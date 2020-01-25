@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fedireads import views
+from fedireads import activitystream, openlibrary, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', views.api),
-    path('webfinger/', views.webfinger),
+    path('api/book/<str:olkey>', openlibrary.get_book),
+    path('webfinger/', activitystream.webfinger),
 ]
