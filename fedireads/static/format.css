@@ -1,0 +1,69 @@
+* {
+    margin: 0;
+    padding: 0;
+    line-height: 1.3em;
+    overflow: auto;
+}
+
+body > * > * {
+    margin: 0 auto;
+    padding: 1rem;
+    max-width: 75rem;
+    min-width: 30rem;
+}
+
+#top-bar {
+    height: 4rem;
+    border-bottom: 1px solid #aaa;
+    box-shadow: 0 0.5em 0.5em -0.6em #666;
+    margin-bottom: 1em;
+    overflow: auto;
+}
+
+#branding {
+    font-size: 2em;
+}
+
+header > div:first-child {
+    float: left;
+}
+
+header > div:last-child {
+    float: right;
+}
+
+#sidebar {
+    width: 30%;
+    float: left;
+}
+
+.user-pic {
+    width: 2em;
+    height: auto;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.book-preview {
+    overflow: auto;
+    margin-bottom: 1em;
+}
+
+.book-preview img {
+    float: left;
+    margin-right: 0.5em;
+}
+
+.update {
+    border: 1px solid #333;
+    border-radius: 0.2rem;
+    margin-bottom: 1em;
+}
+
+.update > * {
+    padding: 1em;
+}
+
+.interact {
+    background-color: #eee;
+}

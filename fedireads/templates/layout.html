@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FediReads</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="/static/format.css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="FediReads">
+    <meta name="og:title" content="FediReads">
+    <meta name="twitter:description" content="Federated Social Reading">
+    <meta name="og:description" content="Federated Social Reading">
+    <meta name="twitter:creator" content="@tripofmice">
+    <meta name="twitter:site" content="@tripofmice">
+
+</head>
+
+<body>
+
+<div id="top-bar">
+    <header>
+        <div id="branding">📚FediReads</div>
+        <div>
+            <div id="account">
+                {% if user.is_authenticated %}
+                <form name="logout" action="/logout/" method="post">
+                    Welcome, {{ user.username }}
+                    <input type="submit" value="Log out"></input>
+                </form>
+                {% else %}
+                <form name="login" action="/login/" method="post">
+                    <input type="text" name="username"></input>
+                    <input type="password" name="password"></input>
+                    <input type="submit" value="Log in"></input>
+                </form>
+                {% endif %}
+            </div>
+            <div id="search">
+                <form action="search">
+                    <input type="text" name="q"></input>
+                    <input type="submit" value="🔍"></input>
+                </form>
+            </div>
+        </div>
+    </header>
+</div>
+
+<div id="content">
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="sidebar">
+    {% for shelf in shelves %}
+    <h1>{{ shelf.name }}</h1>
+    {% for book in  shelf.books.all %}
+    <div class="book-preview">
+        <img class="cover" src="static/images/small.jpg">
+        <p class="title">{{ book.data.title }}</p>
+        <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
+        {% if shelf.type == 'reading' %}
+        <button>Done reading</button>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+<div id="main">
+    <div class="update">
+        <div class="user-preview">
+            <img class="user-pic" src="static/images/profile.jpg">
+            <span><a href="" class="user">Mouse</a> is currently reading</span>
+        </div>
+        <div class="book-preview">
+            <img class="cover" src="static/images/med.jpg">
+            <p class="title">Moby Dick</p>
+            <p>by <a href="" class="author">Herman Melville</a></p>
+            <p>"Command the murderous chalices! Drink ye harpooners! Drink and swear, ye men that man the deathful whaleboat's bow -- Death to Moby Dick!" So Captain Ahab binds his crew to fulfil his obsession -- the destruction of the great white whale. Under his lordly but maniacal command the Pequod's commercial mission is perverted to one of vengeance...</p>
+        </div>
+        <div class="interact">
+            <span>⭐️ Like</span>
+            <span>💬 <input type="text"></input></span>
+        </div>
+    </div>
+    <div class="update">
+        <img class="user-pic" src="static/images/profile.jpg">
+        <span><a href="" class="user">Mouse</a> is currently reading</span>
+        <div class="book-preview">
+            <img class="cover" src="static/images/med.jpg">
+            <p class="title">Moby Dick</p>
+            <p>by <a href="" class="author">Herman Melville</a></p>
+            <p>"Command the murderous chalices! Drink ye harpooners! Drink and swear, ye men that man the deathful whaleboat's bow -- Death to Moby Dick!" So Captain Ahab binds his crew to fulfil his obsession -- the destruction of the great white whale. Under his lordly but maniacal command the Pequod's commercial mission is perverted to one of vengeance...</p>
+        </div>
+        <div class="interact">
+            <span>⭐️ Like</span>
+            <span>💬 <input type="text"></input></span>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -19,6 +19,9 @@ from fedireads import activitystream, openlibrary, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.home),
+    path('login/', views.user_login),
+    path('logout/', views.user_logout),
     path('api/book/<str:olkey>', openlibrary.get_book),
     path('webfinger/', activitystream.webfinger),
 ]
