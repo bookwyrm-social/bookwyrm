@@ -23,5 +23,5 @@ urlpatterns = [
     path('login/', views.user_login),
     path('logout/', views.user_logout),
     path('api/book/<str:olkey>', openlibrary.get_book),
-    path('webfinger/', activitystream.webfinger),
+    path('.well-known/webfinger', activitystream.webfinger),
 ]
