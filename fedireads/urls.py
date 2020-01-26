@@ -15,13 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fedireads import activitystream, openlibrary, views
+from fedireads import federation, openlibrary, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home),
     path('login/', views.user_login),
     path('logout/', views.user_logout),
+    path('user/<str:username>', views.user_profile),
+    path('follow/', views.follow),
+    path('unfollow/', views.unfollow),
     path('api/book/<str:olkey>', openlibrary.get_book),
-    path('.well-known/webfinger', activitystream.webfinger),
+    path('api/<str:username>/inbox', federation.inbox),
+    path('api/<str:username>/outbox', federation.outbox),
+    path('.well-known/webfinger', federation.webfinger),
 ]

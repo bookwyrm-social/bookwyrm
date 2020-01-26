@@ -18,6 +18,8 @@ def get_book(request, olkey):
         book = Book(openlibary_key=olkey)
     data = response.json()
     book.data = data
+    if request and request.user and request.user.is_authenticated:
+        book.added_by = request.user
     book.save()
     for work_id in data['works']:
         work_id = work_id['key']

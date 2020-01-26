@@ -1,7 +1,9 @@
 ''' activitystream api '''
-from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, \
+    HttpResponseNotFound, JsonResponse
 from fedireads.settings import DOMAIN
 from fedireads.models import User
+
 
 def webfinger(request):
     ''' allow other servers to ask about a user '''
@@ -15,7 +17,9 @@ def webfinger(request):
         return HttpResponseNotFound('No account found')
     return JsonResponse(format_webfinger(user))
 
+
 def format_webfinger(user):
+    ''' helper function to create structured webfinger json '''
     return {
         'subject': 'acct:%s@%s' % (user.username, DOMAIN),
         'links': [
@@ -26,3 +30,28 @@ def format_webfinger(user):
             }
         ]
     }
+
+def inbox(request, username):
+    ''' incoming activitypub events '''
+    # TODO RSA junk: signature = request.headers['Signature']
+    user = User.objects.get(username=username)
+
+
+def outbox(request, username):
+    user = User.objects.get(username=username)
+    if request.method == 'GET':
+        # list of activities
+        return JsonResponse()
+
+    data = request.body.decode('utf-8')
+    if data.activity.type == 'Follow':
+        handle_follow(data)
+    return HttpResponse()
+
+def handle_follow(data):
+    pass
+
+def get_or_create_remote_user(activity):
+    pass
+
+

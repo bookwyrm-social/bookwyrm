@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="main">
+    <div class="user-profile">
+        <img class="user-pic" src="/static/images/profile.jpg">
+        <h2>{{ user.username }}</h2>
+        <p>Since {{ user.created_date }}</p>
+        {% if not is_self %}
+        {% if not following %}
+        <form action="/follow/" method="post">
+            <input type="hidden" name="user" value="{{ user.id }}"></input>
+            <input type="submit" value="Follow"></input>
+        </form>
+        {% else %}
+        <form action="/unfollow/" method="post">
+            <input type="hidden" name="user" value="{{ user.id }}"></input>
+            <input type="submit" value="Unfollow"></input>
+        </form>
+        {% endif %}
+        {% endif %}
+    </div>
+    {% for book in books.all %}
+    <div class="book">
+        {{ book.data.title }} by {{ book.authors.first.data.name }}
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

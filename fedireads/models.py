@@ -5,13 +5,15 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from Crypto.PublicKey import RSA
 from Crypto import Random
-from datetime import datetime
+from fedireads.settings import DOMAIN
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    private_key = models.CharField(max_length=255)
-    public_key = models.CharField(max_length=255)
+    private_key = models.CharField(max_length=1024)
+    public_key = models.CharField(max_length=1024)
     api_key = models.CharField(max_length=255, blank=True, null=True)
+    actor = JSONField()
+    local = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     followers = models.ManyToManyField('self', symmetrical=False)
@@ -21,16 +23,36 @@ class User(AbstractUser):
         if not self.private_key:
             random_generator = Random.new().read
             key = RSA.generate(1024, random_generator)
-            self.private_key = key
-            self.public_key = key.publickey()
-        if not self.id:
-            self.created_date = datetime.now()
-        self.updated_date = datetime.now()
+            self.private_key = key.export_key()
+            self.public_key = key.publickey().export_key()
+
+        if self.local and not self.actor:
+            self.actor = {
+                '@context': [
+                    'https://www.w3.org/ns/activitystreams',
+                    'https://w3id.org/security/v1'
+                ],
+
+                'id': 'https://%s/u/%s' % (DOMAIN, self.username),
+                'type': 'Person',
+                'preferredUsername': self.username,
+                'inbox': 'https://%s/api/inbox' % DOMAIN,
+                'followers': 'https://%s/u/%s/followers' % \
+                        (DOMAIN, self.username),
+                'publicKey': {
+                    'id': 'https://%s/u/%s#main-key' % (DOMAIN, self.username),
+                    'owner': 'https://%s/u/%s' % (DOMAIN, self.username),
+                    'publicKeyPem': self.public_key.decode('utf8'),
+                }
+            }
 
         super().save(*args, **kwargs)
 
+
 @receiver(models.signals.post_save, sender=User)
 def execute_after_save(sender, instance, created, *args, **kwargs):
+    ''' create shelves for new users '''
+    # TODO: how are remote users handled? what if they aren't readers?
     if not created:
         return
     shelves = [{
@@ -45,7 +67,12 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
     }]
 
     for shelf in shelves:
-        Shelf(name=shelf['name'], shelf_type=shelf['type'], user=instance, editable=False).save()
+        Shelf(
+            name=shelf['name'],
+            shelf_type=shelf['type'],
+            user=instance,
+            editable=False
+        ).save()
 
 
 class Message(models.Model):
@@ -63,6 +90,13 @@ class Message(models.Model):
 class Review(Message):
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     star_rating = models.IntegerField(default=0)
+
+
+class Activity(models.Model):
+    data = JSONField()
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    remote = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
 
 
 class Shelf(models.Model):
@@ -84,7 +118,12 @@ class ShelfBook(models.Model):
     # many to many join table for books and shelves
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
-    added_by = models.ForeignKey('User', blank=True, null=True, on_delete=models.PROTECT)
+    added_by = models.ForeignKey(
+        'User',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT
+    )
     added_date = models.DateTimeField(auto_now_add=True)
 
 
@@ -94,11 +133,23 @@ class Book(models.Model):
     data = JSONField()
     works = models.ManyToManyField('Work')
     authors = models.ManyToManyField('Author')
-    added_by = models.ForeignKey('User', on_delete=models.PROTECT, blank=True, null=True)
+    shelves = models.ManyToManyField(
+        'Shelf',
+        symmetrical=False,
+        through='ShelfBook',
+        through_fields=('book', 'shelf')
+    )
+    added_by = models.ForeignKey(
+        'User',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT
+    )
     added_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
 class Work(models.Model):
+    ''' encompassses all editions of a book '''
     openlibary_key = models.CharField(max_length=255)
     data = JSONField()
     added_date = models.DateTimeField(auto_now_add=True)
