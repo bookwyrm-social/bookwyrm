@@ -1,25 +1,26 @@
 ''' activitystream api and books '''
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.core.exceptions import ObjectDoesNotExist
-from django.core import serializers
 from fedireads.models import Author, Book, Work
+from fedireads.settings import OL_URL
 import requests
 
-openlibrary_url = 'https://openlibrary.org'
-
-def get_book(request, olkey):
+def get_or_create_book(olkey, user=None, update=True):
+    ''' add a book '''
     # check if this is a valid open library key, and a book
-    response = requests.get(openlibrary_url + '/book/' + olkey + '.json')
+    olkey = '/book/' + olkey
+    response = requests.get(OL_URL + olkey + '.json')
 
     # get the existing entry from our db, if it exists
     try:
         book = Book.objects.get(openlibary_key=olkey)
+        if not update:
+            return book
     except ObjectDoesNotExist:
         book = Book(openlibary_key=olkey)
     data = response.json()
     book.data = data
-    if request and request.user and request.user.is_authenticated:
-        book.added_by = request.user
+    if user and user.is_authenticated:
+        book.added_by = user
     book.save()
     for work_id in data['works']:
         work_id = work_id['key']
@@ -27,23 +28,25 @@ def get_book(request, olkey):
     for author_id in data['authors']:
         author_id = author_id['key']
         book.authors.add(get_or_create_author(author_id))
-    return HttpResponse(serializers.serialize('json', [book]))
+    return book
 
 def get_or_create_work(olkey):
+    ''' load em up '''
     try:
         work = Work.objects.get(openlibary_key=olkey)
     except ObjectDoesNotExist:
-        response = requests.get(openlibrary_url + olkey + '.json')
+        response = requests.get(OL_URL + olkey + '.json')
         data = response.json()
         work = Work(openlibary_key=olkey, data=data)
         work.save()
     return work
 
 def get_or_create_author(olkey):
+    ''' load that author '''
     try:
         author = Author.objects.get(openlibary_key=olkey)
     except ObjectDoesNotExist:
-        response = requests.get(openlibrary_url + olkey + '.json')
+        response = requests.get(OL_URL + olkey + '.json')
         data = response.json()
         author = Author(openlibary_key=olkey, data=data)
         author.save()

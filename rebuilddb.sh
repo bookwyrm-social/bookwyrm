@@ -9,7 +9,9 @@ python manage.py migrate
 echo "from fedireads.models import User
 User.objects.create_user('mouse', 'mouse.reeve@gmail.com', 'password123')" | python manage.py shell
 echo "from fedireads.models import User
-User.objects.create_user('rat', 'rat@rat.com', 'ratword')" | python manage.py shell
-echo "from fedireads.openlibrary import get_book
-get_book(None, 'OL13549170M')
-get_book(None, 'OL24738110M')" | python manage.py shell
+User.objects.create_user('rat', 'rat@rat.com', 'ratword')
+User.objects.get(id=1).followers.add(User.objects.get(id=2))" | python manage.py shell
+echo "from fedireads.openlibrary import get_or_create_book
+get_or_create_book('OL13549170M')
+get_or_create_book('OL24738110M')" | python manage.py shell
+python manage.py runserver

@@ -5,12 +5,14 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from Crypto.PublicKey import RSA
 from Crypto import Random
-from fedireads.settings import DOMAIN
+from fedireads.settings import DOMAIN, OL_URL
+import re
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    private_key = models.CharField(max_length=1024)
-    public_key = models.CharField(max_length=1024)
+    activitypub_id = models.CharField(max_length=255)
+    private_key = models.TextField(blank=True, null=True)
+    public_key = models.TextField()
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = JSONField()
     local = models.BooleanField(default=True)
@@ -23,8 +25,8 @@ class User(AbstractUser):
         if not self.private_key:
             random_generator = Random.new().read
             key = RSA.generate(1024, random_generator)
-            self.private_key = key.export_key()
-            self.public_key = key.publickey().export_key()
+            self.private_key = key.export_key().decode('utf8')
+            self.public_key = key.publickey().export_key().decode('utf8')
 
         if self.local and not self.actor:
             self.actor = {
@@ -33,18 +35,21 @@ class User(AbstractUser):
                     'https://w3id.org/security/v1'
                 ],
 
-                'id': 'https://%s/u/%s' % (DOMAIN, self.username),
+                'id': 'https://%s/api/u/%s' % (DOMAIN, self.username),
                 'type': 'Person',
                 'preferredUsername': self.username,
-                'inbox': 'https://%s/api/inbox' % DOMAIN,
-                'followers': 'https://%s/u/%s/followers' % \
+                'inbox': 'https://%s/api/%s/inbox' % (DOMAIN, self.username),
+                'followers': 'https://%s/api/u/%s/followers' % \
                         (DOMAIN, self.username),
                 'publicKey': {
-                    'id': 'https://%s/u/%s#main-key' % (DOMAIN, self.username),
-                    'owner': 'https://%s/u/%s' % (DOMAIN, self.username),
-                    'publicKeyPem': self.public_key.decode('utf8'),
+                    'id': 'https://%s/api/u/%s#main-key' % (DOMAIN, self.username),
+                    'owner': 'https://%s/api/u/%s' % (DOMAIN, self.username),
+                    'publicKeyPem': self.public_key,
                 }
             }
+
+        if not self.activitypub_id:
+            self.activitypub_id = '%s@%s' % (self.username, DOMAIN)
 
         super().save(*args, **kwargs)
 
@@ -78,7 +83,6 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 class Message(models.Model):
     ''' any kind of user post, incl. reviews, replies, and status updates '''
     author = models.ForeignKey('User', on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
     content = JSONField(max_length=5000)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -87,19 +91,9 @@ class Message(models.Model):
         abstract = True
 
 
-class Review(Message):
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    star_rating = models.IntegerField(default=0)
-
-
-class Activity(models.Model):
-    data = JSONField()
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    remote = models.BooleanField(default=False)
-    created_date = models.DateTimeField(auto_now_add=True)
-
-
 class Shelf(models.Model):
+    activitypub_id = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=255)
     name = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     editable = models.BooleanField(default=True)
@@ -113,6 +107,19 @@ class Shelf(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('user', 'name')
+
+    def save(self, *args, **kwargs):
+        if not self.identifier:
+            self.identifier = '%s_%s' % (
+                self.user.username,
+                re.sub(r'\W', '-', self.name).lower()
+            )
+        if not self.activitypub_id:
+            self.activitypub_id = 'https://%s/shelf/%s' % (DOMAIN, self.identifier)
+        super().save(*args, **kwargs)
+
 
 class ShelfBook(models.Model):
     # many to many join table for books and shelves
@@ -125,10 +132,13 @@ class ShelfBook(models.Model):
         on_delete=models.PROTECT
     )
     added_date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('book', 'shelf')
 
 
 class Book(models.Model):
     ''' a non-canonical copy from open library '''
+    activitypub_id = models.CharField(max_length=255)
     openlibary_key = models.CharField(max_length=255)
     data = JSONField()
     works = models.ManyToManyField('Work')
@@ -147,6 +157,11 @@ class Book(models.Model):
     )
     added_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.activitypub_id = '%s%s' % (OL_URL, self.openlibary_key)
+        super().save(*args, **kwargs)
+
 
 class Work(models.Model):
     ''' encompassses all editions of a book '''

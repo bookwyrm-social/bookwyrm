@@ -25,9 +25,10 @@ SECRET_KEY = '7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'ff2cb3e9.ngrok.io']
 
-DOMAIN = 'localhost'
+DOMAIN = 'ff2cb3e9.ngrok.io'
+OL_URL = 'https://openlibrary.org'
 
 # Application definition
 

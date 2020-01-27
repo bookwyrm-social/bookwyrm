@@ -9,7 +9,7 @@
         <p class="title">{{ book.data.title }}</p>
         <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
         {% if shelf.type == 'reading' %}
-        <button>Done reading</button>
+        <button>done reading</button>
         {% endif %}
     </div>
     {% endfor %}
@@ -17,6 +17,21 @@
 </div>
 
 <div id="main">
+    <div class="carosel">
+        {% for book in recent_books %}
+        <div class="book-preview">
+            <img class="cover" src="static/images/small.jpg">
+            <p class="title">{{ book.data.title }}</p>
+            <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
+            {% if not book.user_shelves %}
+            <form name="shelve" action="/shelve/{{ request.user.username }}_to-read/{{ book.id }}" method="post">
+                <input type="hidden" name="book" value="book.id"></input>
+                <input type="submit" value="want to read"></input>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
     <div class="update">
         <div class="user-preview">
             <img class="user-pic" src="static/images/profile.jpg">
