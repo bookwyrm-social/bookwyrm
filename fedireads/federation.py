@@ -20,7 +20,7 @@ def webfinger(request):
     if not resource and not resource.startswith('acct:'):
         return HttpResponseBadRequest()
     ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(activitypub_id=ap_id).first()
+    user = models.User.objects.filter(full_username=ap_id).first()
     if not user:
         return HttpResponseNotFound('No account found')
     return JsonResponse(format_webfinger(user))
@@ -29,12 +29,12 @@ def webfinger(request):
 def format_webfinger(user):
     ''' helper function to create structured webfinger json '''
     return {
-        'subject': 'acct:%s' % (user.activitypub_id),
+        'subject': 'acct:%s' % (user.full_username),
         'links': [
             {
                 'rel': 'self',
                 'type': 'application/activity+json',
-                'href': user.actor['id']
+                'href': user.actor
             }
         ]
     }
@@ -44,7 +44,7 @@ def format_webfinger(user):
 def actor(request, username):
     ''' return an activitypub actor object '''
     user = models.User.objects.get(username=username)
-    return JsonResponse(user.actor)
+    return JsonResponse(templates.actor(user))
 
 
 @csrf_exempt
@@ -69,7 +69,7 @@ def handle_add(activity):
     book_id = activity['object']['url']
     book = openlibrary.get_or_create_book(book_id)
     user_ap_id = activity['actor'].replace('https//:', '')
-    user = models.User.objects.get(activitypub_id=user_ap_id)
+    user = models.User.objects.get(actor=user_ap_id)
     shelf = models.Shelf.objects.get(activitypub_id=activity['target']['id'])
     models.ShelfBook(
         shelf=shelf,
@@ -92,11 +92,7 @@ def handle_follow(activity):
     following = activity['object'].replace('https://%s/api/u/' % DOMAIN, '')
     following = models.User.objects.get(username=following)
     # figure out who they are
-    ap_id = activity['actor']
-    try:
-        user = models.User.objects.get(activitypub_id=ap_id)
-    except models.User.DoesNotExist:
-        user = models.User(activitypub_id=ap_id, local=False).save()
+    user = get_or_create_remote_user(activity)
     following.followers.add(user)
     # accept the request
     return templates.accept_follow(activity, following)
@@ -125,7 +121,7 @@ def broadcast_action(sender, action, recipients):
         action['to'] = 'https://www.w3.org/ns/activitystreams#Public'
         action['cc'] = [recipient]
 
-        inbox_fragment = sender.actor['inbox'].replace('https://' + DOMAIN, '')
+        inbox_fragment = '/api/%s/inbox' % (sender.username)
         now = datetime.utcnow().isoformat()
         message_to_sign = '''(request-target): post %s
 host: https://%s
@@ -133,12 +129,12 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         signer = pkcs1_15.new(RSA.import_key(sender.private_key))
         signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 
-        signature = 'keyId="%s",' % sender.activitypub_id
+        signature = 'keyId="%s",' % sender.full_username
         signature += 'headers="(request-target) host date",'
         signature += 'signature="%s"' % b64encode(signed_message)
         response = requests.post(
             recipient,
-            body=action,
+            data=json.dumps(action),
             headers={
                 'Date': now,
                 'Signature': signature,
@@ -148,8 +144,40 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         if not response.ok:
             return response.raise_for_status()
 
+def broadcast_follow(sender, action, destination):
+    ''' send a follow request '''
+    inbox_fragment = '/api/%s/inbox' % (sender.username)
+    now = datetime.utcnow().isoformat()
+    message_to_sign = '''(request-target): post %s
+host: https://%s
+date: %s''' % (inbox_fragment, DOMAIN, now)
+    signer = pkcs1_15.new(RSA.import_key(sender.private_key))
+    signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
+
+    signature = 'keyId="%s",' % sender.full_username
+    signature += 'headers="(request-target) host date",'
+    signature += 'signature="%s"' % b64encode(signed_message)
+    response = requests.post(
+        destination,
+        data=json.dumps(action),
+        headers={
+            'Date': now,
+            'Signature': signature,
+            'Host': DOMAIN,
+        },
+    )
+    if not response.ok:
+         response.raise_for_status()
+
 
 def get_or_create_remote_user(activity):
-    pass
+    actor = activity['actor']
+    try:
+        user = models.User.objects.get(actor=actor)
+    except models.User.DoesNotExist:
+        # TODO: how do you actually correctly learn this?
+        username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
+        user = models.User.objects.create_user(username, '', '', actor=actor, local=False)
+    return user
 
 

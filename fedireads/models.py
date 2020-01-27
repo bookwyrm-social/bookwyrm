@@ -10,11 +10,11 @@ import re
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    activitypub_id = models.CharField(max_length=255)
+    full_username = models.CharField(max_length=255, blank=True, null=True, unique=True)
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
-    actor = JSONField(blank=True, null=True)
+    actor = models.CharField(max_length=255)
     local = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -29,27 +29,9 @@ class User(AbstractUser):
             self.public_key = key.publickey().export_key().decode('utf8')
 
         if self.local and not self.actor:
-            self.actor = {
-                '@context': [
-                    'https://www.w3.org/ns/activitystreams',
-                    'https://w3id.org/security/v1'
-                ],
-
-                'id': 'https://%s/api/u/%s' % (DOMAIN, self.username),
-                'type': 'Person',
-                'preferredUsername': self.username,
-                'inbox': 'https://%s/api/%s/inbox' % (DOMAIN, self.username),
-                'followers': 'https://%s/api/u/%s/followers' % \
-                        (DOMAIN, self.username),
-                'publicKey': {
-                    'id': 'https://%s/api/u/%s#main-key' % (DOMAIN, self.username),
-                    'owner': 'https://%s/api/u/%s' % (DOMAIN, self.username),
-                    'publicKeyPem': self.public_key,
-                }
-            }
-
-        if not self.activitypub_id:
-            self.activitypub_id = '%s@%s' % (self.username, DOMAIN)
+            self.actor = 'https://%s/api/u/%s' % (DOMAIN, self.username)
+        if self.local and not self.full_username:
+            self.full_username = '%s@%s' % (self.username, DOMAIN)
 
         super().save(*args, **kwargs)
 

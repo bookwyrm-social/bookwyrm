@@ -32,7 +32,7 @@
     <div>
         <h2>Followers</h2>
         {% for follower in user.followers.all %}
-        {{ follower.activitypub_id }}
+        <a href="{{ follower.actor }}">{{ follower.username }}</a>
         {% endfor %}
     </div>
 

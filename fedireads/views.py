@@ -7,7 +7,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from fedireads import models
 import fedireads.activitypub_templates as templates
-from fedireads.federation import broadcast_action
+from fedireads.federation import broadcast_action, broadcast_follow
 
 @login_required
 def home(request):
@@ -77,7 +77,7 @@ def shelve(request, shelf_id, book_id):
 
     # send out the activitypub action
     action = templates.shelve_action(request.user, book, shelf)
-    recipients = [u.actor['inbox'] for u in request.user.followers.all()]
+    recipients = [templates.inbox(u) for u in request.user.followers.all()]
     broadcast_action(request.user, action, recipients)
 
     return redirect('/')
@@ -87,29 +87,13 @@ def shelve(request, shelf_id, book_id):
 @login_required
 def follow(request):
     ''' follow another user, here or abroad '''
-    followed = request.POST.get('user')
-    followed = models.User.objects.get(id=followed)
-    followed.followers.add(request.user)
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'summary': '',
-        'type': 'Follow',
-        'actor': {
-            'type': 'Person',
-            'name': request.user.get_actor(),
-        },
-        'object': {
-            'type': 'Person',
-            'name': followed.get_actor(),
-        }
-    }
+    to_follow = request.POST.get('user')
+    to_follow = models.User.objects.get(id=to_follow)
 
-    models.Activity(
-        data=activity,
-        user=request.user,
-    )
+    activity = templates.follow_request(request.user, to_follow.actor)
+    broadcast_follow(request.user, activity, templates.inbox(to_follow))
+    return redirect('/user/%s' % to_follow.username)
 
-    return redirect('/user/%s' % followed.username)
 
 
 @csrf_exempt

@@ -7,7 +7,7 @@ import requests
 def get_or_create_book(olkey, user=None, update=True):
     ''' add a book '''
     # check if this is a valid open library key, and a book
-    olkey = '/book/' + olkey
+    olkey = olkey
     response = requests.get(OL_URL + olkey + '.json')
 
     # get the existing entry from our db, if it exists
