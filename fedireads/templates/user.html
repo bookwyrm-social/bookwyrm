@@ -32,7 +32,13 @@
     <div>
         <h2>Followers</h2>
         {% for follower in user.followers.all %}
-        <a href="{{ follower.actor }}">{{ follower.username }}</a>
+        <div>
+            <a href="{{ follower.actor }}">{{ follower.username }}</a>
+            <form action="/follow/" method="post">
+                <input type="hidden" name="user" value="{{ follower.id }}"></input>
+                <input type="submit" value="Follow"></input>
+            </form>
+        </div>
         {% endfor %}
     </div>
 
