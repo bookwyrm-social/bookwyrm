@@ -1,3 +1,3 @@
 # fedireads
 
-what if reads but fedi
+Social reading and reviewing, decentralized with ActivityPub
