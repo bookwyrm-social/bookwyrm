@@ -26,8 +26,8 @@ urlpatterns = [
     path('shelve/<str:shelf_id>/<int:book_id>', views.shelve),
     path('follow/', views.follow),
     path('unfollow/', views.unfollow),
-    path('api/u/<str:username>', federation.actor),
-    path('api/<str:username>/inbox', federation.inbox),
-    path('api/<str:username>/outbox', federation.outbox),
+    path('api/u/<str:username>', federation.get_actor),
+    path('api/u/<str:username>/inbox', federation.inbox),
+    path('api/u/<str:username>/outbox', federation.outbox),
     path('.well-known/webfinger', federation.webfinger),
 ]

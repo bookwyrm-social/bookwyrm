@@ -7,7 +7,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from fedireads import models
 import fedireads.activitypub_templates as templates
-from fedireads.federation import broadcast_action, broadcast_follow
+from fedireads.federation import broadcast_activity, broadcast_follow
 
 @login_required
 def home(request):
@@ -73,12 +73,19 @@ def shelve(request, shelf_id, book_id):
     shelf = models.Shelf.objects.get(identifier=shelf_id)
 
     # update the database
-    #models.ShelfBook(book=book, shelf=shelf, added_by=request.user).save()
+    models.ShelfBook(book=book, shelf=shelf, added_by=request.user).save()
 
     # send out the activitypub action
-    action = templates.shelve_action(request.user, book, shelf)
+    summary = '%s marked %s as %s' % (
+        request.user.username,
+        book.data['title'],
+        shelf.name
+    )
+
+    obj = templates.note_object(request.user, summary)
+    #activity = templates.shelve_activity(request.user, book, shelf)
     recipients = [templates.inbox(u) for u in request.user.followers.all()]
-    broadcast_action(request.user, action, recipients)
+    broadcast_activity(request.user, obj, recipients)
 
     return redirect('/')
 

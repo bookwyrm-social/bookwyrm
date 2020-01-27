@@ -64,13 +64,10 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
 class Message(models.Model):
     ''' any kind of user post, incl. reviews, replies, and status updates '''
-    author = models.ForeignKey('User', on_delete=models.PROTECT)
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
     content = JSONField(max_length=5000)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
 
 
 class Shelf(models.Model):

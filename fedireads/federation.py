@@ -41,7 +41,7 @@ def format_webfinger(user):
 
 
 @csrf_exempt
-def actor(request, username):
+def get_actor(request, username):
     ''' return an activitypub actor object '''
     user = models.User.objects.get(username=username)
     return JsonResponse(templates.actor(user))
@@ -52,17 +52,22 @@ def inbox(request, username):
     ''' incoming activitypub events '''
     if request.method == 'GET':
         # return a collection of something?
-        pass
+        return JsonResponse({})
 
-    activity = json.loads(request.body)
+    # TODO: RSA key verification
+
+    try:
+        activity = json.loads(request.body)
+    except json.decoder.JSONDecodeError:
+        return HttpResponseBadRequest
     if activity['type'] == 'Add':
         handle_add(activity)
 
     if activity['type'] == 'Follow':
         response = handle_follow(activity)
         return JsonResponse(response)
-
     return HttpResponse()
+
 
 def handle_add(activity):
     ''' adding a book to a shelf '''
@@ -100,10 +105,12 @@ def handle_follow(activity):
 
 @csrf_exempt
 def outbox(request, username):
+    ''' outbox for the requested user '''
     user = models.User.objects.get(username=username)
+    size = models.Message.objects.filter(user=user).count()
     if request.method == 'GET':
         # list of activities
-        return JsonResponse()
+        return JsonResponse(templates.outbox_collection(user, size))
 
     data = request.body.decode('utf-8')
     if data.activity.type == 'Follow':
@@ -111,42 +118,24 @@ def outbox(request, username):
     return HttpResponse()
 
 
-def broadcast_action(sender, action, recipients):
+def broadcast_activity(sender, obj, recipients):
     ''' sign and send out the actions '''
-    #models.Message(
-    #    author=sender,
-    #    content=action
-    #).save()
+    activity = templates.create_activity(sender, obj)
+
+    # store message in database
+    models.Message(user=sender, content=activity).save()
+
     for recipient in recipients:
-        action['to'] = 'https://www.w3.org/ns/activitystreams#Public'
-        action['cc'] = [recipient]
+        broadcast(sender, activity, recipient)
 
-        inbox_fragment = '/api/%s/inbox' % (sender.username)
-        now = datetime.utcnow().isoformat()
-        message_to_sign = '''(request-target): post %s
-host: https://%s
-date: %s''' % (inbox_fragment, DOMAIN, now)
-        signer = pkcs1_15.new(RSA.import_key(sender.private_key))
-        signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
-
-        signature = 'keyId="%s",' % sender.full_username
-        signature += 'headers="(request-target) host date",'
-        signature += 'signature="%s"' % b64encode(signed_message)
-        response = requests.post(
-            recipient,
-            data=json.dumps(action),
-            headers={
-                'Date': now,
-                'Signature': signature,
-                'Host': DOMAIN,
-            },
-        )
-        if not response.ok:
-            return response.raise_for_status()
 
 def broadcast_follow(sender, action, destination):
     ''' send a follow request '''
-    inbox_fragment = '/api/%s/inbox' % (sender.username)
+    broadcast(sender, action, destination)
+
+def broadcast(sender, action, destination):
+    ''' send out an event to all followers '''
+    inbox_fragment = '/api/u/%s/inbox' % (sender.username)
     now = datetime.utcnow().isoformat()
     message_to_sign = '''(request-target): post %s
 host: https://%s
@@ -167,17 +156,22 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         },
     )
     if not response.ok:
-         response.raise_for_status()
-
+        response.raise_for_status()
 
 def get_or_create_remote_user(activity):
+    ''' wow, a foreigner '''
     actor = activity['actor']
     try:
         user = models.User.objects.get(actor=actor)
     except models.User.DoesNotExist:
         # TODO: how do you actually correctly learn this?
         username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
-        user = models.User.objects.create_user(username, '', '', actor=actor, local=False)
+        user = models.User.objects.create_user(
+            username,
+            '', '',
+            actor=actor,
+            local=False
+        )
     return user
 
 

@@ -1,9 +1,20 @@
 ''' generates activitypub formatted objects '''
 from uuid import uuid4
 from fedireads.settings import DOMAIN
+from datetime import datetime
 
+def outbox_collection(user, size):
+    ''' outbox okay cool '''
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s/outbox' % user.actor,
+        'type': 'OrderedCollection',
+        'totalItems': size,
+        'first': '%s/outbox?page=true' % user.actor,
+        'last': '%s/outbox?min_id=0&page=true' % user.actor
+    }
 
-def shelve_action(user, book, shelf):
+def shelve_activity(user, book, shelf):
     ''' a user puts a book on a shelf.
     activitypub action type Add
     https://www.w3.org/ns/activitystreams#Add '''
@@ -28,6 +39,37 @@ def shelve_action(user, book, shelf):
             'name': shelf.name,
             'id': shelf.activitypub_id
         }
+    }
+
+
+def create_activity(user, obj):
+    ''' wraps any object we're broadcasting '''
+    uuid = uuid4()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+
+        'id': str(uuid),
+        'type': 'Create',
+        'actor': user.actor,
+
+        'to': ['%s/followers' % user.actor],
+        'cc': ['https://www.w3.org/ns/activitystreams#Public'],
+
+        'object': obj,
+
+    }
+
+
+def note_object(user, content):
+    ''' a lil post '''
+    uuid = uuid4()
+    return {
+        'id': str(uuid),
+        'type': 'Note',
+        'published': datetime.utcnow().isoformat(),
+        'attributedTo': user.actor,
+        'content': content,
+        'to': 'https://www.w3.org/ns/activitystreams#Public'
     }
 
 def follow_request(user, follow):
@@ -64,12 +106,11 @@ def actor(user):
         'id': user.actor,
         'type': 'Person',
         'preferredUsername': user.username,
-        'inbox': 'https://%s/api/%s/inbox' % (DOMAIN, user.username),
-        'followers': 'https://%s/api/u/%s/followers' % \
-                (DOMAIN, user.username),
+        'inbox': inbox(user),
+        'followers': '%s/followers' % user.actor,
         'publicKey': {
-            'id': 'https://%s/api/u/%s#main-key' % (DOMAIN, user.username),
-            'owner': 'https://%s/api/u/%s' % (DOMAIN, user.username),
+            'id': '%s/#main-key' % user.actor,
+            'owner': user.actor,
             'publicKeyPem': user.public_key,
         }
     }
@@ -77,4 +118,4 @@ def actor(user):
 
 def inbox(user):
     ''' describe an inbox '''
-    return 'https://%s/api/%s/inbox' % (DOMAIN, user.username)
+    return '%s/inbox' % (user.actor)
