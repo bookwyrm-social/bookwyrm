@@ -57,12 +57,10 @@ def user_profile(request, username):
     ''' profile page for a user '''
     user = models.User.objects.get(username=username)
     books = models.Book.objects.filter(shelves__user=user)
-    following = user.followers.filter(id=request.user.id).count() > 0
     data = {
         'user': user,
         'books': books,
         'is_self': request.user.id == user.id,
-        'following': following,
     }
     return TemplateResponse(request, 'user.html', data)
 

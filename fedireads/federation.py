@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 from fedireads.settings import DOMAIN
 from fedireads import models
 from fedireads import openlibrary
+import fedireads.activitypub_templates as templates
+import json
 import requests
 
 def webfinger(request):
@@ -52,13 +54,18 @@ def inbox(request, username):
         # return a collection of something?
         pass
 
-    activity = request.POST.dict()
+    activity = json.loads(request.body)
     if activity['type'] == 'Add':
         handle_add(activity)
+
+    if activity['type'] == 'Follow':
+        response = handle_follow(activity)
+        return JsonResponse(response)
 
     return HttpResponse()
 
 def handle_add(activity):
+    ''' adding a book to a shelf '''
     book_id = activity['object']['url']
     book = openlibrary.get_or_create_book(book_id)
     user_ap_id = activity['actor'].replace('https//:', '')
@@ -69,6 +76,31 @@ def handle_add(activity):
         book=book,
         added_by=user,
     ).save()
+
+
+def handle_follow(activity):
+    '''
+    {
+	"@context": "https://www.w3.org/ns/activitystreams",
+	"id": "https://friend.camp/768222ce-a1c7-479c-a544-c93b8b67fb54",
+	"type": "Follow",
+	"actor": "https://friend.camp/users/tripofmice",
+	"object": "https://ff2cb3e9.ngrok.io/api/u/mouse"
+    }
+    '''
+    # figure out who they want to follow
+    following = activity['object'].replace('https://%s/api/u/' % DOMAIN, '')
+    following = models.User.objects.get(username=following)
+    # figure out who they are
+    ap_id = activity['actor']
+    try:
+        user = models.User.objects.get(activitypub_id=ap_id)
+    except models.User.DoesNotExist:
+        user = models.User(activitypub_id=ap_id, local=False).save()
+    following.followers.add(user)
+    # accept the request
+    return templates.accept_follow(activity, following)
+
 
 @csrf_exempt
 def outbox(request, username):
@@ -106,19 +138,16 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         signature += 'signature="%s"' % b64encode(signed_message)
         response = requests.post(
             recipient,
-            data=action,
+            body=action,
             headers={
                 'Date': now,
                 'Signature': signature,
                 'Host': DOMAIN,
-                'Content-Type': 'application/json',
             },
         )
         if not response.ok:
             return response.raise_for_status()
 
-def handle_follow(data):
-    pass
 
 def get_or_create_remote_user(activity):
     pass

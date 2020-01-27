@@ -12,9 +12,9 @@ class User(AbstractUser):
     ''' a user who wants to read books '''
     activitypub_id = models.CharField(max_length=255)
     private_key = models.TextField(blank=True, null=True)
-    public_key = models.TextField()
+    public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
-    actor = JSONField()
+    actor = JSONField(blank=True, null=True)
     local = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)

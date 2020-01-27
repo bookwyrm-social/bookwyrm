@@ -3,7 +3,7 @@
 <div id="main">
     <div class="user-profile">
         <img class="user-pic" src="/static/images/profile.jpg">
-        <h2>{{ user.username }}</h2>
+        <h1>{{ user.username }}</h1>
         <p>Since {{ user.created_date }}</p>
         {% if not is_self %}
         {% if not following %}
@@ -19,11 +19,22 @@
         {% endif %}
         {% endif %}
     </div>
-    {% for book in books.all %}
-    <div class="book">
-        {{ book.data.title }} by {{ book.authors.first.data.name }}
+
+    <div>
+        <h2>Books</h2>
+        {% for book in books.all %}
+        <div class="book">
+            {{ book.data.title }} by {{ book.authors.first.data.name }}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+
+    <div>
+        <h2>Followers</h2>
+        {% for follower in user.followers.all %}
+        {{ follower.activitypub_id }}
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}

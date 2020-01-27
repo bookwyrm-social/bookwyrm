@@ -1,4 +1,7 @@
 ''' generates activitypub formatted objects '''
+from uuid import uuid4
+from fedireads.settings import DOMAIN
+
 
 def shelve_action(user, book, shelf):
     ''' a user puts a book on a shelf.
@@ -25,5 +28,17 @@ def shelve_action(user, book, shelf):
             'name': shelf.name,
             'id': shelf.activitypub_id
         }
+    }
+
+
+def accept_follow(activity, user):
+    ''' say YES! to a user '''
+    uuid = uuid4()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': 'https://%s/%s' % (DOMAIN, uuid),
+        'type': 'Accept',
+        'actor': user.actor['id'],
+        'object': activity,
     }
 
