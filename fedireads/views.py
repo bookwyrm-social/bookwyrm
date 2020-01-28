@@ -48,6 +48,7 @@ def home(request):
 def user_login(request):
     ''' authentication '''
     # send user to the login page
+    # TODO: login with localname or email
     if request.method == 'GET':
         return TemplateResponse(request, 'login.html')
 
