@@ -18,13 +18,14 @@ CREATE ROLE fedireads WITH LOGIN PASSWORD 'fedireads';
 GRANT ALL PRIVILEGES ON DATABASE fedireads TO fedireads;
 ```
 
-Initialize the database
+Initialize the database (this will also delete and re-create the migrations, which is not
+a good idea for the long term but it's what I'm doing right now).
 ``` bash
 ./rebuilddb.sh
 ```
 This creates two users, `mouse@your-domain.com` with password `password123` and `rat@your-domain.com` with password `ratword`.
 
-And go to the app at localhost:8000
+And go to the app at `localhost:8000`
 
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in settings.py to your ngrok domain.
 
@@ -40,3 +41,6 @@ messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Mis
 probably not a good name for that file.
 
 Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`.
+
+The UI is all django templates because I tried to install jinja2 and couldn't get it working so I gave up. It'd be nice to have
+jinja2 for macros, so maybe I'll try again some day. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
