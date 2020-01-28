@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from fedireads import models, openlibrary
 from fedireads import federation as api
+import re
 
 @login_required
 def home(request):
@@ -132,4 +133,17 @@ def unfollow(request):
     followed = models.User.objects.get(id=followed)
     followed.followers.remove(request.user)
     return redirect('/user/%s' % followed.username)
+
+
+@csrf_exempt
+@login_required
+def search(request):
+    ''' that search bar up top '''
+    query = request.GET.get('q')
+    if re.match(r'\w+@\w+.\w+', query):
+        results = [api.handle_account_search(query)]
+    else:
+        results = []
+
+    return TemplateResponse(request, 'results.html', {'results': results})
 

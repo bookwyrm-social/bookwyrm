@@ -19,11 +19,11 @@ def webfinger(request):
     if not resource and not resource.startswith('acct:'):
         return HttpResponseBadRequest()
     ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(full_username=ap_id).first()
+    user = models.User.objects.filter(username=ap_id).first()
     if not user:
         return HttpResponseNotFound('No account found')
     return JsonResponse({
-        'subject': 'acct:%s' % (user.full_username),
+        'subject': 'acct:%s' % (user.username),
         'links': [
             {
                 'rel': 'self',
@@ -86,6 +86,22 @@ def inbox(request, username):
         return handle_incoming_follow(activity)
 
     return HttpResponse()
+
+
+def handle_account_search(query):
+    ''' webfingerin' other servers '''
+    domain = query.split('@')[1]
+    try:
+        user = models.User.objects.get(username=query)
+    except models.User.DoesNotExist:
+        url = 'https://%s/.well-known/webfinger' % domain
+        params = {'resource': 'acct:%s' % query}
+        response = requests.get(url, params=params)
+        data = response.json()
+        for link in data['links']:
+            if link['rel'] == 'self':
+                user = get_or_create_remote_user(link['href'])
+    return user
 
 
 def handle_add(activity):
@@ -156,7 +172,7 @@ def handle_outgoing_follow(user, to_follow):
         'summary': '',
         'type': 'Follow',
         'actor': user.actor,
-        'object': to_follow,
+        'object': to_follow.actor,
     }
 
     broadcast(user, activity, [format_inbox(to_follow)])
@@ -281,6 +297,7 @@ def broadcast(sender, action, recipients):
     for recipient in recipients:
         sign_and_send(sender, action, recipient)
 
+
 def sign_and_send(sender, action, destination):
     ''' crpyto whatever and http junk '''
     inbox_fragment = '/api/u/%s/inbox' % (sender.username)
@@ -291,7 +308,7 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 
-    signature = 'keyId="%s",' % sender.full_username
+    signature = 'keyId="%s",' % sender.username
     signature += 'headers="(request-target) host date",'
     signature += 'signature="%s"' % b64encode(signed_message)
     response = requests.post(
@@ -306,9 +323,9 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
     if not response.ok:
         response.raise_for_status()
 
-def get_or_create_remote_user(activity):
+
+def get_or_create_remote_user(actor):
     ''' wow, a foreigner '''
-    actor = activity['actor']
     try:
         user = models.User.objects.get(actor=actor)
     except models.User.DoesNotExist:

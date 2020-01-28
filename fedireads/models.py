@@ -10,12 +10,6 @@ import re
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    full_username = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        unique=True
-    )
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
@@ -36,8 +30,8 @@ class User(AbstractUser):
 
         if self.local and not self.actor:
             self.actor = 'https://%s/api/u/%s' % (DOMAIN, self.username)
-        if self.local and not self.full_username:
-            self.full_username = '%s@%s' % (self.username, DOMAIN)
+        if self.local and not re.match(r'\w+@\w+.\w+', self.username):
+            self.username = '%s@%s' % (self.username, DOMAIN)
 
         super().save(*args, **kwargs)
 

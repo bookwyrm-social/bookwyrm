@@ -24,10 +24,13 @@ urlpatterns = [
     path('logout/', views.user_logout),
     path('user/<str:username>', views.user_profile),
     path('book/<str:book_identifier>', views.book_page),
+
     path('review/', views.review),
     path('shelve/<str:shelf_id>/<int:book_id>', views.shelve),
     path('follow/', views.follow),
     path('unfollow/', views.unfollow),
+    path('search/', views.search),
+
     path('api/u/<str:username>', federation.get_actor),
     path('api/u/<str:username>/inbox', federation.inbox),
     path('api/u/<str:username>/outbox', federation.outbox),
