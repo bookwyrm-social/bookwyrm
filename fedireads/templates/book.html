@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="main">
+    <div class="book-profile">
+        <img class="book-cover" src="/static/images/med.jpg">
+        <h1>{{ book.data.title }}</h1>
+        by {{ book.authors.first.data.name }}
+        {{ rating }} stars
+    </div>
+    <form name="review" action="/review/" method="post">
+        <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+        <input type="text" name="name"></input>
+        <textarea name="content">Your review</textarea>
+        <input type="number" name="rating"></input>
+        <input type="submit" value="Post review"></input>
+    </form>
+
+    <div class="reviews">
+        <h2>Reviews</h2>
+        {% for review in reviews %}
+        <p><span class="review-title">{{ review.name }}</span>{{ review.rating }} stars, by {{ review.user.username }}</p>
+        <p>{{ review.review_content }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

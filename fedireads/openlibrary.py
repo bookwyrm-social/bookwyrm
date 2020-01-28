@@ -12,11 +12,11 @@ def get_or_create_book(olkey, user=None, update=True):
 
     # get the existing entry from our db, if it exists
     try:
-        book = Book.objects.get(openlibary_key=olkey)
+        book = Book.objects.get(openlibrary_key=olkey)
         if not update:
             return book
     except ObjectDoesNotExist:
-        book = Book(openlibary_key=olkey)
+        book = Book(openlibrary_key=olkey)
     data = response.json()
     book.data = data
     if user and user.is_authenticated:
@@ -33,22 +33,22 @@ def get_or_create_book(olkey, user=None, update=True):
 def get_or_create_work(olkey):
     ''' load em up '''
     try:
-        work = Work.objects.get(openlibary_key=olkey)
+        work = Work.objects.get(openlibrary_key=olkey)
     except ObjectDoesNotExist:
         response = requests.get(OL_URL + olkey + '.json')
         data = response.json()
-        work = Work(openlibary_key=olkey, data=data)
+        work = Work(openlibrary_key=olkey, data=data)
         work.save()
     return work
 
 def get_or_create_author(olkey):
     ''' load that author '''
     try:
-        author = Author.objects.get(openlibary_key=olkey)
+        author = Author.objects.get(openlibrary_key=olkey)
     except ObjectDoesNotExist:
         response = requests.get(OL_URL + olkey + '.json')
         data = response.json()
-        author = Author(openlibary_key=olkey, data=data)
+        author = Author(openlibrary_key=olkey, data=data)
         author.save()
     return author
 

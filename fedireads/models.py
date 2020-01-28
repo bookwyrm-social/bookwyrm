@@ -10,15 +10,21 @@ import re
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    full_username = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    full_username = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True
+    )
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255)
     local = models.BooleanField(default=True)
+    # TODO: a field for if non-local users are readers or others
+    followers = models.ManyToManyField('self', symmetrical=False)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    followers = models.ManyToManyField('self', symmetrical=False)
 
     def save(self, *args, **kwargs):
         # give a new user keys
@@ -40,8 +46,9 @@ class User(AbstractUser):
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' create shelves for new users '''
     # TODO: how are remote users handled? what if they aren't readers?
-    if not created:
+    if not instance.local or not created:
         return
+
     shelves = [{
         'name': 'To Read',
         'type': 'to-read',
@@ -62,12 +69,56 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         ).save()
 
 
-class Message(models.Model):
-    ''' any kind of user post, incl. reviews, replies, and status updates '''
+class Activity(models.Model):
+    ''' basic fields for storing activities '''
+    uuid = models.CharField(max_length=255, unique=True)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     content = JSONField(max_length=5000)
+    activity_type = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+
+
+class ShelveActivity(Activity):
+    ''' someone put a book on a shelf '''
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
+
+
+class FollowActivity(Activity):
+    ''' record follow requests sent out '''
+    followed = models.ForeignKey(
+        'User',
+        related_name='followed',
+        on_delete=models.PROTECT
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.activity_type:
+            self.activity_type = 'Follow'
+        super().save(*args, **kwargs)
+
+
+class Review(Activity):
+    ''' a book review '''
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    work = models.ForeignKey('Work', on_delete=models.PROTECT)
+    name = models.TextField()
+    rating = models.IntegerField(default=0)
+    review_content = models.TextField()
+
+    def save(self, *args, **kwargs):
+        if not self.activity_type:
+            self.activity_type = 'Article'
+        super().save(*args, **kwargs)
+
+
+class Note(Activity):
+    ''' reply to a review, etc '''
+    def save(self, *args, **kwargs):
+        if not self.activity_type:
+            self.activity_type = 'Note'
+        super().save(*args, **kwargs)
 
 
 class Shelf(models.Model):
@@ -96,7 +147,8 @@ class Shelf(models.Model):
                 re.sub(r'\W', '-', self.name).lower()
             )
         if not self.activitypub_id:
-            self.activitypub_id = 'https://%s/shelf/%s' % (DOMAIN, self.identifier)
+            self.activitypub_id = 'https://%s/shelf/%s' % \
+                    (DOMAIN, self.identifier)
         super().save(*args, **kwargs)
 
 
@@ -111,6 +163,7 @@ class ShelfBook(models.Model):
         on_delete=models.PROTECT
     )
     added_date = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         unique_together = ('book', 'shelf')
 
@@ -118,7 +171,7 @@ class ShelfBook(models.Model):
 class Book(models.Model):
     ''' a non-canonical copy from open library '''
     activitypub_id = models.CharField(max_length=255)
-    openlibary_key = models.CharField(max_length=255)
+    openlibrary_key = models.CharField(max_length=255)
     data = JSONField()
     works = models.ManyToManyField('Work')
     authors = models.ManyToManyField('Author')
@@ -138,19 +191,20 @@ class Book(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        self.activitypub_id = '%s%s' % (OL_URL, self.openlibary_key)
+        self.activitypub_id = '%s%s' % (OL_URL, self.openlibrary_key)
         super().save(*args, **kwargs)
 
 
 class Work(models.Model):
     ''' encompassses all editions of a book '''
-    openlibary_key = models.CharField(max_length=255)
+    openlibrary_key = models.CharField(max_length=255)
     data = JSONField()
     added_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
+
 class Author(models.Model):
-    openlibary_key = models.CharField(max_length=255)
+    openlibrary_key = models.CharField(max_length=255)
     data = JSONField()
     added_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)

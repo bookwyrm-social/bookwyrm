@@ -1,13 +1,12 @@
 ''' application views/pages '''
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import FilteredRelation, Q
+from django.db.models import Avg, FilteredRelation, Q
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
-from fedireads import models
-import fedireads.activitypub_templates as templates
-from fedireads.federation import broadcast_activity, broadcast_follow
+from fedireads import models, openlibrary
+from fedireads import federation as api
 
 @login_required
 def home(request):
@@ -20,13 +19,23 @@ def home(request):
             'shelves',
             condition=Q(shelves__user_id=request.user.id)
         )
-    ).values('id', 'authors', 'data', 'user_shelves')
+    ).values('id', 'authors', 'data', 'user_shelves', 'openlibrary_key')
+
+    following = models.User.objects.filter(
+        Q(followers=request.user) | Q(id=request.user.id))
+
+    activities = models.Activity.objects.filter(
+        user__in=following
+    ).order_by('-created_date')[:10]
+
     data = {
         'user': request.user,
         'shelves': shelves,
         'recent_books': recent_books,
+        'activities': activities,
     }
     return TemplateResponse(request, 'feed.html', data)
+
 
 @csrf_exempt
 def user_login(request):
@@ -43,6 +52,7 @@ def user_login(request):
         login(request, user)
         return redirect(request.GET.get('next', '/'))
     return TemplateResponse(request, 'login.html')
+
 
 @csrf_exempt
 @login_required
@@ -65,29 +75,42 @@ def user_profile(request, username):
     return TemplateResponse(request, 'user.html', data)
 
 
+@login_required
+def book_page(request, book_identifier):
+    ''' info about a book '''
+    book = openlibrary.get_or_create_book('/book/' + book_identifier)
+    reviews = models.Review.objects.filter(
+        Q(work=book.works.first()) | Q(book=book)
+    )
+    rating = reviews.aggregate(Avg('rating'))
+    data = {
+        'book': book,
+        'reviews': reviews,
+        'rating': rating['rating__avg'],
+    }
+    return TemplateResponse(request, 'book.html', data)
+
+
 @csrf_exempt
 @login_required
 def shelve(request, shelf_id, book_id):
     ''' put a book on a user's shelf '''
     book = models.Book.objects.get(id=book_id)
     shelf = models.Shelf.objects.get(identifier=shelf_id)
-
-    # update the database
-    models.ShelfBook(book=book, shelf=shelf, added_by=request.user).save()
-
-    # send out the activitypub action
-    summary = '%s marked %s as %s' % (
-        request.user.username,
-        book.data['title'],
-        shelf.name
-    )
-
-    obj = templates.note_object(request.user, summary)
-    #activity = templates.shelve_activity(request.user, book, shelf)
-    recipients = [templates.inbox(u) for u in request.user.followers.all()]
-    broadcast_activity(request.user, obj, recipients)
-
+    api.handle_shelve(request.user, book, shelf)
     return redirect('/')
+
+@csrf_exempt
+@login_required
+def review(request):
+    ''' create a book review note '''
+    book_identifier = request.POST.get('book')
+    book = openlibrary.get_or_create_book(book_identifier)
+    name = request.POST.get('name')
+    content = request.POST.get('content')
+    rating = request.POST.get('rating')
+    api.handle_review(request.user, book, name, content, rating)
+    return redirect(book_identifier)
 
 
 @csrf_exempt
@@ -97,10 +120,8 @@ def follow(request):
     to_follow = request.POST.get('user')
     to_follow = models.User.objects.get(id=to_follow)
 
-    activity = templates.follow_request(request.user, to_follow.actor)
-    broadcast_follow(request.user, activity, templates.inbox(to_follow))
+    api.handle_outgoing_follow(request.user, to_follow)
     return redirect('/user/%s' % to_follow.username)
-
 
 
 @csrf_exempt
