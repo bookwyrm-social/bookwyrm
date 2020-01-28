@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # federation endpoints
+    path('/inbox', incoming.shared_inbox),
     path('user/<str:username>.json', incoming.get_actor),
     path('user/<str:username>/inbox', incoming.inbox),
     path('user/<str:username>/outbox', outgoing.outbox),

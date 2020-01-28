@@ -15,6 +15,7 @@ class User(AbstractUser):
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255)
     inbox = models.CharField(max_length=255)
+    shared_inbox = models.CharField(max_length=255)
     outbox = models.CharField(max_length=255)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
@@ -49,6 +50,7 @@ def execute_before_save(sender, instance, *args, **kwargs):
     instance.username = '%s@%s' % (instance.username, DOMAIN)
     instance.actor = 'https://%s/user/%s' % (DOMAIN, instance.localname)
     instance.inbox = 'https://%s/user/%s/inbox' % (DOMAIN, instance.localname)
+    instance.shared_inbox = 'https://%s/inbox' % DOMAIN
     instance.outbox = 'https://%s/user/%s/outbox' % (DOMAIN, instance.localname)
     if not instance.private_key:
         random_generator = Random.new().read

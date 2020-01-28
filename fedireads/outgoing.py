@@ -14,8 +14,30 @@ import requests
 from uuid import uuid4
 
 
+@csrf_exempt
+def outbox(request, username):
+    ''' outbox for the requested user '''
+    user = models.User.objects.get(localname=username)
+    size = models.Review.objects.filter(user=user).count()
+    if request.method == 'GET':
+        # list of activities
+        return JsonResponse({
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': '%s/outbox' % user.actor,
+            'type': 'OrderedCollection',
+            'totalItems': size,
+            'first': '%s/outbox?page=true' % user.actor,
+            'last': '%s/outbox?min_id=0&page=true' % user.actor
+        })
+    # TODO: paginated list of messages
+
+    #data = request.body.decode('utf-8')
+    return HttpResponse()
+
+
 def handle_account_search(query):
     ''' webfingerin' other servers '''
+    user = None
     domain = query.split('@')[1]
     try:
         user = models.User.objects.get(username=query)
@@ -56,13 +78,18 @@ def handle_response(response):
     if activity['type'] == 'Accept':
         handle_incoming_accept(activity)
 
+
 def handle_incoming_accept(activity):
     ''' someone is accepting a follow request '''
-    # not actually a remote user so this is kinda janky
-    user = get_or_create_remote_user(activity['actor'])
+    # our local user
+    user = models.User.objects.get(actor=activity['actor'])
     # the person our local user wants to follow, who said yes
-    followed = models.User.objects.get(actor=activity['object']['actor'])
+    followed = get_or_create_remote_user(activity['object']['actor'])
+
+    # save this relationship in the db
     followed.followers.add(user)
+
+    # save the activity record
     models.FollowActivity(
         uuid=activity['id'],
         user=user,
@@ -72,7 +99,7 @@ def handle_incoming_accept(activity):
 
 
 def handle_shelve(user, book, shelf):
-    ''' gettin organized '''
+    ''' a local user is getting a book put on their shelf '''
     # update the database
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
@@ -101,8 +128,7 @@ def handle_shelve(user, book, shelf):
             'id': shelf.activitypub_id
         }
     }
-    # TODO: this should be getting shared inboxes and deduplicating
-    recipients = [u.inbox for u in user.followers.all()]
+    recipients = get_recipients(user, 'public')
 
     models.ShelveActivity(
         uuid=uuid,
@@ -114,6 +140,26 @@ def handle_shelve(user, book, shelf):
     ).save()
 
     broadcast(user, activity, recipients)
+
+
+def get_recipients(user, post_privacy, direct_recipients=None):
+    ''' deduplicated list of recipients '''
+    recipients = direct_recipients or []
+
+    followers = user.followers.all()
+    if post_privacy == 'public':
+        # post to public shared inboxes
+        shared_inboxes = set(u.shared_inbox for u in followers)
+        recipients += list(shared_inboxes)
+        # TODO: direct to anyone who's mentioned
+    if post_privacy == 'followers':
+        # don't send it to the shared inboxes
+        inboxes = set(u.inbox for u in followers)
+        recipients += list(inboxes)
+    # if post privacy is direct, we just have direct recipients,
+    # which is already set. hurray
+    return recipients
+
 
 
 def handle_review(user, book, name, content, rating):
@@ -130,7 +176,7 @@ def handle_review(user, book, name, content, rating):
         'rating': rating, # fedireads-only custom field
         'to': 'https://www.w3.org/ns/activitystreams#Public'
     }
-    recipients = [u.inbox for u in user.followers.all()]
+    recipients = get_recipients(user, 'public')
     create_uuid = uuid4()
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
@@ -160,25 +206,6 @@ def handle_review(user, book, name, content, rating):
     broadcast(user, activity, recipients)
 
 
-@csrf_exempt
-def outbox(request, username):
-    ''' outbox for the requested user '''
-    user = models.User.objects.get(localname=username)
-    size = models.Review.objects.filter(user=user).count()
-    if request.method == 'GET':
-        # list of activities
-        return JsonResponse({
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': '%s/outbox' % user.actor,
-            'type': 'OrderedCollection',
-            'totalItems': size,
-            'first': '%s/outbox?page=true' % user.actor,
-            'last': '%s/outbox?min_id=0&page=true' % user.actor
-        })
-    # TODO: paginated list of messages
-
-    #data = request.body.decode('utf-8')
-    return HttpResponse()
 
 
 def broadcast(sender, action, recipients):

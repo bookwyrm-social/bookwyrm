@@ -31,6 +31,61 @@ def webfinger(request):
 
 
 @csrf_exempt
+def shared_inbox(request):
+    ''' incoming activitypub events '''
+    if request.method == 'GET':
+        return HttpResponseNotFound()
+
+    # TODO: RSA key verification
+
+    try:
+        activity = json.loads(request.body)
+    except json.decoder.JSONDecodeError:
+        return HttpResponseBadRequest
+
+    if activity['type'] == 'Add':
+        return handle_incoming_shelve(activity)
+
+    if activity['type'] == 'Follow':
+        return handle_incoming_follow(activity)
+
+    if activity['type'] == 'Create':
+        return handle_incoming_create(activity)
+
+    return HttpResponse()
+
+
+@csrf_exempt
+def inbox(request, username):
+    ''' incoming activitypub events '''
+    if request.method == 'GET':
+        return HttpResponseNotFound()
+
+    # TODO: RSA key verification
+
+    try:
+        activity = json.loads(request.body)
+    except json.decoder.JSONDecodeError:
+        return HttpResponseBadRequest
+
+    # TODO: should do some kind of checking if the user accepts
+    # this action from the sender
+    # but this will just throw an error if the user doesn't exist I guess
+    models.User.objects.get(localname=username)
+
+    if activity['type'] == 'Add':
+        return handle_incoming_shelve(activity)
+
+    if activity['type'] == 'Follow':
+        return handle_incoming_follow(activity)
+
+    if activity['type'] == 'Create':
+        return handle_incoming_create(activity)
+
+    return HttpResponse()
+
+
+@csrf_exempt
 def get_actor(request, username):
     ''' return an activitypub actor object '''
     if request.method != 'GET':
@@ -59,37 +114,6 @@ def get_actor(request, username):
             'sharedInbox': 'https://%s/inbox' % DOMAIN,
         }
     })
-
-
-@csrf_exempt
-def inbox(request, username):
-    ''' incoming activitypub events '''
-    if request.method == 'GET':
-        # TODO: return a collection of something?
-        return JsonResponse({})
-
-    # TODO: RSA key verification
-
-    try:
-        activity = json.loads(request.body)
-    except json.decoder.JSONDecodeError:
-        return HttpResponseBadRequest
-
-    # TODO: should do some kind of checking if the user accepts
-    # this action from the sender
-    # but this will just throw an error if the user doesn't exist I guess
-    models.User.objects.get(localname=username)
-
-    if activity['type'] == 'Add':
-        return handle_incoming_shelve(activity)
-
-    if activity['type'] == 'Follow':
-        return handle_incoming_follow(activity)
-
-    if activity['type'] == 'Create':
-        return handle_incoming_create(activity)
-
-    return HttpResponse()
 
 
 def handle_incoming_shelve(activity):
