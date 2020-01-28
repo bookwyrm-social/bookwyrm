@@ -1,19 +1,19 @@
 ''' application views/pages '''
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, FilteredRelation, Q
+from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseNotFound
-from fedireads import models, openlibrary
-from fedireads import outgoing as api
-from fedireads.settings import DOMAIN
 import re
+
+from fedireads import models, openlibrary, outgoing as api
+
 
 @login_required
 def home(request):
-    ''' user feed '''
+    ''' user's homepage with activity feed '''
     shelves = models.Shelf.objects.filter(user=request.user.id)
     recent_books = models.Book.objects.order_by(
         'added_date'
@@ -22,11 +22,15 @@ def home(request):
             'shelves',
             condition=Q(shelves__user_id=request.user.id)
         )
-    ).values('id', 'authors', 'data', 'user_shelves', 'openlibrary_key')
+    ).values(
+        'id', 'authors', 'data', 'user_shelves', 'openlibrary_key'
+    ).distinct()
 
     following = models.User.objects.filter(
-        Q(followers=request.user) | Q(id=request.user.id))
+        Q(followers=request.user) | Q(id=request.user.id)
+    )
 
+    # TODO: handle post privacy
     activities = models.Activity.objects.filter(
         user__in=following
     ).order_by('-created_date')[:10]
@@ -135,15 +139,20 @@ def shelve(request, shelf_id, book_id):
     api.handle_shelve(request.user, book, shelf)
     return redirect('/')
 
+
 @csrf_exempt
 @login_required
 def review(request):
     ''' create a book review note '''
+    # TODO: error handling
     book_identifier = request.POST.get('book')
     book = openlibrary.get_or_create_book(book_identifier)
+
+    # TODO: validation, htmlification
     name = request.POST.get('name')
     content = request.POST.get('content')
     rating = request.POST.get('rating')
+
     api.handle_review(request.user, book, name, content, rating)
     return redirect(book_identifier)
 
@@ -153,6 +162,7 @@ def review(request):
 def follow(request):
     ''' follow another user, here or abroad '''
     to_follow = request.POST.get('user')
+    # should this be an actor rather than an id? idk
     to_follow = models.User.objects.get(id=to_follow)
 
     api.handle_outgoing_follow(request.user, to_follow)
@@ -163,6 +173,7 @@ def follow(request):
 @login_required
 def unfollow(request):
     ''' unfollow a user '''
+    # TODO: this is not an implementation!!
     followed = request.POST.get('user')
     followed = models.User.objects.get(id=followed)
     followed.followers.remove(request.user)
@@ -177,11 +188,8 @@ def search(request):
     if re.match(r'\w+@\w+.\w+', query):
         results = [api.handle_account_search(query)]
     else:
+        # TODO: book search
         results = []
 
     return TemplateResponse(request, 'results.html', {'results': results})
 
-
-def simplify_local_username(user):
-    ''' helper for getting the short username for local users '''
-    return user.username.replace('@%s' % DOMAIN, '')

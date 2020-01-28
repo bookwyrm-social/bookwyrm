@@ -1,17 +1,13 @@
-''' activitystream api '''
-from base64 import b64encode
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
-from Crypto.Hash import SHA256
+''' handles all the activity coming out of the server '''
 from datetime import datetime
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from fedireads.settings import DOMAIN
-from fedireads import models
-from fedireads.api import get_or_create_remote_user
-import json
 import requests
 from uuid import uuid4
+
+from fedireads import models
+from fedireads.api import get_or_create_remote_user, get_recipients, \
+        broadcast
 
 
 @csrf_exempt
@@ -69,35 +65,6 @@ def handle_outgoing_follow(user, to_follow):
     broadcast(user, activity, [to_follow.inbox])
 
 
-def handle_response(response):
-    ''' hopefully it's an accept from our follow request '''
-    try:
-        activity = response.json()
-    except ValueError:
-        return
-    if activity['type'] == 'Accept':
-        handle_incoming_accept(activity)
-
-
-def handle_incoming_accept(activity):
-    ''' someone is accepting a follow request '''
-    # our local user
-    user = models.User.objects.get(actor=activity['actor'])
-    # the person our local user wants to follow, who said yes
-    followed = get_or_create_remote_user(activity['object']['actor'])
-
-    # save this relationship in the db
-    followed.followers.add(user)
-
-    # save the activity record
-    models.FollowActivity(
-        uuid=activity['id'],
-        user=user,
-        followed=followed,
-        content=activity,
-    ).save()
-
-
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
@@ -142,26 +109,6 @@ def handle_shelve(user, book, shelf):
     broadcast(user, activity, recipients)
 
 
-def get_recipients(user, post_privacy, direct_recipients=None):
-    ''' deduplicated list of recipients '''
-    recipients = direct_recipients or []
-
-    followers = user.followers.all()
-    if post_privacy == 'public':
-        # post to public shared inboxes
-        shared_inboxes = set(u.shared_inbox for u in followers)
-        recipients += list(shared_inboxes)
-        # TODO: direct to anyone who's mentioned
-    if post_privacy == 'followers':
-        # don't send it to the shared inboxes
-        inboxes = set(u.inbox for u in followers)
-        recipients += list(inboxes)
-    # if post privacy is direct, we just have direct recipients,
-    # which is already set. hurray
-    return recipients
-
-
-
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     review_uuid = uuid4()
@@ -189,7 +136,6 @@ def handle_review(user, book, name, content, rating):
         'cc': ['https://www.w3.org/ns/activitystreams#Public'],
 
         'object': obj,
-
     }
 
     models.Review(
@@ -205,37 +151,3 @@ def handle_review(user, book, name, content, rating):
     ).save()
     broadcast(user, activity, recipients)
 
-
-
-
-def broadcast(sender, action, recipients):
-    ''' send out an event to all followers '''
-    for recipient in recipients:
-        sign_and_send(sender, action, recipient)
-
-
-def sign_and_send(sender, action, destination):
-    ''' crpyto whatever and http junk '''
-    inbox_fragment = sender.inbox.replace('https://%s' % DOMAIN, '')
-    now = datetime.utcnow().isoformat()
-    message_to_sign = '''(request-target): post %s
-host: https://%s
-date: %s''' % (inbox_fragment, DOMAIN, now)
-    signer = pkcs1_15.new(RSA.import_key(sender.private_key))
-    signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
-
-    signature = 'keyId="%s",' % sender.localname
-    signature += 'headers="(request-target) host date",'
-    signature += 'signature="%s"' % b64encode(signed_message)
-    response = requests.post(
-        destination,
-        data=json.dumps(action),
-        headers={
-            'Date': now,
-            'Signature': signature,
-            'Host': DOMAIN,
-        },
-    )
-    if not response.ok:
-        response.raise_for_status()
-    handle_response(response)

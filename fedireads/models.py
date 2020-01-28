@@ -3,10 +3,12 @@ from django.db import models
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
-from Crypto.PublicKey import RSA
 from Crypto import Random
-from fedireads.settings import DOMAIN, OL_URL
+from Crypto.PublicKey import RSA
 import re
+
+from fedireads.settings import DOMAIN, OL_URL
+
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
@@ -91,7 +93,10 @@ class Activity(models.Model):
     uuid = models.CharField(max_length=255, unique=True)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     content = JSONField(max_length=5000)
+    # the activitypub activity type (Create, Add, Follow, ...)
     activity_type = models.CharField(max_length=255)
+    # custom types internal to fedireads (Review, Shelve, ...)
+    fedireads_type = models.CharField(max_length=255, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -100,6 +105,12 @@ class ShelveActivity(Activity):
     ''' someone put a book on a shelf '''
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        if not self.activity_type:
+            self.activity_type = 'Add'
+            shelf.fedireads_type = 'Shelve'
+        super().save(*args, **kwargs)
 
 
 class FollowActivity(Activity):
@@ -121,12 +132,14 @@ class Review(Activity):
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     work = models.ForeignKey('Work', on_delete=models.PROTECT)
     name = models.TextField()
+    # TODO: validation
     rating = models.IntegerField(default=0)
     review_content = models.TextField()
 
     def save(self, *args, **kwargs):
         if not self.activity_type:
             self.activity_type = 'Article'
+            self.fedireads_type = 'Review'
         super().save(*args, **kwargs)
 
 

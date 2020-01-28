@@ -1,13 +1,15 @@
-''' activitystream api '''
+''' handles all of the activity coming in to the server '''
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from fedireads.settings import DOMAIN
-from fedireads.openlibrary import get_or_create_book
-from fedireads import models
-from fedireads.api import get_or_create_remote_user
 import json
 from uuid import uuid4
+
+from fedireads import models
+from fedireads.api import get_or_create_remote_user
+from fedireads.openlibrary import get_or_create_book
+from fedireads.settings import DOMAIN
+
 
 def webfinger(request):
     ''' allow other servers to ask about a user '''
@@ -206,3 +208,34 @@ def handle_incoming_create(activity):
         activity_type=activity['object']['type']
     )
     return HttpResponse()
+
+
+def handle_incoming_accept(activity):
+    ''' someone is accepting a follow request '''
+    # our local user
+    user = models.User.objects.get(actor=activity['actor'])
+    # the person our local user wants to follow, who said yes
+    followed = get_or_create_remote_user(activity['object']['actor'])
+
+    # save this relationship in the db
+    followed.followers.add(user)
+
+    # save the activity record
+    models.FollowActivity(
+        uuid=activity['id'],
+        user=user,
+        followed=followed,
+        content=activity,
+    ).save()
+
+
+def handle_response(response):
+    ''' hopefully it's an accept from our follow request '''
+    try:
+        activity = response.json()
+    except ValueError:
+        return
+    if activity['type'] == 'Accept':
+        handle_incoming_accept(activity)
+
+
