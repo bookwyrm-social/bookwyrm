@@ -41,7 +41,7 @@ def get_actor(request, username):
     if request.method != 'GET':
         return HttpResponseBadRequest()
 
-    user = models.User.objects.get(username=username)
+    user = models.User.objects.get(localname=username)
     return JsonResponse({
         '@context': [
             'https://www.w3.org/ns/activitystreams',
@@ -50,7 +50,7 @@ def get_actor(request, username):
 
         'id': user.actor,
         'type': 'Person',
-        'preferredUsername': user.username,
+        'preferredUsername': user.localname,
         'inbox': format_inbox(user),
         'followers': '%s/followers' % user.actor,
         'publicKey': {
@@ -95,9 +95,11 @@ def handle_account_search(query):
     try:
         user = models.User.objects.get(username=query)
     except models.User.DoesNotExist:
-        url = 'https://%s/.well-known/webfinger' % domain
-        params = {'resource': 'acct:%s' % query}
-        response = requests.get(url, params=params)
+        url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
+            (domain, query)
+        response = requests.get(url)
+        if not response.ok:
+            response.raise_for_status()
         data = response.json()
         for link in data['links']:
             if link['rel'] == 'self':
@@ -148,7 +150,7 @@ def handle_incoming_follow(activity):
     )
     to_follow = models.User.objects.get(username=to_follow)
     # figure out who they are
-    user = get_or_create_remote_user(activity)
+    user = get_or_create_remote_user(activity['actor'])
     to_follow.followers.add(user)
     # verify uuid and accept the request
     models.FollowActivity(
@@ -184,6 +186,7 @@ def handle_outgoing_follow(user, to_follow):
     models.FollowActivity(
         uuid=uuid,
         user=user,
+        followed=to_follow,
         content=activity,
     ).save()
 
@@ -279,7 +282,7 @@ def handle_review(user, book, name, content, rating):
 @csrf_exempt
 def outbox(request, username):
     ''' outbox for the requested user '''
-    user = models.User.objects.get(username=username)
+    user = models.User.objects.get(localname=username)
     size = models.Review.objects.filter(user=user).count()
     if request.method == 'GET':
         # list of activities
@@ -305,7 +308,7 @@ def broadcast(sender, action, recipients):
 
 def sign_and_send(sender, action, destination):
     ''' crpyto whatever and http junk '''
-    inbox_fragment = '/api/u/%s/inbox' % (sender.username)
+    inbox_fragment = '/api/u/%s/inbox' % (sender.localname)
     now = datetime.utcnow().isoformat()
     message_to_sign = '''(request-target): post %s
 host: https://%s
@@ -313,7 +316,7 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 
-    signature = 'keyId="%s",' % sender.username
+    signature = 'keyId="%s",' % sender.localname
     signature += 'headers="(request-target) host date",'
     signature += 'signature="%s"' % b64encode(signed_message)
     response = requests.post(

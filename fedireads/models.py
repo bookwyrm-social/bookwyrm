@@ -15,6 +15,12 @@ class User(AbstractUser):
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255)
     local = models.BooleanField(default=True)
+    localname = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        unique=True
+    )
     # TODO: a field for if non-local users are readers or others
     followers = models.ManyToManyField('self', symmetrical=False)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -28,10 +34,15 @@ class User(AbstractUser):
             self.private_key = key.export_key().decode('utf8')
             self.public_key = key.publickey().export_key().decode('utf8')
 
-        if self.local and not self.actor:
-            self.actor = 'https://%s/api/u/%s' % (DOMAIN, self.username)
         if self.local and not re.match(r'\w+@\w+.\w+', self.username):
+            # set your local username that doesn't have the domain
             self.username = '%s@%s' % (self.username, DOMAIN)
+
+        if self.local and not self.localname:
+            self.localname = self.username.replace('@%s' % DOMAIN, '')
+
+        if self.local and not self.actor:
+            self.actor = 'https://%s/api/u/%s' % (DOMAIN, self.localname)
 
         super().save(*args, **kwargs)
 
@@ -137,7 +148,7 @@ class Shelf(models.Model):
     def save(self, *args, **kwargs):
         if not self.identifier:
             self.identifier = '%s_%s' % (
-                self.user.username,
+                self.user.localname,
                 re.sub(r'\W', '-', self.name).lower()
             )
         if not self.activitypub_id:

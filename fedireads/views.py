@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from fedireads import models, openlibrary
 from fedireads import federation as api
+from fedireads.settings import DOMAIN
 import re
 
 @login_required
@@ -147,3 +148,7 @@ def search(request):
 
     return TemplateResponse(request, 'results.html', {'results': results})
 
+
+def simplify_local_username(user):
+    ''' helper for getting the short username for local users '''
+    return user.username.replace('@%s' % DOMAIN, '')

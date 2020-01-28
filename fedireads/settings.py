@@ -27,7 +27,7 @@ DEBUG = True
 
 
 DOMAIN = 'bd352ee8.ngrok.io'
-ALLOWED_HOSTS = ['localhost', DOMAIN]
+ALLOWED_HOSTS = ['*']
 OL_URL = 'https://openlibrary.org'
 
 # Application definition
