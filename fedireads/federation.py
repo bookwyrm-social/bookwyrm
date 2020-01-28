@@ -54,10 +54,15 @@ def get_actor(request, username):
         'preferredUsername': user.localname,
         'inbox': format_inbox(user),
         'followers': '%s/followers' % user.actor,
+        'following': '%s/following' % user.actor,
+        'summary': user.summary,
         'publicKey': {
             'id': '%s/#main-key' % user.actor,
             'owner': user.actor,
             'publicKeyPem': user.public_key,
+        },
+        'endpoints': {
+            'sharedInbox': 'https://%s/inbox' % DOMAIN,
         }
     })
 
@@ -149,7 +154,7 @@ def handle_incoming_follow(activity):
     '''
     # figure out who they want to follow
     to_follow = re.sub(
-        r'https?://([\w\.]+)/api/u/(\w+)',
+        r'https?://([\w\.]+)/user/(\w+)',
         r'\2@\1',
         activity['object']
     )
@@ -243,6 +248,7 @@ def handle_shelve(user, book, shelf):
             'id': shelf.activitypub_id
         }
     }
+    # TODO: this should be getting shared inboxes and deduplicating
     recipients = [format_inbox(u) for u in user.followers.all()]
 
     models.ShelveActivity(
@@ -363,7 +369,7 @@ def broadcast(sender, action, recipients):
 
 def sign_and_send(sender, action, destination):
     ''' crpyto whatever and http junk '''
-    inbox_fragment = '/api/u/%s/inbox' % (sender.localname)
+    inbox_fragment = sender.inbox.replace('https://%s' % DOMAIN, '')
     now = datetime.utcnow().isoformat()
     message_to_sign = '''(request-target): post %s
 host: https://%s

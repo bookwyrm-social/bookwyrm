@@ -20,6 +20,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # federation endpoints
+    path('user/<str:username>.json', federation.get_actor),
+    path('user/<str:username>/inbox', federation.inbox),
+    path('user/<str:username>/outbox', federation.outbox),
+    path('.well-known/webfinger', federation.webfinger),
+
+    # ui views
     path('', views.home),
     path('login/', views.user_login),
     path('logout/', views.user_logout),
@@ -27,6 +35,7 @@ urlpatterns = [
     path('user/<str:username>/edit/', views.user_profile_edit),
     path('book/<str:book_identifier>', views.book_page),
 
+    # internal action endpoints
     path('review/', views.review),
     path('shelve/<str:shelf_id>/<int:book_id>', views.shelve),
     path('follow/', views.follow),
@@ -34,8 +43,4 @@ urlpatterns = [
     path('search/', views.search),
     path('upload-avatar/', views.upload_avatar),
 
-    path('api/u/<str:username>', federation.get_actor),
-    path('api/u/<str:username>/inbox', federation.inbox),
-    path('api/u/<str:username>/outbox', federation.outbox),
-    path('.well-known/webfinger', federation.webfinger),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

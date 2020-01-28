@@ -14,6 +14,9 @@ class User(AbstractUser):
     public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255)
+    inbox = models.CharField(max_length=255)
+    outbox = models.CharField(max_length=255)
+    summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
     localname = models.CharField(
         max_length=255,
@@ -27,25 +30,23 @@ class User(AbstractUser):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        # give a new user keys
-        if not self.private_key:
-            random_generator = Random.new().read
-            key = RSA.generate(1024, random_generator)
-            self.private_key = key.export_key().decode('utf8')
-            self.public_key = key.publickey().export_key().decode('utf8')
 
-        if self.local and not re.match(r'\w+@\w+.\w+', self.username):
-            # set your local username that doesn't have the domain
-            self.username = '%s@%s' % (self.username, DOMAIN)
-
-        if self.local and not self.localname:
-            self.localname = self.username.replace('@%s' % DOMAIN, '')
-
-        if self.local and not self.actor:
-            self.actor = 'https://%s/api/u/%s' % (DOMAIN, self.localname)
-
-        super().save(*args, **kwargs)
+@receiver(models.signals.pre_save, sender=User)
+def execute_before_save(sender, instance, *args, **kwargs):
+    ''' create shelves for new users '''
+    # TODO: how are remote users handled? what if they aren't readers?
+    if not instance.local or instance.id:
+        return
+    instance.localname = instance.username
+    instance.username = '%s@%s' % (instance.username, DOMAIN)
+    instance.actor = 'https://%s/user/%s' % (DOMAIN, instance.localname)
+    instance.inbox = 'https://%s/user/%s/inbox' % (DOMAIN, instance.localname)
+    instance.outbox = 'https://%s/user/%s/outbox' % (DOMAIN, instance.localname)
+    if not instance.private_key:
+        random_generator = Random.new().read
+        key = RSA.generate(1024, random_generator)
+        instance.private_key = key.export_key().decode('utf8')
+        instance.public_key = key.publickey().export_key().decode('utf8')
 
 
 @receiver(models.signals.post_save, sender=User)
