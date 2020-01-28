@@ -26,7 +26,7 @@
             </p>
             <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
             {% if not book.user_shelves %}
-            <form name="shelve" action="/shelve/{{ request.user.username }}_to-read/{{ book.id }}" method="post">
+            <form name="shelve" action="/shelve/{{ request.user.localname }}_to-read/{{ book.id }}" method="post">
                 <input type="hidden" name="book" value="book.id"></input>
                 <input type="submit" value="want to read"></input>
             </form>
@@ -38,7 +38,9 @@
     <div class="update">
         <div class="user-preview">
             <img class="user-pic" src="static/images/profile.jpg">
-            <span><a href="" class="user">Mouse</a> did {{ activity.activity_type }} </span>
+            <span><a href="/user/{% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}" class="user">
+                    {% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}</a>
+                did {{ activity.activity_type }} </span>
         </div>
     </div>
     {% endfor %}

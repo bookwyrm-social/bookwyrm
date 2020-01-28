@@ -17,6 +17,9 @@
 
     <div class="reviews">
         <h2>Reviews</h2>
+        {% if not reviews %}
+        <p>No reviews yet!</p>
+        {% endif %}
         {% for review in reviews %}
         <p><span class="review-title">{{ review.name }}</span>{{ review.rating }} stars, by {{ review.user.username }}</p>
         <p>{{ review.review_content }}</p>

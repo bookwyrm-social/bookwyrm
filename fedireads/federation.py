@@ -191,16 +191,18 @@ def handle_outgoing_follow(user, to_follow):
 
 def handle_response(response):
     ''' hopefully it's an accept from our follow request '''
-    activity = response.json()
-    if not activity:
+    try:
+        activity = response.json()
+    except ValueError:
         return
     if activity['type'] == 'Accept':
         handle_incoming_accept(activity)
 
 def handle_incoming_accept(activity):
     ''' someone is accepting a follow request '''
-    # remote user who said yes
+    # not actually a remote user so this is kinda janky
     user = get_or_create_remote_user(activity['actor'])
+    # the person our local user wants to follow, who said yes
     followed = models.User.objects.get(actor=activity['object']['actor'])
     followed.followers.add(user)
     models.FollowActivity(
