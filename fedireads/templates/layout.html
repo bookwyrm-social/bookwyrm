@@ -26,7 +26,7 @@
             <div id="account">
                 {% if user.is_authenticated %}
                 <form name="logout" action="/logout/" method="post">
-                    Welcome, {{ request.user.username }}
+                    Welcome, {% if request.user.localname %}{{ request.user.localname }}{% else %}{{ request.user.username }}{% endif %}
                     <input type="submit" value="Log out"></input>
                 </form>
                 {% else %}

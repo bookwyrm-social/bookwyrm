@@ -21,6 +21,7 @@ class User(AbstractUser):
         blank=True,
         unique=True
     )
+    avatar = models.ImageField(upload_to='uploads/', blank=True, null=True)
     # TODO: a field for if non-local users are readers or others
     followers = models.ManyToManyField('self', symmetrical=False)
     created_date = models.DateTimeField(auto_now_add=True)

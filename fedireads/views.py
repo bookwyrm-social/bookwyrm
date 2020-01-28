@@ -5,6 +5,7 @@ from django.db.models import Avg, FilteredRelation, Q
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseNotFound
 from fedireads import models, openlibrary
 from fedireads import federation as api
 from fedireads.settings import DOMAIN
@@ -67,7 +68,14 @@ def user_logout(request):
 @login_required
 def user_profile(request, username):
     ''' profile page for a user '''
-    user = models.User.objects.get(username=username)
+    try:
+        user = models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        try:
+            user = models.User.objects.get(username=username)
+        except models.User.DoesNotExist:
+            return HttpResponseNotFound()
+
     books = models.Book.objects.filter(shelves__user=user)
     data = {
         'user': user,
@@ -75,6 +83,31 @@ def user_profile(request, username):
         'is_self': request.user.id == user.id,
     }
     return TemplateResponse(request, 'user.html', data)
+
+
+@login_required
+def user_profile_edit(request, username):
+    ''' profile page for a user '''
+    try:
+        user = models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    data = {
+        'user': user,
+    }
+    return TemplateResponse(request, 'edit_user.html', data)
+
+
+@csrf_exempt
+@login_required
+def upload_avatar(request):
+    ''' les get fancy with images '''
+    if not request.method == 'POST':
+        return redirect('/')
+    request.user.avatar = request.FILES['avatar']
+    request.user.save()
+    return redirect('/user/%s' % request.user.localname)
 
 
 @login_required

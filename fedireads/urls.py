@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fedireads import federation, openlibrary, views
+from fedireads import federation, views, settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,6 +24,7 @@ urlpatterns = [
     path('login/', views.user_login),
     path('logout/', views.user_logout),
     path('user/<str:username>', views.user_profile),
+    path('user/<str:username>/edit/', views.user_profile_edit),
     path('book/<str:book_identifier>', views.book_page),
 
     path('review/', views.review),
@@ -30,9 +32,10 @@ urlpatterns = [
     path('follow/', views.follow),
     path('unfollow/', views.unfollow),
     path('search/', views.search),
+    path('upload-avatar/', views.upload_avatar),
 
     path('api/u/<str:username>', federation.get_actor),
     path('api/u/<str:username>/inbox', federation.inbox),
     path('api/u/<str:username>/outbox', federation.outbox),
     path('.well-known/webfinger', federation.webfinger),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
