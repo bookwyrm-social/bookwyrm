@@ -89,6 +89,7 @@ def inbox(request, username):
 
     if activity['type'] == 'Create':
         return handle_incoming_create(activity)
+
     return HttpResponse()
 
 
@@ -187,10 +188,25 @@ def handle_outgoing_follow(user, to_follow):
     }
 
     broadcast(user, activity, [format_inbox(to_follow)])
+
+def handle_response(response):
+    ''' hopefully it's an accept from our follow request '''
+    activity = response.json()
+    if not activity:
+        return
+    if activity['type'] == 'Accept':
+        handle_incoming_accept(activity)
+
+def handle_incoming_accept(activity):
+    ''' someone is accepting a follow request '''
+    # remote user who said yes
+    user = get_or_create_remote_user(activity['actor'])
+    followed = models.User.objects.get(actor=activity['object']['actor'])
+    followed.followers.add(user)
     models.FollowActivity(
-        uuid=uuid,
+        uuid=activity['id'],
         user=user,
-        followed=to_follow,
+        followed=followed,
         content=activity,
     ).save()
 
@@ -367,6 +383,7 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
     )
     if not response.ok:
         response.raise_for_status()
+    handle_response(response)
 
 
 def get_or_create_remote_user(actor):
