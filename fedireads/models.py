@@ -1,5 +1,6 @@
 ''' database schema for the whole dang thing '''
 from django.db import models
+from model_utils.managers import InheritanceManager
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
@@ -99,6 +100,7 @@ class Activity(models.Model):
     fedireads_type = models.CharField(max_length=255, blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    objects = InheritanceManager()
 
 
 class ShelveActivity(Activity):
@@ -107,9 +109,8 @@ class ShelveActivity(Activity):
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        if not self.activity_type:
-            self.activity_type = 'Add'
-            shelf.fedireads_type = 'Shelve'
+        self.activity_type = 'Add'
+        self.fedireads_type = 'Shelve'
         super().save(*args, **kwargs)
 
 
@@ -122,8 +123,7 @@ class FollowActivity(Activity):
     )
 
     def save(self, *args, **kwargs):
-        if not self.activity_type:
-            self.activity_type = 'Follow'
+        self.activity_type = 'Follow'
         super().save(*args, **kwargs)
 
 
@@ -137,17 +137,15 @@ class Review(Activity):
     review_content = models.TextField()
 
     def save(self, *args, **kwargs):
-        if not self.activity_type:
-            self.activity_type = 'Article'
-            self.fedireads_type = 'Review'
+        self.activity_type = 'Article'
+        self.fedireads_type = 'Review'
         super().save(*args, **kwargs)
 
 
 class Note(Activity):
     ''' reply to a review, etc '''
     def save(self, *args, **kwargs):
-        if not self.activity_type:
-            self.activity_type = 'Note'
+        self.activity_type = 'Note'
         super().save(*args, **kwargs)
 
 

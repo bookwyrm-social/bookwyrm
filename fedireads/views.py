@@ -32,8 +32,10 @@ def home(request):
 
     # TODO: handle post privacy
     activities = models.Activity.objects.filter(
-        user__in=following
-    ).order_by('-created_date')[:10]
+        user__in=following,
+    ).select_subclasses().order_by(
+        '-created_date'
+    )[:10]
 
     data = {
         'user': request.user,
@@ -135,6 +137,7 @@ def book_page(request, book_identifier):
 @login_required
 def shelve(request, shelf_id, book_id):
     ''' put a book on a user's shelf '''
+    # TODO: handle "reshelving"
     book = models.Book.objects.get(id=book_id)
     shelf = models.Shelf.objects.get(identifier=shelf_id)
     api.handle_shelve(request.user, book, shelf)

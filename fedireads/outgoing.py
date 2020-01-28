@@ -101,7 +101,6 @@ def handle_shelve(user, book, shelf):
         uuid=uuid,
         user=user,
         content=activity,
-        activity_type='Add',
         shelf=shelf,
         book=book,
     ).save()
