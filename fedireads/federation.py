@@ -11,6 +11,7 @@ from fedireads.settings import DOMAIN
 from fedireads import models
 import json
 import requests
+import re
 from uuid import uuid4
 
 def webfinger(request):
@@ -77,7 +78,7 @@ def inbox(request, username):
     # TODO: should do some kind of checking if the user accepts
     # this action from the sender
     # but this will just throw an error if the user doesn't exist I guess
-    models.User.objects.get(username=username)
+    #models.User.objects.get(username=username)
 
     if activity['type'] == 'Add':
         return handle_add(activity)
@@ -140,16 +141,20 @@ def handle_incoming_follow(activity):
     }
     '''
     # figure out who they want to follow
-    following = activity['object'].replace('https://%s/api/u/' % DOMAIN, '')
-    following = models.User.objects.get(username=following)
+    to_follow = re.sub(
+        r'https?://([\w\.]+)/api/u/(\w+)',
+        r'\2@\1',
+        activity['object']
+    )
+    to_follow = models.User.objects.get(username=to_follow)
     # figure out who they are
     user = get_or_create_remote_user(activity)
-    following.followers.add(user)
+    to_follow.followers.add(user)
     # verify uuid and accept the request
     models.FollowActivity(
         uuid=activity['id'],
         user=user,
-        followed=following,
+        followed=to_follow,
         content=activity,
         activity_type='Follow',
     )
