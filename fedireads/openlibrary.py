@@ -9,6 +9,8 @@ def get_or_create_book(olkey, user=None, update=True):
     # check if this is a valid open library key, and a book
     olkey = olkey
     response = requests.get(OL_URL + olkey + '.json')
+    if not response.ok:
+        response.raise_for_status()
 
     # get the existing entry from our db, if it exists
     try:

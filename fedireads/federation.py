@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from fedireads.settings import DOMAIN
+from fedireads.openlibrary import get_or_create_book
 from fedireads import models
 import json
 import requests
@@ -78,14 +79,16 @@ def inbox(request, username):
     # TODO: should do some kind of checking if the user accepts
     # this action from the sender
     # but this will just throw an error if the user doesn't exist I guess
-    #models.User.objects.get(username=username)
+    models.User.objects.get(localname=username)
 
     if activity['type'] == 'Add':
-        return handle_add(activity)
+        return handle_incoming_shelve(activity)
 
     if activity['type'] == 'Follow':
         return handle_incoming_follow(activity)
 
+    if activity['type'] == 'Create':
+        return handle_incoming_create(activity)
     return HttpResponse()
 
 
@@ -107,7 +110,7 @@ def handle_account_search(query):
     return user
 
 
-def handle_add(activity):
+def handle_incoming_shelve(activity):
     ''' receiving an Add activity (to shelve a book) '''
     # TODO what happens here? If it's a remote over, then I think
     # I should save both the activity and the ShelfBook entry. But
@@ -130,6 +133,7 @@ def handle_add(activity):
     ).save()
     '''
     return HttpResponse()
+
 
 
 def handle_incoming_follow(activity):
@@ -245,7 +249,7 @@ def handle_review(user, book, name, content, rating):
         'published': datetime.utcnow().isoformat(),
         'attributedTo': user.actor,
         'content': content,
-        'inReplyTo': book.activitypub_id,
+        'inReplyTo': book.openlibrary_key,
         'rating': rating, # fedireads-only custom field
         'to': 'https://www.w3.org/ns/activitystreams#Public'
     }
@@ -278,6 +282,39 @@ def handle_review(user, book, name, content, rating):
     ).save()
     broadcast(user, activity, recipients)
 
+
+def handle_incoming_create(activity):
+    ''' someone did something, good on them '''
+    user = get_or_create_remote_user(activity['actor'])
+    uuid = activity['id']
+    # if it's an article and in reply to a book, we have a review
+    if activity['object']['type'] == 'Article' and \
+            'inReplyTo' in activity['object']:
+        possible_book = activity['object']['inReplyTo']
+        try:
+            book = get_or_create_book(possible_book)
+            models.Review(
+                uuid=uuid,
+                user=user,
+                content=activity,
+                activity_type='Article',
+                book=book,
+                work=book.works.first(),
+                name=activity['object']['name'],
+                rating=activity['object']['rating'],
+                review_content=activity['objet']['content'],
+            ).save()
+            return HttpResponse()
+        except KeyError:
+            pass
+
+    models.Activity(
+        uuid=uuid,
+        user=user,
+        content=activity,
+        activity_type=activity['object']['type']
+    )
+    return HttpResponse()
 
 @csrf_exempt
 def outbox(request, username):
