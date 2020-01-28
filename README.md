@@ -44,3 +44,15 @@ Connection to openlibrary.org to get book data is handled in `fedireads/openlibr
 
 The UI is all django templates because I tried to install jinja2 and couldn't get it working so I gave up. It'd be nice to have
 jinja2 for macros, so maybe I'll try again some day. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
+
+
+## Thoughts and considerations
+
+### What even are books
+The most complex part of this is knowing what books are which and who authors are. Right now I'm only using openlibrary.org as a
+single, canonical source of truth for books, works, and authors. But it may be that user should be able to import books that aren't
+in openlibrary, which, that's hard. So there's room to wonder if the openlibrary work key is indeed how a work should be identified.
+
+The key needs to be universal (or at least universally comprehensible) across all fedireads servers, which is why I'm using an external
+identifier controlled by someone else.
+
