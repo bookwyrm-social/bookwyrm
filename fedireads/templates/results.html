@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="main">
+    {% for result in results %}
+    {{ result.username }}
+    <form action="/follow/" method="post">
+        <input type="hidden" name="user" value="{{ result.id }}"></input>
+        <input type="submit" value="Follow"></input>
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}
+
