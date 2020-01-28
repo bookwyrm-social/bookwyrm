@@ -7,7 +7,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseNotFound
 from fedireads import models, openlibrary
-from fedireads import federation as api
+from fedireads import outgoing as api
 from fedireads.settings import DOMAIN
 import re
 

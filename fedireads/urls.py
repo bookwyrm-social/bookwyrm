@@ -15,17 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from fedireads import federation, views, settings
+from fedireads import incoming, outgoing, views, settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # federation endpoints
-    path('user/<str:username>.json', federation.get_actor),
-    path('user/<str:username>/inbox', federation.inbox),
-    path('user/<str:username>/outbox', federation.outbox),
-    path('.well-known/webfinger', federation.webfinger),
+    path('user/<str:username>.json', incoming.get_actor),
+    path('user/<str:username>/inbox', incoming.inbox),
+    path('user/<str:username>/outbox', outgoing.outbox),
+    path('.well-known/webfinger', incoming.webfinger),
 
     # ui views
     path('', views.home),

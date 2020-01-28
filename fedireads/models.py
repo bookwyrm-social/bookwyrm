@@ -34,9 +34,17 @@ class User(AbstractUser):
 @receiver(models.signals.pre_save, sender=User)
 def execute_before_save(sender, instance, *args, **kwargs):
     ''' create shelves for new users '''
-    # TODO: how are remote users handled? what if they aren't readers?
-    if not instance.local or instance.id:
+    # this user already exists, no need to poplate fields
+    if instance.id:
         return
+
+    # TODO: how do I know this properly???
+    if not instance.local:
+        instance.inbox = instance.actor = 'inbox'
+        instance.outbox = instance.actor = 'outbox'
+        return
+
+    # populate fields for local users
     instance.localname = instance.username
     instance.username = '%s@%s' % (instance.username, DOMAIN)
     instance.actor = 'https://%s/user/%s' % (DOMAIN, instance.localname)
