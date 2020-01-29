@@ -32,8 +32,12 @@
         <p>No reviews yet!</p>
         {% endif %}
         {% for review in reviews %}
-        <p><span class="review-title">{{ review.name }}</span>{{ review.rating }} stars, by {{ review.user.username }}</p>
-        <p>{{ review.review_content }}</p>
+        <div class="review">
+            <h4>{{ review.name }}
+                <small>{{ review.rating }} stars, by {{ review.user.username }}</small>
+            </h4>
+            <blockquote>{{ review.review_content }}</blockquote>
+        </div>
         {% endfor %}
     </div>
 </div>
