@@ -16,6 +16,7 @@ h2 {
     background-color: #B2DBBF;
     padding: 0.5rem 0.2rem;
     margin-bottom: 1rem;
+    height: 1rem;
 }
 
 #top-bar {
@@ -51,18 +52,21 @@ h2 {
 #feed, #content, #sidebar {
     display: flex;
     flex-direction: column;
-    margin: 0 1rem 0 0;
+    margin: 0 1rem 1rem 0;
 }
 
 #sidebar {
     min-width: 20rem;
+    margin-right: 0;
 }
 
 .user-pic {
     width: 2rem;
     height: auto;
     border-radius: 50%;
-    vertical-align: middle;
+    vertical-align: top;
+    position: relative;
+    bottom: 0.5em;
 }
 
 .book-preview {
@@ -72,7 +76,6 @@ h2 {
 .book-preview img {
     float: left;
     margin-right: 1em;
-    margin-bottom: 1em;
 }
 
 .book-cover.small {
@@ -109,4 +112,24 @@ blockquote {
     background-color: #F3FFBD;
     clear: both;
     margin-top: 1rem;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 1em;
+}
+tr {
+    vertical-align: top;
+}
+
+tr:nth-child(even) {
+    background-color: #DDD;
+}
+
+th {
+    font-weight: bold;
+}
+th, td {
+    padding: 1em;
+    text-align: left;
 }

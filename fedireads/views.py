@@ -1,11 +1,10 @@
 ''' application views/pages '''
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Q
+from django.db.models import Avg, FilteredRelation, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.views.decorators.csrf import csrf_exempt
 import re
 
 from fedireads import forms, models, openlibrary, outgoing, incoming
@@ -120,10 +119,13 @@ def user_profile(request, username):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
-    books = models.Book.objects.filter(shelves__user=user)
+    shelves = models.Shelf.objects.filter(user=user)
+    ratings = {r.book.id: r.rating for r in models.Review.objects.filter(user=user, book__shelves__user=user)}
+
     data = {
         'user': user,
-        'books': books,
+        'shelves': shelves,
+        'ratings': ratings,
         'is_self': request.user.id == user.id,
     }
     return TemplateResponse(request, 'user.html', data)

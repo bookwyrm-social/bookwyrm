@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load fr_display %}
 {% block content %}
 <div id="sidebar">
     <div>
@@ -103,7 +104,7 @@
                 </p>
 
                 <h3>{{ activity.name }}</h3>
-                <p>{{ activity.rating }} stars</p>
+                <p>{{ activity.rating | stars }} stars</p>
                 <p>{{ activity.review_content }}</p>
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>

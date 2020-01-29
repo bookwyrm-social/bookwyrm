@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load fr_display %}
 {% block content %}
 <div id="content">
     <div>
@@ -6,13 +7,14 @@
             <img class="book-cover" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
             <h1>{{ book.data.title }}</h1>
             by {{ book.authors.first.data.name }}
-            {{ rating }} stars
+            {{ rating | stars }} {{ rating }}
             <blockquote>{{ book.data.description }}</blockquote>
         </div>
 
         <h3>Leave a review</h3>
 
         <form class="review-form" name="review" action="/review/" method="post">
+            {% csrf_token %}
             <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
             {{ review_form.as_p }}
             <button type="submit">Post review</button>
@@ -27,7 +29,7 @@
         {% for review in reviews %}
         <div class="review">
             <h4>{{ review.name }}
-                <small>{{ review.rating }} stars, by {{ review.user.username }}</small>
+                <small>{{ review.rating | stars }} stars, by {{ review.user.username }}</small>
             </h4>
             <blockquote>{{ review.review_content }}</blockquote>
         </div>

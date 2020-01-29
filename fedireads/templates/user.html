@@ -1,51 +1,122 @@
 {% extends 'layout.html' %}
+{% load humanize %}
+{% load fr_display %}
 {% block content %}
-<div id="content">
+<div id="sidebar">
     <div class="user-profile">
-        <img class="user-pic" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
-        <h1>{% if user.name %}{{ user.name }}<br>{% endif %}{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
+        <h2>
+            <img class="user-pic" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
+            {% if user.name %}{{ user.name }}{% endif %}
+            <small>{{ user.username }}</small>
+        </h2>
         {% if user.summary %}
         <blockquote>{{ user.summary }}</blockquote>
         {% endif %}
-        {% if is_self %}<a href="/user/{{ user.localname }}/edit">Edit profile</a>
-        <p>Since {{ user.created_date }}</p>
-        {% endif %}
         {% if not is_self %}
-        {% if not following %}
+        {% if not request.user in user.followers.all %}
         <form action="/follow/" method="post">
+            {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.id }}"></input>
             <input type="submit" value="Follow"></input>
         </form>
         {% else %}
         <form action="/unfollow/" method="post">
+            {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.id }}"></input>
             <input type="submit" value="Unfollow"></input>
         </form>
         {% endif %}
         {% endif %}
-    </div>
 
-    <div>
-        <h2>Books</h2>
-        {% for book in books.all %}
-        <div class="book">
-            {{ book.data.title }} by {{ book.authors.first.data.name }}
+        {% if is_self %}
+        <div class="interaction">
+            <a href="/user/{{ user.localname }}/edit">Edit profile</a>
         </div>
-        {% endfor %}
+        {% endif %}
     </div>
-
     <div>
         <h2>Followers</h2>
         {% for follower in user.followers.all %}
         <div>
             <a href="{{ follower.actor }}">{{ follower.username }}</a>
+            {% if not request.user in follower.followers.all %}
             <form action="/follow/" method="post">
+                {% csrf_token %}
                 <input type="hidden" name="user" value="{{ follower.id }}"></input>
                 <input type="submit" value="Follow"></input>
             </form>
+            {% else %}
+            <form action="/unfollow/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="user" value="{{ follower.id }}"></input>
+                <input type="submit" value="Unfollow"></input>
+            </form>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
-
 </div>
+
+<div id="content">
+    {% for shelf in shelves %}
+    <div>
+        <h2>{{ shelf.shelf.name }}</h2>
+        {% if shelf.books %}
+        <table>
+        <tr class="book-preview">
+            <th>
+                Cover
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Author
+            </th>
+            <th>
+                Published
+            </th>
+            <th>
+                Shelved
+            </th>
+            <th>
+                External links
+            </th>
+            <th>
+                Rating
+            </th>
+        </tr>
+        {% for book in shelf.books.all %}
+        <tr class="book-preview">
+            <td>
+                <img src="/images/{{ book.cover }}" class="book-cover small">
+            </td>
+            <td>
+                <a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a>
+            </td>
+            <td>
+                {{ book.authors.first.data.name }}
+            </td>
+            <td>
+                {{ book.data.first_publish_date }}
+            </td>
+            <td>
+                {{ book.added_date | naturalday }}
+            </td>
+            <td>
+                <a href="https://openlibrary.org{{ book.data.key }}" target="_blank">OpenLibrary</a>
+            </td>
+            <td>
+                {{ ratings | dict_key:book.id | stars}}
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        {% else %}
+        <p>This shelf is empty.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}
