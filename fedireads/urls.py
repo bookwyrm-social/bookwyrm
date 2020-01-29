@@ -31,6 +31,6 @@ urlpatterns = [
     path('follow/', views.follow),
     path('unfollow/', views.unfollow),
     path('search/', views.search),
-    path('upload-avatar/', views.upload_avatar),
+    path('edit_profile/', views.edit_profile),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

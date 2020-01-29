@@ -13,15 +13,7 @@
 
         <form class="review-form" name="review" action="/review/" method="post">
             <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
-            <label for="name">Title:
-                <input type="text" name="name"></input>
-            </label>
-            <label for="content">
-                <textarea name="content"></textarea>
-            </label>
-            <label for="rating">Your rating (1-5)
-                <input type="number" name="rating"></input>
-            </label>
+            {{ review_form.as_p }}
             <button type="submit">Post review</button>
         </form>
     </div>

@@ -28,6 +28,8 @@ class User(AbstractUser):
         blank=True,
         unique=True
     )
+    # name is your display name, which you can change at will
+    name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='uploads/', blank=True, null=True)
     # TODO: a field for if non-local users are readers or others
     followers = models.ManyToManyField('self', symmetrical=False)
@@ -131,7 +133,7 @@ class Review(Activity):
     ''' a book review '''
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     work = models.ForeignKey('Work', on_delete=models.PROTECT)
-    name = models.TextField()
+    name = models.CharField(max_length=255)
     # TODO: validation
     rating = models.IntegerField(default=0)
     review_content = models.TextField()

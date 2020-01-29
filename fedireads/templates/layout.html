@@ -27,20 +27,21 @@
                 <div id="account">
                     {% if user.is_authenticated %}
                     <form name="logout" action="/logout/" method="post">
-                        Welcome, {% if request.user.localname %}{{ request.user.localname }}{% else %}{{ request.user.username }}{% endif %}
+                        Welcome, <a href="{{ request.user.actor }}">{% if request.user.localname %}{{ request.user.localname }}{% else %}{{ request.user.username }}{% endif %}</a>
                         <input type="submit" value="Log out"></input>
                     </form>
                     {% else %}
                     <form name="login" action="/login/" method="post">
-                        <input type="text" name="username"></input>
-                        <input type="password" name="password"></input>
+                        {% for field in login_form %}
+                            {{ field }}
+                        {% endfor %}
                         <input type="submit" value="Log in"></input>
                     </form>
                     {% endif %}
                 </div>
                 <div id="search">
                     <form action="/search/">
-                        <input type="text" name="q"></input>
+                        <input type="text" name="q" placeholder="search"></input>
                         <input type="submit" value="🔍"></input>
                     </form>
                 </div>

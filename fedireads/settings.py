@@ -119,4 +119,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+# TODO: this super doesn't work when I do a join on BASE_DIR
+MEDIA_ROOT = '/Users/mouse/Personal/fedireads/images/'

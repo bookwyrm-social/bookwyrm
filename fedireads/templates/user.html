@@ -2,8 +2,11 @@
 {% block content %}
 <div id="content">
     <div class="user-profile">
-        <img class="user-pic" src="/static/images/profile.jpg">
-        <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
+        <img class="user-pic" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
+        <h1>{% if user.name %}{{ user.name }}<br>{% endif %}{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
+        {% if user.summary %}
+        <blockquote>{{ user.summary }}</blockquote>
+        {% endif %}
         {% if is_self %}<a href="/user/{{ user.localname }}/edit">Edit profile</a>
         <p>Since {{ user.created_date }}</p>
         {% endif %}

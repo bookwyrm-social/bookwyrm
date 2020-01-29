@@ -47,7 +47,7 @@
     {% for activity in activities %}
     <div class="update">
         <h2>
-        <img class="user-pic" src="static/images/profile.jpg">
+            <img class="user-pic" src="{% if activity.user.avatar %}/images/{{ activity.user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
         {# TODO: a helper function for displaying a username #}
         <a href="/user/{% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}" class="user">
                 {% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}</a>

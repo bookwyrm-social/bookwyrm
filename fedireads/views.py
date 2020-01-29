@@ -8,7 +8,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 import re
 
-from fedireads import models, openlibrary, outgoing as api
+from fedireads import forms, models, openlibrary, outgoing as api
 from fedireads.settings import DOMAIN
 
 
@@ -32,12 +32,14 @@ def home(request):
         '-created_date'
     )[:10]
 
+    login_form = forms.LoginForm()
     data = {
         'user': request.user,
         'shelves': shelves,
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
+        'login_form': login_form,
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -47,12 +49,17 @@ def user_login(request):
     ''' authentication '''
     # send user to the login page
     if request.method == 'GET':
-        return TemplateResponse(request, 'login.html')
+        form = forms.LoginForm()
+        return TemplateResponse(request, 'login.html', {'login_form': form})
 
     # authenticate user
-    username = request.POST['username']
+    form = forms.LoginForm(request.POST)
+    if not form.is_valid():
+        return TemplateResponse(request, 'login.html')
+
+    username = form.data['username']
     username = '%s@%s' % (username, DOMAIN)
-    password = request.POST['password']
+    password = form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
@@ -72,12 +79,20 @@ def user_logout(request):
 def register(request):
     ''' join the server '''
     if request.method == 'GET':
-        return TemplateResponse(request, 'register.html')
+        form = forms.RegisterForm()
+        return TemplateResponse(
+            request,
+            'register.html',
+            {'register_form': form}
+        )
 
-    username = request.POST['username']
-    password = request.POST['password']
-    email = request.POST['email']
-    password = request.POST['password']
+    form = forms.RegisterForm(request.POST)
+    if not form.is_valid():
+        return redirect('/register/')
+
+    username = form.data['username']
+    email = form.data['email']
+    password = form.data['password']
 
     user = models.User.objects.create_user(username, email, password)
     login(request, user)
@@ -112,7 +127,9 @@ def user_profile_edit(request, username):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
+    form = forms.EditUserForm()
     data = {
+        'form': form,
         'user': user,
     }
     return TemplateResponse(request, 'edit_user.html', data)
@@ -120,11 +137,17 @@ def user_profile_edit(request, username):
 
 @csrf_exempt
 @login_required
-def upload_avatar(request):
+def edit_profile(request):
     ''' les get fancy with images '''
     if not request.method == 'POST':
+        return redirect('/user/%s' % request.user.localname)
+    form = forms.EditUserForm(request.POST, request.FILES)
+    if not form.is_valid():
         return redirect('/')
-    request.user.avatar = request.FILES['avatar']
+    request.user.name = form.data['name']
+    if 'avatar' in form.files:
+        request.user.avatar = form.files['avatar']
+    request.user.summary = form.data['summary']
     request.user.save()
     return redirect('/user/%s' % request.user.localname)
 
@@ -137,10 +160,12 @@ def book_page(request, book_identifier):
         Q(work=book.works.first()) | Q(book=book)
     )
     rating = reviews.aggregate(Avg('rating'))
+    review_form = forms.ReviewForm()
     data = {
         'book': book,
         'reviews': reviews,
         'rating': rating['rating__avg'],
+        'review_form': review_form,
     }
     return TemplateResponse(request, 'book.html', data)
 
@@ -160,14 +185,17 @@ def shelve(request, shelf_id, book_id):
 @login_required
 def review(request):
     ''' create a book review note '''
-    # TODO: error handling
+    form = forms.ReviewForm(request.POST)
+    # TODO: better failure behavior
+    if not form.is_valid():
+        return redirect('/')
     book_identifier = request.POST.get('book')
     book = openlibrary.get_or_create_book(book_identifier)
 
     # TODO: validation, htmlification
-    name = request.POST.get('name')
-    content = request.POST.get('content')
-    rating = request.POST.get('rating')
+    name = form.data.get('name')
+    content = form.data.get('review_content')
+    rating = form.data.get('rating')
 
     api.handle_review(request.user, book, name, content, rating)
     return redirect(book_identifier)

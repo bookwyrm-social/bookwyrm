@@ -2,51 +2,13 @@
 {% block content %}
 <div id="content">
     <div class="user-profile">
+        <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
         <img class="user-pic" src="/static/images/profile.jpg">
-        <form name="avatar" action="/upload-avatar/" method="post" enctype="multipart/form-data">
-            <input type="file" name="avatar">
+        <form name="avatar" action="/edit_profile/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
             <button type="submit">Upload</button>
         </form>
-        <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
-        {% if is_self %}<a href="/user/{{ user.localname }}/edit">Edit profile</a>
-        <p>Since {{ user.created_date }}</p>
-        {% endif %}
-        {% if not is_self %}
-        {% if not following %}
-        <form action="/follow/" method="post">
-            <input type="hidden" name="user" value="{{ user.id }}"></input>
-            <input type="submit" value="Follow"></input>
-        </form>
-        {% else %}
-        <form action="/unfollow/" method="post">
-            <input type="hidden" name="user" value="{{ user.id }}"></input>
-            <input type="submit" value="Unfollow"></input>
-        </form>
-        {% endif %}
-        {% endif %}
     </div>
-
-    <div>
-        <h2>Books</h2>
-        {% for book in books.all %}
-        <div class="book">
-            {{ book.data.title }} by {{ book.authors.first.data.name }}
-        </div>
-        {% endfor %}
-    </div>
-
-    <div>
-        <h2>Followers</h2>
-        {% for follower in user.followers.all %}
-        <div>
-            <a href="{{ follower.actor }}">{{ follower.username }}</a>
-            <form action="/follow/" method="post">
-                <input type="hidden" name="user" value="{{ follower.id }}"></input>
-                <input type="submit" value="Follow"></input>
-            </form>
-        </div>
-        {% endfor %}
-    </div>
-
 </div>
 {% endblock %}
