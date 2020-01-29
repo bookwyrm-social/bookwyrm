@@ -11,5 +11,18 @@ def dict_key(d, k):
 @register.filter(name='stars')
 def stars(number):
     ''' turn integers into stars '''
-    number = int(number)
+    try:
+        number = int(number)
+    except TypeError:
+        number = 0
     return ('★' * number) + '☆' * (5 - number)
+
+@register.filter(name='description')
+def description_format(description):
+    ''' handle the various OL description formats '''
+    if isinstance(description, dict) and 'value' in description:
+        description = description['value']
+    if '----------' in description:
+        description = description.split('----------')[0]
+
+    return description.strip()

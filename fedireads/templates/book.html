@@ -8,24 +8,20 @@
             <h1>{{ book.data.title }}</h1>
             by {{ book.authors.first.data.name }}
             {{ rating | stars }} {{ rating }}
-            <blockquote>{{ book.data.description }}</blockquote>
+            <blockquote>{{ book.data.description | description }}</blockquote>
         </div>
-
-        <h3>Leave a review</h3>
-
+    </div>
+    <div class="reviews">
+        <h2>Reviews</h2>
+        {% if not reviews %}
+        <p>No reviews yet!</p>
+        {% endif %}
         <form class="review-form" name="review" action="/review/" method="post">
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
             {{ review_form.as_p }}
             <button type="submit">Post review</button>
         </form>
-    </div>
-
-    <div class="reviews">
-        <h2>Reviews</h2>
-        {% if not reviews %}
-        <p>No reviews yet!</p>
-        {% endif %}
         {% for review in reviews %}
         <div class="review">
             <h4>{{ review.name }}

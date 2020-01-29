@@ -86,7 +86,7 @@
                     <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
                     by
                     <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    <blockquote>{{ activity.book.data.description }}</blockquote>
+                    <blockquote>{{ activity.book.data.description | description }}</blockquote>
                 </p>
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>
@@ -100,11 +100,10 @@
                     <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
                     by
                     <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    <blockquote>{{ activity.book.data.description }}</blockquote>
                 </p>
 
                 <h3>{{ activity.name }}</h3>
-                <p>{{ activity.rating | stars }} stars</p>
+                <p>{{ activity.rating | stars }}</p>
                 <p>{{ activity.review_content }}</p>
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>
