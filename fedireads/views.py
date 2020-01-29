@@ -180,12 +180,17 @@ def book_page(request, book_identifier):
 
 @csrf_exempt
 @login_required
-def shelve(request, shelf_id, book_id):
+def shelve(request, shelf_id, book_id, reshelve=True):
     ''' put a book on a user's shelf '''
-    # TODO: handle "reshelving"
     book = models.Book.objects.get(id=book_id)
-    shelf = models.Shelf.objects.get(identifier=shelf_id)
-    api.handle_shelve(request.user, book, shelf)
+    desired_shelf = models.Shelf.objects.get(identifier=shelf_id)
+    if reshelve:
+        try:
+            current_shelf = models.Shelf.objects.get(user=request.user, book=book)
+            api.handle_unshelve(request.user, book, current_shelf)
+        except models.Shelf.DoesNotExist:
+            pass
+    api.handle_shelve(request.user, book, desired_shelf)
     return redirect('/')
 
 

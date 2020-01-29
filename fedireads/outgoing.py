@@ -108,6 +108,51 @@ def handle_shelve(user, book, shelf):
     broadcast(user, activity, recipients)
 
 
+def handle_unshelve(user, book, shelf):
+    ''' a local user is getting a book put on their shelf '''
+    # update the database
+    row = models.ShelfBook.objects.get(book=book, shelf=shelf)
+    row.delete()
+
+    # send out the activitypub action
+    summary = '%s removed %s from %s' % (
+        user.username,
+        book.data['title'],
+        shelf.name
+    )
+
+    uuid = uuid4()
+    activity = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': str(uuid),
+        'summary': summary,
+        'type': 'Remove',
+        'actor': user.actor,
+        'object': {
+            'type': 'Document',
+            'name': book.data['title'],
+            'url': book.openlibrary_key
+        },
+        'target': {
+            'type': 'Collection',
+            'name': shelf.name,
+            'id': shelf.activitypub_id
+        }
+    }
+    recipients = get_recipients(user, 'public')
+
+    models.ShelveActivity(
+        uuid=uuid,
+        user=user,
+        content=activity,
+        shelf=shelf,
+        book=book,
+        activity_type='Remove',
+    ).save()
+
+    broadcast(user, activity, recipients)
+
+
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     review_uuid = uuid4()

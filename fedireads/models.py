@@ -111,7 +111,8 @@ class ShelveActivity(Activity):
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        self.activity_type = 'Add'
+        if not self.activity_type:
+            self.activity_type = 'Add'
         self.fedireads_type = 'Shelve'
         super().save(*args, **kwargs)
 

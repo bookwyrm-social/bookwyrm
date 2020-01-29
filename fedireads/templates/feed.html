@@ -11,7 +11,10 @@
             <img class="book-cover small" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
             <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
             <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
-            <button>start reading</button>
+            <form name="shelve" action="/shelve/{{ user.localname }}_currently-reading/{{ book.id }}" method="post">
+                <input type="hidden" name="book" value="book.id"></input>
+                <button type="submit">Start reading</button>
+            </form>
         </div>
         {% endfor %}
         {% endif %}
@@ -21,7 +24,10 @@
             <img class="book-cover small" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
             <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
             <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
-            <button>done reading</button>
+            <form name="shelve" action="/shelve/{{ user.localname }}_read/{{ book.id }}" method="post">
+                <input type="hidden" name="book" value="book.id"></input>
+                <button type="submit">I'm done!</button>
+            </form>
         </div>
         {% endfor %}
     </div>
@@ -38,7 +44,7 @@
                 <a href="" class="author">{{ book.authors.first.data.name }}</a>
             </p>
             {% if not book in user_books.all %}
-            <form name="shelve" action="/shelve/{{ request.user.localname }}_to-read/{{ book.id }}" method="post">
+            <form name="shelve" action="/shelve/{{ user.localname }}_to-read/{{ book.id }}" method="post">
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Want to read</button>
             </form>
