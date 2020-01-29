@@ -62,7 +62,9 @@ def handle_outgoing_follow(user, to_follow):
         'object': to_follow.actor,
     }
 
-    broadcast(user, activity, [to_follow.inbox])
+    errors = broadcast(user, activity, [to_follow.inbox])
+    for error in errors:
+        raise(error['error'])
 
 
 def handle_shelve(user, book, shelf):

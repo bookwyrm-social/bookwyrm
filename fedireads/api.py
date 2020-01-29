@@ -61,9 +61,17 @@ def get_recipients(user, post_privacy, direct_recipients=None):
 
 def broadcast(sender, action, recipients):
     ''' send out an event '''
+    errors = []
     for recipient in recipients:
-        # TODO: error handling
-        sign_and_send(sender, action, recipient)
+        try:
+            sign_and_send(sender, action, recipient)
+        except requests.exceptions.HTTPError as e:
+            errors.append({
+                'error': e,
+                'recipient': recipient,
+                'activity': action,
+            })
+    return errors
 
 
 def sign_and_send(sender, action, destination):
@@ -76,9 +84,14 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 
-    signature = 'keyId="%s",' % sender.localname
-    signature += 'headers="(request-target) host date",'
-    signature += 'signature="%s"' % b64encode(signed_message)
+    signature = {
+        'keyId': '%s#main-key' % sender.actor,
+        'algorithm': 'rsa-sha256',
+        'headers': '(request-target) host date',
+        'signature': b64encode(signed_message),
+    }
+    signature = ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
+
     response = requests.post(
         destination,
         data=json.dumps(action),

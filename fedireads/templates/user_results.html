@@ -5,6 +5,7 @@
     <div>
         <h2>{{ result.username }}</h2>
         <form action="/follow/" method="post">
+            {% csrf_token %}
             <input type="hidden" name="user" value="{{ result.id }}"></input>
             <input type="submit" value="Follow"></input>
         </form>
