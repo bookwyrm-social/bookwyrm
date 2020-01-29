@@ -15,16 +15,28 @@ from fedireads.settings import DOMAIN
 def get_or_create_remote_user(actor):
     ''' look up a remote user or add them '''
     try:
-        user = models.User.objects.get(actor=actor)
+        return models.User.objects.get(actor=actor)
     except models.User.DoesNotExist:
-        # TODO: how do you actually correctly learn this?
-        username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
-        user = models.User.objects.create_user(
-            username,
-            '', '',
-            actor=actor,
-            local=False
-        )
+        pass
+
+    # get the user's info
+    response = requests.get(
+        actor,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+
+    username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
+    user = models.User.objects.create_user(
+        username, '', '',
+        name=data.get('name'),
+        summary=data.get('summary'),
+        inbox=data['inbox'],
+        outbox=data['outbox'],
+        shared_inbox=data.get('endpoints').get('sharedInbox'),
+        actor=actor,
+        local=False
+    )
     return user
 
 

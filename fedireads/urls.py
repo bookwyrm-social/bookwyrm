@@ -20,7 +20,7 @@ urlpatterns = [
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 
     # ui views
-    re_path(r'^/?$', views.home),
+    path(r'', views.home),
     re_path(r'^register/?$', views.register),
     re_path(r'^login/?$', views.user_login),
     re_path(r'^logout/?$', views.user_logout),

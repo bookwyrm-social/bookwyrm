@@ -13,8 +13,8 @@ from fedireads.settings import DOMAIN, OL_URL
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    private_key = models.TextField(blank=True, null=True, unique=True)
-    public_key = models.TextField(blank=True, null=True, unique=True)
+    private_key = models.TextField(blank=True, null=True)
+    public_key = models.TextField(blank=True, null=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255, unique=True)
     inbox = models.CharField(max_length=255, unique=True)
@@ -44,13 +44,7 @@ class User(AbstractUser):
 def execute_before_save(sender, instance, *args, **kwargs):
     ''' create shelves for new users '''
     # this user already exists, no need to poplate fields
-    if instance.id:
-        return
-
-    # TODO: how do I know this properly???
-    if not instance.local:
-        instance.inbox = instance.actor = 'inbox'
-        instance.outbox = instance.actor = 'outbox'
+    if instance.id or not instance.local:
         return
 
     # populate fields for local users
