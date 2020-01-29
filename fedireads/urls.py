@@ -31,7 +31,7 @@ urlpatterns = [
 
     # internal action endpoints
     re_path(r'^review/?$', views.review),
-    re_path(r'^shelve/(?P<shelf_id>\w+)/(?P<book_id>\d+)/?$', views.shelve),
+    re_path(r'^shelve/(?P<shelf_id>[\w_-]+)/(?P<book_id>\d+)/?$', views.shelve),
     re_path(r'^follow/?$', views.follow),
     re_path(r'^unfollow/?$', views.unfollow),
     re_path(r'^search/?$', views.search),

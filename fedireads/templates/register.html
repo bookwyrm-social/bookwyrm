@@ -3,6 +3,7 @@
 <div id="content">
     <div>
         <form name="register" method="post">
+            {% csrf_token %}
             {{ register_form.as_p }}
             <button type="submit">Create account</button>
         </form>

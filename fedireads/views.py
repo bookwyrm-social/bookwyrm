@@ -52,7 +52,6 @@ def home(request):
     return TemplateResponse(request, 'feed.html', data)
 
 
-@csrf_exempt
 def user_login(request):
     ''' authentication '''
     # send user to the login page
@@ -75,7 +74,6 @@ def user_login(request):
     return TemplateResponse(request, 'login.html')
 
 
-@csrf_exempt
 @login_required
 def user_logout(request):
     ''' done with this place! outa here! '''
@@ -83,7 +81,6 @@ def user_logout(request):
     return redirect('/')
 
 
-@csrf_exempt
 def register(request):
     ''' join the server '''
     if request.method == 'GET':
@@ -140,7 +137,7 @@ def user_profile_edit(request, username):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
-    form = forms.EditUserForm()
+    form = forms.EditUserForm(instance=request.user)
     data = {
         'form': form,
         'user': user,
@@ -148,15 +145,16 @@ def user_profile_edit(request, username):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-@csrf_exempt
 @login_required
 def edit_profile(request):
     ''' les get fancy with images '''
     if not request.method == 'POST':
         return redirect('/user/%s' % request.user.localname)
+
     form = forms.EditUserForm(request.POST, request.FILES)
     if not form.is_valid():
         return redirect('/')
+
     request.user.name = form.data['name']
     if 'avatar' in form.files:
         request.user.avatar = form.files['avatar']
@@ -181,7 +179,6 @@ def book_page(request, book_identifier):
     return TemplateResponse(request, 'book.html', data)
 
 
-@csrf_exempt
 @login_required
 def shelve(request, shelf_id, book_id, reshelve=True):
     ''' put a book on a user's shelf '''
@@ -200,7 +197,6 @@ def shelve(request, shelf_id, book_id, reshelve=True):
     return redirect('/')
 
 
-@csrf_exempt
 @login_required
 def review(request):
     ''' create a book review note '''
@@ -220,7 +216,6 @@ def review(request):
     return redirect(book_identifier)
 
 
-@csrf_exempt
 @login_required
 def follow(request):
     ''' follow another user, here or abroad '''
@@ -232,7 +227,6 @@ def follow(request):
     return redirect('/user/%s' % to_follow.username)
 
 
-@csrf_exempt
 @login_required
 def unfollow(request):
     ''' unfollow a user '''
@@ -243,7 +237,6 @@ def unfollow(request):
     return redirect('/user/%s' % followed.username)
 
 
-@csrf_exempt
 @login_required
 def search(request):
     ''' that search bar up top '''

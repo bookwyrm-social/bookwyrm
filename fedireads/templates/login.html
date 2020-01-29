@@ -3,6 +3,7 @@
 <div id="content">
     <div>
         <form name="login" method="post">
+            {% csrf_token %}
             {{ login_form.as_p }}
             <button type="submit">Log in</button>
         </form>
