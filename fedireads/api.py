@@ -34,6 +34,7 @@ def get_or_create_remote_user(actor):
         inbox=data['inbox'],
         outbox=data['outbox'],
         shared_inbox=data.get('endpoints').get('sharedInbox'),
+        public_key=data.get('publicKey').get('publicKeyPem'),
         actor=actor,
         local=False
     )

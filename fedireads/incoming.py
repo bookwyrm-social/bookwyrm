@@ -125,6 +125,7 @@ def get_actor(request, username):
         }
     })
 
+
 @csrf_exempt
 def get_followers(request, username):
     ''' return a list of followers for an actor '''
