@@ -3,7 +3,6 @@
     margin: 0;
     padding: 0;
     line-height: 1.3em;
-    overflow: auto;
     font-family: sans-serif;
     font-weight: normal;
 }
@@ -22,7 +21,7 @@ h2 {
 #main, header > div {
     margin: 0 auto;
     display: flex;
-    flex-flow: row wrap;
+    flex-direction: row;
     max-width: 75rem;
     width: 100%;
 }
@@ -55,7 +54,13 @@ h2 {
 #sidebar {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    min-width: 20rem;
+}
+
+#feed, #content {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem 0 0;
 }
 
 .user-pic {
@@ -80,17 +85,10 @@ h2 {
     height: auto;
 }
 
-#feed, #content {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 3;
-}
-
 #content > div, #feed > div, #sidebar > div {
     background-color: #EFEFEF;
-    margin: 1rem auto;
+    margin: 1rem 0 1rem 1rem;
     padding: 1rem;
-    width: 90%;
 }
 
 .review-form textarea {
@@ -103,4 +101,8 @@ h2 {
 
 small {
     display: block;
+}
+
+blockquote {
+    white-space: pre-wrap;
 }

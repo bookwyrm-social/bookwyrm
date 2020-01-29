@@ -82,7 +82,7 @@
                     <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
                     by
                     <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    <blockquote>{{ book.data.description }}</blockquote>
+                    <blockquote>{{ activity.book.data.description }}</blockquote>
                 </p>
             </div>
         {% elif activity.fedireads_type == 'Review' %}
@@ -95,7 +95,7 @@
                     <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
                     by
                     <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    <blockquote>{{ book.data.description }}</blockquote>
+                    <blockquote>{{ activity.book.data.description }}</blockquote>
                 </p>
 
                 <h3>{{ activity.name }}</h3>

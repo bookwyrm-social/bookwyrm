@@ -25,8 +25,8 @@ def home(request):
     )
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
     recent_books = models.Book.objects.order_by(
-        'added_date'
-        )[:5]
+        '-added_date'
+    )[:5]
 
     following = models.User.objects.filter(
         Q(followers=request.user) | Q(id=request.user.id)
