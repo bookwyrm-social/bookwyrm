@@ -18,6 +18,7 @@ urlpatterns = [
 
     # ui views
     path('', views.home),
+    path('register/', views.register),
     path('login/', views.user_login),
     path('logout/', views.user_logout),
     path('user/<str:username>', views.user_profile),

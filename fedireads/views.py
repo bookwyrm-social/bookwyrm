@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import re
 
 from fedireads import models, openlibrary, outgoing as api
+from fedireads.settings import DOMAIN
 
 
 @login_required
@@ -45,12 +46,12 @@ def home(request):
 def user_login(request):
     ''' authentication '''
     # send user to the login page
-    # TODO: login with localname or email
     if request.method == 'GET':
         return TemplateResponse(request, 'login.html')
 
     # authenticate user
     username = request.POST['username']
+    username = '%s@%s' % (username, DOMAIN)
     password = request.POST['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
@@ -64,6 +65,22 @@ def user_login(request):
 def user_logout(request):
     ''' done with this place! outa here! '''
     logout(request)
+    return redirect('/')
+
+
+@csrf_exempt
+def register(request):
+    ''' join the server '''
+    if request.method == 'GET':
+        return TemplateResponse(request, 'register.html')
+
+    username = request.POST['username']
+    password = request.POST['password']
+    email = request.POST['email']
+    password = request.POST['password']
+
+    user = models.User.objects.create_user(username, email, password)
+    login(request, user)
     return redirect('/')
 
 

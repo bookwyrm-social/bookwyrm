@@ -23,7 +23,7 @@ a good idea for the long term but it's what I'm doing right now).
 ``` bash
 ./rebuilddb.sh
 ```
-This creates two users, `mouse@your-domain.com` with password `password123` and `rat@your-domain.com` with password `ratword`.
+This creates two users, `mouse` with password `password123` and `rat` with password `ratword`.
 
 And go to the app at `localhost:8000`
 

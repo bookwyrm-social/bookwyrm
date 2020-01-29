@@ -13,13 +13,13 @@ from fedireads.settings import DOMAIN, OL_URL
 
 class User(AbstractUser):
     ''' a user who wants to read books '''
-    private_key = models.TextField(blank=True, null=True)
-    public_key = models.TextField(blank=True, null=True)
+    private_key = models.TextField(blank=True, null=True, unique=True)
+    public_key = models.TextField(blank=True, null=True, unique=True)
     api_key = models.CharField(max_length=255, blank=True, null=True)
-    actor = models.CharField(max_length=255)
-    inbox = models.CharField(max_length=255)
+    actor = models.CharField(max_length=255, unique=True)
+    inbox = models.CharField(max_length=255, unique=True)
     shared_inbox = models.CharField(max_length=255)
-    outbox = models.CharField(max_length=255)
+    outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
     localname = models.CharField(
@@ -151,7 +151,7 @@ class Note(Activity):
 
 class Shelf(models.Model):
     activitypub_id = models.CharField(max_length=255)
-    identifier = models.CharField(max_length=255)
+    identifier = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     editable = models.BooleanField(default=True)

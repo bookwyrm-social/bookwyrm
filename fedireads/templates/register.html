@@ -2,18 +2,22 @@
 {% block content %}
 <div id="content">
     <div>
-        <form name="login" method="post">
+        <form name="register" method="post">
             <label for="username">Username:
                 <input type="text" name="username"></input>
+            </label>
+
+            <label for="email">Email address:
+                <input type="text" name="email"></input>
             </label>
 
             <label for="password">Password:
                 <input type="password" name="password"></input>
             </label>
-            <button type="submit">Log in</button>
+            <button type="submit">Create account</button>
         </form>
-        <a href="/register/">Create a new account</a>
-    </div>
 
+        <a href="/login/">Log in with existing account</a>
+    </div>
 </div>
 {% endblock %}

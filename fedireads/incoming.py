@@ -35,6 +35,7 @@ def webfinger(request):
 @csrf_exempt
 def shared_inbox(request):
     ''' incoming activitypub events '''
+    # TODO: this is just a dupe of inbox but there's gotta be a reason??
     if request.method == 'GET':
         return HttpResponseNotFound()
 
