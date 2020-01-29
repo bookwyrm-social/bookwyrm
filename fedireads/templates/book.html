@@ -3,7 +3,7 @@
 <div id="content">
     <div>
         <div class="book-preview">
-            <img class="book-cover" src="/static/images/med.jpg">
+            <img class="book-cover" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
             <h1>{{ book.data.title }}</h1>
             by {{ book.authors.first.data.name }}
             {{ rating }} stars

@@ -1,12 +1,13 @@
 ''' activitystream api and books '''
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.base import ContentFile
 import requests
 
 from fedireads.models import Author, Book, Work
 from fedireads.settings import OL_URL
 
 
-def get_or_create_book(olkey, user=None, update=True):
+def get_or_create_book(olkey, user=None, update=False):
     ''' add a book '''
     # TODO: check if this is a valid open library key, and a book
     olkey = olkey
@@ -44,7 +45,21 @@ def get_or_create_book(olkey, user=None, update=True):
         author_id = author_id['key']
         book.authors.add(get_or_create_author(author_id))
 
+    if len(data['covers']):
+        book.cover.save(*get_cover(data['covers'][0]), save=True)
+
     return book
+
+
+def get_cover(cover_id):
+    ''' ask openlibrary for the cover '''
+    image_name = '%s-M.jpg' % cover_id
+    url = 'https://covers.openlibrary.org/b/id/%s' % image_name
+    response = requests.get(url)
+    if not response.ok:
+        response.raise_for_status()
+    image_content = ContentFile(requests.get(url).content)
+    return [image_name, image_content]
 
 
 def get_or_create_work(olkey):

@@ -15,7 +15,14 @@ from fedireads.settings import DOMAIN
 @login_required
 def home(request):
     ''' user's homepage with activity feed '''
-    shelves = models.Shelf.objects.filter(user=request.user.id)
+    reading = models.Shelf.objects.get(
+        user=request.user,
+        shelf_type='reading'
+    )
+    to_read = models.Shelf.objects.get(
+        user=request.user,
+        shelf_type='to-read'
+    )
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
     recent_books = models.Book.objects.order_by(
         'added_date'
@@ -35,7 +42,8 @@ def home(request):
     login_form = forms.LoginForm()
     data = {
         'user': request.user,
-        'shelves': shelves,
+        'reading': reading,
+        'to_read': to_read,
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,

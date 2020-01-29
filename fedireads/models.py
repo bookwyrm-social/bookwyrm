@@ -30,7 +30,7 @@ class User(AbstractUser):
     )
     # name is your display name, which you can change at will
     name = models.CharField(max_length=100, blank=True, null=True)
-    avatar = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     # TODO: a field for if non-local users are readers or others
     followers = models.ManyToManyField('self', symmetrical=False)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -205,6 +205,7 @@ class Book(models.Model):
     data = JSONField()
     works = models.ManyToManyField('Work')
     authors = models.ManyToManyField('Author')
+    cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     shelves = models.ManyToManyField(
         'Shelf',
         symmetrical=False,

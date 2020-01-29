@@ -3,7 +3,6 @@
 <div id="content">
     <div class="user-profile">
         <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
-        <img class="user-pic" src="/static/images/profile.jpg">
         <form name="avatar" action="/edit_profile/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
