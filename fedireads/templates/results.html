@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div id="main">
+<div id="content">
     {% for result in results %}
     {{ result.username }}
     <form action="/follow/" method="post">

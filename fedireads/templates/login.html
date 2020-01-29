@@ -1,8 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
-    <form name="login" method="post">
-        <input type="text" name="username"></input>
-        <input type="password" name="password"></input>
-        <input type="submit"></input>
-    </form>
+<div id="content">
+    <div>
+        <form name="login" method="post">
+            <label for="username">Username:
+                <input type="text" name="username"></input>
+            </label>
+
+            <label for="password">Password:
+                <input type="password" name="password"></input>
+            </label>
+            <button type="submit">Log in</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

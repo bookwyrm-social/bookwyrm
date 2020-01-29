@@ -1,19 +1,30 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div id="main">
-    <div class="book-profile">
-        <img class="book-cover" src="/static/images/med.jpg">
-        <h1>{{ book.data.title }}</h1>
-        by {{ book.authors.first.data.name }}
-        {{ rating }} stars
+<div id="content">
+    <div>
+        <div class="book-preview">
+            <img class="book-cover" src="/static/images/med.jpg">
+            <h1>{{ book.data.title }}</h1>
+            by {{ book.authors.first.data.name }}
+            {{ rating }} stars
+        </div>
+
+        <h3>Leave a review</h3>
+
+        <form class="review-form" name="review" action="/review/" method="post">
+            <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+            <label for="name">Title:
+                <input type="text" name="name"></input>
+            </label>
+            <label for="content">
+                <textarea name="content"></textarea>
+            </label>
+            <label for="rating">Your rating (1-5)
+                <input type="number" name="rating"></input>
+            </label>
+            <button type="submit">Post review</button>
+        </form>
     </div>
-    <form name="review" action="/review/" method="post">
-        <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
-        <input type="text" name="name"></input>
-        <textarea name="content">Your review</textarea>
-        <input type="number" name="rating"></input>
-        <input type="submit" value="Post review"></input>
-    </form>
 
     <div class="reviews">
         <h2>Reviews</h2>

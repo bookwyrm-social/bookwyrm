@@ -1,30 +1,27 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div id="sidebar">
-    {# listing books currently on user's shelves #}
-    {# TODO: this should only show currently reading probably #}
-    {% for shelf in shelves %}
-    {% if shelf.books.all %}
-    <h2>{{ shelf.name }}</h2>
-    {% for book in  shelf.books.all %}
-    <div class="book-preview">
-        <img class="cover" src="static/images/small.jpg">
-        <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
-        <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
-        {% if shelf.type == 'reading' %}
-        {# TODO: re-shelve a book #}
-        <button>done reading</button>
+    <div>
+        <h2>Currently Reading</h2>
+        {# listing books currently on user's shelves #}
+        {% if not shelves.first.books.all %}
+        <p>Start a book!</p>
         {% endif %}
+        {% for book in shelves.first.books.all %}
+        <div class="book-preview">
+            <img class="cover" src="static/images/small.jpg">
+            <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
+            <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
+            {% if shelf.type == 'reading' %}
+            {# TODO: re-shelve a book #}
+            <button>done reading</button>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    {% endif %}
-    {% endfor %}
-</div>
 
-<div id="main">
-
-    <div class="carosel">
-        {# a display of books in your local db, so you have somewhere to start #}
+    <div>
+        <h2>Recently Added Books</h2>
         {% for book in recent_books %}
         <div class="book-preview">
             <img class="cover" src="static/images/small.jpg">
@@ -34,7 +31,7 @@
                 {# TODO: there should be a helper function for listing authors #}
                 <a href="" class="author">{{ book.authors.first.data.name }}</a>
             </p>
-            {% if not book.user_shelves %}
+            {% if not book in user_books.all %}
             <form name="shelve" action="/shelve/{{ request.user.localname }}_to-read/{{ book.id }}" method="post">
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Want to read</button>
@@ -43,55 +40,62 @@
         </div>
         {% endfor %}
     </div>
+</div>
+
+<div id="feed">
+
     {% for activity in activities %}
     <div class="update">
-        <div class="user-preview">
-            <img class="user-pic" src="static/images/profile.jpg">
-            {# TODO: a helper function for displaying a username #}
-            <span><a href="/user/{% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}" class="user">
-                    {% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}</a>
-            {% if activity.fedireads_type == 'Shelve' %}
-                {# display a reading/shelving activity #}
-                {% if activity.shelf.shelf_type == 'to-read' %}
-                    wants to read
-                {% elif activity.shelf.shelf_type == 'read' %}
-                    finished reading
-                {% elif activity.shelf.shelf_type == 'reading' %}
-                    started reading
-                {% else %}
-                    shelved in "{{ activity.shelf.name }}"
-                {% endif %}
-                {# TODO: wouldn't it rule if this was a reusable piece of markup? #}
-                <div class="book-preview">
-                    <img class="cover" src="static/images/med.jpg">
-                    <p class="title">
-                        <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
-                        by
-                        <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    </p>
-                </div>
-            {% elif activity.fedireads_type == 'Review' %}
-                {# display a review #}
-                reviewed {{ activity.book.data.title }}
-                <div class="book-preview review">
-                    <img class="cover" src="static/images/med.jpg">
-                    <p class="title">
-                        <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
-                        by
-                        <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    </p>
-
-                    <h3>{{ activity.name }}</h3>
-                    <p>{{ activity.rating }} stars</p>
-                    <p>{{ activity.review_content }}</p>
-                </div>
-            {% elif activity.activity_type == 'Follow' %}
-                started following someone
+        <h2>
+        <img class="user-pic" src="static/images/profile.jpg">
+        {# TODO: a helper function for displaying a username #}
+        <a href="/user/{% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}" class="user">
+                {% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}</a>
+        {% if activity.fedireads_type == 'Shelve' %}
+            {# display a reading/shelving activity #}
+            {% if activity.shelf.shelf_type == 'to-read' %}
+                wants to read
+            {% elif activity.shelf.shelf_type == 'read' %}
+                finished reading
+            {% elif activity.shelf.shelf_type == 'reading' %}
+                started reading
             {% else %}
-            {# generic handling for a misc activity, which perhaps should not be displayed at all #}
-                did {{ activity.activity_type }}</span>
+                shelved in "{{ activity.shelf.name }}"
             {% endif %}
-        </div>
+        </h2>
+            {# TODO: wouldn't it rule if this was a reusable piece of markup? #}
+            <div class="book-preview">
+                <img class="cover" src="static/images/med.jpg">
+                <p class="title">
+                    <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
+                    by
+                    <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
+                </p>
+            </div>
+        {% elif activity.fedireads_type == 'Review' %}
+            {# display a review #}
+            reviewed {{ activity.book.data.title }}
+        </h2>
+            <div class="book-preview review">
+                <img class="cover" src="static/images/med.jpg">
+                <p class="title">
+                    <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
+                    by
+                    <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
+                </p>
+
+                <h3>{{ activity.name }}</h3>
+                <p>{{ activity.rating }} stars</p>
+                <p>{{ activity.review_content }}</p>
+            </div>
+        {% elif activity.activity_type == 'Follow' %}
+            started following someone
+        </h2>
+        {% else %}
+        {# generic handling for a misc activity, which perhaps should not be displayed at all #}
+            did {{ activity.activity_type }}
+        </h2>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

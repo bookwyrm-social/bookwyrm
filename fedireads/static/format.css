@@ -1,23 +1,41 @@
+/* some colors that are okay: #247BA0 #70C1B2 #B2DBBF #F3FFBD #FF1654 */
 * {
     margin: 0;
     padding: 0;
     line-height: 1.3em;
     overflow: auto;
+    font-family: sans-serif;
+    font-weight: normal;
 }
 
-body > * > * {
+h1 {
+    font-size: 1.2rem;
+}
+
+h2 {
+    font-size: 1rem;
+    background-color: #F3FFBD;
+    padding: 0.5rem 0.2rem;
+    margin-bottom: 1rem;
+}
+
+#main {
     margin: 0 auto;
-    padding: 1rem;
+    display: flex;
+    flex-flow: row wrap;
     max-width: 75rem;
-    min-width: 30rem;
 }
 
 #top-bar {
     height: 4rem;
-    border-bottom: 1px solid #aaa;
-    box-shadow: 0 0.5em 0.5em -0.6em #666;
-    margin-bottom: 1em;
-    overflow: auto;
+    background-color: #B2DBBF;
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+#top-bar a {
+    color: black;
+    text-decoration: none;
 }
 
 #branding {
@@ -33,17 +51,9 @@ header > div:last-child {
 }
 
 #sidebar {
-    width: 30%;
-    float: left;
-}
-
-.carosel {
-    margin-bottom: 1rem;
-}
-.carosel > div {
-    display: inline-block;
-    margin: 0 1rem;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .user-pic {
@@ -63,16 +73,24 @@ header > div:last-child {
     margin-right: 0.5em;
 }
 
-.update {
-    border: 1px solid #333;
-    border-radius: 0.2rem;
-    margin-bottom: 1em;
+#feed, #content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 3;
 }
 
-.update > * {
-    padding: 1em;
+#content > div, #feed > div, #sidebar > div {
+    background-color: #EFEFEF;
+    margin: 1rem auto;
+    padding: 1rem;
+    width: 90%;
 }
 
-.interact {
-    background-color: #eee;
+form label {
+    display: block;
+}
+
+.review-form textarea {
+    width: 30rem;
+    height: 10rem;
 }

@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div id="main">
+<div id="content">
     <div class="user-profile">
         <img class="user-pic" src="/static/images/profile.jpg">
         <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>

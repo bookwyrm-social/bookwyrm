@@ -199,7 +199,7 @@ class ShelfBook(models.Model):
 class Book(models.Model):
     ''' a non-canonical copy from open library '''
     activitypub_id = models.CharField(max_length=255)
-    openlibrary_key = models.CharField(max_length=255)
+    openlibrary_key = models.CharField(max_length=255, unique=True)
     data = JSONField()
     works = models.ManyToManyField('Work')
     authors = models.ManyToManyField('Author')

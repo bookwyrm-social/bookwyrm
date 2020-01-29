@@ -1,7 +1,7 @@
 ''' application views/pages '''
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, FilteredRelation, Q
+from django.db.models import Avg, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -15,16 +15,10 @@ from fedireads import models, openlibrary, outgoing as api
 def home(request):
     ''' user's homepage with activity feed '''
     shelves = models.Shelf.objects.filter(user=request.user.id)
+    user_books = models.Book.objects.filter(shelves__user=request.user).all()
     recent_books = models.Book.objects.order_by(
         'added_date'
-    ).annotate(
-        user_shelves=FilteredRelation(
-            'shelves',
-            condition=Q(shelves__user_id=request.user.id)
-        )
-    ).values(
-        'id', 'authors', 'data', 'user_shelves', 'openlibrary_key'
-    ).distinct()
+        )[:10]
 
     following = models.User.objects.filter(
         Q(followers=request.user) | Q(id=request.user.id)
@@ -41,6 +35,7 @@ def home(request):
         'user': request.user,
         'shelves': shelves,
         'recent_books': recent_books,
+        'user_books': user_books,
         'activities': activities,
     }
     return TemplateResponse(request, 'feed.html', data)
