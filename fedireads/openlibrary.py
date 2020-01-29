@@ -3,9 +3,26 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import requests
 
-from fedireads.models import Author, Book, Work
+from fedireads.models import Author, Book
 from fedireads.settings import OL_URL
 
+
+def book_search(query):
+    ''' look up a book '''
+    response = requests.get('%s/search.json' % OL_URL, params={'q': query})
+    if not response.ok:
+        response.raise_for_status()
+    data = response.json()
+    results = []
+    for doc in data['docs'][:5]:
+        key = doc['key'].split('/')[-1]
+        results.append({
+            'title': doc['title'],
+            'olkey': key,
+            'year': doc['first_publish_year'],
+            'author': doc['author_name'][0],
+        })
+    return results
 
 def get_or_create_book(olkey, user=None, update=False):
     ''' add a book '''
@@ -36,13 +53,9 @@ def get_or_create_book(olkey, user=None, update=False):
     # great, we can update our book.
     book.save()
 
-    # we also need to know the author and works related to this book.
-    for work_id in data['works']:
-        work_id = work_id['key']
-        book.works.add(get_or_create_work(work_id))
-
-    for author_id in data['authors']:
-        author_id = author_id['key']
+    # we also need to know the author get the cover
+    for author_blob in data['authors']:
+        author_id = author_blob['author']['key']
         book.authors.add(get_or_create_author(author_id))
 
     if len(data['covers']):
@@ -60,20 +73,6 @@ def get_cover(cover_id):
         response.raise_for_status()
     image_content = ContentFile(requests.get(url).content)
     return [image_name, image_content]
-
-
-def get_or_create_work(olkey):
-    ''' load em up '''
-    # TODO: validate that this is a work key
-    # TODO: error handling
-    try:
-        work = Work.objects.get(openlibrary_key=olkey)
-    except ObjectDoesNotExist:
-        response = requests.get(OL_URL + olkey + '.json')
-        data = response.json()
-        work = Work(openlibrary_key=olkey, data=data)
-        work.save()
-    return work
 
 
 def get_or_create_author(olkey):

@@ -188,7 +188,6 @@ def handle_review(user, book, name, content, rating):
         content=activity,
         activity_type='Article',
         book=book,
-        work=book.works.first(),
         name=name,
         rating=rating,
         review_content=content,

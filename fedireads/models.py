@@ -133,7 +133,6 @@ class FollowActivity(Activity):
 class Review(Activity):
     ''' a book review '''
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    work = models.ForeignKey('Work', on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     # TODO: validation
     rating = models.IntegerField(default=0)
@@ -200,11 +199,10 @@ class ShelfBook(models.Model):
 
 
 class Book(models.Model):
-    ''' a non-canonical copy from open library '''
+    ''' a non-canonical copy of a work (not book) from open library '''
     activitypub_id = models.CharField(max_length=255)
     openlibrary_key = models.CharField(max_length=255, unique=True)
     data = JSONField()
-    works = models.ManyToManyField('Work')
     authors = models.ManyToManyField('Author')
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     shelves = models.ManyToManyField(
@@ -225,14 +223,6 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         self.activitypub_id = '%s%s' % (OL_URL, self.openlibrary_key)
         super().save(*args, **kwargs)
-
-
-class Work(models.Model):
-    ''' encompassses all editions of a book '''
-    openlibrary_key = models.CharField(max_length=255)
-    data = JSONField()
-    added_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
 
 
 class Author(models.Model):

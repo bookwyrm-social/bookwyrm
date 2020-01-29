@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="content">
+    <div>
+        <h1>Search results</h1>
+        {% for result in results %}
+        <div>
+            <a href="/work/{{ result.olkey }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

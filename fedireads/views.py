@@ -26,7 +26,7 @@ def home(request):
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
     recent_books = models.Book.objects.order_by(
         'added_date'
-        )[:10]
+        )[:5]
 
     following = models.User.objects.filter(
         Q(followers=request.user) | Q(id=request.user.id)
@@ -163,10 +163,8 @@ def edit_profile(request):
 @login_required
 def book_page(request, book_identifier):
     ''' info about a book '''
-    book = openlibrary.get_or_create_book('/book/' + book_identifier)
-    reviews = models.Review.objects.filter(
-        Q(work=book.works.first()) | Q(book=book)
-    )
+    book = openlibrary.get_or_create_book('/work/' + book_identifier)
+    reviews = models.Review.objects.filter(book=book)
     rating = reviews.aggregate(Avg('rating'))
     review_form = forms.ReviewForm()
     data = {
@@ -244,9 +242,10 @@ def search(request):
     query = request.GET.get('q')
     if re.match(r'\w+@\w+.\w+', query):
         results = [api.handle_account_search(query)]
+        template = 'user_results.html'
     else:
-        # TODO: book search
-        results = []
+        results = openlibrary.book_search(query)
+        template = 'book_results.html'
 
-    return TemplateResponse(request, 'results.html', {'results': results})
+    return TemplateResponse(request, template, {'results': results})
 

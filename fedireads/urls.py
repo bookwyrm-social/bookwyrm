@@ -23,7 +23,7 @@ urlpatterns = [
     path('logout/', views.user_logout),
     path('user/<str:username>', views.user_profile),
     path('user/<str:username>/edit/', views.user_profile_edit),
-    path('book/<str:book_identifier>', views.book_page),
+    path('work/<str:book_identifier>', views.book_page),
 
     # internal action endpoints
     path('review/', views.review),

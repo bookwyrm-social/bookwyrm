@@ -193,7 +193,6 @@ def handle_incoming_create(activity):
                 content=activity,
                 activity_type='Article',
                 book=book,
-                work=book.works.first(),
                 name=activity['object']['name'],
                 rating=activity['object']['rating'],
                 review_content=activity['objet']['content'],

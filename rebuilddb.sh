@@ -12,6 +12,6 @@ echo "from fedireads.models import User
 User.objects.create_user('rat', 'rat@rat.com', 'ratword')
 User.objects.get(id=1).followers.add(User.objects.get(id=2))" | python manage.py shell
 echo "from fedireads.openlibrary import get_or_create_book
-get_or_create_book('/book/OL13549170M')
-get_or_create_book('/book/OL24738110M')" | python manage.py shell
+get_or_create_book('/work/OL1715344W')
+get_or_create_book('/work/OL102749W')" | python manage.py shell
 python manage.py runserver
