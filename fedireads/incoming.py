@@ -32,6 +32,12 @@ def webfinger(request):
     })
 
 
+'''
+def host_meta(request):
+    import pdb;pdb.set_trace()
+'''
+
+
 @csrf_exempt
 def shared_inbox(request):
     ''' incoming activitypub events '''
@@ -104,6 +110,7 @@ def get_actor(request, username):
         'id': user.actor,
         'type': 'Person',
         'preferredUsername': user.localname,
+        'name': user.name,
         'inbox': user.inbox,
         'followers': '%s/followers' % user.actor,
         'following': '%s/following' % user.actor,
@@ -117,6 +124,73 @@ def get_actor(request, username):
             'sharedInbox': 'https://%s/inbox' % DOMAIN,
         }
     })
+
+@csrf_exempt
+def get_followers(request, username):
+    ''' return a list of followers for an actor '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    user = models.User.objects.get(localname=username)
+    followers = user.followers
+    id_slug = '%s/followers' % user.actor
+    if request.GET.get('page'):
+        page = request.GET.get('page')
+        return JsonResponse(get_follow_page(followers, id_slug, page))
+    follower_count = followers.count()
+    return JsonResponse({
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'OrderedCollection',
+        'totalItems': follower_count,
+        'first': '%s?page=1' % id_slug,
+    })
+
+
+@csrf_exempt
+def get_following(request, username):
+    ''' return a list of following for an actor '''
+    # TODO: this is total deplication of get_followers, should be streamlined
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    user = models.User.objects.get(localname=username)
+    following = models.User.objects.filter(followers=user)
+    id_slug = '%s/following' % user.actor
+    if request.GET.get('page'):
+        page = request.GET.get('page')
+        return JsonResponse(get_follow_page(following, id_slug, page))
+    following_count = following.count()
+    return JsonResponse({
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'OrderedCollection',
+        'totalItems': following_count,
+        'first': '%s?page=1' % id_slug,
+    })
+
+
+def get_follow_page(user_list, id_slug, page):
+    ''' format a list of followers/following '''
+    page = int(page)
+    page_length = 10
+    start = (page - 1) * page_length
+    end = start + page_length
+    follower_page = user_list.all()[start:end]
+    data = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s?page=%d' % (id_slug, page),
+        'type': 'OrderedCollectionPage',
+        'totalItems': user_list.count(),
+        'partOf': id_slug,
+        'orderedItems': [u.actor for u in follower_page],
+    }
+    if end <= user_list.count():
+        # there are still more pages
+        data['next'] = '%s?page=%d' % (id_slug, page + 1)
+    if start > 0:
+        data['prev'] = '%s?page=%d' % (id_slug, page - 1)
+    return data
 
 
 def handle_incoming_shelve(activity):

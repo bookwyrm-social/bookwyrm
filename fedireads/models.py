@@ -19,19 +19,22 @@ class User(AbstractUser):
     actor = models.CharField(max_length=255, unique=True)
     inbox = models.CharField(max_length=255, unique=True)
     shared_inbox = models.CharField(max_length=255)
+    federated_server = models.ForeignKey(
+        'FederatedServer',
+        on_delete=models.PROTECT,
+        null=True,
+    )
     outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
     localname = models.CharField(
         max_length=255,
         null=True,
-        blank=True,
         unique=True
     )
     # name is your display name, which you can change at will
     name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    # TODO: a field for if non-local users are readers or others
     followers = models.ManyToManyField('self', symmetrical=False)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -89,6 +92,16 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             user=instance,
             editable=False
         ).save()
+
+
+class FederatedServer(models.Model):
+    ''' store which server's we federate with '''
+    server_name = models.CharField(max_length=255, unique=True)
+    shared_inbox = models.CharField(max_length=255, unique=True)
+    # federated, blocked, whatever else
+    status = models.CharField(max_length=255, default='federated')
+    # is it mastodon, fedireads, etc
+    application_type = models.CharField(max_length=255, null=True)
 
 
 class Activity(models.Model):

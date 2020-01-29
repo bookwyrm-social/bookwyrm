@@ -1,7 +1,7 @@
 ''' url routing for the app and api '''
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from fedireads import incoming, outgoing, views, settings
 
@@ -10,27 +10,31 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # federation endpoints
-    path('inbox', incoming.shared_inbox),
-    path('user/<str:username>.json', incoming.get_actor),
-    path('user/<str:username>/inbox', incoming.inbox),
-    path('user/<str:username>/outbox', outgoing.outbox),
-    path('.well-known/webfinger', incoming.webfinger),
+    re_path(r'^inbox/?$', incoming.shared_inbox),
+    re_path(r'^user/(?P<username>\w+).json/?$', incoming.get_actor),
+    re_path(r'^user/(?P<username>\w+)/inbox/?$', incoming.inbox),
+    re_path(r'^user/(?P<username>\w+)/outbox/?$', outgoing.outbox),
+    re_path(r'^user/(?P<username>\w+)/followers/?$', incoming.get_followers),
+    re_path(r'^user/(?P<username>\w+)/following/?$', incoming.get_following),
+    re_path(r'^.well-known/webfinger/?$', incoming.webfinger),
+    # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 
     # ui views
-    path('', views.home),
-    path('register/', views.register),
-    path('login/', views.user_login),
-    path('logout/', views.user_logout),
-    path('user/<str:username>', views.user_profile),
-    path('user/<str:username>/edit/', views.user_profile_edit),
-    path('work/<str:book_identifier>', views.book_page),
+    re_path(r'^/?$', views.home),
+    re_path(r'^register/?$', views.register),
+    re_path(r'^login/?$', views.user_login),
+    re_path(r'^logout/?$', views.user_logout),
+    # this endpoint is both ui and fed depending on Accept type
+    re_path(r'^user/(?P<username>[\w@\.]+)/?$', views.user_profile),
+    re_path(r'^user/(?P<username>\w+)/edit/?$', views.user_profile_edit),
+    re_path(r'^work/(?P<book_identifier>\w+)/?$', views.book_page),
 
     # internal action endpoints
-    path('review/', views.review),
-    path('shelve/<str:shelf_id>/<int:book_id>', views.shelve),
-    path('follow/', views.follow),
-    path('unfollow/', views.unfollow),
-    path('search/', views.search),
-    path('edit_profile/', views.edit_profile),
+    re_path(r'^review/?$', views.review),
+    re_path(r'^shelve/(?P<shelf_id>\w+)/(?P<book_id>\d+)/?$', views.shelve),
+    re_path(r'^follow/?$', views.follow),
+    re_path(r'^unfollow/?$', views.unfollow),
+    re_path(r'^search/?$', views.search),
+    re_path(r'^edit_profile/?$', views.edit_profile),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -8,7 +8,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 import re
 
-from fedireads import forms, models, openlibrary, outgoing as api
+from fedireads import forms, models, openlibrary, outgoing, incoming
 from fedireads.settings import DOMAIN
 
 
@@ -107,9 +107,14 @@ def register(request):
     return redirect('/')
 
 
-@login_required
 def user_profile(request, username):
     ''' profile page for a user '''
+    content = request.headers.get('Accept')
+    if 'json' in content:
+        # we have a json request
+        return incoming.get_actor(request, username)
+
+    # otherwise we're at a UI view
     try:
         user = models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
@@ -184,11 +189,14 @@ def shelve(request, shelf_id, book_id, reshelve=True):
     desired_shelf = models.Shelf.objects.get(identifier=shelf_id)
     if reshelve:
         try:
-            current_shelf = models.Shelf.objects.get(user=request.user, book=book)
-            api.handle_unshelve(request.user, book, current_shelf)
+            current_shelf = models.Shelf.objects.get(
+                user=request.user,
+                book=book
+            )
+            outgoing.handle_unshelve(request.user, book, current_shelf)
         except models.Shelf.DoesNotExist:
             pass
-    api.handle_shelve(request.user, book, desired_shelf)
+    outgoing.handle_shelve(request.user, book, desired_shelf)
     return redirect('/')
 
 
@@ -208,7 +216,7 @@ def review(request):
     content = form.data.get('review_content')
     rating = form.data.get('rating')
 
-    api.handle_review(request.user, book, name, content, rating)
+    outgoing.handle_review(request.user, book, name, content, rating)
     return redirect(book_identifier)
 
 
@@ -220,7 +228,7 @@ def follow(request):
     # should this be an actor rather than an id? idk
     to_follow = models.User.objects.get(id=to_follow)
 
-    api.handle_outgoing_follow(request.user, to_follow)
+    outgoing.handle_outgoing_follow(request.user, to_follow)
     return redirect('/user/%s' % to_follow.username)
 
 
@@ -241,9 +249,11 @@ def search(request):
     ''' that search bar up top '''
     query = request.GET.get('q')
     if re.match(r'\w+@\w+.\w+', query):
-        results = [api.handle_account_search(query)]
+        # if something looks like a username, search with webfinger
+        results = [outgoing.handle_account_search(query)]
         template = 'user_results.html'
     else:
+        # just send the question over to openlibrary for book search
         results = openlibrary.book_search(query)
         template = 'book_results.html'
 
