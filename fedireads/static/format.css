@@ -8,22 +8,20 @@
 }
 
 h1 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 }
 
 h2 {
     font-size: 1rem;
-    background-color: #F3FFBD;
+    background-color: #B2DBBF;
     padding: 0.5rem 0.2rem;
     margin-bottom: 1rem;
 }
 
-#main, header > div {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row;
-    max-width: 75rem;
-    width: 100%;
+#top-bar {
+    background-color: #70C1B3;
+    overflow: hidden;
+    padding: 0.5rem;
 }
 
 #branding, #actions {
@@ -31,6 +29,7 @@ h2 {
 }
 #branding {
     flex-grow: 1;
+    font-size: 2rem;
 }
 #branding a {
     text-decoration: none;
@@ -41,30 +40,26 @@ h2 {
     text-align: right;
 }
 
-#top-bar {
-    background-color: #B2DBBF;
-    overflow: hidden;
-    padding: 0.5rem;
-}
-
-#branding {
-    font-size: 2em;
-}
-
-#sidebar {
+#main, header > div {
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    min-width: 20rem;
+    flex-direction: row;
+    max-width: 75rem;
+    width: 100%;
 }
 
-#feed, #content {
+#feed, #content, #sidebar {
     display: flex;
     flex-direction: column;
     margin: 0 1rem 0 0;
 }
 
+#sidebar {
+    min-width: 20rem;
+}
+
 .user-pic {
-    width: 2em;
+    width: 2rem;
     height: auto;
     border-radius: 50%;
     vertical-align: middle;
@@ -72,12 +67,12 @@ h2 {
 
 .book-preview {
     overflow: auto;
-    margin-bottom: 1em;
 }
 
 .book-preview img {
     float: left;
-    margin-right: 0.5em;
+    margin-right: 1em;
+    margin-bottom: 1em;
 }
 
 .book-cover.small {
@@ -87,9 +82,12 @@ h2 {
 
 #content > div, #feed > div, #sidebar > div {
     background-color: #EFEFEF;
-    margin: 1rem 0 1rem 1rem;
+    margin: 1rem 0 0 1rem;
+}
+#content > div > *, #feed > div > *, #sidebar > div > * {
     padding: 1rem;
 }
+
 
 .review-form textarea {
     width: 30rem;
@@ -105,4 +103,10 @@ small {
 
 blockquote {
     white-space: pre-wrap;
+}
+
+.interaction {
+    background-color: #F3FFBD;
+    clear: both;
+    margin-top: 1rem;
 }

@@ -12,6 +12,7 @@
             <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
             <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
             <form name="shelve" action="/shelve/{{ user.localname }}_currently-reading/{{ book.id }}" method="post">
+                {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Start reading</button>
             </form>
@@ -25,6 +26,7 @@
             <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
             <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
             <form name="shelve" action="/shelve/{{ user.localname }}_read/{{ book.id }}" method="post">
+                {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">I'm done!</button>
             </form>
@@ -45,6 +47,7 @@
             </p>
             {% if not book in user_books.all %}
             <form name="shelve" action="/shelve/{{ user.localname }}_to-read/{{ book.id }}" method="post">
+                {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Want to read</button>
             </form>
@@ -85,6 +88,7 @@
                     <blockquote>{{ activity.book.data.description }}</blockquote>
                 </p>
             </div>
+            <div class="interaction"><button>⭐️ Like</button></div>
         {% elif activity.fedireads_type == 'Review' %}
             {# display a review #}
             reviewed {{ activity.book.data.title }}
@@ -102,6 +106,7 @@
                 <p>{{ activity.rating }} stars</p>
                 <p>{{ activity.review_content }}</p>
             </div>
+            <div class="interaction"><button>⭐️ Like</button></div>
         {% elif activity.activity_type == 'Follow' %}
             started following someone
         </h2>
