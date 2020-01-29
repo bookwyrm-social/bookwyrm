@@ -21,27 +21,29 @@
 
 <div id="top-bar">
     <header>
-        <div id="branding"><a href="/">📚FediReads</a></div>
         <div>
-            <div id="account">
-                {% if user.is_authenticated %}
-                <form name="logout" action="/logout/" method="post">
-                    Welcome, {% if request.user.localname %}{{ request.user.localname }}{% else %}{{ request.user.username }}{% endif %}
-                    <input type="submit" value="Log out"></input>
-                </form>
-                {% else %}
-                <form name="login" action="/login/" method="post">
-                    <input type="text" name="username"></input>
-                    <input type="password" name="password"></input>
-                    <input type="submit" value="Log in"></input>
-                </form>
-                {% endif %}
-            </div>
-            <div id="search">
-                <form action="/search/">
-                    <input type="text" name="q"></input>
-                    <input type="submit" value="🔍"></input>
-                </form>
+            <div id="branding"><a href="/">📚FediReads</a></div>
+            <div id="actions">
+                <div id="account">
+                    {% if user.is_authenticated %}
+                    <form name="logout" action="/logout/" method="post">
+                        Welcome, {% if request.user.localname %}{{ request.user.localname }}{% else %}{{ request.user.username }}{% endif %}
+                        <input type="submit" value="Log out"></input>
+                    </form>
+                    {% else %}
+                    <form name="login" action="/login/" method="post">
+                        <input type="text" name="username"></input>
+                        <input type="password" name="password"></input>
+                        <input type="submit" value="Log in"></input>
+                    </form>
+                    {% endif %}
+                </div>
+                <div id="search">
+                    <form action="/search/">
+                        <input type="text" name="q"></input>
+                        <input type="submit" value="🔍"></input>
+                    </form>
+                </div>
             </div>
         </div>
     </header>

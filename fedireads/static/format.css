@@ -19,15 +19,25 @@ h2 {
     margin-bottom: 1rem;
 }
 
-#main {
+#main, header > div {
     margin: 0 auto;
     display: flex;
     flex-flow: row wrap;
     max-width: 75rem;
+    width: 100%;
+}
+
+#branding, #actions {
+    margin: 0 1rem;
+}
+#branding {
+    flex-grow: 1;
+}
+#actions {
+    flex-grow: 0;
 }
 
 #top-bar {
-    height: 4rem;
     background-color: #B2DBBF;
     overflow: hidden;
     padding: 0.5rem;
@@ -40,14 +50,6 @@ h2 {
 
 #branding {
     font-size: 2em;
-}
-
-header > div:first-child {
-    float: left;
-}
-
-header > div:last-child {
-    float: right;
 }
 
 #sidebar {
