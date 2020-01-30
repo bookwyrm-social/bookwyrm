@@ -79,9 +79,12 @@ def sign_and_send(sender, action, destination):
     ''' crpyto whatever and http junk '''
     inbox_fragment = sender.inbox.replace('https://%s' % DOMAIN, '')
     now = datetime.utcnow().isoformat()
-    message_to_sign = '''(request-target): post %s
-host: https://%s
-date: %s''' % (inbox_fragment, DOMAIN, now)
+    signature_headers = [
+        '(request-target): post %s' % inbox_fragment,
+        'host: https://%s' % DOMAIN,
+        'date: %s' %  now
+    ]
+    message_to_sign = '\n'.join(signature_headers)
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 
@@ -89,7 +92,7 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         'keyId': '%s#main-key' % sender.actor,
         'algorithm': 'rsa-sha256',
         'headers': '(request-target) host date',
-        'signature': b64encode(signed_message),
+        'signature': b64encode(signed_message).decode('utf8'),
     }
     signature = ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
 
@@ -99,7 +102,7 @@ date: %s''' % (inbox_fragment, DOMAIN, now)
         headers={
             'Date': now,
             'Signature': signature,
-            'Host': DOMAIN,
+            'Host': 'https://%s' % DOMAIN,
         },
     )
     if not response.ok:

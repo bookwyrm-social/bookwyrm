@@ -1,8 +1,13 @@
 ''' handles all of the activity coming in to the server '''
+from base64 import b64decode
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import requests
 from uuid import uuid4
 
 from fedireads import models
@@ -32,25 +37,55 @@ def webfinger(request):
     })
 
 
-'''
-def host_meta(request):
-    import pdb;pdb.set_trace()
-'''
-
-
 @csrf_exempt
 def shared_inbox(request):
     ''' incoming activitypub events '''
-    # TODO: this is just a dupe of inbox but there's gotta be a reason??
+    # TODO: should this be functionally different from the non-shared inbox??
     if request.method == 'GET':
         return HttpResponseNotFound()
-
-    # TODO: RSA key verification
 
     try:
         activity = json.loads(request.body)
     except json.decoder.JSONDecodeError:
         return HttpResponseBadRequest
+
+    # verify rsa signature
+    signature_header = request.headers['Signature'].split(',')
+    signature_dict = {}
+    for pair in signature_header:
+        k, v = pair.split('=', 1)
+        v = v.replace('"', '')
+        signature_dict[k] = v
+
+    key_id = signature_dict['keyId']
+    headers = signature_dict['headers']
+    signature = b64decode(signature_dict['signature'])
+
+    response = requests.get(
+        key_id,
+        headers={'Accept': 'application/activity+json'}
+    )
+    if not response.ok:
+        response.raise_for_status()
+
+    actor = response.json()
+    key = RSA.import_key(actor['publicKey']['publicKeyPem'])
+
+    comparison_string = []
+    for signed_header_name in headers.split(' '):
+        if signed_header_name == '(request-target)':
+            comparison_string.append('(request-target): post %s' % request.path)
+        else:
+            comparison_string.append('%s: %s' % (
+                signed_header_name,
+                request.headers[signed_header_name]
+            ))
+    comparison_string = '\n'.join(comparison_string)
+
+    signer = pkcs1_15.new(key)
+    digest = SHA256.new()
+    digest.update(comparison_string.encode())
+    signer.verify(digest, signature)
 
     if activity['type'] == 'Add':
         return handle_incoming_shelve(activity)
@@ -61,37 +96,18 @@ def shared_inbox(request):
     if activity['type'] == 'Create':
         return handle_incoming_create(activity)
 
-    return HttpResponse()
+    return HttpResponseNotFound()
 
 
 @csrf_exempt
 def inbox(request, username):
     ''' incoming activitypub events '''
-    if request.method == 'GET':
-        return HttpResponseNotFound()
-
-    # TODO: RSA key verification
-
-    try:
-        activity = json.loads(request.body)
-    except json.decoder.JSONDecodeError:
-        return HttpResponseBadRequest
-
     # TODO: should do some kind of checking if the user accepts
-    # this action from the sender
+    # this action from the sender probably? idk
     # but this will just throw an error if the user doesn't exist I guess
     models.User.objects.get(localname=username)
 
-    if activity['type'] == 'Add':
-        return handle_incoming_shelve(activity)
-
-    if activity['type'] == 'Follow':
-        return handle_incoming_follow(activity)
-
-    if activity['type'] == 'Create':
-        return handle_incoming_create(activity)
-
-    return HttpResponse()
+    return shared_inbox(request)
 
 
 @csrf_exempt
