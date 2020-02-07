@@ -15,7 +15,7 @@ SECRET_KEY = '7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr'
 DEBUG = True
 
 # TODO: this hsould be populated at runtime at least for debug mode
-DOMAIN = 'bd352ee8.ngrok.io'
+DOMAIN = 'a4522b16.ngrok.io'
 ALLOWED_HOSTS = ['*']
 OL_URL = 'https://openlibrary.org'
 

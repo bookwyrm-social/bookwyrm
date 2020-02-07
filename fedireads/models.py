@@ -18,7 +18,7 @@ class User(AbstractUser):
     api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255, unique=True)
     inbox = models.CharField(max_length=255, unique=True)
-    shared_inbox = models.CharField(max_length=255)
+    shared_inbox = models.CharField(max_length=255, blank=True, null=True)
     federated_server = models.ForeignKey(
         'FederatedServer',
         on_delete=models.PROTECT,

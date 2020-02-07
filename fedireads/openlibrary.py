@@ -15,10 +15,9 @@ def book_search(query):
     data = response.json()
     results = []
     for doc in data['docs'][:5]:
-        key = doc['key'].split('/')[-1]
         results.append({
             'title': doc['title'],
-            'olkey': key,
+            'olkey': doc['key'],
             'year': doc['first_publish_year'],
             'author': doc['author_name'][0],
         })

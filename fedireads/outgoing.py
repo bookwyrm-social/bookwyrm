@@ -8,6 +8,7 @@ from uuid import uuid4
 from fedireads import models
 from fedireads.api import get_or_create_remote_user, get_recipients, \
         broadcast
+from fedireads.settings import DOMAIN
 
 
 @csrf_exempt
@@ -55,7 +56,7 @@ def handle_outgoing_follow(user, to_follow):
     uuid = uuid4()
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': str(uuid),
+        'id': 'https://%s/%s' % (DOMAIN, str(uuid)),
         'summary': '',
         'type': 'Follow',
         'actor': user.actor,

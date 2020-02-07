@@ -27,13 +27,15 @@ def get_or_create_remote_user(actor):
     data = response.json()
 
     username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
+    shared_inbox = data.get('endpoints').get('sharedInbox') if \
+        data.get('endpoints') else None
     user = models.User.objects.create_user(
         username, '', '',
         name=data.get('name'),
         summary=data.get('summary'),
         inbox=data['inbox'],
         outbox=data['outbox'],
-        shared_inbox=data.get('endpoints').get('sharedInbox'),
+        shared_inbox=shared_inbox,
         public_key=data.get('publicKey').get('publicKeyPem'),
         actor=actor,
         local=False
@@ -50,6 +52,7 @@ def get_recipients(user, post_privacy, direct_recipients=None):
         # post to public shared inboxes
         shared_inboxes = set(u.shared_inbox for u in followers)
         recipients += list(shared_inboxes)
+        # TODO: not every user has a shared inbox
         # TODO: direct to anyone who's mentioned
     if post_privacy == 'followers':
         # don't send it to the shared inboxes
@@ -103,6 +106,7 @@ def sign_and_send(sender, action, destination):
             'Date': now,
             'Signature': signature,
             'Host': 'https://%s' % DOMAIN,
+            'Content-Type': 'application/activity+json; charset=utf-8',
         },
     )
     if not response.ok:
