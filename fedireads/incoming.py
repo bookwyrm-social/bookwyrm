@@ -16,6 +16,7 @@ from fedireads.openlibrary import get_or_create_book
 from fedireads.settings import DOMAIN
 
 
+# TODO: this should probably live somewhere else
 class HttpResponseUnauthorized(HttpResponse):
     ''' http response for authentication failure '''
     status_code = 401

@@ -19,11 +19,15 @@ def get_or_create_remote_user(actor):
     except models.User.DoesNotExist:
         pass
 
+    # TODO: also bring in the user's prevous reviews and books
+
     # load the user's info from the actor url
     response = requests.get(
         actor,
         headers={'Accept': 'application/activity+json'}
     )
+    if not response.ok:
+        response.raise_for_status()
     data = response.json()
 
     # the webfinger format for the username.

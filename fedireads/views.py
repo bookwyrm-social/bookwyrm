@@ -1,7 +1,7 @@
 ''' application views/pages '''
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, FilteredRelation, Q
+from django.db.models import Avg, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -14,6 +14,7 @@ from fedireads.settings import DOMAIN
 @login_required
 def home(request):
     ''' user's homepage with activity feed '''
+    # user's shelves for display
     reading = models.Shelf.objects.get(
         user=request.user,
         shelf_type='reading'
@@ -22,15 +23,19 @@ def home(request):
         user=request.user,
         shelf_type='to-read'
     )
+
+    # allows us to check if a user has shelved a book
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
+
+    # books new to the instance, for discovery
     recent_books = models.Book.objects.order_by(
         '-added_date'
     )[:5]
 
+    # status updates for your follow network
     following = models.User.objects.filter(
         Q(followers=request.user) | Q(id=request.user.id)
     )
-
     # TODO: handle post privacy
     activities = models.Activity.objects.filter(
         user__in=following,
@@ -46,7 +51,7 @@ def home(request):
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
-        'login_form': login_form,
+        'login_form': login_form, # TODO remove this
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -61,6 +66,7 @@ def user_login(request):
     # authenticate user
     form = forms.LoginForm(request.POST)
     if not form.is_valid():
+        # TODO messaging about a login failure
         return TemplateResponse(request, 'login.html')
 
     username = form.data['username']
@@ -106,6 +112,7 @@ def register(request):
 def user_profile(request, username):
     ''' profile page for a user '''
     content = request.headers.get('Accept')
+    # TODO: this should probably be the full content type? maybe?
     if 'json' in content:
         # we have a json request
         return incoming.get_actor(request, username)
@@ -119,8 +126,10 @@ def user_profile(request, username):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
+    # TODO: change display with privacy and authentication considerations
     shelves = models.Shelf.objects.filter(user=user)
-    ratings = {r.book.id: r.rating for r in models.Review.objects.filter(user=user, book__shelves__user=user)}
+    ratings = {r.book.id: r.rating for r in \
+            models.Review.objects.filter(user=user, book__shelves__user=user)}
 
     data = {
         'user': user,
@@ -147,6 +156,7 @@ def user_profile_edit(request, username):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
+# TODO: there oughta be clear naming between endpoints and pages
 @login_required
 def edit_profile(request):
     ''' les get fancy with images '''
@@ -169,6 +179,7 @@ def edit_profile(request):
 def book_page(request, book_identifier):
     ''' info about a book '''
     book = openlibrary.get_or_create_book('/work/' + book_identifier)
+    # TODO: again, post privacy?
     reviews = models.Review.objects.filter(book=book)
     rating = reviews.aggregate(Avg('rating'))
     review_form = forms.ReviewForm()
