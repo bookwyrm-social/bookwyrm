@@ -23,9 +23,10 @@ def book_search(query):
         })
     return results
 
+
 def get_or_create_book(olkey, user=None, update=False):
     ''' add a book '''
-    # TODO: check if this is a valid open library key, and a book
+    # TODO: check if this is a valid open library key, and a work
     olkey = olkey
 
     # get the existing entry from our db, if it exists
@@ -65,6 +66,7 @@ def get_or_create_book(olkey, user=None, update=False):
 
 def get_cover(cover_id):
     ''' ask openlibrary for the cover '''
+    # TODO: get medium and small versions
     image_name = '%s-M.jpg' % cover_id
     url = 'https://covers.openlibrary.org/b/id/%s' % image_name
     response = requests.get(url)
@@ -77,13 +79,17 @@ def get_cover(cover_id):
 def get_or_create_author(olkey):
     ''' load that author '''
     # TODO: validate that this is an author key
-    # TODO: error handling
     try:
         author = Author.objects.get(openlibrary_key=olkey)
     except ObjectDoesNotExist:
-        response = requests.get(OL_URL + olkey + '.json')
-        data = response.json()
-        author = Author(openlibrary_key=olkey, data=data)
-        author.save()
+        pass
+
+    response = requests.get(OL_URL + olkey + '.json')
+    if not response.ok:
+        response.raise_for_status()
+
+    data = response.json()
+    author = Author(openlibrary_key=olkey, data=data)
+    author.save()
     return author
 

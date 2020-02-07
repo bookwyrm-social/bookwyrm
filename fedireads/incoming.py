@@ -16,6 +16,11 @@ from fedireads.openlibrary import get_or_create_book
 from fedireads.settings import DOMAIN
 
 
+class HttpResponseUnauthorized(HttpResponse):
+    ''' http response for authentication failure '''
+    status_code = 401
+
+
 def webfinger(request):
     ''' allow other servers to ask about a user '''
     resource = request.GET.get('resource')
@@ -66,7 +71,7 @@ def shared_inbox(request):
         headers={'Accept': 'application/activity+json'}
     )
     if not response.ok:
-        response.raise_for_status()
+        return HttpResponseUnauthorized()
 
     actor = response.json()
     key = RSA.import_key(actor['publicKey']['publicKeyPem'])
@@ -85,7 +90,11 @@ def shared_inbox(request):
     signer = pkcs1_15.new(key)
     digest = SHA256.new()
     digest.update(comparison_string.encode())
-    signer.verify(digest, signature)
+    try:
+        signer.verify(digest, signature)
+    except:
+        # TODO: what kind of error does this throw?
+        return HttpResponseUnauthorized()
 
     if activity['type'] == 'Add':
         return handle_incoming_shelve(activity)
@@ -137,7 +146,7 @@ def get_actor(request, username):
             'publicKeyPem': user.public_key,
         },
         'endpoints': {
-            'sharedInbox': 'https://%s/inbox' % DOMAIN,
+            'sharedInbox': user.shared_inbox,
         }
     })
 
@@ -150,42 +159,33 @@ def get_followers(request, username):
 
     user = models.User.objects.get(localname=username)
     followers = user.followers
-    id_slug = '%s/followers' % user.actor
-    if request.GET.get('page'):
-        page = request.GET.get('page')
-        return JsonResponse(get_follow_page(followers, id_slug, page))
-    follower_count = followers.count()
-    return JsonResponse({
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': id_slug,
-        'type': 'OrderedCollection',
-        'totalItems': follower_count,
-        'first': '%s?page=1' % id_slug,
-    })
+    return format_follow_info(user, request.GET.get('page'), followers)
 
 
 @csrf_exempt
 def get_following(request, username):
     ''' return a list of following for an actor '''
-    # TODO: this is total deplication of get_followers, should be streamlined
     if request.method != 'GET':
         return HttpResponseBadRequest()
 
     user = models.User.objects.get(localname=username)
     following = models.User.objects.filter(followers=user)
+    return format_follow_info(user, request.GET.get('page'), following)
+
+
+def format_follow_info(user, page, follow_queryset):
+    ''' create the activitypub json for followers/following '''
     id_slug = '%s/following' % user.actor
-    if request.GET.get('page'):
-        page = request.GET.get('page')
-        return JsonResponse(get_follow_page(following, id_slug, page))
-    following_count = following.count()
+    if page:
+        return JsonResponse(get_follow_page(follow_queryset, id_slug, page))
+    count = follow_queryset.count()
     return JsonResponse({
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': id_slug,
         'type': 'OrderedCollection',
-        'totalItems': following_count,
+        'totalItems': count,
         'first': '%s?page=1' % id_slug,
     })
-
 
 def get_follow_page(user_list, id_slug, page):
     ''' format a list of followers/following '''
@@ -259,6 +259,7 @@ def handle_incoming_follow(activity):
         activity_type='Follow',
     )
     uuid = uuid4()
+    # TODO does this need to be signed?
     return JsonResponse({
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': 'https://%s/%s' % (DOMAIN, uuid),
@@ -277,6 +278,7 @@ def handle_incoming_create(activity):
             'inReplyTo' in activity['object']:
         possible_book = activity['object']['inReplyTo']
         try:
+            # TODO idk about this error handling, should probs be more granular
             book = get_or_create_book(possible_book)
             models.Review(
                 uuid=uuid,
@@ -318,6 +320,7 @@ def handle_incoming_accept(activity):
         followed=followed,
         content=activity,
     ).save()
+    return HttpResponse()
 
 
 def handle_response(response):

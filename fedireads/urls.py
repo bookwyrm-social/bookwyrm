@@ -16,6 +16,7 @@ urlpatterns = [
     re_path(r'^user/(?P<username>\w+)/outbox/?$', outgoing.outbox),
     re_path(r'^user/(?P<username>\w+)/followers/?$', incoming.get_followers),
     re_path(r'^user/(?P<username>\w+)/following/?$', incoming.get_following),
+    # TODO: shelves need pages in the UI and for their activitypub Collection
     re_path(r'^.well-known/webfinger/?$', incoming.webfinger),
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 

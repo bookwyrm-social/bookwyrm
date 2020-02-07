@@ -65,6 +65,7 @@ def handle_outgoing_follow(user, to_follow):
 
     errors = broadcast(user, activity, [to_follow.inbox])
     for error in errors:
+        # TODO: following masto users is returning 400
         raise(error['error'])
 
 
@@ -166,10 +167,11 @@ def handle_review(user, book, name, content, rating):
         'published': datetime.utcnow().isoformat(),
         'attributedTo': user.actor,
         'content': content,
-        'inReplyTo': book.openlibrary_key,
+        'inReplyTo': book.openlibrary_key, # TODO is this the right identifier?
         'rating': rating, # fedireads-only custom field
         'to': 'https://www.w3.org/ns/activitystreams#Public'
     }
+    # TODO: create alt version for mastodon
     recipients = get_recipients(user, 'public')
     create_uuid = uuid4()
     activity = {

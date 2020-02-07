@@ -211,6 +211,7 @@ class Book(models.Model):
     openlibrary_key = models.CharField(max_length=255, unique=True)
     data = JSONField()
     authors = models.ManyToManyField('Author')
+    # TODO: also store cover thumbnail
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     shelves = models.ManyToManyField(
         'Shelf',
