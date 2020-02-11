@@ -3,7 +3,7 @@
 <p class="title">
     <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
 </p>
-<p>by <a href="/author/{{ book.author.id }}" class="author">{{ book.authors.first.data.name }}</a></p>
+<p>by <a href="/author/{{ book.authors.first.openlibrary_key }}" class="author">{{ book.authors.first.data.name }}</a></p>
 
 {% if rating %}
 {{ rating | stars }} {{ rating }}

@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% load fr_display %}
+{% block content %}
+<div id="content">
+    <div>
+        <h2>{{ author.data.name }}</h2>
+        {% for book in books %}
+        <div class="book-preview">
+            {% include 'snippets/book.html' with book=book size=large description=True %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

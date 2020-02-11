@@ -19,11 +19,12 @@ def book_search(query):
     for doc in data['docs'][:5]:
         key = doc['key']
         key = key.split('/')[-1]
+        author = doc.get('author_name') or ['Unknown']
         results.append({
             'title': doc.get('title'),
             'olkey': key,
             'year': doc.get('first_publish_year'),
-            'author': doc.get('author_name')[0],
+            'author': author[0],
         })
     return results
 
@@ -68,7 +69,7 @@ def get_or_create_book(olkey, user=None, update=False):
         author_id = author_id.split('/')[-1]
         book.authors.add(get_or_create_author(author_id))
 
-    if data['covers'] and len(data['covers']):
+    if data.get('covers') and len(data['covers']):
         book.cover.save(*get_cover(data['covers'][0]), save=True)
 
     return book

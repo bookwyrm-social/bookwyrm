@@ -191,6 +191,22 @@ def book_page(request, book_identifier):
 
 
 @login_required
+def author_page(request, author_identifier):
+    ''' landing page for an author '''
+    try:
+        author = models.Author.objects.get(openlibrary_key=author_identifier)
+    except ValueError:
+        return HttpResponseNotFound()
+
+    books = models.Book.objects.filter(authors=author)
+    data = {
+        'author': author,
+        'books': books,
+    }
+    return TemplateResponse(request, 'author.html', data)
+
+
+@login_required
 def shelve(request, shelf_id, book_id, reshelve=True):
     ''' put a book on a user's shelf '''
     book = models.Book.objects.get(id=book_id)
