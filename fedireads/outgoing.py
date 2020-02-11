@@ -1,8 +1,9 @@
 ''' handles all the activity coming out of the server '''
 from datetime import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
+from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
@@ -15,21 +16,59 @@ from fedireads.settings import DOMAIN
 def outbox(request, username):
     ''' outbox for the requested user '''
     user = models.User.objects.get(localname=username)
-    size = models.Review.objects.filter(user=user).count()
-    if request.method == 'GET':
-        # list of activities
-        return JsonResponse({
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': '%s/outbox' % user.actor,
-            'type': 'OrderedCollection',
-            'totalItems': size,
-            'first': '%s/outbox?page=true' % user.actor,
-            'last': '%s/outbox?min_id=0&page=true' % user.actor
-        })
-    # TODO: paginated list of messages
+    if request.method != 'GET':
+        return HttpResponseNotFound()
 
-    #data = request.body.decode('utf-8')
-    return HttpResponse()
+    # paginated list of messages
+    if request.GET.get('page'):
+        limit = 20
+        min_id = request.GET.get('min_id')
+        max_id = request.GET.get('max_id')
+
+        path = 'https://%s%s?' % (DOMAIN, request.path)
+        # filters for use in the django queryset min/max
+        filters = {}
+        # params for the outbox page id
+        params = {'page': 'true'}
+        if min_id != None:
+            params['min_id'] = min_id
+            filters['id__gt'] = min_id
+        if max_id != None:
+            params['max_id'] = max_id
+            filters['id__lte'] = max_id
+        collection_id = path + urlencode(params)
+
+        messages = models.Activity.objects.filter(
+            user=user,
+            activity_type__in=['Article', 'Note'],
+            **filters
+            ).all()[:limit]
+
+        outbox_page = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': collection_id,
+            'type': 'OrderedCollectionPage',
+            'partOf': 'https://oulipo.social/users/mus/outbox',
+            'orderedItems': [m.content for m in messages],
+        }
+        if max_id:
+            outbox_page['next'] = path + \
+                urlencode({'min_id': max_id, 'page': 'true'})
+        if min_id:
+            outbox_page['prev'] = path + \
+                urlencode({'max_id': min_id, 'page': 'true'})
+        return JsonResponse(outbox_page)
+
+    # collection overview
+    size = models.Review.objects.filter(user=user).count()
+    return JsonResponse({
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s/outbox' % user.actor,
+        'type': 'OrderedCollection',
+        'totalItems': size,
+        'first': '%s/outbox?page=true' % user.actor,
+        'last': '%s/outbox?min_id=0&page=true' % user.actor
+    })
 
 
 def handle_account_search(query):
