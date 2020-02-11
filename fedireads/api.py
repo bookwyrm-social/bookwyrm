@@ -6,6 +6,7 @@ from Crypto.Hash import SHA256
 from datetime import datetime
 import json
 import requests
+from urllib.parse import urlparse
 
 from fedireads import models
 from fedireads import incoming
@@ -32,7 +33,8 @@ def get_or_create_remote_user(actor):
 
     # the webfinger format for the username.
     # TODO: get the user's domain in a better way
-    username = '%s@%s' % (actor.split('/')[-1], actor.split('/')[2])
+    actor_parts = urlparse(actor)
+    username = '%s@%s' % (actor_parts.path.split('/')[-1], actor_parts.netloc)
     shared_inbox = data.get('endpoints').get('sharedInbox') if \
         data.get('endpoints') else None
 

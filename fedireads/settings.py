@@ -4,7 +4,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -14,8 +13,8 @@ SECRET_KEY = '7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# TODO: this hsould be populated at runtime at least for debug mode
-DOMAIN = 'a4522b16.ngrok.io'
+# TODO: this should be populated at runtime at least for debug mode
+DOMAIN = 'af064ab4.ngrok.io'
 ALLOWED_HOSTS = ['*']
 OL_URL = 'https://openlibrary.org'
 
@@ -44,7 +43,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'fedireads.urls'
 
-# TODO: how tf do I switch to jinja2
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -120,5 +118,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
-# TODO: this super doesn't work when I do a join on BASE_DIR
-MEDIA_ROOT = '/Users/mouse/Personal/fedireads/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
