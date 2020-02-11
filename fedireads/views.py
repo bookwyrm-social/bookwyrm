@@ -44,7 +44,6 @@ def home(request):
         '-created_date'
     )[:10]
 
-    login_form = forms.LoginForm()
     data = {
         'user': request.user,
         'reading': reading,
@@ -52,7 +51,6 @@ def home(request):
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
-        'login_form': login_form, # TODO remove this
     }
     return TemplateResponse(request, 'feed.html', data)
 
