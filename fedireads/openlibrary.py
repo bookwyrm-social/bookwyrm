@@ -20,10 +20,10 @@ def book_search(query):
         key = doc['key']
         key = key.split('/')[-1]
         results.append({
-            'title': doc['title'],
+            'title': doc.get('title'),
             'olkey': key,
-            'year': doc['first_publish_year'],
-            'author': doc['author_name'][0],
+            'year': doc.get('first_publish_year'),
+            'author': doc.get('author_name')[0],
         })
     return results
 
