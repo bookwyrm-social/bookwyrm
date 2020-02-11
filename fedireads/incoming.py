@@ -93,8 +93,7 @@ def shared_inbox(request):
     digest.update(comparison_string.encode())
     try:
         signer.verify(digest, signature)
-    except:
-        # TODO: what kind of error does this throw?
+    except ValueError:
         return HttpResponseUnauthorized()
 
     if activity['type'] == 'Add':
