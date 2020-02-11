@@ -56,3 +56,6 @@ in openlibrary, which, that's hard. So there's room to wonder if the openlibrary
 The key needs to be universal (or at least universally comprehensible) across all fedireads servers, which is why I'm using an external
 identifier controlled by someone else.
 
+### Explain "review"
+There's no actual reason to be beholden to simple 5 star reviews with a text body. Are there other ways of thinking about a review
+that could be represented in a database?
