@@ -9,7 +9,7 @@
         <p>Start a book!</p>
         {% for book in to_read.books.all %}
         <div class="book-preview">
-            {% include 'book_snippet.html' with book=book size="small" %}
+            {% include 'snippets/book.html' with book=book size="small" %}
             <form name="shelve" action="/shelve/{{ user.localname }}_currently-reading/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
@@ -21,7 +21,7 @@
 
         {% for book in reading.books.all %}
         <div class="book-preview">
-            {% include 'book_snippet.html' with book=book size="small" %}
+            {% include 'snippets/book.html' with book=book size="small" %}
             <form name="shelve" action="/shelve/{{ user.localname }}_read/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
@@ -35,7 +35,7 @@
         <h2>Recently Added Books</h2>
         {% for book in recent_books %}
         <div class="book-preview">
-            {% include 'book_snippet.html' with book=book size="small" %}
+            {% include 'snippets/book.html' with book=book size="small" %}
             {% if not book in user_books.all %}
             <form name="shelve" action="/shelve/{{ user.localname }}_to-read/{{ book.id }}" method="post">
                 {% csrf_token %}
@@ -53,10 +53,8 @@
     {% for activity in activities %}
     <div class="update">
         <h2>
-            <img class="user-pic" src="{% if activity.user.avatar %}/images/{{ activity.user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
-        {# TODO: a helper function for displaying a username #}
-        <a href="/user/{% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}" class="user">
-                {% if activity.user.localname %}{{ activity.user.localname }}{% else %}{{ activity.user.username }}{% endif %}</a>
+            {% include 'snippets/avatar.html' with user=activity.user %}
+            {% include 'snippets/username.html' with user=activity.user %}
         {% if activity.fedireads_type == 'Shelve' %}
             {# display a reading/shelving activity #}
             {% if activity.shelf.shelf_type == 'to-read' %}
@@ -69,9 +67,8 @@
                 shelved in "{{ activity.shelf.name }}"
             {% endif %}
         </h2>
-            {# TODO: wouldn't it rule if this was a reusable piece of markup? #}
             <div class="book-preview">
-                {% include 'book_snippet.html' with book=activity.book size=large description=True %}
+                {% include 'snippets/book.html' with book=activity.book size=large description=True %}
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>
         {% elif activity.fedireads_type == 'Review' %}
@@ -79,7 +76,7 @@
             reviewed {{ activity.book.data.title }}
         </h2>
             <div class="book-preview review">
-                {% include 'book_snippet.html' with book=activity.book size=large %}
+                {% include 'snippets/book.html' with book=activity.book size=large %}
 
                 <h3>{{ activity.name }}</h3>
                 <p>{{ activity.rating | stars }}</p>

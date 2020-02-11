@@ -28,7 +28,7 @@
                     {% if user.is_authenticated %}
                     <form name="logout" action="/logout/" method="post">
                         {% csrf_token %}
-                        Welcome, <a href="/user/{{ request.user.localname }}">{{ request.user.localname }}</a>
+                        Welcome, {% include 'snippets/username.html' %}
                         <input type="submit" value="Log out"></input>
                     </form>
                     {% else %}

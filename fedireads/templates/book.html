@@ -4,7 +4,7 @@
 <div id="content">
     <div>
         <div class="book-preview">
-            {% include 'book_snippet.html' with book=book size=large rating=rating description=True %}
+            {% include 'snippets/book.html' with book=book size=large rating=rating description=True %}
         </div>
     </div>
     <div class="reviews">
@@ -21,7 +21,7 @@
         {% for review in reviews %}
         <div class="review">
             <h4>{{ review.name }}
-                <small>{{ review.rating | stars }} stars, by {{ review.user.username }}</small>
+                <small>{{ review.rating | stars }} stars, by {% include 'snippets/username.html' with user=review.user %}</small>
             </h4>
             <blockquote>{{ review.review_content }}</blockquote>
         </div>
