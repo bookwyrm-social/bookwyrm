@@ -7,8 +7,8 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.api import get_or_create_remote_user, get_recipients, \
-        broadcast
+from fedireads.remote_user import get_or_create_remote_user
+from fedireads.broadcast import get_recipients, broadcast
 from fedireads.settings import DOMAIN
 
 

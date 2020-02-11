@@ -1,5 +1,6 @@
 ''' usin django model forms '''
-from django.forms import ModelForm, PasswordInput
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.forms import ModelForm, PasswordInput, IntegerField
 
 from fedireads import models
 
@@ -29,6 +30,9 @@ class ReviewForm(ModelForm):
         model = models.Review
         fields = ['name', 'review_content', 'rating']
         help_texts = {f: None for f in fields}
+        review_content = IntegerField(validators=[
+            MinValueValidator(0), MaxValueValidator(5)
+        ])
         labels = {
             'name': 'Title',
             'review_content': 'Review',

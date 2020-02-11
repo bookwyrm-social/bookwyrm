@@ -11,15 +11,9 @@ import requests
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.api import get_or_create_remote_user
+from fedireads.remote_user import get_or_create_remote_user
 from fedireads.openlibrary import get_or_create_book
 from fedireads.settings import DOMAIN
-
-
-# TODO: this should probably live somewhere else
-class HttpResponseUnauthorized(HttpResponse):
-    ''' http response for authentication failure '''
-    status_code = 401
 
 
 def webfinger(request):
@@ -72,7 +66,7 @@ def shared_inbox(request):
         headers={'Accept': 'application/activity+json'}
     )
     if not response.ok:
-        return HttpResponseUnauthorized()
+        return HttpResponse(status=401)
 
     actor = response.json()
     key = RSA.import_key(actor['publicKey']['publicKeyPem'])
@@ -94,7 +88,7 @@ def shared_inbox(request):
     try:
         signer.verify(digest, signature)
     except ValueError:
-        return HttpResponseUnauthorized()
+        return HttpResponse(status=401)
 
     if activity['type'] == 'Add':
         return handle_incoming_shelve(activity)

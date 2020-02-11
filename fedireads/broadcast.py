@@ -1,4 +1,4 @@
-''' api utilties '''
+''' send out activitypub messages '''
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -6,55 +6,9 @@ from Crypto.Hash import SHA256
 from datetime import datetime
 import json
 import requests
-from urllib.parse import urlparse
 
-from fedireads import models
 from fedireads import incoming
 from fedireads.settings import DOMAIN
-
-
-def get_or_create_remote_user(actor):
-    ''' look up a remote user or add them '''
-    try:
-        return models.User.objects.get(actor=actor)
-    except models.User.DoesNotExist:
-        pass
-
-    # TODO: also bring in the user's prevous reviews and books
-
-    # load the user's info from the actor url
-    response = requests.get(
-        actor,
-        headers={'Accept': 'application/activity+json'}
-    )
-    if not response.ok:
-        response.raise_for_status()
-    data = response.json()
-
-    # the webfinger format for the username.
-    # TODO: get the user's domain in a better way
-    actor_parts = urlparse(actor)
-    username = '%s@%s' % (actor_parts.path.split('/')[-1], actor_parts.netloc)
-    shared_inbox = data.get('endpoints').get('sharedInbox') if \
-        data.get('endpoints') else None
-
-    try:
-        user = models.User.objects.create_user(
-            username,
-            '', '', # email and passwords are left blank
-            actor=actor,
-            name=data.get('name'),
-            summary=data.get('summary'),
-            inbox=data['inbox'], #fail if there's no inbox
-            outbox=data['outbox'], # fail if there's no outbox
-            shared_inbox=shared_inbox,
-            # TODO: probably shouldn't bother to store this for remote users
-            public_key=data.get('publicKey').get('publicKeyPem'),
-            local=False
-        )
-    except KeyError:
-        return False
-    return user
 
 
 def get_recipients(user, post_privacy, direct_recipients=None):

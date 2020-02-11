@@ -37,13 +37,9 @@ application endpoints (things that happen when you click buttons), and federatio
 
 The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content.
 Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming
-messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Misc api functions live in `fedireads/api.py`, which is
-probably not a good name for that file.
+messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`.
 
-Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`.
-
-The UI is all django templates because I tried to install jinja2 and couldn't get it working so I gave up. It'd be nice to have
-jinja2 for macros, so maybe I'll try again some day. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
+The UI is all django templates because that is the default. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
 
 
 ## Thoughts and considerations
