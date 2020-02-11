@@ -9,9 +9,7 @@
         <p>Start a book!</p>
         {% for book in to_read.books.all %}
         <div class="book-preview">
-            <img class="book-cover small" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-            <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
-            <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
+            {% include 'book_snippet.html' with book=book size="small" %}
             <form name="shelve" action="/shelve/{{ user.localname }}_currently-reading/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
@@ -23,9 +21,7 @@
 
         {% for book in reading.books.all %}
         <div class="book-preview">
-            <img class="book-cover small" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-            <p class="title"><a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a></p>
-            <p>by <a href="" class="author">{{ book.authors.first.data.name }}</a></p>
+            {% include 'book_snippet.html' with book=book size="small" %}
             <form name="shelve" action="/shelve/{{ user.localname }}_read/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
@@ -39,13 +35,7 @@
         <h2>Recently Added Books</h2>
         {% for book in recent_books %}
         <div class="book-preview">
-            <img class="book-cover small" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-            <p class="title">
-                <a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a>
-                by
-                {# TODO: there should be a helper function for listing authors #}
-                <a href="" class="author">{{ book.authors.first.data.name }}</a>
-            </p>
+            {% include 'book_snippet.html' with book=book size="small" %}
             {% if not book in user_books.all %}
             <form name="shelve" action="/shelve/{{ user.localname }}_to-read/{{ book.id }}" method="post">
                 {% csrf_token %}
@@ -81,13 +71,7 @@
         </h2>
             {# TODO: wouldn't it rule if this was a reusable piece of markup? #}
             <div class="book-preview">
-                <img class="book-cover" src="{% if activity.book.cover %}/images/{{ activity.book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-                <p class="title">
-                    <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
-                    by
-                    <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                    <blockquote>{{ activity.book.data.description | description }}</blockquote>
-                </p>
+                {% include 'book_snippet.html' with book=activity.book size=large description=True %}
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>
         {% elif activity.fedireads_type == 'Review' %}
@@ -95,12 +79,7 @@
             reviewed {{ activity.book.data.title }}
         </h2>
             <div class="book-preview review">
-                <img class="book-cover" src="{% if activity.book.cover %}/images/{{ activity.book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-                <p class="title">
-                    <a href="{{ activity.book.openlibrary_key }}">{{ activity.book.data.title }}</a>
-                    by
-                    <a href="" class="author">{{ activity.book.authors.first.data.name }}</a>
-                </p>
+                {% include 'book_snippet.html' with book=activity.book size=large %}
 
                 <h3>{{ activity.name }}</h3>
                 <p>{{ activity.rating | stars }}</p>

@@ -4,11 +4,7 @@
 <div id="content">
     <div>
         <div class="book-preview">
-            <img class="book-cover" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
-            <h1>{{ book.data.title }}</h1>
-            by {{ book.authors.first.data.name }}
-            {{ rating | stars }} {{ rating }}
-            <blockquote>{{ book.data.description | description }}</blockquote>
+            {% include 'book_snippet.html' with book=book size=large rating=rating description=True %}
         </div>
     </div>
     <div class="reviews">

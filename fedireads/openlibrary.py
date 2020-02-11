@@ -1,6 +1,7 @@
 ''' activitystream api and books '''
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
+import re
 import requests
 
 from fedireads.models import Author, Book
@@ -14,10 +15,13 @@ def book_search(query):
         response.raise_for_status()
     data = response.json()
     results = []
+
     for doc in data['docs'][:5]:
+        key = doc['key']
+        key = key.split('/')[-1]
         results.append({
             'title': doc['title'],
-            'olkey': doc['key'],
+            'olkey': key,
             'year': doc['first_publish_year'],
             'author': doc['author_name'][0],
         })
@@ -25,9 +29,13 @@ def book_search(query):
 
 
 def get_or_create_book(olkey, user=None, update=False):
-    ''' add a book '''
-    # TODO: check if this is a valid open library key, and a work
-    olkey = olkey
+    ''' add a book by looking up its open library "work" key. I'm conflating
+    "book" and "work" here a bit; the table is called "book" in fedireads, but
+    in open library parlance, it's a "work," which is the canonical umbrella
+    item that contains all the editions ("book"s) '''
+    # check if this is in the format of an OL book identifier
+    if not re.match(r'^OL\d+W$', olkey):
+        raise ValueError('Invalid OpenLibrary work ID')
 
     # get the existing entry from our db, if it exists
     try:
@@ -40,7 +48,7 @@ def get_or_create_book(olkey, user=None, update=False):
         book = Book(openlibrary_key=olkey)
 
     # load the book json from openlibrary.org
-    response = requests.get(OL_URL + olkey + '.json')
+    response = requests.get('%s/works/%s.json' % (OL_URL, olkey))
     if not response.ok:
         response.raise_for_status()
 
@@ -55,10 +63,12 @@ def get_or_create_book(olkey, user=None, update=False):
 
     # we also need to know the author get the cover
     for author_blob in data['authors']:
+        # this id starts as "/authors/OL1234567A" and we want just "OL1234567A"
         author_id = author_blob['author']['key']
+        author_id = author_id.split('/')[-1]
         book.authors.add(get_or_create_author(author_id))
 
-    if len(data['covers']):
+    if data['covers'] and len(data['covers']):
         book.cover.save(*get_cover(data['covers'][0]), save=True)
 
     return book
@@ -76,15 +86,18 @@ def get_cover(cover_id):
     return [image_name, image_content]
 
 
-def get_or_create_author(olkey):
+def get_or_create_author(olkey, update=False):
     ''' load that author '''
-    # TODO: validate that this is an author key
+    if not re.match(r'^OL\d+A$', olkey):
+        raise ValueError('Invalid OpenLibrary author ID')
     try:
         author = Author.objects.get(openlibrary_key=olkey)
+        if not update:
+            return author
     except ObjectDoesNotExist:
         pass
 
-    response = requests.get(OL_URL + olkey + '.json')
+    response = requests.get('%s/authors/%s.json' % (OL_URL, olkey))
     if not response.ok:
         response.raise_for_status()
 

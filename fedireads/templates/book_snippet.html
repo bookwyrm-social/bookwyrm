@@ -1,0 +1,14 @@
+{% load fr_display %}
+<img class="book-cover {{ size }}" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
+<p class="title">
+    <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
+</p>
+<p>by <a href="/author/{{ book.author.id }}" class="author">{{ book.authors.first.data.name }}</a></p>
+
+{% if rating %}
+{{ rating | stars }} {{ rating }}
+{% endif %}
+
+{% if description %}
+<blockquote>{{ book.data.description | description }}</blockquote>
+{% endif %}

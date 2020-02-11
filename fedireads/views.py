@@ -178,7 +178,7 @@ def edit_profile(request):
 @login_required
 def book_page(request, book_identifier):
     ''' info about a book '''
-    book = openlibrary.get_or_create_book('/work/' + book_identifier)
+    book = openlibrary.get_or_create_book(book_identifier)
     # TODO: again, post privacy?
     reviews = models.Review.objects.filter(book=book)
     rating = reviews.aggregate(Avg('rating'))
@@ -226,7 +226,7 @@ def review(request):
     rating = form.data.get('rating')
 
     outgoing.handle_review(request.user, book, name, content, rating)
-    return redirect(book_identifier)
+    return redirect('/book/%s' % book_identifier)
 
 
 @login_required
