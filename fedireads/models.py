@@ -4,6 +4,7 @@ from model_utils.managers import InheritanceManager
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from Crypto import Random
 from Crypto.PublicKey import RSA
 import re
@@ -137,12 +138,16 @@ class FollowActivity(Activity):
         super().save(*args, **kwargs)
 
 
+def validate_rating(rating):
+    ''' only accept 0-5 as star rating ints '''
+    if rating < 0 or rating > 5:
+        raise ValidationError('Rating must be 0-5')
+
 class Review(Activity):
     ''' a book review '''
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
-    # TODO: validation
-    rating = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, validators=[validate_rating])
     review_content = models.TextField()
 
     def save(self, *args, **kwargs):
