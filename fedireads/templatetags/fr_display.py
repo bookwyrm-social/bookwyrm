@@ -26,3 +26,9 @@ def description_format(description):
         description = description.split('----------')[0]
 
     return description.strip()
+
+@register.filter(name='author_bio')
+def bio_format(bio):
+    ''' clean up OL author bios '''
+    bio = bio.split('\n')
+    return bio[0].strip()

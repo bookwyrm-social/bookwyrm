@@ -4,6 +4,10 @@
 <div id="content">
     <div>
         <h2>{{ author.data.name }}</h2>
+        {% if author.data.bio %}
+        <blockquote>{{ author.data.bio | author_bio }}
+        </blockquote>
+        {% endif %}
         {% for book in books %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size=large description=True %}
