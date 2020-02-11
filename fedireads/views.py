@@ -39,6 +39,7 @@ def home(request):
     # TODO: handle post privacy
     activities = models.Activity.objects.filter(
         user__in=following,
+
     ).select_subclasses().order_by(
         '-created_date'
     )[:10]
@@ -66,8 +67,7 @@ def user_login(request):
     # authenticate user
     form = forms.LoginForm(request.POST)
     if not form.is_valid():
-        # TODO messaging about a login failure
-        return TemplateResponse(request, 'login.html')
+        return TemplateResponse(request, 'login.html', {'login_form': form})
 
     username = form.data['username']
     username = '%s@%s' % (username, DOMAIN)
@@ -76,7 +76,7 @@ def user_login(request):
     if user is not None:
         login(request, user)
         return redirect(request.GET.get('next', '/'))
-    return TemplateResponse(request, 'login.html')
+    return TemplateResponse(request, 'login.html', {'login_form': form})
 
 
 @login_required
