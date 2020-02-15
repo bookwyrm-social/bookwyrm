@@ -10,7 +10,7 @@
             <small>{{ user.username }}</small>
         </h2>
         {% if user.summary %}
-        <blockquote>{{ user.summary }}</blockquote>
+        <blockquote>{{ user.summary | safe }}</blockquote>
         {% endif %}
         {% if not is_self %}
         {% if not request.user in user.followers.all %}

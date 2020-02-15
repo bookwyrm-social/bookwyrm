@@ -100,8 +100,7 @@ def shared_inbox(request):
         return handle_incoming_create(activity)
 
     if activity['type'] == 'Accept':
-        # aww yay, friendship
-        return HttpResponse()
+        return handle_incoming_follow_accept(activity)
 
     return HttpResponseNotFound()
 
@@ -265,6 +264,17 @@ def handle_incoming_follow(activity):
         'actor': user.actor,
         'object': activity,
     })
+
+
+def handle_incoming_follow_accept(activity):
+    ''' hurray, someone remote accepted a follow request '''
+    # figure out who they want to follow
+    requester = models.User.objects.get(actor=activity['object']['actor'])
+    # figure out who they are
+    accepter = get_or_create_remote_user(activity['actor'])
+
+    accepter.followers.add(requester)
+    return HttpResponse()
 
 
 def handle_incoming_create(activity):
