@@ -12,30 +12,7 @@ import requests
 from fedireads import models
 from fedireads import outgoing
 from fedireads.activity import create_review
-from fedireads.openlibrary import get_or_create_book
 from fedireads.remote_user import get_or_create_remote_user
-from fedireads.sanitize_html import InputHtmlParser
-
-
-def webfinger(request):
-    ''' allow other servers to ask about a user '''
-    resource = request.GET.get('resource')
-    if not resource and not resource.startswith('acct:'):
-        return HttpResponseBadRequest()
-    ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(username=ap_id).first()
-    if not user:
-        return HttpResponseNotFound('No account found')
-    return JsonResponse({
-        'subject': 'acct:%s' % (user.username),
-        'links': [
-            {
-                'rel': 'self',
-                'type': 'application/activity+json',
-                'href': user.actor
-            }
-        ]
-    })
 
 
 @csrf_exempt

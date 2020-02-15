@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
-from fedireads import incoming, outgoing, views, settings
+from fedireads import incoming, outgoing, views, settings, wellknown
 
 
 urlpatterns = [
@@ -17,7 +17,11 @@ urlpatterns = [
     re_path(r'^user/(?P<username>\w+)/followers/?$', incoming.get_followers),
     re_path(r'^user/(?P<username>\w+)/following/?$', incoming.get_following),
     # TODO: shelves need pages in the UI and for their activitypub Collection
-    re_path(r'^.well-known/webfinger/?$', incoming.webfinger),
+
+    # .well-known endpoints
+    re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
+    re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo),
+    re_path(r'^api/v1/instance/?$', wellknown.instance_info),
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 
     # ui views
