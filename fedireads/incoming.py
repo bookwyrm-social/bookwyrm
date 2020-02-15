@@ -303,13 +303,12 @@ def handle_incoming_create(activity):
             'inReplyTo' in activity['object']:
         response = create_review(user, activity)
 
-    if not user.local:
-        models.Activity(
-            uuid=activity['uuid'],
-            user=user,
-            content=activity,
-            activity_type=activity['object']['type']
-        )
+    models.Activity(
+        uuid=activity['id'],
+        user=user,
+        content=activity,
+        activity_type=activity['object']['type']
+    )
     return response
 
 

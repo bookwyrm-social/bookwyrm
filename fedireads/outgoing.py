@@ -205,6 +205,7 @@ def handle_review(user, book, name, content, rating):
         'type': 'Article',
         'published': datetime.utcnow().isoformat(),
         'attributedTo': user.actor,
+        'name': name,
         'content': content,
         'inReplyTo': book.openlibrary_key, # TODO is this the right identifier?
         'rating': rating, # fedireads-only custom field
@@ -226,15 +227,5 @@ def handle_review(user, book, name, content, rating):
         'object': obj,
     }
 
-    models.Review(
-        uuid=create_uuid,
-        user=user,
-        content=activity,
-        activity_type='Article',
-        book=book,
-        name=name,
-        rating=rating,
-        review_content=content,
-    ).save()
     broadcast(user, activity, recipients)
 
