@@ -1,4 +1,8 @@
 ''' handles all the activity coming out of the server '''
+from base64 import b64encode
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
 from datetime import datetime
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -224,11 +228,12 @@ def handle_review(user, book, name, content, rating):
         (DOMAIN, user.localname, review.id)
     book_path = 'https://%s/book/%s' % (DOMAIN, review.book.openlibrary_key)
 
+    now = datetime.utcnow().isoformat() #TODO: should this be http_date?
     review_activity = {
         'id': review_path,
         'url': review_path,
         'inReplyTo': book_path,
-        'published': datetime.utcnow().isoformat(),
+        'published': now,
         'attributedTo': user.actor,
         # TODO: again, assuming all posts are public
         'to': ['https://www.w3.org/ns/activitystreams#Public'],
@@ -255,19 +260,26 @@ def handle_review(user, book, name, content, rating):
     review.activity = review_activity
     review.save()
 
+    signer = pkcs1_15.new(RSA.import_key(user.private_key))
+    signed_message = signer.sign(SHA256.new(content.encode('utf8')))
     create_activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
 
         'id': '%s/activity' % review_path,
         'type': 'Create',
         'actor': user.actor,
-        'published': datetime.utcnow().isoformat(),
+        'published': now,
 
         'to': ['%s/followers' % user.actor],
         'cc': ['https://www.w3.org/ns/activitystreams#Public'],
 
         'object': review_activity,
-        # TODO: signature
+        'signature': {
+            'type': 'RsaSignature2017',
+            'creator': 'https://%s/user/%s#main-key' % (DOMAIN, user.localname),
+            'created': now,
+            'signatureValue': b64encode(signed_message).decode('utf8'),
+        }
     }
 
     recipients = get_recipients(user, 'public')
