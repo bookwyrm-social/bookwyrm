@@ -10,7 +10,6 @@ def create_review(user, possible_book, name, content, rating):
     book = get_or_create_book(possible_book)
 
     # sanitize review html
-    import pdb;pdb.set_trace()
     parser = InputHtmlParser()
     parser.feed(content)
     content = parser.get_output()
