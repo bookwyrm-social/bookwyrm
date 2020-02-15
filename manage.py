@@ -2,7 +2,10 @@
 import os
 import sys
 
+from environs import Env
+
 if __name__ == "__main__":
+    Env.read_env()  # load environment variables from .env
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fedireads.settings")
     try:
         from django.core.management import execute_from_command_line

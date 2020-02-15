@@ -1,5 +1,11 @@
 #!/bin/bash
 set -e
+
+if [ ! -f .env ]; then
+  echo "No .env found -- copying .example.env to .env!"
+  cp .env.example .env
+fi
+
 dropdb fedireads
 createdb fedireads
 python manage.py makemigrations fedireads

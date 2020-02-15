@@ -1,6 +1,10 @@
 ''' fedireads settings and configuration '''
 import os
 
+from environs import Env
+
+env = Env()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -8,15 +12,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '7(2w1sedok=aznpq)ta1mc4i%4h=xx@hxwx*o57ctsuml0x%fr'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', True)
 
 # TODO: annoying that I keep changing and re-commiting this
-DOMAIN = '26863dc9.ngrok.io'
-ALLOWED_HOSTS = ['*']
-OL_URL = 'https://openlibrary.org'
+DOMAIN = env('DOMAIN')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['*'])
+OL_URL = env('OL_URL')
 
 # Application definition
 
@@ -66,8 +70,10 @@ WSGI_APPLICATION = 'fedireads.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+FEDIREADS_DATABASE_BACKEND = env('FEDIREADS_DATABASE', 'postgres')
+
+FEDIREADS_DBS = {
+    'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'fedireads',
         'USER': 'fedireads',
@@ -75,6 +81,10 @@ DATABASES = {
         'HOST': '',
         'PORT': 5432
     }
+}
+
+DATABASES = {
+    'default': FEDIREADS_DBS[FEDIREADS_DATABASE_BACKEND]
 }
 
 LOGIN_URL = '/login/'
@@ -118,4 +128,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'images/')
+MEDIA_ROOT = os.path.join(BASE_DIR, env('MEDIA_ROOT', 'images/'))
