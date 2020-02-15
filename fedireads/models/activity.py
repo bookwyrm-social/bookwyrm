@@ -44,23 +44,40 @@ class FollowActivity(Activity):
         super().save(*args, **kwargs)
 
 
-class Review(Activity):
-    ''' a book review '''
+class ReviewActivity(Activity):
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
-    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
-    review_content = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.activity_type = 'Article'
-        self.fedireads_type = 'Review'
         super().save(*args, **kwargs)
 
 
-class Note(Activity):
+class Status(models.Model):
     ''' reply to a review, etc '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    status_type = models.CharField(max_length=255, default='Note')
+    reply_parent = models.ForeignKey(
+        'self',
+        null=True,
+        on_delete=models.PROTECT
+    )
+    content = models.TextField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    objects = InheritanceManager()
+
+
+class Review(Status):
+    ''' a book review '''
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    name = models.CharField(max_length=255)
+    rating = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
+
     def save(self, *args, **kwargs):
-        self.activity_type = 'Note'
+        self.status_type = 'Review'
         super().save(*args, **kwargs)
 
 

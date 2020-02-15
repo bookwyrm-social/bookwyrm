@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
+from fedireads.activity import create_review
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 from fedireads.settings import DOMAIN
@@ -216,34 +217,57 @@ def handle_unshelve(user, book, shelf):
 
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
-    review_uuid = uuid4()
-    obj = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': str(review_uuid),
-        'type': 'Article',
+    # validated and saves the review in the database so it has an id
+    review = create_review(user, book, name, content, rating)
+
+    review_path = 'https://%s/user/%s/status/%d' % \
+        (DOMAIN, user.localname, review.id)
+    book_path = 'https://%s/book/%s' % (DOMAIN, review.book.openlibrary_key)
+
+    review_activity = {
+        'id': review_path,
+        'url': review_path,
+        'inReplyTo': book_path,
         'published': datetime.utcnow().isoformat(),
         'attributedTo': user.actor,
-        'name': name,
+        # TODO: again, assuming all posts are public
+        'to': ['https://www.w3.org/ns/activitystreams#Public'],
+        'cc': ['https://%s/user/%s/followers' % (DOMAIN, user.localname)],
+        'sensitive': False, # TODO: allow content warning/sensitivity
         'content': content,
-        'inReplyTo': book.openlibrary_key, # TODO is this the right identifier?
+        'type': 'Note',
+        'fedireadsType': 'Review',
+        'name': name,
         'rating': rating, # fedireads-only custom field
-        'to': 'https://www.w3.org/ns/activitystreams#Public'
+        'attachment': [], # TODO: the book cover
+        'replies': {
+            'id': '%s/replies' % review_path,
+            'type': 'Collection',
+            'first': {
+                'type': 'CollectionPage',
+                'next': '%s/replies?only_other_accounts=true&page=true' % \
+                    review_path,
+                'partOf': '%s/replies' % review_path,
+                'items': [], # TODO: populate with replies
+            }
+        }
     }
-    # TODO: create alt version for mastodon
-    recipients = get_recipients(user, 'public')
-    create_uuid = uuid4()
+
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
 
-        'id': str(create_uuid),
+        'id': '%s/activity' % review_path,
         'type': 'Create',
         'actor': user.actor,
+        'published': datetime.utcnow().isoformat(),
 
         'to': ['%s/followers' % user.actor],
         'cc': ['https://www.w3.org/ns/activitystreams#Public'],
 
-        'object': obj,
+        'object': review_activity,
+        # TODO: signature
     }
 
+    recipients = get_recipients(user, 'public')
     broadcast(user, activity, recipients)
 

@@ -28,7 +28,7 @@ class RegisterForm(ModelForm):
 class ReviewForm(ModelForm):
     class Meta:
         model = models.Review
-        fields = ['name', 'review_content', 'rating']
+        fields = ['name', 'content', 'rating']
         help_texts = {f: None for f in fields}
         review_content = IntegerField(validators=[
             MinValueValidator(0), MaxValueValidator(5)

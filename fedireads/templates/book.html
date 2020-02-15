@@ -23,7 +23,7 @@
             <h4>{{ review.name }}
                 <small>{{ review.rating | stars }} stars, by {% include 'snippets/username.html' with user=review.user %}</small>
             </h4>
-            <blockquote>{{ review.review_content }}</blockquote>
+            <blockquote>{{ review.content }}</blockquote>
         </div>
         {% endfor %}
     </div>

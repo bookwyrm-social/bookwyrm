@@ -11,6 +11,7 @@ import requests
 
 from fedireads import models
 from fedireads import outgoing
+from fedireads.activity import create_review
 from fedireads.openlibrary import get_or_create_book
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.sanitize_html import InputHtmlParser
@@ -290,45 +291,33 @@ def handle_incoming_create(activity):
 
     response = HttpResponse()
     # if it's an article and in reply to a book, we have a review
-    if activity['object']['type'] == 'Article' and \
+    if activity['object']['fedireadsType'] == 'Review' and \
             'inReplyTo' in activity['object']:
-        response = create_review(user, activity)
+        book = activity['object']['inReplyTo']
+        name = activity['object'].get('name')
+        content = activity['object'].get('content')
+        rating = activity['object'].get('rating')
+        try:
+            create_review(user, book, name, content, rating)
+        except ValueError:
+            return HttpResponseBadRequest()
+        models.ReviewActivity(
+            uuid=activity['id'],
+            user=user,
+            content=activity,
+            activity_type=activity['object']['type'],
+            book=book,
+        ).save()
 
-    models.Activity(
-        uuid=activity['id'],
-        user=user,
-        content=activity,
-        activity_type=activity['object']['type']
-    )
+    else:
+        models.Activity(
+            uuid=activity['id'],
+            user=user,
+            content=activity,
+            activity_type=activity['object']['type']
+        ).save()
     return response
 
-
-def create_review(user, activity):
-    ''' a book review has been added '''
-    possible_book = activity['object']['inReplyTo']
-    try:
-        book = get_or_create_book(possible_book)
-    except ValueError:
-        return HttpResponseNotFound('Book \'%s\' not found' % possible_book)
-
-    content = activity['object'].get('content')
-    parser = InputHtmlParser()
-    parser.feed(content)
-    content = parser.get_output()
-    review_title = activity['object'].get('name', 'Untitled')
-    rating = activity['object'].get('rating', 0)
-
-    models.Review(
-        uuid=activity.get('id'),
-        user=user,
-        content=activity,
-        activity_type='Article',
-        book=book,
-        name=review_title,
-        rating=rating,
-        review_content=content,
-    ).save()
-    return HttpResponse()
 
 
 def handle_incoming_accept(activity):
@@ -349,15 +338,4 @@ def handle_incoming_accept(activity):
         content=activity,
     ).save()
     return HttpResponse()
-
-
-def handle_response(response):
-    ''' hopefully it's an accept from our follow request '''
-    try:
-        activity = response.json()
-    except ValueError:
-        return
-    if activity['type'] == 'Accept':
-        handle_incoming_accept(activity)
-
 

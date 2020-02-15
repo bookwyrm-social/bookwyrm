@@ -8,8 +8,6 @@ import json
 import requests
 from urllib.parse import urlparse
 
-from fedireads import incoming
-
 
 def get_recipients(user, post_privacy, direct_recipients=None):
     ''' deduplicated list of recipient inboxes '''
@@ -40,7 +38,7 @@ def broadcast(sender, activity, recipients):
     errors = []
     for recipient in recipients:
         try:
-            sign_and_send(sender, activity, recipient)
+            response = sign_and_send(sender, activity, recipient)
         except requests.exceptions.HTTPError as e:
             # TODO: maybe keep track of users who cause errors
             errors.append({
@@ -85,5 +83,5 @@ def sign_and_send(sender, activity, destination):
     )
     if not response.ok:
         response.raise_for_status()
-    incoming.handle_response(response)
+    return response
 

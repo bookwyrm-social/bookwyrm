@@ -233,14 +233,13 @@ def review(request):
     if not form.is_valid():
         return redirect('/')
     book_identifier = request.POST.get('book')
-    book = openlibrary.get_or_create_book(book_identifier)
 
     # TODO: validation, htmlification
     name = form.data.get('name')
-    content = form.data.get('review_content')
-    rating = form.data.get('rating')
+    content = form.data.get('content')
+    rating = int(form.data.get('rating'))
 
-    outgoing.handle_review(request.user, book, name, content, rating)
+    outgoing.handle_review(request.user, book_identifier, name, content, rating)
     return redirect('/book/%s' % book_identifier)
 
 
