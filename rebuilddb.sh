@@ -6,8 +6,16 @@ if [ ! -f .env ]; then
   cp .env.example .env
 fi
 
-dropdb fedireads
-createdb fedireads
+source .env
+
+if [ $FEDIREADS_DATABASE_BACKEND = 'sqlite' ]; then
+  rm fedireads.db
+else
+  # assume postgres
+  dropdb fedireads
+  createdb fedireads
+fi
+
 python manage.py makemigrations fedireads
 python manage.py migrate
 

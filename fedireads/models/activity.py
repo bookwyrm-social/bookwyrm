@@ -1,9 +1,9 @@
 ''' models for storing different kinds of Activities '''
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
+from fedireads.utils.fields import JSONField
 
 class Activity(models.Model):
     ''' basic fields for storing activities '''

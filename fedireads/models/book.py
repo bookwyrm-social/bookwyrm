@@ -3,13 +3,13 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from Crypto import Random
 from Crypto.PublicKey import RSA
 import re
 
 from fedireads.settings import DOMAIN, OL_URL
+from fedireads.utils.fields import JSONField
 
 class Shelf(models.Model):
     activitypub_id = models.CharField(max_length=255)
