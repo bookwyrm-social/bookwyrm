@@ -24,7 +24,6 @@ def get_or_create_remote_user(actor):
     data = response.json()
 
     # the webfinger format for the username.
-    # TODO: get the user's domain in a better way
     actor_parts = urlparse(actor)
     username = '%s@%s' % (actor_parts.path.split('/')[-1], actor_parts.netloc)
     shared_inbox = data.get('endpoints').get('sharedInbox') if \
@@ -40,7 +39,7 @@ def get_or_create_remote_user(actor):
             inbox=data['inbox'], #fail if there's no inbox
             outbox=data['outbox'], # fail if there's no outbox
             shared_inbox=shared_inbox,
-            # TODO: probably shouldn't bother to store this for remote users
+            # TODO: I'm never actually using this for remote users
             public_key=data.get('publicKey').get('publicKeyPem'),
             local=False
         )
