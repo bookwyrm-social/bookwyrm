@@ -108,6 +108,24 @@ def handle_outgoing_follow(user, to_follow):
         raise(error['error'])
 
 
+def handle_outgoing_accept(user, to_follow, activity):
+    ''' send an acceptance message to a follow request '''
+    to_follow.followers.add(user)
+    activity = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': 'https://%s/%s#accepts/follows/' % (DOMAIN, to_follow.localname),
+        'type': 'Accept',
+        'actor': to_follow.actor,
+        'object': activity,
+    }
+    recipient = get_recipients(
+        to_follow,
+        'direct',
+        direct_recipients=[user]
+    )
+    broadcast(to_follow, activity, recipient)
+
+
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database

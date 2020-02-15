@@ -16,7 +16,7 @@ def get_recipients(user, post_privacy, direct_recipients=None):
     recipients = direct_recipients or []
     if post_privacy == 'direct':
         # all we care about is direct_recipients, not followers
-        return recipients
+        return [u.inbox for u in recipients]
 
     # load all the followers of the user who is sending the message
     followers = user.followers.all()

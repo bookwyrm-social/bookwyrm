@@ -8,13 +8,12 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
-from uuid import uuid4
 
 from fedireads import models
-from fedireads.remote_user import get_or_create_remote_user
+from fedireads import outgoing
 from fedireads.openlibrary import get_or_create_book
+from fedireads.remote_user import get_or_create_remote_user
 from fedireads.sanitize_html import InputHtmlParser
-from fedireads.settings import DOMAIN
 
 
 def webfinger(request):
@@ -259,25 +258,16 @@ def handle_incoming_follow(activity):
     to_follow = models.User.objects.get(actor=activity['object'])
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
-    to_follow.followers.add(user)
-    # verify uuid and accept the request
     models.FollowActivity(
         uuid=activity['id'],
         user=user,
         followed=to_follow,
         content=activity,
-        activity_type='Follow',
     )
-    uuid = uuid4()
-    # TODO does this need to be signed?
-    # TODO: handle users who moderate followers instead of auto-accepting
-    return JsonResponse({
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': 'https://%s/%s' % (DOMAIN, uuid),
-        'type': 'Accept',
-        'actor': user.actor,
-        'object': activity,
-    })
+    # TODO: allow users to manually approve requests
+    outgoing.handle_outgoing_accept(user, to_follow, activity)
+    return HttpResponse()
+
 
 
 def handle_incoming_follow_accept(activity):
