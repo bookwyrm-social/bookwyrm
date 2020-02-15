@@ -47,26 +47,51 @@ def shared_inbox(request):
     try:
         activity = json.loads(request.body)
     except json.decoder.JSONDecodeError:
-        return HttpResponseBadRequest
+        return HttpResponseBadRequest()
 
-    # verify rsa signature
-    signature_header = request.headers['Signature'].split(',')
+    try:
+        verify_signature(request)
+    except ValueError:
+        return HttpResponse(status=401)
+
+    response = HttpResponseNotFound()
+    if activity['type'] == 'Add':
+        response = handle_incoming_shelve(activity)
+
+    if activity['type'] == 'Follow':
+        response = handle_incoming_follow(activity)
+
+    if activity['type'] == 'Create':
+        response = handle_incoming_create(activity)
+
+    if activity['type'] == 'Accept':
+        response = handle_incoming_follow_accept(activity)
+
+    return response
+
+
+
+def verify_signature(request):
+    ''' verify rsa signature '''
     signature_dict = {}
-    for pair in signature_header:
+    for pair in request.headers['Signature'].split(','):
         k, v = pair.split('=', 1)
         v = v.replace('"', '')
         signature_dict[k] = v
 
-    key_id = signature_dict['keyId']
-    headers = signature_dict['headers']
-    signature = b64decode(signature_dict['signature'])
+    try:
+        key_id = signature_dict['keyId']
+        headers = signature_dict['headers']
+        signature = b64decode(signature_dict['signature'])
+    except KeyError:
+        raise ValueError('Invalid auth header')
 
     response = requests.get(
         key_id,
         headers={'Accept': 'application/activity+json'}
     )
     if not response.ok:
-        return HttpResponse(status=401)
+        raise ValueError('Could not load public key')
 
     actor = response.json()
     key = RSA.import_key(actor['publicKey']['publicKeyPem'])
@@ -85,24 +110,11 @@ def shared_inbox(request):
     signer = pkcs1_15.new(key)
     digest = SHA256.new()
     digest.update(comparison_string.encode())
-    try:
-        signer.verify(digest, signature)
-    except ValueError:
-        return HttpResponse(status=401)
 
-    if activity['type'] == 'Add':
-        return handle_incoming_shelve(activity)
+    # raises a ValueError if it fails
+    signer.verify(digest, signature)
 
-    if activity['type'] == 'Follow':
-        return handle_incoming_follow(activity)
-
-    if activity['type'] == 'Create':
-        return handle_incoming_create(activity)
-
-    if activity['type'] == 'Accept':
-        return handle_incoming_follow_accept(activity)
-
-    return HttpResponseNotFound()
+    return True
 
 
 @csrf_exempt
@@ -257,6 +269,7 @@ def handle_incoming_follow(activity):
     )
     uuid = uuid4()
     # TODO does this need to be signed?
+    # TODO: handle users who moderate followers instead of auto-accepting
     return JsonResponse({
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': 'https://%s/%s' % (DOMAIN, uuid),
