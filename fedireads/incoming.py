@@ -99,6 +99,10 @@ def shared_inbox(request):
     if activity['type'] == 'Create':
         return handle_incoming_create(activity)
 
+    if activity['type'] == 'Accept':
+        # aww yay, friendship
+        return HttpResponse()
+
     return HttpResponseNotFound()
 
 
