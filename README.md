@@ -26,7 +26,7 @@ This creates two users, `mouse` with password `password123` and `rat` with passw
 
 And go to the app at `localhost:8000`
 
-For most testing, you'll want to use ngrok. Remember to set the DOMAIN in settings.py to your ngrok domain.
+For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
 
 
 ## Structure
