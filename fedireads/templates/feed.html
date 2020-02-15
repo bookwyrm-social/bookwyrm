@@ -86,6 +86,9 @@
         {% elif activity.activity_type == 'Follow' %}
             started following someone
         </h2>
+        {% elif activity.activity_type == 'Note' %}
+            posted</h2>
+            {{ activity.content.object.content | safe }}
         {% else %}
         {# generic handling for a misc activity, which perhaps should not be displayed at all #}
             did {{ activity.activity_type }}
