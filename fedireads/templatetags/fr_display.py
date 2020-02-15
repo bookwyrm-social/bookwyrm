@@ -13,7 +13,7 @@ def stars(number):
     ''' turn integers into stars '''
     try:
         number = int(number)
-    except TypeError:
+    except (ValueError, TypeError):
         number = 0
     return ('★' * number) + '☆' * (5 - number)
 

@@ -49,6 +49,7 @@ class ReviewActivity(Activity):
 
     def save(self, *args, **kwargs):
         self.activity_type = 'Article'
+        self.fedireads_type = 'Review'
         super().save(*args, **kwargs)
 
 
