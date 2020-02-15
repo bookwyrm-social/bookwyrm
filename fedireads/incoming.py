@@ -293,34 +293,48 @@ def handle_incoming_follow_accept(activity):
 def handle_incoming_create(activity):
     ''' someone did something, good on them '''
     user = get_or_create_remote_user(activity['actor'])
-    uuid = activity['id']
+
+    if not 'object' in activity:
+        return HttpResponseBadRequest()
+
+    response = HttpResponse()
     # if it's an article and in reply to a book, we have a review
     if activity['object']['type'] == 'Article' and \
             'inReplyTo' in activity['object']:
-        possible_book = activity['object']['inReplyTo']
-        try:
-            # TODO idk about this error handling, should probs be more granular
-            book = get_or_create_book(possible_book)
-            models.Review(
-                uuid=uuid,
-                user=user,
-                content=activity,
-                activity_type='Article',
-                book=book,
-                name=activity['object']['name'],
-                rating=activity['object']['rating'],
-                review_content=activity['objet']['content'],
-            ).save()
-            return HttpResponse()
-        except KeyError:
-            pass
+        response = create_review(user, activity)
 
-    models.Activity(
-        uuid=uuid,
+    if not user.local:
+        models.Activity(
+            uuid=activity['uuid'],
+            user=user,
+            content=activity,
+            activity_type=activity['object']['type']
+        )
+    return response
+
+
+def create_review(user, activity):
+    ''' a book review has been added '''
+    possible_book = activity['object']['inReplyTo']
+    try:
+        book = get_or_create_book(possible_book)
+    except ValueError:
+        return HttpResponseNotFound('Book \'%s\' not found' % possible_book)
+
+    content = activity['object'].get('content')
+    review_title = activity['object'].get('name', 'Untitled')
+    rating = activity['object'].get('rating', 0)
+
+    models.Review(
+        uuid=activity.get('id'),
         user=user,
         content=activity,
-        activity_type=activity['object']['type']
-    )
+        activity_type='Article',
+        book=book,
+        name=review_title,
+        rating=rating,
+        review_content=content,
+    ).save()
     return HttpResponse()
 
 
