@@ -80,7 +80,7 @@
 
                 <h3>{{ activity.name }}</h3>
                 <p>{{ activity.rating | stars }}</p>
-                <p>{{ activity.review_content }}</p>
+                <p>{{ activity.review_content | safe }}</p>
             </div>
             <div class="interaction"><button>⭐️ Like</button></div>
         {% elif activity.activity_type == 'Follow' %}

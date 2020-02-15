@@ -13,6 +13,7 @@ from uuid import uuid4
 from fedireads import models
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.openlibrary import get_or_create_book
+from fedireads.sanitize_html import InputHtmlParser
 from fedireads.settings import DOMAIN
 
 
@@ -321,6 +322,9 @@ def create_review(user, activity):
         return HttpResponseNotFound('Book \'%s\' not found' % possible_book)
 
     content = activity['object'].get('content')
+    parser = InputHtmlParser()
+    parser.feed(content)
+    content = parser.get_output()
     review_title = activity['object'].get('name', 'Untitled')
     rating = activity['object'].get('rating', 0)
 
