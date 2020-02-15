@@ -3,12 +3,12 @@ from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
-from datetime import datetime
+from django.utils.http import http_date
 import json
 import requests
+from urllib.parse import urlparse
 
 from fedireads import incoming
-from fedireads.settings import DOMAIN
 
 
 def get_recipients(user, post_privacy, direct_recipients=None):
@@ -51,13 +51,12 @@ def broadcast(sender, activity, recipients):
 
 def sign_and_send(sender, activity, destination):
     ''' crpyto whatever and http junk '''
-    # TODO: handle http[s] with regex
-    inbox_fragment = sender.inbox.replace('https://%s' % DOMAIN, '')
-    now = datetime.utcnow().isoformat()
+    inbox_parts = urlparse(destination)
+    now = http_date()
     signature_headers = [
-        '(request-target): post %s' % inbox_fragment,
-        'host: https://%s' % DOMAIN,
-        'date: %s' %  now
+        '(request-target): post %s' % inbox_parts.path,
+        'host: %s' % inbox_parts.netloc,
+        'date: %s' % now
     ]
     message_to_sign = '\n'.join(signature_headers)
 
@@ -79,7 +78,6 @@ def sign_and_send(sender, activity, destination):
         headers={
             'Date': now,
             'Signature': signature,
-            'Host': 'https://%s' % DOMAIN,
             'Content-Type': 'application/activity+json; charset=utf-8',
         },
     )
