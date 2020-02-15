@@ -22,9 +22,11 @@ def get_recipients(user, post_privacy, direct_recipients=None):
     followers = user.followers.all()
     if post_privacy == 'public':
         # post to public shared inboxes
-        shared_inboxes = set(u.shared_inbox for u in followers)
+        shared_inboxes = set(
+            u.shared_inbox for u in followers if u.shared_inbox
+        )
         recipients += list(shared_inboxes)
-        # TODO: not every user has a shared inbox
+        recipients += [u.inbox for u in followers if not u.shared_inbox]
         # TODO: direct to anyone who's mentioned
     if post_privacy == 'followers':
         # don't send it to the shared inboxes
