@@ -5,6 +5,9 @@ from model_utils.managers import InheritanceManager
 
 from fedireads.utils.fields import JSONField
 
+# TODO: I don't know that these Activity models should exist, at least in this way
+# but I'm not sure what the right approach is for now.
+
 class Activity(models.Model):
     ''' basic fields for storing activities '''
     uuid = models.CharField(max_length=255, unique=True)
@@ -14,6 +17,7 @@ class Activity(models.Model):
     activity_type = models.CharField(max_length=255)
     # custom types internal to fedireads (Review, Shelve, ...)
     fedireads_type = models.CharField(max_length=255, blank=True, null=True)
+    local = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     objects = InheritanceManager()
@@ -48,7 +52,7 @@ class ReviewActivity(Activity):
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        self.activity_type = 'Article'
+        self.activity_type = 'Note'
         self.fedireads_type = 'Review'
         super().save(*args, **kwargs)
 
@@ -58,6 +62,7 @@ class Status(models.Model):
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
     activity = JSONField(max_length=5000, null=True)
+    local = models.BooleanField(default=True)
     reply_parent = models.ForeignKey(
         'self',
         null=True,

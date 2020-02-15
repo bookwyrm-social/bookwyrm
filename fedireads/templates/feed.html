@@ -10,7 +10,7 @@
         {% for book in to_read.books.all %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
-            <form name="shelve" action="/shelve/{{ user.localname }}_currently-reading/{{ book.id }}" method="post">
+            <form name="shelve" action="/shelve/{{ user.localname }}/reading/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Start reading</button>
@@ -22,7 +22,7 @@
         {% for book in reading.books.all %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
-            <form name="shelve" action="/shelve/{{ user.localname }}_read/{{ book.id }}" method="post">
+            <form name="shelve" action="/shelve/{{ user.localname }}/read/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">I'm done!</button>
@@ -37,7 +37,7 @@
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
             {% if not book in user_books.all %}
-            <form name="shelve" action="/shelve/{{ user.localname }}_to-read/{{ book.id }}" method="post">
+            <form name="shelve" action="/shelve/{{ user.localname }}/to-read/{{ book.id }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="book.id"></input>
                 <button type="submit">Want to read</button>
@@ -57,11 +57,11 @@
             {% include 'snippets/username.html' with user=activity.user %}
         {% if activity.fedireads_type == 'Shelve' %}
             {# display a reading/shelving activity #}
-            {% if activity.shelf.shelf_type == 'to-read' %}
+            {% if activity.shelf.identifier == 'to-read' %}
                 wants to read
-            {% elif activity.shelf.shelf_type == 'read' %}
+            {% elif activity.shelf.identifier == 'read' %}
                 finished reading
-            {% elif activity.shelf.shelf_type == 'reading' %}
+            {% elif activity.shelf.identifier == 'reading' %}
                 started reading
             {% else %}
                 shelved in "{{ activity.shelf.name }}"

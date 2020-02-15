@@ -13,7 +13,6 @@ class User(AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
-    api_key = models.CharField(max_length=255, blank=True, null=True)
     actor = models.CharField(max_length=255, unique=True)
     inbox = models.CharField(max_length=255, unique=True)
     shared_inbox = models.CharField(max_length=255, blank=True, null=True)
@@ -41,7 +40,6 @@ class User(AbstractUser):
 class FederatedServer(models.Model):
     ''' store which server's we federate with '''
     server_name = models.CharField(max_length=255, unique=True)
-    shared_inbox = models.CharField(max_length=255, unique=True)
     # federated, blocked, whatever else
     status = models.CharField(max_length=255, default='federated')
     # is it mastodon, fedireads, etc
@@ -50,7 +48,7 @@ class FederatedServer(models.Model):
 
 @receiver(models.signals.pre_save, sender=User)
 def execute_before_save(sender, instance, *args, **kwargs):
-    ''' create shelves for new users '''
+    ''' populate fields for new local users '''
     # this user already exists, no need to poplate fields
     if instance.id or not instance.local:
         return
@@ -72,25 +70,24 @@ def execute_before_save(sender, instance, *args, **kwargs):
 @receiver(models.signals.post_save, sender=User)
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' create shelves for new users '''
-    # TODO: how are remote users handled? what if they aren't readers?
     if not instance.local or not created:
         return
 
     shelves = [{
         'name': 'To Read',
-        'type': 'to-read',
+        'identifier': 'to-read',
     }, {
         'name': 'Currently Reading',
-        'type': 'reading',
+        'identifier': 'reading',
     }, {
         'name': 'Read',
-        'type': 'read',
+        'identifier': 'read',
     }]
 
     for shelf in shelves:
         Shelf(
             name=shelf['name'],
-            shelf_type=shelf['type'],
+            identifier=shelf['identifier'],
             user=instance,
             editable=False
         ).save()

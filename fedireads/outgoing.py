@@ -158,7 +158,8 @@ def handle_shelve(user, book, shelf):
         'target': {
             'type': 'Collection',
             'name': shelf.name,
-            'id': shelf.activitypub_id
+            'id': 'https://%s/user/%s/shelf/%s' % \
+                (DOMAIN, user.localname, shelf.identifier)
         }
     }
     recipients = get_recipients(user, 'public')
@@ -202,7 +203,8 @@ def handle_unshelve(user, book, shelf):
         'target': {
             'type': 'Collection',
             'name': shelf.name,
-            'id': shelf.activitypub_id
+            'id': 'https://%s/user/%s/shelf/%s' % \
+                (DOMAIN, user.localname, shelf.identifier)
         }
     }
     recipients = get_recipients(user, 'public')

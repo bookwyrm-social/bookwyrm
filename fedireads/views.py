@@ -17,11 +17,11 @@ def home(request):
     # user's shelves for display
     reading = models.Shelf.objects.get(
         user=request.user,
-        shelf_type='reading'
+        identifier='reading'
     )
     to_read = models.Shelf.objects.get(
         user=request.user,
-        shelf_type='to-read'
+        identifier='to-read'
     )
 
     # allows us to check if a user has shelved a book
@@ -208,10 +208,18 @@ def author_page(request, author_identifier):
 
 
 @login_required
-def shelve(request, shelf_id, book_id, reshelve=True):
+def shelve(request, username, shelf_id, book_id, reshelve=True):
     ''' put a book on a user's shelf '''
+    if request.user.localname != username:
+        # don't let people put books on other people's shelves
+        return HttpResponseNotFound()
+
     book = models.Book.objects.get(id=book_id)
-    desired_shelf = models.Shelf.objects.get(identifier=shelf_id)
+    desired_shelf = models.Shelf.objects.filter(
+        identifier=shelf_id,
+        user=request.user
+    ).first()
+
     if reshelve:
         try:
             current_shelf = models.Shelf.objects.get(
@@ -220,6 +228,7 @@ def shelve(request, shelf_id, book_id, reshelve=True):
             )
             outgoing.handle_unshelve(request.user, book, current_shelf)
         except models.Shelf.DoesNotExist:
+            # this just means it isn't currently on the user's shelves
             pass
     outgoing.handle_shelve(request.user, book, desired_shelf)
     return redirect('/')
