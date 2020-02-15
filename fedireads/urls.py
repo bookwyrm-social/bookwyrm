@@ -20,7 +20,8 @@ urlpatterns = [
 
     # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
-    re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo),
+    re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo_pointer),
+    re_path(r'^nodeinfo/2\.0/?$', wellknown.nodeinfo),
     re_path(r'^api/v1/instance/?$', wellknown.instance_info),
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 

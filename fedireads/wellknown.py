@@ -30,8 +30,8 @@ def webfinger(request):
     })
 
 
-def nodeinfo(request):
-    ''' idk what this is, but mastodon asked for it '''
+def nodeinfo_pointer(request):
+    ''' direct servers to nodeinfo '''
     if request.method != 'GET':
         return HttpResponseNotFound()
 
@@ -43,6 +43,34 @@ def nodeinfo(request):
             }
         ]
     })
+
+def nodeinfo(request):
+    ''' basic info about the server '''
+    if request.method != 'GET':
+        return HttpResponseNotFound()
+
+    status_count = models.Status.objects.count()
+    user_count = models.User.objects.count()
+    return JsonResponse({
+        "version": "2.0",
+        "software": {
+            "name": "mastodon",
+            "version": "3.0.1"
+        },
+        "protocols": [
+            "activitypub"
+        ],
+        "usage": {
+            "users": {
+                "total": user_count,
+                "activeMonth": user_count, # TODO
+                "activeHalfyear": user_count, # TODO
+            },
+            "localPosts": status_count, # TODO: mark local
+        },
+        "openRegistrations": True,
+    })
+
 
 
 def instance_info(request):
