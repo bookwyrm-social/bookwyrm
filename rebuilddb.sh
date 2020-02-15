@@ -1,5 +1,4 @@
 #!/bin/bash
-rm fedireads/migrations/0*
 set -e
 dropdb fedireads
 createdb fedireads

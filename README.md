@@ -18,8 +18,7 @@ CREATE ROLE fedireads WITH LOGIN PASSWORD 'fedireads';
 GRANT ALL PRIVILEGES ON DATABASE fedireads TO fedireads;
 ```
 
-Initialize the database (this will also delete and re-create the migrations, which is not
-a good idea for the long term but it's what I'm doing right now).
+Initialize the database (or, more specifically, delete the existing database, run migrations, and start fresh):
 ``` bash
 ./rebuilddb.sh
 ```
