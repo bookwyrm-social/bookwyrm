@@ -38,7 +38,7 @@ def broadcast(sender, activity, recipients):
     errors = []
     for recipient in recipients:
         try:
-            response = sign_and_send(sender, activity, recipient)
+            sign_and_send(sender, activity, recipient)
         except requests.exceptions.HTTPError as e:
             # TODO: maybe keep track of users who cause errors
             errors.append({

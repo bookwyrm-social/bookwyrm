@@ -36,17 +36,18 @@ def shared_inbox(request):
     if activity['type'] == 'Add':
         response = handle_incoming_shelve(activity)
 
-    if activity['type'] == 'Follow':
+    elif activity['type'] == 'Follow':
         response = handle_incoming_follow(activity)
 
-    if activity['type'] == 'Create':
+    elif activity['type'] == 'Create':
         response = handle_incoming_create(activity)
 
-    if activity['type'] == 'Accept':
+    elif activity['type'] == 'Accept':
         response = handle_incoming_follow_accept(activity)
 
-    return response
+    # TODO: Undo, Remove, etc
 
+    return response
 
 
 def verify_signature(request):
@@ -156,8 +157,6 @@ def get_status(request, username, status_id):
     return JsonResponse(status.activity)
 
 
-
-
 @csrf_exempt
 def get_followers(request, username):
     ''' return a list of followers for an actor '''
@@ -193,6 +192,7 @@ def format_follow_info(user, page, follow_queryset):
         'totalItems': count,
         'first': '%s?page=1' % id_slug,
     })
+
 
 def get_follow_page(user_list, id_slug, page):
     ''' format a list of followers/following '''
@@ -243,15 +243,7 @@ def handle_incoming_shelve(activity):
 
 
 def handle_incoming_follow(activity):
-    '''
-    {
-	"@context": "https://www.w3.org/ns/activitystreams",
-	"id": "https://friend.camp/768222ce-a1c7-479c-a544-c93b8b67fb54",
-	"type": "Follow",
-	"actor": "https://friend.camp/users/tripofmice",
-	"object": "https://ff2cb3e9.ngrok.io/api/u/mouse"
-    }
-    '''
+    ''' someone wants to follow a local user '''
     # figure out who they want to follow
     to_follow = models.User.objects.get(actor=activity['object'])
     # figure out who they are
@@ -265,7 +257,6 @@ def handle_incoming_follow(activity):
     # TODO: allow users to manually approve requests
     outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
-
 
 
 def handle_incoming_follow_accept(activity):
@@ -318,7 +309,6 @@ def handle_incoming_create(activity):
             activity_type=activity['object']['type']
         )
     return response
-
 
 
 def handle_incoming_accept(activity):
