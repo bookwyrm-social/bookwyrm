@@ -56,6 +56,7 @@ class Status(models.Model):
     ''' reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
+    activity = JSONField(max_length=5000, null=True)
     reply_parent = models.ForeignKey(
         'self',
         null=True,

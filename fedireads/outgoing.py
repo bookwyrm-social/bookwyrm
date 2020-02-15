@@ -252,8 +252,10 @@ def handle_review(user, book, name, content, rating):
             }
         }
     }
+    review.activity = review_activity
+    review.save()
 
-    activity = {
+    create_activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
 
         'id': '%s/activity' % review_path,
@@ -269,5 +271,5 @@ def handle_review(user, book, name, content, rating):
     }
 
     recipients = get_recipients(user, 'public')
-    broadcast(user, activity, recipients)
+    broadcast(user, create_activity, recipients)
 

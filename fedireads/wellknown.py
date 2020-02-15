@@ -55,7 +55,7 @@ def nodeinfo(request):
         "version": "2.0",
         "software": {
             "name": "mastodon",
-            "version": "3.0.1"
+            "version": "0.0.1"
         },
         "protocols": [
             "activitypub"

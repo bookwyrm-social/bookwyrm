@@ -16,6 +16,15 @@ urlpatterns = [
     re_path(r'^user/(?P<username>\w+)/outbox/?$', outgoing.outbox),
     re_path(r'^user/(?P<username>\w+)/followers/?$', incoming.get_followers),
     re_path(r'^user/(?P<username>\w+)/following/?$', incoming.get_following),
+    re_path(
+        r'^user/(?P<username>\w+)/status/(?P<status_id>\d+)/?$',
+        incoming.get_status
+    ),
+    re_path(
+        r'^user/(?P<username>\w+)/status/(?P<status_id>\d+)/activity/?$',
+        incoming.get_status
+    ),
+    re_path(r'^user/(?P<username>\w+)/status/?$', incoming.get_following),
     # TODO: shelves need pages in the UI and for their activitypub Collection
 
     # .well-known endpoints

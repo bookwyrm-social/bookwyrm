@@ -139,6 +139,26 @@ def get_actor(request, username):
 
 
 @csrf_exempt
+def get_status(request, username, status_id):
+    ''' return activity json for a specific status '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    try:
+        user = models.User.objects.get(localname=username)
+        status = models.Status.objects.get(id=status_id)
+    except ValueError:
+        return HttpResponseNotFound()
+
+    if user != status.user:
+        return HttpResponseNotFound()
+
+    return JsonResponse(status.activity)
+
+
+
+
+@csrf_exempt
 def get_followers(request, username):
     ''' return a list of followers for an actor '''
     if request.method != 'GET':
@@ -267,32 +287,36 @@ def handle_incoming_create(activity):
         return HttpResponseBadRequest()
 
     response = HttpResponse()
-    # if it's an article and in reply to a book, we have a review
-    if activity['object']['fedireadsType'] == 'Review' and \
+    if activity['object'].get('fedireadsType') == 'Review' and \
             'inReplyTo' in activity['object']:
         book = activity['object']['inReplyTo']
+        book = book.split('/')[-1]
         name = activity['object'].get('name')
         content = activity['object'].get('content')
         rating = activity['object'].get('rating')
-        try:
-            create_review(user, book, name, content, rating)
-        except ValueError:
-            return HttpResponseBadRequest()
-        models.ReviewActivity(
+        if user.local:
+            review_id = activity['object']['id'].split('/')[-1]
+            review = models.Review.objects.get(id=review_id)
+        else:
+            try:
+                review = create_review(user, book, name, content, rating)
+            except ValueError:
+                return HttpResponseBadRequest()
+        models.ReviewActivity.objects.create(
             uuid=activity['id'],
             user=user,
-            content=activity,
+            content=activity['object'],
             activity_type=activity['object']['type'],
-            book=book,
-        ).save()
+            book=review.book,
+        )
 
     else:
-        models.Activity(
+        models.Activity.objects.create(
             uuid=activity['id'],
             user=user,
             content=activity,
             activity_type=activity['object']['type']
-        ).save()
+        )
     return response
 
 
