@@ -36,14 +36,16 @@ def shared_inbox(request):
     if activity['type'] == 'Add':
         response = handle_incoming_shelve(activity)
 
-    if activity['type'] == 'Follow':
+    elif activity['type'] == 'Follow':
         response = handle_incoming_follow(activity)
 
-    if activity['type'] == 'Create':
+    elif activity['type'] == 'Create':
         response = handle_incoming_create(activity)
 
-    if activity['type'] == 'Accept':
+    elif activity['type'] == 'Accept':
         response = handle_incoming_follow_accept(activity)
+
+    # TODO: Undo, Remove, etc
 
     return response
 
