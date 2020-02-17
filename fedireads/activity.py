@@ -57,7 +57,7 @@ def create_status(user, content, reply_parent=None, mention_books=None):
 def get_status_json(status):
     ''' create activitypub json for a status '''
     user = status.user
-    uri = 'https://%s/user/%s/status/%d' % (DOMAIN, user.localname, status.id)
+    uri = status.absolute_id
     reply_parent_id = status.reply_parent.id if status.reply_parent else None
     status_json = {
         'id': uri,

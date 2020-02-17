@@ -29,7 +29,7 @@ def home(request):
 
     # books new to the instance, for discovery
     recent_books = models.Book.objects.order_by(
-        '-added_date'
+        '-created_date'
     )[:5]
 
     # status updates for your follow network

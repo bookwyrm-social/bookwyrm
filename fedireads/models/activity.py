@@ -3,8 +3,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
+from fedireads.utils.models import FedireadsModel
 
-class Status(models.Model):
+
+class Status(FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
@@ -19,8 +21,6 @@ class Status(models.Model):
         null=True,
         on_delete=models.PROTECT
     )
-    content = models.TextField(blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add=True)
     objects = InheritanceManager()
 
 

@@ -7,6 +7,7 @@ from django.dispatch import receiver
 
 from fedireads.models import Shelf
 from fedireads.settings import DOMAIN
+from fedireads.utils.models import FedireadsModel
 
 
 class User(AbstractUser):
@@ -33,11 +34,15 @@ class User(AbstractUser):
     name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     followers = models.ManyToManyField('self', symmetrical=False)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+
+    @property
+    def absolute_id(self):
+        ''' users are identified by their username, so overriding this prop '''
+        model_name = type(self).__name__
+        return 'https://%s/%s/%s' % (DOMAIN, model_name, self.localname)
 
 
-class FederatedServer(models.Model):
+class FederatedServer(FedireadsModel):
     ''' store which server's we federate with '''
     server_name = models.CharField(max_length=255, unique=True)
     # federated, blocked, whatever else

@@ -1,9 +1,12 @@
 ''' database schema for books and shelves '''
 from django.db import models
+
+from fedireads.settings import DOMAIN
 from fedireads.utils.fields import JSONField
+from fedireads.utils.models import FedireadsModel
 
 
-class Shelf(models.Model):
+class Shelf(FedireadsModel):
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -14,14 +17,12 @@ class Shelf(models.Model):
         through='ShelfBook',
         through_fields=('shelf', 'book')
     )
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('user', 'identifier')
 
 
-class ShelfBook(models.Model):
+class ShelfBook(FedireadsModel):
     # many to many join table for books and shelves
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
@@ -31,13 +32,12 @@ class ShelfBook(models.Model):
         null=True,
         on_delete=models.PROTECT
     )
-    created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('book', 'shelf')
 
 
-class Book(models.Model):
+class Book(FedireadsModel):
     ''' a non-canonical copy of a work (not book) from open library '''
     openlibrary_key = models.CharField(max_length=255, unique=True)
     data = JSONField()
@@ -56,14 +56,17 @@ class Book(models.Model):
         null=True,
         on_delete=models.PROTECT
     )
-    added_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+
+    @property
+    def absolute_id(self):
+        ''' constructs the absolute reference to any db object '''
+        base_path = 'https://%s' % DOMAIN
+        model_name = self.__name__.lower()
+        return '%s/%s/%d' % (base_path, model_name, self.openlibrary_key)
 
 
-class Author(models.Model):
+class Author(FedireadsModel):
     ''' copy of an author from OL '''
     openlibrary_key = models.CharField(max_length=255)
     data = JSONField()
-    added_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
 
