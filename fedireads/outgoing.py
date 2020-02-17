@@ -30,8 +30,7 @@ def outbox(request, username):
         min_id = request.GET.get('min_id')
         max_id = request.GET.get('max_id')
 
-        outbox_path = 'https://%s%s' % (DOMAIN, request.path)
-        query_path = outbox_path + '?'
+        query_path = user.outbox + '?'
         # filters for use in the django queryset min/max
         filters = {}
         # params for the outbox page id
@@ -54,7 +53,7 @@ def outbox(request, username):
             '@context': 'https://www.w3.org/ns/activitystreams',
             'id': collection_id,
             'type': 'OrderedCollectionPage',
-            'partOf': outbox_path,
+            'partOf': user.outbox,
             'orderedItems': [m.content for m in messages],
         }
         if max_id:
