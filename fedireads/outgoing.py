@@ -1,9 +1,4 @@
 ''' handles all the activity coming out of the server '''
-from base64 import b64encode
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
-from Crypto.Hash import SHA256
-from datetime import datetime
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
@@ -11,7 +6,8 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.activity import create_review
+from fedireads.activity import create_review, get_status_json, get_create_json
+from fedireads.activity import get_add_remove_json
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 from fedireads.settings import DOMAIN
@@ -43,19 +39,17 @@ def outbox(request, username):
             filters['id__lte'] = max_id
         collection_id = query_path + urlencode(params)
 
-        messages = models.Activity.objects.filter(
-            user=user,
-            activity_type__in=['Article', 'Note'],
-            **filters
-            ).all()[:limit]
-
         outbox_page = {
             '@context': 'https://www.w3.org/ns/activitystreams',
             'id': collection_id,
             'type': 'OrderedCollectionPage',
             'partOf': user.outbox,
-            'orderedItems': [m.content for m in messages],
+            'orderedItems': [],
         }
+        statuses = models.Status.objects.filter(user=user, **filters).all()
+        for status in statuses[:limit]:
+            outbox_page['orderedItems'].append(get_status_json(status))
+
         if max_id:
             outbox_page['next'] = query_path + \
                 urlencode({'min_id': max_id, 'page': 'true'})
@@ -65,7 +59,7 @@ def outbox(request, username):
         return JsonResponse(outbox_page)
 
     # collection overview
-    size = models.Review.objects.filter(user=user).count()
+    size = models.Status.objects.filter(user=user).count()
     return JsonResponse({
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': '%s/outbox' % user.actor,
@@ -134,43 +128,11 @@ def handle_outgoing_accept(user, to_follow, activity):
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
+    # TODO: this should probably happen in incoming instead
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
-    # send out the activitypub action
-    summary = '%s marked %s as %s' % (
-        user.username,
-        book.data['title'],
-        shelf.name
-    )
-
-    uuid = uuid4()
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': str(uuid),
-        'summary': summary,
-        'type': 'Add',
-        'actor': user.actor,
-        'object': {
-            'type': 'Document',
-            'name': book.data['title'],
-            'url': book.openlibrary_key
-        },
-        'target': {
-            'type': 'Collection',
-            'name': shelf.name,
-            'id': 'https://%s/user/%s/shelf/%s' % \
-                (DOMAIN, user.localname, shelf.identifier)
-        }
-    }
+    activity = get_add_remove_json(user, book, shelf, 'Add')
     recipients = get_recipients(user, 'public')
-
-    models.ShelveActivity(
-        uuid=uuid,
-        user=user,
-        content=activity,
-        shelf=shelf,
-        book=book,
-    ).save()
 
     broadcast(user, activity, recipients)
 
@@ -178,45 +140,12 @@ def handle_shelve(user, book, shelf):
 def handle_unshelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
+    # TODO: this should probably happen in incoming instead
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()
 
-    # send out the activitypub action
-    summary = '%s removed %s from %s' % (
-        user.username,
-        book.data['title'],
-        shelf.name
-    )
-
-    uuid = uuid4()
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': str(uuid),
-        'summary': summary,
-        'type': 'Remove',
-        'actor': user.actor,
-        'object': {
-            'type': 'Document',
-            'name': book.data['title'],
-            'url': book.openlibrary_key
-        },
-        'target': {
-            'type': 'Collection',
-            'name': shelf.name,
-            'id': 'https://%s/user/%s/shelf/%s' % \
-                (DOMAIN, user.localname, shelf.identifier)
-        }
-    }
+    activity = get_add_remove_json(user, book, shelf, 'Remove')
     recipients = get_recipients(user, 'public')
-
-    models.ShelveActivity(
-        uuid=uuid,
-        user=user,
-        content=activity,
-        shelf=shelf,
-        book=book,
-        activity_type='Remove',
-    ).save()
 
     broadcast(user, activity, recipients)
 
@@ -226,63 +155,10 @@ def handle_review(user, book, name, content, rating):
     # validated and saves the review in the database so it has an id
     review = create_review(user, book, name, content, rating)
 
-    review_path = 'https://%s/user/%s/status/%d' % \
-        (DOMAIN, user.localname, review.id)
-    book_path = 'https://%s/book/%s' % (DOMAIN, review.book.openlibrary_key)
+    #book_path = 'https://%s/book/%s' % (DOMAIN, review.book.openlibrary_key)
 
-    now = datetime.utcnow().isoformat() #TODO: should this be http_date?
-    review_activity = {
-        'id': review_path,
-        'url': review_path,
-        'inReplyTo': book_path,
-        'published': now,
-        'attributedTo': user.actor,
-        # TODO: again, assuming all posts are public
-        'to': ['https://www.w3.org/ns/activitystreams#Public'],
-        'cc': ['https://%s/user/%s/followers' % (DOMAIN, user.localname)],
-        'sensitive': False, # TODO: allow content warning/sensitivity
-        'content': content,
-        'type': 'Note',
-        'fedireadsType': 'Review',
-        'name': name,
-        'rating': rating, # fedireads-only custom field
-        'attachment': [], # TODO: the book cover
-        'replies': {
-            'id': '%s/replies' % review_path,
-            'type': 'Collection',
-            'first': {
-                'type': 'CollectionPage',
-                'next': '%s/replies?only_other_accounts=true&page=true' % \
-                    review_path,
-                'partOf': '%s/replies' % review_path,
-                'items': [], # TODO: populate with replies
-            }
-        }
-    }
-    review.activity = review_activity
-    review.save()
-
-    signer = pkcs1_15.new(RSA.import_key(user.private_key))
-    signed_message = signer.sign(SHA256.new(content.encode('utf8')))
-    create_activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-
-        'id': '%s/activity' % review_path,
-        'type': 'Create',
-        'actor': user.actor,
-        'published': now,
-
-        'to': ['%s/followers' % user.actor],
-        'cc': ['https://www.w3.org/ns/activitystreams#Public'],
-
-        'object': review_activity,
-        'signature': {
-            'type': 'RsaSignature2017',
-            'creator': 'https://%s/user/%s#main-key' % (DOMAIN, user.localname),
-            'created': now,
-            'signatureValue': b64encode(signed_message).decode('utf8'),
-        }
-    }
+    review_activity = get_status_json(review)
+    create_activity = get_create_json(user, review_activity)
 
     recipients = get_recipients(user, 'public')
     broadcast(user, create_activity, recipients)

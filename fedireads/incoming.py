@@ -11,7 +11,7 @@ import requests
 
 from fedireads import models
 from fedireads import outgoing
-from fedireads.activity import create_review
+from fedireads.activity import create_review, create_status
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -33,10 +33,7 @@ def shared_inbox(request):
         return HttpResponse(status=401)
 
     response = HttpResponseNotFound()
-    if activity['type'] == 'Add':
-        response = handle_incoming_shelve(activity)
-
-    elif activity['type'] == 'Follow':
+    if activity['type'] == 'Follow':
         response = handle_incoming_follow(activity)
 
     elif activity['type'] == 'Create':
@@ -45,7 +42,7 @@ def shared_inbox(request):
     elif activity['type'] == 'Accept':
         response = handle_incoming_follow_accept(activity)
 
-    # TODO: Undo, Remove, etc
+    # TODO: Add, Undo, Remove, etc
 
     return response
 
@@ -217,43 +214,12 @@ def get_follow_page(user_list, id_slug, page):
     return data
 
 
-def handle_incoming_shelve(activity):
-    ''' receiving an Add activity (to shelve a book) '''
-    # TODO what happens here? If it's a remote over, then I think
-    # I should save both the activity and the ShelfBook entry. But
-    # I'll do that later.
-    uuid = activity['id']
-    models.ShelveActivity.objects.get(uuid=uuid)
-    '''
-    book_id = activity['object']['url']
-    book = openlibrary.get_or_create_book(book_id)
-    user_ap_id = activity['actor'].replace('https//:', '')
-    user = models.User.objects.get(actor=user_ap_id)
-    if not user or not user.local:
-        return HttpResponseBadRequest()
-
-    shelf = models.Shelf.objects.get(activitypub_id=activity['target']['id'])
-    models.ShelfBook(
-        shelf=shelf,
-        book=book,
-        added_by=user,
-    ).save()
-    '''
-    return HttpResponse()
-
-
 def handle_incoming_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow
     to_follow = models.User.objects.get(actor=activity['object'])
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
-    models.FollowActivity(
-        uuid=activity['id'],
-        user=user,
-        followed=to_follow,
-        content=activity,
-    )
     # TODO: allow users to manually approve requests
     outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
@@ -278,36 +244,27 @@ def handle_incoming_create(activity):
         return HttpResponseBadRequest()
 
     response = HttpResponse()
+    content = activity['object'].get('content')
     if activity['object'].get('fedireadsType') == 'Review' and \
             'inReplyTo' in activity['object']:
         book = activity['object']['inReplyTo']
         book = book.split('/')[-1]
         name = activity['object'].get('name')
-        content = activity['object'].get('content')
         rating = activity['object'].get('rating')
         if user.local:
             review_id = activity['object']['id'].split('/')[-1]
-            review = models.Review.objects.get(id=review_id)
+            models.Review.objects.get(id=review_id)
         else:
             try:
-                review = create_review(user, book, name, content, rating)
+                create_review(user, book, name, content, rating)
             except ValueError:
                 return HttpResponseBadRequest()
-        models.ReviewActivity.objects.create(
-            uuid=activity['id'],
-            user=user,
-            content=activity['object'],
-            activity_type=activity['object']['type'],
-            book=review.book,
-        )
-
     else:
-        models.Activity.objects.create(
-            uuid=activity['id'],
-            user=user,
-            content=activity,
-            activity_type=activity['object']['type']
-        )
+        try:
+            create_status(user, content)
+        except ValueError:
+            return HttpResponseBadRequest()
+
     return response
 
 
@@ -321,12 +278,5 @@ def handle_incoming_accept(activity):
     # save this relationship in the db
     followed.followers.add(user)
 
-    # save the activity record
-    models.FollowActivity(
-        uuid=activity['id'],
-        user=user,
-        followed=followed,
-        content=activity,
-    ).save()
     return HttpResponse()
 
