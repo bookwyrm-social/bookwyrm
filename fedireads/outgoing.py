@@ -30,7 +30,8 @@ def outbox(request, username):
         min_id = request.GET.get('min_id')
         max_id = request.GET.get('max_id')
 
-        path = 'https://%s%s?' % (DOMAIN, request.path)
+        outbox_path = 'https://%s%s' % (DOMAIN, request.path)
+        query_path = outbox_path + '?'
         # filters for use in the django queryset min/max
         filters = {}
         # params for the outbox page id
@@ -41,7 +42,7 @@ def outbox(request, username):
         if max_id != None:
             params['max_id'] = max_id
             filters['id__lte'] = max_id
-        collection_id = path + urlencode(params)
+        collection_id = query_path + urlencode(params)
 
         messages = models.Activity.objects.filter(
             user=user,
@@ -53,14 +54,14 @@ def outbox(request, username):
             '@context': 'https://www.w3.org/ns/activitystreams',
             'id': collection_id,
             'type': 'OrderedCollectionPage',
-            'partOf': 'https://oulipo.social/users/mus/outbox',
+            'partOf': outbox_path,
             'orderedItems': [m.content for m in messages],
         }
         if max_id:
-            outbox_page['next'] = path + \
+            outbox_page['next'] = query_path + \
                 urlencode({'min_id': max_id, 'page': 'true'})
         if min_id:
-            outbox_page['prev'] = path + \
+            outbox_page['prev'] = query_path + \
                 urlencode({'max_id': min_id, 'page': 'true'})
         return JsonResponse(outbox_page)
 
