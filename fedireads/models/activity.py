@@ -8,6 +8,8 @@ class Status(models.Model):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
+    mention_users = models.ManyToManyField('User', related_name='mention_user')
+    mention_books = models.ManyToManyField('Book', related_name='mention_book')
     activity_type = models.CharField(max_length=255, default='Note')
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')

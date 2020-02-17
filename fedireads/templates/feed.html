@@ -70,6 +70,11 @@
         {% elif activity.status_type == 'Note' %}
             posted</h2>
             {{ activity.content | safe }}
+            {% for book in activity.mention_books.all %}
+            <div class="book-preview review">
+                {% include 'snippets/book.html' with book=book size=large description=True %}
+            </div>
+            {% endfor %}
         {% else %}
         {# generic handling for a misc activity, which perhaps should not be displayed at all #}
             did {{ activity.activity_type }}

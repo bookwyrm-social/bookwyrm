@@ -33,7 +33,7 @@ def create_review(user, possible_book, name, content, rating):
     )
 
 
-def create_status(user, content, reply_parent=None):
+def create_status(user, content, reply_parent=None, mention_books=None):
     ''' a status update '''
     # TODO: handle @'ing users
 
@@ -42,11 +42,16 @@ def create_status(user, content, reply_parent=None):
     parser.feed(content)
     content = parser.get_output()
 
-    return models.Status.objects.create(
+    status = models.Status.objects.create(
         user=user,
         content=content,
         reply_parent=reply_parent,
     )
+
+    for book in mention_books:
+        status.mention_books.add(book)
+
+    return status
 
 
 def get_status_json(status):
@@ -113,6 +118,16 @@ def get_create_json(user, status_json):
         }
     }
 
+
+
+def get_add_json(*args):
+    ''' activitypub Add activity '''
+    return get_add_remove_json(*args, action='Add')
+
+
+def get_remove_json(*args):
+    ''' activitypub Add activity '''
+    return get_add_remove_json(*args, action='Remove')
 
 
 def get_add_remove_json(user, book, shelf, action='Add'):

@@ -259,7 +259,7 @@ def handle_incoming_create(activity):
                 create_review(user, book, name, content, rating)
             except ValueError:
                 return HttpResponseBadRequest()
-    else:
+    elif not user.local:
         try:
             create_status(user, content)
         except ValueError:

@@ -6,8 +6,8 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.activity import create_review, get_status_json, get_create_json
-from fedireads.activity import get_add_remove_json
+from fedireads.activity import create_review, create_status, get_status_json
+from fedireads.activity import get_add_json, get_remove_json, get_create_json
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 from fedireads.settings import DOMAIN
@@ -131,10 +131,24 @@ def handle_shelve(user, book, shelf):
     # TODO: this should probably happen in incoming instead
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
-    activity = get_add_remove_json(user, book, shelf, 'Add')
+    activity = get_add_json(user, book, shelf)
     recipients = get_recipients(user, 'public')
-
     broadcast(user, activity, recipients)
+
+    # tell the world about this cool thing that happened
+    verb = {
+        'to-read': 'wants to read',
+        'reading': 'started reading',
+        'read': 'finished reading'
+    }[shelf.identifier]
+    name = user.name if user.name else user.localname
+    message = '%s %s %s' % (name, verb, book.data['title'])
+    status = create_status(user, message, mention_books=[book])
+
+    activity = get_status_json(status)
+    create_activity = get_create_json(user, activity)
+
+    broadcast(user, create_activity, recipients)
 
 
 def handle_unshelve(user, book, shelf):
@@ -144,7 +158,7 @@ def handle_unshelve(user, book, shelf):
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()
 
-    activity = get_add_remove_json(user, book, shelf, 'Remove')
+    activity = get_remove_json(user, book, shelf)
     recipients = get_recipients(user, 'public')
 
     broadcast(user, activity, recipients)
