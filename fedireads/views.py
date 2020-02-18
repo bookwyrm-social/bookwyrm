@@ -36,11 +36,9 @@ def home(request):
     following = models.User.objects.filter(
         Q(followers=request.user) | Q(id=request.user.id)
     )
-    # TODO: this is fundamentally not how the feed should work I think? it
-    # should do something smart with inboxes. (in this implementation it would
-    # show DMs meant for other local users)
+
     activities = models.Status.objects.filter(
-        user__in=following,
+        Q(user__in=following, privacy='public') | Q(mention_users=request.user)
     ).select_subclasses().order_by(
         '-created_date'
     )[:10]
