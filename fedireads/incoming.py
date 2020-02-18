@@ -14,7 +14,6 @@ from fedireads import models
 from fedireads import outgoing
 from fedireads.status import create_review, create_status
 from fedireads.remote_user import get_or_create_remote_user
-from fedireads.settings import DOMAIN
 
 
 @csrf_exempt
@@ -140,24 +139,15 @@ def get_replies(request, username, status_id):
     if request.method != 'GET':
         return HttpResponseBadRequest()
 
+    status = models.Status.objects.get(id=status_id)
+    if status.user.localname != username:
+        return HttpResponseNotFound()
+
     replies = models.Status.objects.filter(
-        reply_parent=status_id
+        reply_parent=status
     ).first()
 
-    path_id = 'https://%s/user/%s/status/%s/replies' % \
-        (DOMAIN, username, status_id)
-    replies_activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': path_id,
-        'type': 'Collection',
-        'first': {
-            'id': '%s?page=true' % path_id,
-            'type': 'CollectionPage',
-            'next': '%s?only_other_accounts=true&page=true' % path_id,
-            'partOf': path_id,
-            'items': [activitypub.get_status(replies)]
-        }
-    }
+    replies_activity = activitypub.get_replies(status, replies)
     return JsonResponse(replies_activity)
 
 

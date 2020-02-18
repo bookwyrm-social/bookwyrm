@@ -13,7 +13,8 @@ def get_status(status):
     ''' create activitypub json for a status '''
     user = status.user
     uri = status.absolute_id
-    reply_parent_id = status.reply_parent.absolute_id if status.reply_parent else None
+    reply_parent_id = status.reply_parent.absolute_id \
+        if status.reply_parent else None
     status_json = {
         'id': uri,
         'url': uri,
@@ -42,4 +43,19 @@ def get_status(status):
     return status_json
 
 
-
+def get_replies(status, replies):
+    ''' collection of replies '''
+    id_slug = status.absolute_id + '/replies'
+    # TODO only partially implemented
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'Collection',
+        'first': {
+            'id': '%s?page=true' % id_slug,
+            'type': 'CollectionPage',
+            'next': '%s?only_other_accounts=true&page=true' % id_slug,
+            'partOf': id_slug,
+            'items': [get_status(r) for r in replies]
+        }
+    }
