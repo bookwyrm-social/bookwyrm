@@ -77,10 +77,10 @@ def handle_outgoing_follow(user, to_follow):
         raise(error['error'])
 
 
-def handle_outgoing_accept(user, to_follow, activity):
+def handle_outgoing_accept(user, to_follow, request_activity):
     ''' send an acceptance message to a follow request '''
     to_follow.followers.add(user)
-    activity = activitypub.get_accept(user, to_follow, activity)
+    activity = activitypub.get_accept(to_follow, request_activity)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
 

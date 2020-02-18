@@ -17,12 +17,13 @@ def get_follow_request(user, to_follow):
     }
 
 
-def get_accept(user, to_follow, request_activity):
+def get_accept(user, request_activity):
+    ''' accept a follow request '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s#accepts/follows/' % to_follow.absolute_id,
+        'id': '%s#accepts/follows/' % user.absolute_id,
         'type': 'Accept',
-        'actor': to_follow.actor,
-        'object': activity,
+        'actor': user.actor,
+        'object': request_activity,
     }
 
