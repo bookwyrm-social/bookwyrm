@@ -3,14 +3,12 @@ from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 from urllib.parse import urlencode
-from uuid import uuid4
 
 from fedireads import models
 from fedireads.status import create_review, create_status
 from fedireads import activitypub
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
-from fedireads.settings import DOMAIN
 
 
 @csrf_exempt
@@ -26,7 +24,6 @@ def outbox(request, username):
         min_id = request.GET.get('min_id')
         max_id = request.GET.get('max_id')
 
-        query_path = user.outbox + '?'
         # filters for use in the django queryset min/max
         filters = {}
         # params for the outbox page id
@@ -37,37 +34,20 @@ def outbox(request, username):
         if max_id != None:
             params['max_id'] = max_id
             filters['id__lte'] = max_id
-        collection_id = query_path + urlencode(params)
 
-        outbox_page = {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': collection_id,
-            'type': 'OrderedCollectionPage',
-            'partOf': user.outbox,
-            'orderedItems': [],
-        }
-        statuses = models.Status.objects.filter(user=user, **filters).all()
-        for status in statuses[:limit]:
-            outbox_page['orderedItems'].append(activitypub.get_status(status))
+        page_id = user.outbox + '?' + urlencode(params)
+        statuses = models.Status.objects.filter(
+            user=user,
+            **filters
+        ).all()[:limit]
 
-        if max_id:
-            outbox_page['next'] = query_path + \
-                urlencode({'min_id': max_id, 'page': 'true'})
-        if min_id:
-            outbox_page['prev'] = query_path + \
-                urlencode({'max_id': min_id, 'page': 'true'})
-        return JsonResponse(outbox_page)
+        return JsonResponse(
+            activitypub.get_outbox_page(user, page_id, statuses, max_id, min_id)
+        )
 
     # collection overview
     size = models.Status.objects.filter(user=user).count()
-    return JsonResponse({
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s/outbox' % user.actor,
-        'type': 'OrderedCollection',
-        'totalItems': size,
-        'first': '%s/outbox?page=true' % user.actor,
-        'last': '%s/outbox?min_id=0&page=true' % user.actor
-    })
+    return JsonResponse(activitypub.get_outbox(user, size))
 
 
 def handle_account_search(query):
@@ -91,16 +71,7 @@ def handle_account_search(query):
 
 def handle_outgoing_follow(user, to_follow):
     ''' someone local wants to follow someone '''
-    uuid = uuid4()
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': 'https://%s/%s' % (DOMAIN, str(uuid)),
-        'summary': '',
-        'type': 'Follow',
-        'actor': user.actor,
-        'object': to_follow.actor,
-    }
-
+    activity = activitypub.get_follow_request(user, to_follow)
     errors = broadcast(user, activity, [to_follow.inbox])
     for error in errors:
         raise(error['error'])
@@ -109,18 +80,8 @@ def handle_outgoing_follow(user, to_follow):
 def handle_outgoing_accept(user, to_follow, activity):
     ''' send an acceptance message to a follow request '''
     to_follow.followers.add(user)
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s#accepts/follows/' % to_follow.absolute_id,
-        'type': 'Accept',
-        'actor': to_follow.actor,
-        'object': activity,
-    }
-    recipient = get_recipients(
-        to_follow,
-        'direct',
-        direct_recipients=[user]
-    )
+    activity = activitypub.get_accept(user, to_follow, activity)
+    recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
 
 
