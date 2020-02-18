@@ -9,10 +9,7 @@ def create_review(user, possible_book, name, content, rating):
     # throws a value error if the book is not found
     book = get_or_create_book(possible_book)
 
-    # sanitize review html
-    parser = InputHtmlParser()
-    parser.feed(content)
-    content = parser.get_output()
+    content = sanitize(content)
 
     # no ratings outside of 0-5
     rating = rating if 0 <= rating <= 5 else 0
@@ -41,8 +38,15 @@ def create_status(user, content, reply_parent=None, mention_books=None):
         reply_parent=reply_parent,
     )
 
-    for book in mention_books:
-        status.mention_books.add(book)
+    if mention_books:
+        for book in mention_books:
+            status.mention_books.add(book)
 
     return status
 
+
+def sanitize(content):
+    ''' remove invalid html from free text '''
+    parser = InputHtmlParser()
+    parser.feed(content)
+    return parser.get_output()

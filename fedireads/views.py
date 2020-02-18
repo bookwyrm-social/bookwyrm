@@ -43,6 +43,7 @@ def home(request):
         '-created_date'
     )[:10]
 
+    comment_form = forms.CommentForm()
     data = {
         'user': request.user,
         'reading': reading,
@@ -50,6 +51,7 @@ def home(request):
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
+        'comment_form': comment_form,
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -248,6 +250,18 @@ def review(request):
 
     outgoing.handle_review(request.user, book_identifier, name, content, rating)
     return redirect('/book/%s' % book_identifier)
+
+
+def comment(request):
+    ''' respond to a book review '''
+    form = forms.CommentForm(request.POST)
+    # this is a bit of a formality, the form is just one text field
+    if not form.is_valid():
+        return redirect('/')
+    review_id = request.POST['review']
+    parent = models.Review.objects.get(id=review_id)
+    outgoing.handle_comment(request.user, parent, form.data['content'])
+    return redirect('/')
 
 
 @login_required

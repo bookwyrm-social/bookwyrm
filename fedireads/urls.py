@@ -24,7 +24,10 @@ urlpatterns = [
         r'^user/(?P<username>\w+)/(status|review)/(?P<status_id>\d+)/activity/?$',
         incoming.get_status
     ),
-    re_path(r'^user/(?P<username>\w+)/(status|review)/?$', incoming.get_following),
+    re_path(
+        r'^user/(?P<username>\w+)/(status|review)/(?P<status_id>\d+)/replies/?$',
+        incoming.get_replies
+    ),
     # TODO: shelves need pages in the UI and for their activitypub Collection
 
     # .well-known endpoints
@@ -47,6 +50,7 @@ urlpatterns = [
 
     # internal action endpoints
     re_path(r'^review/?$', views.review),
+    re_path(r'^comment/?$', views.comment),
     re_path(
         r'^shelve/(?P<username>\w+)/(?P<shelf_id>[\w-]+)/(?P<book_id>\d+)/?$',
         views.shelve

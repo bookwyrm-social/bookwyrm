@@ -4,9 +4,9 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 from urllib.parse import urlencode
 
+from fedireads import activitypub
 from fedireads import models
 from fedireads.status import create_review, create_status
-from fedireads import activitypub
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 
@@ -131,6 +131,17 @@ def handle_review(user, book, name, content, rating):
 
     review_activity = activitypub.get_review(review)
     create_activity = activitypub.get_create(user, review_activity)
+
+    recipients = get_recipients(user, 'public')
+    broadcast(user, create_activity, recipients)
+
+
+def handle_comment(user, review, content):
+    ''' post a review '''
+    # validated and saves the comment in the database so it has an id
+    comment = create_status(user, content, reply_parent=review)
+    comment_activity = activitypub.get_status(comment)
+    create_activity = activitypub.get_create(user, comment_activity)
 
     recipients = get_recipients(user, 'public')
     broadcast(user, create_activity, recipients)

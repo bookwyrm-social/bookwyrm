@@ -66,7 +66,15 @@
                 <p>{{ activity.rating | stars }}</p>
                 <p>{{ activity.content | safe }}</p>
             </div>
-            <div class="interaction"><button>⭐️ Like</button></div>
+            <div class="interaction">
+                <button>⭐️ Like</button>
+                <form name="comment" action="/comment" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="review" value="{{ activity.id }}"></input>
+                    {{ comment_form.content }}
+                    <button type="submit">Comment</button>
+                </form>
+            </div>
         {% elif activity.status_type == 'Note' %}
             posted</h2>
             {{ activity.content | safe }}

@@ -1,7 +1,7 @@
 ''' status serializers '''
 def get_review(review):
     ''' fedireads json for book reviews '''
-    status = get_status_json(review)
+    status = get_status(review)
     status['inReplyTo'] = review.book.absolute_id
     status['fedireadsType'] = review.status_type,
     status['name'] = review.name
