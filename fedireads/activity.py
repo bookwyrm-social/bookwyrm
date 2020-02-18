@@ -8,7 +8,6 @@ from uuid import uuid4
 from fedireads import models
 from fedireads.openlibrary import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
-from fedireads.settings import DOMAIN
 
 
 def create_review(user, possible_book, name, content, rating):
@@ -54,6 +53,16 @@ def create_status(user, content, reply_parent=None, mention_books=None):
     return status
 
 
+def get_review_json(review):
+    ''' fedireads json for book reviews '''
+    status = get_status_json(review)
+    status['inReplyTo'] = review.book.absolute_id
+    status['fedireadsType'] = review.status_type,
+    status['name'] = review.name
+    status['rating'] = review.rating
+    return status
+
+
 def get_status_json(status):
     ''' create activitypub json for a status '''
     user = status.user
@@ -67,11 +76,10 @@ def get_status_json(status):
         'attributedTo': user.actor,
         # TODO: assuming all posts are public -- should check privacy db field
         'to': ['https://www.w3.org/ns/activitystreams#Public'],
-        'cc': ['https://%s/user/%s/followers' % (DOMAIN, user.localname)],
+        'cc': ['%s/followers' % user.absolute_id],
         'sensitive': status.sensitive,
         'content': status.content,
         'type': status.activity_type,
-        'fedireadsType': status.status_type,
         'attachment': [], # TODO: the book cover
         'replies': {
             'id': '%s/replies' % uri,
@@ -84,11 +92,6 @@ def get_status_json(status):
             }
         }
     }
-
-    if status.status_type == 'Review':
-        status_json['name'] = status.name,
-        status_json['rating'] = status.rating
-        status_json['fedireadsType'] = status.status_type
 
     return status_json
 
@@ -112,7 +115,7 @@ def get_create_json(user, status_json):
         'object': status_json,
         'signature': {
             'type': 'RsaSignature2017',
-            'creator': 'https://%s/user/%s#main-key' % (DOMAIN, user.localname),
+            'creator': '%s#main-key' % user.absolute_id,
             'created': status_json['published'],
             'signatureValue': b64encode(signed_message).decode('utf8'),
         }
@@ -146,8 +149,7 @@ def get_add_remove_json(user, book, shelf, action='Add'):
         'target': {
             'type': 'Collection',
             'name': shelf.name,
-            'id': 'https://%s/user/%s/shelf/%s' % \
-                (DOMAIN, user.localname, shelf.identifier)
+            'id': shelf.absolute_id,
         }
     }
 

@@ -6,7 +6,8 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.activity import create_review, create_status, get_status_json
+from fedireads.activity import create_review, create_status
+from fedireads.activity import get_status_json, get_review_json
 from fedireads.activity import get_add_json, get_remove_json, get_create_json
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
@@ -112,7 +113,7 @@ def handle_outgoing_accept(user, to_follow, activity):
     to_follow.followers.add(user)
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': 'https://%s/%s#accepts/follows/' % (DOMAIN, to_follow.localname),
+        'id': '%s#accepts/follows/' % to_follow.absolute_id,
         'type': 'Accept',
         'actor': to_follow.actor,
         'object': activity,
@@ -169,9 +170,7 @@ def handle_review(user, book, name, content, rating):
     # validated and saves the review in the database so it has an id
     review = create_review(user, book, name, content, rating)
 
-    #book_path = 'https://%s/book/%s' % (DOMAIN, review.book.openlibrary_key)
-
-    review_activity = get_status_json(review)
+    review_activity = get_review_json(review)
     create_activity = get_create_json(user, review_activity)
 
     recipients = get_recipients(user, 'public')

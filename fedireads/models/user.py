@@ -38,7 +38,7 @@ class User(AbstractUser):
     @property
     def absolute_id(self):
         ''' users are identified by their username, so overriding this prop '''
-        model_name = type(self).__name__
+        model_name = type(self).__name__.lower()
         return 'https://%s/%s/%s' % (DOMAIN, model_name, self.localname)
 
 
@@ -61,10 +61,10 @@ def execute_before_save(sender, instance, *args, **kwargs):
     # populate fields for local users
     instance.localname = instance.username
     instance.username = '%s@%s' % (instance.username, DOMAIN)
-    instance.actor = 'https://%s/user/%s' % (DOMAIN, instance.localname)
-    instance.inbox = 'https://%s/user/%s/inbox' % (DOMAIN, instance.localname)
+    instance.actor = instance.absolute_id
+    instance.inbox = '%s/inbox' % instance.absolute_id
     instance.shared_inbox = 'https://%s/inbox' % DOMAIN
-    instance.outbox = 'https://%s/user/%s/outbox' % (DOMAIN, instance.localname)
+    instance.outbox = '%s/outbox' % instance.absolute_id
     if not instance.private_key:
         random_generator = Random.new().read
         key = RSA.generate(1024, random_generator)

@@ -13,7 +13,7 @@ class FedireadsModel(models.Model):
         base_path = 'https://%s' % DOMAIN
         if self.user:
             base_path = self.user.absolute_id
-        model_name = type(self).__name__
+        model_name = type(self).__name__.lower()
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
     class Meta:

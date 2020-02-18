@@ -18,6 +18,13 @@ class Shelf(FedireadsModel):
         through_fields=('shelf', 'book')
     )
 
+    @property
+    def absolute_id(self):
+        ''' use shelf identifier as absolute id '''
+        base_path = self.user.absolute_id
+        model_name = type(self).__name__.lower()
+        return '%s/%s/%s' % (base_path, model_name, self.identifier)
+
     class Meta:
         unique_together = ('user', 'identifier')
 
@@ -61,8 +68,8 @@ class Book(FedireadsModel):
     def absolute_id(self):
         ''' constructs the absolute reference to any db object '''
         base_path = 'https://%s' % DOMAIN
-        model_name = self.__name__.lower()
-        return '%s/%s/%d' % (base_path, model_name, self.openlibrary_key)
+        model_name = type(self).__name__.lower()
+        return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
 
 
 class Author(FedireadsModel):

@@ -11,7 +11,7 @@ import requests
 
 from fedireads import models
 from fedireads import outgoing
-from fedireads.activity import create_review, create_status
+from fedireads.activity import create_review, create_status, get_status_json
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -151,7 +151,7 @@ def get_status(request, username, status_id):
     if user != status.user:
         return HttpResponseNotFound()
 
-    return JsonResponse(status.activity)
+    return JsonResponse(get_status_json(status))
 
 
 @csrf_exempt
