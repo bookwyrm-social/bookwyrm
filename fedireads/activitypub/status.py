@@ -13,7 +13,7 @@ def get_status(status):
     ''' create activitypub json for a status '''
     user = status.user
     uri = status.absolute_id
-    reply_parent_id = status.reply_parent.id if status.reply_parent else None
+    reply_parent_id = status.reply_parent.absolute_id if status.reply_parent else None
     status_json = {
         'id': uri,
         'url': uri,

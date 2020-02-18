@@ -155,11 +155,10 @@ def get_replies(request, username, status_id):
             'type': 'CollectionPage',
             'next': '%s?only_other_accounts=true&page=true' % path_id,
             'partOf': path_id,
-            'items': [replies.activity]
+            'items': [activitypub.get_status(replies)]
         }
     }
     return JsonResponse(replies_activity)
-
 
 
 @csrf_exempt
