@@ -9,9 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 
+from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.activity import create_review, create_status, get_status_json
+from fedireads.status import create_review, create_status
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -111,29 +112,7 @@ def get_actor(request, username):
         return HttpResponseBadRequest()
 
     user = models.User.objects.get(localname=username)
-    return JsonResponse({
-        '@context': [
-            'https://www.w3.org/ns/activitystreams',
-            'https://w3id.org/security/v1'
-        ],
-
-        'id': user.actor,
-        'type': 'Person',
-        'preferredUsername': user.localname,
-        'name': user.name,
-        'inbox': user.inbox,
-        'followers': '%s/followers' % user.actor,
-        'following': '%s/following' % user.actor,
-        'summary': user.summary,
-        'publicKey': {
-            'id': '%s/#main-key' % user.actor,
-            'owner': user.actor,
-            'publicKeyPem': user.public_key,
-        },
-        'endpoints': {
-            'sharedInbox': user.shared_inbox,
-        }
-    })
+    return JsonResponse(activitypub.get_actor(user))
 
 
 @csrf_exempt
@@ -151,7 +130,7 @@ def get_status(request, username, status_id):
     if user != status.user:
         return HttpResponseNotFound()
 
-    return JsonResponse(get_status_json(status))
+    return JsonResponse(activitypub.get_status(status))
 
 
 @csrf_exempt

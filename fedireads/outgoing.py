@@ -6,9 +6,8 @@ from urllib.parse import urlencode
 from uuid import uuid4
 
 from fedireads import models
-from fedireads.activity import create_review, create_status
-from fedireads.activity import get_status_json, get_review_json
-from fedireads.activity import get_add_json, get_remove_json, get_create_json
+from fedireads.status import create_review, create_status
+from fedireads import activitypub
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 from fedireads.settings import DOMAIN
@@ -49,7 +48,7 @@ def outbox(request, username):
         }
         statuses = models.Status.objects.filter(user=user, **filters).all()
         for status in statuses[:limit]:
-            outbox_page['orderedItems'].append(get_status_json(status))
+            outbox_page['orderedItems'].append(activitypub.get_status(status))
 
         if max_id:
             outbox_page['next'] = query_path + \
@@ -104,7 +103,6 @@ def handle_outgoing_follow(user, to_follow):
 
     errors = broadcast(user, activity, [to_follow.inbox])
     for error in errors:
-        # TODO: following masto users is returning 400
         raise(error['error'])
 
 
@@ -132,7 +130,7 @@ def handle_shelve(user, book, shelf):
     # TODO: this should probably happen in incoming instead
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
-    activity = get_add_json(user, book, shelf)
+    activity = activitypub.get_add(user, book, shelf)
     recipients = get_recipients(user, 'public')
     broadcast(user, activity, recipients)
 
@@ -146,8 +144,8 @@ def handle_shelve(user, book, shelf):
     message = '%s %s %s' % (name, verb, book.data['title'])
     status = create_status(user, message, mention_books=[book])
 
-    activity = get_status_json(status)
-    create_activity = get_create_json(user, activity)
+    activity = activitypub.get_status(status)
+    create_activity = activitypub.get_create(user, activity)
 
     broadcast(user, create_activity, recipients)
 
@@ -159,7 +157,7 @@ def handle_unshelve(user, book, shelf):
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()
 
-    activity = get_remove_json(user, book, shelf)
+    activity = activitypub.get_remove(user, book, shelf)
     recipients = get_recipients(user, 'public')
 
     broadcast(user, activity, recipients)
@@ -170,8 +168,8 @@ def handle_review(user, book, name, content, rating):
     # validated and saves the review in the database so it has an id
     review = create_review(user, book, name, content, rating)
 
-    review_activity = get_review_json(review)
-    create_activity = get_create_json(user, review_activity)
+    review_activity = activitypub.get_review(review)
+    create_activity = activitypub.get_create(user, review_activity)
 
     recipients = get_recipients(user, 'public')
     broadcast(user, create_activity, recipients)
