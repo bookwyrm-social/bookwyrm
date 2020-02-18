@@ -136,6 +136,7 @@ def get_status(request, username, status_id):
 @csrf_exempt
 def get_replies(request, username, status_id):
     ''' ordered collection of replies to a status '''
+    # TODO: this isn't a full implmentation
     if request.method != 'GET':
         return HttpResponseBadRequest()
 
@@ -147,7 +148,7 @@ def get_replies(request, username, status_id):
         reply_parent=status
     ).first()
 
-    replies_activity = activitypub.get_replies(status, replies)
+    replies_activity = activitypub.get_replies(status, [replies])
     return JsonResponse(replies_activity)
 
 
