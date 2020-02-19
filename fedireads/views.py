@@ -278,11 +278,10 @@ def follow(request):
 @login_required
 def unfollow(request):
     ''' unfollow a user '''
-    # TODO: this is not an implementation!!
-    followed = request.POST.get('user')
-    followed = models.User.objects.get(id=followed)
-    followed.followers.remove(request.user)
-    return redirect('/user/%s' % followed.username)
+    user = request.user
+    to_unfollow = models.User.objects.get(id=request.POST.get('user'))
+    outgoing.handle_outgoing_unfollow(user, to_unfollow)
+    return redirect('/user/%s' % to_unfollow.username)
 
 
 @login_required

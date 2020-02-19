@@ -16,6 +16,21 @@ def get_follow_request(user, to_follow):
         'object': to_follow.actor,
     }
 
+def get_unfollow(relationship):
+    ''' undo that precious bond of friendship '''
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s/undo' % relationship.absolute_id,
+        'type': 'Undo',
+        'actor': relationship.user_subject.actor,
+        'object': {
+            'id': relationship.relationship_id,
+            'type': 'Follow',
+            'actor': relationship.user_subject.actor,
+            'object': relationship.user_object.actor,
+        }
+    }
+
 
 def get_accept(user, request_activity):
     ''' accept a follow request '''
