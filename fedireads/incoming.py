@@ -9,9 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 
+from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.activity import create_review
+from fedireads.status import create_review, create_status
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -33,10 +34,7 @@ def shared_inbox(request):
         return HttpResponse(status=401)
 
     response = HttpResponseNotFound()
-    if activity['type'] == 'Add':
-        response = handle_incoming_shelve(activity)
-
-    elif activity['type'] == 'Follow':
+    if activity['type'] == 'Follow':
         response = handle_incoming_follow(activity)
 
     elif activity['type'] == 'Create':
@@ -45,7 +43,7 @@ def shared_inbox(request):
     elif activity['type'] == 'Accept':
         response = handle_incoming_follow_accept(activity)
 
-    # TODO: Undo, Remove, etc
+    # TODO: Add, Undo, Remove, etc
 
     return response
 
@@ -114,29 +112,7 @@ def get_actor(request, username):
         return HttpResponseBadRequest()
 
     user = models.User.objects.get(localname=username)
-    return JsonResponse({
-        '@context': [
-            'https://www.w3.org/ns/activitystreams',
-            'https://w3id.org/security/v1'
-        ],
-
-        'id': user.actor,
-        'type': 'Person',
-        'preferredUsername': user.localname,
-        'name': user.name,
-        'inbox': user.inbox,
-        'followers': '%s/followers' % user.actor,
-        'following': '%s/following' % user.actor,
-        'summary': user.summary,
-        'publicKey': {
-            'id': '%s/#main-key' % user.actor,
-            'owner': user.actor,
-            'publicKeyPem': user.public_key,
-        },
-        'endpoints': {
-            'sharedInbox': user.shared_inbox,
-        }
-    })
+    return JsonResponse(activitypub.get_actor(user))
 
 
 @csrf_exempt
@@ -154,7 +130,26 @@ def get_status(request, username, status_id):
     if user != status.user:
         return HttpResponseNotFound()
 
-    return JsonResponse(status.activity)
+    return JsonResponse(activitypub.get_status(status))
+
+
+@csrf_exempt
+def get_replies(request, username, status_id):
+    ''' ordered collection of replies to a status '''
+    # TODO: this isn't a full implmentation
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    status = models.Status.objects.get(id=status_id)
+    if status.user.localname != username:
+        return HttpResponseNotFound()
+
+    replies = models.Status.objects.filter(
+        reply_parent=status
+    ).first()
+
+    replies_activity = activitypub.get_replies(status, [replies])
+    return JsonResponse(replies_activity)
 
 
 @csrf_exempt
@@ -165,7 +160,8 @@ def get_followers(request, username):
 
     user = models.User.objects.get(localname=username)
     followers = user.followers
-    return format_follow_info(user, request.GET.get('page'), followers)
+    page = request.GET.get('page')
+    return JsonResponse(activitypub.get_followers(user, page, followers))
 
 
 @csrf_exempt
@@ -176,70 +172,8 @@ def get_following(request, username):
 
     user = models.User.objects.get(localname=username)
     following = models.User.objects.filter(followers=user)
-    return format_follow_info(user, request.GET.get('page'), following)
-
-
-def format_follow_info(user, page, follow_queryset):
-    ''' create the activitypub json for followers/following '''
-    id_slug = '%s/following' % user.actor
-    if page:
-        return JsonResponse(get_follow_page(follow_queryset, id_slug, page))
-    count = follow_queryset.count()
-    return JsonResponse({
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': id_slug,
-        'type': 'OrderedCollection',
-        'totalItems': count,
-        'first': '%s?page=1' % id_slug,
-    })
-
-
-def get_follow_page(user_list, id_slug, page):
-    ''' format a list of followers/following '''
-    page = int(page)
-    page_length = 10
-    start = (page - 1) * page_length
-    end = start + page_length
-    follower_page = user_list.all()[start:end]
-    data = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s?page=%d' % (id_slug, page),
-        'type': 'OrderedCollectionPage',
-        'totalItems': user_list.count(),
-        'partOf': id_slug,
-        'orderedItems': [u.actor for u in follower_page],
-    }
-    if end <= user_list.count():
-        # there are still more pages
-        data['next'] = '%s?page=%d' % (id_slug, page + 1)
-    if start > 0:
-        data['prev'] = '%s?page=%d' % (id_slug, page - 1)
-    return data
-
-
-def handle_incoming_shelve(activity):
-    ''' receiving an Add activity (to shelve a book) '''
-    # TODO what happens here? If it's a remote over, then I think
-    # I should save both the activity and the ShelfBook entry. But
-    # I'll do that later.
-    uuid = activity['id']
-    models.ShelveActivity.objects.get(uuid=uuid)
-    '''
-    book_id = activity['object']['url']
-    book = openlibrary.get_or_create_book(book_id)
-    user_ap_id = activity['actor'].replace('https//:', '')
-    user = models.User.objects.get(actor=user_ap_id)
-    if not user or not user.local:
-        return HttpResponseBadRequest()
-
-    shelf = models.Shelf.objects.get(activitypub_id=activity['target']['id'])
-    models.ShelfBook(
-        shelf=shelf,
-        book=book,
-        added_by=user,
-    ).save()
-    '''
-    return HttpResponse()
+    page = request.GET.get('page')
+    return JsonResponse(activitypub.get_following(user, page, following))
 
 
 def handle_incoming_follow(activity):
@@ -248,12 +182,6 @@ def handle_incoming_follow(activity):
     to_follow = models.User.objects.get(actor=activity['object'])
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
-    models.FollowActivity(
-        uuid=activity['id'],
-        user=user,
-        followed=to_follow,
-        content=activity,
-    )
     # TODO: allow users to manually approve requests
     outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
@@ -277,37 +205,30 @@ def handle_incoming_create(activity):
     if not 'object' in activity:
         return HttpResponseBadRequest()
 
+    # TODO: should only create notes if they are relevent to a book,
+    # so, not every single thing someone posts on mastodon
     response = HttpResponse()
+    content = activity['object'].get('content')
     if activity['object'].get('fedireadsType') == 'Review' and \
-            'inReplyTo' in activity['object']:
-        book = activity['object']['inReplyTo']
+            'inReplyToBook' in activity['object']:
+        book = activity['object']['inReplyToBook']
         book = book.split('/')[-1]
         name = activity['object'].get('name')
-        content = activity['object'].get('content')
         rating = activity['object'].get('rating')
         if user.local:
             review_id = activity['object']['id'].split('/')[-1]
-            review = models.Review.objects.get(id=review_id)
+            models.Review.objects.get(id=review_id)
         else:
             try:
-                review = create_review(user, book, name, content, rating)
+                create_review(user, book, name, content, rating)
             except ValueError:
                 return HttpResponseBadRequest()
-        models.ReviewActivity.objects.create(
-            uuid=activity['id'],
-            user=user,
-            content=activity['object'],
-            activity_type=activity['object']['type'],
-            book=review.book,
-        )
+    elif not user.local:
+        try:
+            create_status(user, content)
+        except ValueError:
+            return HttpResponseBadRequest()
 
-    else:
-        models.Activity.objects.create(
-            uuid=activity['id'],
-            user=user,
-            content=activity,
-            activity_type=activity['object']['type']
-        )
     return response
 
 
@@ -321,12 +242,5 @@ def handle_incoming_accept(activity):
     # save this relationship in the db
     followed.followers.add(user)
 
-    # save the activity record
-    models.FollowActivity(
-        uuid=activity['id'],
-        user=user,
-        followed=followed,
-        content=activity,
-    ).save()
     return HttpResponse()
 

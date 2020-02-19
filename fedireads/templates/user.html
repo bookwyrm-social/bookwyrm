@@ -92,7 +92,7 @@
                 <img src="/images/{{ book.cover }}" class="book-cover small">
             </td>
             <td>
-                <a href="{{ book.openlibrary_key }}">{{ book.data.title }}</a>
+                <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
             </td>
             <td>
                 {{ book.authors.first.data.name }}

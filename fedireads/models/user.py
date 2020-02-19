@@ -7,6 +7,7 @@ from django.dispatch import receiver
 
 from fedireads.models import Shelf
 from fedireads.settings import DOMAIN
+from fedireads.utils.models import FedireadsModel
 
 
 class User(AbstractUser):
@@ -24,6 +25,7 @@ class User(AbstractUser):
     outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
+    fedireads_user = models.BooleanField(default=True)
     localname = models.CharField(
         max_length=255,
         null=True,
@@ -33,11 +35,15 @@ class User(AbstractUser):
     name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     followers = models.ManyToManyField('self', symmetrical=False)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+
+    @property
+    def absolute_id(self):
+        ''' users are identified by their username, so overriding this prop '''
+        model_name = type(self).__name__.lower()
+        return 'https://%s/%s/%s' % (DOMAIN, model_name, self.localname)
 
 
-class FederatedServer(models.Model):
+class FederatedServer(FedireadsModel):
     ''' store which server's we federate with '''
     server_name = models.CharField(max_length=255, unique=True)
     # federated, blocked, whatever else
@@ -56,10 +62,10 @@ def execute_before_save(sender, instance, *args, **kwargs):
     # populate fields for local users
     instance.localname = instance.username
     instance.username = '%s@%s' % (instance.username, DOMAIN)
-    instance.actor = 'https://%s/user/%s' % (DOMAIN, instance.localname)
-    instance.inbox = 'https://%s/user/%s/inbox' % (DOMAIN, instance.localname)
+    instance.actor = instance.absolute_id
+    instance.inbox = '%s/inbox' % instance.absolute_id
     instance.shared_inbox = 'https://%s/inbox' % DOMAIN
-    instance.outbox = 'https://%s/user/%s/outbox' % (DOMAIN, instance.localname)
+    instance.outbox = '%s/outbox' % instance.absolute_id
     if not instance.private_key:
         random_generator = Random.new().read
         key = RSA.generate(1024, random_generator)

@@ -40,8 +40,17 @@ class ReviewForm(ModelForm):
         }
 
 
+class CommentForm(ModelForm):
+    class Meta:
+        model = models.Status
+        fields = ['content']
+        help_texts = {f: None for f in fields}
+        labels = {'content': 'Comment'}
+
+
 class EditUserForm(ModelForm):
     class Meta:
         model = models.User
         fields = ['avatar', 'name', 'summary']
         help_texts = {f: None for f in fields}
+

@@ -41,7 +41,8 @@ def get_or_create_remote_user(actor):
             shared_inbox=shared_inbox,
             # TODO: I'm never actually using this for remote users
             public_key=data.get('publicKey').get('publicKeyPem'),
-            local=False
+            local=False,
+            fedireads_user=False,
         )
     except KeyError:
         return False
