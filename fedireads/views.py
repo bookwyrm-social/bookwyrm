@@ -238,10 +238,10 @@ def shelve(request, username, shelf_id, book_id, reshelve=True):
 def review(request):
     ''' create a book review note '''
     form = forms.ReviewForm(request.POST)
+    book_identifier = request.POST.get('book')
     # TODO: better failure behavior
     if not form.is_valid():
-        return redirect('/')
-    book_identifier = request.POST.get('book')
+        return redirect('/book/%s' % book_identifier)
 
     # TODO: validation, htmlification
     name = form.data.get('name')
