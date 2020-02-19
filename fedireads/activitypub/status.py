@@ -3,7 +3,7 @@ def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
     status['inReplyToBook'] = review.book.absolute_id
-    status['fedireadsType'] = review.status_type,
+    status['fedireadsType'] = review.status_type
     status['name'] = review.name
     status['rating'] = review.rating
     return status
