@@ -272,7 +272,9 @@ def follow(request):
     to_follow = models.User.objects.get(id=to_follow)
 
     outgoing.handle_outgoing_follow(request.user, to_follow)
-    return redirect('/user/%s' % to_follow.username)
+    user_slug = to_follow.localname if to_follow.localname \
+        else to_follow.username
+    return redirect('/user/%s' % user_slug)
 
 
 @login_required
@@ -281,7 +283,9 @@ def unfollow(request):
     user = request.user
     to_unfollow = models.User.objects.get(id=request.POST.get('user'))
     outgoing.handle_outgoing_unfollow(user, to_unfollow)
-    return redirect('/user/%s' % to_unfollow.username)
+    user_slug = to_unfollow.localname if to_unfollow.localname \
+        else to_unfollow.username
+    return redirect('/user/%s' % user_slug)
 
 
 @login_required
