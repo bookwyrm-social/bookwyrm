@@ -286,11 +286,11 @@ def follow(request, username):
 
 
 @login_required
-def unfollow(request):
+def unfollow(request, username):
     ''' unfollow a user '''
-    user = request.user
-    to_unfollow = models.User.objects.get(id=request.POST.get('user'))
-    outgoing.handle_outgoing_unfollow(user, to_unfollow)
+    to_unfollow = models.User.objects.get(username=username)
+
+    outgoing.handle_outgoing_unfollow(request.user, to_unfollow)
     user_slug = to_unfollow.localname if to_unfollow.localname \
         else to_unfollow.username
     return redirect('/user/%s' % user_slug)
