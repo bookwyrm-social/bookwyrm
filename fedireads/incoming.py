@@ -205,11 +205,13 @@ def handle_incoming_create(activity):
     if not 'object' in activity:
         return HttpResponseBadRequest()
 
+    # TODO: should only create notes if they are relevent to a book,
+    # so, not every single thing someone posts on mastodon
     response = HttpResponse()
     content = activity['object'].get('content')
     if activity['object'].get('fedireadsType') == 'Review' and \
-            'inReplyTo' in activity['object']:
-        book = activity['object']['inReplyTo']
+            'inReplyToBook' in activity['object']:
+        book = activity['object']['inReplyToBook']
         book = book.split('/')[-1]
         name = activity['object'].get('name')
         rating = activity['object'].get('rating')

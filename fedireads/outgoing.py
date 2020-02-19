@@ -130,10 +130,16 @@ def handle_review(user, book, name, content, rating):
     review = create_review(user, book, name, content, rating)
 
     review_activity = activitypub.get_review(review)
-    create_activity = activitypub.get_create(user, review_activity)
+    review_create_activity = activitypub.get_create(user, review_activity)
+    fr_recipients = get_recipients(user, 'public', limit='fedireads')
+    broadcast(user, review_create_activity, fr_recipients)
 
-    recipients = get_recipients(user, 'public')
-    broadcast(user, create_activity, recipients)
+    # re-format the activity for non-fedireads servers
+    article_activity = activitypub.get_review_article(review)
+    article_create_activity = activitypub.get_create(user, article_activity)
+
+    other_recipients = get_recipients(user, 'public', limit='other')
+    broadcast(user, article_create_activity, other_recipients)
 
 
 def handle_comment(user, review, content):

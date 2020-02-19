@@ -25,6 +25,7 @@ class User(AbstractUser):
     outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
+    fedireads_user = models.BooleanField(default=True)
     localname = models.CharField(
         max_length=255,
         null=True,

@@ -2,10 +2,22 @@
 def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
-    status['inReplyTo'] = review.book.absolute_id
+    status['inReplyToBook'] = review.book.absolute_id
     status['fedireadsType'] = review.status_type,
     status['name'] = review.name
     status['rating'] = review.rating
+    return status
+
+
+def get_review_article(review):
+    ''' a book review formatted for a non-fedireads isntance (mastodon) '''
+    status = get_status(review)
+    name = 'Review of "%s" (%d stars): %s' % (
+        review.book.data['title'],
+        review.rating,
+        review.name
+    )
+    status['name'] = name
     return status
 
 

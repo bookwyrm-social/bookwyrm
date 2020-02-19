@@ -9,7 +9,7 @@ import requests
 from urllib.parse import urlparse
 
 
-def get_recipients(user, post_privacy, direct_recipients=None):
+def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
     ''' deduplicated list of recipient inboxes '''
     recipients = direct_recipients or []
     if post_privacy == 'direct':
@@ -17,7 +17,12 @@ def get_recipients(user, post_privacy, direct_recipients=None):
         return [u.inbox for u in recipients]
 
     # load all the followers of the user who is sending the message
-    followers = user.followers.all()
+    if not limit:
+        followers = user.followers.all()
+    else:
+        fedireads_user = limit == 'fedireads'
+        followers = user.followers.filter(fedireads_user=fedireads_user).all()
+
     if post_privacy == 'public':
         # post to public shared inboxes
         shared_inboxes = set(

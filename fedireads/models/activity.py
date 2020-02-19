@@ -35,5 +35,6 @@ class Review(Status):
 
     def save(self, *args, **kwargs):
         self.status_type = 'Review'
+        self.activity_type = 'Article'
         super().save(*args, **kwargs)
 
