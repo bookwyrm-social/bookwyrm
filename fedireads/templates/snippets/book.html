@@ -1,5 +1,5 @@
 {% load fr_display %}
-<img class="book-cover {{ size }}" src="{% if book.cover %}/images/{{ book.cover }}{% else %}/static/images/no_cover.jpg{% endif %}">
+{% include 'snippets/book_cover.html' with book=book %}
 <p class="title">
     <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
 </p>

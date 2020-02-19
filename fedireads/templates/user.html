@@ -89,7 +89,7 @@
         {% for book in shelf.books.all %}
         <tr class="book-preview">
             <td>
-                <img src="/images/{{ book.cover }}" class="book-cover small">
+                {% include 'snippets/book_cover.html' with book=book %}
             </td>
             <td>
                 <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
