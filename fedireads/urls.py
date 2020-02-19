@@ -51,6 +51,7 @@ urlpatterns = [
     # internal action endpoints
     re_path(r'^review/?$', views.review),
     re_path(r'^comment/?$', views.comment),
+    re_path(r'^favorite/(?P<status_id>\d+)/?$', views.favorite),
     re_path(
         r'^shelve/(?P<username>\w+)/(?P<shelf_id>[\w-]+)/(?P<book_id>\d+)/?$',
         views.shelve

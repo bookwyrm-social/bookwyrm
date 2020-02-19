@@ -50,4 +50,3 @@ class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
-    relationship_id = models.CharField(max_length=100)

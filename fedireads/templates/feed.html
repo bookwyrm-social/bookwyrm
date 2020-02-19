@@ -67,7 +67,10 @@
                 <p>{{ activity.content | safe }}</p>
             </div>
             <div class="interaction">
-                <button>⭐️ Like</button>
+                <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
+                    {% csrf_token %}
+                    <button>⭐️ Like</button>
+                </form>
                 <form name="comment" action="/comment" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="review" value="{{ activity.id }}"></input>

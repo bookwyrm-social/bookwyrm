@@ -46,6 +46,9 @@ def shared_inbox(request):
     elif activity['type'] == 'Accept':
         response = handle_incoming_follow_accept(activity)
 
+    elif activity['type'] == 'Like':
+        response = handle_incoming_favorite(activity)
+
     # TODO: Add, Undo, Remove, etc
 
     return response
@@ -255,6 +258,20 @@ def handle_incoming_create(activity):
             return HttpResponseBadRequest()
 
     return response
+
+
+def handle_incoming_favorite(activity):
+    ''' approval of your good good post '''
+    try:
+        status_id = activity['object'].split('/')[-1]
+        status = models.Status.objects.get(id=status_id)
+        liker = get_or_create_remote_user(activity['actor'])
+    except (models.Status.DoesNotExist, models.User.DoesNotExist):
+        return HttpResponseNotFound()
+
+    if not liker.local:
+        status.favorites.add(liker)
+    return HttpResponse()
 
 
 def handle_incoming_accept(activity):

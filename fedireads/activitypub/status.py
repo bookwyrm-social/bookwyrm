@@ -71,3 +71,14 @@ def get_replies(status, replies):
             'items': [get_status(r) for r in replies]
         }
     }
+
+
+def get_favorite(favorite):
+    ''' like a post '''
+    return {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": favorite.absolute_id,
+        "type": "Like",
+        "actor": favorite.user.actor,
+        "object": favorite.status.absolute_id,
+    }

@@ -160,7 +160,7 @@ def handle_review(user, book, name, content, rating):
 
 
 def handle_comment(user, review, content):
-    ''' post a review '''
+    ''' respond to a review or status '''
     # validated and saves the comment in the database so it has an id
     comment = create_status(user, content, reply_parent=review)
     comment_activity = activitypub.get_status(comment)
@@ -168,4 +168,15 @@ def handle_comment(user, review, content):
 
     recipients = get_recipients(user, 'public')
     broadcast(user, create_activity, recipients)
+
+
+def handle_outgoing_favorite(user, status):
+    ''' a user likes a status '''
+    favorite = models.Favorite.objects.create(
+        status=status,
+        user=user
+    )
+    fav_activity = activitypub.get_favorite(favorite)
+    recipients = get_recipients(user, 'direct', [status.user])
+    broadcast(user, fav_activity, recipients)
 

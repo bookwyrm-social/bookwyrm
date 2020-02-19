@@ -252,6 +252,7 @@ def review(request):
     return redirect('/book/%s' % book_identifier)
 
 
+@login_required
 def comment(request):
     ''' respond to a book review '''
     form = forms.CommentForm(request.POST)
@@ -262,6 +263,14 @@ def comment(request):
     parent = models.Review.objects.get(id=review_id)
     outgoing.handle_comment(request.user, parent, form.data['content'])
     return redirect('/')
+
+
+@login_required
+def favorite(request, status_id):
+    ''' like a status '''
+    status = models.Status.objects.get(id=status_id)
+    outgoing.handle_outgoing_favorite(request.user, status)
+    return redirect(request.headers.get('Referer', '/'))
 
 
 @login_required
