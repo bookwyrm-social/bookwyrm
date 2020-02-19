@@ -16,6 +16,13 @@ class Status(FedireadsModel):
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
+    favorites = models.ManyToManyField(
+        'User',
+        symmetrical=False,
+        through='Favorite',
+        through_fields=('status', 'user'),
+        related_name='user_favorites'
+    )
     reply_parent = models.ForeignKey(
         'self',
         null=True,
@@ -38,3 +45,9 @@ class Review(Status):
         self.activity_type = 'Article'
         super().save(*args, **kwargs)
 
+
+class Favorite(FedireadsModel):
+    ''' fav'ing a post '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    status = models.ForeignKey('Status', on_delete=models.PROTECT)
+    relationship_id = models.CharField(max_length=100)

@@ -40,6 +40,13 @@ class User(AbstractUser):
         through='UserRelationship',
         through_fields=('user_subject', 'user_object')
     )
+    favorites = models.ManyToManyField(
+        'Status',
+        symmetrical=False,
+        through='Favorite',
+        through_fields=('user', 'status'),
+        related_name='favorite_statuses'
+    )
 
     @property
     def absolute_id(self):
