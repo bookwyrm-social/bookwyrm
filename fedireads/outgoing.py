@@ -1,4 +1,5 @@
 ''' handles all the activity coming out of the server '''
+from django.db import IntegrityError
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
@@ -172,10 +173,15 @@ def handle_comment(user, review, content):
 
 def handle_outgoing_favorite(user, status):
     ''' a user likes a status '''
-    favorite = models.Favorite.objects.create(
-        status=status,
-        user=user
-    )
+    try:
+        favorite = models.Favorite.objects.create(
+            status=status,
+            user=user
+        )
+    except IntegrityError:
+        # you already fav'ed that
+        return
+
     fav_activity = activitypub.get_favorite(favorite)
     recipients = get_recipients(user, 'direct', [status.user])
     broadcast(user, fav_activity, recipients)

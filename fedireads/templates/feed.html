@@ -67,6 +67,11 @@
                 <p>{{ activity.content | safe }}</p>
             </div>
             <div class="interaction">
+                {% if activity.favorites.all %}
+                <span>
+                {{ activity.favorites.count }} like(s)
+                </span>
+                {% endif %}
                 <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
                     {% csrf_token %}
                     <button>⭐️ Like</button>

@@ -50,3 +50,7 @@ class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = ('user', 'status')
+
