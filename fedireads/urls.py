@@ -43,7 +43,7 @@ urlpatterns = [
     re_path(r'^login/?$', views.user_login),
     re_path(r'^logout/?$', views.user_logout),
     # this endpoint is both ui and fed depending on Accept type
-    re_path(r'^user/(?P<username>[\w@\.]+)/?$', views.user_profile),
+    re_path(r'^user/(?P<username>[\w@\.-]+)/?$', views.user_profile),
     re_path(r'^user/(?P<username>\w+)/edit/?$', views.user_profile_edit),
     re_path(r'^book/(?P<book_identifier>\w+)/?$', views.book_page),
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
@@ -56,8 +56,8 @@ urlpatterns = [
         r'^shelve/(?P<username>\w+)/(?P<shelf_id>[\w-]+)/(?P<book_id>\d+)/?$',
         views.shelve
     ),
-    re_path(r'^follow/(?P<username>[\w@\.]+)/?$', views.follow),
-    re_path(r'^unfollow/(?P<username>[\w@\.]+)/?$', views.unfollow),
+    re_path(r'^follow/(?P<username>[\w@\.-]+)/?$', views.follow),
+    re_path(r'^unfollow/(?P<username>[\w@\.-]+)/?$', views.unfollow),
     re_path(r'^search/?$', views.search),
     re_path(r'^edit_profile/?$', views.edit_profile),
 
