@@ -106,7 +106,6 @@ def handle_outgoing_accept(user, to_follow, request_activity):
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
-    # TODO: this should probably happen in incoming instead
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
     activity = activitypub.get_add(user, book, shelf)
@@ -132,7 +131,6 @@ def handle_shelve(user, book, shelf):
 def handle_unshelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
-    # TODO: this should probably happen in incoming instead
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()
 

@@ -1,4 +1,4 @@
-''' we're solving fizzbuzz with a little help from the web '''
+''' html parser to clean up incoming text from unknown sources '''
 from html.parser import HTMLParser
 
 class InputHtmlParser(HTMLParser):
