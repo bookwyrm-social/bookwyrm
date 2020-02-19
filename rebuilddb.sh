@@ -9,7 +9,9 @@ fi
 source .env
 
 if [ $FEDIREADS_DATABASE_BACKEND = 'sqlite' ]; then
-  rm fedireads.db
+  if [ -f fedireads.db ]; then
+    rm fedireads.db
+  fi
 else
   # assume postgres
   dropdb fedireads
