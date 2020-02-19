@@ -37,6 +37,9 @@ def shared_inbox(request):
     if activity['type'] == 'Follow':
         response = handle_incoming_follow(activity)
 
+    elif activity['type'] == 'Undo':
+        response = handle_incoming_undo(activity)
+
     elif activity['type'] == 'Create':
         response = handle_incoming_create(activity)
 
@@ -183,7 +186,29 @@ def handle_incoming_follow(activity):
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
     # TODO: allow users to manually approve requests
+    models.UserRelationship.objects.create(
+        user_subject=to_follow,
+        user_object=user,
+        status='follow_request',
+        relationship_id=activity['id']
+    )
     outgoing.handle_outgoing_accept(user, to_follow, activity)
+    return HttpResponse()
+
+
+def handle_incoming_undo(activity):
+    ''' unfollow a local user '''
+    obj = activity['object']
+    if not obj['type'] == 'Follow':
+        #idk how to undo other things
+        return HttpResponseNotFound()
+    try:
+        requester = get_or_create_remote_user(obj['actor'])
+        to_unfollow = models.User.objects.get(actor=obj['object'])
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    to_unfollow.followers.remove(requester)
     return HttpResponse()
 
 

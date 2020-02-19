@@ -34,13 +34,41 @@ class User(AbstractUser):
     # name is your display name, which you can change at will
     name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    followers = models.ManyToManyField('self', symmetrical=False)
+    followers = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        through='UserRelationship',
+        through_fields=('user_subject', 'user_object')
+    )
 
     @property
     def absolute_id(self):
         ''' users are identified by their username, so overriding this prop '''
         model_name = type(self).__name__.lower()
         return 'https://%s/%s/%s' % (DOMAIN, model_name, self.localname)
+
+
+class UserRelationship(FedireadsModel):
+    ''' many-to-many through table for followers '''
+    user_subject = models.ForeignKey(
+        'User',
+        on_delete=models.PROTECT,
+        related_name='user_subject'
+    )
+    user_object = models.ForeignKey(
+        'User',
+        on_delete=models.PROTECT,
+        related_name='user_object'
+    )
+    # follow or follow_request for pending TODO: blocking?
+    status = models.CharField(max_length=100, default='follows', null=True)
+    relationship_id = models.CharField(max_length=100)
+
+    @property
+    def absolute_id(self):
+        ''' use shelf identifier as absolute id '''
+        base_path = self.user_subject.absolute_id
+        return '%s#%s/%d' % (base_path, self.status, self.id)
 
 
 class FederatedServer(FedireadsModel):

@@ -77,9 +77,26 @@ def handle_outgoing_follow(user, to_follow):
         raise(error['error'])
 
 
+def handle_outgoing_unfollow(user, to_unfollow):
+    ''' someone local wants to follow someone '''
+    relationship = models.UserRelationship.objects.get(
+        user_object=user,
+        user_subject=to_unfollow
+    )
+    activity = activitypub.get_unfollow(relationship)
+    errors = broadcast(user, activity, [to_unfollow.inbox])
+    to_unfollow.followers.remove(user)
+    for error in errors:
+        raise(error['error'])
+
+
 def handle_outgoing_accept(user, to_follow, request_activity):
     ''' send an acceptance message to a follow request '''
-    to_follow.followers.add(user)
+    relationship = models.UserRelationship.objects.get(
+        relationship_id=request_activity['id']
+    )
+    relationship.status = 'follow'
+    relationship.save()
     activity = activitypub.get_accept(to_follow, request_activity)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
