@@ -29,23 +29,21 @@ def get_or_create_remote_user(actor):
     shared_inbox = data.get('endpoints').get('sharedInbox') if \
         data.get('endpoints') else None
 
-    try:
-        user = models.User.objects.create_user(
-            username,
-            '', '', # email and passwords are left blank
-            actor=actor,
-            name=data.get('name'),
-            summary=data.get('summary'),
-            inbox=data['inbox'], #fail if there's no inbox
-            outbox=data['outbox'], # fail if there's no outbox
-            shared_inbox=shared_inbox,
-            # TODO: I'm never actually using this for remote users
-            public_key=data.get('publicKey').get('publicKeyPem'),
-            local=False,
-            fedireads_user=False,
-        )
-    except KeyError:
-        return False
+    # throws a key error if it can't find any of these fields
+    user = models.User.objects.create_user(
+        username,
+        '', '', # email and passwords are left blank
+        actor=actor,
+        name=data.get('name'),
+        summary=data.get('summary'),
+        inbox=data['inbox'], #fail if there's no inbox
+        outbox=data['outbox'], # fail if there's no outbox
+        shared_inbox=shared_inbox,
+        # TODO: I'm never actually using this for remote users
+        public_key=data.get('publicKey').get('publicKeyPem'),
+        local=False,
+        fedireads_user=data.get('fedireadsUser', False),
+    )
     return user
 
 

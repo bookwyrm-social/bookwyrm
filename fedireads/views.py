@@ -274,11 +274,10 @@ def favorite(request, status_id):
 
 
 @login_required
-def follow(request):
+def follow(request, username):
     ''' follow another user, here or abroad '''
-    to_follow = request.POST.get('user')
     # should this be an actor rather than an id? idk
-    to_follow = models.User.objects.get(id=to_follow)
+    to_follow = models.User.objects.get(username=username)
 
     outgoing.handle_outgoing_follow(request.user, to_follow)
     user_slug = to_follow.localname if to_follow.localname \

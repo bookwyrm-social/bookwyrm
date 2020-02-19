@@ -13,6 +13,7 @@ def get_actor(user):
         'preferredUsername': user.localname,
         'name': user.name,
         'inbox': user.inbox,
+        'outbox': '%s/outbox' % user.actor,
         'followers': '%s/followers' % user.actor,
         'following': '%s/following' % user.actor,
         'summary': user.summary,
@@ -23,6 +24,7 @@ def get_actor(user):
         },
         'endpoints': {
             'sharedInbox': user.shared_inbox,
-        }
+        },
+        'fedireadsUser': True,
     }
 

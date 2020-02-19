@@ -14,15 +14,13 @@
         {% endif %}
         {% if not is_self %}
         {% if not request.user in user.followers.all %}
-        <form action="/follow/" method="post">
+        <form action="/follow/{{ user.username }}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="user" value="{{ user.id }}"></input>
             <input type="submit" value="Follow"></input>
         </form>
         {% else %}
-        <form action="/unfollow/" method="post">
+        <form action="/unfollow/{{ user.username }}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="user" value="{{ user.id }}"></input>
             <input type="submit" value="Unfollow"></input>
         </form>
         {% endif %}

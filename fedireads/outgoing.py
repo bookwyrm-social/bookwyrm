@@ -66,7 +66,10 @@ def handle_account_search(query):
         data = response.json()
         for link in data['links']:
             if link['rel'] == 'self':
-                user = get_or_create_remote_user(link['href'])
+                try:
+                    user = get_or_create_remote_user(link['href'])
+                except KeyError:
+                    return HttpResponseNotFound()
     return user
 
 

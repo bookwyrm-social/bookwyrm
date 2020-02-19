@@ -56,8 +56,8 @@ urlpatterns = [
         r'^shelve/(?P<username>\w+)/(?P<shelf_id>[\w-]+)/(?P<book_id>\d+)/?$',
         views.shelve
     ),
-    re_path(r'^follow/?$', views.follow),
-    re_path(r'^unfollow/?$', views.unfollow),
+    re_path(r'^follow/(?P<username>[\w@\.]+)/?$', views.follow),
+    re_path(r'^unfollow/(?P<username>[\w@\.]+)/?$', views.unfollow),
     re_path(r'^search/?$', views.search),
     re_path(r'^edit_profile/?$', views.edit_profile),
 
