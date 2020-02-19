@@ -3,6 +3,7 @@ import requests
 from urllib.parse import urlparse
 
 from fedireads import models
+from fedireads.status import create_review
 
 
 def get_or_create_remote_user(actor):
@@ -44,6 +45,27 @@ def get_or_create_remote_user(actor):
         local=False,
         fedireads_user=data.get('fedireadsUser', False),
     )
+    if user.fedireads_user:
+        get_remote_reviews(user)
     return user
 
+
+def get_remote_reviews(user):
+    ''' ingest reviews by a new remote fedireads user '''
+    outbox_page = user.outbox + '?page=true'
+    response = requests.get(
+        outbox_page,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+    for status in data['orderedItems']:
+        if status.get('fedireadsType') == 'Review':
+            book_id = status['inReplyToBook'].split('/')[-1]
+            create_review(
+                user,
+                book_id,
+                status['name'],
+                status['content'],
+                status['rating']
+            )
 
