@@ -40,7 +40,7 @@ def outbox(request, username):
         statuses = models.Status.objects.filter(
             user=user,
             **filters
-        ).all()[:limit]
+        ).select_subclasses().all()[:limit]
 
         return JsonResponse(
             activitypub.get_outbox_page(user, page_id, statuses, max_id, min_id)

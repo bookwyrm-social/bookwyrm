@@ -2,7 +2,7 @@
 from uuid import uuid4
 from urllib.parse import urlencode
 
-from .status import get_status
+from .status import get_status, get_review
 
 def get_outbox(user, size):
     ''' helper function for creating an outbox '''
@@ -21,7 +21,11 @@ def get_outbox_page(user, page_id, statuses, max_id, min_id):
     }
 
     for status in statuses:
-        page['orderedItems'].append(get_status(status))
+        if status.status_type == 'Review':
+            status_activity = get_review(status)
+        else:
+            status_activity = get_status(status)
+        page['orderedItems'].append(status_activity)
 
     if max_id:
         page['next'] = user.outbox + '?' + \
