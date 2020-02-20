@@ -24,8 +24,9 @@ This project is still in its very early stages, but these are the higher-level f
     - Allow users to comment on reading activity (optionally, and with granular privacy controls)
  - Federation with ActivityPub
     - Identify shared books across instances
+    - Follow and interact across FediReads instances
     - Inter-operate with non-FediReads ActivityPub services
- - Give user's granular privacy controls
+ - Granular privacy controls
     - Local-only, followers-only, and public posting
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderaton
