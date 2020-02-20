@@ -30,5 +30,7 @@ def description_format(description):
 @register.filter(name='author_bio')
 def bio_format(bio):
     ''' clean up OL author bios '''
+    if isinstance(bio, dict) and 'value' in bio:
+        bio = bio['value']
     bio = bio.split('\n')
     return bio[0].strip()
