@@ -44,12 +44,7 @@ The UI is all django templates because that is the default. You can replace it w
 ## Thoughts and considerations
 
 ### What even are books
-The most complex part of this is knowing what books are which and who authors are. Right now I'm only using openlibrary.org as a
-single, canonical source of truth for books, works, and authors. But it may be that user should be able to import books that aren't
-in openlibrary, which, that's hard. So there's room to wonder if the openlibrary work key is indeed how a work should be identified.
-
-The key needs to be universal (or at least universally comprehensible) across all fedireads servers, which is why I'm using an external
-identifier controlled by someone else.
+It's important for this application to function that books can be identified reliably across different instances. I'm using OpenLibrary.org data, which works well (thanks OpenLibrary!) and I'm treating it as canonical and not the copies in the local databases. This means that instances will be consistent, but the major downside is that if users want to modify books or add books that aren't available, they need to do it on OpenLibrary, rather than their own instance.
 
 ### Explain "review"
 There's no actual reason to be beholden to simple 5 star reviews with a text body. Are there other ways of thinking about a review
