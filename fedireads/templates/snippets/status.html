@@ -1,0 +1,48 @@
+{% load fr_display %}
+<div class="update">
+    <h2>
+        {% include 'snippets/avatar.html' with user=activity.user %}
+        {% include 'snippets/username.html' with user=activity.user %}
+    {% if activity.status_type == 'Review' %}
+        {# display a review #}
+        reviewed {{ activity.book.data.title }}
+    </h2>
+        <div class="book-preview review">
+            {% include 'snippets/book.html' with book=activity.book size=large %}
+
+            <h3>{{ activity.name }}</h3>
+            <p>{{ activity.rating | stars }}</p>
+            <p>{{ activity.content | safe }}</p>
+        </div>
+        <div class="interaction">
+            {% if activity.favorites.all %}
+            <span>
+            {{ activity.favorites.count }} like(s)
+            </span>
+            {% endif %}
+            <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
+                {% csrf_token %}
+                <button>⭐️ Like</button>
+            </form>
+            <form name="comment" action="/comment" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="review" value="{{ activity.id }}"></input>
+                {{ comment_form.content }}
+                <button type="submit">Comment</button>
+            </form>
+        </div>
+    {% elif activity.status_type == 'Note' %}
+        posted</h2>
+        {{ activity.content | safe }}
+        {% for book in activity.mention_books.all %}
+        <div class="book-preview review">
+            {% include 'snippets/book.html' with book=book size=large description=True %}
+        </div>
+        {% endfor %}
+    {% else %}
+    {# generic handling for a misc activity, which perhaps should not be displayed at all #}
+        did {{ activity.activity_type }}
+    </h2>
+    {% endif %}
+</div>
+
