@@ -1,6 +1,37 @@
-# fedireads
+# FediReads
 
 Social reading and reviewing, decentralized with ActivityPub
+
+## The overall idea
+### What it is an isn't
+FediReads is meant to be a platform for social reading; specifically, for tracking what you're reading and sharing your updates with friends, and reviewing and commenting on books. It isn't meant primarily for cataloguing or as a datasource for books, but it may incidentally act in that way even when that isn't the focus of the software. For example, listing books you've read can be a way for you to catalog their personal reading, even though the feature is designed with the intent of sharing updates on what you've read.
+
+### The role of federation
+FediReads is built on [ActivityPub](http://activitypub.rocks/) and uses that standard to inter-operate between different instances of FediReads run on different servers by different people, and to inter-operate with other ActivityPub compliant services, like Mastodon and Pixelfed. This means, for example, that your friend on mastodon can read and comment on your Fedireads book review.
+
+Federation also makes it possible to have small, self-determining communities, as opposed to a monolithic service like you find on GoodReads or Twitter. An instance could be focused on a particular type of literature, just for use by people who are in a book club together, or anything else that brings them together. Each community can choose what other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy I'm working from for how social networks out to be.
+
+### Features
+This project is still in its very early stages, but these are the higher-level features it should have:
+ - Book reviews
+    - Post and comment on reviews
+    - Find reviews of a book across connected FediReads instances
+    - Differentiate local and federated reviews and rating
+ - Track reading activity
+    - Store "shelves" that list books a user wants to read/is reading/has read
+    - Allow users to create their own shelves
+    - Update followers about user activity (optionally, and with granular privacy controls)
+    - Allow users to comment on reading activity (optionally, and with granular privacy controls)
+ - Federation with ActivityPub
+    - Identify shared books across instances
+    - Inter-operate with non-FediReads ActivityPub services
+ - Give user's granular privacy controls
+    - Local-only, followers-only, and public posting
+    - Option for users to manually approve followers
+    - Allow blocking and flagging for moderaton
+    - Control over which instances you want to federate with
+
+But this isn't a set in stone, unchangeable list, so if you have ideas about how this could be tweaked, changed, or improved, please open an issue and start a conversation about it.
 
 ## Setting up the developer environment
 You will need postgres installed and running on your computer.
