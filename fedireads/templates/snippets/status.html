@@ -1,12 +1,7 @@
 {% load fr_display %}
 <div class="update">
-    <h2>
-        {% include 'snippets/avatar.html' with user=activity.user %}
-        {% include 'snippets/username.html' with user=activity.user %}
     {% if activity.status_type == 'Review' %}
-        {# display a review #}
-        reviewed {{ activity.book.data.title }}
-    </h2>
+        {% include 'snippets/status_banner.html' with content="reviewed <i>"|add:activity.book.data.title|add:"</i>"  %}
         <div class="book-preview review">
             {% include 'snippets/book.html' with book=activity.book size=large %}
 
@@ -32,8 +27,8 @@
             </form>
         </div>
     {% elif activity.status_type == 'Note' %}
-        posted</h2>
-        {{ activity.content | safe }}
+        {% include 'snippets/status_banner.html' %}
+        <span>{{ activity.content | safe }}</span>
         {% for book in activity.mention_books.all %}
         <div class="book-preview review">
             {% include 'snippets/book.html' with book=book size=large description=True %}

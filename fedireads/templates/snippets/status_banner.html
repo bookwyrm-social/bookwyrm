@@ -1,0 +1,10 @@
+{% load humanize %}
+<h2>
+    {% include 'snippets/avatar.html' with user=activity.user %}
+    {% include 'snippets/username.html' with user=activity.user %}
+    {{ content | safe }}
+    <span class="time-ago">
+    {{ activity.created_date | naturaltime }}
+    </span>
+</h2>
+
