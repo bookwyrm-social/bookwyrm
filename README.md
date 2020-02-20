@@ -2,6 +2,17 @@
 
 Social reading and reviewing, decentralized with ActivityPub
 
+## Contents
+ - [The overall idea](#the-overall-idea)
+   - [What it is and isn't](#what-it-is-and-isnt)
+   - [The role of federation](#the-role-of-federation)
+   - [Features](#features)
+ - [Setting up the developer environment](#setting-up-the-developer-environment)
+ - [Structure](#structure)
+ - [Thoughts and considerations](#thoughts-and-considerations)
+   - [What even are books](#what-even-are-books)
+   - [Explain "review"](#explain-review)
+
 ## The overall idea
 ### What it is an isn't
 FediReads is meant to be a platform for social reading; specifically, for tracking what you're reading and sharing your updates with friends, and reviewing and commenting on books. It isn't meant primarily for cataloguing or as a datasource for books, but it may incidentally act in that way even when that isn't the focus of the software. For example, listing books you've read can be a way for you to catalog their personal reading, even though the feature is designed with the intent of sharing updates on what you've read.
