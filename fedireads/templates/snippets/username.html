@@ -1,2 +1,2 @@
-<a href="/user/{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}" class="user">{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</a>
+<a href="/user/{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}" class="user">{% if user.name %}{{ user.name }}{% elif user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</a>
 
