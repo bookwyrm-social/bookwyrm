@@ -7,7 +7,7 @@
 }
 
 html {
-    background-color:#EFEFEF;
+    background-color: #FFF;
     color: black;
 }
 
@@ -74,6 +74,14 @@ h2 {
 #sidebar {
     min-width: 20rem;
     margin-right: 0;
+}
+
+#feed-tabs {
+    display: flex;
+    flex-direction: row;
+}
+.active {
+    background-color: #FF1654;
 }
 
 .user-pic {

@@ -13,6 +13,12 @@ from fedireads.settings import DOMAIN
 
 @login_required
 def home(request):
+    ''' this is the same as the feed on the home tab '''
+    return home_tab(request, 'home')
+
+
+@login_required
+def home_tab(request, tab):
     ''' user's homepage with activity feed '''
     # user's shelves for display
     reading = models.Shelf.objects.get(
@@ -37,11 +43,23 @@ def home(request):
         Q(followers=request.user) | Q(id=request.user.id)
     )
 
-    activities = models.Status.objects.filter(
-        Q(user__in=following, privacy='public') | Q(mention_users=request.user)
-    ).select_subclasses().order_by(
+    activities = models.Status.objects.select_subclasses().order_by(
         '-created_date'
-    )[:10]
+    )
+
+    if tab == 'home':
+        # people you follow and direct mentions
+        activities = activities.filter(
+            Q(user__in=following, privacy='public') | Q(mention_users=request.user)
+        )
+    elif tab == 'local':
+        # everyone on this instance
+        activities = activities.filter(user__local=True, privacy='public')
+    else:
+        # all activities from everyone you federate with
+        activities = activities.filter(privacy='public')
+
+    activities = activities[:10]
 
     comment_form = forms.CommentForm()
     data = {
@@ -51,6 +69,8 @@ def home(request):
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
+        'feed_tabs': ['home', 'local', 'federated'],
+        'active_tab': tab,
         'comment_form': comment_form,
     }
     return TemplateResponse(request, 'feed.html', data)
