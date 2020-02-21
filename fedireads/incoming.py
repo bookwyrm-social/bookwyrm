@@ -12,7 +12,6 @@ import requests
 from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.openlibrary import get_or_create_book
 from fedireads.status import create_review, create_status, create_tag
 from fedireads.remote_user import get_or_create_remote_user
 
@@ -283,8 +282,7 @@ def handle_incoming_add(activity):
     if activity['object']['type'] == 'Tag':
         user = get_or_create_remote_user(activity['actor'])
         if not user.local:
-            book_id = activity['target']['id'].split('/')[-1]
-            book = get_or_create_book(book_id)
+            book = activity['target']['id'].split('/')[-1]
             create_tag(user, book, activity['object']['name'])
             return HttpResponse()
         return HttpResponse()
