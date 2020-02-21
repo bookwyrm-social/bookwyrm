@@ -10,6 +10,7 @@ class Status(FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
+    content = models.TextField(blank=True, null=True)
     mention_users = models.ManyToManyField('User', related_name='mention_user')
     mention_books = models.ManyToManyField('Book', related_name='mention_book')
     activity_type = models.CharField(max_length=255, default='Note')

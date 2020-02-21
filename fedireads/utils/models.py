@@ -4,8 +4,8 @@ from fedireads.settings import DOMAIN
 
 
 class FedireadsModel(models.Model):
-    content = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
 
     @property
     def absolute_id(self):
