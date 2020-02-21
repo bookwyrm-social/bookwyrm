@@ -1,5 +1,5 @@
 <div class="tag">
-    {{ tag.name }}
+    <a href="/tag/{{ tag.identifier }}">{{ tag.name }}</a>
     {% if tag.name in user_tags %}
     <form class="tag-form" name="tag" action="/untag/" method="post">
         {% csrf_token %}

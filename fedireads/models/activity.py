@@ -3,6 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
+import re
 
 from fedireads.utils.models import FedireadsModel
 
@@ -60,7 +61,14 @@ class Tag(FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    name = models.CharField(max_length=140)
+    name = models.CharField(max_length=100)
+    identifier = models.CharField(max_length=100)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # add identifiers to new tags
+            self.identifier = re.sub(r'\W+', '-', self.name).lower()
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = ('user', 'book', 'name')

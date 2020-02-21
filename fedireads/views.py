@@ -205,7 +205,7 @@ def book_page(request, book_identifier):
     tags = models.Tag.objects.filter(
         book=book
     ).values(
-        'book', 'name'
+        'book', 'name', 'identifier'
     ).distinct().all()
     user_tags = models.Tag.objects.filter(
         book=book, user=request.user
@@ -239,6 +239,17 @@ def author_page(request, author_identifier):
         'books': books,
     }
     return TemplateResponse(request, 'author.html', data)
+
+
+def tag_page(request, tag_id):
+    ''' books related to a tag '''
+    tag = models.Tag.objects.filter(identifier=tag_id).first()
+    books = models.Book.objects.filter(tag=tag).all()
+    data = {
+        'books': books,
+        'tag': tag,
+    }
+    return TemplateResponse(request, 'tag.html', data)
 
 
 @login_required
