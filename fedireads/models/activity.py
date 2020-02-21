@@ -47,6 +47,13 @@ class Review(Status):
         super().save(*args, **kwargs)
 
 
+class Tag(FedireadsModel):
+    ''' freeform tags for books '''
+    users = models.ManyToManyField('User')
+    books = models.ManyToManyField('Book')
+    name = models.CharField(max_length=140, unique=True)
+
+
 class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)

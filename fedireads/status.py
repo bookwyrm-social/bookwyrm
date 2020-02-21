@@ -45,6 +45,21 @@ def create_status(user, content, reply_parent=None, mention_books=None):
     return status
 
 
+def create_tag(user, possible_book, name):
+    ''' add a tag to a book '''
+    book = get_or_create_book(possible_book)
+
+    try:
+        # check for an existing tag with this text
+        tag = models.Tag.objects.get(name=name)
+    except models.Tag.DoesNotExist():
+        # create a new one if there isn't an existing one
+        tag = models.Tag.objects.create(name=name)
+    tag.users.add(user)
+    tag.books.add(book)
+    return tag
+
+
 def sanitize(content):
     ''' remove invalid html from free text '''
     parser = InputHtmlParser()

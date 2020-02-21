@@ -50,7 +50,8 @@ def home_tab(request, tab):
     if tab == 'home':
         # people you follow and direct mentions
         activities = activities.filter(
-            Q(user__in=following, privacy='public') | Q(mention_users=request.user)
+            Q(user__in=following, privacy='public') | \
+                Q(mention_users=request.user)
         )
     elif tab == 'local':
         # everyone on this instance
@@ -269,6 +270,19 @@ def review(request):
     rating = int(form.data.get('rating'))
 
     outgoing.handle_review(request.user, book_identifier, name, content, rating)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
+def tag(request):
+    ''' tag a book '''
+    form = forms.ReviewForm(request.POST)
+    book_identifier = request.POST.get('book')
+    if not form.is_valid():
+        return redirect('/book/%s' % book_identifier)
+
+    name = form.data.get('name')
+    outgoing.handle_tag(request.user, book_identifier, name)
     return redirect('/book/%s' % book_identifier)
 
 

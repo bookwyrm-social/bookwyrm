@@ -54,3 +54,9 @@ class EditUserForm(ModelForm):
         fields = ['avatar', 'name', 'summary']
         help_texts = {f: None for f in fields}
 
+class TagForm(ModelForm):
+    class Meta:
+        model = models.Tag
+        fields = ['name']
+        help_texts = {f: None for f in fields}
+

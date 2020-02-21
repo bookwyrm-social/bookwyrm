@@ -12,6 +12,12 @@
         {% if not reviews %}
         <p>No reviews yet!</p>
         {% endif %}
+        <form class="tag-form" name="tag" action="/tag/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+            {{ tag_form.as_p }}
+            <button type="submit">Add tag</button>
+        </form>
         <form class="review-form" name="review" action="/review/" method="post">
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>

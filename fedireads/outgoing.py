@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 
 from fedireads import activitypub
 from fedireads import models
-from fedireads.status import create_review, create_status
+from fedireads.status import create_review, create_status, create_tag
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 
@@ -160,6 +160,11 @@ def handle_review(user, book, name, content, rating):
     other_recipients = get_recipients(user, 'public', limit='other')
     broadcast(user, article_create_activity, other_recipients)
 
+def handle_tag(user, book, name):
+    tag = create_tag(user, book, name)
+
+    tag_activity = activitypub.get_tag(tag)
+    book_object = activitypub.get_book(book)
 
 def handle_comment(user, review, content):
     ''' respond to a review or status '''
