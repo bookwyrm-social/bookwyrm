@@ -1,6 +1,7 @@
 ''' models for storing different kinds of Activities '''
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 from fedireads.utils.models import FedireadsModel
@@ -46,14 +47,6 @@ class Review(Status):
         self.activity_type = 'Article'
         super().save(*args, **kwargs)
 
-
-class Tag(FedireadsModel):
-    ''' freeform tags for books '''
-    users = models.ManyToManyField('User')
-    books = models.ManyToManyField('Book')
-    name = models.CharField(max_length=140, unique=True)
-
-
 class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -61,4 +54,14 @@ class Favorite(FedireadsModel):
 
     class Meta:
         unique_together = ('user', 'status')
+
+
+class Tag(FedireadsModel):
+    ''' freeform tags for books '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    name = models.CharField(max_length=140)
+
+    class Meta:
+        unique_together = ('user', 'book', 'name')
 

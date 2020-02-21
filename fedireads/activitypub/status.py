@@ -1,4 +1,7 @@
 ''' status serializers '''
+from uuid import uuid4
+
+
 def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
@@ -76,9 +79,51 @@ def get_replies(status, replies):
 def get_favorite(favorite):
     ''' like a post '''
     return {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": favorite.absolute_id,
-        "type": "Like",
-        "actor": favorite.user.actor,
-        "object": favorite.status.absolute_id,
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': favorite.absolute_id,
+        'type': 'Like',
+        'actor': favorite.user.actor,
+        'object': favorite.status.absolute_id,
     }
+
+
+def get_add_tag(tag):
+    ''' add activity for tagging a book '''
+    uuid = uuid4()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': str(uuid),
+        'type': 'Add',
+        'actor': tag.user.actor,
+        'object': {
+            'type': 'Tag',
+            'id': tag.absolute_id,
+            'name': tag.name,
+        },
+        'target': {
+            'type': 'Book',
+            'id': tag.book.absolute_id,
+        }
+    }
+
+
+def get_remove_tag(tag):
+    ''' add activity for tagging a book '''
+    uuid = uuid4()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': str(uuid),
+        'type': 'Remove',
+        'actor': tag.user.actor,
+        'object': {
+            'type': 'Tag',
+            'id': tag.absolute_id,
+            'name': tag.name,
+        },
+        'target': {
+            'type': 'Book',
+            'id': tag.book.absolute_id,
+        }
+    }
+
+

@@ -2,6 +2,7 @@
 from fedireads import models
 from fedireads.openlibrary import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
+from django.db import IntegrityError
 
 
 def create_review(user, possible_book, name, content, rating):
@@ -50,13 +51,9 @@ def create_tag(user, possible_book, name):
     book = get_or_create_book(possible_book)
 
     try:
-        # check for an existing tag with this text
-        tag = models.Tag.objects.get(name=name)
-    except models.Tag.DoesNotExist():
-        # create a new one if there isn't an existing one
-        tag = models.Tag.objects.create(name=name)
-    tag.users.add(user)
-    tag.books.add(book)
+        tag = models.Tag.objects.create(name=name, book=book, user=user)
+    except IntegrityError:
+        return models.Tag.objects.get(name=name, book=book, user=user)
     return tag
 
 

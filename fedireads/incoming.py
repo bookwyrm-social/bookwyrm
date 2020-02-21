@@ -12,7 +12,8 @@ import requests
 from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.status import create_review, create_status
+from fedireads.openlibrary import get_or_create_book
+from fedireads.status import create_review, create_status, create_tag
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -48,6 +49,9 @@ def shared_inbox(request):
 
     elif activity['type'] == 'Like':
         response = handle_incoming_favorite(activity)
+
+    elif activity['type'] == 'Add':
+        response = handle_incoming_add(activity)
 
     # TODO: Add, Undo, Remove, etc
 
@@ -272,6 +276,19 @@ def handle_incoming_favorite(activity):
     if not liker.local:
         status.favorites.add(liker)
     return HttpResponse()
+
+
+def handle_incoming_add(activity):
+    ''' someone is tagging or shelving a book '''
+    if activity['object']['type'] == 'Tag':
+        user = get_or_create_remote_user(activity['actor'])
+        if not user.local:
+            book_id = activity['target']['id'].split('/')[-1]
+            book = get_or_create_book(book_id)
+            create_tag(user, book, activity['object']['name'])
+            return HttpResponse()
+        return HttpResponse()
+    return HttpResponseNotFound()
 
 
 def handle_incoming_accept(activity):

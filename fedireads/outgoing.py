@@ -160,11 +160,26 @@ def handle_review(user, book, name, content, rating):
     other_recipients = get_recipients(user, 'public', limit='other')
     broadcast(user, article_create_activity, other_recipients)
 
-def handle_tag(user, book, name):
-    tag = create_tag(user, book, name)
 
-    tag_activity = activitypub.get_tag(tag)
-    book_object = activitypub.get_book(book)
+def handle_tag(user, book, name):
+    ''' tag a book '''
+    tag = create_tag(user, book, name)
+    tag_activity = activitypub.get_add_tag(tag)
+
+    recipients = get_recipients(user, 'public')
+    broadcast(user, tag_activity, recipients)
+
+
+def handle_untag(user, book, name):
+    ''' tag a book '''
+    book = models.Book.objects.get(openlibrary_key=book)
+    tag = models.Tag.objects.get(name=name, book=book, user=user)
+    tag_activity = activitypub.get_remove_tag(tag)
+    tag.delete()
+
+    recipients = get_recipients(user, 'public')
+    broadcast(user, tag_activity, recipients)
+
 
 def handle_comment(user, review, content):
     ''' respond to a review or status '''
