@@ -8,10 +8,8 @@ Social reading and reviewing, decentralized with ActivityPub
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
  - [Setting up the developer environment](#setting-up-the-developer-environment)
- - [Structure](#structure)
- - [Thoughts and considerations](#thoughts-and-considerations)
-   - [What even are books](#what-even-are-books)
-   - [Explain "review"](#explain-review)
+ - [Project structure](#project-structure)
+ - [Contributing](#contributing)
 
 ## The overall idea
 ### What it is an isn't
@@ -72,23 +70,18 @@ And go to the app at `localhost:8000`
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
 
 
-## Structure
+## Project structure
 
-All the url routing is in `fedireads/urls.py`. This includes the application views (your home page, user page, book page, etc),
-application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
+All the url routing is in `fedireads/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
 
-The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content.
-Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming
-messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`.
+The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`. ActivityPub serialization is handled in the `activitypub/` directory.
+
+There's some organization/refactoring work to be done to clarify the separation of concerns and keep the code readable and well organized.
 
 The UI is all django templates because that is the default. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
 
 
-## Thoughts and considerations
+## Contributing
+There are many ways you can contribute to this project! You are welcome and encouraged to create or contribute a github issue to report a bug, request a feature, make a usability suggestion, or express a nevulous desire.
 
-### What even are books
-It's important for this application to function that books can be identified reliably across different instances. I'm using OpenLibrary.org data, which works well (thanks OpenLibrary!) and I'm treating it as canonical and not the copies in the local databases. This means that instances will be consistent, but the major downside is that if users want to modify books or add books that aren't available, they need to do it on OpenLibrary, rather than their own instance.
-
-### Explain "review"
-There's no actual reason to be beholden to simple 5 star reviews with a text body. Are there other ways of thinking about a review
-that could be represented in a database?
+If you'd like to add to the codebase, the issues are a good place to start to get a sense of what needs to be done -- feel free to ask questions and tag @mouse-reeve. This isn't a formalized process at this point.
