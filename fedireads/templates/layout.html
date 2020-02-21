@@ -33,6 +33,7 @@
                     </form>
                     {% else %}
                     <form name="login" action="/login/" method="post">
+                        {% csrf_token %}
                         {% for field in login_form %}
                             {{ field }}
                         {% endfor %}
