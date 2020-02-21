@@ -2,6 +2,7 @@
 from fedireads import models
 from fedireads.openlibrary import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
+from django.db import IntegrityError
 
 
 def create_review(user, possible_book, name, content, rating):
@@ -43,6 +44,17 @@ def create_status(user, content, reply_parent=None, mention_books=None):
             status.mention_books.add(book)
 
     return status
+
+
+def create_tag(user, possible_book, name):
+    ''' add a tag to a book '''
+    book = get_or_create_book(possible_book)
+
+    try:
+        tag = models.Tag.objects.create(name=name, book=book, user=user)
+    except IntegrityError:
+        return models.Tag.objects.get(name=name, book=book, user=user)
+    return tag
 
 
 def sanitize(content):

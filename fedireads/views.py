@@ -50,7 +50,8 @@ def home_tab(request, tab):
     if tab == 'home':
         # people you follow and direct mentions
         activities = activities.filter(
-            Q(user__in=following, privacy='public') | Q(mention_users=request.user)
+            Q(user__in=following, privacy='public') | \
+                Q(mention_users=request.user)
         )
     elif tab == 'local':
         # everyone on this instance
@@ -201,12 +202,25 @@ def book_page(request, book_identifier):
     # TODO: again, post privacy?
     reviews = models.Review.objects.filter(book=book)
     rating = reviews.aggregate(Avg('rating'))
+    tags = models.Tag.objects.filter(
+        book=book
+    ).values(
+        'book', 'name'
+    ).distinct().all()
+    user_tags = models.Tag.objects.filter(
+        book=book, user=request.user
+    ).values_list('name', flat=True)
+
     review_form = forms.ReviewForm()
+    tag_form = forms.TagForm()
     data = {
         'book': book,
         'reviews': reviews,
         'rating': rating['rating__avg'],
+        'tags': tags,
+        'user_tags': user_tags,
         'review_form': review_form,
+        'tag_form': tag_form,
     }
     return TemplateResponse(request, 'book.html', data)
 
@@ -269,6 +283,28 @@ def review(request):
     rating = int(form.data.get('rating'))
 
     outgoing.handle_review(request.user, book_identifier, name, content, rating)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
+def tag(request):
+    ''' tag a book '''
+    # I'm not using a form here because sometimes "name" is sent as a hidden
+    # field which doesn't validate
+    name = request.POST.get('name')
+    book_identifier = request.POST.get('book')
+
+    outgoing.handle_tag(request.user, book_identifier, name)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
+def untag(request):
+    ''' untag a book '''
+    name = request.POST.get('name')
+    book_identifier = request.POST.get('book')
+
+    outgoing.handle_untag(request.user, book_identifier, name)
     return redirect('/book/%s' % book_identifier)
 
 

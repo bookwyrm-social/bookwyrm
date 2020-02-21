@@ -51,6 +51,8 @@ urlpatterns = [
 
     # internal action endpoints
     re_path(r'^review/?$', views.review),
+    re_path(r'^tag/?$', views.tag),
+    re_path(r'^untag/?$', views.untag),
     re_path(r'^comment/?$', views.comment),
     re_path(r'^favorite/(?P<status_id>\d+)/?$', views.favorite),
     re_path(

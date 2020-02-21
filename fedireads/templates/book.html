@@ -6,6 +6,17 @@
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size=large rating=rating description=True %}
         </div>
+        <div id="tag-cloud">
+            {% for tag in tags %}
+            {% include 'snippets/tag.html' with tag=tag user=request.user %}
+            {% endfor %}
+        </div>
+        <form class="tag-form" name="tag" action="/tag/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+            {{ tag_form.as_p }}
+            <button type="submit">Add tag</button>
+        </form>
     </div>
     <div class="reviews">
         <h2>Reviews</h2>
