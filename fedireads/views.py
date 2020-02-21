@@ -244,7 +244,7 @@ def author_page(request, author_identifier):
 def tag_page(request, tag_id):
     ''' books related to a tag '''
     tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
-    books = models.Book.objects.filter(tag__identifier=tag_id)
+    books = models.Book.objects.filter(tag__identifier=tag_id).distinct()
     data = {
         'books': books,
         'tag': tag_obj,
