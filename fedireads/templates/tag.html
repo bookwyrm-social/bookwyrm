@@ -5,7 +5,7 @@
     <div>
         <h2>Books tagged "{{ tag.name }}"</h2>
         {% for book in books.all %}
-        <div class="book-preview">
+        <div class="book-preview grid">
             {% include 'snippets/book.html' with book=book size=large %}
         </div>
         {% endfor %}

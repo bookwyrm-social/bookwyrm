@@ -243,11 +243,11 @@ def author_page(request, author_identifier):
 
 def tag_page(request, tag_id):
     ''' books related to a tag '''
-    tag = models.Tag.objects.filter(identifier=tag_id).first()
-    books = models.Book.objects.filter(tag=tag).all()
+    tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
+    books = models.Book.objects.filter(tag__identifier=tag_id)
     data = {
         'books': books,
-        'tag': tag,
+        'tag': tag_obj,
     }
     return TemplateResponse(request, 'tag.html', data)
 
