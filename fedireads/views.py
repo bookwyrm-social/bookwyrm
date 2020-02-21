@@ -20,15 +20,20 @@ def home(request):
 @login_required
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
-    # user's shelves for display
-    reading = models.Shelf.objects.get(
-        user=request.user,
-        identifier='reading'
-    )
-    to_read = models.Shelf.objects.get(
-        user=request.user,
-        identifier='to-read'
-    )
+    shelves = []
+    for identifier in ['reading', 'to-read']:
+        shelf = models.Shelf.objects.get(
+            user=request.user,
+            identifier=identifier,
+        )
+        if not shelf.books.count():
+            continue
+        shelves.append({
+            'name': shelf.name,
+            'identifier': shelf.identifier,
+            'books': shelf.books.all()[:3],
+            'size': shelf.books.count(),
+        })
 
     # allows us to check if a user has shelved a book
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
@@ -65,8 +70,7 @@ def home_tab(request, tab):
     comment_form = forms.CommentForm()
     data = {
         'user': request.user,
-        'reading': reading,
-        'to_read': to_read,
+        'shelves': shelves,
         'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
@@ -326,8 +330,8 @@ def comment(request):
     # this is a bit of a formality, the form is just one text field
     if not form.is_valid():
         return redirect('/')
-    review_id = request.POST['review']
-    parent = models.Review.objects.get(id=review_id)
+    parent_id = request.POST['parent']
+    parent = models.Status.objects.get(id=parent_id)
     outgoing.handle_comment(request.user, parent, form.data['content'])
     return redirect('/')
 

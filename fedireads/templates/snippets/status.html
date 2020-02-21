@@ -9,23 +9,7 @@
             <p>{{ activity.rating | stars }}</p>
             <p>{{ activity.content | safe }}</p>
         </div>
-        <div class="interaction">
-            {% if activity.favorites.all %}
-            <span>
-            {{ activity.favorites.count }} like(s)
-            </span>
-            {% endif %}
-            <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
-                {% csrf_token %}
-                <button>⭐️ Like</button>
-            </form>
-            <form name="comment" action="/comment" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="review" value="{{ activity.id }}"></input>
-                {{ comment_form.content }}
-                <button type="submit">Comment</button>
-            </form>
-        </div>
+        {% include 'snippets/interaction.html' with activity=activity %}
     {% elif activity.status_type == 'Note' %}
         {% include 'snippets/status_banner.html' %}
         <span>{{ activity.content | safe }}</span>
@@ -34,6 +18,7 @@
             {% include 'snippets/book.html' with book=book size=large description=True %}
         </div>
         {% endfor %}
+        {% include 'snippets/interaction.html' with activity=activity %}
     {% else %}
     {# generic handling for a misc activity, which perhaps should not be displayed at all #}
         did {{ activity.activity_type }}

@@ -1,0 +1,18 @@
+<div class="interaction">
+    {% if activity.favorites.all %}
+    <span>
+    {{ activity.favorites.count }} like(s)
+    </span>
+    {% endif %}
+    <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
+        {% csrf_token %}
+        <button>⭐️ Like</button>
+    </form>
+    <form name="comment" action="/comment" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="parent" value="{{ activity.id }}"></input>
+        {{ comment_form.content }}
+        <button type="submit">Comment</button>
+    </form>
+</div>
+

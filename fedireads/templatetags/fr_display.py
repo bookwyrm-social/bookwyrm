@@ -1,6 +1,9 @@
 ''' template filters '''
 from django import template
 
+from fedireads import models
+
+
 register = template.Library()
 
 @register.filter(name='dict_key')
@@ -34,3 +37,39 @@ def bio_format(bio):
         bio = bio['value']
     bio = bio.split('\n')
     return bio[0].strip()
+
+
+@register.simple_tag(takes_context=True)
+def shelve_button_identifier(context, book):
+    ''' check what shelf a user has a book on, if any '''
+    try:
+        shelf = models.ShelfBook.objects.get(
+            shelf__user=context['user'],
+            book=book
+        )
+    except models.ShelfBook.DoesNotExist:
+        return 'to-read'
+    identifier = shelf.shelf.identifier
+    if identifier == 'to-read':
+        return 'reading'
+    elif identifier == 'reading':
+        return 'read'
+    return 'to-read'
+
+
+@register.simple_tag(takes_context=True)
+def shelve_button_text(context, book):
+    ''' check what shelf a user has a book on, if any '''
+    try:
+        shelf = models.ShelfBook.objects.get(
+            shelf__user=context['user'],
+            book=book
+        )
+    except models.ShelfBook.DoesNotExist:
+        return 'Want to read'
+    identifier = shelf.shelf.identifier
+    if identifier == 'Start reading':
+        return 'reading'
+    elif identifier == 'reading':
+        return 'I\'m done!'
+    return 'Want to read'

@@ -1,0 +1,7 @@
+{% load fr_display %}
+<form name="shelve" action="/shelve/{{ user.localname }}/{% shelve_button_identifier book %}/{{ book.id }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="book.id"></input>
+    <button type="submit">{% shelve_button_text book %}</button>
+</form>
+

@@ -2,33 +2,26 @@
 {% load fr_display %}
 {% block content %}
 <div id="sidebar">
-    <div>
-        <h2>Currently Reading</h2>
-        {# listing books currently on user's shelves #}
-        {% if not reading.books.all %}
-        <p>Start a book!</p>
-        {% for book in to_read.books.all %}
-        <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size="small" %}
-            <form name="shelve" action="/shelve/{{ user.localname }}/reading/{{ book.id }}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="book.id"></input>
-                <button type="submit">Start reading</button>
-            </form>
-        </div>
-        {% endfor %}
-        {% endif %}
 
-        {% for book in reading.books.all %}
+    <div>
+        {% if shelves %}
+        {% for shelf in shelves %}
+        <h2>{{ shelf.name }}</h2>
+        {% for book in shelf.books %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
-            <form name="shelve" action="/shelve/{{ user.localname }}/read/{{ book.id }}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="book.id"></input>
-                <button type="submit">I'm done!</button>
-            </form>
+            {% include 'snippets/shelve-button.html' with book=book %}
         </div>
         {% endfor %}
+        {% if shelf.size > shelf.books.count %}
+        <a href="/shelf/{{ shelf.identifier }}">See all {{ shelf.size }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% else %}
+        <h2>Reading Activity</h2>
+        <p>Start a book!</p>
+        {% endif %}
     </div>
 
     <div>
@@ -37,11 +30,7 @@
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
             {% if not book in user_books.all %}
-            <form name="shelve" action="/shelve/{{ user.localname }}/to-read/{{ book.id }}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="book.id"></input>
-                <button type="submit">Want to read</button>
-            </form>
+            {% include 'snippets/shelve-button.html' with book=book %}
             {% endif %}
         </div>
         {% endfor %}
