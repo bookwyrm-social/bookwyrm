@@ -26,7 +26,7 @@
         <div>
             <a href="{{ follower.actor }}">{{ follower.username }}</a>
             {% if not request.user in follower.followers.all %}
-            {% include 'snippets/follow_button.html' with user=user %}
+            {% include 'snippets/follow_button.html' with user=follower %}
             {% endif %}
         </div>
         {% endfor %}
