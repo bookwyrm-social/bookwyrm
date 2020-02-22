@@ -1,7 +1,27 @@
 {% load fr_display %}
-<form name="shelve" action="/shelve/{{ user.localname }}/{% shelve_button_identifier book %}/{{ book.id }}" method="post">
+{% if not pulldown %}
+
+<form name="shelve" action="/shelve/" method="post">
     {% csrf_token %}
-    <input type="hidden" name="book" value="book.id"></input>
+    <input type="hidden" name="book" value="{{ book.id }}"></input>
+    <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
     <button type="submit">{% shelve_button_text book %}</button>
 </form>
 
+{% else %}
+
+<form name="shelve" action="/shelve/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}"></input>
+
+    <select name="shelf">
+        {% for shelf in request.user.shelf_set.all %}
+        <option value="{{ shelf.identifier }}" {% if book in shelf.books.all %} selected {% endif %}>
+             {{ shelf.name }}{% if book in shelf.books.all %} ✓ {% endif %}
+        </option>
+        {% endfor %}
+    </select>
+    <button type="submit">Shelve</button>
+</form>
+
+{% endif %}

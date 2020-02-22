@@ -12,3 +12,5 @@
 {% if description %}
 <blockquote>{{ book.data.description | description }}</blockquote>
 {% endif %}
+
+{% include 'snippets/shelve-button.html' with book=book pulldown=shelf_pulldown%}

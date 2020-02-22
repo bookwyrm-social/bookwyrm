@@ -74,8 +74,8 @@ def shelve_button_text(context, book):
     except models.ShelfBook.DoesNotExist:
         return 'Want to read'
     identifier = shelf.shelf.identifier
-    if identifier == 'Start reading':
-        return 'reading'
+    if identifier == 'to-read':
+        return 'Start reading'
     elif identifier == 'reading':
         return 'I\'m done!'
     return 'Want to read'

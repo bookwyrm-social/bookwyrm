@@ -10,7 +10,6 @@
         {% for book in shelf.books %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
-            {% include 'snippets/shelve-button.html' with book=book %}
         </div>
         {% endfor %}
         {% if shelf.size > shelf.books.count %}
@@ -29,9 +28,6 @@
         {% for book in recent_books %}
         <div class="book-preview">
             {% include 'snippets/book.html' with book=book size="small" %}
-            {% if not book in user_books.all %}
-            {% include 'snippets/shelve-button.html' with book=book %}
-            {% endif %}
         </div>
         {% endfor %}
     </div>

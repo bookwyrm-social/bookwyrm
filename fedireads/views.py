@@ -274,19 +274,15 @@ def shelf_page(request, username, shelf_identifier):
 
 
 @login_required
-def shelve(request, username, shelf_id, book_id, reshelve=True):
+def shelve(request):
     ''' put a book on a user's shelf '''
-    if request.user.localname != username:
-        # don't let people put books on other people's shelves
-        return HttpResponseNotFound()
-
-    book = models.Book.objects.get(id=book_id)
+    book = models.Book.objects.get(id=request.POST['book'])
     desired_shelf = models.Shelf.objects.filter(
-        identifier=shelf_id,
+        identifier=request.POST['shelf'],
         user=request.user
     ).first()
 
-    if reshelve:
+    if request.POST.get('reshelve', True):
         try:
             current_shelf = models.Shelf.objects.get(
                 user=request.user,

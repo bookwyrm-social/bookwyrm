@@ -4,7 +4,7 @@
 <div id="content">
     <div>
         <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size=large rating=rating description=True %}
+            {% include 'snippets/book.html' with book=book size=large rating=rating description=True shelf_pulldown=True %}
         </div>
         <div id="tag-cloud">
             {% for tag in tags %}
