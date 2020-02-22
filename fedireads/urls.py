@@ -57,8 +57,8 @@ urlpatterns = [
     re_path(r'^comment/?$', views.comment),
     re_path(r'^favorite/(?P<status_id>\d+)/?$', views.favorite),
     re_path(r'^shelve/?$', views.shelve),
-    re_path(r'^follow/(?P<username>[\w@\.-]+)/?$', views.follow),
-    re_path(r'^unfollow/(?P<username>[\w@\.-]+)/?$', views.unfollow),
+    re_path(r'^follow/?$', views.follow),
+    re_path(r'^unfollow/?$', views.unfollow),
     re_path(r'^search/?$', views.search),
     re_path(r'^edit_profile/?$', views.edit_profile),
 
