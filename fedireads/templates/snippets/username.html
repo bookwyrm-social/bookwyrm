@@ -1,2 +1,2 @@
-<a href="/user/{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}" class="user">{% if user.name %}{{ user.name }}{% elif user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</a>
-
+{% load fr_display %}
+<a href="/user/{{ user | username }}" class="user">{% if user.name %}{{ user.name }}{% else %}{{ user | username }}{% endif %}</a>

@@ -28,7 +28,6 @@ urlpatterns = [
         r'^user/(?P<username>\w+)/(status|review)/(?P<status_id>\d+)/replies/?$',
         incoming.get_replies
     ),
-    # TODO: shelves need pages in the UI and for their activitypub Collection
 
     # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
@@ -49,6 +48,7 @@ urlpatterns = [
     re_path(r'^book/(?P<book_identifier>\w+)/?$', views.book_page),
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>[\w-]+)/?$', views.tag_page),
+    re_path(r'^shelf/(?P<username>[\w@\.-]+)/(?P<shelf_identifier>[\w-]+)/?$', views.shelf_page),
 
     # internal action endpoints
     re_path(r'^review/?$', views.review),

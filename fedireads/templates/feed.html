@@ -14,7 +14,7 @@
         </div>
         {% endfor %}
         {% if shelf.size > shelf.books.count %}
-        <a href="/shelf/{{ shelf.identifier }}">See all {{ shelf.size }}</a>
+        <a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>
         {% endif %}
         {% endfor %}
 

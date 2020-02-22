@@ -143,12 +143,9 @@ def user_profile(request, username):
 
     # otherwise we're at a UI view
     try:
-        user = models.User.objects.get(localname=username)
+        user = get_user_from_username(username)
     except models.User.DoesNotExist:
-        try:
-            user = models.User.objects.get(username=username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
+        return HttpResponseNotFound()
 
     # TODO: change display with privacy and authentication considerations
     shelves = models.Shelf.objects.filter(user=user)
@@ -162,6 +159,14 @@ def user_profile(request, username):
         'is_self': request.user.id == user.id,
     }
     return TemplateResponse(request, 'user.html', data)
+
+def get_user_from_username(username):
+    ''' resolve a localname or a username to a user '''
+    try:
+        user = models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        user = models.User.objects.get(username=username)
+    return user
 
 
 @login_required
@@ -254,6 +259,18 @@ def tag_page(request, tag_id):
         'tag': tag_obj,
     }
     return TemplateResponse(request, 'tag.html', data)
+
+
+def shelf_page(request, username, shelf_identifier):
+    ''' display a shelf '''
+    # TODO: json view
+    try:
+        user = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
+    return TemplateResponse(request, 'shelf.html', {'shelf': shelf})
 
 
 @login_required

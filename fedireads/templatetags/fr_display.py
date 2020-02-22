@@ -39,6 +39,12 @@ def bio_format(bio):
     return bio[0].strip()
 
 
+@register.filter(name='username')
+def get_user_identifier(user):
+    ''' use localname for local users, username for remote '''
+    return user.localname if user.localname else user.username
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
@@ -73,3 +79,4 @@ def shelve_button_text(context, book):
     elif identifier == 'reading':
         return 'I\'m done!'
     return 'Want to read'
+
