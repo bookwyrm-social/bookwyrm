@@ -11,19 +11,7 @@
         <blockquote>{{ user.summary | safe }}</blockquote>
         {% endif %}
         {% if not is_self %}
-        {% if not request.user in user.followers.all %}
-        <form action="/follow/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="user" value="{{ user.username }}"></input>
-            <input type="submit" value="Follow"></input>
-        </form>
-        {% else %}
-        <form action="/unfollow/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="user" value="{{ user.username }}"></input>
-            <input type="submit" value="Unfollow"></input>
-        </form>
-        {% endif %}
+        {% include 'snippets/follow_button.html' with user=user %}
         {% endif %}
 
         {% if is_self %}
@@ -38,17 +26,7 @@
         <div>
             <a href="{{ follower.actor }}">{{ follower.username }}</a>
             {% if not request.user in follower.followers.all %}
-            <form action="/follow/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="user" value="{{ follower.username }}"></input>
-                <input type="submit" value="Follow"></input>
-            </form>
-            {% else %}
-            <form action="/unfollow/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="user" value="{{ follower.username }}"></input>
-                <input type="submit" value="Unfollow"></input>
-            </form>
+            {% include 'snippets/follow_button.html' with user=user %}
             {% endif %}
         </div>
         {% endfor %}

@@ -1,0 +1,13 @@
+{% if not request.user in user.followers.all %}
+<form action="/follow/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ user.username }}"></input>
+    <input type="submit" value="Follow"></input>
+</form>
+{% else %}
+<form action="/unfollow/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ user.username }}"></input>
+    <input type="submit" value="Unfollow"></input>
+</form>
+{% endif %}

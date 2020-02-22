@@ -4,10 +4,7 @@
     {% for result in results %}
     <div>
         <h2>{{ result.username }}</h2>
-        <form action="/follow/{{ result.username }}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="Follow"></input>
-        </form>
+        {% include 'snippets/follow_button.html' with user=result %}
     </div>
     {% endfor %}
 </div>

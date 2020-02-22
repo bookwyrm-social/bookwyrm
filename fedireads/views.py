@@ -2,7 +2,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import re
@@ -365,8 +365,10 @@ def favorite(request, status_id):
 def follow(request):
     ''' follow another user, here or abroad '''
     username = request.POST['user']
-    # should this be an actor rather than an id? idk
-    to_follow = models.User.objects.get(username=username)
+    try:
+        to_follow = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseBadRequest()
 
     outgoing.handle_outgoing_follow(request.user, to_follow)
     user_slug = to_follow.localname if to_follow.localname \
@@ -378,7 +380,10 @@ def follow(request):
 def unfollow(request):
     ''' unfollow a user '''
     username = request.POST['user']
-    to_unfollow = models.User.objects.get(username=username)
+    try:
+        to_unfollow = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseBadRequest()
 
     outgoing.handle_outgoing_unfollow(request.user, to_unfollow)
     user_slug = to_unfollow.localname if to_unfollow.localname \
