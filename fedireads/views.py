@@ -362,8 +362,9 @@ def favorite(request, status_id):
 
 
 @login_required
-def follow(request, username):
+def follow(request):
     ''' follow another user, here or abroad '''
+    username = request.POST['user']
     # should this be an actor rather than an id? idk
     to_follow = models.User.objects.get(username=username)
 
@@ -374,8 +375,9 @@ def follow(request, username):
 
 
 @login_required
-def unfollow(request, username):
+def unfollow(request):
     ''' unfollow a user '''
+    username = request.POST['user']
     to_unfollow = models.User.objects.get(username=username)
 
     outgoing.handle_outgoing_unfollow(request.user, to_unfollow)
