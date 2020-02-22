@@ -108,8 +108,11 @@ def inbox(request, username):
     ''' incoming activitypub events '''
     # TODO: should do some kind of checking if the user accepts
     # this action from the sender probably? idk
-    # but this will just throw an error if the user doesn't exist I guess
-    models.User.objects.get(localname=username)
+    # but this will just throw a 404 if the user doesn't exist
+    try:
+        models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
 
     return shared_inbox(request)
 
@@ -120,7 +123,10 @@ def get_actor(request, username):
     if request.method != 'GET':
         return HttpResponseBadRequest()
 
-    user = models.User.objects.get(localname=username)
+    try:
+        user = models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
     return JsonResponse(activitypub.get_actor(user))
 
 

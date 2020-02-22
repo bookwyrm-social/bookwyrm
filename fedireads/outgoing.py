@@ -15,8 +15,12 @@ from fedireads.broadcast import get_recipients, broadcast
 @csrf_exempt
 def outbox(request, username):
     ''' outbox for the requested user '''
-    user = models.User.objects.get(localname=username)
     if request.method != 'GET':
+        return HttpResponseNotFound()
+
+    try:
+        user = models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
     # paginated list of messages
