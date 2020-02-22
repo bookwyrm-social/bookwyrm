@@ -270,7 +270,11 @@ def shelf_page(request, username, shelf_identifier):
         return HttpResponseNotFound()
 
     shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
-    return TemplateResponse(request, 'shelf.html', {'shelf': shelf})
+    data = {
+        'shelf': shelf,
+        'user': user,
+    }
+    return TemplateResponse(request, 'shelf.html', data)
 
 
 @login_required

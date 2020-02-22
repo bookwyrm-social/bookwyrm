@@ -3,7 +3,7 @@
 
 <div id="content">
     <div>
-        <h2>{% include 'snippets/username.html' %} > {{ shelf.name }}</h2>
+        <h2>{% include 'snippets/username.html' with user=user %} > {{ shelf.name }}</h2>
         {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
     </div>
 </div>
