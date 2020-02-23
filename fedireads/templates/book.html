@@ -18,12 +18,16 @@
             {{ tag_form.as_p }}
             <button type="submit">Add tag</button>
         </form>
+
+        {% for review in user_reviews %}
+        {% include 'snippets/review.html' with review=review %}
+        {% endfor %}
     </div>
 </div>
 
 <div id="content">
     <div>
-        <h2><q>{{ book.data.title }}</q> by 
+        <h2><q>{{ book.data.title }}</q> by
             {% include 'snippets/authors.html' with book=book %}</h2>
         <div class="book-preview">
             {% include 'snippets/book_cover.html' with book=book size=large %}
@@ -31,9 +35,6 @@
             {% if description %}
             <blockquote>{{ book.data.description | description }}</blockquote>
             {% endif %}
-            {% for review in user_reviews %}
-            {% include 'snippets/review.html' with review=review %}
-            {% endfor %}
             <div>
                 <div id="tag-cloud">
                     {% for tag in tags %}
