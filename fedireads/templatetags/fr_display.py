@@ -80,3 +80,16 @@ def shelve_button_text(context, book):
         return 'I\'m done!'
     return 'Want to read'
 
+
+@register.simple_tag(takes_context=True)
+def current_shelf(context, book):
+    ''' check what shelf a user has a book on, if any '''
+    try:
+        shelf = models.ShelfBook.objects.get(
+            shelf__user=context['user'],
+            book=book
+        )
+    except models.ShelfBook.DoesNotExist:
+        return None
+    return shelf.name
+

@@ -1,14 +1,15 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div id="content">
+<div id="sidebar">
     <div>
-        <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size=large rating=rating description=True shelf_pulldown=True %}
-        </div>
+        <h2><q>{{ book.data.title }}</q> and You</h2>
+        <p>{% if shelf %}On shelf <q>{{ shelf.name }}</q>{% endif %}</p>
+        {% include 'snippets/shelve-button.html' with book=book pulldown=True %}
+
         <div id="tag-cloud">
-            {% for tag in tags %}
-            {% include 'snippets/tag.html' with tag=tag user=request.user %}
+            {% for tag in user_tags %}
+            {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
             {% endfor %}
         </div>
         <form class="tag-form" name="tag" action="/tag/" method="post">
@@ -18,6 +19,33 @@
             <button type="submit">Add tag</button>
         </form>
     </div>
+</div>
+
+<div id="content">
+    <div>
+        <h2><q>{{ book.data.title }}</q> by 
+            {% include 'snippets/authors.html' with book=book %}</h2>
+        <div class="book-preview">
+            {% include 'snippets/book_cover.html' with book=book size=large %}
+            <p>{{ active_tab }} rating: {{ rating | stars }}</p>
+            {% if description %}
+            <blockquote>{{ book.data.description | description }}</blockquote>
+            {% endif %}
+            {% for review in user_reviews %}
+            {% include 'snippets/review.html' with review=review %}
+            {% endfor %}
+            <div>
+                <div id="tag-cloud">
+                    {% for tag in tags %}
+                    {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
     <div class="reviews">
         <h2>Reviews</h2>
         {% if not reviews %}
@@ -29,13 +57,9 @@
             {{ review_form.as_p }}
             <button type="submit">Post review</button>
         </form>
+        <p>Average rating: {{ rating | stars }}</p>
         {% for review in reviews %}
-        <div class="review">
-            <h4>{{ review.name }}
-                <small>{{ review.rating | stars }} stars, by {% include 'snippets/username.html' with user=review.user %}</small>
-            </h4>
-            <blockquote>{{ review.content }}</blockquote>
-        </div>
+        {% include 'snippets/review.html' with review=review %}
         {% endfor %}
     </div>
 </div>

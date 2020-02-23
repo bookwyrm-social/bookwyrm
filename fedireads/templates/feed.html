@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div id="sidebar">
 
+<div id="sidebar">
     <div>
         {% if shelves %}
         {% for shelf in shelves %}
@@ -33,17 +33,13 @@
     </div>
 </div>
 
+
 <div id="feed">
-    <div id="feed-tabs">
-        {% for tab in feed_tabs %}
-        <div class="{% if tab == active_tab %}active{% endif %}">
-            <a href="/{{ tab }}">{{ tab }}</a>
-        </div>
-        {% endfor %}
-    </div>
+    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
 
     {% for activity in activities %}
         {% include 'snippets/status.html' with activity=activity %}
     {% endfor %}
 </div>
+
 {% endblock %}

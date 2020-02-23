@@ -7,6 +7,8 @@ import re
 
 from fedireads.utils.models import FedireadsModel
 
+# TODO: quote, comment, poll, recommendation, content warning, image
+
 
 class Status(FedireadsModel):
     ''' any post, like a reply to a review, etc '''

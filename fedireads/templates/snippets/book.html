@@ -3,7 +3,9 @@
 <p class="title">
     <a href="/book/{{ book.openlibrary_key }}">{{ book.data.title }}</a>
 </p>
-<p>by <a href="/author/{{ book.authors.first.openlibrary_key }}" class="author">{{ book.authors.first.data.name }}</a></p>
+<p>
+    {% include 'snippets/authors.html' with book=book %}
+</p>
 
 {% if rating %}
 {{ rating | stars }} {{ rating }}
@@ -13,4 +15,4 @@
 <blockquote>{{ book.data.description | description }}</blockquote>
 {% endif %}
 
-{% include 'snippets/shelve-button.html' with book=book pulldown=shelf_pulldown%}
+{% include 'snippets/shelve-button.html' with book=book pulldown=shelf_pulldown %}

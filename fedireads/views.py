@@ -185,12 +185,38 @@ def edit_profile_page(request, username):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-
-def book_page(request, book_identifier):
+@login_required
+def book_page(request, book_identifier, tab='friends'):
     ''' info about a book '''
     book = openlibrary.get_or_create_book(book_identifier)
-    # TODO: again, post privacy?
-    reviews = models.Review.objects.filter(book=book)
+
+    user_reviews = models.Review.objects.filter(user=request.user, book=book).all()
+
+    if tab == 'friends':
+        reviews = models.Review.objects.filter(
+            Q(user__followers=request.user, privacy='public') | \
+                Q(mention_users=request.user),
+            book=book,
+        )
+    elif tab == 'local':
+        reviews = models.Review.objects.filter(
+            Q(privacy='public') | \
+                Q(mention_users=request.user),
+            user__local=True,
+            book=book,
+        )
+    else:
+        reviews = models.Review.objects.filter(
+            Q(privacy='public') | \
+                Q(mention_users=request.user),
+            book=book,
+        )
+
+    try:
+        shelf = models.Shelf.objects.get(user=request.user, book=book)
+    except models.Shelf.DoesNotExist:
+        shelf = None
+
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
         book=book
@@ -199,18 +225,25 @@ def book_page(request, book_identifier):
     ).distinct().all()
     user_tags = models.Tag.objects.filter(
         book=book, user=request.user
-    ).values_list('name', flat=True)
+    ).all()
 
     review_form = forms.ReviewForm()
     tag_form = forms.TagForm()
     data = {
         'book': book,
+        'shelf': shelf,
+        'user_reviews': user_reviews,
+        'user_rating': user_reviews.aggregate(Avg('rating')),
         'reviews': reviews,
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
+        'user_tag_names': user_tags.values_list('identifier', flat=True),
         'review_form': review_form,
         'tag_form': tag_form,
+        'feed_tabs': ['friends', 'local', 'federated'],
+        'active_tab': tab,
+        'path': '/book/%s' % book_identifier,
     }
     return TemplateResponse(request, 'book.html', data)
 

@@ -1,6 +1,6 @@
 <div class="tag">
     <a href="/tag/{{ tag.identifier }}">{{ tag.name }}</a>
-    {% if tag.name in user_tags %}
+    {% if tag.identifier in user_tags %}
     <form class="tag-form" name="tag" action="/untag/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
