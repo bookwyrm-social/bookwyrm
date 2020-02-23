@@ -207,9 +207,9 @@ def handle_incoming_follow(activity):
             relationship_id=activity['id']
         )
     except django.db.utils.IntegrityError:
-        # Duplicate follow request. Not sure what the correct behaviour is, but just dropping
-        # it works for now. We should perhaps generate the Accept, but then do we need to match
-        # the activity id?
+        # Duplicate follow request. Not sure what the correct behaviour is, but
+        # just dropping it works for now. We should perhaps generate the
+        # Accept, but then do we need to match the activity id?
         return HttpResponse()
 
     outgoing.handle_outgoing_accept(user, to_follow, activity)

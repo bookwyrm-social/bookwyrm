@@ -75,7 +75,10 @@ class UserRelationship(FedireadsModel):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user_subject', 'user_object'], name='followers_unique')
+            models.UniqueConstraint(
+                fields=['user_subject', 'user_object'],
+                name='followers_unique'
+            )
         ]
 
     @property
