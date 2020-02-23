@@ -6,6 +6,7 @@ from Crypto.Hash import SHA256
 from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import django.db.utils
 import json
 import requests
 
@@ -198,12 +199,19 @@ def handle_incoming_follow(activity):
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
     # TODO: allow users to manually approve requests
-    models.UserRelationship.objects.create(
-        user_subject=to_follow,
-        user_object=user,
-        status='follow_request',
-        relationship_id=activity['id']
-    )
+    try:
+        models.UserRelationship.objects.create(
+            user_subject=to_follow,
+            user_object=user,
+            status='follow_request',
+            relationship_id=activity['id']
+        )
+    except django.db.utils.IntegrityError:
+        # Duplicate follow request. Not sure what the correct behaviour is, but just dropping
+        # it works for now. We should perhaps generate the Accept, but then do we need to match
+        # the activity id?
+        return HttpResponse()
+
     outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
 

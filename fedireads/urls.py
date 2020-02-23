@@ -6,7 +6,7 @@ from django.urls import path, re_path
 from fedireads import incoming, outgoing, views, settings, wellknown
 from fedireads import view_actions as actions
 
-username_regex = r'[\w@\.-]+'
+username_regex = r'(?P<username>[\w@\.-]+)'
 localname_regex = r'(?P<username>[\w\.-]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex

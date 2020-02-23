@@ -73,6 +73,11 @@ class UserRelationship(FedireadsModel):
     status = models.CharField(max_length=100, default='follows', null=True)
     relationship_id = models.CharField(max_length=100)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user_subject', 'user_object'], name='followers_unique')
+        ]
+
     @property
     def absolute_id(self):
         ''' use shelf identifier as absolute id '''
