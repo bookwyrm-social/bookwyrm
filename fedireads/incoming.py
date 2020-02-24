@@ -201,8 +201,8 @@ def handle_incoming_follow(activity):
     # TODO: allow users to manually approve requests
     try:
         models.UserRelationship.objects.create(
-            user_subject=to_follow,
-            user_object=user,
+            user_subject=user,
+            user_object=to_follow,
             status='follow_request',
             relationship_id=activity['id']
         )

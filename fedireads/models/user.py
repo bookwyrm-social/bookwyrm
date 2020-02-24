@@ -38,7 +38,7 @@ class User(AbstractUser):
         'self',
         symmetrical=False,
         through='UserRelationship',
-        through_fields=('user_subject', 'user_object'),
+        through_fields=('user_object', 'user_subject'),
         related_name='following'
     )
     favorites = models.ManyToManyField(
