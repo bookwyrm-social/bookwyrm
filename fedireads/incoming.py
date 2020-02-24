@@ -187,7 +187,7 @@ def get_following(request, username):
         return HttpResponseBadRequest()
 
     user = models.User.objects.get(localname=username)
-    following = models.User.objects.filter(followers=user)
+    following = user.following
     page = request.GET.get('page')
     return JsonResponse(activitypub.get_following(user, page, following))
 
