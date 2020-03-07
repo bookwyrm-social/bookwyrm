@@ -1,5 +1,5 @@
 from fedireads.models import User
-from fedireads.openlibrary import get_or_create_book
+from fedireads.books_manager import get_or_create_book
 
 User.objects.create_user('mouse', 'mouse.reeve@gmail.com', 'password123')
 User.objects.create_user('rat', 'rat@rat.com', 'ratword')

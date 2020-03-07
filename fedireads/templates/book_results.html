@@ -5,7 +5,7 @@
         <h1>Search results</h1>
         {% for result in results %}
         <div>
-            <a href="/book/{{ result.olkey }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
+            <a href="/book/{{ result.key }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
         </div>
         {% endfor %}
     </div>

@@ -1,6 +1,6 @@
 ''' Handle user activity '''
 from fedireads import models
-from fedireads.openlibrary import get_or_create_book
+from fedireads.books_manager import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
 from django.db import IntegrityError
 
