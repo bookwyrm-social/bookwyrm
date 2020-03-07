@@ -1,3 +1,4 @@
+''' base model with default fields '''
 from django.db import models
 
 from fedireads.settings import DOMAIN

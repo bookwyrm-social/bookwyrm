@@ -11,6 +11,7 @@ def dict_key(d, k):
     '''Returns the given key from a dictionary.'''
     return d.get(k) or 0
 
+
 @register.filter(name='stars')
 def stars(number):
     ''' turn integers into stars '''
@@ -20,15 +21,18 @@ def stars(number):
         number = 0
     return ('★' * number) + '☆' * (5 - number)
 
+
 @register.filter(name='description')
 def description_format(description):
     ''' handle the various OL description formats '''
-    if isinstance(description, dict) and 'value' in description:
-        description = description['value']
+    if not description:
+        return ''
+
     if '----------' in description:
         description = description.split('----------')[0]
 
     return description.strip()
+
 
 @register.filter(name='author_bio')
 def bio_format(bio):

@@ -190,26 +190,33 @@ def book_page(request, book_identifier, tab='friends'):
     ''' info about a book '''
     book = openlibrary.get_or_create_book(book_identifier)
 
-    user_reviews = models.Review.objects.filter(user=request.user, book=book).all()
+    if isinstance(book, models.Work):
+        book_reviews = models.Review.objects.filter(
+            Q(book=book) | Q(book__parent_work=book),
+        )
+    else:
+        book_reviews = models.Review.objects.filter(book=book)
+
+    user_reviews = book_reviews.filter(
+        user=request.user,
+    ).all()
 
     if tab == 'friends':
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(user__followers=request.user, privacy='public') | \
+                Q(user=request.user) | \
                 Q(mention_users=request.user),
-            book=book,
         )
     elif tab == 'local':
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(privacy='public') | \
                 Q(mention_users=request.user),
             user__local=True,
-            book=book,
         )
     else:
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(privacy='public') | \
                 Q(mention_users=request.user),
-            book=book,
         )
 
     try:

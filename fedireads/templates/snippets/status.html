@@ -1,7 +1,7 @@
 {% load fr_display %}
 <div class="update">
     {% if activity.status_type == 'Review' %}
-        {% include 'snippets/status_banner.html' with content="reviewed <i>"|add:activity.book.data.title|add:"</i>"  %}
+        {% include 'snippets/status_banner.html' with content="reviewed <i>"|add:activity.book.title|add:"</i>"  %}
         <div class="book-preview review">
             {% include 'snippets/book.html' with book=activity.book size=large %}
 

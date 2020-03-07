@@ -3,9 +3,9 @@
 {% block content %}
 <div id="content">
     <div>
-        <h2>{{ author.data.name }}</h2>
-        {% if author.data.bio %}
-        <blockquote>{{ author.data.bio | author_bio }}
+        <h2>{{ author.name }}</h2>
+        {% if author.bio %}
+        <blockquote>{{ author.bio | author_bio }}
         </blockquote>
         {% endif %}
         {% for book in books %}

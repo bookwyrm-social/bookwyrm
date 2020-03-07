@@ -1,68 +1,65 @@
 ''' database schema for books and shelves '''
+from datetime import datetime
 from django.db import models
+from uuid import uuid4
 
 from fedireads.settings import DOMAIN
-from fedireads.utils.fields import JSONField
+from fedireads.utils.fields import JSONField, ArrayField
 from fedireads.utils.models import FedireadsModel
 
 
-class Shelf(FedireadsModel):
-    name = models.CharField(max_length=100)
-    identifier = models.CharField(max_length=100)
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    editable = models.BooleanField(default=True)
-    books = models.ManyToManyField(
-        'Book',
-        symmetrical=False,
-        through='ShelfBook',
-        through_fields=('shelf', 'book')
-    )
-
-    @property
-    def absolute_id(self):
-        ''' use shelf identifier as absolute id '''
-        base_path = self.user.absolute_id
-        model_name = type(self).__name__.lower()
-        return '%s/%s/%s' % (base_path, model_name, self.identifier)
-
-    class Meta:
-        unique_together = ('user', 'identifier')
-
-
-class ShelfBook(FedireadsModel):
-    # many to many join table for books and shelves
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
-    added_by = models.ForeignKey(
-        'User',
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT
-    )
-
-    class Meta:
-        unique_together = ('book', 'shelf')
-
-
 class Book(FedireadsModel):
-    ''' a non-canonical copy of a work (not book) from open library '''
-    openlibrary_key = models.CharField(max_length=255, unique=True)
-    data = JSONField()
+    ''' a generic book, which can mean either an edition or a work '''
+    # these identifiers apply to both works and editions
+    openlibrary_key = models.CharField(max_length=255, unique=True, null=True)
+    librarything_key = models.CharField(max_length=255, unique=True, null=True)
+    local_key = models.CharField(max_length=255, unique=True, default=uuid4)
+    misc_identifiers = JSONField(null=True)
+
+    # info about where the data comes from and where/if to sync
+    origin = models.CharField(max_length=255, unique=True, null=True)
+    local_edits = models.BooleanField(default=False)
+    sync = models.BooleanField(default=True)
+    last_sync_date = models.DateTimeField(default=datetime.now)
+
+    # TODO: edit history
+
+    # book/work metadata
+    title = models.CharField(max_length=255)
+    sort_title = models.CharField(max_length=255, null=True)
+    subtitle = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    language = models.CharField(max_length=255, null=True)
+    series = models.CharField(max_length=255, blank=True, null=True)
+    series_number = models.CharField(max_length=255, blank=True, null=True)
+    # TODO: include an annotation about the type of authorship (ie, translator)
     authors = models.ManyToManyField('Author')
     # TODO: also store cover thumbnail
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
+    first_published_date = models.DateTimeField(null=True)
+    published_date = models.DateTimeField(null=True)
     shelves = models.ManyToManyField(
         'Shelf',
         symmetrical=False,
         through='ShelfBook',
         through_fields=('book', 'shelf')
     )
-    added_by = models.ForeignKey(
-        'User',
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT
-    )
+    # TODO: why can't I just call this work????
+    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
+
+
+class Work(Book):
+    ''' a work (an abstract concept of a book that manifests in an edition) '''
+    # library of congress catalog control number
+    lccn = models.CharField(max_length=255, unique=True, null=True)
+
+
+class Edition(Book):
+    ''' an edition of a book '''
+    # these identifiers only apply to work
+    isbn = models.CharField(max_length=255, unique=True, null=True)
+    oclc_number = models.CharField(max_length=255, unique=True, null=True)
+    pages = models.IntegerField(null=True)
 
     @property
     def absolute_id(self):
@@ -74,6 +71,14 @@ class Book(FedireadsModel):
 
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
-    openlibrary_key = models.CharField(max_length=255)
-    data = JSONField()
+    openlibrary_key = models.CharField(max_length=255, null=True, unique=True)
+    wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
+    # idk probably other keys would be useful here?
+    born = models.DateTimeField(null=True)
+    died = models.DateTimeField(null=True)
+    name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255, null=True)
+    first_name = models.CharField(max_length=255, null=True)
+    aliases = ArrayField(models.CharField(max_length=255), blank=True)
+    bio = models.TextField(null=True, blank=True)
 

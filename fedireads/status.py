@@ -15,14 +15,17 @@ def create_review(user, possible_book, name, content, rating, published):
     # no ratings outside of 0-5
     rating = rating if 0 <= rating <= 5 else 0
 
-    return models.Review.objects.create(
+    review = models.Review(
         user=user,
         book=book,
         name=name,
         rating=rating,
         content=content,
-        published_date=published,
     )
+    if published:
+        review.published_date = published
+    review.save()
+    return review
 
 
 def create_status(user, content, reply_parent=None, mention_books=None):

@@ -120,7 +120,7 @@ def get_add_remove(user, book, shelf, action='Add'):
         'object': {
             # TODO: document??
             'type': 'Document',
-            'name': book.data['title'],
+            'name': book.title,
             'url': book.openlibrary_key
         },
         'target': {

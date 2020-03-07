@@ -126,7 +126,7 @@ def handle_shelve(user, book, shelf):
         'read': 'finished reading'
     }[shelf.identifier]
     name = user.name if user.name else user.localname
-    message = '%s %s %s' % (name, verb, book.data['title'])
+    message = '%s %s %s' % (name, verb, book.title)
     status = create_status(user, message, mention_books=[book])
 
     activity = activitypub.get_status(status)
@@ -150,7 +150,7 @@ def handle_unshelve(user, book, shelf):
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    review = create_review(user, book, name, content, rating)
+    review = create_review(user, book, name, content, rating, None)
 
     review_activity = activitypub.get_review(review)
     review_create_activity = activitypub.get_create(user, review_activity)
