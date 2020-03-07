@@ -88,8 +88,8 @@ def handle_outgoing_follow(user, to_follow):
 def handle_outgoing_unfollow(user, to_unfollow):
     ''' someone local wants to follow someone '''
     relationship = models.UserRelationship.objects.get(
-        user_object=user,
-        user_subject=to_unfollow
+        user_subject=user,
+        user_object=to_unfollow
     )
     activity = activitypub.get_unfollow(relationship)
     errors = broadcast(user, activity, [to_unfollow.inbox])

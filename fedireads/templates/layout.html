@@ -25,7 +25,7 @@
             <div id="branding"><a href="/">📚FediReads</a></div>
             <div id="actions">
                 <div id="account">
-                    {% if user.is_authenticated %}
+                    {% if request.user.is_authenticated %}
                     <form name="logout" action="/logout/" method="post">
                         {% csrf_token %}
                         Welcome, {% include 'snippets/username.html' with user=request.user %}

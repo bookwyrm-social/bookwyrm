@@ -187,7 +187,7 @@ def get_following(request, username):
         return HttpResponseBadRequest()
 
     user = models.User.objects.get(localname=username)
-    following = models.User.objects.filter(followers=user)
+    following = user.following
     page = request.GET.get('page')
     return JsonResponse(activitypub.get_following(user, page, following))
 
@@ -201,8 +201,8 @@ def handle_incoming_follow(activity):
     # TODO: allow users to manually approve requests
     try:
         models.UserRelationship.objects.create(
-            user_subject=to_follow,
-            user_object=user,
+            user_subject=user,
+            user_object=to_follow,
             status='follow_request',
             relationship_id=activity['id']
         )
