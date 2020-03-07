@@ -260,12 +260,13 @@ def handle_incoming_create(activity):
         book = book.split('/')[-1]
         name = activity['object'].get('name')
         rating = activity['object'].get('rating')
+        published = activity['object'].get('published')
         if user.local:
             review_id = activity['object']['id'].split('/')[-1]
             models.Review.objects.get(id=review_id)
         else:
             try:
-                create_review(user, book, name, content, rating)
+                create_review(user, book, name, content, rating, published)
             except ValueError:
                 return HttpResponseBadRequest()
     elif not user.local:

@@ -5,7 +5,7 @@ from fedireads.sanitize_html import InputHtmlParser
 from django.db import IntegrityError
 
 
-def create_review(user, possible_book, name, content, rating):
+def create_review(user, possible_book, name, content, rating, published):
     ''' a book review has been added '''
     # throws a value error if the book is not found
     book = get_or_create_book(possible_book)
@@ -21,6 +21,7 @@ def create_review(user, possible_book, name, content, rating):
         name=name,
         rating=rating,
         content=content,
+        published_date=published,
     )
 
 

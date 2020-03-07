@@ -4,7 +4,7 @@
     {% include 'snippets/username.html' with user=activity.user %}
     {{ content | safe }}
     <span class="time-ago">
-    {{ activity.created_date | naturaltime }}
+    {{ activity.published_date | naturaltime }}
     </span>
 </h2>
 

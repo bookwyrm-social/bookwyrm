@@ -1,4 +1,5 @@
 ''' models for storing different kinds of Activities '''
+from datetime import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.dispatch import receiver
@@ -6,8 +7,6 @@ from model_utils.managers import InheritanceManager
 import re
 
 from fedireads.utils.models import FedireadsModel
-
-# TODO: quote, comment, poll, recommendation, content warning, image
 
 
 class Status(FedireadsModel):
@@ -21,6 +20,8 @@ class Status(FedireadsModel):
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
+    # the created date can't double as this, because of receiving federated posts
+    published_date = models.DateTimeField(default=datetime.now)
     favorites = models.ManyToManyField(
         'User',
         symmetrical=False,

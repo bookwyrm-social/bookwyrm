@@ -34,7 +34,7 @@ def get_status(status):
         'id': uri,
         'url': uri,
         'inReplyTo': reply_parent_id,
-        'published': status.created_date.isoformat(),
+        'published': status.published_date.isoformat(),
         'attributedTo': user.actor,
         # TODO: assuming all posts are public -- should check privacy db field
         'to': ['https://www.w3.org/ns/activitystreams#Public'],
