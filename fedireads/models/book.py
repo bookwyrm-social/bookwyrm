@@ -47,6 +47,13 @@ class Book(FedireadsModel):
     # TODO: why can't I just call this work????
     parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
 
+    @property
+    def absolute_id(self):
+        ''' constructs the absolute reference to any db object '''
+        base_path = 'https://%s' % DOMAIN
+        model_name = type(self).__name__.lower()
+        return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
+
 
 class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
@@ -60,13 +67,6 @@ class Edition(Book):
     isbn = models.CharField(max_length=255, unique=True, null=True)
     oclc_number = models.CharField(max_length=255, unique=True, null=True)
     pages = models.IntegerField(null=True)
-
-    @property
-    def absolute_id(self):
-        ''' constructs the absolute reference to any db object '''
-        base_path = 'https://%s' % DOMAIN
-        model_name = type(self).__name__.lower()
-        return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
 
 
 class Author(FedireadsModel):

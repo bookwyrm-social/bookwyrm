@@ -66,6 +66,7 @@ def get_remote_reviews(user):
                 book_id,
                 status['name'],
                 status['content'],
-                status['rating']
+                status['rating'],
+                status.get('published'),
             )
 
