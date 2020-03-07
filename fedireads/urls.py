@@ -17,12 +17,13 @@ urlpatterns = [
 
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),
-    re_path(r'%s.json/?$' % local_user_path, incoming.get_actor),
+    re_path(r'%s.json$' % local_user_path, incoming.get_actor),
     re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
     re_path(r'%s/outbox/?$' % local_user_path, outgoing.outbox),
     re_path(r'%s/followers/?$' % local_user_path, incoming.get_followers),
     re_path(r'%s/following/?$' % local_user_path, incoming.get_following),
-    re_path(r'%s(/activity/?)?$' % status_path, incoming.get_status),
+    re_path(r'%s.json$' % status_path, incoming.get_status),
+    re_path(r'%s/activity/?$' % status_path, incoming.get_status),
     re_path(r'%s/replies/?$' % status_path, incoming.get_replies),
 
     # .well-known endpoints
@@ -42,6 +43,7 @@ urlpatterns = [
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s/edit/?$' % user_path, views.edit_profile_page),
     re_path(r'^user/edit/?$', views.edit_profile_page),
+    re_path(r'%s/?$' % status_path, views.status_page),
     re_path(r'^book/(?P<book_identifier>\w+)/?$', views.book_page),
     re_path(r'^book/(?P<book_identifier>\w+)/(?P<tab>friends|local|federated)?$', views.book_page),
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),

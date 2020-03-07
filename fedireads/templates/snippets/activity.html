@@ -1,7 +1,7 @@
 {% load fr_display %}
 <div class="update">
     {% if activity.status_type == 'Review' %}
-        {% include 'snippets/status_banner.html' with content="reviewed <i>"|add:activity.book.title|add:"</i>"  %}
+        {% include 'snippets/activity_banner.html' with content="reviewed <i>"|add:activity.book.title|add:"</i>"  %}
         <div class="book-preview review">
             {% include 'snippets/book.html' with book=activity.book size=large %}
 
@@ -11,7 +11,7 @@
         </div>
         {% include 'snippets/interaction.html' with activity=activity %}
     {% elif activity.status_type == 'Note' %}
-        {% include 'snippets/status_banner.html' %}
+        {% include 'snippets/activity_banner.html' %}
         <span>{{ activity.content | safe }}</span>
         {% for book in activity.mention_books.all %}
         <div class="book-preview review">

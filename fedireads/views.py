@@ -150,6 +150,7 @@ def notifications_page(request):
     return TemplateResponse(request, 'notifications.html', data)
 
 
+@login_required
 def user_page(request, username):
     ''' profile page for a user '''
     content = request.headers.get('Accept')
@@ -176,6 +177,30 @@ def user_page(request, username):
         'is_self': request.user.id == user.id,
     }
     return TemplateResponse(request, 'user.html', data)
+
+
+@login_required
+def status_page(request, username, status_id):
+    ''' display a particular status (and replies, etc) '''
+    content = request.headers.get('Accept')
+    if 'json' in content:
+        # we have a json request
+        return incoming.get_status(request, username, status_id)
+    try:
+        user = models.User.objects.get(localname=username)
+        status = models.Status.objects.select_subclasses().get(id=status_id)
+    except ValueError:
+        return HttpResponseNotFound()
+
+    if user != status.user:
+        return HttpResponseNotFound()
+
+    replies = models.Status.objects.filter(reply_parent=status).select_subclasses().all()
+    data = {
+        'status': status,
+        'replies': replies,
+    }
+    return TemplateResponse(request, 'status.html', data)
 
 
 @login_required

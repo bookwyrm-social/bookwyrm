@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div id="content">
+    {% if status.reply_parent %}
+    {% include 'snippets/status.html' with status=status.reply_parent %}
+    {% endif %}
+
+    {% include 'snippets/status.html' with status=status main=True %}
+
+    {% for reply in replies %}
+    {% include 'snippets/status.html' with status=reply %}
+    {% endfor %}
+</div>
+
+{% endblock %}
+

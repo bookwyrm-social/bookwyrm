@@ -1,8 +1,0 @@
-{% load fr_display %}
-<div class="review">
-    <h4>{{ review.name }}
-        <small>{{ review.rating | stars }} stars, by {% include 'snippets/username.html' with user=review.user %}</small>
-    </h4>
-    <blockquote>{{ review.content }}</blockquote>
-</div>
-
