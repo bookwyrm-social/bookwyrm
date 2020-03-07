@@ -241,7 +241,7 @@ def book_page(request, book_identifier, tab='friends'):
         'shelf': shelf,
         'user_reviews': user_reviews,
         'user_rating': user_reviews.aggregate(Avg('rating')),
-        'reviews': reviews,
+        'reviews': reviews.distinct(),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
