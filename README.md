@@ -9,6 +9,7 @@ Social reading and reviewing, decentralized with ActivityPub
    - [Features](#features)
  - [Setting up the developer environment](#setting-up-the-developer-environment)
  - [Project structure](#project-structure)
+ - [Book data](#book-data)
  - [Contributing](#contributing)
 
 ## The overall idea
@@ -71,14 +72,24 @@ For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env`
 
 
 ## Project structure
-
 All the url routing is in `fedireads/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
 
-The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/openlibrary.py`. ActivityPub serialization is handled in the `activitypub/` directory.
+The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/connectors/openlibrary.py`. ActivityPub serialization is handled in the `activitypub/` directory.
 
 There's some organization/refactoring work to be done to clarify the separation of concerns and keep the code readable and well organized.
 
 The UI is all django templates because that is the default. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
+
+
+## Book data
+The application is set up to get book data from arbitary outside source -- right now, it's only able to connect to OpenLibrary, but other connectors could be written. By default, a book is non-canonical copy of an OpenLibrary book, and will be updated with OpenLibrary if the data there changes. However, theoretically a book can edited and decoupled from its original data source, or added locally with no external data source.
+
+There are three structures for storing book data:
+ - `Book`, a general high-level concept that could mean either a `Work` or an `Edition`
+ - `Work`, a theoretical umbrella concept of a book that encompasses every edition of the book, and
+ - `Edition`, a concreet, actually published version of a book
+ 
+Usually, a review is tied to a `Work`, because your review is relevent regardless of whether you're talking about the hardcover, the paperback, the reprint or whatever. But in some cases a review is specfic to an `Edition` -- if you're reviewing a particular translation, the voice acting on an audiobook, or whatever. 
 
 
 ## Contributing
