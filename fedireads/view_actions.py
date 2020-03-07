@@ -157,3 +157,8 @@ def search(request):
     return TemplateResponse(request, template, {'results': results})
 
 
+@login_required
+def clear_notifications(request):
+    request.user.notification_set.filter(read=True).delete()
+    return redirect('/notifications')
+

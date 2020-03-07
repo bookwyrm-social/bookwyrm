@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% load humanize %}l
+{% block content %}
+<div id="content">
+    <div>
+        <h2>Notifications</h2>
+        <form name="clear" action="/clear-notifications" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete notifications</button>
+        </form>
+        {% for notification in notifications %}
+        <div>
+            <p>
+            {% if notification.notification_type == 'FAVORITE' %}
+                {% include 'snippets/username.html' with user=notification.related_user %}
+                favorited your
+                <a href="{{ notification.related_status.absolute_id}}">status</a>
+
+            {% elif notification.notification_type == 'REPLY' %}
+                {% include 'snippets/username.html' with user=notification.related_user %}
+                <a href="{{ notification.related_status.absolute_id}}">replied</a>
+                to your
+                <a href="{{ notification.related_status.reply_parent.absolute_id}}">status</a>
+
+            {% elif notification.notification_type == 'FOLLOW' %}
+                {% include 'snippets/username.html' with user=notification.related_user %}
+                followed you
+            {% endif %}
+            <small>{{ notification.created_date | naturaltime }}</small>
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+

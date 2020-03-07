@@ -76,3 +76,29 @@ class Tag(FedireadsModel):
     class Meta:
         unique_together = ('user', 'book', 'name')
 
+
+class Notification(FedireadsModel):
+    ''' you've been tagged, liked, followed, etc '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    related_book = models.ForeignKey(
+        'Book', on_delete=models.PROTECT, null=True)
+    related_user = models.ForeignKey(
+        'User',
+        on_delete=models.PROTECT, null=True, related_name='related_user')
+    related_status = models.ForeignKey(
+        'Status', on_delete=models.PROTECT, null=True)
+    read = models.BooleanField(default=False)
+    notification_type = models.CharField(max_length=255)
+
+    def save(self, *args, **kwargs):
+        # TODO: there's probably a real way to do enums
+        types = [
+            'FAVORITE',
+            'REPLY',
+            'TAG',
+            'FOLLOW'
+        ]
+        if not self.notification_type in types:
+            raise ValueError('Invalid notitication type')
+        super().save(*args, **kwargs)
+

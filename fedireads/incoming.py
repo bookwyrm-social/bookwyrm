@@ -13,7 +13,8 @@ import requests
 from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.status import create_review, create_status, create_tag
+from fedireads.status import create_review, create_status, create_tag, \
+    create_notification
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -212,6 +213,7 @@ def handle_incoming_follow(activity):
         # Accept, but then do we need to match the activity id?
         return HttpResponse()
 
+    create_notification(to_follow, 'FOLLOW', related_user=user)
     outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
 
@@ -271,7 +273,14 @@ def handle_incoming_create(activity):
                 return HttpResponseBadRequest()
     elif not user.local:
         try:
-            create_status(user, content)
+            status = create_status(user, content)
+            if status.reply_parent:
+                create_notification(
+                    status.reply_parent.user,
+                    'REPLY',
+                    related_user=status.user,
+                    related_status=status,
+                )
         except ValueError:
             return HttpResponseBadRequest()
 
@@ -289,6 +298,13 @@ def handle_incoming_favorite(activity):
 
     if not liker.local:
         status.favorites.add(liker)
+
+    create_notification(
+        status.user,
+        'FAVORITE',
+        related_user=liker,
+        related_status=status,
+    )
     return HttpResponse()
 
 

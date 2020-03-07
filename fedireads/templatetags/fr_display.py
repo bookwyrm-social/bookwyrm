@@ -49,6 +49,12 @@ def get_user_identifier(user):
     return user.localname if user.localname else user.username
 
 
+@register.filter(name='notification_count')
+def get_notification_count(user):
+    ''' how many UNREAD notifications are there '''
+    return user.notification_set.filter(read=False).count()
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''

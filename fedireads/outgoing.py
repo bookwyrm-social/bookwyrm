@@ -7,7 +7,8 @@ from urllib.parse import urlencode
 
 from fedireads import activitypub
 from fedireads import models
-from fedireads.status import create_review, create_status, create_tag
+from fedireads.status import create_review, create_status, create_tag, \
+    create_notification
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 
@@ -189,6 +190,13 @@ def handle_comment(user, review, content):
     ''' respond to a review or status '''
     # validated and saves the comment in the database so it has an id
     comment = create_status(user, content, reply_parent=review)
+    if comment.reply_parent:
+        create_notification(
+            comment.reply_parent.user,
+            'REPLY',
+            related_user=user,
+            related_status=comment,
+        )
     comment_activity = activitypub.get_status(comment)
     create_activity = activitypub.get_create(user, comment_activity)
 

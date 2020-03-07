@@ -61,6 +61,18 @@ def create_tag(user, possible_book, name):
     return tag
 
 
+def create_notification(user, notification_type, related_user=None, \
+        related_book=None, related_status=None):
+    ''' let a user know when someone interacts with their content '''
+    models.Notification.objects.create(
+        user=user,
+        related_book=related_book,
+        related_user=related_user,
+        related_status=related_status,
+        notification_type=notification_type,
+    )
+
+
 def sanitize(content):
     ''' remove invalid html from free text '''
     parser = InputHtmlParser()

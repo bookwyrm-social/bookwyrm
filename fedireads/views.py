@@ -141,6 +141,15 @@ def register(request):
     return redirect('/')
 
 
+def notifications_page(request):
+    ''' list notitications '''
+    data = {
+        'notifications': request.user.notification_set.all().order_by('-created_date')
+    }
+    request.user.notification_set.update(read=True)
+    return TemplateResponse(request, 'notifications.html', data)
+
+
 def user_page(request, username):
     ''' profile page for a user '''
     content = request.headers.get('Accept')

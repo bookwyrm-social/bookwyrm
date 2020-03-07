@@ -38,7 +38,7 @@ urlpatterns = [
     re_path(r'^register/?$', views.register),
     re_path(r'^login/?$', views.user_login),
     re_path(r'^logout/?$', views.user_logout),
-    # this endpoint is both ui and fed depending on Accept type
+    re_path(r'^notifications/?', views.notifications_page),
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s/edit/?$' % user_path, views.edit_profile_page),
     re_path(r'^user/edit/?$', views.edit_profile_page),
@@ -59,5 +59,6 @@ urlpatterns = [
     re_path(r'^unfollow/?$', actions.unfollow),
     re_path(r'^search/?$', actions.search),
     re_path(r'^edit_profile/?$', actions.edit_profile),
+    re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

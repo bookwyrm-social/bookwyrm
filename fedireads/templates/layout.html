@@ -1,3 +1,4 @@
+{% load fr_display %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +48,13 @@
                         <input type="submit" value="🔍"></input>
                     </form>
                 </div>
+                {% if request.user.is_authenticated %}
+                <div id="notification">
+                    <a href="/notifications">
+                        🔔 ({{ request.user | notification_count }})
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </header>
