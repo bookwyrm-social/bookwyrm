@@ -2,9 +2,8 @@
 from datetime import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
-import re
+import urllib.parse
 
 from fedireads.utils.models import FedireadsModel
 
@@ -20,7 +19,7 @@ class Status(FedireadsModel):
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
-    # the created date can't double as this, because of receiving federated posts
+    # the created date can't be this, because of receiving federated posts
     published_date = models.DateTimeField(default=datetime.now)
     favorites = models.ManyToManyField(
         'User',
@@ -51,6 +50,7 @@ class Review(Status):
         self.activity_type = 'Article'
         super().save(*args, **kwargs)
 
+
 class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -70,7 +70,7 @@ class Tag(FedireadsModel):
     def save(self, *args, **kwargs):
         if not self.id:
             # add identifiers to new tags
-            self.identifier = re.sub(r'\W+', '-', self.name).lower()
+            self.identifier = urllib.parse.quote_plus(self.name)
         super().save(*args, **kwargs)
 
     class Meta:
