@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import re
 
-from fedireads import forms, models, openlibrary, outgoing
+from fedireads import forms, models, books_manager, outgoing
 from fedireads.views import get_user_from_username
 
 
@@ -150,8 +150,8 @@ def search(request):
         results = [outgoing.handle_account_search(query)]
         template = 'user_results.html'
     else:
-        # just send the question over to openlibrary for book search
-        results = openlibrary.book_search(query)
+        # just send the question over to book search
+        results = books_manager.search(query)
         template = 'book_results.html'
 
     return TemplateResponse(request, template, {'results': results})

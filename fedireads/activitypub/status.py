@@ -16,7 +16,7 @@ def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(review)
     name = 'Review of "%s" (%d stars): %s' % (
-        review.book.data['title'],
+        review.book.title,
         review.rating,
         review.name
     )

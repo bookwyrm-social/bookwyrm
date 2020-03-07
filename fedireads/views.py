@@ -6,7 +6,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-from fedireads import forms, models, openlibrary, incoming
+from fedireads import forms, models, books_manager, incoming
 from fedireads.settings import DOMAIN
 
 
@@ -188,28 +188,35 @@ def edit_profile_page(request, username):
 @login_required
 def book_page(request, book_identifier, tab='friends'):
     ''' info about a book '''
-    book = openlibrary.get_or_create_book(book_identifier)
+    book = books_manager.get_or_create_book(book_identifier)
 
-    user_reviews = models.Review.objects.filter(user=request.user, book=book).all()
+    if isinstance(book, models.Work):
+        book_reviews = models.Review.objects.filter(
+            Q(book=book) | Q(book__parent_work=book),
+        )
+    else:
+        book_reviews = models.Review.objects.filter(book=book)
+
+    user_reviews = book_reviews.filter(
+        user=request.user,
+    ).all()
 
     if tab == 'friends':
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(user__followers=request.user, privacy='public') | \
+                Q(user=request.user) | \
                 Q(mention_users=request.user),
-            book=book,
         )
     elif tab == 'local':
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(privacy='public') | \
                 Q(mention_users=request.user),
             user__local=True,
-            book=book,
         )
     else:
-        reviews = models.Review.objects.filter(
+        reviews = book_reviews.filter(
             Q(privacy='public') | \
                 Q(mention_users=request.user),
-            book=book,
         )
 
     try:
@@ -251,7 +258,7 @@ def book_page(request, book_identifier, tab='friends'):
 def author_page(request, author_identifier):
     ''' landing page for an author '''
     try:
-        author = models.Author.objects.get(openlibrary_key=author_identifier)
+        author = models.Author.objects.get(books_manager_key=author_identifier)
     except ValueError:
         return HttpResponseNotFound()
 

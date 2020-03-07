@@ -3,7 +3,7 @@
 {% block content %}
 <div id="sidebar">
     <div>
-        <h2><q>{{ book.data.title }}</q> and You</h2>
+        <h2><q>{{ book.title }}</q> and You</h2>
         <p>{% if shelf %}On shelf <q>{{ shelf.name }}</q>{% endif %}</p>
         {% include 'snippets/shelve-button.html' with book=book pulldown=True %}
 
@@ -27,13 +27,15 @@
 
 <div id="content">
     <div>
-        <h2><q>{{ book.data.title }}</q> by
+        <h2><q>{{ book.title }}</q> by
             {% include 'snippets/authors.html' with book=book %}</h2>
+        {% if book.parent_work %}<p>Edition of <a href="/book/{{ book.parent_work.openlibrary_key }}">{{ book.parent_work.title }}</a></p>{% endif %}
         <div class="book-preview">
+
             {% include 'snippets/book_cover.html' with book=book size=large %}
             <p>{{ active_tab }} rating: {{ rating | stars }}</p>
             {% if description %}
-            <blockquote>{{ book.data.description | description }}</blockquote>
+            <blockquote>{{ book.description | description }}</blockquote>
             {% endif %}
             <div>
                 <div id="tag-cloud">
