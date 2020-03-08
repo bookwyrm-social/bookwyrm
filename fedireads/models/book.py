@@ -79,6 +79,6 @@ class Author(FedireadsModel):
     name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255, null=True)
     first_name = models.CharField(max_length=255, null=True)
-    aliases = ArrayField(models.CharField(max_length=255), blank=True)
+    aliases = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     bio = models.TextField(null=True, blank=True)
 
