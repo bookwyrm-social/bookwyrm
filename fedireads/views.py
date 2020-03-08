@@ -204,12 +204,9 @@ def status_page(request, username, status_id):
 
 
 @login_required
-def edit_profile_page(request, username):
+def edit_profile_page(request):
     ''' profile page for a user '''
-    try:
-        user = models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
+    user = request.user
 
     form = forms.EditUserForm(instance=request.user)
     data = {
