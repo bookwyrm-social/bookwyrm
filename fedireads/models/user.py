@@ -50,6 +50,7 @@ class User(AbstractUser):
     )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    manually_approves_followers = models.BooleanField(default=False)
 
     @property
     def absolute_id(self):
