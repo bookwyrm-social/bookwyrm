@@ -36,13 +36,13 @@
         <a href="/book/{{ book.openlibrary_key }}">{{ book.title }}</a>
     </td>
     <td>
-        {{ book.authors.first.data.name }}
+        {{ book.authors.first.name }}
     </td>
     <td>
-        {{ book.first_publish_date }}
+        {% if book.first_published_date %}{{ book.first_published_date }}{% endif %}
     </td>
     <td>
-        {{ book.added_date | naturalday }}
+        {{ book.created_date | naturalday }}
     </td>
     <td>
         <a href="https://openlibrary.org{{ book.key }}" target="_blank">OpenLibrary</a>
