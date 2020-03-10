@@ -10,7 +10,7 @@ username_regex = r'(?P<username>[\w@\.-]+)'
 localname_regex = r'(?P<username>[\w\.-]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
-status_path = r'%s/(status|review)/(?P<status_id>\d+)' % local_user_path
+status_path = r'%s/(status|review)/(?P<status_id>\d+)' % user_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
