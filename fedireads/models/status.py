@@ -10,6 +10,7 @@ from fedireads.utils.models import FedireadsModel
 
 class Status(FedireadsModel):
     ''' any post, like a reply to a review, etc '''
+    remote_id = models.CharField(max_length=255, unique=True, null=True)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
     content = models.TextField(blank=True, null=True)
@@ -34,6 +35,16 @@ class Status(FedireadsModel):
         on_delete=models.PROTECT
     )
     objects = InheritanceManager()
+
+    @property
+    def absolute_id(self):
+        ''' constructs the absolute reference to any db object '''
+        if self.remote_id:
+            return self.remote_id
+        base_path = self.user.absolute_id
+        model_name = type(self).__name__.lower()
+        return '%s/%s/%d' % (base_path, model_name, self.id)
+
 
 
 class Review(Status):

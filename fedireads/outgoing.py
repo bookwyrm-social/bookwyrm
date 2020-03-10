@@ -151,7 +151,7 @@ def handle_unshelve(user, book, shelf):
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    review = create_review(user, book, name, content, rating, None)
+    review = create_review(user, book, name, content, rating)
 
     review_activity = activitypub.get_review(review)
     review_create_activity = activitypub.get_create(user, review_activity)

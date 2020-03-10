@@ -13,8 +13,8 @@ import requests
 from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
-from fedireads.status import create_review, create_status, create_tag, \
-    create_notification
+from fedireads.status import create_review_from_activity, \
+    create_status_from_activity, create_tag, create_notification
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -256,25 +256,19 @@ def handle_incoming_create(activity):
     # TODO: should only create notes if they are relevent to a book,
     # so, not every single thing someone posts on mastodon
     response = HttpResponse()
-    content = activity['object'].get('content')
     if activity['object'].get('fedireadsType') == 'Review' and \
             'inReplyToBook' in activity['object']:
-        book = activity['object']['inReplyToBook']
-        book = book.split('/')[-1]
-        name = activity['object'].get('name')
-        rating = activity['object'].get('rating')
-        published = activity['object'].get('published')
         if user.local:
             review_id = activity['object']['id'].split('/')[-1]
             models.Review.objects.get(id=review_id)
         else:
             try:
-                create_review(user, book, name, content, rating, published)
+                create_review_from_activity(user, activity['object'])
             except ValueError:
                 return HttpResponseBadRequest()
     elif not user.local:
         try:
-            status = create_status(user, content)
+            status = create_status_from_activity(user, activity['object'])
             if status.reply_parent:
                 create_notification(
                     status.reply_parent.user,

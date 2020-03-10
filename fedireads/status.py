@@ -5,7 +5,24 @@ from fedireads.sanitize_html import InputHtmlParser
 from django.db import IntegrityError
 
 
-def create_review(user, possible_book, name, content, rating, published):
+def create_review_from_activity(author, activity):
+    ''' parse an activity json blob into a status '''
+    book = activity['inReplyToBook']
+    book = book.split('/')[-1]
+    name = activity.get('name')
+    rating = activity.get('rating')
+    content = activity.get('content')
+    published = activity.get('published')
+    remote_id = activity['id']
+
+    review = create_review(author, book, name, content, rating)
+    review.published_date = published
+    review.remote_id = remote_id
+    review.save()
+    return review
+
+
+def create_review(user, possible_book, name, content, rating):
     ''' a book review has been added '''
     # throws a value error if the book is not found
     book = get_or_create_book(possible_book)
@@ -15,17 +32,51 @@ def create_review(user, possible_book, name, content, rating, published):
     # no ratings outside of 0-5
     rating = rating if 0 <= rating <= 5 else 0
 
-    review = models.Review(
+    return models.Review.objects.create(
         user=user,
         book=book,
         name=name,
         rating=rating,
         content=content,
     )
-    if published:
-        review.published_date = published
-    review.save()
-    return review
+
+
+def create_status_from_activity(author, activity):
+    ''' parse a status object out of an activity json blob '''
+    content = activity.get('content')
+    reply_parent_id = activity.get('inReplyTo')
+    reply_parent = get_status(reply_parent_id)
+
+    remote_id = activity['id']
+
+    status = create_status(author, content, reply_parent=reply_parent)
+    status.remote_id = remote_id
+    status.published_date = activity.get('published')
+    status.save()
+    return status
+
+
+def get_status(absolute_id):
+    ''' find a status in the database '''
+    # check if it's a remote status
+    try:
+        return models.Status.objects.get(remote_id=absolute_id)
+    except models.Status.DoesNotExist:
+        pass
+
+    # try finding a local status with that id
+    local_id = absolute_id.split('/')[-1]
+    try:
+        possible_match = models.Status.objects.get(id=local_id)
+    except models.Status.DoesNotExist:
+        return None
+
+    # make sure it's not actually a remote status with an id that
+    # clashes with a local id
+    if possible_match.absolute_id == absolute_id:
+        return possible_match
+    return None
+
 
 
 def create_status(user, content, reply_parent=None, mention_books=None):
