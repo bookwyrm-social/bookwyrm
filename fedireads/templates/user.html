@@ -24,10 +24,8 @@
         <h2>Followers</h2>
         {% for follower in user.followers.all %}
         <div>
-            <a href="{{ follower.actor }}">{{ follower.username }}</a>
-            {% if not request.user in follower.followers.all and request.user != follower %}
+            {% include 'snippets/username.html' with user=follower show_full=True  %}
             {% include 'snippets/follow_button.html' with user=follower %}
-            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -36,10 +34,8 @@
         <h2>Following</h2>
         {% for following in user.following.all %}
         <div>
-            <a href="{{ following.actor }}">{{ following.username }}</a>
-            {% if not request.user in following.followers.all and request.user != following %}
+            {% include 'snippets/username.html' with user=following show_full=True  %}
             {% include 'snippets/follow_button.html' with user=following %}
-            {% endif %}
         </div>
         {% endfor %}
     </div>
