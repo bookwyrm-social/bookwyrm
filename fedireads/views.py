@@ -148,7 +148,6 @@ def notifications_page(request):
     return TemplateResponse(request, 'notifications.html', data)
 
 
-@login_required
 def user_page(request, username):
     ''' profile page for a user '''
     content = request.headers.get('Accept')

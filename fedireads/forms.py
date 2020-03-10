@@ -51,7 +51,7 @@ class CommentForm(ModelForm):
 class EditUserForm(ModelForm):
     class Meta:
         model = models.User
-        fields = ['avatar', 'name', 'summary']
+        fields = ['avatar', 'name', 'summary', 'manually_approves_followers']
         help_texts = {f: None for f in fields}
 
 

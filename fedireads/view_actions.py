@@ -23,6 +23,7 @@ def edit_profile(request):
     if 'avatar' in form.files:
         request.user.avatar = form.files['avatar']
     request.user.summary = form.data['summary']
+    request.user.manually_approves_followers = form.cleaned_data['manually_approves_followers']
     request.user.save()
     return redirect('/user/%s' % request.user.localname)
 

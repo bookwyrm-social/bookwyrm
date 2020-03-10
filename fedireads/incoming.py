@@ -214,7 +214,8 @@ def handle_incoming_follow(activity):
         return HttpResponse()
 
     create_notification(to_follow, 'FOLLOW', related_user=user)
-    outgoing.handle_outgoing_accept(user, to_follow, activity)
+    if not to_follow.manually_approves_followers:
+        outgoing.handle_outgoing_accept(user, to_follow, activity)
     return HttpResponse()
 
 
