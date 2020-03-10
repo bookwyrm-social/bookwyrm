@@ -185,7 +185,7 @@ def status_page(request, username, status_id):
         # we have a json request
         return incoming.get_status(request, username, status_id)
     try:
-        user = models.User.objects.get(localname=username)
+        user = get_user_from_username(username)
         status = models.Status.objects.select_subclasses().get(id=status_id)
     except ValueError:
         return HttpResponseNotFound()
