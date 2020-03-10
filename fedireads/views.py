@@ -139,12 +139,15 @@ def register(request):
     return redirect('/')
 
 
+@login_required
 def notifications_page(request):
     ''' list notitications '''
     notifications = request.user.notification_set.all() \
             .order_by('-created_date')
+    unread = [n.id for n in notifications.filter(read=False)]
     data = {
         'notifications': notifications,
+        'unread': unread,
     }
     notifications.update(read=True)
     return TemplateResponse(request, 'notifications.html', data)
