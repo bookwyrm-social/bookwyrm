@@ -56,7 +56,8 @@ class User(AbstractUser):
     def absolute_id(self):
         ''' users are identified by their username, so overriding this prop '''
         model_name = type(self).__name__.lower()
-        return 'https://%s/%s/%s' % (DOMAIN, model_name, self.localname)
+        username = self.localname or self.username
+        return 'https://%s/%s/%s' % (DOMAIN, model_name, username)
 
 
 class UserRelationship(FedireadsModel):

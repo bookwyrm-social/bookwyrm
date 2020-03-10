@@ -141,10 +141,12 @@ def register(request):
 
 def notifications_page(request):
     ''' list notitications '''
+    notifications = request.user.notification_set.all() \
+            .order_by('-created_date')
     data = {
-        'notifications': request.user.notification_set.all().order_by('-created_date')
+        'notifications': notifications,
     }
-    request.user.notification_set.update(read=True)
+    notifications.update(read=True)
     return TemplateResponse(request, 'notifications.html', data)
 
 
@@ -176,7 +178,6 @@ def user_page(request, username):
     return TemplateResponse(request, 'user.html', data)
 
 
-@login_required
 def status_page(request, username, status_id):
     ''' display a particular status (and replies, etc) '''
     content = request.headers.get('Accept')
@@ -211,7 +212,6 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-@login_required
 def book_page(request, book_identifier, tab='friends'):
     ''' info about a book '''
     book = books_manager.get_or_create_book(book_identifier)

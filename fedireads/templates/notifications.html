@@ -9,7 +9,7 @@
             <button type="submit">Delete notifications</button>
         </form>
         {% for notification in notifications %}
-        <div>
+        <div class="notification{% if not notification.read %}unread{% endif %}">
             <p>
             {% if notification.notification_type == 'FAVORITE' %}
                 {% include 'snippets/username.html' with user=notification.related_user %}
