@@ -60,6 +60,11 @@ def get_replies(status):
     return models.Status.objects.filter(reply_parent=status).select_subclasses().all()[:10]
 
 
+@register.filter(name='reply_count')
+def get_reply_count(status):
+    return models.Status.objects.filter(reply_parent=status).count()
+
+
 @register.filter(name='parent')
 def get_parent(status):
     return models.Status.objects.filter(id=status.reply_parent_id).select_subclasses().get()

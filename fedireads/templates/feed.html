@@ -38,7 +38,7 @@
     {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
 
     {% for activity in activities %}
-        {% include 'snippets/status.html' with status=activity depth=1 %}
+        {% include 'snippets/status.html' with status=activity depth=1 description=True %}
     {% endfor %}
 </div>
 

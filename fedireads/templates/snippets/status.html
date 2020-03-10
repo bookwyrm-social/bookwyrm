@@ -15,6 +15,7 @@
         <small>{{ status.rating | stars }} stars, by {% include 'snippets/username.html' with user=status.user %}</small>
     </h4>{% endif %}
     <blockquote>{{ status.content }}</blockquote>
+    {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.absolute_id }}">Thread</a>{% endif %}
     {% include 'snippets/interaction.html' with activity=status %}
 </div>
 

@@ -20,7 +20,7 @@
         </form>
 
         {% for review in user_reviews %}
-        {% include 'snippets/status.html' with status=review hide_book=True main=True depth=1 %}
+        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
         {% endfor %}
     </div>
 </div>
@@ -34,7 +34,7 @@
 
             {% include 'snippets/book_cover.html' with book=book size=large %}
             <p>{{ active_tab }} rating: {{ rating | stars }}</p>
-            {% if description %}
+            {% if book.description %}
             <blockquote>{{ book.description | description }}</blockquote>
             {% endif %}
             <div>
@@ -62,7 +62,7 @@
         </form>
         <p>Average rating: {{ rating | stars }}</p>
         {% for review in reviews %}
-        {% include 'snippets/status.html' with status=review hide_book=True main=True depth=1 %}
+        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
         {% endfor %}
     </div>
 </div>

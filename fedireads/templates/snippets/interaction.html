@@ -1,7 +1,15 @@
+{% load fr_display %}
 <div class="interaction">
     {% if activity.favorites.all %}
     <span>
-    {{ activity.favorites.count }} like(s)
+        {{ activity.favorites.count }} like{{activity.favorites.count|pluralize }}
+    </span>
+    {% endif %}
+    {% if activity|reply_count %}
+    <span>
+        <a href="{{ activity.absolute_id }}">
+            {{ activity|reply_count }} repl{{ activity|reply_count|pluralize:'y,ies' }}
+        </a>
     </span>
     {% endif %}
     <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
