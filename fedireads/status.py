@@ -64,6 +64,9 @@ def create_tag(user, possible_book, name):
 def create_notification(user, notification_type, related_user=None, \
         related_book=None, related_status=None):
     ''' let a user know when someone interacts with their content '''
+    if user == related_user:
+        # don't create notification when you interact with your own stuff
+        return
     models.Notification.objects.create(
         user=user,
         related_book=related_book,
