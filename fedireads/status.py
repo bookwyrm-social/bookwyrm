@@ -67,7 +67,8 @@ def get_status(absolute_id):
     # try finding a local status with that id
     local_id = absolute_id.split('/')[-1]
     try:
-        possible_match = models.Status.objects.get(id=local_id)
+        possible_match = models.Status.objects.select_subclasses() \
+            .get(id=local_id)
     except models.Status.DoesNotExist:
         return None
 
