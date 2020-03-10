@@ -20,7 +20,7 @@
         </form>
 
         {% for review in user_reviews %}
-        {% include 'snippets/review.html' with review=review %}
+        {% include 'snippets/status.html' with status=review hide_book=True main=True depth=1 %}
         {% endfor %}
     </div>
 </div>
@@ -62,7 +62,7 @@
         </form>
         <p>Average rating: {{ rating | stars }}</p>
         {% for review in reviews %}
-        {% include 'snippets/review.html' with review=review %}
+        {% include 'snippets/status.html' with status=review hide_book=True main=True depth=1 %}
         {% endfor %}
     </div>
 </div>

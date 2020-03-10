@@ -2,15 +2,9 @@
 {% block content %}
 
 <div id="content">
-    {% if status.reply_parent %}
-    {% include 'snippets/status.html' with status=status.reply_parent %}
-    {% endif %}
-
-    {% include 'snippets/status.html' with status=status main=True %}
-
-    {% for reply in replies %}
-    {% include 'snippets/status.html' with status=reply %}
-    {% endfor %}
+    <div class="comment-thread">
+        {% include 'snippets/thread.html' with status=status depth=0 max_depth=6 is_root=True direction=0 %}
+    </div>
 </div>
 
 {% endblock %}

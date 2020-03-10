@@ -11,7 +11,7 @@
     <form name="comment" action="/comment" method="post">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}"></input>
-        {{ comment_form.content }}
+        <textarea name="content" cols="40" rows="10" id="id_content"></textarea>
         <button type="submit">Comment</button>
     </form>
 </div>

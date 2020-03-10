@@ -55,6 +55,16 @@ def get_notification_count(user):
     return user.notification_set.filter(read=False).count()
 
 
+@register.filter(name='replies')
+def get_replies(status):
+    return models.Status.objects.filter(reply_parent=status).select_subclasses().all()[:10]
+
+
+@register.filter(name='parent')
+def get_parent(status):
+    return models.Status.objects.filter(id=status.reply_parent_id).select_subclasses().get()
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''

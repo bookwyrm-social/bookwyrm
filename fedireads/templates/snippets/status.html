@@ -1,0 +1,20 @@
+{% load fr_display %}
+<div class="post {{ status.status_type|lower }} depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}">
+    {% include 'snippets/activity_banner.html' with activity=status %}
+    {% if not hide_book and status.mention_books.count %}
+    <div class="book-preview">
+        {% include 'snippets/book.html' with book=status.mention_books.first %}
+    </div>
+    {% endif %}
+    {% if not hide_book and status.book%}
+    <div class="book-preview">
+        {% include 'snippets/book.html' with book=status.book %}
+    </div>
+    {% endif %}
+    {% if status.status_type == 'Review' %}<h4>{{ status.name }}
+        <small>{{ status.rating | stars }} stars, by {% include 'snippets/username.html' with user=status.user %}</small>
+    </h4>{% endif %}
+    <blockquote>{{ status.content }}</blockquote>
+    {% include 'snippets/interaction.html' with activity=status %}
+</div>
+

@@ -56,9 +56,9 @@ def home_tab(request, tab):
         Q(followers=request.user) | Q(id=request.user.id)
     )
 
-    activities = models.Status.objects.select_subclasses().order_by(
+    activities = models.Status.objects.order_by(
         '-created_date'
-    )
+    ).select_subclasses()
 
     if tab == 'home':
         # people you follow and direct mentions
@@ -75,7 +75,6 @@ def home_tab(request, tab):
 
     activities = activities[:10]
 
-    comment_form = forms.CommentForm()
     data = {
         'user': request.user,
         'shelves': shelves,
@@ -84,7 +83,6 @@ def home_tab(request, tab):
         'activities': activities,
         'feed_tabs': ['home', 'local', 'federated'],
         'active_tab': tab,
-        'comment_form': comment_form,
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -195,10 +193,8 @@ def status_page(request, username, status_id):
     if user != status.user:
         return HttpResponseNotFound()
 
-    replies = models.Status.objects.filter(reply_parent=status).select_subclasses().all()
     data = {
         'status': status,
-        'replies': replies,
     }
     return TemplateResponse(request, 'status.html', data)
 
