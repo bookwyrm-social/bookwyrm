@@ -1,5 +1,5 @@
 ''' handles all the activity coming out of the server '''
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
@@ -88,7 +88,7 @@ def handle_outgoing_follow(user, to_follow):
 
 def handle_outgoing_unfollow(user, to_unfollow):
     ''' someone local wants to follow someone '''
-    relationship = models.UserRelationship.objects.get(
+    relationship = models.UserFollows.objects.get(
         user_subject=user,
         user_object=to_unfollow
     )
@@ -101,11 +101,14 @@ def handle_outgoing_unfollow(user, to_unfollow):
 
 def handle_outgoing_accept(user, to_follow, request_activity):
     ''' send an acceptance message to a follow request '''
-    relationship = models.UserRelationship.objects.get(
-        relationship_id=request_activity['id']
-    )
-    relationship.status = 'follow'
-    relationship.save()
+    with transaction.atomic():
+        follow_request = models.UserFollowRequest.objects.get(
+            relationship_id=request_activity['id']
+        )
+        relationship = models.UserFollows.from_request(follow_request)
+        follow_request.delete()
+        relationship.save()
+
     activity = activitypub.get_accept(to_follow, request_activity)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)

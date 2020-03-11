@@ -201,10 +201,9 @@ def handle_incoming_follow(activity):
     user = get_or_create_remote_user(activity['actor'])
     # TODO: allow users to manually approve requests
     try:
-        models.UserRelationship.objects.create(
+        models.UserFollowRequest.objects.create(
             user_subject=user,
             user_object=to_follow,
-            status='follow_request',
             relationship_id=activity['id']
         )
     except django.db.utils.IntegrityError:

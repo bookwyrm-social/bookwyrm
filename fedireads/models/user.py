@@ -34,12 +34,26 @@ class User(AbstractUser):
     # name is your display name, which you can change at will
     name = models.CharField(max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    followers = models.ManyToManyField(
+    following = models.ManyToManyField(
         'self',
         symmetrical=False,
-        through='UserRelationship',
-        through_fields=('user_object', 'user_subject'),
-        related_name='following'
+        through='UserFollows',
+        through_fields=('user_subject', 'user_object'),
+        related_name='followers'
+    )
+    follow_requests = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        through='UserFollowRequest',
+        through_fields=('user_subject', 'user_object'),
+        related_name='follower_requests'
+    )
+    blocks = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        through='UserBlocks',
+        through_fields=('user_subject', 'user_object'),
+        related_name='blocked_by'
     )
     favorites = models.ManyToManyField(
         'Status',
@@ -65,22 +79,22 @@ class UserRelationship(FedireadsModel):
     user_subject = models.ForeignKey(
         'User',
         on_delete=models.PROTECT,
-        related_name='user_subject'
+        related_name='%(class)s_user_subject'
     )
     user_object = models.ForeignKey(
         'User',
         on_delete=models.PROTECT,
-        related_name='user_object'
+        related_name='%(class)s_user_object'
     )
     # follow or follow_request for pending TODO: blocking?
-    status = models.CharField(max_length=100, default='follows', null=True)
     relationship_id = models.CharField(max_length=100)
 
     class Meta:
+        abstract = True
         constraints = [
             models.UniqueConstraint(
                 fields=['user_subject', 'user_object'],
-                name='followers_unique'
+                name='%(class)s_unique'
             )
         ]
 
@@ -90,6 +104,28 @@ class UserRelationship(FedireadsModel):
         base_path = self.user_subject.absolute_id
         return '%s#%s/%d' % (base_path, self.status, self.id)
 
+class UserFollows(UserRelationship):
+    @property
+    def status(self):
+        return 'follows'
+
+    @classmethod
+    def from_request(cls, follow_request):
+        return cls(
+            user_subject=follow_request.user_subject,
+            user_object=follow_request.user_object,
+            relationship_id=follow_request.relationship_id,
+        )
+
+class UserFollowRequest(UserRelationship):
+    @property
+    def status(self):
+        return 'follow_request'
+
+class UserBlocks(UserRelationship):
+    @property
+    def status(self):
+        return 'blocks'
 
 class FederatedServer(FedireadsModel):
     ''' store which server's we federate with '''
