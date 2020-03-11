@@ -39,7 +39,7 @@ This project is still in its very early stages, but these are the higher-level f
  - Granular privacy controls
     - Local-only, followers-only, and public posting
     - Option for users to manually approve followers
-    - Allow blocking and flagging for moderaton
+    - Allow blocking and flagging for moderation
     - Control over which instances you want to federate with
 
 But this isn't a set in stone, unchangeable list, so if you have ideas about how this could be tweaked, changed, or improved, please open an issue and start a conversation about it.
