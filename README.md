@@ -1,4 +1,4 @@
-# FediReads
+# BookWyrm (aka FediReads)
 
 Social reading and reviewing, decentralized with ActivityPub
 
