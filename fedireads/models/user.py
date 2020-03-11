@@ -109,6 +109,14 @@ class UserFollows(UserRelationship):
     def status(self):
         return 'follows'
 
+    @classmethod
+    def from_request(cls, follow_request):
+        return cls(
+            user_subject=follow_request.user_subject,
+            user_object=follow_request.user_object,
+            relationship_id=follow_request.relationship_id,
+        )
+
 class UserFollowRequest(UserRelationship):
     @property
     def status(self):
