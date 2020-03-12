@@ -71,8 +71,26 @@ def get_replies(status, replies):
             'type': 'CollectionPage',
             'next': '%s?only_other_accounts=true&page=true' % id_slug,
             'partOf': id_slug,
-            'items': [get_status(r) for r in replies]
+            'items': [get_status(r) for r in replies],
         }
+    }
+
+
+def get_replies_page(status, replies):
+    id_slug = status.absolute_id + '/replies?page=true&only_other_accounts=true'
+    items = []
+    for reply in replies:
+        if reply.user.local:
+            items.append(get_status(reply))
+        else:
+            items.append(reply.remote_id)
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'CollectionPage',
+        'next': '%s&min_id=%d' % (id_slug, replies[len(replies) - 1].id),
+        'partOf': status.absolute_id + '/replies',
+        'items': [items]
     }
 
 

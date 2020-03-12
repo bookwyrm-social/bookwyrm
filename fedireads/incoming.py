@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
     HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import django.db.utils
+from django.db.models import Q
 import json
 import requests
 
@@ -162,11 +163,27 @@ def get_replies(request, username, status_id):
         return HttpResponseNotFound()
 
     replies = models.Status.objects.filter(
-        reply_parent=status
-    ).first()
+        reply_parent=status,
+    ).select_subclasses()
 
-    replies_activity = activitypub.get_replies(status, [replies])
-    return JsonResponse(replies_activity)
+    if request.GET.get('only_other_accounts'):
+        replies = replies.filter(
+            ~Q(user=status.user)
+        )
+    else:
+        replies = replies.filter(user=status.user)
+
+    if request.GET.get('page'):
+        min_id = request.GET.get('min_id')
+        if min_id:
+            replies = replies.filter(id__gt=min_id)
+        max_id = request.GET.get('max_id')
+        if max_id:
+            replies = replies.filter(id__lte=max_id)
+        activity = activitypub.get_replies_page(status, replies)
+        return JsonResponse(activity)
+
+    return JsonResponse(activitypub.get_replies(status, replies))
 
 
 @csrf_exempt
