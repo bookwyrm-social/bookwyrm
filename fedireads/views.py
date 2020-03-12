@@ -287,7 +287,7 @@ def book_page(request, book_identifier, tab='friends'):
 def author_page(request, author_identifier):
     ''' landing page for an author '''
     try:
-        author = models.Author.objects.get(books_manager_key=author_identifier)
+        author = models.Author.objects.get(openlibrary_key=author_identifier)
     except ValueError:
         return HttpResponseNotFound()
 
