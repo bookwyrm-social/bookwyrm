@@ -25,6 +25,10 @@
             {% elif notification.notification_type == 'FOLLOW' %}
                 {% include 'snippets/username.html' with user=notification.related_user %}
                 followed you
+
+            {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
+                {% include 'snippets/username.html' with user=notification.related_user %}
+                sent you a follow request
             {% endif %}
             <small>{{ notification.created_date | naturaltime }}</small>
             </p>

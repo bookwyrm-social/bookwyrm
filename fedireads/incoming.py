@@ -229,9 +229,11 @@ def handle_incoming_follow(activity):
         # Accept, but then do we need to match the activity id?
         return HttpResponse()
 
-    create_notification(to_follow, 'FOLLOW', related_user=user)
     if not to_follow.manually_approves_followers:
+        create_notification(to_follow, 'FOLLOW', related_user=user)
         outgoing.handle_outgoing_accept(user, to_follow, activity)
+    else:
+        create_notification(to_follow, 'FOLLOW_REQUEST', related_user=user)
     return HttpResponse()
 
 

@@ -107,7 +107,8 @@ class Notification(FedireadsModel):
             'FAVORITE',
             'REPLY',
             'TAG',
-            'FOLLOW'
+            'FOLLOW',
+            'FOLLOW_REQUEST'
         ]
         if not self.notification_type in types:
             raise ValueError('Invalid notitication type')
