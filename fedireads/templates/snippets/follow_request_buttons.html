@@ -1,0 +1,10 @@
+<form action="/accept_follow_request/" method="POST">
+    {% csrf_token %}
+    <input type=hidden name="user" value="{{ user.username }}">
+    <input type=submit value="Accept">
+</form>
+<form action="/delete_follow_request/" method="POST">
+    {% csrf_token %}
+    <input type=hidden name="user" value="{{ user.username }}">
+    <input type=submit value="Delete">
+</form>
