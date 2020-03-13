@@ -5,7 +5,13 @@ def get_actor(user):
     return {
         '@context': [
             'https://www.w3.org/ns/activitystreams',
-            'https://w3id.org/security/v1'
+            'https://w3id.org/security/v1',
+            {
+                "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+                "schema": "http://schema.org#",
+                "PropertyValue": "schema:PropertyValue",
+                "value": "schema:value",
+            },
         ],
 
         'id': user.actor,
@@ -26,5 +32,6 @@ def get_actor(user):
             'sharedInbox': user.shared_inbox,
         },
         'fedireadsUser': True,
+        'manuallyApprovesFollowers': user.manually_approves_followers,
     }
 
