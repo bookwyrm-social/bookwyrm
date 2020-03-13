@@ -32,13 +32,33 @@ def get_unfollow(relationship):
     }
 
 
-def get_accept(user, request_activity):
+def get_accept(user, relationship):
     ''' accept a follow request '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': '%s#accepts/follows/' % user.absolute_id,
         'type': 'Accept',
         'actor': user.actor,
-        'object': request_activity,
+        'object': {
+            'id': relationship.relationship_id,
+            'type': 'Follow',
+            'actor': relationship.user_subject.actor,
+            'object': relationship.user_object.actor,
+        }
     }
 
+
+def get_reject(user, relationship):
+    ''' reject a follow request '''
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s#rejects/follows/' % user.absolute_id,
+        'type': 'Reject',
+        'actor': user.actor,
+        'object': {
+            'id': relationship.relationship_id,
+            'type': 'Follow',
+            'actor': relationship.user_subject.actor,
+            'object': relationship.user_object.actor,
+        }
+    }

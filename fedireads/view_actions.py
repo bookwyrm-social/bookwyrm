@@ -171,13 +171,15 @@ def accept_follow_request(request):
     except models.User.DoesNotExist:
         return HttpResponseBadRequest()
 
-    follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
-    # We don't keep a full copy of the follow request, but a minimal copy is good enough for now.
-    follow_activity = {'id': follow_request.relationship_id}
-    outgoing.handle_outgoing_accept(requester, request.user, follow_activity)
-    user_slug = requester.localname if requester.localname \
-        else requester.username
-    return redirect('/user/%s' % user_slug)
+    try:
+        follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
+    except models.UserFollowRequest.DoesNotExist:
+        # Request already dealt with.
+        pass
+    else:
+        outgoing.handle_outgoing_accept(requester, request.user, follow_request)
+
+    return redirect('/user/%s' % request.user.localname)
 
 @login_required
 def delete_follow_request(request):
@@ -189,9 +191,8 @@ def delete_follow_request(request):
 
     try:
         follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
-        follow_request.delete()
-        # Generate a Reject activity here.
     except models.UserFollowRequest.DoesNotExist:
-        pass
+        return HttpResponseBadRequest()
 
+    outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)

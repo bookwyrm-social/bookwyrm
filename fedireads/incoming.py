@@ -54,6 +54,8 @@ def shared_inbox(request):
 
     elif activity['type'] == 'Add':
         response = handle_incoming_add(activity)
+    elif activity['type'] == 'Reject':
+        response = handle_incoming_follow_reject(activity)
 
     # TODO: Add, Undo, Remove, etc
 
@@ -218,7 +220,7 @@ def handle_incoming_follow(activity):
     user = get_or_create_remote_user(activity['actor'])
     # TODO: allow users to manually approve requests
     try:
-        models.UserFollowRequest.objects.create(
+        request = models.UserFollowRequest.objects.create(
             user_subject=user,
             user_object=to_follow,
             relationship_id=activity['id']
@@ -231,7 +233,7 @@ def handle_incoming_follow(activity):
 
     if not to_follow.manually_approves_followers:
         create_notification(to_follow, 'FOLLOW', related_user=user)
-        outgoing.handle_outgoing_accept(user, to_follow, activity)
+        outgoing.handle_outgoing_accept(user, to_follow, request)
     else:
         create_notification(to_follow, 'FOLLOW_REQUEST', related_user=user)
     return HttpResponse()
@@ -260,9 +262,28 @@ def handle_incoming_follow_accept(activity):
     # figure out who they are
     accepter = get_or_create_remote_user(activity['actor'])
 
-    accepter.followers.add(requester)
+    try:
+        request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=accepter)
+        request.delete()
+    except models.UserFollowRequest.DoesNotExist:
+        pass
+    else:
+        accepter.followers.add(requester)
     return HttpResponse()
 
+
+def handle_incoming_follow_reject(activity):
+    ''' someone is rejecting a follow request '''
+    requester = models.User.objects.get(actor=activity['object']['actor'])
+    rejecter = get_or_create_remote_user(activity['actor'])
+
+    try:
+        request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=rejecter)
+        request.delete()
+    except models.UserFollowRequest.DoesNotExist:
+        pass
+
+    return HttpResponse()
 
 def handle_incoming_create(activity):
     ''' someone did something, good on them '''
@@ -331,17 +352,3 @@ def handle_incoming_add(activity):
             return HttpResponse()
         return HttpResponse()
     return HttpResponseNotFound()
-
-
-def handle_incoming_accept(activity):
-    ''' someone is accepting a follow request '''
-    # our local user
-    user = models.User.objects.get(actor=activity['actor'])
-    # the person our local user wants to follow, who said yes
-    followed = get_or_create_remote_user(activity['object']['actor'])
-
-    # save this relationship in the db
-    followed.followers.add(user)
-
-    return HttpResponse()
-
