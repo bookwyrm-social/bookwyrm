@@ -1,4 +1,8 @@
-{% if not request.user in user.followers.all %}
+{% if request.user in user.follower_requests.all %}
+<div>
+Follow request already sent.
+</div>
+{% elif not request.user in user.followers.all %}
 <form action="/follow/" method="post">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
