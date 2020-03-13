@@ -20,6 +20,27 @@
         </div>
         {% endif %}
     </div>
+
+    {% if is_self and user.follower_requests.all %}
+    <div>
+        <h2>Follow Requests</h2>
+        {% for requester in user.follower_requests.all %}
+            <div>
+                {% include 'snippets/username.html' with user=requester show_full=True %}
+                <form action="/accept_follow_request/" method="POST">
+                    {% csrf_token %}
+                    <input type=hidden name="user" value="{{ requester.username }}">
+                    <input type=submit value="Accept">
+                </form>
+                <form action="/delete_follow_request/" method="POST">
+                    {% csrf_token %}
+                    <input type=hidden name="user" value="{{ requester.username }}">
+                    <input type=submit value="Delete">
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div>
         <h2>Followers</h2>
         {% for follower in user.followers.all %}
