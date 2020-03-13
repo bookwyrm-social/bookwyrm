@@ -6,7 +6,7 @@ class InputHtmlParser(HTMLParser):
 
     def __init__(self):
         HTMLParser.__init__(self)
-        self.whitelist = ['p', 'b', 'i', 'pre']
+        self.whitelist = ['p', 'b', 'i', 'pre', 'a', 'span']
         self.tag_stack = []
         self.output = []
         # if the html appears invalid, we just won't allow any at all
@@ -16,7 +16,7 @@ class InputHtmlParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         ''' check if the tag is valid '''
         if self.allow_html and tag in self.whitelist:
-            self.output.append(('tag', '<%s>' % tag))
+            self.output.append(('tag', self.get_starttag_text()))
             self.tag_stack.append(tag)
         else:
             self.output.append(('data', ' '))
