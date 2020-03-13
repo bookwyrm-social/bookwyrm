@@ -99,20 +99,23 @@ def handle_outgoing_unfollow(user, to_unfollow):
         raise(error['error'])
 
 
-def handle_outgoing_accept(user, to_follow, request_activity):
+def handle_outgoing_accept(user, to_follow, follow_request):
     ''' send an acceptance message to a follow request '''
     with transaction.atomic():
-        follow_request = models.UserFollowRequest.objects.get(
-            relationship_id=request_activity['id']
-        )
         relationship = models.UserFollows.from_request(follow_request)
         follow_request.delete()
         relationship.save()
 
-    activity = activitypub.get_accept(to_follow, request_activity)
+    activity = activitypub.get_accept(to_follow, follow_request)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
 
+def handle_outgoing_reject(user, to_follow, relationship):
+    relationship.delete()
+
+    activity = activitypub.get_reject(to_follow, relationship)
+    recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
+    broadcast(to_follow, activity, recipient)
 
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''

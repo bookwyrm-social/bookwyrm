@@ -163,3 +163,36 @@ def clear_notifications(request):
     request.user.notification_set.filter(read=True).delete()
     return redirect('/notifications')
 
+@login_required
+def accept_follow_request(request):
+    username = request.POST['user']
+    try:
+        requester = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    try:
+        follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
+    except models.UserFollowRequest.DoesNotExist:
+        # Request already dealt with.
+        pass
+    else:
+        outgoing.handle_outgoing_accept(requester, request.user, follow_request)
+
+    return redirect('/user/%s' % request.user.localname)
+
+@login_required
+def delete_follow_request(request):
+    username = request.POST['user']
+    try:
+        requester = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    try:
+        follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
+    except models.UserFollowRequest.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    outgoing.handle_outgoing_reject(requester, request.user, follow_request)
+    return redirect('/user/%s' % request.user.localname)
