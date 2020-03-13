@@ -48,9 +48,10 @@ def create_status_from_activity(author, activity):
     reply_parent = get_status(reply_parent_id)
 
     remote_id = activity['id']
-
-    status = create_status(author, content, reply_parent=reply_parent)
-    status.remote_id = remote_id
+    if models.Status.objects.filter(remote_id=remote_id).count():
+        return None
+    status = create_status(author, content, reply_parent=reply_parent,
+                           remote_id=remote_id)
     status.published_date = activity.get('published')
     status.save()
     return status
@@ -80,7 +81,8 @@ def get_status(absolute_id):
 
 
 
-def create_status(user, content, reply_parent=None, mention_books=None):
+def create_status(user, content, reply_parent=None, mention_books=None,
+                  remote_id=None):
     ''' a status update '''
     # TODO: handle @'ing users
 
@@ -93,6 +95,7 @@ def create_status(user, content, reply_parent=None, mention_books=None):
         user=user,
         content=content,
         reply_parent=reply_parent,
+        remote_id=remote_id,
     )
 
     if mention_books:

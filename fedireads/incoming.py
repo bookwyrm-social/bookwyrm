@@ -285,7 +285,7 @@ def handle_incoming_create(activity):
     elif not user.local:
         try:
             status = create_status_from_activity(user, activity['object'])
-            if status.reply_parent:
+            if status and status.reply_parent:
                 create_notification(
                     status.reply_parent.user,
                     'REPLY',
