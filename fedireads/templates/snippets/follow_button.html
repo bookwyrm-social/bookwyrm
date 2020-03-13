@@ -1,4 +1,5 @@
-{% if request.user in user.follower_requests.all %}
+{% if request.user == user %}
+{% elif request.user in user.follower_requests.all %}
 <div>
 Follow request already sent.
 </div>
