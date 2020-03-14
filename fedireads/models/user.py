@@ -95,6 +95,10 @@ class UserRelationship(FedireadsModel):
             models.UniqueConstraint(
                 fields=['user_subject', 'user_object'],
                 name='%(class)s_unique'
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user_subject=models.F('user_object')),
+                name='%(class)s_no_self'
             )
         ]
 
