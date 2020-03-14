@@ -2,11 +2,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseNotFound, \
+        JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import forms, models, books_manager, incoming
+from fedireads import activitypub
+from fedireads import forms, models, books_manager
 from fedireads.settings import DOMAIN
 
 
@@ -17,6 +20,14 @@ def get_user_from_username(username):
     except models.User.DoesNotExist:
         user = models.User.objects.get(username=username)
     return user
+
+
+
+def is_api_request(request):
+    ''' check whether a request is asking for html or data '''
+    # TODO: this should probably be the full content type? maybe?
+    return 'json' in request.headers.get('Accept') or \
+            request.path[-5:] == '.json'
 
 
 @login_required
@@ -153,19 +164,18 @@ def notifications_page(request):
     return TemplateResponse(request, 'notifications.html', data)
 
 
+@csrf_exempt
 def user_page(request, username):
     ''' profile page for a user '''
-    content = request.headers.get('Accept')
-    # TODO: this should probably be the full content type? maybe?
-    if 'json' in content:
-        # we have a json request
-        return incoming.get_actor(request, username)
-
-    # otherwise we're at a UI view
     try:
         user = get_user_from_username(username)
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
+
+    if is_api_request(request):
+        # we have a json request
+        return JsonResponse(activitypub.get_actor(user))
+    # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
     shelves = models.Shelf.objects.filter(user=user)
@@ -181,12 +191,52 @@ def user_page(request, username):
     return TemplateResponse(request, 'user.html', data)
 
 
+@csrf_exempt
+def followers_page(request, username):
+    ''' list of followers '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    try:
+        user = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if is_api_request(request):
+        user = models.User.objects.get(localname=username)
+        followers = user.followers
+        page = request.GET.get('page')
+        return JsonResponse(activitypub.get_followers(user, page, followers))
+
+    return redirect('/user/' + username)
+
+
+@csrf_exempt
+def following_page(request, username):
+    ''' list of followers '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    try:
+        user = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if is_api_request(request):
+        user = models.User.objects.get(localname=username)
+        following = user.following
+        page = request.GET.get('page')
+        return JsonResponse(activitypub.get_following(user, page, following))
+
+    return redirect('/user/' + username)
+
+
+@csrf_exempt
 def status_page(request, username, status_id):
     ''' display a particular status (and replies, etc) '''
-    content = request.headers.get('Accept')
-    if 'json' in content:
-        # we have a json request
-        return incoming.get_status(request, username, status_id)
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
     try:
         user = get_user_from_username(username)
         status = models.Status.objects.select_subclasses().get(id=status_id)
@@ -196,10 +246,50 @@ def status_page(request, username, status_id):
     if user != status.user:
         return HttpResponseNotFound()
 
+    if is_api_request(request):
+        return JsonResponse(activitypub.get_status(status))
+
     data = {
         'status': status,
     }
     return TemplateResponse(request, 'status.html', data)
+
+
+@csrf_exempt
+def replies_page(request, username, status_id):
+    ''' ordered collection of replies to a status '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    if not is_api_request(request):
+        return status_page(request, username, status_id)
+
+    status = models.Status.objects.get(id=status_id)
+    if status.user.localname != username:
+        return HttpResponseNotFound()
+
+    replies = models.Status.objects.filter(
+        reply_parent=status,
+    ).select_subclasses()
+
+    if request.GET.get('only_other_accounts'):
+        replies = replies.filter(
+            ~Q(user=status.user)
+        )
+    else:
+        replies = replies.filter(user=status.user)
+
+    if request.GET.get('page'):
+        min_id = request.GET.get('min_id')
+        if min_id:
+            replies = replies.filter(id__gt=min_id)
+        max_id = request.GET.get('max_id')
+        if max_id:
+            replies = replies.filter(id__lte=max_id)
+        activity = activitypub.get_replies_page(status, replies)
+        return JsonResponse(activity)
+
+    return JsonResponse(activitypub.get_replies(status, replies))
 
 
 @login_required

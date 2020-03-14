@@ -122,96 +122,6 @@ def inbox(request, username):
     return shared_inbox(request)
 
 
-@csrf_exempt
-def get_actor(request, username):
-    ''' return an activitypub actor object '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    try:
-        user = models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
-    return JsonResponse(activitypub.get_actor(user))
-
-
-@csrf_exempt
-def get_status(request, username, status_id):
-    ''' return activity json for a specific status '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    try:
-        user = models.User.objects.get(localname=username)
-        status = models.Status.objects.get(id=status_id)
-    except ValueError:
-        return HttpResponseNotFound()
-
-    if user != status.user:
-        return HttpResponseNotFound()
-
-    return JsonResponse(activitypub.get_status(status))
-
-
-@csrf_exempt
-def get_replies(request, username, status_id):
-    ''' ordered collection of replies to a status '''
-    # TODO: this isn't a full implmentation
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    status = models.Status.objects.get(id=status_id)
-    if status.user.localname != username:
-        return HttpResponseNotFound()
-
-    replies = models.Status.objects.filter(
-        reply_parent=status,
-    ).select_subclasses()
-
-    if request.GET.get('only_other_accounts'):
-        replies = replies.filter(
-            ~Q(user=status.user)
-        )
-    else:
-        replies = replies.filter(user=status.user)
-
-    if request.GET.get('page'):
-        min_id = request.GET.get('min_id')
-        if min_id:
-            replies = replies.filter(id__gt=min_id)
-        max_id = request.GET.get('max_id')
-        if max_id:
-            replies = replies.filter(id__lte=max_id)
-        activity = activitypub.get_replies_page(status, replies)
-        return JsonResponse(activity)
-
-    return JsonResponse(activitypub.get_replies(status, replies))
-
-
-@csrf_exempt
-def get_followers(request, username):
-    ''' return a list of followers for an actor '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    user = models.User.objects.get(localname=username)
-    followers = user.followers
-    page = request.GET.get('page')
-    return JsonResponse(activitypub.get_followers(user, page, followers))
-
-
-@csrf_exempt
-def get_following(request, username):
-    ''' return a list of following for an actor '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    user = models.User.objects.get(localname=username)
-    following = user.following
-    page = request.GET.get('page')
-    return JsonResponse(activitypub.get_following(user, page, following))
-
-
 def handle_incoming_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow
@@ -263,7 +173,10 @@ def handle_incoming_follow_accept(activity):
     accepter = get_or_create_remote_user(activity['actor'])
 
     try:
-        request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=accepter)
+        request = models.UserFollowRequest.objects.get(
+            user_subject=requester,
+            user_object=accepter
+        )
         request.delete()
     except models.UserFollowRequest.DoesNotExist:
         pass

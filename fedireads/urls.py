@@ -6,8 +6,8 @@ from django.urls import path, re_path
 from fedireads import incoming, outgoing, views, settings, wellknown
 from fedireads import view_actions as actions
 
-username_regex = r'(?P<username>[\w@\.-]+)'
-localname_regex = r'(?P<username>[\w\.-]+)'
+username_regex = r'(?P<username>[\w@\-_]+)'
+localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 status_path = r'%s/(status|review)/(?P<status_id>\d+)' % local_user_path
@@ -17,14 +17,8 @@ urlpatterns = [
 
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),
-    re_path(r'%s.json$' % local_user_path, incoming.get_actor),
     re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
     re_path(r'%s/outbox/?$' % local_user_path, outgoing.outbox),
-    re_path(r'%s/followers/?$' % local_user_path, incoming.get_followers),
-    re_path(r'%s/following/?$' % local_user_path, incoming.get_following),
-    re_path(r'%s.json$' % status_path, incoming.get_status),
-    re_path(r'%s/activity/?$' % status_path, incoming.get_status),
-    re_path(r'%s/replies/?$' % status_path, incoming.get_replies),
 
     # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
@@ -34,15 +28,32 @@ urlpatterns = [
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 
     # ui views
-    path('', views.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^register/?$', views.register),
     re_path(r'^login/?$', views.user_login),
     re_path(r'^logout/?$', views.user_logout),
+
+    # should return a ui view or activitypub json blob as requested
+    path('', views.home),
+    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
+
+    # users
     re_path(r'%s/?$' % user_path, views.user_page),
+    re_path(r'%s\.json$' % local_user_path, views.user_page),
     re_path(r'edit_profile_page/?$', views.edit_profile_page),
+    re_path(r'%s/followers/?$' % local_user_path, views.followers_page),
+    re_path(r'%s/followers.json$' % local_user_path, views.followers_page),
+    re_path(r'%s/following/?$' % local_user_path, views.following_page),
+    re_path(r'%s/following.json$' % local_user_path, views.following_page),
+
+    # statuses
     re_path(r'%s/?$' % status_path, views.status_page),
+    re_path(r'%s.json$' % status_path, views.status_page),
+    re_path(r'%s/activity/?$' % status_path, views.status_page),
+    re_path(r'%s/replies/?$' % status_path, views.replies_page),
+    re_path(r'%s/replies\.json$' % status_path, views.replies_page),
+
+    # books
     re_path(r'^book/(?P<book_identifier>\w+)/?$', views.book_page),
     re_path(r'^book/(?P<book_identifier>\w+)/(?P<tab>friends|local|federated)?$', views.book_page),
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
