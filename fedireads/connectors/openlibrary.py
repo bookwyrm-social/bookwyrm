@@ -45,7 +45,7 @@ class OpenLibraryConnector(AbstractConnector):
             raise ValueError('Invalid OpenLibrary ID')
 
         try:
-            book = models.Book.objects.get(openlibrary_key=olkey)
+            book = model.objects.get(openlibrary_key=olkey)
             return book
         except ObjectDoesNotExist:
             # no book was found, so we start creating a new one
@@ -68,16 +68,17 @@ class OpenLibraryConnector(AbstractConnector):
         book.pages = data.get('pages')
         #book.published_date = data.get('publish_date')
 
+        book.save()
+
         # this book sure as heck better be an edition
         if data.get('works'):
             key = data.get('works')[0]['key']
             key = key.split('/')[-1]
             work = self.get_or_create_book(key)
             book.parent_work = work
-        book.save()
 
         # we also need to know the author get the cover
-        for author_blob in data.get('authors'):
+        for author_blob in data.get('authors', []):
             # this id is "/authors/OL1234567A" and we want just "OL1234567A"
             author_blob = author_blob.get('author', author_blob)
             author_id = author_blob['key']
@@ -95,7 +96,7 @@ class OpenLibraryConnector(AbstractConnector):
         if not re.match(r'^OL\d+A$', olkey):
             raise ValueError('Invalid OpenLibrary author ID')
         try:
-            author = models.Author.objects.get(openlibrary_key=olkey)
+            return models.Author.objects.get(openlibrary_key=olkey)
         except ObjectDoesNotExist:
             pass
 
@@ -130,7 +131,7 @@ class OpenLibraryConnector(AbstractConnector):
         response = requests.get(url)
         if not response.ok:
             response.raise_for_status()
-        image_content = ContentFile(requests.get(url).content)
+        image_content = ContentFile(response.content)
         return [image_name, image_content]
 
 
