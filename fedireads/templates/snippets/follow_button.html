@@ -6,7 +6,11 @@ Follow request already sent.
 <form action="/follow/" method="post">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
-    <input type="submit" value="Follow"></input>
+    {% if user.manually_approves_followers %}
+        <input type="submit" value="Send follow request"></input>
+    {% else %}
+        <input type="submit" value="Follow"></input>
+    {% endif %}
 </form>
 {% else %}
 <form action="/unfollow/" method="post">
