@@ -312,7 +312,7 @@ button.secondary {
 .covers-shelf .book-preview:hover img {
     box-shadow: #F3FFBD 0em 0em 1em 1em;
 }
-.covers-shelf .book-preview img {
+.covers-shelf .book-cover {
     float: none;
     height: 11rem;
     width: auto;
@@ -332,6 +332,24 @@ button.secondary {
     display: block;
 }
 
+.no-cover {
+    position: relative;
+}
+.no-cover div {
+    position: absolute;
+    padding: 1em;
+    color: white;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+.no-cover .title {
+    text-transform: uppercase;
+    margin-bottom: 1em;
+}
+.book-cover {
+    width: 180px;
+}
 .book-cover.small {
     width: 50px;
     height: auto;
