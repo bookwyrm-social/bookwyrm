@@ -364,10 +364,39 @@ blockquote {
 .interaction {
     background-color: #B2DBBF;
     border-radius: 0 0 0.5em 0.5em;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5em;
 }
-
+.interaction > * {
+    margin-right: 0.5em;
+}
+.interaction button:hover {
+    box-shadow: #247BA0 0em 0em 1em 0em;
+    color: #247BA0;
+}
+.interaction button.active:hover .icon {
+    color: #888;
+}
+.interaction button {
+    background: white;
+    height: 2em;
+    min-width: 3em;
+    padding: 0;
+    color: #888;
+}
+.interaction button.active .icon {
+    color: #FF1654;
+}
 .interaction textarea {
     height: 2em;
+    width: 23em;
+    float: left;
+    padding: 0.25em;
+    margin-right: 0.5em;
+}
+.interaction textarea:valid, .interaction textarea:focus {
+    height: 4em;
 }
 
 table {
@@ -407,6 +436,10 @@ th, td {
 .post h2, .compose-suggestion h2 {
     position: relative;
     right: 2em;
+}
+.post .time-ago {
+    position: relative;
+    left: 2em;
 }
 .post .user-pic, .compose-suggestion .user-pic {
     right: 0.25em;

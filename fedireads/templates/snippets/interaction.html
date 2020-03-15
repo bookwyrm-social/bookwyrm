@@ -1,26 +1,33 @@
 {% load fr_display %}
 <div class="interaction">
-    {% if activity.favorites.all %}
-    <span>
-        {{ activity.favorites.count }} like{{activity.favorites.count|pluralize }}
-    </span>
-    {% endif %}
-    {% if activity|reply_count %}
-    <span>
-        <a href="{{ activity.absolute_id }}">
-            {{ activity|reply_count }} repl{{ activity|reply_count|pluralize:'y,ies' }}
-        </a>
-    </span>
-    {% endif %}
-    <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
-        {% csrf_token %}
-        <button>⭐️ Like</button>
-    </form>
+
     <form name="comment" action="/comment" method="post">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}"></input>
-        <textarea name="content" cols="40" rows="10" id="id_content"></textarea>
-        <button type="submit">Comment</button>
+        <textarea name="content" placeholder="Leave a comment..." id="id_content" required="true"></textarea>
+        <button type="submit" class="comment">
+            <span class="icon icon-comment">
+                <span class="hidden-text">Comment</span>
+            </span>
+        </button>
+    </form>
+
+    <form name="boost" action="/boost/{{ activity.id }}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="{% if False %}active{% endif %}">
+            <span class="icon icon-boost">
+                <span class="hidden-text">Boost status</span>
+            </span>
+        </button>
+    </form>
+
+    <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="{% if request.user|liked:status %}active{% endif %}">
+            <span class="icon icon-heart">
+                <span class="hidden-text">Like status</span>
+            </span>
+        </button>
     </form>
 </div>
 

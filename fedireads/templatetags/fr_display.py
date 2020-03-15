@@ -70,6 +70,15 @@ def get_parent(status):
     return models.Status.objects.filter(id=status.reply_parent_id).select_subclasses().get()
 
 
+@register.filter(name='liked')
+def get_user_liked(user, status):
+    try:
+        models.Favorite.objects.get(user=user, status=status)
+        return True
+    except models.Favorite.DoesNotExist:
+        return False
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
