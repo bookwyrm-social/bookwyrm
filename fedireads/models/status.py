@@ -46,7 +46,6 @@ class Status(FedireadsModel):
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
 
-
 class Review(Status):
     ''' a book review '''
     name = models.CharField(max_length=255)

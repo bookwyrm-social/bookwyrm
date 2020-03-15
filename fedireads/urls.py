@@ -6,7 +6,7 @@ from django.urls import path, re_path
 from fedireads import incoming, outgoing, views, settings, wellknown
 from fedireads import view_actions as actions
 
-username_regex = r'(?P<username>[\w@\-_]+)'
+username_regex = r'(?P<username>[\w@\-_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
@@ -28,9 +28,7 @@ urlpatterns = [
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
 
     # ui views
-    re_path(r'^register/?$', views.register),
-    re_path(r'^login/?$', views.user_login),
-    re_path(r'^logout/?$', views.user_logout),
+    re_path(r'^login/?$', views.login_page),
 
     # should return a ui view or activitypub json blob as requested
     path('', views.home),
@@ -40,7 +38,7 @@ urlpatterns = [
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
-    re_path(r'edit_profile_page/?$', views.edit_profile_page),
+    re_path(r'user-edit/?$', views.edit_profile_page),
     re_path(r'%s/followers/?$' % local_user_path, views.followers_page),
     re_path(r'%s/followers.json$' % local_user_path, views.followers_page),
     re_path(r'%s/following/?$' % local_user_path, views.following_page),
@@ -61,6 +59,9 @@ urlpatterns = [
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)/?$' % username_regex, views.shelf_page),
 
     # internal action endpoints
+    re_path(r'^logout/?$', actions.user_logout),
+    re_path(r'^user-login/?$', actions.user_login),
+    re_path(r'^register/?$', actions.register),
     re_path(r'^review/?$', actions.review),
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),

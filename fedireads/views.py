@@ -1,5 +1,4 @@
 ''' views for pages you can go to in the application '''
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, \
@@ -10,7 +9,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import activitypub
 from fedireads import forms, models, books_manager
-from fedireads.settings import DOMAIN
 
 
 def get_user_from_username(username):
@@ -20,7 +18,6 @@ def get_user_from_username(username):
     except models.User.DoesNotExist:
         user = models.User.objects.get(username=username)
     return user
-
 
 
 def is_api_request(request):
@@ -40,27 +37,43 @@ def home(request):
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
     shelves = []
-    for identifier in ['reading', 'to-read']:
+    book_count = 6
+    for (identifier, count) in [('reading', 3), ('read', 1), ('to-read', 3)]:
+        if book_count <= 0:
+            break
         shelf = models.Shelf.objects.get(
             user=request.user,
             identifier=identifier,
         )
         if not shelf.books.count():
             continue
+        books = models.ShelfBook.objects.filter(
+            shelf=shelf,
+        ).order_by(
+            '-updated_date'
+        )[:count]
+
+        book_count -= len(books)
+
         shelves.append({
             'name': shelf.name,
             'identifier': shelf.identifier,
-            'books': shelf.books.all()[:3],
+            'books': [b.book for b in books],
             'size': shelf.books.count(),
+        })
+    # books new to the instance, for discovery
+    if book_count > 0:
+        shelves.append({
+            'name': 'Recently added',
+            'identifier': None,
+            'books': models.Book.objects.order_by(
+                '-created_date'
+            )[:book_count],
+            'count': book_count,
         })
 
     # allows us to check if a user has shelved a book
     user_books = models.Book.objects.filter(shelves__user=request.user).all()
-
-    # books new to the instance, for discovery
-    recent_books = models.Book.objects.order_by(
-        '-created_date'
-    )[:5]
 
     # status updates for your follow network
     following = models.User.objects.filter(
@@ -89,65 +102,27 @@ def home_tab(request, tab):
     data = {
         'user': request.user,
         'shelves': shelves,
-        'recent_books': recent_books,
         'user_books': user_books,
         'activities': activities,
-        'feed_tabs': ['home', 'local', 'federated'],
+        'feed_tabs': [
+            {'id': 'home', 'display': 'Home'},
+            {'id': 'local', 'display': 'Local'},
+            {'id': 'federated', 'display': 'Federated'}
+        ],
         'active_tab': tab,
+        'review_form': forms.ReviewForm(),
     }
     return TemplateResponse(request, 'feed.html', data)
 
 
-def user_login(request):
+def login_page(request):
     ''' authentication '''
     # send user to the login page
-    if request.method == 'GET':
-        form = forms.LoginForm()
-        return TemplateResponse(request, 'login.html', {'login_form': form})
-
-    # authenticate user
-    form = forms.LoginForm(request.POST)
-    if not form.is_valid():
-        return TemplateResponse(request, 'login.html', {'login_form': form})
-
-    username = form.data['username']
-    username = '%s@%s' % (username, DOMAIN)
-    password = form.data['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return redirect(request.GET.get('next', '/'))
-    return TemplateResponse(request, 'login.html', {'login_form': form})
-
-
-@login_required
-def user_logout(request):
-    ''' done with this place! outa here! '''
-    logout(request)
-    return redirect('/')
-
-
-def register(request):
-    ''' join the server '''
-    if request.method == 'GET':
-        form = forms.RegisterForm()
-        return TemplateResponse(
-            request,
-            'register.html',
-            {'register_form': form}
-        )
-
-    form = forms.RegisterForm(request.POST)
-    if not form.is_valid():
-        return redirect('/register/')
-
-    username = form.data['username']
-    email = form.data['email']
-    password = form.data['password']
-
-    user = models.User.objects.create_user(username, email, password)
-    login(request, user)
-    return redirect('/')
+    data = {
+        'login_form': forms.LoginForm(),
+        'register_form': forms.RegisterForm(),
+    }
+    return TemplateResponse(request, 'login.html', data)
 
 
 @login_required

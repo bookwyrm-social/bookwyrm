@@ -10,13 +10,21 @@ html {
     background-color: #FFF;
     color: black;
 }
-
-a {
-    color: #00F;
+body {
+    padding-top: 90px;
 }
 
-a:visited {
-    color: #808;
+
+a {
+    color: #247BA0;
+}
+
+input, button {
+    padding: 0.2em 0.5em;
+}
+button {
+    cursor: pointer;
+    width: max-content;
 }
 
 h1, h2, h3, h4 {
@@ -29,16 +37,21 @@ h1 {
 
 h2 {
     font-size: 1rem;
-    background-color: #B2DBBF;
     padding: 0.5rem 0.2rem;
     margin-bottom: 1rem;
-    height: 1rem;
 }
 
 #top-bar {
-    background-color: #70C1B3;
-    overflow: hidden;
+    overflow: visible;
     padding: 0.5rem;
+    border-bottom: 3px solid #247BA0;
+    margin-bottom: 1em;
+    width: 100%;
+    background-color: #FFF;
+    position: fixed;
+    top: 0;
+    height: 47px;
+    z-index: 1;
 }
 
 #warning {
@@ -46,62 +59,183 @@ h2 {
     text-align: center;
 }
 
-
-#branding, #actions {
-    margin: 0 1rem;
-}
-#branding {
-    flex-grow: 1;
-    font-size: 2rem;
-}
 #branding a {
     text-decoration: none;
-    color: black;
 }
 #actions {
-    flex-grow: 0;
-    text-align: right;
+    margin-top: 1em;
 }
 
-#main, header > div {
+#actions > * {
+    display: inline-block;
+}
+
+#notifications .icon {
+    font-size: 1.1rem;
+}
+#notifications a {
+    color: black;
+    text-decoration: none;
+    position: relative;
+    top: 0.2rem;
+}
+#notifications .count {
+    background-color: #FF1654;
+    color: white;
+    font-size: 0.85rem;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: -0.65rem;
+    right: -0.5rem;
+    height: 1rem;
+    width: 1rem;
+}
+
+button .icon {
+    font-size: 1.1rem;
+    vertical-align: sub;
+}
+#search button {
+    border: none;
+}
+
+#main, header {
     margin: 0 auto;
+    max-width: 55rem;
+    padding-right: 1em;
+}
+header {
     display: flex;
     flex-direction: row;
-    max-width: 75rem;
-    width: 100%;
-}
-@media (max-width: 600px) {
-    #main {
-        flex-direction: column-reverse;
-    }
 }
 
-#feed, #content, #sidebar {
+ul.menu {
+    list-style: none;
+    text-align: center;
+    margin-top: 1.5rem;
+    flex-grow: 1;
+    font-size: 0.9em;
+}
+ul.menu li {
+    display: inline-block;
+    background-color: white;
+    padding: 0 0.5em;
+    text-transform: uppercase;
+}
+ul.menu a {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.pulldown-container {
+    position: relative;
+}
+.pulldown {
+    display: none;
+    position: absolute;
+    list-style: none;
+    background: white;
+    padding: 1em;
+    text-align: right;
+    right: 0;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+    width: max-content;
+}
+.pulldown-container:hover .pulldown {
+    display: block;
+}
+
+#feed {
     display: flex;
     flex-direction: column;
-    margin: 0 1rem 1rem 0;
+    padding-top: 70px;
+    position: relative;
+    top: -50px;
 }
 
-#sidebar {
-    min-width: 20rem;
-    margin-right: 0;
+.row {
+    display: flex;
+    flex-direction: row;
+}
+.row > * {
+    flex-grow: 1;
+    width: min-content;
+}
+
+.login form {
+    margin-top: 1em;
+}
+.login form p {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5em 0;
+}
+.login form label {
+    width: 0;
+    flex-grow: 1;
+    display: inline-block;
+}
+form input {
+    flex-grow: 1;
+}
+.content-container button {
+    border: none;
+    background-color: #247BA0;
+    color: white;
+    padding: 0.3em 0.8em;
+    font-size: 0.9em;
+    border-radius: 0.3em;
+}
+button.secondary {
+    background-color: #EEE;
+    border: 2px solid #247BA0;
+    color: #247BA0;
+}
+
+.login h2 {
+    border-bottom: 3px solid #B2DBBF;
 }
 
 .tabs {
     display: flex;
     flex-direction: row;
+    border-bottom: 3px solid #FF1654;
+    padding-left: 1em;
 }
-.tab.active {
+.tabs.secondary {
+    border-bottom: 3px solid #247BA0;
+}
+.tab {
+    padding: 0.5em 1em;
+    border-radius: 0.25em 0.25em 0 0;
+}
+.secondary .tab {
+    padding: 0.25em 0.5em;
+}
+.tabs .tab.active {
     background-color: #FF1654;
+}
+.tabs.secondary .tab.active {
+    background-color: #247BA0;
+}
+.tab.active a {
+    color: black;
 }
 
 .user-pic {
     width: 2rem;
-    height: auto;
+    height: 2rem;
     border-radius: 50%;
     vertical-align: top;
     position: relative;
-    bottom: 0.5em;
+    bottom: 0.35em;
+}
+
+.review-form label {
+    display: block;
 }
 
 .time-ago {
@@ -110,7 +244,7 @@ h2 {
 }
 
 .book-preview {
-    overflow: auto;
+    overflow: hidden;
 }
 
 .book-preview img {
@@ -122,17 +256,89 @@ h2 {
     float: left;
 }
 
+.content-container {
+    margin: 1rem;
+}
+.content-container > * {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.all-shelves {
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
+    margin-left: 0;
+}
+.all-shelves > div {
+    flex-grow: 0;
+}
+.all-shelves > div:last-child {
+    padding-right: 0;
+    flex-grow: 1;
+}
+.all-shelves > div > * {
+    padding: 0;
+}
+.all-shelves > div:first-child > * {
+    padding-left: 1em;
+}
+.all-shelves h2 {
+    border-bottom: 3px solid #B2DBBF;
+}
+
+.covers-shelf {
+    display: flex;
+    flex-direction: row;
+}
+.covers-shelf .book-preview {
+    margin-right: 1em;
+    font-size: 0.9em;
+    overflow: unset;
+    width: min-content;
+    position: relative;
+}
+.covers-shelf .book-preview button {
+    display: block;
+    margin: 0 auto;
+    border: none;
+}
+.covers-shelf .book-preview:last-child {
+    margin-right: 0;
+}
+.covers-shelf .book-preview:hover {
+    cursor: pointer;
+}
+.covers-shelf .book-preview:hover img {
+    box-shadow: #F3FFBD 0em 0em 1em 1em;
+}
+.covers-shelf .book-preview img {
+    float: none;
+    height: 11rem;
+    width: auto;
+    margin: 0;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    padding: 1rem;
+}
+
+.compose-suggestion {
+    display: none;
+}
+.compose-suggestion.visible {
+    display: block;
+}
+
 .book-cover.small {
     width: 50px;
     height: auto;
 }
-
-#content > div, #feed > div, #sidebar > div {
-    background-color: #EFEFEF;
-    margin: 1rem 0 0 1rem;
-}
-#content > div > *, #feed > div > *, #sidebar > div > * {
-    padding: 1rem;
+.compose-suggestion .book-preview {
+    background-color: #EEE;
+    padding: 1em;
 }
 
 .tag {
@@ -150,22 +356,14 @@ h2 {
     width: 30rem;
     height: 10rem;
 }
-.review {
-    margin-bottom: 1rem;
-}
-
-small {
-    display: block;
-}
 
 blockquote {
     white-space: pre-wrap;
 }
 
 .interaction {
-    background-color: #F3FFBD;
-    clear: both;
-    margin-top: 1rem;
+    background-color: #B2DBBF;
+    border-radius: 0 0 0.5em 0.5em;
 }
 
 .interaction textarea {
@@ -201,27 +399,44 @@ th, td {
 .comment-thread .reply h2 {
     background: none;
 }
-.post.main {
-    background-color: #F3FFBD;
-}
 .post {
+    background-color: #EFEFEF;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+.post h2, .compose-suggestion h2 {
+    position: relative;
+    right: 2em;
+}
+.post .user-pic, .compose-suggestion .user-pic {
+    right: 0.25em;
+}
+
+.comment-thread .post {
     margin-left: 4em;
     border-left: 2px solid #247BA0;
 }
-.post.depth-1 {
+.comment-thread .post.depth-1 {
     margin-left: 0;
     border: none;
 }
-.post.depth-2 {
+.comment-thread .post.depth-2 {
     margin-left: 1em;
 }
-.post.depth-3 {
+.comment-thread .post.depth-3 {
     margin-left: 2em;
 }
-.post.depth-4 {
+.comment-thread .post.depth-4 {
     margin-left: 3em;
 }
 
 .unread {
-    background-color: #F3FFBD;
+    background-color: #DDD;
+}
+
+.hidden-text {
+    height: 0;
+    width: 0;
+    position: absolute;
+    overflow: hidden;
 }

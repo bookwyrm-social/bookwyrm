@@ -1,4 +1,5 @@
 ''' views for actions you can take in the application '''
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -6,7 +7,52 @@ from django.template.response import TemplateResponse
 import re
 
 from fedireads import forms, models, books_manager, outgoing
+from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+
+
+def user_login(request):
+    ''' authenticate user login '''
+    if request.method == 'GET':
+        return redirect('/login')
+
+    form = forms.LoginForm(request.POST)
+    if not form.is_valid():
+        return TemplateResponse(request, 'login.html', {'login_form': form})
+
+    username = form.data['username']
+    username = '%s@%s' % (username, DOMAIN)
+    password = form.data['password']
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return redirect(request.GET.get('next', '/'))
+    return TemplateResponse(request, 'login.html', {'login_form': form})
+
+
+def register(request):
+    ''' join the server '''
+    if request.method == 'GET':
+        return redirect('/login')
+
+    form = forms.RegisterForm(request.POST)
+    if not form.is_valid():
+        return redirect('/register/')
+
+    username = form.data['username']
+    email = form.data['email']
+    password = form.data['password']
+
+    user = models.User.objects.create_user(username, email, password)
+    login(request, user)
+    return redirect('/')
+
+
+@login_required
+def user_logout(request):
+    ''' done with this place! outa here! '''
+    logout(request)
+    return redirect('/')
 
 
 @login_required
@@ -23,7 +69,8 @@ def edit_profile(request):
     if 'avatar' in form.files:
         request.user.avatar = form.files['avatar']
     request.user.summary = form.data['summary']
-    request.user.manually_approves_followers = form.cleaned_data['manually_approves_followers']
+    request.user.manually_approves_followers = \
+        form.cleaned_data['manually_approves_followers']
     request.user.save()
     return redirect('/user/%s' % request.user.localname)
 
@@ -160,11 +207,14 @@ def search(request):
 
 @login_required
 def clear_notifications(request):
+    ''' permanently delete notification for user '''
     request.user.notification_set.filter(read=True).delete()
     return redirect('/notifications')
 
+
 @login_required
 def accept_follow_request(request):
+    ''' a user accepts a follow request '''
     username = request.POST['user']
     try:
         requester = get_user_from_username(username)
@@ -172,7 +222,10 @@ def accept_follow_request(request):
         return HttpResponseBadRequest()
 
     try:
-        follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
+        follow_request = models.UserFollowRequest.objects.get(
+            user_subject=requester,
+            user_object=request.user
+        )
     except models.UserFollowRequest.DoesNotExist:
         # Request already dealt with.
         pass
@@ -181,8 +234,10 @@ def accept_follow_request(request):
 
     return redirect('/user/%s' % request.user.localname)
 
+
 @login_required
 def delete_follow_request(request):
+    ''' a user rejects a follow request '''
     username = request.POST['user']
     try:
         requester = get_user_from_username(username)
@@ -190,9 +245,13 @@ def delete_follow_request(request):
         return HttpResponseBadRequest()
 
     try:
-        follow_request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=request.user)
+        follow_request = models.UserFollowRequest.objects.get(
+            user_subject=requester,
+            user_object=request.user
+        )
     except models.UserFollowRequest.DoesNotExist:
         return HttpResponseBadRequest()
 
     outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
+

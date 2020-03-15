@@ -5,7 +5,7 @@
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}"></input>
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
-    <button type="submit">{% shelve_button_text book %}</button>
+    <button class="secondary" type="submit">{% shelve_button_text book %}</button>
 </form>
 
 {% else %}
@@ -21,7 +21,7 @@
         </option>
         {% endfor %}
     </select>
-    <button type="submit">Shelve</button>
+    <button class="secondary" type="submit">Shelve</button>
 </form>
 
 {% endif %}

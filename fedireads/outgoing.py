@@ -111,11 +111,13 @@ def handle_outgoing_accept(user, to_follow, follow_request):
     broadcast(to_follow, activity, recipient)
 
 def handle_outgoing_reject(user, to_follow, relationship):
+    ''' a local user who managed follows rejects a follow request '''
     relationship.delete()
 
     activity = activitypub.get_reject(to_follow, relationship)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
+
 
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
@@ -132,9 +134,10 @@ def handle_shelve(user, book, shelf):
         'reading': 'started reading',
         'read': 'finished reading'
     }[shelf.identifier]
-    name = user.name if user.name else user.localname
-    message = '%s %s %s' % (name, verb, book.title)
+    message = '%s %s' % (verb, book.title)
     status = create_status(user, message, mention_books=[book])
+    status.status_type = 'Update'
+    status.save()
 
     activity = activitypub.get_status(status)
     create_activity = activitypub.get_create(user, activity)

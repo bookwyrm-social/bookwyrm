@@ -1,0 +1,6 @@
+{% load fr_display %}
+{% for book in books %}
+    <div class="book-preview">
+        {% include 'snippets/book.html' with rating=rating %}
+    </div>
+{% endfor %}

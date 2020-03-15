@@ -5,7 +5,7 @@
     <div>
         <h2><q>{{ book.title }}</q> and You</h2>
         <p>{% if shelf %}On shelf <q>{{ shelf.name }}</q>{% endif %}</p>
-        {% include 'snippets/shelve-button.html' with book=book pulldown=True %}
+        {% include 'snippets/shelve_button.html' with book=book pulldown=True %}
 
         <div id="tag-cloud">
             {% for tag in user_tags %}

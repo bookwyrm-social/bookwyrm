@@ -1,14 +1,34 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div id="content">
+<div class="row">
+
+<div class="content-container login">
+    <h2>Create an Account</h2>
+    <p><small>
+        With a BookWyrm account, you can track and share your reading activity with
+        friends here and on any other federated server, like Mastodon and PixelFed.
+    </small></p>
+
     <div>
-        <form name="login" method="post">
+        <form name="register" method="post" action="/register">
+            {% csrf_token %}
+            {{ register_form.as_p }}
+            <button type="submit">Create account</button>
+        </form>
+    </div>
+</div>
+
+<div class="content-container login">
+    <h2>Log in</h2>
+    <div>
+        <form name="login" method="post" action="/user-login">
             {% csrf_token %}
             {{ login_form.as_p }}
             <button type="submit">Log in</button>
         </form>
-        <a href="/register/">Create a new account</a>
+        <p><small><a href="/reset-password">Forgot your password?</a></small></p>
     </div>
+</div>
 
 </div>
 {% endblock %}

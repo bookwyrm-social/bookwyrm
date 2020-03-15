@@ -2,15 +2,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>FediReads</title>
+    <title>BookWyrm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="/static/format.css">
+    <link type="text/css" rel="stylesheet" href="/static/icons.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="FediReads">
-    <meta name="og:title" content="FediReads">
+    <meta name="twitter:title" content="BookWyrm">
+    <meta name="og:title" content="BookWyrm">
     <meta name="twitter:description" content="Federated Social Reading">
     <meta name="og:description" content="Federated Social Reading">
     <meta name="twitter:creator" content="@tripofmice">
@@ -22,40 +23,43 @@
 
 <div id="top-bar">
     <header>
-        <div>
-            <div id="branding"><a href="/">📚FediReads</a></div>
-            <div id="actions">
-                <div id="account">
-                    {% if request.user.is_authenticated %}
-                    <form name="logout" action="/logout/" method="post">
-                        {% csrf_token %}
-                        Welcome, {% include 'snippets/username.html' with user=request.user %}
-                        <input type="submit" value="Log out"></input>
-                    </form>
-                    {% else %}
-                    <form name="login" action="/login/" method="post">
-                        {% csrf_token %}
-                        {% for field in login_form %}
-                            {{ field }}
-                        {% endfor %}
-                        <input type="submit" value="Log in"></input>
-                    </form>
-                    {% endif %}
-                </div>
-                <div id="search">
-                    <form action="/search/">
-                        <input type="text" name="q" placeholder="search"></input>
-                        <input type="submit" value="🔍"></input>
-                    </form>
-                </div>
-                {% if request.user.is_authenticated %}
-                <div id="notification">
-                    <a href="/notifications">
-                        🔔 ({{ request.user | notification_count }})
-                    </a>
-                </div>
-                {% endif %}
+        <div id="branding"><a href="/"><img id="logo" src="/static/images/logo-small.png" alt="BookWyrm"></img></a></div>
+
+        <ul class="menu">
+            <li><a href="/user/{{request.user.localname}}">Your shelves</a></li>
+            <li><a href="/#feed">Updates</a></li>
+            <li><a href="/books">Discover Books</a></li>
+        </ul>
+
+        <div id="actions">
+            <div id="search">
+                <form action="/search/">
+                    <input type="text" name="q" placeholder="Search for a book or user"></input>
+                    <button type="submit">
+                        <span class="icon icon-search">
+                            <span class="hidden-text">search</span>
+                        </span>
+                    </button>
+                </form>
             </div>
+            {% if request.user.is_authenticated %}
+            <div id="notifications">
+                <a href="/notifications">
+                    <span class="icon icon-bell">
+                        <span class="hidden-text">Notitications</span>
+                    </span>
+                    {% if request.user|notification_count %}<span class="count">{{ request.user | notification_count }}</span>{% endif %}
+                </a>
+            </div>
+            <div class="pulldown-container">
+                {% include 'snippets/avatar.html' with user=request.user %}
+                <ul class="pulldown">
+                    <li><a href="/user/{{ request.user }}">Your profile</a></li>
+                    <li><a href="/user-edit/">Settings</a></li>
+                    <li><a href="/logout/">Log out</a></li>
+                </ul>
+            </p>
+            {% endif %}
         </div>
     </header>
 </div>
@@ -65,6 +69,10 @@
     {% endblock %}
 </div>
 
+<script>
+    var csrf_token = {{ csrf_token }};
+</script>
+<script src="/static/js/shared.js"></script>
 </body>
 </html>
 

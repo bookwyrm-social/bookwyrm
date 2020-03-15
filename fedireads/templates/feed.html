@@ -2,44 +2,52 @@
 {% load fr_display %}
 {% block content %}
 
-<div id="sidebar">
+<div class="all-shelves content-container">
+    {% for shelf in shelves %}
+    {% if shelf.books %}
     <div>
-        {% if shelves %}
-        {% for shelf in shelves %}
-        <h2>{{ shelf.name }}</h2>
-        {% for book in shelf.books %}
-        <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size="small" %}
+        <h2>{{ shelf.name }}
+            {% if shelf.size > shelf.books|length %}
+            <small>(<a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>)</small>
+            {% endif %}
+        </h2>
+        <div class="covers-shelf {{ shelf.identifier }}">
+            {% for book in shelf.books %}
+            <div class="book-preview" onclick="show_compose(this)" id="book-{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book %}
+                {% include 'snippets/shelve_button.html' with book=book %}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        {% if shelf.size > shelf.books.count %}
-        <a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>
-        {% endif %}
-        {% endfor %}
-
-        {% else %}
-        <h2>Reading Activity</h2>
-        <p>Start a book!</p>
-        {% endif %}
     </div>
-
-    <div>
-        <h2>Recently Added Books</h2>
-        {% for book in recent_books %}
-        <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size="small" %}
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-
-<div id="feed">
-    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
-
-    {% for activity in activities %}
-        {% include 'snippets/status.html' with status=activity depth=1 description=True %}
+    {% endif %}
     {% endfor %}
 </div>
 
+{% for shelf in shelves %}
+    {% for book in shelf.books %}
+<div class="compose-suggestion" id="compose-book-{{ book.id }}">
+    <span class="close icon icon-close" onclick="hide_element(this)">
+        <span class="hidden-text">Close</span>
+    </span>
+    <div class="content-container">
+        {% include 'snippets/create_status.html' with book=book user=request.user %}
+    </div>
+</div>
+    {% endfor %}
+{% endfor %}
+
+<div id="feed">
+    <div class="content-container tabs">
+    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
+    </div>
+
+    {% for activity in activities %}
+    <div class="content-container">
+        {% include 'snippets/status.html' with status=activity %}
+    </div>
+    {% endfor %}
+</div>
+
+<script src="/static/js/feed.js"></script>
 {% endblock %}
