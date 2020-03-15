@@ -128,14 +128,15 @@ def handle_incoming_follow(activity):
     to_follow = models.User.objects.get(actor=activity['object'])
     # figure out who they are
     user = get_or_create_remote_user(activity['actor'])
-    # TODO: allow users to manually approve requests
     try:
         request = models.UserFollowRequest.objects.create(
             user_subject=user,
             user_object=to_follow,
             relationship_id=activity['id']
         )
-    except django.db.utils.IntegrityError:
+    except django.db.utils.IntegrityError as err:
+        if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
+            raise
         # Duplicate follow request. Not sure what the correct behaviour is, but
         # just dropping it works for now. We should perhaps generate the
         # Accept, but then do we need to match the activity id?
