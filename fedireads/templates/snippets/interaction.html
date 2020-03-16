@@ -1,7 +1,7 @@
 {% load fr_display %}
 <div class="interaction">
 
-    <form name="comment" action="/comment" method="post">
+    <form name="comment" action="/comment" method="post" onsubmit="return comment(e_">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}"></input>
         <textarea name="content" placeholder="Leave a comment..." id="id_content" required="true"></textarea>
@@ -12,18 +12,18 @@
         </button>
     </form>
 
-    <form name="boost" action="/boost/{{ activity.id }}" method="post">
+    <form name="boost" action="/boost/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="{% if False %}active{% endif %}">
         {% csrf_token %}
-        <button type="submit" class="{% if False %}active{% endif %}">
+        <button type="submit">
             <span class="icon icon-boost">
                 <span class="hidden-text">Boost status</span>
             </span>
         </button>
     </form>
 
-    <form name="favorite" action="/favorite/{{ activity.id }}" method="post">
+    <form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="{% if request.user|liked:status %}active{% endif %}">
         {% csrf_token %}
-        <button type="submit" class="{% if request.user|liked:status %}active{% endif %}">
+        <button type="submit">
             <span class="icon icon-heart">
                 <span class="hidden-text">Like status</span>
             </span>
