@@ -3,25 +3,7 @@
 {% block content %}
 
 <div class="all-shelves content-container">
-    {% for shelf in shelves %}
-    {% if shelf.books %}
-    <div>
-        <h2>{{ shelf.name }}
-            {% if shelf.size > shelf.books|length %}
-            <small>(<a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>)</small>
-            {% endif %}
-        </h2>
-        <div class="covers-shelf {{ shelf.identifier }}">
-            {% for book in shelf.books %}
-            <div class="book-preview" onclick="show_compose(this)" id="book-{{ book.id }}">
-                {% include 'snippets/book_cover.html' with book=book %}
-                {% include 'snippets/shelve_button.html' with book=book %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
+    {% include 'snippets/covers_shelf.html' with shelves=shelves user=request.user %}
 </div>
 
 {% for shelf in shelves %}

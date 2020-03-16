@@ -37,39 +37,20 @@ def home(request):
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
     shelves = []
-    book_count = 6
-    for (identifier, count) in [('reading', 3), ('read', 1), ('to-read', 3)]:
-        if book_count <= 0:
-            break
-        shelf = models.Shelf.objects.get(
-            user=request.user,
-            identifier=identifier,
-        )
-        if not shelf.books.count():
-            continue
-        books = models.ShelfBook.objects.filter(
-            shelf=shelf,
-        ).order_by(
-            '-updated_date'
-        )[:count]
-
-        book_count -= len(books)
-
-        shelves.append({
-            'name': shelf.name,
-            'identifier': shelf.identifier,
-            'books': [b.book for b in books],
-            'size': shelf.books.count(),
-        })
+    shelves = get_user_shelf_preview(
+        request.user,
+        [('reading', 3), ('read', 1), ('to-read', 3)]
+    )
+    size = sum(len(s['books']) for s in shelves)
     # books new to the instance, for discovery
-    if book_count > 0:
+    if size < 6:
         shelves.append({
             'name': 'Recently added',
             'identifier': None,
             'books': models.Book.objects.order_by(
                 '-created_date'
-            )[:book_count],
-            'count': book_count,
+            )[:6 - size],
+            'count': 6 - size,
         })
 
     # allows us to check if a user has shelved a book
@@ -138,7 +119,6 @@ def notifications_page(request):
     notifications.update(read=True)
     return TemplateResponse(request, 'notifications.html', data)
 
-
 @csrf_exempt
 def user_page(request, username):
     ''' profile page for a user '''
@@ -153,15 +133,19 @@ def user_page(request, username):
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
-    shelves = models.Shelf.objects.filter(user=user)
-    ratings = {r.book.id: r.rating for r in \
-            models.Review.objects.filter(user=user, book__shelves__user=user)}
+    shelves = get_user_shelf_preview(user)
+
+    activities = models.Status.objects.filter(
+        user=user,
+    ).order_by(
+        '-created_date',
+    ).select_subclasses()[:10]
 
     data = {
         'user': user,
         'shelves': shelves,
-        'ratings': ratings,
         'is_self': request.user.id == user.id,
+        'activities': activities,
     }
     return TemplateResponse(request, 'user.html', data)
 
@@ -389,4 +373,38 @@ def shelf_page(request, username, shelf_identifier):
         'user': user,
     }
     return TemplateResponse(request, 'shelf.html', data)
+
+
+def get_user_shelf_preview(user, shelf_proportions=None):
+    ''' data for the covers shelf (user page and feed page) '''
+    shelves = []
+    shelf_max = 6
+    if not shelf_proportions:
+        shelf_proportions = [('reading', 3), ('read', 2), ('to-read', -1)]
+    for (identifier, count) in shelf_proportions:
+        if shelf_max <= 0:
+            break
+        if count > shelf_max or count < 0:
+            count = shelf_max
+        shelf = models.Shelf.objects.get(
+            user=user,
+            identifier=identifier,
+        )
+        if not shelf.books.count():
+            continue
+        books = models.ShelfBook.objects.filter(
+            shelf=shelf,
+        ).order_by(
+            '-updated_date'
+        )[:count]
+
+        shelf_max -= len(books)
+
+        shelves.append({
+            'name': shelf.name,
+            'identifier': shelf.identifier,
+            'books': [b.book for b in books],
+            'size': shelf.books.count(),
+        })
+    return shelves
 

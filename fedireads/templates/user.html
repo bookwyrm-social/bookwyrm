@@ -1,64 +1,61 @@
 {% extends 'layout.html' %}
+{% load humanize %}
 {% block content %}
-<div id="sidebar">
-    <div class="user-profile">
-        <h2>
-            {% include 'snippets/avatar.html' with user=user %}
-            {% if user.name %}{{ user.name }}{% endif %}
-            <small>{{ user.username }}</small>
-        </h2>
-        {% if user.summary %}
-        <blockquote>{{ user.summary | safe }}</blockquote>
-        {% endif %}
-        {% if not is_self %}
-        {% include 'snippets/follow_button.html' with user=user %}
-        {% endif %}
-
+<div class="content-container user-profile">
+    <h2>User Profile
         {% if is_self %}
-        <div class="interaction">
-            <a href="/user-edit/">Edit profile</a>
+        <a href="/user-edit/">edit
+            <span class="icon icon-pencil">
+                <span class="hidden-text">Edit profile</span>
+            </span>
+        </a>
+        {% endif %}
+    </h2>
+
+    <div class="row">
+        <div class="pic-container">
+            {% include 'snippets/avatar.html' with user=user large=True %}
         </div>
+
+        <div>
+            <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
+            <p>{{ user.username }}</p>
+            <p>Joined {{ user.created_date | naturaltime }}</p>
+        </div>
+
+        {% if user.summary %}
+        <blockquote><span class="icon icon-quote-open"></span>{{ user.summary | safe }}</blockquote>
         {% endif %}
     </div>
+    {% if not is_self %}
+    {% include 'snippets/follow_button.html' with user=user %}
+    {% endif %}
 
     {% if is_self and user.follower_requests.all %}
-    <div>
+    <div class="follow-requests">
         <h2>Follow Requests</h2>
         {% for requester in user.follower_requests.all %}
-            <div>
-                {% include 'snippets/username.html' with user=requester show_full=True %}
+            <div class="row shrink">
+                <p>
+                    {% include 'snippets/username.html' with user=requester show_full=True %}
+                </p>
                 {% include 'snippets/follow_request_buttons.html' with user=requester %}
             </div>
         {% endfor %}
     </div>
     {% endif %}
-    <div>
-        <h2>Followers</h2>
-        {% for follower in user.followers.all %}
-        <div>
-            {% include 'snippets/username.html' with user=follower show_full=True  %}
-            {% include 'snippets/follow_button.html' with user=follower %}
-        </div>
-        {% endfor %}
-    </div>
-
-    <div>
-        <h2>Following</h2>
-        {% for following in user.following.all %}
-        <div>
-            {% include 'snippets/username.html' with user=following show_full=True  %}
-            {% include 'snippets/follow_button.html' with user=following %}
-        </div>
-        {% endfor %}
-    </div>
 
 </div>
 
-<div id="content">
-    {% for shelf in shelves %}
-    <div>
-        <h2>{{ shelf.name }}</h2>
-        {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
+<div class="all-shelves content-container">
+    {% include 'snippets/covers_shelf.html' with shelves=shelves user=user %}
+</div>
+
+<div>
+    <div class="content-container"><h2>User Activity</h2></div>
+    {% for activity in activities %}
+    <div class="content-container">
+        {% include 'snippets/status.html' with status=activity %}
     </div>
     {% endfor %}
 </div>

@@ -39,6 +39,7 @@ h2 {
     font-size: 1rem;
     padding: 0.5rem 0.2rem;
     margin-bottom: 1rem;
+    border-bottom: 3px solid #B2DBBF;
 }
 
 #top-bar {
@@ -68,6 +69,9 @@ h2 {
 
 #actions > * {
     display: inline-block;
+}
+#actions > *:last-child {
+    margin-left: 0.5em;
 }
 
 #notifications .icon {
@@ -165,6 +169,21 @@ ul.menu a {
 .row > * {
     flex-grow: 1;
     width: min-content;
+    margin-right: 1em;
+}
+.row > *:last-child {
+    margin-right: 0;
+}
+.row.shrink > * {
+    flex-grow: 0;
+    width: max-content;
+}
+
+.follow-requests .row {
+    margin-bottom: 0.5em;
+}
+.follow-requests .row > *:first-child {
+    width: 15em;
 }
 
 .login form {
@@ -196,9 +215,8 @@ button.secondary {
     border: 2px solid #247BA0;
     color: #247BA0;
 }
-
-.login h2 {
-    border-bottom: 3px solid #B2DBBF;
+button.warning {
+    background-color: #FF1654;
 }
 
 .tabs {
@@ -234,6 +252,25 @@ button.secondary {
     vertical-align: top;
     position: relative;
     bottom: 0.35em;
+}
+.user-pic.large {
+    width: 5em;
+    height: 5em;
+}
+
+.user-profile h2 a {
+    text-decoration: none;
+    font-size: 0.9em;
+    float: right;
+}
+.user-profile h2 .icon {
+    font-size: 1.2em;
+}
+.user-profile .row > * {
+    flex-grow: 0;
+}
+.user-profile .row > *:last-child {
+    flex-grow: 1;
 }
 
 .review-form label {
@@ -285,8 +322,19 @@ button.secondary {
 .all-shelves > div:first-child > * {
     padding-left: 1em;
 }
-.all-shelves h2 {
-    border-bottom: 3px solid #B2DBBF;
+
+.user-shelves .covers-shelf {
+    flex-wrap: wrap;
+}
+.user-shelves > div {
+    margin: 1em 0;
+    padding: 0;
+}
+.user-shelves > div > * {
+    padding-left: 1em;
+}
+.user-shelves .covers-shelf .book-cover {
+    height: 9em;
 }
 
 .covers-shelf {
@@ -378,7 +426,14 @@ button.secondary {
 }
 
 blockquote {
-    white-space: pre-wrap;
+    white-space: pre-line;
+    margin-left: 2em;
+}
+blockquote .icon-quote-open {
+    float: left;
+    font-size: 2rem;
+    margin-right: 0.5rem;
+    color: #888;
 }
 
 .interaction {
@@ -456,6 +511,7 @@ th, td {
 .post h2, .compose-suggestion h2 {
     position: relative;
     right: 2em;
+    border: none;
 }
 .post .time-ago {
     position: relative;
@@ -485,6 +541,11 @@ th, td {
 
 .unread {
     background-color: #DDD;
+}
+
+a .icon {
+    color: black;
+    text-decoration: none;
 }
 
 .hidden-text {
