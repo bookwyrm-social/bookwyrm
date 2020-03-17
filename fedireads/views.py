@@ -331,7 +331,11 @@ def book_page(request, book_identifier, tab='friends'):
         'user_tag_names': user_tags.values_list('identifier', flat=True),
         'review_form': review_form,
         'tag_form': tag_form,
-        'feed_tabs': ['friends', 'local', 'federated'],
+        'feed_tabs': [
+            {'id': 'friends', 'display': 'Friends'},
+            {'id': 'local', 'display': 'Local'},
+            {'id': 'federated', 'display': 'Federated'}
+        ],
         'active_tab': tab,
         'path': '/book/%s' % book_identifier,
     }

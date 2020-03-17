@@ -1,34 +1,10 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div id="sidebar">
+<div class="content-container">
+    <h2><q>{{ book.title }}</q> by
+        {% include 'snippets/authors.html' with book=book %}</h2>
     <div>
-        <h2><q>{{ book.title }}</q> and You</h2>
-        <p>{% if shelf %}On shelf <q>{{ shelf.name }}</q>{% endif %}</p>
-        {% include 'snippets/shelve_button.html' with book=book pulldown=True %}
-
-        <div id="tag-cloud">
-            {% for tag in user_tags %}
-            {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
-            {% endfor %}
-        </div>
-        <form class="tag-form" name="tag" action="/tag/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
-            {{ tag_form.as_p }}
-            <button type="submit">Add tag</button>
-        </form>
-
-        {% for review in user_reviews %}
-        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
-        {% endfor %}
-    </div>
-</div>
-
-<div id="content">
-    <div>
-        <h2><q>{{ book.title }}</q> by
-            {% include 'snippets/authors.html' with book=book %}</h2>
         {% if book.parent_work %}<p>Edition of <a href="/book/{{ book.parent_work.openlibrary_key }}">{{ book.parent_work.title }}</a></p>{% endif %}
         <div class="book-preview">
 
@@ -47,24 +23,32 @@
 
         </div>
     </div>
-
-    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
-    <div class="reviews">
-        <h2>Reviews</h2>
-        {% if not reviews %}
-        <p>No reviews yet!</p>
-        {% endif %}
-        <form class="review-form" name="review" action="/review/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
-            {{ review_form.as_p }}
-            <button type="submit">Post review</button>
-        </form>
-        <p>Average rating: {{ rating | stars }}</p>
-        {% for review in reviews %}
-        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
-        {% endfor %}
-    </div>
 </div>
+
+<div class="content-container">
+    <h2>Leave a review</h2>
+    <form class="review-form" name="review" action="/review/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+        {{ review_form.as_p }}
+        <button type="submit">Post review</button>
+    </form>
+</div>
+
+<div class="content-container tabs">
+    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
+</div>
+
+{% if not reviews %}
+<div class="content-container">
+    <p>No reviews yet!</p>
+</div>
+{% endif %}
+
+{% for review in reviews %}
+<div class="content-container">
+    {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
+</div>
+{% endfor %}
 {% endblock %}
 
