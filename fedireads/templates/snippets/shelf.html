@@ -30,7 +30,7 @@
 {% for book in shelf.books.all %}
 <tr class="book-preview">
     <td>
-        {% include 'snippets/book_cover.html' with book=book %}
+        {% include 'snippets/book_cover.html' with book=book size="small" %}
     </td>
     <td>
         <a href="/book/{{ book.openlibrary_key }}">{{ book.title }}</a>

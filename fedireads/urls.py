@@ -39,6 +39,7 @@ urlpatterns = [
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
     re_path(r'user-edit/?$', views.edit_profile_page),
+    re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
     re_path(r'%s/followers/?$' % local_user_path, views.followers_page),
     re_path(r'%s/followers.json$' % local_user_path, views.followers_page),
     re_path(r'%s/following/?$' % local_user_path, views.following_page),

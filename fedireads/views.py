@@ -132,11 +132,9 @@ def user_page(request, username, subpage=None):
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
-    shelves = get_user_shelf_preview(user)
 
     data = {
         'user': user,
-        'shelves': shelves,
         'is_self': request.user.id == user.id,
     }
     if subpage == 'followers':
@@ -145,7 +143,12 @@ def user_page(request, username, subpage=None):
     elif subpage == 'following':
         data['following'] = user.following.all()
         return TemplateResponse(request, 'following.html', data)
+    elif subpage == 'shelves':
+        data['shelves'] = user.shelf_set.all()
+        return TemplateResponse(request, 'user_shelves.html', data)
     else:
+        shelves = get_user_shelf_preview(user)
+        data['shelves'] = shelves
         activities = models.Status.objects.filter(
             user=user,
         ).order_by(
@@ -193,6 +196,15 @@ def following_page(request, username):
         return JsonResponse(activitypub.get_following(user, page, following))
 
     return user_page(request, username, subpage='following')
+
+
+@csrf_exempt
+def user_shelves_page(request, username):
+    ''' list of followers '''
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+
+    return user_page(request, username, subpage='shelves')
 
 
 @csrf_exempt
