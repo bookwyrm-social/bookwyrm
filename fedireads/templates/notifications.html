@@ -1,41 +1,43 @@
 {% extends 'layout.html' %}
 {% load humanize %}l
 {% block content %}
-<div id="content">
-    <div>
-        <h2>Notifications</h2>
-        <form name="clear" action="/clear-notifications" method="POST">
-            {% csrf_token %}
-            <button type="submit">Delete notifications</button>
-        </form>
-        {% for notification in notifications %}
-        <div class="notification{% if notification.id in unread %} unread{% endif %}">
-            <p>
-            {% if notification.notification_type == 'FAVORITE' %}
-                {% include 'snippets/username.html' with user=notification.related_user %}
-                favorited your
-                <a href="{{ notification.related_status.absolute_id}}">status</a>
+<div class="content-container">
+    <h2>Notifications</h2>
 
-            {% elif notification.notification_type == 'REPLY' %}
-                {% include 'snippets/username.html' with user=notification.related_user %}
-                <a href="{{ notification.related_status.absolute_id}}">replied</a>
-                to your
-                <a href="{{ notification.related_status.reply_parent.absolute_id}}">status</a>
+    <form name="clear" action="/clear-notifications" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="secondary">Delete notifications</button>
+    </form>
+</div>
 
-            {% elif notification.notification_type == 'FOLLOW' %}
-                {% include 'snippets/username.html' with user=notification.related_user %}
-                followed you
+<div class="content-container">
+    {% for notification in notifications %}
+    <div class="notification{% if notification.id in unread %} unread{% endif %}">
+        <small class="time-ago">{{ notification.created_date | naturaltime }}</small>
+        {% include 'snippets/username.html' with user=notification.related_user %}
+        {% if notification.notification_type == 'FAVORITE' %}
+            favorited your
+            <a href="{{ notification.related_status.absolute_id}}">status</a>
 
-            {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-                {% include 'snippets/username.html' with user=notification.related_user %}
-                sent you a follow request
+        {% elif notification.notification_type == 'REPLY' %}
+            <a href="{{ notification.related_status.absolute_id}}">replied</a>
+            to your
+            <a href="{{ notification.related_status.reply_parent.absolute_id}}">status</a>
+
+        {% elif notification.notification_type == 'FOLLOW' %}
+            followed you
+
+        {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
+            sent you a follow request
+            <div class="row shrink">
                 {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
-            {% endif %}
-            <small>{{ notification.created_date | naturaltime }}</small>
-            </p>
-        </div>
-        {% endfor %}
+            </div>
+        {% endif %}
     </div>
+    {% endfor %}
+    {% if not notifications %}
+    <p>You're all caught up!</p>
+    {% endif %}
 </div>
 
 {% endblock %}

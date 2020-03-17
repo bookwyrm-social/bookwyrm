@@ -97,6 +97,16 @@ h2 {
     width: 1rem;
 }
 
+.notification {
+    margin-bottom: 1em;
+    padding: 1em 0;
+    background-color: #EEE;
+}
+.notification.unread {
+    background-color: #DDD;
+}
+
+
 button .icon {
     font-size: 1.1rem;
     vertical-align: sub;
@@ -194,7 +204,7 @@ ul.menu a {
     margin-bottom: 0.5em;
 }
 .follow-requests .row > *:first-child {
-    width: 15em;
+    width: 20em;
 }
 
 .login form {
@@ -291,6 +301,7 @@ button.warning {
 .time-ago {
     float: right;
     display: block;
+    text-align: right;
 }
 
 .book-preview {
@@ -548,10 +559,6 @@ th, td {
 }
 .comment-thread .post.depth-4 {
     margin-left: 3em;
-}
-
-.unread {
-    background-color: #DDD;
 }
 
 a .icon {
