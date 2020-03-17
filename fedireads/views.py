@@ -95,6 +95,19 @@ def home_tab(request, tab):
     return TemplateResponse(request, 'feed.html', data)
 
 
+def books_page(request):
+    ''' discover books '''
+    recent_books = models.Book.objects.filter(
+        ~Q(shelfbook__shelf__user=request.user)
+    ).order_by(
+        '-created_date'
+    )[:50]
+    data = {
+        'books': recent_books,
+    }
+    return TemplateResponse(request, 'books.html', data)
+
+
 def login_page(request):
     ''' authentication '''
     # send user to the login page

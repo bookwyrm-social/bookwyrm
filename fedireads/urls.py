@@ -30,11 +30,12 @@ urlpatterns = [
     # ui views
     re_path(r'^login/?$', views.login_page),
 
-    # should return a ui view or activitypub json blob as requested
     path('', views.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
+    re_path(r'books/?$', views.books_page),
 
+    # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),

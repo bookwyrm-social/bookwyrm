@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% load fr_display %}
+{% block content %}
+<div class="content-container">
+    <h2>Recently Added Books</h2>
+    <div class="book-grid row wrap">
+        {% for book in books %}
+        <div class="book-preview">
+            <a href="{{ book.absolute_id }}">
+            {% include 'snippets/book_cover.html' with book=book %}
+            </a>
+            {% include 'snippets/shelve_button.html' with book=book %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
