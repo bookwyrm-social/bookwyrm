@@ -1,0 +1,50 @@
+{% load humanize %}
+{% load fr_display %}
+<div class="content-container user-profile">
+    <h2>User Profile
+        {% if is_self %}
+        <a href="/user-edit/">edit
+            <span class="icon icon-pencil">
+                <span class="hidden-text">Edit profile</span>
+            </span>
+        </a>
+        {% endif %}
+    </h2>
+
+    <div class="row">
+        <div class="pic-container">
+            {% include 'snippets/avatar.html' with user=user large=True %}
+        </div>
+
+        <div>
+            <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
+            <p>{{ user.username }}</p>
+            <p>Joined {{ user.created_date | naturaltime }}</p>
+            <p>
+                <a href="/user/{{ user|username }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
+                <a href="/user/{{ user|username }}/following">{{ user.following.count }} following</a></p>
+        </div>
+
+        {% if user.summary %}
+        <blockquote><span class="icon icon-quote-open"></span>{{ user.summary | safe }}</blockquote>
+        {% endif %}
+    </div>
+    {% if not is_self %}
+    {% include 'snippets/follow_button.html' with user=user %}
+    {% endif %}
+
+    {% if is_self and user.follower_requests.all %}
+    <div class="follow-requests">
+        <h2>Follow Requests</h2>
+        {% for requester in user.follower_requests.all %}
+            <div class="row shrink">
+                <p>
+                    {% include 'snippets/username.html' with user=requester show_full=True %}
+                </p>
+                {% include 'snippets/follow_request_buttons.html' with user=requester %}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+

@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound, \
         JsonResponse
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -120,7 +119,7 @@ def notifications_page(request):
     return TemplateResponse(request, 'notifications.html', data)
 
 @csrf_exempt
-def user_page(request, username):
+def user_page(request, username, subpage=None):
     ''' profile page for a user '''
     try:
         user = get_user_from_username(username)
@@ -135,19 +134,25 @@ def user_page(request, username):
     # TODO: change display with privacy and authentication considerations
     shelves = get_user_shelf_preview(user)
 
-    activities = models.Status.objects.filter(
-        user=user,
-    ).order_by(
-        '-created_date',
-    ).select_subclasses()[:10]
-
     data = {
         'user': user,
         'shelves': shelves,
         'is_self': request.user.id == user.id,
-        'activities': activities,
     }
-    return TemplateResponse(request, 'user.html', data)
+    if subpage == 'followers':
+        data['followers'] = user.followers.all()
+        return TemplateResponse(request, 'followers.html', data)
+    elif subpage == 'following':
+        data['following'] = user.following.all()
+        return TemplateResponse(request, 'following.html', data)
+    else:
+        activities = models.Status.objects.filter(
+            user=user,
+        ).order_by(
+            '-created_date',
+        ).select_subclasses().all()[:10]
+        data['activities'] = activities
+        return TemplateResponse(request, 'user.html', data)
 
 
 @csrf_exempt
@@ -167,7 +172,7 @@ def followers_page(request, username):
         page = request.GET.get('page')
         return JsonResponse(activitypub.get_followers(user, page, followers))
 
-    return redirect('/user/' + username)
+    return user_page(request, username, subpage='followers')
 
 
 @csrf_exempt
@@ -187,7 +192,7 @@ def following_page(request, username):
         page = request.GET.get('page')
         return JsonResponse(activitypub.get_following(user, page, following))
 
-    return redirect('/user/' + username)
+    return user_page(request, username, subpage='following')
 
 
 @csrf_exempt
@@ -386,10 +391,15 @@ def get_user_shelf_preview(user, shelf_proportions=None):
             break
         if count > shelf_max or count < 0:
             count = shelf_max
-        shelf = models.Shelf.objects.get(
-            user=user,
-            identifier=identifier,
-        )
+
+        try:
+            shelf = models.Shelf.objects.get(
+                user=user,
+                identifier=identifier,
+            )
+        except models.Shelf.DoesNotExist:
+            continue
+
         if not shelf.books.count():
             continue
         books = models.ShelfBook.objects.filter(

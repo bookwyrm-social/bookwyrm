@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% load fr_display %}
+{% block content %}
+{% include 'user_header.html' %}
+
+<div class="content-container">
+    <h2>Following</h2>
+    {% for follower in user.following.all %}
+    <div class="row shrink">
+        <div>
+            {% include 'snippets/avatar.html' with user=follower %}
+        </div>
+        <div>
+            {% include 'snippets/username.html' with user=follower show_full=True  %}
+        </div>
+        <div>
+            {% include 'snippets/follow_button.html' with user=follower %}
+        </div>
+    </div>
+    {% endfor %}
+    {% if not following.count %}
+    <div>No one is following {{ user|username }}</div>
+    {% endif %}
+</div>
+
+{% endblock %}

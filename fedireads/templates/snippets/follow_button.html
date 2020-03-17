@@ -7,12 +7,12 @@ Follow request already sent.
 <form action="/follow/" method="post">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
-    <input type="submit" value="Follow"></input>
+    <button type="submit">Follow</button>
 </form>
 {% else %}
 <form action="/unfollow/" method="post">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
-    <input type="submit" value="Unfollow"></input>
+    <button type="submit">Unfollow</button>
 </form>
 {% endif %}
