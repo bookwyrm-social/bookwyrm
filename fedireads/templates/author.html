@@ -1,19 +1,23 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div id="content">
-    <div>
-        <h2>{{ author.name }}</h2>
-        {% if author.bio %}
-        <blockquote>{{ author.bio | author_bio }}
-        </blockquote>
-        {% endif %}
-        {% for book in books %}
-        <div class="book-preview">
-            {% include 'snippets/book.html' with book=book size=large description=True %}
-        </div>
-        {% endfor %}
+<div class="content-container">
+    <h2>{{ author.name }}</h2>
+
+    {% if author.bio %}
+    <p>
+        {{ author.bio | author_bio }}
+    </p>
+    {% endif %}
+</div>
+
+<div class="content-container">
+    <h2>Books by {{ author.name }}</h2>
+    {% for book in books %}
+    <div class="book-preview">
+        {% include 'snippets/book.html' with book=book size=large description=True %}
     </div>
+    {% endfor %}
 </div>
 {% endblock %}
 
