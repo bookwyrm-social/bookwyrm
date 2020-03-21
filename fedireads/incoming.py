@@ -181,8 +181,7 @@ def handle_incoming_follow_accept(activity):
         request.delete()
     except models.UserFollowRequest.DoesNotExist:
         pass
-    else:
-        accepter.followers.add(requester)
+    accepter.followers.add(requester)
     return HttpResponse()
 
 
