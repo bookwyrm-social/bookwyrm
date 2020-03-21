@@ -42,6 +42,17 @@ class ReviewForm(ModelForm):
 
 class CommentForm(ModelForm):
     class Meta:
+        model = models.Comment
+        fields = ['name', 'content']
+        help_texts = {f: None for f in fields}
+        labels = {
+            'name': 'Title',
+            'content': 'Comment',
+        }
+
+
+class ReplyForm(ModelForm):
+    class Meta:
         model = models.Status
         fields = ['content']
         help_texts = {f: None for f in fields}

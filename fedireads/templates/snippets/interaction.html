@@ -1,11 +1,11 @@
 {% load fr_display %}
 <div class="interaction">
 
-    <form name="comment" action="/comment" method="post" onsubmit="return comment(e_">
+    <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}"></input>
         <textarea name="content" placeholder="Leave a comment..." id="id_content" required="true"></textarea>
-        <button type="submit" class="comment">
+        <button type="submit">
             <span class="icon icon-comment">
                 <span class="hidden-text">Comment</span>
             </span>

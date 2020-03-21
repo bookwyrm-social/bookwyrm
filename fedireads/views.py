@@ -91,6 +91,7 @@ def home_tab(request, tab):
         ],
         'active_tab': tab,
         'review_form': forms.ReviewForm(),
+        'comment_form': forms.CommentForm(),
     }
     return TemplateResponse(request, 'feed.html', data)
 

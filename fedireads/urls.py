@@ -10,7 +10,7 @@ username_regex = r'(?P<username>[\w@\-_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
-status_path = r'%s/(status|review)/(?P<status_id>\d+)' % local_user_path
+status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -65,9 +65,10 @@ urlpatterns = [
     re_path(r'^user-login/?$', actions.user_login),
     re_path(r'^register/?$', actions.register),
     re_path(r'^review/?$', actions.review),
+    re_path(r'^comment/?$', actions.comment),
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),
-    re_path(r'^comment/?$', actions.comment),
+    re_path(r'^reply/?$', actions.reply),
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^shelve/?$', actions.shelve),

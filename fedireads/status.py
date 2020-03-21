@@ -41,6 +41,36 @@ def create_review(user, possible_book, name, content, rating):
     )
 
 
+def create_comment_from_activity(author, activity):
+    ''' parse an activity json blob into a status '''
+    book = activity['inReplyToBook']
+    book = book.split('/')[-1]
+    name = activity.get('name')
+    content = activity.get('content')
+    published = activity.get('published')
+    remote_id = activity['id']
+
+    comment = create_comment(author, book, name, content, rating)
+    comment.published_date = published
+    comment.remote_id = remote_id
+    comment.save()
+    return comment
+
+
+def create_comment(user, possible_book, name, content):
+    ''' a book comment has been added '''
+    # throws a value error if the book is not found
+    book = get_or_create_book(possible_book)
+    content = sanitize(content)
+
+    return models.Comment.objects.create(
+        user=user,
+        book=book,
+        name=name,
+        content=content,
+    )
+
+
 def create_status_from_activity(author, activity):
     ''' parse a status object out of an activity json blob '''
     content = activity.get('content')
@@ -58,6 +88,7 @@ def create_status_from_activity(author, activity):
 
 
 def create_favorite_from_activity(user, activity):
+    ''' create a new favorite entry '''
     status = get_status(activity['object'])
     remote_id = activity['id']
     try:
@@ -81,6 +112,7 @@ def get_favorite(absolute_id):
 
 
 def get_by_absolute_id(absolute_id, model):
+    ''' generalized function to get from a model with a remote_id field '''
     # check if it's a remote status
     try:
         return model.objects.get(remote_id=absolute_id)

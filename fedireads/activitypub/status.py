@@ -12,6 +12,15 @@ def get_review(review):
     return status
 
 
+def get_comment(comment):
+    ''' fedireads json for book reviews '''
+    status = get_status(comment)
+    status['inReplyToBook'] = comment.book.absolute_id
+    status['fedireadsType'] = comment.status_type
+    status['name'] = comment.name
+    return status
+
+
 def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(review)
@@ -19,6 +28,17 @@ def get_review_article(review):
         review.book.title,
         review.rating,
         review.name
+    )
+    status['name'] = name
+    return status
+
+
+def get_comment_article(comment):
+    ''' a book comment formatted for a non-fedireads isntance (mastodon) '''
+    status = get_status(comment)
+    name = '%s (comment on "%s")' % (
+        comment.name,
+        comment.book.title
     )
     status['name'] = name
     return status

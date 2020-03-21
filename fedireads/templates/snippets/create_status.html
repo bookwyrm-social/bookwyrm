@@ -9,24 +9,32 @@
 </h2>
 
 <div class="tabs secondary">
-    <div class="tab active">
-        Review
+    <div class="tab active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+        <a href="{{ book.absolute_id }}/review" onclick="tabChange(event)">Review</a>
     </div>
-    <div class="tab">
-        Comment
+    <div class="tab" data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+        <a href="{{ book.absolute_id }}/comment" onclick="tabChange(event)">Comment</a>
     </div>
-    <div class="tab">
+    <div class="tab" data-id="tab-quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">
         Quote
     </div>
 </div>
 
 <div class="book-preview">
     {% include 'snippets/book_cover.html' with book=book %}
-    <form class="review-form" name="review" action="/review/" method="post">
+    <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
         {% csrf_token %}
-        {# TODO: this shouldn't use the openlibrary key #}
+        {# todo: this shouldn't use the openlibrary key #}
         <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
         {{ review_form.as_p }}
-        <button type="submit">Post review</button>
+        <button type="submit">post review</button>
+    </form>
+
+    <form class="hidden tab-option-{{ book.id }} review-form" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
+        {% csrf_token %}
+        {# todo: this shouldn't use the openlibrary key #}
+        <input type="hidden" name="book" value="{{ book.openlibrary_key }}"></input>
+        {{ comment_form.as_p }}
+        <button type="submit">post comment</button>
     </form>
 </div>

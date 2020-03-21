@@ -100,7 +100,7 @@ def shelve(request):
 
 @login_required
 def review(request):
-    ''' create a book review note '''
+    ''' create a book review '''
     form = forms.ReviewForm(request.POST)
     book_identifier = request.POST.get('book')
     # TODO: better failure behavior
@@ -113,6 +113,23 @@ def review(request):
     rating = int(form.data.get('rating'))
 
     outgoing.handle_review(request.user, book_identifier, name, content, rating)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
+def comment(request):
+    ''' create a book comment '''
+    form = forms.CommentForm(request.POST)
+    book_identifier = request.POST.get('book')
+    # TODO: better failure behavior
+    if not form.is_valid():
+        return redirect('/book/%s' % book_identifier)
+
+    # TODO: validation, htmlification
+    name = form.data.get('name')
+    content = form.data.get('content')
+
+    outgoing.handle_comment(request.user, book_identifier, name, content)
     return redirect('/book/%s' % book_identifier)
 
 
@@ -139,15 +156,15 @@ def untag(request):
 
 
 @login_required
-def comment(request):
+def reply(request):
     ''' respond to a book review '''
-    form = forms.CommentForm(request.POST)
+    form = forms.ReplyForm(request.POST)
     # this is a bit of a formality, the form is just one text field
     if not form.is_valid():
         return redirect('/')
     parent_id = request.POST['parent']
     parent = models.Status.objects.get(id=parent_id)
-    outgoing.handle_comment(request.user, parent, form.data['content'])
+    outgoing.handle_reply(request.user, parent, form.data['content'])
     return redirect('/')
 
 

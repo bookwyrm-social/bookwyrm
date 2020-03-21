@@ -18,11 +18,37 @@ function interact(e) {
     return true;
 }
 
-function comment(e) {
+function reply(e) {
     e.preventDefault();
     ajaxPost(e.target);
     // TODO: display comment
     return true;
+}
+
+function tabChange(e) {
+    e.preventDefault();
+    var target = e.target.parentElement;
+    var identifier = target.getAttribute('data-id');
+
+    var options_class = target.getAttribute('data-category');
+    var options = document.getElementsByClassName(options_class);
+    for (var i = 0; i < options.length; i++) {
+        if (!options[i].className.includes('hidden')) {
+            options[i].className += ' hidden';
+        }
+    }
+
+    var tabs = target.parentElement.children;
+    for (i = 0; i < tabs.length; i++) {
+        if (tabs[i].getAttribute('data-id') == identifier) {
+            tabs[i].className += ' active';
+        } else {
+            tabs[i].className = tabs[i].className.replace('active', '');
+        }
+    }
+
+    var el = document.getElementById(identifier);
+    el.className = el.className.replace('hidden', '');
 }
 
 function ajaxPost(form) {

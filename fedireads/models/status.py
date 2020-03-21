@@ -46,6 +46,17 @@ class Status(FedireadsModel):
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
 
+class Comment(Status):
+    ''' like a review but without a rating and transient '''
+    name = models.CharField(max_length=255)
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        self.status_type = 'Comment'
+        self.activity_type = 'Article'
+        super().save(*args, **kwargs)
+
+
 class Review(Status):
     ''' a book review '''
     name = models.CharField(max_length=255)

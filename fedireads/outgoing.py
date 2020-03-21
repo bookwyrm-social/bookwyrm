@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 from fedireads import activitypub
 from fedireads import models
 from fedireads.status import create_review, create_status, create_tag, \
-    create_notification
+    create_notification, create_comment
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
 
@@ -175,6 +175,24 @@ def handle_review(user, book, name, content, rating):
     broadcast(user, article_create_activity, other_recipients)
 
 
+def handle_comment(user, book, name, content):
+    ''' post a review '''
+    # validated and saves the review in the database so it has an id
+    comment = create_comment(user, book, name, content)
+
+    comment_activity = activitypub.get_comment(comment)
+    comment_create_activity = activitypub.get_create(user, comment_activity)
+    fr_recipients = get_recipients(user, 'public', limit='fedireads')
+    broadcast(user, comment_create_activity, fr_recipients)
+
+    # re-format the activity for non-fedireads servers
+    article_activity = activitypub.get_comment_article(comment)
+    article_create_activity = activitypub.get_create(user, article_activity)
+
+    other_recipients = get_recipients(user, 'public', limit='other')
+    broadcast(user, article_create_activity, other_recipients)
+
+
 def handle_tag(user, book, name):
     ''' tag a book '''
     tag = create_tag(user, book, name)
@@ -195,19 +213,19 @@ def handle_untag(user, book, name):
     broadcast(user, tag_activity, recipients)
 
 
-def handle_comment(user, review, content):
+def handle_reply(user, review, content):
     ''' respond to a review or status '''
     # validated and saves the comment in the database so it has an id
-    comment = create_status(user, content, reply_parent=review)
-    if comment.reply_parent:
+    reply = create_status(user, content, reply_parent=review)
+    if reply.reply_parent:
         create_notification(
-            comment.reply_parent.user,
+            reply.reply_parent.user,
             'REPLY',
             related_user=user,
-            related_status=comment,
+            related_status=reply,
         )
-    comment_activity = activitypub.get_status(comment)
-    create_activity = activitypub.get_create(user, comment_activity)
+    reply_activity = activitypub.get_status(reply)
+    create_activity = activitypub.get_create(user, reply_activity)
 
     recipients = get_recipients(user, 'public')
     broadcast(user, create_activity, recipients)

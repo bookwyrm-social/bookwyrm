@@ -236,6 +236,19 @@ def handle_incoming_create(activity):
                 )
             except ValueError:
                 return HttpResponseBadRequest()
+    elif activity['object'].get('fedireadsType') == 'Comment' and \
+            'inReplyToBook' in activity['object']:
+        if user.local:
+            comment_id = activity['object']['id'].split('/')[-1]
+            models.Comment.objects.get(id=comment_id)
+        else:
+            try:
+                status_builder.create_comment_from_activity(
+                    user,
+                    activity['object']
+                )
+            except ValueError:
+                return HttpResponseBadRequest()
     elif not user.local:
         try:
             status = status_builder.create_status_from_activity(
