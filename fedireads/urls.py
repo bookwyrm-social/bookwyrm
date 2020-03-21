@@ -69,6 +69,7 @@ urlpatterns = [
     re_path(r'^untag/?$', actions.untag),
     re_path(r'^comment/?$', actions.comment),
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
+    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^shelve/?$', actions.shelve),
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),

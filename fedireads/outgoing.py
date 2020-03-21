@@ -228,3 +228,19 @@ def handle_outgoing_favorite(user, status):
     recipients = get_recipients(user, 'direct', [status.user])
     broadcast(user, fav_activity, recipients)
 
+
+def handle_outgoing_unfavorite(user, status):
+    ''' a user likes a status '''
+    try:
+        favorite = models.Favorite.objects.get(
+            status=status,
+            user=user
+        )
+    except models.Favorite.DoesNotExist:
+        # can't find that status, idk
+        return
+
+    fav_activity = activitypub.get_unfavorite(favorite)
+    recipients = get_recipients(user, 'direct', [status.user])
+    broadcast(user, fav_activity, recipients)
+

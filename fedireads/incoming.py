@@ -12,8 +12,7 @@ import requests
 
 from fedireads import models
 from fedireads import outgoing
-from fedireads.status import create_review_from_activity, \
-    create_status_from_activity, create_tag, create_notification
+from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -39,7 +38,14 @@ def shared_inbox(request):
         response = handle_incoming_follow(activity)
 
     elif activity['type'] == 'Undo':
-        response = handle_incoming_undo(activity)
+        if not 'object' in activity:
+            return HttpResponseNotFound()
+        if activity['object']['type'] == 'Follow':
+            response = handle_incoming_undo(activity)
+        elif activity['object']['type'] == 'Like':
+            response = handle_incoming_unfavorite(activity)
+        else:
+            return HttpResponseNotFound()
 
     elif activity['type'] == 'Create':
         response = handle_incoming_create(activity)
@@ -141,10 +147,18 @@ def handle_incoming_follow(activity):
         return HttpResponse()
 
     if not to_follow.manually_approves_followers:
-        create_notification(to_follow, 'FOLLOW', related_user=user)
+        status_builder.create_notification(
+            to_follow,
+            'FOLLOW',
+            related_user=user
+        )
         outgoing.handle_outgoing_accept(user, to_follow, request)
     else:
-        create_notification(to_follow, 'FOLLOW_REQUEST', related_user=user)
+        status_builder.create_notification(
+            to_follow,
+            'FOLLOW_REQUEST',
+            related_user=user
+        )
     return HttpResponse()
 
 
@@ -216,14 +230,20 @@ def handle_incoming_create(activity):
             models.Review.objects.get(id=review_id)
         else:
             try:
-                create_review_from_activity(user, activity['object'])
+                status_builder.create_review_from_activity(
+                    user,
+                    activity['object']
+                )
             except ValueError:
                 return HttpResponseBadRequest()
     elif not user.local:
         try:
-            status = create_status_from_activity(user, activity['object'])
+            status = status_builder.create_status_from_activity(
+                user,
+                activity['object']
+            )
             if status and status.reply_parent:
-                create_notification(
+                status_builder.create_notification(
                     status.reply_parent.user,
                     'REPLY',
                     related_user=status.user,
@@ -245,14 +265,26 @@ def handle_incoming_favorite(activity):
         return HttpResponseNotFound()
 
     if not liker.local:
-        status.favorites.add(liker)
+        status_builder.create_favorite_from_activity(liker, activity)
 
-    create_notification(
+    status_builder.create_notification(
         status.user,
         'FAVORITE',
         related_user=liker,
         related_status=status,
     )
+    return HttpResponse()
+
+
+def handle_incoming_unfavorite(activity):
+    ''' approval of your good good post '''
+    try:
+        favorite_id = activity['object']['id']
+        fav = status_builder.get_favorite(favorite_id)
+    except models.Favorite.DoesNotExist:
+        return HttpResponseNotFound()
+
+    fav.delete()
     return HttpResponse()
 
 
@@ -262,7 +294,8 @@ def handle_incoming_add(activity):
         user = get_or_create_remote_user(activity['actor'])
         if not user.local:
             book = activity['target']['id'].split('/')[-1]
-            create_tag(user, book, activity['object']['name'])
+            status_builder.create_tag(user, book, activity['object']['name'])
             return HttpResponse()
         return HttpResponse()
     return HttpResponseNotFound()
+

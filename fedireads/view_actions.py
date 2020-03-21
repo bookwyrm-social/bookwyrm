@@ -160,6 +160,14 @@ def favorite(request, status_id):
 
 
 @login_required
+def unfavorite(request, status_id):
+    ''' like a status '''
+    status = models.Status.objects.get(id=status_id)
+    outgoing.handle_outgoing_unfavorite(request.user, status)
+    return redirect(request.headers.get('Referer', '/'))
+
+
+@login_required
 def follow(request):
     ''' follow another user, here or abroad '''
     username = request.POST['user']

@@ -57,20 +57,44 @@ def create_status_from_activity(author, activity):
     return status
 
 
+def create_favorite_from_activity(user, activity):
+    status = get_status(activity['object'])
+    remote_id = activity['id']
+    try:
+        return models.Favorite.objects.create(
+            status=status,
+            user=user,
+            remote_id=remote_id,
+        )
+    except IntegrityError:
+        return models.Favorite.objects.get(status=status, user=user)
+
+
 def get_status(absolute_id):
     ''' find a status in the database '''
+    return get_by_absolute_id(absolute_id, models.Status)
+
+
+def get_favorite(absolute_id):
+    ''' find a status in the database '''
+    return get_by_absolute_id(absolute_id, models.Favorite)
+
+
+def get_by_absolute_id(absolute_id, model):
     # check if it's a remote status
     try:
-        return models.Status.objects.get(remote_id=absolute_id)
-    except models.Status.DoesNotExist:
+        return model.objects.get(remote_id=absolute_id)
+    except model.DoesNotExist:
         pass
 
     # try finding a local status with that id
     local_id = absolute_id.split('/')[-1]
     try:
-        possible_match = models.Status.objects.select_subclasses() \
-            .get(id=local_id)
-    except models.Status.DoesNotExist:
+        if hasattr(model.objects, 'select_subclasses'):
+            possible_match = model.objects.select_subclasses().get(id=local_id)
+        else:
+            possible_match = model.objects.get(id=local_id)
+    except model.DoesNotExist:
         return None
 
     # make sure it's not actually a remote status with an id that
@@ -78,7 +102,6 @@ def get_status(absolute_id):
     if possible_match.absolute_id == absolute_id:
         return possible_match
     return None
-
 
 
 def create_status(user, content, reply_parent=None, mention_books=None,

@@ -37,7 +37,7 @@
             </span>
         </button>
     </form>
-    <form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}">
+    <form name="unfavorite" action="/unfavorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}">
         {% csrf_token %}
         <button type="submit">
             <span class="icon icon-heart">

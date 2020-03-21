@@ -77,6 +77,7 @@ def get_replies(status, replies):
 
 
 def get_replies_page(status, replies):
+    ''' actual reply list content '''
     id_slug = status.absolute_id + '/replies?page=true&only_other_accounts=true'
     items = []
     for reply in replies:
@@ -102,6 +103,22 @@ def get_favorite(favorite):
         'type': 'Like',
         'actor': favorite.user.actor,
         'object': favorite.status.absolute_id,
+    }
+
+
+def get_unfavorite(favorite):
+    ''' like a post '''
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s/undo' % favorite.absolute_id,
+        'type': 'Undo',
+        'actor': favorite.user.actor,
+        'object': {
+            'id': favorite.absolute_id,
+            'type': 'Like',
+            'actor': favorite.user.actor,
+            'object': favorite.status.absolute_id,
+        }
     }
 
 
