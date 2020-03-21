@@ -6,10 +6,14 @@ function hide_element(element) {
 function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
-    if (e.target.className.includes('active')) {
-        e.target.className = '';
-    } else {
-        e.target.className += ' active';
+    var identifier = e.target.getAttribute('data-id');
+    var elements = document.getElementsByClassName(identifier);
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].className.includes('hidden')) {
+            elements[i].className = elements[i].className.replace('hidden', '');
+        } else {
+            elements[i].className += ' hidden';
+        }
     }
     return true;
 }
@@ -21,26 +25,9 @@ function comment(e) {
     return true;
 }
 
-function ajaxPost(form, callback) {
-    // jeez. https://stackoverflow.com/questions/33021995
-    var url = form.action;
-    var xhr = new XMLHttpRequest();
-
-    var params = [].filter.call(form.elements, function(el) {
-        return typeof(el.checked) === 'undefined' || el.checked;
-    })
-    .filter(function(el) { return !!el.name; })
-    .filter(function(el) { return el.disabled; })
-    .map(function(el) {
-        return encodeURIComponent(el.name) + '=' + encodeURIComponent(el.value);
-    }).join('&');
-
-    xhr.open('POST', url);
-    xhr.setRequestHeader('Content-type', 'application/x-form-urlencoded');
-    xhr.setRequestHeader('X-CSRFToken', csrf_token);
-
-    if (callback) {
-        xhr.onload = callback.bind(xhr);
-    }
-    xhr.send(params);
+function ajaxPost(form) {
+    fetch(form.action, {
+        method : "POST",
+        body: new FormData(form)
+    });
 }

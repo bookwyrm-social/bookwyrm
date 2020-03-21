@@ -1,10 +1,13 @@
 {% if request.user == user %}
 {% elif request.user in user.follower_requests.all %}
+
 <div>
 Follow request already sent.
 </div>
-{% elif not request.user in user.followers.all %}
-<form action="/follow/" method="post">
+
+{% else %}
+
+<form action="/follow/" method="POST" onsubmit="interact(event)" class="follow-{{ user.id }} {% if request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
     {% if user.manually_approves_followers %}
@@ -13,8 +16,7 @@ Follow request already sent.
         <button type="submit">Follow</button>
     {% endif %}
 </form>
-{% else %}
-<form action="/unfollow/" method="post">
+<form action="/unfollow/" method="POST" onsubmit="interact(event)" class="follow-{{ user.id }} {% if not request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}"></input>
     <button type="submit">Unfollow</button>

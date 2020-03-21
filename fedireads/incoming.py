@@ -4,14 +4,12 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound, JsonResponse
+    HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 import django.db.utils
-from django.db.models import Q
 import json
 import requests
 
-from fedireads import activitypub
 from fedireads import models
 from fedireads import outgoing
 from fedireads.status import create_review_from_activity, \
@@ -191,7 +189,10 @@ def handle_incoming_follow_reject(activity):
     rejecter = get_or_create_remote_user(activity['actor'])
 
     try:
-        request = models.UserFollowRequest.objects.get(user_subject=requester, user_object=rejecter)
+        request = models.UserFollowRequest.objects.get(
+            user_subject=requester,
+            user_object=rejecter
+        )
         request.delete()
     except models.UserFollowRequest.DoesNotExist:
         pass
