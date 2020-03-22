@@ -134,7 +134,7 @@ def handle_shelve(user, book, shelf):
         'reading': 'started reading',
         'read': 'finished reading'
     }[shelf.identifier]
-    message = '%s %s' % (verb, book.title)
+    message = '%s "%s"' % (verb, book.title)
     status = create_status(user, message, mention_books=[book])
     status.status_type = 'Update'
     status.save()
