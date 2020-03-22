@@ -6,14 +6,41 @@ services:
         env_file: .env
         volumes:
           - pgdata:/var/lib/posgresql/data
+        networks:
+            - main
     web:
         build: .
         command: python manage.py runserver 0.0.0.0:8000
         volumes:
-            - .:/code
+            - .:/app
         ports:
             - "8000:8000"
         depends_on:
             - db
+            - celery_worker
+        networks:
+            - main
+    rabbitmq:
+        env_file: .env
+        image: rabbitmq:latest
+        networks:
+            - main
+        ports:
+            - "5672:5672"
+        restart: on-failure
+    celery_worker:
+        env_file: .env
+        build: .
+        networks:
+            - main
+        command: celery -A fedireads worker -l info
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - rabbitmq
+        restart: on-failure
 volumes:
     pgdata:
+networks:
+    main:

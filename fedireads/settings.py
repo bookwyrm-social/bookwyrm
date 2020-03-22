@@ -17,10 +17,14 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', True)
 
-# TODO: annoying that I keep changing and re-commiting this
 DOMAIN = env('DOMAIN')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['*'])
 OL_URL = env('OL_URL')
+
+# celery/rebbitmq
+CELERY_BROKER_URL = env('CELERY_BROKER')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 # Application definition
 
@@ -33,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'fedireads',
+    'celery',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '"%s"' % env('POSTGRES_PASSWORD', 'fedireads'),
+        'PASSWORD': '%s' % env('POSTGRES_PASSWORD', 'fedireads'),
         'HOST': 'db',
         'PORT': 5432
     }
