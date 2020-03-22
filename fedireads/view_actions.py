@@ -16,18 +16,27 @@ def user_login(request):
     if request.method == 'GET':
         return redirect('/login')
 
-    form = forms.LoginForm(request.POST)
-    if not form.is_valid():
-        return TemplateResponse(request, 'login.html', {'login_form': form})
+    register_form = forms.RegisterForm()
+    login_form = forms.LoginForm(request.POST)
+    if not login_form.is_valid():
+        return TemplateResponse(
+            request,
+            'login.html',
+            {'login_form': login_form, 'register_form': register_form}
+        )
 
-    username = form.data['username']
+    username = login_form.data['username']
     username = '%s@%s' % (username, DOMAIN)
-    password = form.data['password']
+    password = login_form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
         return redirect(request.GET.get('next', '/'))
-    return TemplateResponse(request, 'login.html', {'login_form': form})
+    return TemplateResponse(
+        request,
+        'login.html',
+        {'login_form': login_form, 'register_form': register_form}
+    )
 
 
 def register(request):
