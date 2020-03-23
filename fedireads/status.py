@@ -50,7 +50,7 @@ def create_comment_from_activity(author, activity):
     published = activity.get('published')
     remote_id = activity['id']
 
-    comment = create_comment(author, book, name, content, rating)
+    comment = create_comment(author, book, name, content)
     comment.published_date = published
     comment.remote_id = remote_id
     comment.save()
