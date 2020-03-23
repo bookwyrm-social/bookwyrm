@@ -5,6 +5,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import re
+import csv
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.settings import DOMAIN
@@ -289,3 +290,27 @@ def delete_follow_request(request):
     outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
 
+def unquote_string(text):
+    match = re.match(r'="([^"]*)"', text)
+    if match:
+        return match.group(1)
+    else:
+        return text
+
+import itertools
+from io import TextIOWrapper
+
+@login_required
+def import_data(request):
+    form = forms.ImportForm(request.POST, request.FILES)
+    if form.is_valid():
+        reader = csv.DictReader(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding))
+        for line in itertools.islice(reader, 10):
+            isbn = unquote_string(line['ISBN13'])
+            print(line['Title'], isbn, line['Exclusive Shelf'])
+            search_results = books_manager.search(isbn)
+            if search_results:
+                book = books_manager.get_or_create_book(search_results[0].key)
+        return HttpResponse('thanks')
+    else:
+        return HttpResponseBadRequest()
