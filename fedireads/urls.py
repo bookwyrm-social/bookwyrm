@@ -34,6 +34,7 @@ urlpatterns = [
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
     re_path(r'books/?$', views.books_page),
+    re_path(r'import/?$', views.import_page),
 
     # should return a ui view or activitypub json blob as requested
     # users
@@ -81,5 +82,6 @@ urlpatterns = [
     re_path(r'^accept_follow_request/?$', actions.accept_follow_request),
     re_path(r'^delete_follow_request/?$', actions.delete_follow_request),
 
+    re_path(r'import_data', actions.import_data),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

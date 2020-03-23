@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="content">
+    <form name="import" action="/import_data/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ import_form.as_p }}
+        <button type="submit">Import</button>
+    </form>
+</div>
+{% endblock %}
