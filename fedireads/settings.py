@@ -25,6 +25,7 @@ OL_URL = env('OL_URL')
 CELERY_BROKER_URL = env('CELERY_BROKER')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'amqp'
 
 # Application definition
 
