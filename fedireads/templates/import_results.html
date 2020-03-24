@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div id="content">
+    <div>
+        <h1>Search results</h1>
+        {% for book in results %}
+        <div>
+            <a href="{{ book.absolute_id }}">
+            {% include 'snippets/book_cover.html' with book=book %}
+            </a>
+            {{ book.title }}
+            {{ book.author }}
+            {% include 'snippets/shelve_button.html' with book=book pulldown=True %}
+        </div>
+        {% endfor %}
+
+        <h1>Failures</h1>
+        <ul>
+        {% for book in failures %}
+            <li>
+            {{ book.Title }}
+            {{ book.Author }}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
