@@ -31,6 +31,7 @@ class OpenLibraryConnector(AbstractConnector):
                 key,
                 author[0],
                 doc.get('first_publish_year'),
+                doc
             ))
         return results
 

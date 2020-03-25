@@ -1,15 +1,16 @@
 ''' views for actions you can take in the application '''
+from io import TextIOWrapper
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-import re
-import csv
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+from fedireads.goodreads_import import GoodreadsCsv
 
 
 def user_login(request):
@@ -289,54 +290,18 @@ def delete_follow_request(request):
 
     outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
-
-def unquote_string(text):
-    match = re.match(r'="([^"]*)"', text)
-    if match:
-        return match.group(1)
-    else:
-        return text
-
-def construct_search_term(title, author):
-    # Strip brackets (usually series title from search term)
-    title = re.sub(r'\s*\([^)]*\)\s*', '', title)
-    # Open library doesn't like including author initials in search term.
-    author = re.sub(r'(\w\.)+\s*', '', author)
-
-    return ' '.join([title, author])
     
-import itertools
-from io import TextIOWrapper
-from requests import HTTPError
-
 @login_required
 def import_data(request):
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
-        reader = csv.DictReader(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding))
         results = []
         failures = []
-        for line in itertools.islice(reader, 20):
-            isbn = unquote_string(line['ISBN13'])
-            print(line['Title'], isbn, line['Exclusive Shelf'])
-            search_results = books_manager.search(isbn)
-            if search_results:
-                book = books_manager.get_or_create_book(search_results[0].key)
-                print(book)
-                results.append(book)
+        for item in GoodreadsCsv(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)):
+            if item.book:
+                results.append(item.book)
             else:
-                try:
-                    search_term = construct_search_term(line['Title'], line['Author'])
-                    print("Search term: ", search_term)
-                    search_results = books_manager.search(search_term)
-                    if search_results:
-                        book = books_manager.get_or_create_book(search_results[0].key)
-                        print(book)
-                        results.append(book)
-                    else:
-                        failures.append(line)
-                except HTTPError:
-                    failures.append(line) # 
+                failures.append(item)
         return TemplateResponse(request, 'import_results.html', {
                 'results': results,
                 'failures': failures
