@@ -11,6 +11,7 @@ GOODREADS_SHELVES = {
         'currently-reading': 'reading',
         'to-read': 'to-read',
 }
+MAX_ENTRIES = 20
 
 def unquote_string(text):
     match = re.match(r'="([^"]*)"', text)
@@ -32,7 +33,7 @@ class GoodreadsCsv(object):
         self.reader = csv.DictReader(csv_file)
 
     def __iter__(self):
-        for line in itertools.islice(self.reader, 30):
+        for line in itertools.islice(self.reader, MAX_ENTRIES):
             entry = GoodreadsItem(line)
             try:
                 entry.resolve()
@@ -69,3 +70,6 @@ class GoodreadsItem(object):
 
     def __repr__(self):
         return "<GoodreadsItem {!r}>".format(self.line['Title'])
+
+    def __str__(self):
+        return "{} by {}".format(self.line['Title'], self.line['Author'])

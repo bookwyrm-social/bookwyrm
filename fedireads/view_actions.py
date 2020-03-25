@@ -299,18 +299,17 @@ def import_data(request):
         failures = []
         for item in GoodreadsCsv(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)):
             if item.book:
-                results.append(item.book)
-                if item.shelf:
-                    desired_shelf = models.Shelf.objects.get(
-                        identifier=item.shelf,
-                        user=request.user
-                    )
-                    outgoing.handle_shelve(request.user, item.book, desired_shelf)
+                results.append(item)
             else:
                 failures.append(item)
-        return TemplateResponse(request, 'import_results.html', {
-                'results': results,
-                'failures': failures
-            })
+
+        outgoing.handle_import_books(request.user, results)
+        if failures:
+            return TemplateResponse(request, 'import_results.html', {
+                    'success_count': len(results),
+                    'failures': failures,
+                })
+        else:
+            return redirect('/')
     else:
         return HttpResponseBadRequest()

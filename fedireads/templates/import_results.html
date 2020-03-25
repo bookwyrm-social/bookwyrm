@@ -2,26 +2,17 @@
 {% block content %}
 <div id="content">
     <div>
-        <h1>Search results</h1>
-        {% for book in results %}
-        <div>
-            <a href="{{ book.absolute_id }}">
-            {% include 'snippets/book_cover.html' with book=book %}
-            </a>
-            {{ book.title }}
-            {{ book.author }}
-            {% include 'snippets/shelve_button.html' with book=book pulldown=True %}
-        </div>
-        {% endfor %}
+        <h1>The following books could not be imported: </h1>
 
-        <h1>Failures</h1>
         <ul>
-        {% for book in failures %}
+        {% for item in failures %}
             <li>
-            {{ book }}
+            {{ item }}
             </li>
         {% endfor %}
         </ul>
+
+        <p>{{ success_count }} books imported successfully</p>
     </div>
 </div>
 {% endblock %}
