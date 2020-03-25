@@ -300,6 +300,12 @@ def import_data(request):
         for item in GoodreadsCsv(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)):
             if item.book:
                 results.append(item.book)
+                if item.shelf:
+                    desired_shelf = models.Shelf.objects.get(
+                        identifier=item.shelf,
+                        user=request.user
+                    )
+                    outgoing.handle_shelve(request.user, item.book, desired_shelf)
             else:
                 failures.append(item)
         return TemplateResponse(request, 'import_results.html', {

@@ -5,6 +5,13 @@ from requests import HTTPError
 
 from fedireads import books_manager
 
+# Mapping goodreads -> fedireads shelf titles.
+GOODREADS_SHELVES = {
+        'read': 'read',
+        'currently-reading': 'reading',
+        'to-read': 'to-read',
+}
+
 def unquote_string(text):
     match = re.match(r'="([^"]*)"', text)
     if match:
@@ -25,7 +32,7 @@ class GoodreadsCsv(object):
         self.reader = csv.DictReader(csv_file)
 
     def __iter__(self):
-        for line in itertools.islice(self.reader, 20, 30):
+        for line in itertools.islice(self.reader, 30):
             entry = GoodreadsItem(line)
             try:
                 entry.resolve()
@@ -54,6 +61,11 @@ class GoodreadsItem(object):
         search_results = books_manager.search(search_term)
         if search_results:
             return books_manager.get_or_create_book(search_results[0].key)
+
+    @property
+    def shelf(self):
+        if self.line['Exclusive Shelf']:
+            return GOODREADS_SHELVES[self.line['Exclusive Shelf']]
 
     def __repr__(self):
         return "<GoodreadsItem {!r}>".format(self.line['Title'])
