@@ -21,13 +21,15 @@
     </h2>
 
     {% if not hide_book and status.mention_books.count %}
+    {% for book in status.mention_books.all|slice:"0:3" %}
     <div class="book-preview">
         {% if status.status_type == 'Review' %}
-            {% include 'snippets/book.html' with book=status.mention_books.first %}
+            {% include 'snippets/book.html' with book=book %}
         {% else %}
-            {% include 'snippets/book.html' with book=status.mention_books.first description=True %}
+            {% include 'snippets/book.html' with book=book description=True %}
         {% endif %}
     </div>
+    {% endfor %}
     {% endif %}
     {% if not hide_book and status.book%}
     <div class="book-preview">
