@@ -8,9 +8,9 @@ from fedireads.connectors.settings import CONNECTORS
 def get_or_create_book(key):
     ''' pull up a book record by whatever means possible '''
     try:
-        book = models.Book.objects.get(
-            openlibrary_key=key
-        ).select_subclasses()
+        book = models.Book.objects.select_subclasses().get(
+            local_key=key
+        )
         return book
     except models.Book.DoesNotExist:
         pass

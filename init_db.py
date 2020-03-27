@@ -15,7 +15,7 @@ Connector.objects.create(
     base_url='https://openlibrary.org',
     covers_url='https://covers.openlibrary.org',
     search_url='https://openlibrary.org/search?q=',
-    key_name='olkey',
+    key_name='openlibrary_key',
 )
 
 

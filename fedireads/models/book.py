@@ -1,6 +1,7 @@
 ''' database schema for books and shelves '''
 from datetime import datetime
 from django.db import models
+from model_utils.managers import InheritanceManager
 from uuid import uuid4
 
 from fedireads.settings import DOMAIN
@@ -66,6 +67,7 @@ class Book(FedireadsModel):
     )
     # TODO: why can't I just call this work????
     parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
+    objects = InheritanceManager()
 
     @property
     def absolute_id(self):

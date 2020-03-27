@@ -56,8 +56,8 @@ urlpatterns = [
     re_path(r'%s/replies\.json$' % status_path, views.replies_page),
 
     # books
-    re_path(r'^book/(?P<book_identifier>\w+)/?$', views.book_page),
-    re_path(r'^book/(?P<book_identifier>\w+)/(?P<tab>friends|local|federated)?$', views.book_page),
+    re_path(r'^book/(?P<book_identifier>[\w\-]+)/?$', views.book_page),
+    re_path(r'^book/(?P<book_identifier>[\w\-]+)/(?P<tab>friends|local|federated)?$', views.book_page),
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)/?$' % username_regex, views.shelf_page),
