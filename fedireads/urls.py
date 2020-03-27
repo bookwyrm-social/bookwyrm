@@ -6,7 +6,7 @@ from django.urls import path, re_path
 from fedireads import incoming, outgoing, views, settings, wellknown
 from fedireads import view_actions as actions
 
-username_regex = r'(?P<username>[\w@\-_\.]+)'
+username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
@@ -39,6 +39,7 @@ urlpatterns = [
     # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
+    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
     re_path(r'user-edit/?$', views.edit_profile_page),
     re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
@@ -60,6 +61,7 @@ urlpatterns = [
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)/?$' % username_regex, views.shelf_page),
+    re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)/?$' % localname_regex, views.shelf_page),
 
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
