@@ -157,6 +157,31 @@ def handle_unshelve(user, book, shelf):
     broadcast(user, activity, recipients)
 
 
+def handle_import_books(user, items):
+    new_books = []
+    for item in items:
+        if item.shelf:
+            desired_shelf = models.Shelf.objects.get(
+                identifier=item.shelf,
+                user=user
+            )
+            shelf, created = models.ShelfBook.objects.get_or_create(book=item.book, shelf=desired_shelf, added_by=user)
+            if created:
+                new_books.append(item.book)
+                activity = activitypub.get_add(user, item.book, desired_shelf)
+                recipients = get_recipients(user, 'public')
+                broadcast(user, activity, recipients)
+
+    if new_books:
+        message = 'imported {} books'.format(len(new_books))
+        status = create_status(user, message, mention_books=new_books)
+        status.status_type = 'Update'
+        status.save()
+
+        create_activity = activitypub.get_create(user, activitypub.get_status(status))
+        broadcast(user, create_activity, get_recipients(user, 'public'))
+
+
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id

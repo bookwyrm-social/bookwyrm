@@ -54,6 +54,9 @@ class Book(FedireadsModel):
         model_name = type(self).__name__.lower()
         return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
 
+    def __repr__(self):
+        return "<{} key={!r} title={!r} author={!r}>".format(self.__class__, self.openlibrary_key, self.title, self.author)
+
 
 class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''

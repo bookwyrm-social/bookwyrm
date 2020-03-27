@@ -1,14 +1,16 @@
 ''' views for actions you can take in the application '''
+from io import TextIOWrapper
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-import re
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+from fedireads.goodreads_import import GoodreadsCsv
 
 
 def user_login(request):
@@ -288,4 +290,26 @@ def delete_follow_request(request):
 
     outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
+    
+@login_required
+def import_data(request):
+    form = forms.ImportForm(request.POST, request.FILES)
+    if form.is_valid():
+        results = []
+        failures = []
+        for item in GoodreadsCsv(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)):
+            if item.book:
+                results.append(item)
+            else:
+                failures.append(item)
 
+        outgoing.handle_import_books(request.user, results)
+        if failures:
+            return TemplateResponse(request, 'import_results.html', {
+                    'success_count': len(results),
+                    'failures': failures,
+                })
+        else:
+            return redirect('/')
+    else:
+        return HttpResponseBadRequest()

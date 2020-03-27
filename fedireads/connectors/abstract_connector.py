@@ -53,8 +53,12 @@ class AbstractConnector(ABC):
 
 class SearchResult(object):
     ''' standardized search result object '''
-    def __init__(self, title, key, author, year):
+    def __init__(self, title, key, author, year, raw_data):
         self.title = title
         self.key = key
         self.author = author
         self.year = year
+        self.raw_data = raw_data
+
+    def __repr__(self):
+        return "<SearchResult key={!r} title={!r} author={!r}>".format(self.key, self.title, self.author)

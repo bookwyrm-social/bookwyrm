@@ -108,6 +108,14 @@ def books_page(request):
     }
     return TemplateResponse(request, 'books.html', data)
 
+@login_required
+def import_page(request):
+    ''' import history from goodreads '''
+    return TemplateResponse(request, 'import.html', {
+        'import_form': forms.ImportForm(),
+    })
+
+
 
 def login_page(request):
     ''' authentication '''

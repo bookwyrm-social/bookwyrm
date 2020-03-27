@@ -1,6 +1,7 @@
 ''' usin django model forms '''
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import ModelForm, PasswordInput, IntegerField
+from django import forms
 
 from fedireads import models
 
@@ -73,3 +74,6 @@ class TagForm(ModelForm):
         help_texts = {f: None for f in fields}
         labels = {'name': 'Add a tag'}
 
+
+class ImportForm(forms.Form):
+    csv_file = forms.FileField()
