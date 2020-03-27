@@ -91,14 +91,14 @@ def get_user_liked(user, status):
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
-    try:
-        #TODO: books can be on multiple shelves, handle that better
-        shelf = models.ShelfBook.objects.filter(
-            shelf__user=context['request'].user,
-            book=book
-        ).first()
-    except models.ShelfBook.DoesNotExist:
+    #TODO: books can be on multiple shelves, handle that better
+    shelf = models.ShelfBook.objects.filter(
+        shelf__user=context['request'].user,
+        book=book
+    ).first()
+    if not shelf:
         return 'to-read'
+
     identifier = shelf.shelf.identifier
     if identifier == 'to-read':
         return 'reading'
@@ -110,14 +110,14 @@ def shelve_button_identifier(context, book):
 @register.simple_tag(takes_context=True)
 def shelve_button_text(context, book):
     ''' check what shelf a user has a book on, if any '''
-    try:
-        #TODO: books can be on multiple shelves
-        shelf = models.ShelfBook.objects.filter(
-            shelf__user=context['request'].user,
-            book=book
-        ).first()
-    except models.ShelfBook.DoesNotExist:
+    #TODO: books can be on multiple shelves
+    shelf = models.ShelfBook.objects.filter(
+        shelf__user=context['request'].user,
+        book=book
+    ).first()
+    if not shelf:
         return 'Want to read'
+
     identifier = shelf.shelf.identifier
     if identifier == 'to-read':
         return 'Start reading'
