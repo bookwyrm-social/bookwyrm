@@ -84,7 +84,7 @@ def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
     try:
         shelf = models.ShelfBook.objects.get(
-            shelf__user=context['user'],
+            shelf__user=context['request'].user,
             book=book
         )
     except models.ShelfBook.DoesNotExist:
@@ -102,7 +102,7 @@ def shelve_button_text(context, book):
     ''' check what shelf a user has a book on, if any '''
     try:
         shelf = models.ShelfBook.objects.get(
-            shelf__user=context['user'],
+            shelf__user=context['request'].user,
             book=book
         )
     except models.ShelfBook.DoesNotExist:
