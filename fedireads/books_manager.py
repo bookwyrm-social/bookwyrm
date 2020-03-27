@@ -9,3 +9,7 @@ def get_or_create_book(key):
 def search(query):
     ''' ya '''
     return openlibrary.search(query)
+
+
+def update_book(key):
+    return openlibrary.update_book(key)

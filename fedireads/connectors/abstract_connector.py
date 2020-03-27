@@ -61,4 +61,5 @@ class SearchResult(object):
         self.raw_data = raw_data
 
     def __repr__(self):
-        return "<SearchResult key={!r} title={!r} author={!r}>".format(self.key, self.title, self.author)
+        return "<SearchResult key={!r} title={!r} author={!r}>".format(
+            self.key, self.title, self.author)
