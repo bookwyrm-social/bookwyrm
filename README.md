@@ -45,17 +45,40 @@ This project is still in its very early stages, but these are the higher-level f
 But this isn't a set in stone, unchangeable list, so if you have ideas about how this could be tweaked, changed, or improved, please open an issue and start a conversation about it.
 
 ## Setting up the developer environment
+You will need postgres installed and running on your computer.
 
-Install docker and run:
 ``` bash
-docker-compose build
-docker-compose up
-docker-compose exec web python manage.py migrate
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+createdb fedireads
 ```
+
+Create the psql user in `psql fedireads`:
+``` psql
+CREATE ROLE fedireads WITH LOGIN PASSWORD 'fedireads';
+GRANT ALL PRIVILEGES ON DATABASE fedireads TO fedireads;
+```
+
+Initialize the database (or, more specifically, delete the existing database, run migrations, and start fresh):
+``` bash
+./rebuilddb.sh
+```
+This creates two users, `mouse` with password `password123` and `rat` with password `ratword`.
 
 And go to the app at `localhost:8000`
 
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
+
+
+### Docker
+You can also run the application in a docker container. You'll have to install the Docker and docker-compose:
+
+```bash
+docker-compose build
+docker-compose up
+docker-compose exec web python manage.py migrate
+```
 
 
 ## Project structure

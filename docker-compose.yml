@@ -5,7 +5,7 @@ services:
         image: postgres
         env_file: .env
         volumes:
-          - pgdata:/var/lib/posgresql/data
+          - pgdata:/var/lib/postgresql/data
         networks:
             - main
     web:

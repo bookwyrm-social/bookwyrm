@@ -76,16 +76,27 @@ WSGI_APPLICATION = 'fedireads.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+FEDIREADS_DATABASE_BACKEND = env('FEDIREADS_DATABASE_BACKEND', 'postgres')
+
+FEDIREADS_DBS = {
+    'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': '%s' % env('POSTGRES_PASSWORD', 'fedireads'),
+        'NAME': env('POSTGRES_DB', 'fedireads'),
+        'USER': env('POSTGRES_USER', 'fedireads'),
+        'PASSWORD': env('POSTGRES_PASSWORD', 'fedireads'),
         'HOST': 'db',
         'PORT': 5432
+    },
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'fedireads.db')
     }
 }
+
+DATABASES = {
+    'default': FEDIREADS_DBS[FEDIREADS_DATABASE_BACKEND]
+}
+
 
 LOGIN_URL = '/login/'
 AUTH_USER_MODEL = 'fedireads.User'
