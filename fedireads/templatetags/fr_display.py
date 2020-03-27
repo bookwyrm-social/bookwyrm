@@ -57,21 +57,30 @@ def get_notification_count(user):
 
 @register.filter(name='replies')
 def get_replies(status):
-    return models.Status.objects.filter(reply_parent=status).select_subclasses().all()[:10]
+    ''' get all direct replies to a status '''
+    #TODO: this limit could cause problems
+    return models.Status.objects.filter(
+        reply_parent=status
+    ).select_subclasses().all()[:10]
 
 
 @register.filter(name='reply_count')
 def get_reply_count(status):
+    ''' how many replies does a status have? '''
     return models.Status.objects.filter(reply_parent=status).count()
 
 
 @register.filter(name='parent')
 def get_parent(status):
-    return models.Status.objects.filter(id=status.reply_parent_id).select_subclasses().get()
+    ''' get the reply parent for a status '''
+    return models.Status.objects.filter(
+        id=status.reply_parent_id
+    ).select_subclasses().get()
 
 
 @register.filter(name='liked')
 def get_user_liked(user, status):
+    ''' did the given user fav a status? '''
     try:
         models.Favorite.objects.get(user=user, status=status)
         return True
@@ -83,10 +92,11 @@ def get_user_liked(user, status):
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
     try:
-        shelf = models.ShelfBook.objects.get(
+        #TODO: books can be on multiple shelves, handle that better
+        shelf = models.ShelfBook.objects.filter(
             shelf__user=context['request'].user,
             book=book
-        )
+        ).first()
     except models.ShelfBook.DoesNotExist:
         return 'to-read'
     identifier = shelf.shelf.identifier
@@ -101,10 +111,11 @@ def shelve_button_identifier(context, book):
 def shelve_button_text(context, book):
     ''' check what shelf a user has a book on, if any '''
     try:
-        shelf = models.ShelfBook.objects.get(
+        #TODO: books can be on multiple shelves
+        shelf = models.ShelfBook.objects.filter(
             shelf__user=context['request'].user,
             book=book
-        )
+        ).first()
     except models.ShelfBook.DoesNotExist:
         return 'Want to read'
     identifier = shelf.shelf.identifier
