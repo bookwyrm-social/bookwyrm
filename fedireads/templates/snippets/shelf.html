@@ -33,7 +33,7 @@
         {% include 'snippets/book_cover.html' with book=book size="small" %}
     </td>
     <td>
-        <a href="/book/{{ book.local_key }}">{{ book.title }}</a>
+        <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
     </td>
     <td>
         {{ book.authors.first.name }}

@@ -10,8 +10,8 @@ from .abstract_connector import AbstractConnector, SearchResult
 
 class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
-    def __init__(self):
-        super().__init__('OpenLibrary')
+    def __init__(self, identifier):
+        super().__init__(identifier)
 
 
     def search(self, query):
@@ -140,3 +140,4 @@ class Connector(AbstractConnector):
 
     def update_book(self, book_obj):
         pass
+

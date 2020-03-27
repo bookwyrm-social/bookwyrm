@@ -3,14 +3,14 @@
     {% if tag.identifier in user_tags %}
     <form class="tag-form" name="tag" action="/untag/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.local_key }}"></input>
+        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
         <input type="hidden" name="name" value="{{ tag.name }}"></input>
         <button type="submit">x</button>
     </form>
     {% else %}
     <form class="tag-form" name="tag" action="/tag/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.local_key }}"></input>
+        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
         <input type="hidden" name="name" value="{{ tag.name }}"></input>
         <button type="submit">+</button>
     </form>

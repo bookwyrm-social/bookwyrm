@@ -1,7 +1,7 @@
 {% load fr_display %}
 {% include 'snippets/book_cover.html' with book=book %}
 <p class="title">
-    <a href="/book/{{ book.local_key }}">{{ book.title }}</a>
+    <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
 </p>
 <p>
     by {% include 'snippets/authors.html' with book=book %}

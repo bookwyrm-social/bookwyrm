@@ -8,17 +8,28 @@ from fedireads.settings import DOMAIN
 from fedireads.utils.fields import JSONField, ArrayField
 from fedireads.utils.models import FedireadsModel
 
+from fedireads.connectors.settings import CONNECTORS
 
+
+ConnectorFiles = models.TextChoices('ConnectorFiles', CONNECTORS)
 class Connector(FedireadsModel):
     ''' book data source connectors '''
-    name = models.CharField(max_length=255, unique=True)
+    identifier = models.CharField(max_length=255, unique=True)
+    connector_file = models.CharField(
+        max_length=255,
+        default='openlibrary',
+        choices=ConnectorFiles.choices
+    )
+    # is this a connector to your own database, should only be true if
+    # the connector_file is `fedireads`
+    is_self = models.BooleanField(default=False)
     api_key = models.CharField(max_length=255, null=True)
 
     base_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True)
 
-    key_name = models.CharField(max_length=255, unique=True)
+    key_name = models.CharField(max_length=255)
 
     politeness_delay = models.IntegerField(null=True) #seconds
     max_query_count = models.IntegerField(null=True)
@@ -27,13 +38,21 @@ class Connector(FedireadsModel):
     # when to reset the query count back to 0 (ie, after 1 day)
     query_count_expiry = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(connector_file__in=ConnectorFiles),
+                name='connector_file_valid'
+            )
+        ]
+
 
 class Book(FedireadsModel):
     ''' a generic book, which can mean either an edition or a work '''
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, unique=True, null=True)
     librarything_key = models.CharField(max_length=255, unique=True, null=True)
-    local_key = models.CharField(max_length=255, unique=True, default=uuid4)
+    fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
     misc_identifiers = JSONField(null=True)
 
     # info about where the data comes from and where/if to sync

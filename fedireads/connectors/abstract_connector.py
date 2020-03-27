@@ -2,19 +2,14 @@
 from abc import ABC, abstractmethod
 
 from fedireads import models
-from fedireads.connectors import CONNECTORS
 
 
 class AbstractConnector(ABC):
     ''' generic book data connector '''
 
-    def __init__(self, connector_name):
+    def __init__(self, identifier):
         # load connector settings
-        settings = CONNECTORS.get(connector_name)
-        if not settings:
-            raise ValueError('No connector with name "%s"' % connector_name)
-
-        info = models.Connector.objects.get(name=settings['db_name'])
+        info = models.Connector.objects.get(identifier=identifier)
         self.model = info
 
         self.url = info.base_url

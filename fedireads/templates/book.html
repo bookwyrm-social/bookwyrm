@@ -5,7 +5,7 @@
     <h2><q>{{ book.title }}</q> by
         {% include 'snippets/authors.html' with book=book %}</h2>
     <div>
-        {% if book.parent_work %}<p>Edition of <a href="/book/{{ book.parent_work.local_key }}">{{ book.parent_work.title }}</a></p>{% endif %}
+        {% if book.parent_work %}<p>Edition of <a href="/book/{{ book.parent_work.fedireads_key }}">{{ book.parent_work.title }}</a></p>{% endif %}
         <div class="book-preview">
 
             {% include 'snippets/book_cover.html' with book=book size=large %}
@@ -32,7 +32,7 @@
     <h2>Leave a review</h2>
     <form class="review-form" name="review" action="/review/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.local_key }}"></input>
+        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
         {{ review_form.as_p }}
         <button type="submit">Post review</button>
     </form>
