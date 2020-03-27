@@ -158,6 +158,7 @@ def handle_unshelve(user, book, shelf):
 
 
 def handle_import_books(user, items):
+    ''' process a goodreads csv and then post about it '''
     new_books = []
     for item in items:
         if item.shelf:
@@ -165,7 +166,8 @@ def handle_import_books(user, items):
                 identifier=item.shelf,
                 user=user
             )
-            shelf, created = models.ShelfBook.objects.get_or_create(book=item.book, shelf=desired_shelf, added_by=user)
+            _, created = models.ShelfBook.objects.get_or_create(
+                book=item.book, shelf=desired_shelf, added_by=user)
             if created:
                 new_books.append(item.book)
                 activity = activitypub.get_add(user, item.book, desired_shelf)
@@ -178,7 +180,8 @@ def handle_import_books(user, items):
         status.status_type = 'Update'
         status.save()
 
-        create_activity = activitypub.get_create(user, activitypub.get_status(status))
+        create_activity = activitypub.get_create(
+            user, activitypub.get_status(status))
         broadcast(user, create_activity, get_recipients(user, 'public'))
 
 

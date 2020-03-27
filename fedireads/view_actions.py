@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+import re
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.settings import DOMAIN
@@ -290,14 +291,18 @@ def delete_follow_request(request):
 
     outgoing.handle_outgoing_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
-    
+
+
 @login_required
 def import_data(request):
+    ''' ingest a goodreads csv '''
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
         results = []
         failures = []
-        for item in GoodreadsCsv(TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)):
+        for item in GoodreadsCsv(TextIOWrapper(
+                request.FILES['csv_file'],
+                encoding=request.encoding)):
             if item.book:
                 results.append(item)
             else:
@@ -306,9 +311,9 @@ def import_data(request):
         outgoing.handle_import_books(request.user, results)
         if failures:
             return TemplateResponse(request, 'import_results.html', {
-                    'success_count': len(results),
-                    'failures': failures,
-                })
+                'success_count': len(results),
+                'failures': failures,
+            })
         else:
             return redirect('/')
     else:
