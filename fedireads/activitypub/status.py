@@ -1,6 +1,8 @@
 ''' status serializers '''
 from uuid import uuid4
 
+from fedireads.settings import DOMAIN
+
 
 def get_review(review):
     ''' fedireads json for book reviews '''
@@ -50,6 +52,21 @@ def get_status(status):
     uri = status.absolute_id
     reply_parent_id = status.reply_parent.absolute_id \
         if status.reply_parent else None
+
+    image_attachments = []
+    books = list(status.mention_books.all()[:3])
+    if hasattr(status, 'book'):
+        books.append(status.book)
+    for book in books:
+        if book and book.cover:
+            image_path = book.cover.url
+            image_type = image_path.split('.')[-1]
+            image_attachments.append({
+                'type': 'Document',
+                'mediaType': 'image/%s' % image_type,
+                'url': 'https://%s%s' % (DOMAIN, image_path),
+                'name': 'Cover of "%s"' % book.title,
+            })
     status_json = {
         'id': uri,
         'url': uri,
@@ -62,7 +79,7 @@ def get_status(status):
         'sensitive': status.sensitive,
         'content': status.content,
         'type': status.activity_type,
-        'attachment': [], # TODO: the book cover
+        'attachment': image_attachments,
         'replies': {
             'id': '%s/replies' % uri,
             'type': 'Collection',
@@ -81,7 +98,6 @@ def get_status(status):
 def get_replies(status, replies):
     ''' collection of replies '''
     id_slug = status.absolute_id + '/replies'
-    # TODO only partially implemented
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': id_slug,
