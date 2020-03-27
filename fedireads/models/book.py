@@ -10,14 +10,14 @@ from fedireads.utils.models import FedireadsModel
 
 class Connector(FedireadsModel):
     ''' book data source connectors '''
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     api_key = models.CharField(max_length=255, null=True)
 
     base_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True)
 
-    key_name = models.CharField(max_length=255)
+    key_name = models.CharField(max_length=255, unique=True)
 
     politeness_delay = models.IntegerField(null=True) #seconds
     max_query_count = models.IntegerField(null=True)

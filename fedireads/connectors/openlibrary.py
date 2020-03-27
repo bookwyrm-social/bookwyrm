@@ -8,10 +8,10 @@ from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
 
 
-class OpenLibraryConnector(AbstractConnector):
+class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
     def __init__(self):
-        super().__init__('openlibrary')
+        super().__init__('OpenLibrary')
 
 
     def search(self, query):
@@ -76,6 +76,8 @@ class OpenLibraryConnector(AbstractConnector):
             key = data.get('works')[0]['key']
             key = key.split('/')[-1]
             work = self.get_or_create_book(key)
+            h
+
             book.parent_work = work
 
         # we also need to know the author get the cover
