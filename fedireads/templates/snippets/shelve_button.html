@@ -1,4 +1,5 @@
 {% load fr_display %}
+{% if request.user.is_authenticated %}
 {% if not pulldown %}
 
 <form name="shelve" action="/shelve/" method="post">
@@ -24,4 +25,5 @@
     <button class="secondary" type="submit">Shelve</button>
 </form>
 
+{% endif %}
 {% endif %}

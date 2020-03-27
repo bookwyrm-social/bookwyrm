@@ -25,6 +25,7 @@
     </div>
 </div>
 
+{% if request.user.is_authenticated %}
 <div class="content-container">
     <h2>Leave a review</h2>
     <form class="review-form" name="review" action="/review/" method="post">
@@ -38,6 +39,7 @@
 <div class="content-container tabs">
     {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
 </div>
+{% endif %}
 
 {% if not reviews %}
 <div class="content-container">

@@ -26,7 +26,9 @@
         <div id="branding"><a href="/"><img id="logo" src="/static/images/logo-small.png" alt="BookWyrm"></img></a></div>
 
         <ul class="menu">
+            {% if request.user.is_authenticated %}
             <li><a href="/user/{{request.user.localname}}/shelves">Your shelves</a></li>
+            {% endif %}
             <li><a href="/#feed">Updates</a></li>
             <li><a href="/books">Discover Books</a></li>
         </ul>

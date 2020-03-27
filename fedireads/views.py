@@ -98,11 +98,11 @@ def home_tab(request, tab):
 
 def books_page(request):
     ''' discover books '''
-    recent_books = models.Book.objects.filter(
-        ~Q(shelfbook__shelf__user=request.user)
-    ).order_by(
-        '-created_date'
-    )[:50]
+    recent_books = models.Book.objects
+    if request.user.is_authenticated:
+        recent_books = recent_books.filter(~Q(shelfbook__shelf__user=request.user))
+    recent_books = recent_books.order_by('-created_date')[:50]
+
     data = {
         'books': recent_books,
     }
@@ -306,32 +306,48 @@ def book_page(request, book_identifier, tab='friends'):
     else:
         book_reviews = models.Review.objects.filter(book=book)
 
-    user_reviews = book_reviews.filter(
-        user=request.user,
-    ).all()
+    if request.user.is_authenticated:
+        user_reviews = book_reviews.filter(
+            user=request.user,
+        ).all()
 
-    if tab == 'friends':
-        reviews = book_reviews.filter(
-            Q(user__followers=request.user, privacy='public') | \
-                Q(user=request.user) | \
-                Q(mention_users=request.user),
-        )
-    elif tab == 'local':
-        reviews = book_reviews.filter(
-            Q(privacy='public') | \
-                Q(mention_users=request.user),
-            user__local=True,
-        )
+        if tab == 'friends':
+            reviews = book_reviews.filter(
+                Q(user__followers=request.user, privacy='public') | \
+                    Q(user=request.user) | \
+                    Q(mention_users=request.user),
+            )
+        elif tab == 'local':
+            reviews = book_reviews.filter(
+                Q(privacy='public') | \
+                    Q(mention_users=request.user),
+                user__local=True,
+            )
+        else:
+            reviews = book_reviews.filter(
+                Q(privacy='public') | \
+                    Q(mention_users=request.user),
+            )
+
+        try:
+            shelf = models.Shelf.objects.get(user=request.user, book=book)
+        except models.Shelf.DoesNotExist:
+            shelf = None
+
+        user_tags = models.Tag.objects.filter(
+            book=book, user=request.user
+        ).all()
+        user_tag_names = user_tags.values_list('identifier', flat=True)
+
+        user_rating = user_reviews.aggregate(Avg('rating')),
     else:
-        reviews = book_reviews.filter(
-            Q(privacy='public') | \
-                Q(mention_users=request.user),
-        )
-
-    try:
-        shelf = models.Shelf.objects.get(user=request.user, book=book)
-    except models.Shelf.DoesNotExist:
+        tab = 'public'
+        reviews = book_reviews.filter(privacy='public')
         shelf = None
+        user_reviews = []
+        user_rating = None
+        user_tags = []
+        user_tag_names = []
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -339,9 +355,6 @@ def book_page(request, book_identifier, tab='friends'):
     ).values(
         'book', 'name', 'identifier'
     ).distinct().all()
-    user_tags = models.Tag.objects.filter(
-        book=book, user=request.user
-    ).all()
 
     review_form = forms.ReviewForm()
     tag_form = forms.TagForm()
@@ -349,12 +362,12 @@ def book_page(request, book_identifier, tab='friends'):
         'book': book,
         'shelf': shelf,
         'user_reviews': user_reviews,
-        'user_rating': user_reviews.aggregate(Avg('rating')),
+        'user_rating': user_rating,
         'reviews': reviews.distinct(),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
-        'user_tag_names': user_tags.values_list('identifier', flat=True),
+        'user_tag_names': user_tag_names,
         'review_form': review_form,
         'tag_form': tag_form,
         'feed_tabs': [
