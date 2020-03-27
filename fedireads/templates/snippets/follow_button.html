@@ -1,4 +1,4 @@
-{% if request.user == user %}
+{% if request.user == user or not request.user.is_authenticated %}
 {% elif request.user in user.follower_requests.all %}
 
 <div>

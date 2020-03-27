@@ -1,6 +1,6 @@
 {% load fr_display %}
 <div class="interaction">
-
+    {% if request.user.is_authenticated %}
     <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}"></input>
@@ -45,5 +45,20 @@
             </span>
         </button>
     </form>
+    {% else %}
+    <a href="/login">
+    <span class="icon icon-comment">
+        <span class="hidden-text">Comment</span>
+    </span>
+
+    <span class="icon icon-boost">
+        <span class="hidden-text">Boost status</span>
+    </span>
+
+    <span class="icon icon-heart">
+        <span class="hidden-text">Like status</span>
+    </span>
+    </a>
+    {% endif %}
 </div>
 
