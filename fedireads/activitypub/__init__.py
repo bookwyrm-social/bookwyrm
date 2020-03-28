@@ -1,6 +1,6 @@
 ''' bring activitypub functions into the namespace '''
 from .actor import get_actor
-from .book import get_book, get_book_list
+from .book import get_book
 from .create import get_create
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject

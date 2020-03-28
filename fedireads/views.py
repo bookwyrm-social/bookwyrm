@@ -309,6 +309,9 @@ def book_page(request, book_identifier, tab='friends'):
     ''' info about a book '''
     book = books_manager.get_or_create_book(book_identifier)
 
+    if is_api_request(request):
+        return JsonResponse(activitypub.get_book(book))
+
     if isinstance(book, models.Work):
         book_reviews = models.Review.objects.filter(
             Q(book=book) | Q(book__parent_work=book),
@@ -426,6 +429,10 @@ def shelf_page(request, username, shelf_identifier):
         return HttpResponseNotFound()
 
     shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
+
+    if is_api_request(request):
+        return activitypub.get_shelf(shelf)
+
     data = {
         'shelf': shelf,
         'user': user,
