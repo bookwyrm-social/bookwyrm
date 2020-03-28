@@ -78,6 +78,7 @@ You can also run the application in a docker container. You'll have to install t
 docker-compose build
 docker-compose up
 docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py shell -c 'import init_db'
 ```
 
 
