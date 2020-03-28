@@ -162,7 +162,7 @@ def get_date(date_string):
             return datetime.strptime(date_string, date_format)
         except ValueError:
             pass
-    return False
+    return None
 
 
 def get_description(description_blob):

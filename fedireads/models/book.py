@@ -20,9 +20,6 @@ class Connector(FedireadsModel):
         default='openlibrary',
         choices=ConnectorFiles.choices
     )
-    # is this a connector to your own database, should only be true if
-    # the connector_file is `fedireads`
-    is_self = models.BooleanField(default=False)
     api_key = models.CharField(max_length=255, null=True)
 
     base_url = models.CharField(max_length=255)
@@ -130,6 +127,7 @@ class Edition(Book):
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
     openlibrary_key = models.CharField(max_length=255, null=True, unique=True)
+    fedireads_key = models.CharField(max_length=255, null=True, unique=True)
     wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
     # idk probably other keys would be useful here?
     born = models.DateTimeField(null=True)
