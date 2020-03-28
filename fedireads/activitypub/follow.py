@@ -62,3 +62,55 @@ def get_reject(user, relationship):
             'object': relationship.user_object.actor,
         }
     }
+
+
+def get_followers(user, page, follow_queryset):
+    ''' list of people who follow a user '''
+    id_slug = '%s/followers' % user.actor
+    return get_follow_info(id_slug, page, follow_queryset)
+
+
+def get_following(user, page, follow_queryset):
+    ''' list of people who follow a user '''
+    id_slug = '%s/following' % user.actor
+    return get_follow_info(id_slug, page, follow_queryset)
+
+
+def get_follow_info(id_slug, page, follow_queryset):
+    ''' a list of followers or following '''
+    if page:
+        return get_follow_page(follow_queryset, id_slug, page)
+    count = follow_queryset.count()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'OrderedCollection',
+        'totalItems': count,
+        'first': '%s?page=1' % id_slug,
+    }
+
+
+def get_follow_page(user_list, id_slug, page):
+    ''' format a list of followers/following '''
+    page = int(page)
+    page_length = 10
+    start = (page - 1) * page_length
+    end = start + page_length
+    follower_page = user_list.all()[start:end]
+    data = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s?page=%d' % (id_slug, page),
+        'type': 'OrderedCollectionPage',
+        'totalItems': user_list.count(),
+        'partOf': id_slug,
+        'orderedItems': [u.actor for u in follower_page],
+    }
+    if end <= user_list.count():
+        # there are still more pages
+        data['next'] = '%s?page=%d' % (id_slug, page + 1)
+    if start > 0:
+        data['prev'] = '%s?page=%d' % (id_slug, page - 1)
+    return data
+
+
+
