@@ -54,21 +54,17 @@ class Connector(AbstractConnector):
         data = response.json()
 
         # great, we can update our book.
-        noop = lambda x: x
-        formatters = {
-            'published_date': get_date,
-            'first_published_date': get_date,
+        mappings = {
+            'published_date': ('published_date', get_date),
+            'first_published_date': ('first_published_date', get_date),
         }
-        for (key, value) in data.items():
-            formatter = formatters[key] if key in formatters else noop
+        book = update_from_mappings(book, data, mappings)
 
-            if self.has_attr(book, key):
-                book.__setattr__(key, formatter(value))
+        book.source_url = response.url
         book.save()
 
         if data.get('parent_work'):
             work = self.get_or_create_book(data.get('parent_work'))
-
             book.parent_work = work
 
         for author_blob in data.get('authors', []):

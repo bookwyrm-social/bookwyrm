@@ -81,6 +81,7 @@ class Connector(AbstractConnector):
             if 'goodreads' in data['identifiers']:
                 book.goodreads_key = data['identifiers']['goodreads']
 
+        book.source_url = response.url
         book.save()
 
         # this book sure as heck better be an edition

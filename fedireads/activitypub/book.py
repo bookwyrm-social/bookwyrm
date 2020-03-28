@@ -20,8 +20,6 @@ def get_book(book):
         'misc_identifiers',
 
         'source_url',
-        'sync',
-        'last_sync_date',
 
         'description',
         'language',
