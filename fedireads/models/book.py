@@ -53,6 +53,7 @@ class Book(FedireadsModel):
     openlibrary_key = models.CharField(max_length=255, unique=True, null=True)
     librarything_key = models.CharField(max_length=255, unique=True, null=True)
     fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
+    goodreads_key = models.CharField(max_length=255, unique=True, null=True)
     misc_identifiers = JSONField(null=True)
 
     # info about where the data comes from and where/if to sync
@@ -72,6 +73,12 @@ class Book(FedireadsModel):
     language = models.CharField(max_length=255, null=True)
     series = models.CharField(max_length=255, blank=True, null=True)
     series_number = models.CharField(max_length=255, blank=True, null=True)
+    subjects = ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )
+    subject_places = ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = models.ManyToManyField('Author')
     # TODO: also store cover thumbnail
@@ -95,11 +102,10 @@ class Book(FedireadsModel):
         return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
 
     def __repr__(self):
-        return "<{} key={!r} title={!r} author={!r}>".format(
+        return "<{} key={!r} title={!r}>".format(
             self.__class__,
             self.openlibrary_key,
             self.title,
-            self.author
         )
 
 
@@ -115,6 +121,10 @@ class Edition(Book):
     isbn = models.CharField(max_length=255, unique=True, null=True)
     oclc_number = models.CharField(max_length=255, unique=True, null=True)
     pages = models.IntegerField(null=True)
+    physical_format = models.CharField(max_length=255, null=True)
+    publishers = ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )
 
 
 class Author(FedireadsModel):

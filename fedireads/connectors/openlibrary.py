@@ -1,4 +1,5 @@
 ''' openlibrary data connector '''
+from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import re
@@ -60,14 +61,28 @@ class Connector(AbstractConnector):
         data = response.json()
 
         # great, we can update our book.
-        book.title = data['title']
-        description = data.get('description')
-        if description:
-            if isinstance(description, dict):
-                description = description.get('value')
-            book.description = description
-        book.pages = data.get('pages')
-        #book.published_date = data.get('publish_date')
+        noop = lambda x: x
+        mappings = {
+            'publish_date': ('published_date', get_date),
+            'first_publish_date': ('first_published_date', get_date),
+            'description': ('description', get_description),
+            'isbn_13': ('isbn', noop),
+            'oclc_numbers': ('oclc_number', lambda a: a[0]),
+            'lccn': ('lccn', lambda a: a[0]),
+        }
+        for (key, value) in data.items():
+            if key in mappings:
+                key, formatter = mappings[key]
+            else:
+                key = key
+                formatter = noop
+
+            if self.has_attr(book, key):
+                book.__setattr__(key, formatter(value))
+
+        if 'identifiers' in data:
+            if 'goodreads' in data['identifiers']:
+                book.goodreads_key = data['identifiers']['goodreads']
 
         book.save()
 
@@ -139,4 +154,25 @@ class Connector(AbstractConnector):
 
     def update_book(self, book_obj):
         pass
+
+
+def get_date(date_string):
+    ''' helper function to try to interpret dates '''
+    formats = [
+        '%B %Y',
+        '%Y',
+    ]
+    for date_format in formats:
+        try:
+            return datetime.strptime(date_string, date_format)
+        except ValueError:
+            pass
+    return False
+
+
+def get_description(description_blob):
+    ''' descriptions can be a string or a dict '''
+    if isinstance(description_blob, dict):
+        return description_blob.get('value')
+    return  description_blob
 

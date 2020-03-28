@@ -26,6 +26,15 @@ class AbstractConnector(ABC):
                 return False
         return True
 
+
+    def has_attr(self, obj, key):
+        ''' helper function to check if a model object has a key '''
+        try:
+            return hasattr(obj, key)
+        except ValueError:
+            return False
+
+
     @abstractmethod
     def search(self, query):
         ''' free text search '''
