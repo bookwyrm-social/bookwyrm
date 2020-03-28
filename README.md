@@ -71,6 +71,17 @@ And go to the app at `localhost:8000`
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
 
 
+### Docker
+You can also run the application in a docker container. You'll have to install the Docker and docker-compose:
+
+```bash
+docker-compose build
+docker-compose up
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py shell -c 'import init_db'
+```
+
+
 ## Project structure
 All the url routing is in `fedireads/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
 

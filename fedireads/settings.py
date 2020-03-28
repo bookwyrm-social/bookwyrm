@@ -17,10 +17,15 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', True)
 
-# TODO: annoying that I keep changing and re-commiting this
 DOMAIN = env('DOMAIN')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['*'])
 OL_URL = env('OL_URL')
+
+# celery/rebbitmq
+CELERY_BROKER_URL = env('CELERY_BROKER')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'amqp'
 
 # Application definition
 
@@ -33,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'fedireads',
+    'celery',
 ]
 
 MIDDLEWARE = [
@@ -75,10 +81,10 @@ FEDIREADS_DATABASE_BACKEND = env('FEDIREADS_DATABASE_BACKEND', 'postgres')
 FEDIREADS_DBS = {
     'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fedireads',
-        'USER': 'fedireads',
-        'PASSWORD': 'fedireads',
-        'HOST': '',
+        'NAME': env('POSTGRES_DB', 'fedireads'),
+        'USER': env('POSTGRES_USER', 'fedireads'),
+        'PASSWORD': env('POSTGRES_PASSWORD', 'fedireads'),
+        'HOST': 'db',
         'PORT': 5432
     },
     'sqlite': {
@@ -90,6 +96,7 @@ FEDIREADS_DBS = {
 DATABASES = {
     'default': FEDIREADS_DBS[FEDIREADS_DATABASE_BACKEND]
 }
+
 
 LOGIN_URL = '/login/'
 AUTH_USER_MODEL = 'fedireads.User'
