@@ -76,7 +76,6 @@ class Connector(AbstractConnector):
             key = data.get('works')[0]['key']
             key = key.split('/')[-1]
             work = self.get_or_create_book(key)
-            h
 
             book.parent_work = work
 

@@ -1,3 +1,3 @@
 ''' settings book data connectors '''
 
-CONNECTORS = ['openlibrary', 'fedireads']
+CONNECTORS = ['openlibrary', 'fedireads_connector']

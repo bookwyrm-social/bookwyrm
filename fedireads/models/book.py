@@ -84,7 +84,6 @@ class Book(FedireadsModel):
         through='ShelfBook',
         through_fields=('book', 'shelf')
     )
-    # TODO: why can't I just call this work????
     parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
     objects = InheritanceManager()
 

@@ -22,7 +22,7 @@ Connector.objects.create(
 
 Connector.objects.create(
     identifier=DOMAIN,
-    connector_file='fedireads',
+    connector_file='fedireads_connector',
     base_url='https://%s/book' % DOMAIN,
     covers_url='https://%s/images/covers' % DOMAIN,
     search_url='https://%s/search?q=' % DOMAIN,
