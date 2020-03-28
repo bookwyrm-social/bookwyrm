@@ -33,7 +33,7 @@
         {% include 'snippets/book_cover.html' with book=book size="small" %}
     </td>
     <td>
-        <a href="/book/{{ book.openlibrary_key }}">{{ book.title }}</a>
+        <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
     </td>
     <td>
         {{ book.authors.first.name }}
@@ -45,7 +45,7 @@
         {{ book.created_date | naturalday }}
     </td>
     <td>
-        <a href="https://openlibrary.org{{ book.key }}" target="_blank">OpenLibrary</a>
+        <a href="https://openlibrary.org/book/{{ book.openlibrary_key }}" target="_blank">OpenLibrary</a>
     </td>
     {% if ratings %}
     <td>

@@ -100,7 +100,9 @@ def books_page(request):
     ''' discover books '''
     recent_books = models.Book.objects
     if request.user.is_authenticated:
-        recent_books = recent_books.filter(~Q(shelfbook__shelf__user=request.user))
+        recent_books = recent_books.filter(
+            ~Q(shelfbook__shelf__user=request.user)
+        )
     recent_books = recent_books.order_by('-created_date')[:50]
 
     data = {
