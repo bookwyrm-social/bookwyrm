@@ -6,7 +6,8 @@ import re
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import AbstractConnector, SearchResult, \
+    update_from_mappings
 
 
 class Connector(AbstractConnector):
@@ -17,7 +18,12 @@ class Connector(AbstractConnector):
 
     def search(self, query):
         ''' query openlibrary search '''
-        resp = requests.get('%s/search.json' % self.url, params={'q': query})
+        resp = requests.get(
+            '%s%s' % (self.search_url, query),
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+            },
+        )
         if not resp.ok:
             resp.raise_for_status()
         data = resp.json()
@@ -61,24 +67,15 @@ class Connector(AbstractConnector):
         data = response.json()
 
         # great, we can update our book.
-        noop = lambda x: x
         mappings = {
             'publish_date': ('published_date', get_date),
             'first_publish_date': ('first_published_date', get_date),
             'description': ('description', get_description),
-            'isbn_13': ('isbn', noop),
+            'isbn_13': ('isbn', None),
             'oclc_numbers': ('oclc_number', lambda a: a[0]),
             'lccn': ('lccn', lambda a: a[0]),
         }
-        for (key, value) in data.items():
-            if key in mappings:
-                key, formatter = mappings[key]
-            else:
-                key = key
-                formatter = noop
-
-            if self.has_attr(book, key):
-                book.__setattr__(key, formatter(value))
+        book = update_from_mappings(book, data, mappings)
 
         if 'identifiers' in data:
             if 'goodreads' in data['identifiers']:
@@ -123,18 +120,16 @@ class Connector(AbstractConnector):
 
         data = response.json()
         author = models.Author(openlibrary_key=olkey)
-        bio = data.get('bio')
-        if bio:
-            if isinstance(bio, dict):
-                bio = bio.get('value')
-            author.bio = bio
-        name = data['name']
-        author.name = name
+        mappings = {
+            'birth_date': ('born', get_date),
+            'death_date': ('died', get_date),
+            'bio': ('bio', get_description),
+        }
+        author = update_from_mappings(author, data, mappings)
         # TODO this is making some BOLD assumption
+        name = data['name']
         author.last_name = name.split(' ')[-1]
         author.first_name = ' '.join(name.split(' ')[:-1])
-        #author.born = data.get('birth_date')
-        #author.died = data.get('death_date')
         author.save()
 
         return author

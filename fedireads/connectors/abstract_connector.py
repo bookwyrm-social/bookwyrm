@@ -27,14 +27,6 @@ class AbstractConnector(ABC):
         return True
 
 
-    def has_attr(self, obj, key):
-        ''' helper function to check if a model object has a key '''
-        try:
-            return hasattr(obj, key)
-        except ValueError:
-            return False
-
-
     @abstractmethod
     def search(self, query):
         ''' free text search '''
@@ -63,6 +55,29 @@ class AbstractConnector(ABC):
         pass
 
 
+def update_from_mappings(obj, data, mappings):
+    ''' assign data to model with mappings '''
+    noop = lambda x: x
+    for (key, value) in data.items():
+        formatter = None
+        if key in mappings:
+            key, formatter = mappings[key]
+        if not formatter:
+            formatter = noop
+
+        if has_attr(obj, key):
+            obj.__setattr__(key, formatter(value))
+    return obj
+
+
+def has_attr(obj, key):
+    ''' helper function to check if a model object has a key '''
+    try:
+        return hasattr(obj, key)
+    except ValueError:
+        return False
+
+
 class SearchResult(object):
     ''' standardized search result object '''
     def __init__(self, title, key, author, year, raw_data):
@@ -75,3 +90,4 @@ class SearchResult(object):
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author)
+
