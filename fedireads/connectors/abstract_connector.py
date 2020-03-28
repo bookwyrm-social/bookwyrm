@@ -58,6 +58,8 @@ class AbstractConnector(ABC):
 def update_from_mappings(obj, data, mappings):
     ''' assign data to model with mappings '''
     noop = lambda x: x
+    mappings['authors'] = ('', noop)
+    mappings['parent_work'] = ('', noop)
     for (key, value) in data.items():
         formatter = None
         if key in mappings:

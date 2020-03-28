@@ -23,6 +23,11 @@ def search(query):
     connector = get_connector()
     return connector.search(query)
 
+def update_book(book):
+    ''' re-sync with the original data source '''
+    connector = get_connector(book)
+    connector.update_book(book)
+
 
 def get_connector(book=None):
     ''' pick a book data connector '''

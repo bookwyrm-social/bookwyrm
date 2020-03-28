@@ -58,7 +58,12 @@ class Connector(AbstractConnector):
         except ObjectDoesNotExist:
             # no book was found, so we start creating a new one
             book = model(openlibrary_key=olkey)
+        self.update_book(book)
 
+
+    def update_book(self, book):
+        ''' query openlibrary for data on a book '''
+        olkey = book.openlibrary_key
         # load the book json from openlibrary.org
         response = requests.get('%s/works/%s.json' % (self.url, olkey))
         if not response.ok:
@@ -81,8 +86,10 @@ class Connector(AbstractConnector):
             if 'goodreads' in data['identifiers']:
                 book.goodreads_key = data['identifiers']['goodreads']
 
-        book.source_url = response.url
-        book.connector = self.connector
+        if not book.source_url:
+            book.source_url = response.url
+        if not book.connector:
+            book.connector = self.connector
         book.save()
 
         # this book sure as heck better be an edition
@@ -101,7 +108,7 @@ class Connector(AbstractConnector):
             author_id = author_id.split('/')[-1]
             book.authors.add(self.get_or_create_author(author_id))
 
-        if data.get('covers') and len(data['covers']):
+        if book.sync_cover and data.get('covers') and len(data['covers']):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
 
         return book
@@ -147,10 +154,6 @@ class Connector(AbstractConnector):
             response.raise_for_status()
         image_content = ContentFile(response.content)
         return [image_name, image_content]
-
-
-    def update_book(self, book_obj):
-        pass
 
 
 def get_date(date_string):

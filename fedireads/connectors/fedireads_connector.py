@@ -42,6 +42,10 @@ class Connector(AbstractConnector):
             # no book was found, so we start creating a new one
             book = models.Book(fedireads_key=fedireads_key)
 
+
+    def update_book(self, book):
+        ''' add remote data to a local book '''
+        fedireads_key = book.fedireads_key
         response = requests.get(
             '%s/%s' % (self.base_url, fedireads_key),
             headers={
@@ -60,8 +64,10 @@ class Connector(AbstractConnector):
         }
         book = update_from_mappings(book, data, mappings)
 
-        book.source_url = response.url
-        book.connector = self.connector
+        if not book.source_url:
+            book.source_url = response.url
+        if not book.connector:
+            book.connector = self.connector
         book.save()
 
         if data.get('parent_work'):
@@ -74,7 +80,7 @@ class Connector(AbstractConnector):
             author_id = author_id.split('/')[-1]
             book.authors.add(self.get_or_create_author(author_id))
 
-        if data.get('covers') and len(data['covers']):
+        if book.sync_cover and data.get('covers') and len(data['covers']):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
 
         return book
@@ -113,10 +119,6 @@ class Connector(AbstractConnector):
             response.raise_for_status()
         image_content = ContentFile(response.content)
         return [image_name, image_content]
-
-
-    def update_book(self, book_obj):
-        pass
 
 
 def get_date(date_string):
