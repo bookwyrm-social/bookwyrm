@@ -409,7 +409,7 @@ def edit_book_page(request, book_identifier):
 def author_page(request, author_identifier):
     ''' landing page for an author '''
     try:
-        author = models.Author.objects.get(openlibrary_key=author_identifier)
+        author = models.Author.objects.get(fedireads_key=author_identifier)
     except ValueError:
         return HttpResponseNotFound()
 
