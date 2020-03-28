@@ -390,8 +390,20 @@ def book_page(request, book_identifier, tab='friends'):
         ],
         'active_tab': tab,
         'path': '/book/%s' % book_identifier,
+        'cover_form': forms.CoverForm(instance=book),
     }
     return TemplateResponse(request, 'book.html', data)
+
+
+@login_required
+def edit_book_page(request, book_identifier):
+    ''' info about a book '''
+    book = books_manager.get_or_create_book(book_identifier)
+    data = {
+        'book': book,
+        'form': forms.BookForm(instance=book)
+    }
+    return TemplateResponse(request, 'edit_book.html', data)
 
 
 def author_page(request, author_identifier):

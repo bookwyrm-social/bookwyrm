@@ -35,29 +35,27 @@ urlpatterns = [
     re_path(r'^notifications/?', views.notifications_page),
     re_path(r'books/?$', views.books_page),
     re_path(r'import/?$', views.import_page),
+    re_path(r'user-edit/?$', views.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
     re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
-    re_path(r'user-edit/?$', views.edit_profile_page),
     re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
-    re_path(r'%s/followers/?$' % local_user_path, views.followers_page),
-    re_path(r'%s/followers.json$' % local_user_path, views.followers_page),
-    re_path(r'%s/following/?$' % local_user_path, views.following_page),
-    re_path(r'%s/following.json$' % local_user_path, views.following_page),
+    re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
+    re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
 
     # statuses
-    re_path(r'%s/?$' % status_path, views.status_page),
-    re_path(r'%s.json$' % status_path, views.status_page),
+    re_path(r'%s(.json)?/?$' % status_path, views.status_page),
     re_path(r'%s/activity/?$' % status_path, views.status_page),
-    re_path(r'%s/replies/?$' % status_path, views.replies_page),
-    re_path(r'%s/replies\.json$' % status_path, views.replies_page),
+    re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
 
     # books
     re_path(r'^book/(?P<book_identifier>[\w\-]+)(.json)?/?$', views.book_page),
     re_path(r'^book/(?P<book_identifier>[\w\-]+)/(?P<tab>friends|local|federated)?$', views.book_page),
+    re_path(r'^book/(?P<book_identifier>[\w\-]+)/edit/?$', views.edit_book_page),
+
     re_path(r'^author/(?P<author_identifier>\w+)/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % username_regex, views.shelf_page),
@@ -67,23 +65,29 @@ urlpatterns = [
     re_path(r'^logout/?$', actions.user_logout),
     re_path(r'^user-login/?$', actions.user_login),
     re_path(r'^register/?$', actions.register),
+    re_path(r'^edit_profile/?$', actions.edit_profile),
+
+    re_path(r'^search/?$', actions.search),
+    re_path(r'^import_data/?', actions.import_data),
+    re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
+    re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
+
     re_path(r'^review/?$', actions.review),
     re_path(r'^comment/?$', actions.comment),
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),
     re_path(r'^reply/?$', actions.reply),
+
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
+
     re_path(r'^shelve/?$', actions.shelve),
+
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),
-    re_path(r'^search/?$', actions.search),
-    re_path(r'^edit_profile/?$', actions.edit_profile),
-    re_path(r'^clear-notifications/?$', actions.clear_notifications),
-
     re_path(r'^accept_follow_request/?$', actions.accept_follow_request),
     re_path(r'^delete_follow_request/?$', actions.delete_follow_request),
 
-    re_path(r'import_data', actions.import_data),
+    re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

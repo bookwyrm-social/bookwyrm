@@ -75,5 +75,34 @@ class TagForm(ModelForm):
         labels = {'name': 'Add a tag'}
 
 
+class CoverForm(ModelForm):
+    class Meta:
+        model = models.Book
+        fields = ['cover']
+        help_texts = {f: None for f in fields}
+
+
+class BookForm(ModelForm):
+    class Meta:
+        model = models.Book
+        exclude = [
+            'created_date',
+            'updated_date',
+            'last_sync_date',
+
+            'authors',
+            'parent_work',
+            'shelves',
+            'misc_identifiers',
+
+            'subjects',
+            'subject_places',
+
+            'source_url',
+            'connector',
+        ]
+
+
 class ImportForm(forms.Form):
     csv_file = forms.FileField()
+

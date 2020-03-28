@@ -3,7 +3,7 @@ from io import TextIOWrapper
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 import re
@@ -88,8 +88,50 @@ def edit_profile(request):
 
 
 @login_required
+def edit_book(request, book_id):
+    ''' edit a book cool '''
+    if not request.method == 'POST':
+        return redirect('/book/%s' % request.user.localname)
+
+    try:
+        book = models.Book.objects.get(id=book_id)
+    except models.Book.DoesNotExist:
+        return HttpResponseNotFound()
+
+    form = forms.BookForm(request.POST, request.FILES, instance=book)
+    if not form.is_valid():
+        return redirect(request.headers.get('Referer', '/'))
+    form.save()
+
+    return redirect('/book/%s' % book.fedireads_key)
+
+
+@login_required
+def upload_cover(request, book_id):
+    ''' upload a new cover '''
+    # TODO: alternate covers?
+    if not request.method == 'POST':
+        return redirect('/book/%s' % request.user.localname)
+
+    try:
+        book = models.Book.objects.get(id=book_id)
+    except models.Book.DoesNotExist:
+        return HttpResponseNotFound()
+
+    form = forms.CoverForm(request.POST, request.FILES, instance=book)
+    if not form.is_valid():
+        return redirect(request.headers.get('Referer', '/'))
+
+    book.cover = form.files['cover']
+    book.sync_cover = False
+    book.save()
+
+    return redirect('/book/%s' % book.fedireads_key)
+
+
+@login_required
 def shelve(request):
-    ''' put a book on a user's shelf '''
+    ''' put a  on a user's shelf '''
     book = models.Book.objects.get(id=request.POST['book'])
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],

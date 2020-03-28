@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="content-container">
+    <h2>Edit "{{ book.title }}"</h2>
+
+    <p class="book-cover">{% include 'snippets/book_cover.html' with book=book %}</p>
+
+    <form name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update book</button>
+    </form>
+</div>
+{% endblock %}
+

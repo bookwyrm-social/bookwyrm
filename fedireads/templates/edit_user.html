@@ -1,8 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div id="content">
+<div class="content-container">
     <div class="user-profile">
-        <h1>{% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</h1>
+        <h2>Edit Profile</h2>
+
+        <p>{% include 'snippets/avatar.html' with user=user %} {% if user.localname %}{{ user.localname }}{% else %}{{ user.username }}{% endif %}</p>
+
         <form name="avatar" action="/edit_profile/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}

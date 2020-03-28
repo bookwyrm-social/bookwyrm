@@ -47,15 +47,16 @@ class Connector(FedireadsModel):
 class Book(FedireadsModel):
     ''' a generic book, which can mean either an edition or a work '''
     # these identifiers apply to both works and editions
-    openlibrary_key = models.CharField(max_length=255, unique=True, null=True)
-    librarything_key = models.CharField(max_length=255, unique=True, null=True)
     fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
-    goodreads_key = models.CharField(max_length=255, unique=True, null=True)
+    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
+    librarything_key = models.CharField(max_length=255, blank=True, null=True)
+    goodreads_key = models.CharField(max_length=255, blank=True, null=True)
     misc_identifiers = JSONField(null=True)
 
     # info about where the data comes from and where/if to sync
     source_url = models.CharField(max_length=255, unique=True, null=True)
     sync = models.BooleanField(default=True)
+    sync_cover = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=datetime.now)
     connector = models.ForeignKey(
         'Connector', on_delete=models.PROTECT, null=True)
@@ -64,10 +65,10 @@ class Book(FedireadsModel):
 
     # book/work metadata
     title = models.CharField(max_length=255)
-    sort_title = models.CharField(max_length=255, null=True)
-    subtitle = models.TextField(blank=True, null=True)
+    sort_title = models.CharField(max_length=255, blank=True, null=True)
+    subtitle = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    language = models.CharField(max_length=255, null=True)
+    language = models.CharField(max_length=255, blank=True, null=True)
     series = models.CharField(max_length=255, blank=True, null=True)
     series_number = models.CharField(max_length=255, blank=True, null=True)
     subjects = ArrayField(
@@ -78,10 +79,9 @@ class Book(FedireadsModel):
     )
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = models.ManyToManyField('Author')
-    # TODO: also store cover thumbnail
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
-    first_published_date = models.DateTimeField(null=True)
-    published_date = models.DateTimeField(null=True)
+    first_published_date = models.DateTimeField(blank=True, null=True)
+    published_date = models.DateTimeField(blank=True, null=True)
     shelves = models.ManyToManyField(
         'Shelf',
         symmetrical=False,
@@ -109,16 +109,16 @@ class Book(FedireadsModel):
 class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
-    lccn = models.CharField(max_length=255, unique=True, null=True)
+    lccn = models.CharField(max_length=255, blank=True, null=True)
 
 
 class Edition(Book):
     ''' an edition of a book '''
     # these identifiers only apply to work
-    isbn = models.CharField(max_length=255, unique=True, null=True)
-    oclc_number = models.CharField(max_length=255, unique=True, null=True)
-    pages = models.IntegerField(null=True)
-    physical_format = models.CharField(max_length=255, null=True)
+    isbn = models.CharField(max_length=255, blank=True, null=True)
+    oclc_number = models.CharField(max_length=255, blank=True, null=True)
+    pages = models.IntegerField(blank=True, null=True)
+    physical_format = models.CharField(max_length=255, blank=True, null=True)
     publishers = ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
@@ -126,15 +126,15 @@ class Edition(Book):
 
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
-    openlibrary_key = models.CharField(max_length=255, null=True, unique=True)
-    fedireads_key = models.CharField(max_length=255, null=True, unique=True)
+    fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
+    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
     # idk probably other keys would be useful here?
-    born = models.DateTimeField(null=True)
-    died = models.DateTimeField(null=True)
+    born = models.DateTimeField(blank=True, null=True)
+    died = models.DateTimeField(blank=True, null=True)
     name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255, null=True)
-    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
     aliases = ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
