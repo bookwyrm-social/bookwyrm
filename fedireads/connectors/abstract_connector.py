@@ -10,7 +10,7 @@ class AbstractConnector(ABC):
     def __init__(self, identifier):
         # load connector settings
         info = models.Connector.objects.get(identifier=identifier)
-        self.model = info
+        self.connector = info
 
         self.url = info.base_url
         self.covers_url = info.covers_url
@@ -21,8 +21,8 @@ class AbstractConnector(ABC):
 
     def is_available(self):
         ''' check if you're allowed to use this connector '''
-        if self.model.max_query_count is not None:
-            if self.model.query_count >= self.model.max_query_count:
+        if self.connector.max_query_count is not None:
+            if self.connector.query_count >= self.connector.max_query_count:
                 return False
         return True
 

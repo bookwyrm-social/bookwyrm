@@ -19,7 +19,7 @@ def get_or_create_book(key):
 
 
 def search(query):
-    ''' ya '''
+    ''' try an external datasource for books '''
     connector = get_connector()
     return connector.search(query)
 

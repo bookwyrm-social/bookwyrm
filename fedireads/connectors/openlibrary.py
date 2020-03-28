@@ -82,6 +82,7 @@ class Connector(AbstractConnector):
                 book.goodreads_key = data['identifiers']['goodreads']
 
         book.source_url = response.url
+        book.connector = self.connector
         book.save()
 
         # this book sure as heck better be an edition

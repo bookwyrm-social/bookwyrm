@@ -61,6 +61,7 @@ class Connector(AbstractConnector):
         book = update_from_mappings(book, data, mappings)
 
         book.source_url = response.url
+        book.connector = self.connector
         book.save()
 
         if data.get('parent_work'):
