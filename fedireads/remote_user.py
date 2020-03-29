@@ -13,8 +13,6 @@ def get_or_create_remote_user(actor):
     except models.User.DoesNotExist:
         pass
 
-    # TODO: handle remote server and connector
-
     # load the user's info from the actor url
     response = requests.get(
         actor,
@@ -29,6 +27,9 @@ def get_or_create_remote_user(actor):
     username = '%s@%s' % (actor_parts.path.split('/')[-1], actor_parts.netloc)
     shared_inbox = data.get('endpoints').get('sharedInbox') if \
         data.get('endpoints') else None
+
+
+    server = get_or_create_remote_server(actor_parts.netloc)
 
     # throws a key error if it can't find any of these fields
     user = models.User.objects.create_user(
@@ -46,6 +47,7 @@ def get_or_create_remote_user(actor):
         fedireads_user=data.get('fedireadsUser', False),
         manually_approves_followers=data.get(
             'manuallyApprovesFollowers', False),
+        federated_server=server,
     )
     if user.fedireads_user:
         get_remote_reviews(user)
@@ -64,4 +66,37 @@ def get_remote_reviews(user):
     for status in data['orderedItems']:
         if status.get('fedireadsType') == 'Review':
             create_review_from_activity(user, status)
+
+
+def get_or_create_remote_server(domain):
+    ''' get info on a remote server '''
+    try:
+        return models.FederatedServer.objects.get(
+            server_name=domain
+        )
+    except models.FederatedServer.DoesNotExist:
+        pass
+
+    response = requests.get(
+        'https://%s/.well-known/nodeinfo' % domain,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+    try:
+        nodeinfo_url = data.get('links')[0].get('href')
+    except (TypeError, KeyError):
+        return None
+
+    response = requests.get(
+        nodeinfo_url,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+
+    server = models.FederatedServer.objects.create(
+        server_name=domain,
+        application_type=data['software']['name'],
+        application_version=data['software']['version'],
+    )
+    return server
 

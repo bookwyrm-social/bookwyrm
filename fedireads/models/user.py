@@ -108,6 +108,7 @@ class UserRelationship(FedireadsModel):
         base_path = self.user_subject.absolute_id
         return '%s#%s/%d' % (base_path, self.status, self.id)
 
+
 class UserFollows(UserRelationship):
     @property
     def status(self):
@@ -121,15 +122,18 @@ class UserFollows(UserRelationship):
             relationship_id=follow_request.relationship_id,
         )
 
+
 class UserFollowRequest(UserRelationship):
     @property
     def status(self):
         return 'follow_request'
 
+
 class UserBlocks(UserRelationship):
     @property
     def status(self):
         return 'blocks'
+
 
 class FederatedServer(FedireadsModel):
     ''' store which server's we federate with '''
@@ -138,6 +142,7 @@ class FederatedServer(FedireadsModel):
     status = models.CharField(max_length=255, default='federated')
     # is it mastodon, fedireads, etc
     application_type = models.CharField(max_length=255, null=True)
+    application_version = models.CharField(max_length=255, null=True)
 
 
 @receiver(models.signals.pre_save, sender=User)

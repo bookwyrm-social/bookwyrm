@@ -105,6 +105,6 @@ def peers(request):
     if request.method != 'GET':
         return HttpResponseNotFound()
 
-    # TODO
-    return JsonResponse([])
+    names = models.FederatedServer.objects.values_list('server_name', flat=True)
+    return JsonResponse(list(names), safe=False)
 
