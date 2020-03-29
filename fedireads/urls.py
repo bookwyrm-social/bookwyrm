@@ -13,6 +13,8 @@ local_user_path = r'^user/%s' % localname_regex
 status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
 book_path = r'^book/(?P<book_identifier>[\w\-]+)'
 
+handler404 = 'fedireads.views.not_found_page'
+handler500 = 'fedireads.views.server_error_page'
 urlpatterns = [
     path('admin/', admin.site.urls),
 
