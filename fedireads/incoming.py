@@ -33,38 +33,27 @@ def shared_inbox(request):
     except ValueError:
         return HttpResponse(status=401)
 
-    response = HttpResponseNotFound()
-    if activity['type'] == 'Follow':
-        response = handle_incoming_follow(activity)
+    handlers = {
+        'Follow': handle_follow,
+        'Create': handle_create,
+        'Accept': handle_follow_accept,
+        'Reject': handle_follow_reject,
+        'Like': handle_favorite,
+        'Add': handle_add,
+    }
+    activity_type = activity['type']
 
-    elif activity['type'] == 'Undo':
-        if not 'object' in activity:
-            return HttpResponseNotFound()
+    if activity_type in handlers:
+        handler = handlers[activity_type]
+    elif activity_type == 'Undo' and 'object' in activity:
         if activity['object']['type'] == 'Follow':
-            response = handle_incoming_undo(activity)
+            handler = handle_undo
         elif activity['object']['type'] == 'Like':
-            response = handle_incoming_unfavorite(activity)
-        else:
-            return HttpResponseNotFound()
+            handler = handle_unfavorite
+    if handler:
+        return handlers[activity_type](activity)
 
-    elif activity['type'] == 'Create':
-        response = handle_incoming_create(activity)
-
-    elif activity['type'] == 'Accept':
-        response = handle_incoming_follow_accept(activity)
-
-    elif activity['type'] == 'Like':
-        response = handle_incoming_favorite(activity)
-
-    elif activity['type'] == 'Add':
-        response = handle_incoming_add(activity)
-
-    elif activity['type'] == 'Reject':
-        response = handle_incoming_follow_reject(activity)
-
-    # TODO: Add, Undo, Remove, etc
-
-    return response
+    return HttpResponseNotFound()
 
 
 def verify_signature(request):
@@ -127,7 +116,7 @@ def inbox(request, username):
     return shared_inbox(request)
 
 
-def handle_incoming_follow(activity):
+def handle_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow
     to_follow = models.User.objects.get(actor=activity['object'])
@@ -163,7 +152,7 @@ def handle_incoming_follow(activity):
     return HttpResponse()
 
 
-def handle_incoming_undo(activity):
+def handle_undo(activity):
     ''' unfollow a local user '''
     obj = activity['object']
     if not obj['type'] == 'Follow':
@@ -179,7 +168,7 @@ def handle_incoming_undo(activity):
     return HttpResponse()
 
 
-def handle_incoming_follow_accept(activity):
+def handle_follow_accept(activity):
     ''' hurray, someone remote accepted a follow request '''
     # figure out who they want to follow
     requester = models.User.objects.get(actor=activity['object']['actor'])
@@ -198,7 +187,7 @@ def handle_incoming_follow_accept(activity):
     return HttpResponse()
 
 
-def handle_incoming_follow_reject(activity):
+def handle_follow_reject(activity):
     ''' someone is rejecting a follow request '''
     requester = models.User.objects.get(actor=activity['object']['actor'])
     rejecter = get_or_create_remote_user(activity['actor'])
@@ -214,7 +203,7 @@ def handle_incoming_follow_reject(activity):
 
     return HttpResponse()
 
-def handle_incoming_create(activity):
+def handle_create(activity):
     ''' someone did something, good on them '''
     user = get_or_create_remote_user(activity['actor'])
 
@@ -269,7 +258,7 @@ def handle_incoming_create(activity):
     return response
 
 
-def handle_incoming_favorite(activity):
+def handle_favorite(activity):
     ''' approval of your good good post '''
     try:
         status_id = activity['object'].split('/')[-1]
@@ -290,7 +279,7 @@ def handle_incoming_favorite(activity):
     return HttpResponse()
 
 
-def handle_incoming_unfavorite(activity):
+def handle_unfavorite(activity):
     ''' approval of your good good post '''
     try:
         favorite_id = activity['object']['id']
@@ -302,7 +291,7 @@ def handle_incoming_unfavorite(activity):
     return HttpResponse()
 
 
-def handle_incoming_add(activity):
+def handle_add(activity):
     ''' someone is tagging or shelving a book '''
     if activity['object']['type'] == 'Tag':
         user = get_or_create_remote_user(activity['actor'])
