@@ -114,6 +114,8 @@ def get_favorite(absolute_id):
 def get_by_absolute_id(absolute_id, model):
     ''' generalized function to get from a model with a remote_id field '''
     # check if it's a remote status
+    if not absolute_id:
+        return None
     try:
         return model.objects.get(remote_id=absolute_id)
     except model.DoesNotExist:
