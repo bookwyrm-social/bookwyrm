@@ -1,7 +1,7 @@
 ''' bring activitypub functions into the namespace '''
 from .actor import get_actor
 from .book import get_book
-from .create import get_create
+from .create import get_create, get_update
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
 from .outbox import get_outbox, get_outbox_page

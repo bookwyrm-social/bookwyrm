@@ -1,17 +1,16 @@
 ''' views for actions you can take in the application '''
-from io import TextIOWrapper
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from io import TextIOWrapper
 import re
 
 from fedireads import forms, models, books_manager, outgoing
+from fedireads.goodreads_import import GoodreadsCsv
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
-from fedireads.goodreads_import import GoodreadsCsv
 
 
 def user_login(request):
@@ -103,6 +102,7 @@ def edit_book(request, book_id):
         return redirect(request.headers.get('Referer', '/'))
     form.save()
 
+    outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.fedireads_key)
 
 
@@ -126,6 +126,7 @@ def upload_cover(request, book_id):
     book.sync_cover = False
     book.save()
 
+    outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.fedireads_key)
 
 

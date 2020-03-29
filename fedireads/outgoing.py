@@ -290,3 +290,11 @@ def handle_outgoing_unfavorite(user, status):
     recipients = get_recipients(user, 'direct', [status.user])
     broadcast(user, fav_activity, recipients)
 
+
+def handle_update_book(user, book):
+    ''' broadcast the news about our book '''
+    book_activity = activitypub.get_book(book)
+    update_activity = activitypub.get_update(user, book_activity)
+    recipients = get_recipients(None, 'public')
+    broadcast(user, update_activity, recipients)
+

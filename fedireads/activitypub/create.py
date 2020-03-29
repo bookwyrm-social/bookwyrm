@@ -30,4 +30,17 @@ def get_create(user, status_json):
     }
 
 
+def get_update(user, activity_json):
+    ''' a user profile or book or whatever got updated '''
+    # TODO: should this have a signature??
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': 'https://friend.camp/users/tripofmice#updates/1585446332',
+        'type': 'Update',
+        'actor': user.actor,
+        'to': [
+            'https://www.w3.org/ns/activitystreams#Public'
+        ],
 
+        'object': activity_json,
+    }

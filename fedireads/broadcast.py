@@ -8,10 +8,19 @@ import json
 import requests
 from urllib.parse import urlparse
 
+from fedireads import models
+
 
 def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
     ''' deduplicated list of recipient inboxes '''
     recipients = direct_recipients or []
+    if not user:
+        users = models.User.objects.filter(local=False).all()
+        recipients += list(set(
+            u.shared_inbox if u.shared_inbox else u.inbox for u in users
+        ))
+        return recipients
+
     if post_privacy == 'direct':
         # all we care about is direct_recipients, not followers
         return [u.inbox for u in recipients]
