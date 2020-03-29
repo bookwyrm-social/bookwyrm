@@ -1,17 +1,16 @@
 ''' handles all of the activity coming in to the server '''
 from base64 import b64decode
+from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
-from Crypto.Hash import SHA256
-from django.http import HttpResponse, HttpResponseBadRequest, \
-    HttpResponseNotFound
-from django.views.decorators.csrf import csrf_exempt
 import django.db.utils
+from django.http import HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 
-from fedireads import models
-from fedireads import outgoing
+from fedireads import models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 
@@ -35,23 +34,30 @@ def shared_inbox(request):
 
     handlers = {
         'Follow': handle_follow,
-        'Create': handle_create,
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
+        'Create': handle_create,
         'Like': handle_favorite,
         'Add': handle_add,
     }
     activity_type = activity['type']
 
+    handler = None
     if activity_type in handlers:
         handler = handlers[activity_type]
     elif activity_type == 'Undo' and 'object' in activity:
         if activity['object']['type'] == 'Follow':
-            handler = handle_undo
+            handler = handle_unfollow
         elif activity['object']['type'] == 'Like':
             handler = handle_unfavorite
+    elif activity_type == 'Update' and 'object' in activity:
+        if activity['object']['type'] == 'Person':
+            handler = None# TODO: handle_update_user
+        elif activity_type['object']['type'] == 'Book':
+            handler = None# TODO: handle_update_book
+
     if handler:
-        return handlers[activity_type](activity)
+        return handler(activity)
 
     return HttpResponseNotFound()
 
@@ -152,7 +158,7 @@ def handle_follow(activity):
     return HttpResponse()
 
 
-def handle_undo(activity):
+def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
     if not obj['type'] == 'Follow':
@@ -210,36 +216,25 @@ def handle_create(activity):
     if not 'object' in activity:
         return HttpResponseBadRequest()
 
-    # TODO: should only create notes if they are relevent to a book,
-    # so, not every single thing someone posts on mastodon
-    response = HttpResponse()
-    if activity['object'].get('fedireadsType') == 'Review' and \
+    if user.local:
+        # we really oughtn't even be sending in this case
+        return HttpResponse()
+
+    if activity['object'].get('fedireadsType') in ['Review', 'Comment']  and \
             'inReplyToBook' in activity['object']:
-        if user.local:
-            review_id = activity['object']['id'].split('/')[-1]
-            models.Review.objects.get(id=review_id)
-        else:
-            try:
-                status_builder.create_review_from_activity(
-                    user,
-                    activity['object']
-                )
-            except ValueError:
-                return HttpResponseBadRequest()
-    elif activity['object'].get('fedireadsType') == 'Comment' and \
-            'inReplyToBook' in activity['object']:
-        if user.local:
-            comment_id = activity['object']['id'].split('/')[-1]
-            models.Comment.objects.get(id=comment_id)
-        else:
-            try:
-                status_builder.create_comment_from_activity(
-                    user,
-                    activity['object']
-                )
-            except ValueError:
-                return HttpResponseBadRequest()
-    elif not user.local:
+        try:
+            if activity['object']['fedireadsType'] == 'Review':
+                builder = status_builder.create_review_from_activity
+            else:
+                builder = status_builder.create_comment_from_activity
+
+            # create the status, it'll throw a valueerror if anything is missing
+            builder(user, activity['object'])
+        except ValueError:
+            return HttpResponseBadRequest()
+    else:
+        # TODO: should only create notes if they are relevent to a book,
+        # so, not every single thing someone posts on mastodon
         try:
             status = status_builder.create_status_from_activity(
                 user,
@@ -255,7 +250,7 @@ def handle_create(activity):
         except ValueError:
             return HttpResponseBadRequest()
 
-    return response
+    return HttpResponse()
 
 
 def handle_favorite(activity):

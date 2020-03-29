@@ -1,8 +1,9 @@
 ''' Handle user activity '''
+from django.db import IntegrityError
+
 from fedireads import models
 from fedireads.books_manager import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
-from django.db import IntegrityError
 
 
 def create_review_from_activity(author, activity):
@@ -113,9 +114,10 @@ def get_favorite(absolute_id):
 
 def get_by_absolute_id(absolute_id, model):
     ''' generalized function to get from a model with a remote_id field '''
-    # check if it's a remote status
     if not absolute_id:
         return None
+
+    # check if it's a remote status
     try:
         return model.objects.get(remote_id=absolute_id)
     except model.DoesNotExist:

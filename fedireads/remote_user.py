@@ -13,7 +13,7 @@ def get_or_create_remote_user(actor):
     except models.User.DoesNotExist:
         pass
 
-    # TODO: also bring in the user's prevous reviews and books
+    # TODO: handle remote server and connector
 
     # load the user's info from the actor url
     response = requests.get(
@@ -54,6 +54,7 @@ def get_or_create_remote_user(actor):
 
 def get_remote_reviews(user):
     ''' ingest reviews by a new remote fedireads user '''
+    # TODO: use the server as the data source instead of OL
     outbox_page = user.outbox + '?page=true'
     response = requests.get(
         outbox_page,

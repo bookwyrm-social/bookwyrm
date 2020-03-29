@@ -21,7 +21,6 @@ def get_user_from_username(username):
 
 def is_api_request(request):
     ''' check whether a request is asking for html or data '''
-    # TODO: this should probably be the full content type? maybe?
     return 'json' in request.headers.get('Accept') or \
             request.path[-5:] == '.json'
 
@@ -369,8 +368,6 @@ def book_page(request, book_identifier, tab='friends'):
         'book', 'name', 'identifier'
     ).distinct().all()
 
-    review_form = forms.ReviewForm()
-    tag_form = forms.TagForm()
     data = {
         'book': book,
         'shelf': shelf,
@@ -381,8 +378,8 @@ def book_page(request, book_identifier, tab='friends'):
         'tags': tags,
         'user_tags': user_tags,
         'user_tag_names': user_tag_names,
-        'review_form': review_form,
-        'tag_form': tag_form,
+        'review_form': forms.ReviewForm(),
+        'tag_form': forms.TagForm(),
         'feed_tabs': [
             {'id': 'friends', 'display': 'Friends'},
             {'id': 'local', 'display': 'Local'},
@@ -434,7 +431,6 @@ def tag_page(request, tag_id):
 
 def shelf_page(request, username, shelf_identifier):
     ''' display a shelf '''
-    # TODO: json view
     try:
         user = get_user_from_username(username)
     except models.User.DoesNotExist:

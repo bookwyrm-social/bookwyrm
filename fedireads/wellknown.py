@@ -44,12 +44,13 @@ def nodeinfo_pointer(request):
         ]
     })
 
+
 def nodeinfo(request):
     ''' basic info about the server '''
     if request.method != 'GET':
         return HttpResponseNotFound()
 
-    status_count = models.Status.objects.count()
+    status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.count()
     return JsonResponse({
         "version": "2.0",
@@ -66,11 +67,10 @@ def nodeinfo(request):
                 "activeMonth": user_count, # TODO
                 "activeHalfyear": user_count, # TODO
             },
-            "localPosts": status_count, # TODO: mark local
+            "localPosts": status_count,
         },
         "openRegistrations": True,
     })
-
 
 
 def instance_info(request):
@@ -98,3 +98,13 @@ def instance_info(request):
         'registrations': True,
         'approval_required': False,
     })
+
+
+def peers(request):
+    ''' list of federated servers this instance connects with '''
+    if request.method != 'GET':
+        return HttpResponseNotFound()
+
+    # TODO
+    return JsonResponse([])
+

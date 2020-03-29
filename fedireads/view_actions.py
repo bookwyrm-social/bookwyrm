@@ -354,12 +354,10 @@ def import_data(request):
                 failures.append(item)
 
         outgoing.handle_import_books(request.user, results)
-        if failures:
-            return TemplateResponse(request, 'import_results.html', {
-                'success_count': len(results),
-                'failures': failures,
-            })
-        else:
-            return redirect('/')
+        return TemplateResponse(request, 'import_results.html', {
+            'success_count': len(results),
+            'failures': failures,
+        })
     else:
         return HttpResponseBadRequest()
+

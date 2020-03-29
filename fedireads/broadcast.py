@@ -13,7 +13,12 @@ from fedireads import models
 
 def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
     ''' deduplicated list of recipient inboxes '''
-    recipients = direct_recipients or []
+    # we're always going to broadcast to any direct recipients
+    direct_recipients = direct_recipients or []
+    recipients = [u.inbox for u in direct_recipients]
+
+    # if we're federating a book, it isn't related to any user's followers, we
+    # just want to send it out. To whom? I'm not sure, but for now, everyone.
     if not user:
         users = models.User.objects.filter(local=False).all()
         recipients += list(set(
@@ -22,16 +27,19 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
         return recipients
 
     if post_privacy == 'direct':
-        # all we care about is direct_recipients, not followers
-        return [u.inbox for u in recipients]
+        # all we care about is direct_recipients, not followers, so we're done
+        return recipients
 
     # load all the followers of the user who is sending the message
+    # "limit" refers to whether we want to send to other fedireads instances,
+    # or to only non-fedireads instances. this is confusing (TODO)
     if not limit:
         followers = user.followers.all()
     else:
         fedireads_user = limit == 'fedireads'
         followers = user.followers.filter(fedireads_user=fedireads_user).all()
 
+    # TODO I don't think this is actually accomplishing pubic/followers only?
     if post_privacy == 'public':
         # post to public shared inboxes
         shared_inboxes = set(
@@ -39,11 +47,12 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
         )
         recipients += list(shared_inboxes)
         recipients += [u.inbox for u in followers if not u.shared_inbox]
-        # TODO: direct to anyone who's mentioned
+
     if post_privacy == 'followers':
         # don't send it to the shared inboxes
         inboxes = set(u.inbox for u in followers)
         recipients += list(inboxes)
+
     return recipients
 
 

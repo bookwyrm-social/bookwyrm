@@ -11,6 +11,7 @@ localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
+book_path = r'^book/(?P<book_identifier>[\w\-]+)'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +26,9 @@ urlpatterns = [
     re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo_pointer),
     re_path(r'^nodeinfo/2\.0/?$', wellknown.nodeinfo),
     re_path(r'^api/v1/instance/?$', wellknown.instance_info),
+    re_path(r'^api/v1/instance/peers/?$', wellknown.peers),
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
+    # TODO: robots.txt
 
     # ui views
     re_path(r'^login/?$', views.login_page),
@@ -52,9 +55,9 @@ urlpatterns = [
     re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
 
     # books
-    re_path(r'^book/(?P<book_identifier>[\w\-]+)(.json)?/?$', views.book_page),
-    re_path(r'^book/(?P<book_identifier>[\w\-]+)/(?P<tab>friends|local|federated)?$', views.book_page),
-    re_path(r'^book/(?P<book_identifier>[\w\-]+)/edit/?$', views.edit_book_page),
+    re_path(r'%s(.json)?/?$' % book_path, views.book_page),
+    re_path(r'%s/(?P<tab>friends|local|federated)?$' % book_path, views.book_page),
+    re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
 
     re_path(r'^author/(?P<author_identifier>[\w\-]+)/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),

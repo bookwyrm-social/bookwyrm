@@ -7,10 +7,10 @@ from urllib.parse import urlencode
 
 from fedireads import activitypub
 from fedireads import models
-from fedireads.status import create_review, create_status, create_tag, \
-    create_notification, create_comment
-from fedireads.remote_user import get_or_create_remote_user
 from fedireads.broadcast import get_recipients, broadcast
+from fedireads.status import create_review, create_status, create_comment
+from fedireads.status import create_tag, create_notification
+from fedireads.remote_user import get_or_create_remote_user
 
 
 @csrf_exempt
@@ -109,6 +109,7 @@ def handle_accept(user, to_follow, follow_request):
     activity = activitypub.get_accept(to_follow, follow_request)
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
+
 
 def handle_reject(user, to_follow, relationship):
     ''' a local user who managed follows rejects a follow request '''
