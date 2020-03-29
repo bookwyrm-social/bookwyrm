@@ -84,7 +84,7 @@ FEDIREADS_DBS = {
         'NAME': env('POSTGRES_DB', 'fedireads'),
         'USER': env('POSTGRES_USER', 'fedireads'),
         'PASSWORD': env('POSTGRES_PASSWORD', 'fedireads'),
-        'HOST': 'db',
+        'HOST': env('POSTGRES_HOST', ''),
         'PORT': 5432
     },
     'sqlite': {
