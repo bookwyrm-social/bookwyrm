@@ -88,6 +88,20 @@ def get_user_liked(user, status):
         return False
 
 
+@register.filter(name='follow_request_exists')
+def follow_request_exists(user, requester):
+    ''' see if there is a pending follow request for a user '''
+    try:
+        models.UserFollowRequest.objects.filter(
+            user_subject=requester,
+            user_object=user,
+        ).get()
+        return True
+    except models.UserFollowRequest.DoesNotExist:
+        return False
+
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
