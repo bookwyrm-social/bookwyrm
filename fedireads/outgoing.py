@@ -298,3 +298,11 @@ def handle_update_book(user, book):
     recipients = get_recipients(None, 'public')
     broadcast(user, update_activity, recipients)
 
+
+def handle_update_user(user):
+    ''' broadcast editing a user's profile '''
+    actor = activitypub.get_actor(user)
+    update_activity = activitypub.get_update(user, actor)
+    recipients = get_recipients(user, 'public')
+    broadcast(user, update_activity, recipients)
+

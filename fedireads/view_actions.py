@@ -83,6 +83,8 @@ def edit_profile(request):
     request.user.manually_approves_followers = \
         form.cleaned_data['manually_approves_followers']
     request.user.save()
+
+    outgoing.handle_update_user(request.user)
     return redirect('/user/%s' % request.user.localname)
 
 
