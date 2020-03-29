@@ -58,6 +58,7 @@ def shared_inbox(request):
 
     elif activity['type'] == 'Add':
         response = handle_incoming_add(activity)
+
     elif activity['type'] == 'Reject':
         response = handle_incoming_follow_reject(activity)
 
@@ -152,7 +153,7 @@ def handle_incoming_follow(activity):
             'FOLLOW',
             related_user=user
         )
-        outgoing.handle_outgoing_accept(user, to_follow, request)
+        outgoing.handle_accept(user, to_follow, request)
     else:
         status_builder.create_notification(
             to_follow,

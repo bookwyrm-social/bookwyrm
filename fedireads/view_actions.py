@@ -229,7 +229,7 @@ def reply(request):
 def favorite(request, status_id):
     ''' like a status '''
     status = models.Status.objects.get(id=status_id)
-    outgoing.handle_outgoing_favorite(request.user, status)
+    outgoing.handle_favorite(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
 
@@ -237,7 +237,7 @@ def favorite(request, status_id):
 def unfavorite(request, status_id):
     ''' like a status '''
     status = models.Status.objects.get(id=status_id)
-    outgoing.handle_outgoing_unfavorite(request.user, status)
+    outgoing.handle_unfavorite(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
 
@@ -250,7 +250,7 @@ def follow(request):
     except models.User.DoesNotExist:
         return HttpResponseBadRequest()
 
-    outgoing.handle_outgoing_follow(request.user, to_follow)
+    outgoing.handle_follow(request.user, to_follow)
     user_slug = to_follow.localname if to_follow.localname \
         else to_follow.username
     return redirect('/user/%s' % user_slug)
@@ -265,7 +265,7 @@ def unfollow(request):
     except models.User.DoesNotExist:
         return HttpResponseBadRequest()
 
-    outgoing.handle_outgoing_unfollow(request.user, to_unfollow)
+    outgoing.handle_unfollow(request.user, to_unfollow)
     user_slug = to_unfollow.localname if to_unfollow.localname \
         else to_unfollow.username
     return redirect('/user/%s' % user_slug)
@@ -312,7 +312,7 @@ def accept_follow_request(request):
         # Request already dealt with.
         pass
     else:
-        outgoing.handle_outgoing_accept(requester, request.user, follow_request)
+        outgoing.handle_accept(requester, request.user, follow_request)
 
     return redirect('/user/%s' % request.user.localname)
 
@@ -334,7 +334,7 @@ def delete_follow_request(request):
     except models.UserFollowRequest.DoesNotExist:
         return HttpResponseBadRequest()
 
-    outgoing.handle_outgoing_reject(requester, request.user, follow_request)
+    outgoing.handle_reject(requester, request.user, follow_request)
     return redirect('/user/%s' % request.user.localname)
 
 

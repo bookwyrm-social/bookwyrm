@@ -78,7 +78,7 @@ def handle_account_search(query):
     return user
 
 
-def handle_outgoing_follow(user, to_follow):
+def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
     activity = activitypub.get_follow_request(user, to_follow)
     errors = broadcast(user, activity, [to_follow.inbox])
@@ -86,7 +86,7 @@ def handle_outgoing_follow(user, to_follow):
         raise(error['error'])
 
 
-def handle_outgoing_unfollow(user, to_unfollow):
+def handle_unfollow(user, to_unfollow):
     ''' someone local wants to follow someone '''
     relationship = models.UserFollows.objects.get(
         user_subject=user,
@@ -99,7 +99,7 @@ def handle_outgoing_unfollow(user, to_unfollow):
         raise(error['error'])
 
 
-def handle_outgoing_accept(user, to_follow, follow_request):
+def handle_accept(user, to_follow, follow_request):
     ''' send an acceptance message to a follow request '''
     with transaction.atomic():
         relationship = models.UserFollows.from_request(follow_request)
@@ -110,7 +110,7 @@ def handle_outgoing_accept(user, to_follow, follow_request):
     recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
     broadcast(to_follow, activity, recipient)
 
-def handle_outgoing_reject(user, to_follow, relationship):
+def handle_reject(user, to_follow, relationship):
     ''' a local user who managed follows rejects a follow request '''
     relationship.delete()
 
@@ -259,7 +259,7 @@ def handle_reply(user, review, content):
     broadcast(user, create_activity, recipients)
 
 
-def handle_outgoing_favorite(user, status):
+def handle_favorite(user, status):
     ''' a user likes a status '''
     try:
         favorite = models.Favorite.objects.create(
@@ -275,7 +275,7 @@ def handle_outgoing_favorite(user, status):
     broadcast(user, fav_activity, recipients)
 
 
-def handle_outgoing_unfavorite(user, status):
+def handle_unfavorite(user, status):
     ''' a user likes a status '''
     try:
         favorite = models.Favorite.objects.get(
