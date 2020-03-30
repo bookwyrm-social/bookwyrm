@@ -89,6 +89,22 @@ class Favorite(FedireadsModel):
         unique_together = ('user', 'status')
 
 
+class Boost(FedireadsModel):
+    ''' boost'ing a post '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    status = models.ForeignKey('Status', on_delete=models.PROTECT)
+    remote_id = models.CharField(max_length=255, unique=True, null=True)
+
+    @property
+    def absolute_id(self):
+        ''' constructs the absolute reference to any db object '''
+        if self.remote_id:
+            return self.remote_id
+        return super().absolute_id
+
+    class Meta:
+        unique_together = ('user', 'status')
+
 class Tag(FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -107,7 +123,7 @@ class Tag(FedireadsModel):
 
 
 NotificationType = models.TextChoices(
-    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST')
+    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST')
 
 class Notification(FedireadsModel):
     ''' you've been tagged, liked, followed, etc '''

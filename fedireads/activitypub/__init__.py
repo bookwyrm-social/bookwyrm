@@ -10,4 +10,5 @@ from .status import get_review, get_review_article
 from .status import get_comment, get_comment_article
 from .status import get_status, get_replies, get_replies_page
 from .status import get_favorite, get_unfavorite
+from .status import get_boost
 from .status import get_add_tag, get_remove_tag

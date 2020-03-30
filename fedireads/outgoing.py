@@ -291,6 +291,20 @@ def handle_unfavorite(user, status):
     recipients = get_recipients(user, 'direct', [status.user])
     broadcast(user, fav_activity, recipients)
 
+def handle_boost(user, status):
+    ''' a user wishes to boost a status '''
+    try:
+        boost = models.Boost.objects.create(
+            status=status,
+            user=user,
+        )
+    except IntegrityError:
+        # you already boosted that
+        return
+
+    boost_activity = activitypub.get_boost(boost)
+    recipients = get_recipients(user, 'public')
+    broadcast(user, boost_activity, recipients) 
 
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''
