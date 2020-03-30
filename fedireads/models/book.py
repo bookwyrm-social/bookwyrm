@@ -84,13 +84,6 @@ class Book(FedireadsModel):
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     first_published_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
-    shelves = models.ManyToManyField(
-        'Shelf',
-        symmetrical=False,
-        through='ShelfBook',
-        through_fields=('book', 'shelf')
-    )
-    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
     objects = InheritanceManager()
 
     @property
@@ -99,6 +92,12 @@ class Book(FedireadsModel):
         base_path = 'https://%s' % DOMAIN
         model_name = type(self).__name__.lower()
         return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
+
+    def save(self, *args, **kwargs):
+        ''' can't be abstract for query reasons, but you shouldn't USE it '''
+        if not isinstance(self, Edition) and not isinstance(self, Work):
+            raise ValueError('Books should be added as Editions or Works')
+        super().save(*args, **kwargs)
 
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(
@@ -125,6 +124,13 @@ class Edition(Book):
     publishers = ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
+    shelves = models.ManyToManyField(
+        'Shelf',
+        symmetrical=False,
+        through='ShelfBook',
+        through_fields=('book', 'shelf')
+    )
+    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
 
 
 class Author(FedireadsModel):

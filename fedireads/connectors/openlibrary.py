@@ -76,7 +76,7 @@ class Connector(AbstractConnector):
         return self.update_from_data(book, data)
 
 
-    def update_from_data(self, book, data=None):
+    def update_from_data(self, book, data, work=None):
         ''' update a book from a json blob '''
         mappings = {
             'publish_date': ('published_date', get_date),
@@ -98,12 +98,13 @@ class Connector(AbstractConnector):
         book.save()
 
         # this book sure as heck better be an edition
-        if data.get('works'):
-            key = data.get('works')[0]['key']
-            key = key.split('/')[-1]
-            work = self.get_or_create_book(key)
-
-            book.parent_work = work
+        if not work:
+            work = None
+            if data.get('works'):
+                key = data.get('works')[0]['key']
+                key = key.split('/')[-1]
+                work = self.get_or_create_book(key)
+        book.parent_work = work
 
         if isinstance(book, models.Work):
             # load editions of a work
@@ -128,7 +129,7 @@ class Connector(AbstractConnector):
         response = requests.get(
             '%s/works/%s/editions.json' % (self.url, work.openlibrary_key))
         edition_data = response.json()
-        for data in edition_data.get('entries', []):
+        for data in edition_data.get('entries', [])[:5]:
             try:
                 olkey = data['key'].split('/')[-1]
             except KeyError:
@@ -140,7 +141,7 @@ class Connector(AbstractConnector):
                 continue
             except ObjectDoesNotExist:
                 book = models.Edition.objects.create(openlibrary_key=olkey)
-                self.update_from_data(book, data)
+                self.update_from_data(book, data, work=work)
         set_default_edition(work)
 
 

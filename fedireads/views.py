@@ -55,14 +55,14 @@ def home_tab(request, tab):
         shelves.append({
             'name': 'Recently added',
             'identifier': None,
-            'books': models.Book.objects.order_by(
+            'books': models.Edition.objects.order_by(
                 '-created_date'
             )[:6 - size],
             'count': 6 - size,
         })
 
     # allows us to check if a user has shelved a book
-    user_books = models.Book.objects.filter(shelves__user=request.user).all()
+    user_books = models.Edition.objects.filter(shelves__user=request.user).all()
 
     # status updates for your follow network
     following = models.User.objects.filter(
@@ -322,11 +322,16 @@ def book_page(request, book_identifier, tab='friends'):
         return JsonResponse(activitypub.get_book(book))
 
     if isinstance(book, models.Work):
-        book_reviews = models.Review.objects.filter(
-            Q(book=book) | Q(book__parent_work=book),
-        )
-    else:
-        book_reviews = models.Review.objects.filter(book=book)
+        book = models.Edition.objects.filter(
+            parent_work=book,
+            default=True
+        ).first()
+        if not book:
+            book = models.Edition.objects.filter(
+                parent_work=book,
+            ).first()
+
+    book_reviews = models.Review.objects.filter(book=book)
 
     if request.user.is_authenticated:
         user_reviews = book_reviews.filter(
