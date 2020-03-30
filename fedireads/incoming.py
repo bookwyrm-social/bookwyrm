@@ -38,23 +38,23 @@ def shared_inbox(request):
         'Reject': handle_follow_reject,
         'Create': handle_create,
         'Like': handle_favorite,
-        'Add': handle_add,
+        'Add': {
+            'Tag': handle_add,
+        },
+        'Undo': {
+            'Follow': handle_unfollow,
+            'Like': handle_unfavorite,
+        },
+        'Update': {
+            'Person': None,# TODO: handle_update_user
+            'Document': None# TODO: handle_update_book
+        },
     }
     activity_type = activity['type']
 
-    handler = None
-    if activity_type in handlers:
-        handler = handlers[activity_type]
-    elif activity_type == 'Undo' and 'object' in activity:
-        if activity['object']['type'] == 'Follow':
-            handler = handle_unfollow
-        elif activity['object']['type'] == 'Like':
-            handler = handle_unfavorite
-    elif activity_type == 'Update' and 'object' in activity:
-        if activity['object']['type'] == 'Person':
-            handler = None# TODO: handle_update_user
-        elif activity_type['object']['type'] == 'Book':
-            handler = None# TODO: handle_update_book
+    handler = handlers.get(activity_type, None)
+    if isinstance(handler, dict):
+        handler = handler.get(activity['object']['type'], None)
 
     if handler:
         return handler(activity)
