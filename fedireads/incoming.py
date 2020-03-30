@@ -38,6 +38,7 @@ def shared_inbox(request):
         'Reject': handle_follow_reject,
         'Create': handle_create,
         'Like': handle_favorite,
+        'Announce': handle_boost,
         'Add': {
             'Tag': handle_add,
         },
@@ -285,6 +286,27 @@ def handle_unfavorite(activity):
     fav.delete()
     return HttpResponse()
 
+
+def handle_boost(activity):
+    ''' someone gave us a boost! '''
+    try:
+        status_id = activity['object'].split('/')[-1]
+        status = models.Status.objects.get(id=status_id)
+        booster = get_or_create_remote_user(activity['actor'])
+    except (models.Status.DoesNotExist, models.User.DoesNotExist):
+        return HttpResponseNotFound()
+
+    if not booster.local:
+        status_builder.create_boost_from_activity(booster, activity)
+
+    status_builder.create_notification(
+        status.user,
+        'BOOST',
+        related_user=booster,
+        related_status=status,
+    )
+
+    return HttpResponse()
 
 def handle_add(activity):
     ''' someone is tagging or shelving a book '''
