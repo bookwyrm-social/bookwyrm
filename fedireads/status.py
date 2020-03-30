@@ -102,6 +102,20 @@ def create_favorite_from_activity(user, activity):
         return models.Favorite.objects.get(status=status, user=user)
 
 
+def create_boost_from_activity(user, activity):
+    ''' create a new boost activity '''
+    status = get_status(activity['object'])
+    remote_id = activity['id']
+    try:
+        return models.Boost.objects.create(
+            status=status,
+            user=user,
+            remote_id=remote_id,
+        )
+    except IntegrityError:
+        return models.Boost.objects.get(status=status, user=user)
+
+
 def get_status(absolute_id):
     ''' find a status in the database '''
     return get_by_absolute_id(absolute_id, models.Status)
