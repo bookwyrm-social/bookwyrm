@@ -22,7 +22,7 @@ def get_book(book):
         'source_url',
 
         'description',
-        'language',
+        'languages',
         'series',
         'series_number',
         'subjects',

@@ -68,7 +68,9 @@ class Book(FedireadsModel):
     sort_title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    language = models.CharField(max_length=255, blank=True, null=True)
+    languages = ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )
     series = models.CharField(max_length=255, blank=True, null=True)
     series_number = models.CharField(max_length=255, blank=True, null=True)
     subjects = ArrayField(
@@ -114,6 +116,7 @@ class Work(Book):
 
 class Edition(Book):
     ''' an edition of a book '''
+    default = models.BooleanField(default=False)
     # these identifiers only apply to work
     isbn = models.CharField(max_length=255, blank=True, null=True)
     oclc_number = models.CharField(max_length=255, blank=True, null=True)

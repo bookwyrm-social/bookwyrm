@@ -7,6 +7,7 @@ import requests
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
 from .abstract_connector import update_from_mappings, get_date
+from .openlibrary_languages import languages
 
 
 class Connector(AbstractConnector):
@@ -84,6 +85,7 @@ class Connector(AbstractConnector):
             'isbn_13': ('isbn', None),
             'oclc_numbers': ('oclc_number', lambda a: a[0]),
             'lccn': ('lccn', lambda a: a[0]),
+            'languages': ('languages', get_languages),
         }
         book = update_from_mappings(book, data, mappings)
 
@@ -139,14 +141,7 @@ class Connector(AbstractConnector):
             except ObjectDoesNotExist:
                 book = models.Edition.objects.create(openlibrary_key=olkey)
                 self.update_from_data(book, data)
-        self.set_default_edition(work)
-
-
-    def set_default_edition(self, work):
-        ''' pick one edition to be what gets shown by default '''
-        # check for an existing default work, in which case we're done
-        # favor recent, hardcover, english editions
-
+        set_default_edition(work)
 
 
     def get_or_create_author(self, olkey):
@@ -191,9 +186,38 @@ class Connector(AbstractConnector):
         return [image_name, image_content]
 
 
+def set_default_edition(work):
+    ''' pick one edition to be what gets shown by default '''
+    # check for an existing default work, in which case we're done
+    # favor recent, hardcover, english editions
+    editions = models.Edition.objects.filter(
+        parent_work=work,
+    ).all()
+    options = [e for e in editions if 'English' in e.languages] or editions
+    format_prefs = {
+        'hardcover': 0,
+        'paperback': 1,
+        'mass market paperback': 2,
+    }
+    options = sorted(options, key=lambda e: format_prefs.get(e, 3))
+    options[0].default = True
+    options[0].save()
+
+
 def get_description(description_blob):
     ''' descriptions can be a string or a dict '''
     if isinstance(description_blob, dict):
         return description_blob.get('value')
     return  description_blob
+
+
+def get_languages(language_blob):
+    ''' /language/eng -> English '''
+    langs = []
+    for lang in language_blob:
+        langs.append(
+            languages.get(lang.get('key', ''), None)
+        )
+    return langs
+
 
