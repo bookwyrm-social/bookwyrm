@@ -32,6 +32,9 @@
             <div class="row shrink">
                 {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
             </div>
+
+        {% elif notification.notification_type == 'BOOST' %}
+            boosted your <a href="{{ notification.related_status.absolute_id}}">status</a>
         {% endif %}
     </div>
     {% endfor %}

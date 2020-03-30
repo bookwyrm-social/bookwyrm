@@ -291,6 +291,21 @@ def handle_unfavorite(user, status):
     recipients = get_recipients(user, 'direct', [status.user])
     broadcast(user, fav_activity, recipients)
 
+def handle_boost(user, status):
+    ''' a user wishes to boost a status '''
+    if models.Boost.objects.filter(
+            boosted_status=status, user=user).exists():
+        # you already boosted that.
+        return
+    boost = models.Boost.objects.create(
+        boosted_status=status,
+        user=user,
+    )
+    boost.save()
+
+    boost_activity = activitypub.get_boost(boost)
+    recipients = get_recipients(user, 'public')
+    broadcast(user, boost_activity, recipients)
 
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''

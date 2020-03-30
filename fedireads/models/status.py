@@ -89,6 +89,21 @@ class Favorite(FedireadsModel):
         unique_together = ('user', 'status')
 
 
+class Boost(Status):
+    ''' boost'ing a post '''
+    boosted_status = models.ForeignKey(
+        'Status',
+        on_delete=models.PROTECT,
+        related_name="boosters")
+
+    def save(self, *args, **kwargs):
+        self.status_type = 'Boost'
+        self.activity_type = 'Announce'
+        super().save(*args, **kwargs)
+    # This constraint can't work as it would cross tables.
+    # class Meta:
+    #     unique_together = ('user', 'boosted_status')
+
 class Tag(FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -107,7 +122,7 @@ class Tag(FedireadsModel):
 
 
 NotificationType = models.TextChoices(
-    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST')
+    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST')
 
 class Notification(FedireadsModel):
     ''' you've been tagged, liked, followed, etc '''

@@ -158,6 +158,17 @@ def get_unfavorite(favorite):
     }
 
 
+def get_boost(boost):
+    ''' boost/announce a post '''
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': boost.absolute_id,
+        'type': 'Announce',
+        'actor': boost.user.actor,
+        'object': boost.boosted_status.absolute_id,
+    }
+
+
 def get_add_tag(tag):
     ''' add activity for tagging a book '''
     uuid = uuid4()

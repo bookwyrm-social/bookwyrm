@@ -243,6 +243,12 @@ def unfavorite(request, status_id):
     outgoing.handle_unfavorite(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
+@login_required
+def boost(request, status_id):
+    ''' boost a status '''
+    status = models.Status.objects.get(id=status_id)
+    outgoing.handle_boost(request.user, status)
+    return redirect(request.headers.get('Referer', '/'))
 
 @login_required
 def follow(request):
