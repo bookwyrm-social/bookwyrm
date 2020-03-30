@@ -1,15 +1,54 @@
 {% extends 'layout.html' %}
+{% load humanize %}
 {% block content %}
 <div class="content-container">
     <h2>Edit "{{ book.title }}"</h2>
-
-    <p class="book-cover">{% include 'snippets/book_cover.html' with book=book %}</p>
-
-    <form name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update book</button>
-    </form>
+    <div class="book-preview">
+        {% include 'snippets/book_cover.html' with book=book size="small" %}
+        <p>Added: {{ book.created_date | naturaltime }}</p>
+        <p>Updated: {{ book.updated_date | naturaltime }}</p>
+    </div>
 </div>
+
+<form class="book-form content-container" name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Data sync
+    <small>If sync is enabled, any changes will be over-written</small>
+    </h3>
+    <div>
+        <div class="row">
+        <p><label for="id_sync">Sync:</label> <input type="checkbox" name="sync" id="id_sync"></p>
+        <p><label for="id_sync_cover">Sync cover:</label> <input type="checkbox" name="sync_cover" id="id_sync_cover"></p>
+        </div>
+    </div>
+
+    <h3>Cover</h3>
+    <div class="image-form">
+        <p>{{ form.cover }} </p>
+    </div>
+
+    <h3>Book Identifiers</h2>
+    <div>
+        <p><label for="id_fedireads_key">Fedireads key:</label> {{ form.fedireads_key }} </p>
+        <p><label for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
+        <p><label for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
+        <p><label for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+    </div>
+
+    <h3>Metadata</h3>
+    <div>
+        <p><label for="id_title">Title:</label> {{ form.title }} </p>
+        <p><label for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
+        <p><label for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
+        <p><label for="id_description">Description:</label> {{ form.description }} </p>
+        <p><label for="id_language">Language:</label> {{ form.language }} </p>
+        <p><label for="id_series">Series:</label> {{ form.series }} </p>
+        <p><label for="id_series_number">Series number:</label> {{ form.series_number }} </p>
+        <p><label for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
+        <p><label for="id_published_date">Published date:</label> {{ form.published_date }} </p>
+    </div>
+    <button type="submit">Update book</button>
+</form>
+
 {% endblock %}
 

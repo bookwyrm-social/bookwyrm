@@ -42,6 +42,16 @@ h2 {
     border-bottom: 3px solid #B2DBBF;
 }
 
+h3 {
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem 0;
+    border-bottom: 3px solid #70C1B2;
+    font-weight: bold;
+}
+h3 small {
+    font-weight: normal;
+}
+
 #top-bar {
     overflow: visible;
     padding: 0.5rem;
@@ -222,8 +232,29 @@ ul.menu a {
     flex-grow: 1;
     display: inline-block;
 }
+
+
+.book-form textarea {
+    display: block;
+    width: 100%;
+    font-size: 0.9em;
+}
+.book-form label {
+    display: inline-block;
+    width: 8rem;
+    vertical-align: top;
+}
+.book-form .row label {
+    width: max-content;
+}
 form input {
     flex-grow: 1;
+}
+form div {
+    margin-bottom: 1em;
+}
+textarea {
+    padding: 0.5em;
 }
 .content-container button {
     border: none;
