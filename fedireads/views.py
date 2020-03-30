@@ -352,7 +352,11 @@ def book_page(request, book_identifier, tab='friends'):
             )
 
         try:
-            shelf = models.Shelf.objects.get(user=request.user, book=book)
+            # TODO: books can be on multiple shelves
+            shelf = models.Shelf.objects.filter(
+                user=request.user,
+                book=book
+            ).first()
         except models.Shelf.DoesNotExist:
             shelf = None
 

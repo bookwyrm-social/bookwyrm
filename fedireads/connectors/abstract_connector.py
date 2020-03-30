@@ -1,5 +1,7 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
+from dateutil import parser
+import pytz
 
 from fedireads import models
 
@@ -78,6 +80,14 @@ def has_attr(obj, key):
         return hasattr(obj, key)
     except ValueError:
         return False
+
+
+def get_date(date_string):
+    ''' helper function to try to interpret dates '''
+    try:
+        return pytz.utc.localize(parser.parse(date_string))
+    except ValueError:
+        return None
 
 
 class SearchResult(object):

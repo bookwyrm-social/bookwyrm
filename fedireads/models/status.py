@@ -1,5 +1,5 @@
 ''' models for storing different kinds of Activities '''
-from datetime import datetime
+from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
@@ -21,7 +21,7 @@ class Status(FedireadsModel):
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
     # the created date can't be this, because of receiving federated posts
-    published_date = models.DateTimeField(default=datetime.now)
+    published_date = models.DateTimeField(default=timezone.now)
     favorites = models.ManyToManyField(
         'User',
         symmetrical=False,

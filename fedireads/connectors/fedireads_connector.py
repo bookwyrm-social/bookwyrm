@@ -1,11 +1,11 @@
 ''' using another fedireads instance as a source of book data '''
-from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, update_from_mappings
+from .abstract_connector import AbstractConnector
+from .abstract_connector import update_from_mappings, get_date
 
 
 class Connector(AbstractConnector):
@@ -81,7 +81,7 @@ class Connector(AbstractConnector):
             book.authors.add(self.get_or_create_author(author_id))
 
         if book.sync_cover and data.get('covers') and len(data['covers']):
-            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
+            book.cover.save(*get_cover(data['covers'][0]), save=True)
 
         return book
 
@@ -111,19 +111,12 @@ class Connector(AbstractConnector):
         return author
 
 
-    def get_cover(self, cover_url):
-        ''' ask openlibrary for the cover '''
-        image_name = cover_url.split('/')[-1]
-        response = requests.get(cover_url)
-        if not response.ok:
-            response.raise_for_status()
-        image_content = ContentFile(response.content)
-        return [image_name, image_content]
+def get_cover(cover_url):
+    ''' ask openlibrary for the cover '''
+    image_name = cover_url.split('/')[-1]
+    response = requests.get(cover_url)
+    if not response.ok:
+        response.raise_for_status()
+    image_content = ContentFile(response.content)
+    return [image_name, image_content]
 
-
-def get_date(date_string):
-    ''' helper function to try to interpret dates '''
-    try:
-        datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
-    except ValueError:
-        return False

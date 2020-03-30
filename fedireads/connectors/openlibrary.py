@@ -1,13 +1,12 @@
 ''' openlibrary data connector '''
-from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import re
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult, \
-    update_from_mappings
+from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import update_from_mappings, get_date
 
 
 class Connector(AbstractConnector):
@@ -58,7 +57,7 @@ class Connector(AbstractConnector):
         except ObjectDoesNotExist:
             # no book was found, so we start creating a new one
             book = model(openlibrary_key=olkey)
-        self.update_book(book)
+        return self.update_book(book)
 
 
     def update_book(self, book):
@@ -154,20 +153,6 @@ class Connector(AbstractConnector):
             response.raise_for_status()
         image_content = ContentFile(response.content)
         return [image_name, image_content]
-
-
-def get_date(date_string):
-    ''' helper function to try to interpret dates '''
-    formats = [
-        '%B %Y',
-        '%Y',
-    ]
-    for date_format in formats:
-        try:
-            return datetime.strptime(date_string, date_format)
-        except ValueError:
-            pass
-    return None
 
 
 def get_description(description_blob):

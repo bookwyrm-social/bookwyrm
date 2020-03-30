@@ -1,5 +1,5 @@
 ''' database schema for books and shelves '''
-from datetime import datetime
+from django.utils import timezone
 from django.db import models
 from model_utils.managers import InheritanceManager
 from uuid import uuid4
@@ -57,7 +57,7 @@ class Book(FedireadsModel):
     source_url = models.CharField(max_length=255, unique=True, null=True)
     sync = models.BooleanField(default=True)
     sync_cover = models.BooleanField(default=True)
-    last_sync_date = models.DateTimeField(default=datetime.now)
+    last_sync_date = models.DateTimeField(default=timezone.now)
     connector = models.ForeignKey(
         'Connector', on_delete=models.PROTECT, null=True)
 
