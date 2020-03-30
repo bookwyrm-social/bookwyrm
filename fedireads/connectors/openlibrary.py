@@ -129,7 +129,7 @@ class Connector(AbstractConnector):
         response = requests.get(
             '%s/works/%s/editions.json' % (self.url, work.openlibrary_key))
         edition_data = response.json()
-        for data in edition_data.get('entries', [])[:5]:
+        for data in edition_data.get('entries', []):
             try:
                 olkey = data['key'].split('/')[-1]
             except KeyError:
@@ -200,7 +200,17 @@ def set_default_edition(work):
         'paperback': 1,
         'mass market paperback': 2,
     }
-    options = sorted(options, key=lambda e: format_prefs.get(e, 3))
+    options = sorted(
+        options,
+        key=lambda e: format_prefs.get(str(e.physical_format).lower(), 3)
+    )
+    if options[0].physical_format in format_prefs:
+        options = [e for e in options if \
+            e.physical_format == options[0].physical_format]
+    options = sorted(
+        options,
+        key=lambda e: -1 * e.published_date.year
+    )
     options[0].default = True
     options[0].save()
 

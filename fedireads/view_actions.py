@@ -147,7 +147,7 @@ def shelve(request):
     if request.POST.get('reshelve', True):
         try:
             current_shelf = models.Shelf.objects.get(
-                shelf__user=request.user,
+                user=request.user,
                 edition=book
             )
             outgoing.handle_unshelve(request.user, book, current_shelf)
