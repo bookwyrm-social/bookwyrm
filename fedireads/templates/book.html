@@ -14,13 +14,12 @@
         {% endif %}
     </h2>
     <div>
-        {% if book.parent_work %}<p>Edition of <a href="/book/{{ book.parent_work.fedireads_key }}">{{ book.parent_work.title }}</a></p>{% endif %}
         <div class="book-preview">
 
             {% include 'snippets/book_cover.html' with book=book size=large %}
             <p>{{ active_tab }} rating: {{ rating | stars }}</p>
-            {% if book.description %}
-            <blockquote>{{ book.description | description }}</blockquote>
+            {% if book.parent_work.description %}
+            <blockquote>{{ book.parent_work.description | description }}</blockquote>
             {% endif %}
             <div>
                 <div id="tag-cloud">
@@ -29,6 +28,7 @@
                     {% endfor %}
                 </div>
             </div>
+            <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} other editions</a></p>
 
             {% include 'snippets/shelve_button.html' %}
 

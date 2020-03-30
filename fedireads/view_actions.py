@@ -135,7 +135,10 @@ def upload_cover(request, book_id):
 @login_required
 def shelve(request):
     ''' put a  on a user's shelf '''
-    book = models.Book.objects.get(id=request.POST['book'])
+    book = models.Book.objects.select_subclasses().get(id=request.POST['book'])
+    if isinstance(book, models.Work):
+        book = book.default_edition
+
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],
         user=request.user
@@ -144,8 +147,8 @@ def shelve(request):
     if request.POST.get('reshelve', True):
         try:
             current_shelf = models.Shelf.objects.get(
-                user=request.user,
-                book=book
+                shelf__user=request.user,
+                edition=book
             )
             outgoing.handle_unshelve(request.user, book, current_shelf)
         except models.Shelf.DoesNotExist:

@@ -52,14 +52,17 @@ def home_tab(request, tab):
     size = sum(len(s['books']) for s in shelves)
     # books new to the instance, for discovery
     if size < 6:
+        recent_books = models.Work.objects.order_by(
+            '-created_date'
+        )[:6 - size]
+        recent_books = [b.default_edition for b in recent_books]
         shelves.append({
             'name': 'Recently added',
             'identifier': None,
-            'books': models.Edition.objects.order_by(
-                '-created_date'
-            )[:6 - size],
+            'books': recent_books,
             'count': 6 - size,
         })
+
 
     # allows us to check if a user has shelved a book
     user_books = models.Edition.objects.filter(shelves__user=request.user).all()
@@ -107,17 +110,20 @@ def home_tab(request, tab):
 
 def books_page(request):
     ''' discover books '''
-    recent_books = models.Book.objects
-    if request.user.is_authenticated:
-        recent_books = recent_books.filter(
-            ~Q(shelfbook__shelf__user=request.user)
-        )
+    recent_books = models.Work.objects
     recent_books = recent_books.order_by('-created_date')[:50]
+    recent_books = [b.default_edition for b in recent_books]
+    if request.user.is_authenticated:
+        recent_books = models.Edition.objects.filter(
+            ~Q(shelfbook__shelf__user=request.user),
+            id__in=[b.id for b in recent_books],
+        )
 
     data = {
         'books': recent_books,
     }
     return TemplateResponse(request, 'books.html', data)
+
 
 @login_required
 def import_page(request):
@@ -322,16 +328,11 @@ def book_page(request, book_identifier, tab='friends'):
         return JsonResponse(activitypub.get_book(book))
 
     if isinstance(book, models.Work):
-        book = models.Edition.objects.filter(
-            parent_work=book,
-            default=True
-        ).first()
-        if not book:
-            book = models.Edition.objects.filter(
-                parent_work=book,
-            ).first()
+        book = book.default_edition
 
-    book_reviews = models.Review.objects.filter(book=book)
+    work = book.parent_work
+
+    book_reviews = models.Review.objects.filter(book__in=work.edition_set.all())
 
     if request.user.is_authenticated:
         user_reviews = book_reviews.filter(
@@ -360,7 +361,7 @@ def book_page(request, book_identifier, tab='friends'):
             # TODO: books can be on multiple shelves
             shelf = models.Shelf.objects.filter(
                 user=request.user,
-                book=book
+                edition=book
             ).first()
         except models.Shelf.DoesNotExist:
             shelf = None
@@ -422,6 +423,17 @@ def edit_book_page(request, book_identifier):
     return TemplateResponse(request, 'edit_book.html', data)
 
 
+def editions_page(request, work_id):
+    ''' list of editions of a book '''
+    work = models.Work.objects.get(id=work_id)
+    editions = models.Edition.objects.filter(parent_work=work).all()
+    data = {
+        'editions': editions,
+        'work': work,
+    }
+    return TemplateResponse(request, 'editions.html', data)
+
+
 def author_page(request, author_identifier):
     ''' landing page for an author '''
     try:
@@ -429,10 +441,10 @@ def author_page(request, author_identifier):
     except ValueError:
         return HttpResponseNotFound()
 
-    books = models.Book.objects.filter(authors=author)
+    books = models.Work.objects.filter(authors=author)
     data = {
         'author': author,
-        'books': books,
+        'books': [b.default_edition for b in books],
     }
     return TemplateResponse(request, 'author.html', data)
 
@@ -440,7 +452,7 @@ def author_page(request, author_identifier):
 def tag_page(request, tag_id):
     ''' books related to a tag '''
     tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
-    books = models.Book.objects.filter(tag__identifier=tag_id).distinct()
+    books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {
         'books': books,
         'tag': tag_obj,

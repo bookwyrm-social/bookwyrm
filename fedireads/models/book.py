@@ -91,7 +91,7 @@ class Book(FedireadsModel):
         ''' constructs the absolute reference to any db object '''
         base_path = 'https://%s' % DOMAIN
         model_name = type(self).__name__.lower()
-        return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
+        return '%s/book/%s' % (base_path, self.openlibrary_key)
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
@@ -111,6 +111,13 @@ class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
     lccn = models.CharField(max_length=255, blank=True, null=True)
+
+    @property
+    def default_edition(self):
+        ed = Edition.objects.filter(parent_work=self, default=True).first()
+        if not ed:
+            ed = Edition.objects.filter(parent_work=self).first()
+        return ed
 
 
 class Edition(Book):
