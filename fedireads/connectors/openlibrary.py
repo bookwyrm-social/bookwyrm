@@ -43,20 +43,22 @@ class Connector(AbstractConnector):
 
 
     def get_or_create_book(self, olkey):
-        ''' pull up a book record by whatever means possible '''
-        if re.match(r'^OL\d+W$', olkey):
-            model = models.Work
-        elif re.match(r'^OL\d+M$', olkey):
-            model = models.Edition
-        else:
-            raise ValueError('Invalid OpenLibrary ID')
+        ''' pull up a book record by whatever means possible.
+        if you give a work key, it should give you the default edition,
+        annotated with work data. '''
 
         try:
-            book = model.objects.get(openlibrary_key=olkey)
+            book = models.Book.objects.select_subclasses().get(
+                openlibrary_key=olkey
+            )
             return book
         except ObjectDoesNotExist:
-            # no book was found, so we start creating a new one
-            book = model(openlibrary_key=olkey)
+            pass
+        # no book was found, so we start creating a new one
+        model = models.Edition
+        if re.match(r'^OL\d+W$', olkey):
+            model = models.Work
+        book = model(openlibrary_key=olkey)
         return self.update_book(book)
 
 
@@ -67,10 +69,14 @@ class Connector(AbstractConnector):
         response = requests.get('%s/works/%s.json' % (self.url, olkey))
         if not response.ok:
             response.raise_for_status()
-
         data = response.json()
+        if not book.source_url:
+            book.source_url = response.url
+        return self.update_from_data(book, data)
 
-        # great, we can update our book.
+
+    def update_from_data(self, book, data=None):
+        ''' update a book from a json blob '''
         mappings = {
             'publish_date': ('published_date', get_date),
             'first_publish_date': ('first_published_date', get_date),
@@ -85,8 +91,6 @@ class Connector(AbstractConnector):
             if 'goodreads' in data['identifiers']:
                 book.goodreads_key = data['identifiers']['goodreads']
 
-        if not book.source_url:
-            book.source_url = response.url
         if not book.connector:
             book.connector = self.connector
         book.save()
@@ -98,6 +102,10 @@ class Connector(AbstractConnector):
             work = self.get_or_create_book(key)
 
             book.parent_work = work
+
+        if isinstance(book, models.Work):
+            # load editions of a work
+            self.get_editions_of_work(book)
 
         # we also need to know the author get the cover
         for author_blob in data.get('authors', []):
@@ -111,6 +119,34 @@ class Connector(AbstractConnector):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
 
         return book
+
+
+    def get_editions_of_work(self, work):
+        ''' get all editions of a work '''
+        response = requests.get(
+            '%s/works/%s/editions.json' % (self.url, work.openlibrary_key))
+        edition_data = response.json()
+        for data in edition_data.get('entries', []):
+            try:
+                olkey = data['key'].split('/')[-1]
+            except KeyError:
+                # bad data I guess?
+                continue
+
+            try:
+                models.Edition.objects.get(openlibrary_key=olkey)
+                continue
+            except ObjectDoesNotExist:
+                book = models.Edition.objects.create(openlibrary_key=olkey)
+                self.update_from_data(book, data)
+        self.set_default_edition(work)
+
+
+    def set_default_edition(self, work):
+        ''' pick one edition to be what gets shown by default '''
+        # check for an existing default work, in which case we're done
+        # favor recent, hardcover, english editions
+
 
 
     def get_or_create_author(self, olkey):
