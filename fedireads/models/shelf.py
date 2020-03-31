@@ -10,7 +10,7 @@ class Shelf(FedireadsModel):
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     editable = models.BooleanField(default=True)
     books = models.ManyToManyField(
-        'Book',
+        'Edition',
         symmetrical=False,
         through='ShelfBook',
         through_fields=('shelf', 'book')
@@ -29,7 +29,7 @@ class Shelf(FedireadsModel):
 
 class ShelfBook(FedireadsModel):
     # many to many join table for books and shelves
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
     added_by = models.ForeignKey(
         'User',

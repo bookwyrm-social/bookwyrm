@@ -15,7 +15,7 @@ class Status(FedireadsModel):
     status_type = models.CharField(max_length=255, default='Note')
     content = models.TextField(blank=True, null=True)
     mention_users = models.ManyToManyField('User', related_name='mention_user')
-    mention_books = models.ManyToManyField('Book', related_name='mention_book')
+    mention_books = models.ManyToManyField('Edition', related_name='mention_book')
     activity_type = models.CharField(max_length=255, default='Note')
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
@@ -49,7 +49,7 @@ class Status(FedireadsModel):
 class Comment(Status):
     ''' like a review but without a rating and transient '''
     name = models.CharField(max_length=255)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
         self.status_type = 'Comment'
@@ -60,7 +60,7 @@ class Comment(Status):
 class Review(Status):
     ''' a book review '''
     name = models.CharField(max_length=255)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     rating = models.IntegerField(
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(5)]
@@ -107,7 +107,7 @@ class Boost(Status):
 class Tag(FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
 
@@ -128,7 +128,7 @@ class Notification(FedireadsModel):
     ''' you've been tagged, liked, followed, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     related_book = models.ForeignKey(
-        'Book', on_delete=models.PROTECT, null=True)
+        'Edition', on_delete=models.PROTECT, null=True)
     related_user = models.ForeignKey(
         'User',
         on_delete=models.PROTECT, null=True, related_name='related_user')

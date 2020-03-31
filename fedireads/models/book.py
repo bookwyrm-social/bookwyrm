@@ -68,7 +68,9 @@ class Book(FedireadsModel):
     sort_title = models.CharField(max_length=255, blank=True, null=True)
     subtitle = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    language = models.CharField(max_length=255, blank=True, null=True)
+    languages = ArrayField(
+        models.CharField(max_length=255), blank=True, default=list
+    )
     series = models.CharField(max_length=255, blank=True, null=True)
     series_number = models.CharField(max_length=255, blank=True, null=True)
     subjects = ArrayField(
@@ -82,13 +84,6 @@ class Book(FedireadsModel):
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     first_published_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
-    shelves = models.ManyToManyField(
-        'Shelf',
-        symmetrical=False,
-        through='ShelfBook',
-        through_fields=('book', 'shelf')
-    )
-    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
     objects = InheritanceManager()
 
     @property
@@ -96,7 +91,13 @@ class Book(FedireadsModel):
         ''' constructs the absolute reference to any db object '''
         base_path = 'https://%s' % DOMAIN
         model_name = type(self).__name__.lower()
-        return '%s/%s/%s' % (base_path, model_name, self.openlibrary_key)
+        return '%s/book/%s' % (base_path, self.openlibrary_key)
+
+    def save(self, *args, **kwargs):
+        ''' can't be abstract for query reasons, but you shouldn't USE it '''
+        if not isinstance(self, Edition) and not isinstance(self, Work):
+            raise ValueError('Books should be added as Editions or Works')
+        super().save(*args, **kwargs)
 
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(
@@ -111,9 +112,17 @@ class Work(Book):
     # library of congress catalog control number
     lccn = models.CharField(max_length=255, blank=True, null=True)
 
+    @property
+    def default_edition(self):
+        ed = Edition.objects.filter(parent_work=self, default=True).first()
+        if not ed:
+            ed = Edition.objects.filter(parent_work=self).first()
+        return ed
+
 
 class Edition(Book):
     ''' an edition of a book '''
+    default = models.BooleanField(default=False)
     # these identifiers only apply to work
     isbn = models.CharField(max_length=255, blank=True, null=True)
     oclc_number = models.CharField(max_length=255, blank=True, null=True)
@@ -122,6 +131,13 @@ class Edition(Book):
     publishers = ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
+    shelves = models.ManyToManyField(
+        'Shelf',
+        symmetrical=False,
+        through='ShelfBook',
+        through_fields=('book', 'shelf')
+    )
+    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
 
 
 class Author(FedireadsModel):
