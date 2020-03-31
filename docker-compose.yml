@@ -42,6 +42,7 @@ services:
         restart: on-failure
     flower:
         image: mher/flower
+        command: ["flower", "--broker=redis://redis:6379/0", "--port=5555"]
         env_file: .env
         ports:
             - "5555:5555"
