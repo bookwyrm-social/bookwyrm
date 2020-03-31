@@ -13,6 +13,7 @@ import requests
 from fedireads import models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
+from fedireads import tasks
 
 
 @csrf_exempt
@@ -256,31 +257,16 @@ def handle_create(activity):
 
 def handle_favorite(activity):
     ''' approval of your good good post '''
-    try:
-        status_id = activity['object'].split('/')[-1]
-        status = models.Status.objects.get(id=status_id)
-        liker = get_or_create_remote_user(activity['actor'])
-    except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return HttpResponseNotFound()
-
-    if not liker.local:
-        status_builder.create_favorite_from_activity(liker, activity)
-
-    status_builder.create_notification(
-        status.user,
-        'FAVORITE',
-        related_user=liker,
-        related_status=status,
-    )
+    print('hiii!')
+    tasks.handle_incoming_favorite.delay(activity)
     return HttpResponse()
 
 
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
-    try:
-        favorite_id = activity['object']['id']
-        fav = status_builder.get_favorite(favorite_id)
-    except models.Favorite.DoesNotExist:
+    favorite_id = activity['object']['id']
+    fav = status_builder.get_favorite(favorite_id)
+    if not fav:
         return HttpResponseNotFound()
 
     fav.delete()

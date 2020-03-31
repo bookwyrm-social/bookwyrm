@@ -5,3 +5,5 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 COPY ./fedireads /app
+COPY ./fr_celery /app
+EXPOSE 5555
