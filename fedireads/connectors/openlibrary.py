@@ -190,26 +190,19 @@ class Connector(AbstractConnector):
 def set_default_edition(work):
     ''' pick one edition to be what gets shown by default '''
     # check for an existing default work, in which case we're done
-    # favor recent, hardcover, english editions
+    if models.Edition.objects.filter(
+            parent_work=work,
+            default=True
+        ).count():
+        return
     editions = models.Edition.objects.filter(
         parent_work=work,
     ).all()
     options = [e for e in editions if 'English' in e.languages] or editions
-    format_prefs = {
-        'hardcover': 0,
-        'paperback': 1,
-        'mass market paperback': 2,
-    }
+    options = [e for e in options if e.cover] or options
     options = sorted(
         options,
-        key=lambda e: format_prefs.get(str(e.physical_format).lower(), 3)
-    )
-    if options[0].physical_format in format_prefs:
-        options = [e for e in options if \
-            e.physical_format == options[0].physical_format]
-    options = sorted(
-        options,
-        key=lambda e: -1 * e.published_date.year
+        key=lambda e: e.published_date.year if e.published_date else None
     )
     options[0].default = True
     options[0].save()

@@ -44,7 +44,7 @@ def get_book(book):
         'published_date': book.published_date.isoformat() if \
                 book.published_date else None,
         'parent_work': book.parent_work.absolute_id if \
-                book.parent_work else None,
+                hasattr(book, 'parent_work') else None,
     }
     for field in fields:
         if hasattr(book, field):
