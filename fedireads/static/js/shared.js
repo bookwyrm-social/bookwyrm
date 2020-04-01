@@ -1,4 +1,5 @@
-function show_compose(element) {
+function show_compose(element, e) {
+    e.preventDefault();
     var visible_compose_boxes = document.getElementsByClassName('visible');
     for (var i = 0; i < visible_compose_boxes.length; i++) {
         visible_compose_boxes[i].className = 'compose-suggestion';

@@ -11,8 +11,8 @@
         </h2>
         <div class="covers-shelf {{ shelf.identifier }}">
             {% for book in shelf.books %}
-            <div class="book-preview" onclick="show_compose(this)" id="book-{{ book.id }}">
-                {% include 'snippets/book_cover.html' with book=book %}
+            <div class="book-preview" onclick="show_compose(this, event)" id="book-{{ book.id }}">
+                <a href="{{ book.absolute_id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
                 {% include 'snippets/shelve_button.html' with book=book %}
             </div>
             {% endfor %}
