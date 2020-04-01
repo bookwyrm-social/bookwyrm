@@ -88,6 +88,12 @@ def get_user_liked(user, status):
         return False
 
 
+@register.filter(name='boosted')
+def get_user_boosted(user, status):
+    ''' did the given user fav a status? '''
+    return user.id in status.boosters.all().values_list('user', flat=True)
+
+
 @register.filter(name='follow_request_exists')
 def follow_request_exists(user, requester):
     ''' see if there is a pending follow request for a user '''
