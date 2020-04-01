@@ -2,22 +2,8 @@
 {% load fr_display %}
 {% block content %}
 
-<div class="all-shelves content-container">
-    {% include 'snippets/covers_shelf.html' with shelves=shelves user=request.user %}
-</div>
+{% include 'snippets/covers_shelf.html' with shelves=shelves user=request.user %}
 
-{% for shelf in shelves %}
-    {% for book in shelf.books %}
-<div class="compose-suggestion" id="compose-book-{{ book.id }}">
-    <span class="close icon icon-close" onclick="hide_element(this)">
-        <span class="hidden-text">Close</span>
-    </span>
-    <div class="content-container">
-        {% include 'snippets/create_status.html' with book=book user=request.user %}
-    </div>
-</div>
-    {% endfor %}
-{% endfor %}
 
 <div id="feed">
     <div class="content-container tabs">
@@ -31,5 +17,4 @@
     {% endfor %}
 </div>
 
-<script src="/static/js/feed.js"></script>
 {% endblock %}
