@@ -60,10 +60,15 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
     return recipients
 
 
-@app.task
 def broadcast(sender, activity, recipients):
     ''' send out an event '''
-    sender = models.User.objects.get(id=sender)
+    broadcast_task.delay(sender.id, activity, recipients)
+
+
+@app.task
+def broadcast_task(sender_id, activity, recipients):
+    ''' the celery task for broadcast '''
+    sender = models.User.objects.get(id=sender_id)
     errors = []
     for recipient in recipients:
         try:
