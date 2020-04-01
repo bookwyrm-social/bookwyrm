@@ -39,6 +39,9 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
         fedireads_user = limit == 'fedireads'
         followers = user.followers.filter(fedireads_user=fedireads_user).all()
 
+    # we don't need to broadcast to ourself
+    followers = followers.filter(local=False)
+
     # TODO I don't think this is actually accomplishing pubic/followers only?
     if post_privacy == 'public':
         # post to public shared inboxes
