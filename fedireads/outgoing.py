@@ -167,6 +167,10 @@ def handle_import_books(user, items):
                 identifier=item.shelf,
                 user=user
             )
+            if isinstance(item.book, models.Work):
+                item.book = item.book.default_edition
+            if not item.book:
+                continue
             _, created = models.ShelfBook.objects.get_or_create(
                 book=item.book, shelf=desired_shelf, added_by=user)
             if created:
