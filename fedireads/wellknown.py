@@ -55,7 +55,7 @@ def nodeinfo(request):
     return JsonResponse({
         "version": "2.0",
         "software": {
-            "name": "mastodon",
+            "name": "fedireads",
             "version": "0.0.1"
         },
         "protocols": [
