@@ -11,6 +11,7 @@ from fedireads import forms, models, books_manager, outgoing
 from fedireads.goodreads_import import GoodreadsCsv
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+from fedireads.books_manager import get_or_create_book
 
 
 def user_login(request):
@@ -172,7 +173,10 @@ def review(request):
     content = form.data.get('content')
     rating = form.data.get('rating')
 
-    outgoing.handle_review(request.user, book_identifier, name, content, rating)
+    # throws a value error if the book is not found
+    book = get_or_create_book(book_identifier)
+
+    outgoing.handle_review(request.user, book, name, content, rating)
     return redirect('/book/%s' % book_identifier)
 
 

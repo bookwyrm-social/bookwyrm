@@ -23,11 +23,8 @@ def create_review_from_activity(author, activity):
     return review
 
 
-def create_review(user, possible_book, name, content, rating):
+def create_review(user, book, name, content, rating):
     ''' a book review has been added '''
-    # throws a value error if the book is not found
-    book = get_or_create_book(possible_book)
-
     content = sanitize(content)
 
     # no ratings outside of 0-5
