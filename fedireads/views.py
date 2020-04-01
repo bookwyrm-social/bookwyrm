@@ -73,27 +73,7 @@ def home_tab(request, tab):
     # allows us to check if a user has shelved a book
     user_books = models.Edition.objects.filter(shelves__user=request.user).all()
 
-    # status updates for your follow network
-    following = models.User.objects.filter(
-        Q(followers=request.user) | Q(id=request.user.id)
-    )
-
-    activities = models.Status.objects.order_by(
-        '-created_date'
-    ).select_subclasses()
-
-    if tab == 'home':
-        # people you follow and direct mentions
-        activities = activities.filter(
-            Q(user__in=following, privacy='public') | \
-                Q(mention_users=request.user)
-        )
-    elif tab == 'local':
-        # everyone on this instance
-        activities = activities.filter(user__local=True, privacy='public')
-    else:
-        # all activities from everyone you federate with
-        activities = activities.filter(privacy='public')
+    activities = get_activity_feed(request.user, tab)
 
     activity_count = activities.count()
     activities = activities[(page - 1) * page_size:page * page_size]
@@ -117,6 +97,42 @@ def home_tab(request, tab):
         'prev': prev_page if page > 1 else None,
     }
     return TemplateResponse(request, 'feed.html', data)
+
+
+def get_activity_feed(user, filter_level, model=models.Status):
+    ''' get a filtered queryset of statuses '''
+    # status updates for your follow network
+    following = models.User.objects.filter(
+        Q(followers=user) | Q(id=user.id)
+    )
+
+    activities = model
+    if hasattr(model, 'objects'):
+        activities = model.objects
+
+    activities = activities.order_by(
+        '-created_date'
+    )
+    if hasattr(activities, 'select_subclasses'):
+        activities = activities.select_subclasses()
+
+    # TODO: privacy relationshup between request.user and user
+    if filter_level in ['friends', 'home']:
+        # people you follow and direct mentions
+        activities = activities.filter(
+            Q(user__in=following, privacy='public') | \
+                Q(mention_users=user)
+        )
+    elif filter_level == 'self':
+        activities = activities.filter(user=user, privacy='public')
+    elif filter_level == 'local':
+        # everyone on this instance
+        activities = activities.filter(user__local=True, privacy='public')
+    else:
+        # all activities from everyone you federate with
+        activities = activities.filter(privacy='public')
+
+    return activities
 
 
 def books_page(request):
@@ -199,11 +215,7 @@ def user_page(request, username, subpage=None):
     else:
         shelves = get_user_shelf_preview(user)
         data['shelves'] = shelves
-        activities = models.Status.objects.filter(
-            user=user,
-        ).order_by(
-            '-created_date',
-        ).select_subclasses().all()[:10]
+        activities = get_activity_feed(user, 'self')[:15]
         data['activities'] = activities
         return TemplateResponse(request, 'user.html', data)
 
@@ -350,23 +362,7 @@ def book_page(request, book_identifier, tab='friends'):
             user=request.user,
         ).all()
 
-        if tab == 'friends':
-            reviews = book_reviews.filter(
-                Q(user__followers=request.user, privacy='public') | \
-                    Q(user=request.user) | \
-                    Q(mention_users=request.user),
-            )
-        elif tab == 'local':
-            reviews = book_reviews.filter(
-                Q(privacy='public') | \
-                    Q(mention_users=request.user),
-                user__local=True,
-            )
-        else:
-            reviews = book_reviews.filter(
-                Q(privacy='public') | \
-                    Q(mention_users=request.user),
-            )
+        reviews = get_activity_feed(request.user, tab, model=book_reviews)
 
         try:
             # TODO: books can be on multiple shelves
