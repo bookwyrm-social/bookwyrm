@@ -8,13 +8,15 @@ from fedireads.sanitize_html import InputHtmlParser
 
 def create_review_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
-    book = activity['inReplyToBook']
-    book = book.split('/')[-1]
+    book_id = activity['inReplyToBook']
+    book_id = book_id.split('/')[-1]
     name = activity.get('name')
     rating = activity.get('rating')
     content = activity.get('content')
     published = activity.get('published')
     remote_id = activity['id']
+
+    book = get_or_create_book(book_id)
 
     review = create_review(author, book, name, content, rating)
     review.published_date = published
