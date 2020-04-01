@@ -1,11 +1,12 @@
 ''' views for actions you can take in the application '''
+from io import TextIOWrapper
+import re
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from io import TextIOWrapper
-import re
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.goodreads_import import GoodreadsCsv
@@ -370,6 +371,4 @@ def import_data(request):
             'success_count': len(results),
             'failures': failures,
         })
-    else:
-        return HttpResponseBadRequest()
-
+    return HttpResponseBadRequest()
