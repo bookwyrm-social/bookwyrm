@@ -15,6 +15,26 @@
         {% include 'snippets/status.html' with status=activity %}
     </div>
     {% endfor %}
+
+    <div class="content-container pagination row">
+        {% if prev %}
+        <p>
+            <a href="{{ prev }}">
+                <span class="icon icon-arrow-left"></span>
+                Previous
+            </a>
+        </p>
+        {% endif %}
+
+        {% if next %}
+        <p class="next">
+            <a href="{{ next }}">
+                Next
+                <span class="icon icon-arrow-right"></span>
+            </a>
+        </p>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}

@@ -44,6 +44,12 @@ def home(request):
 @login_required
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
+    page_size = 15
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     shelves = []
     shelves = get_user_shelf_preview(
         request.user,
@@ -89,8 +95,11 @@ def home_tab(request, tab):
         # all activities from everyone you federate with
         activities = activities.filter(privacy='public')
 
-    activities = activities[:10]
+    activity_count = activities.count()
+    activities = activities[(page - 1) * page_size:page * page_size]
 
+    next_page = '/?page=%d' % (page + 1)
+    prev_page = '/?page=%d' % (page - 1)
     data = {
         'user': request.user,
         'shelves': shelves,
@@ -104,6 +113,8 @@ def home_tab(request, tab):
         'active_tab': tab,
         'review_form': forms.ReviewForm(),
         'comment_form': forms.CommentForm(),
+        'next': next_page if activity_count > (page_size * page) else None,
+        'prev': prev_page if page > 1 else None,
     }
     return TemplateResponse(request, 'feed.html', data)
 
