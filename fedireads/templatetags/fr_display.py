@@ -101,6 +101,13 @@ def follow_request_exists(user, requester):
         return False
 
 
+@register.filter(name='boosted_status')
+def get_boosted(boost):
+    ''' load a boosted status. have to do this or it wont get foregin keys '''
+    return models.Status.objects.select_subclasses().filter(
+        id=boost.boosted_status.id
+    ).get()
+
 
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):

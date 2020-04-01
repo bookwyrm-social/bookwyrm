@@ -101,6 +101,7 @@ class Boost(Status):
         self.status_type = 'Boost'
         self.activity_type = 'Announce'
         super().save(*args, **kwargs)
+
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')

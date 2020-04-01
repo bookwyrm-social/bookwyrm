@@ -300,8 +300,8 @@ button.warning {
 }
 
 .user-pic {
-    width: 2rem;
-    height: 2rem;
+    width: 2em;
+    height: 2em;
     border-radius: 50%;
     vertical-align: top;
     position: relative;
@@ -577,6 +577,14 @@ th, td {
 .post .user-pic, .compose-suggestion .user-pic {
     right: 0.25em;
 }
+.post h2 .subhead {
+    display: block;
+    margin-left: 2em;
+}
+.post .subhead .time-ago {
+    display: none;
+}
+
 
 .comment-thread .post {
     margin-left: 4em;
