@@ -88,6 +88,14 @@ class GoodreadsItem:
         if self.line['Exclusive Shelf']:
             return GOODREADS_SHELVES[self.line['Exclusive Shelf']]
 
+    @property
+    def review(self):
+        return self.line['My Review']
+
+    @property
+    def rating(self):
+        return int(self.line['My Rating'])
+
     def __repr__(self):
         return "<GoodreadsItem {!r}>".format(self.line['Title'])
 

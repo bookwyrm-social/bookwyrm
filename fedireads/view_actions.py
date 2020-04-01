@@ -357,16 +357,22 @@ def import_data(request):
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
         results = []
+        reviews = []
         failures = []
         for item in GoodreadsCsv(TextIOWrapper(
                 request.FILES['csv_file'],
                 encoding=request.encoding)):
             if item.book:
                 results.append(item)
+                if item.rating:
+                    reviews.append(item)
             else:
                 failures.append(item)
 
         outgoing.handle_import_books(request.user, results)
+        for item in reviews:
+            outgoing.handle_review(
+                request.user, item.book, "", item.review, item.rating)
         return TemplateResponse(request, 'import_results.html', {
             'success_count': len(results),
             'failures': failures,
