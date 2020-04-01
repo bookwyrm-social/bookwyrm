@@ -19,18 +19,24 @@ def get_comment(comment):
     status = get_status(comment)
     status['inReplyToBook'] = comment.book.absolute_id
     status['fedireadsType'] = comment.status_type
-    status['name'] = comment.name
     return status
 
 
 def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(review)
-    name = 'Review of "%s" (%d stars): %s' % (
-        review.book.title,
-        review.rating,
-        review.name
-    )
+    if review.rating:
+        name = 'Review of "%s" (%d stars): %s' % (
+            review.book.title,
+            review.rating,
+            review.name
+        )
+    else:
+        name = 'Review of "%s": %s' % (
+            review.book.title,
+            review.name
+        )
+
     status['name'] = name
     return status
 
@@ -38,11 +44,8 @@ def get_review_article(review):
 def get_comment_article(comment):
     ''' a book comment formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(comment)
-    name = '%s (comment on "%s")' % (
-        comment.name,
-        comment.book.title
-    )
-    status['name'] = name
+    status['content'] += '<br><br>(comment on <a href="%s">"%s"</a>)' % \
+        (comment.book.absolute_id, comment.book.title)
     return status
 
 

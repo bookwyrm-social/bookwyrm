@@ -31,9 +31,6 @@ class ReviewForm(ModelForm):
         model = models.Review
         fields = ['name', 'rating', 'content']
         help_texts = {f: None for f in fields}
-        content = IntegerField(validators=[
-            MinValueValidator(0), MaxValueValidator(5)
-        ])
         labels = {
             'name': 'Title',
             'rating': 'Rating (out of 5)',
@@ -44,10 +41,9 @@ class ReviewForm(ModelForm):
 class CommentForm(ModelForm):
     class Meta:
         model = models.Comment
-        fields = ['name', 'content']
+        fields = ['content']
         help_texts = {f: None for f in fields}
         labels = {
-            'name': 'Title',
             'content': 'Comment',
         }
 

@@ -31,7 +31,11 @@ def create_review(user, possible_book, name, content, rating):
     content = sanitize(content)
 
     # no ratings outside of 0-5
-    rating = rating if 0 <= rating <= 5 else 0
+    try:
+        rating = int(rating)
+        rating = rating if 1 <= rating <= 5 else None
+    except ValueError:
+        rating = None
 
     return models.Review.objects.create(
         user=user,
@@ -46,19 +50,18 @@ def create_comment_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book = activity['inReplyToBook']
     book = book.split('/')[-1]
-    name = activity.get('name')
     content = activity.get('content')
     published = activity.get('published')
     remote_id = activity['id']
 
-    comment = create_comment(author, book, name, content)
+    comment = create_comment(author, book, content)
     comment.published_date = published
     comment.remote_id = remote_id
     comment.save()
     return comment
 
 
-def create_comment(user, possible_book, name, content):
+def create_comment(user, possible_book, content):
     ''' a book comment has been added '''
     # throws a value error if the book is not found
     book = get_or_create_book(possible_book)
@@ -67,7 +70,6 @@ def create_comment(user, possible_book, name, content):
     return models.Comment.objects.create(
         user=user,
         book=book,
-        name=name,
         content=content,
     )
 

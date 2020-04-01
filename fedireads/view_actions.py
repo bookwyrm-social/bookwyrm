@@ -170,7 +170,7 @@ def review(request):
     # TODO: validation, htmlification
     name = form.data.get('name')
     content = form.data.get('content')
-    rating = int(form.data.get('rating'))
+    rating = form.data.get('rating')
 
     outgoing.handle_review(request.user, book_identifier, name, content, rating)
     return redirect('/book/%s' % book_identifier)
@@ -186,10 +186,9 @@ def comment(request):
         return redirect('/book/%s' % book_identifier)
 
     # TODO: validation, htmlification
-    name = form.data.get('name')
     content = form.data.get('content')
 
-    outgoing.handle_comment(request.user, book_identifier, name, content)
+    outgoing.handle_comment(request.user, book_identifier, content)
     return redirect('/book/%s' % book_identifier)
 
 

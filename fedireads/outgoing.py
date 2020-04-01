@@ -208,10 +208,10 @@ def handle_review(user, book, name, content, rating):
     broadcast(user, article_create_activity, other_recipients)
 
 
-def handle_comment(user, book, name, content):
+def handle_comment(user, book, content):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    comment = create_comment(user, book, name, content)
+    comment = create_comment(user, book, content)
 
     comment_activity = activitypub.get_comment(comment)
     comment_create_activity = activitypub.get_create(user, comment_activity)
