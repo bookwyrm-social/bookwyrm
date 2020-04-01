@@ -22,8 +22,7 @@ def unquote_string(text):
     match = re.match(r'="([^"]*)"', text)
     if match:
         return match.group(1)
-    else:
-        return text
+    return text
 
 
 def construct_search_term(title, author):
@@ -36,7 +35,7 @@ def construct_search_term(title, author):
     return ' '.join([title, author])
 
 
-class GoodreadsCsv(object):
+class GoodreadsCsv:
     ''' define a goodreads csv '''
     def __init__(self, csv_file):
         self.reader = csv.DictReader(csv_file)
@@ -51,7 +50,7 @@ class GoodreadsCsv(object):
             yield entry
 
 
-class GoodreadsItem(object):
+class GoodreadsItem:
     ''' a processed line in a goodreads csv '''
     def __init__(self, line):
         self.line = line
@@ -94,4 +93,3 @@ class GoodreadsItem(object):
 
     def __str__(self):
         return "{} by {}".format(self.line['Title'], self.line['Author'])
-
