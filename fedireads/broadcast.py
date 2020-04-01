@@ -9,6 +9,7 @@ import requests
 from urllib.parse import urlparse
 
 from fedireads import models
+from fedireads.tasks import app
 
 
 def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
@@ -59,8 +60,10 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
     return recipients
 
 
+@app.task
 def broadcast(sender, activity, recipients):
     ''' send out an event '''
+    sender = models.User.objects.get(id=sender)
     errors = []
     for recipient in recipients:
         try:
