@@ -13,7 +13,21 @@ import requests
 from fedireads import models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
-from fedireads import tasks
+from fedireads.tasks import app
+
+
+@csrf_exempt
+def inbox(request, username):
+    ''' incoming activitypub events '''
+    # TODO: should do some kind of checking if the user accepts
+    # this action from the sender probably? idk
+    # but this will just throw a 404 if the user doesn't exist
+    try:
+        models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return HttpResponseNotFound()
+
+    return shared_inbox(request)
 
 
 @csrf_exempt
@@ -41,7 +55,7 @@ def shared_inbox(request):
         'Like': handle_favorite,
         'Announce': handle_boost,
         'Add': {
-            'Tag': handle_add,
+            'Tag': handle_tag,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -58,10 +72,11 @@ def shared_inbox(request):
     if isinstance(handler, dict):
         handler = handler.get(activity['object']['type'], None)
 
-    if handler:
-        return handler(activity)
+    if not handler:
+        return HttpResponseNotFound()
 
-    return HttpResponseNotFound()
+    handler.delay(activity)
+    return HttpResponse()
 
 
 def verify_signature(request):
@@ -110,20 +125,7 @@ def verify_signature(request):
     return True
 
 
-@csrf_exempt
-def inbox(request, username):
-    ''' incoming activitypub events '''
-    # TODO: should do some kind of checking if the user accepts
-    # this action from the sender probably? idk
-    # but this will just throw a 404 if the user doesn't exist
-    try:
-        models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
-
-    return shared_inbox(request)
-
-
+@app.task
 def handle_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow
@@ -142,7 +144,7 @@ def handle_follow(activity):
         # Duplicate follow request. Not sure what the correct behaviour is, but
         # just dropping it works for now. We should perhaps generate the
         # Accept, but then do we need to match the activity id?
-        return HttpResponse()
+        return
 
     if not to_follow.manually_approves_followers:
         status_builder.create_notification(
@@ -157,9 +159,9 @@ def handle_follow(activity):
             'FOLLOW_REQUEST',
             related_user=user
         )
-    return HttpResponse()
 
 
+@app.task
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
@@ -173,9 +175,9 @@ def handle_unfollow(activity):
         return HttpResponseNotFound()
 
     to_unfollow.followers.remove(requester)
-    return HttpResponse()
 
 
+@app.task
 def handle_follow_accept(activity):
     ''' hurray, someone remote accepted a follow request '''
     # figure out who they want to follow
@@ -192,9 +194,9 @@ def handle_follow_accept(activity):
     except models.UserFollowRequest.DoesNotExist:
         pass
     accepter.followers.add(requester)
-    return HttpResponse()
 
 
+@app.task
 def handle_follow_reject(activity):
     ''' someone is rejecting a follow request '''
     requester = models.User.objects.get(actor=activity['object']['actor'])
@@ -209,8 +211,8 @@ def handle_follow_reject(activity):
     except models.UserFollowRequest.DoesNotExist:
         pass
 
-    return HttpResponse()
 
+@app.task
 def handle_create(activity):
     ''' someone did something, good on them '''
     user = get_or_create_remote_user(activity['actor'])
@@ -220,7 +222,7 @@ def handle_create(activity):
 
     if user.local:
         # we really oughtn't even be sending in this case
-        return HttpResponse()
+        return
 
     if activity['object'].get('fedireadsType') in ['Review', 'Comment']  and \
             'inReplyToBook' in activity['object']:
@@ -252,16 +254,30 @@ def handle_create(activity):
         except ValueError:
             return HttpResponseBadRequest()
 
-    return HttpResponse()
 
 
+@app.task
 def handle_favorite(activity):
     ''' approval of your good good post '''
-    print('hiii!')
-    tasks.handle_incoming_favorite.delay(activity)
-    return HttpResponse()
+    try:
+        status_id = activity['object'].split('/')[-1]
+        status = models.Status.objects.get(id=status_id)
+        liker = get_or_create_remote_user(activity['actor'])
+    except (models.Status.DoesNotExist, models.User.DoesNotExist):
+        return
+
+    if not liker.local:
+        status_builder.create_favorite_from_activity(liker, activity)
+
+    status_builder.create_notification(
+        status.user,
+        'FAVORITE',
+        related_user=liker,
+        related_status=status,
+    )
 
 
+@app.task
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
     favorite_id = activity['object']['id']
@@ -270,9 +286,9 @@ def handle_unfavorite(activity):
         return HttpResponseNotFound()
 
     fav.delete()
-    return HttpResponse()
 
 
+@app.task
 def handle_boost(activity):
     ''' someone gave us a boost! '''
     try:
@@ -292,16 +308,12 @@ def handle_boost(activity):
         related_status=status,
     )
 
-    return HttpResponse()
 
-def handle_add(activity):
+@app.task
+def handle_tag(activity):
     ''' someone is tagging or shelving a book '''
-    if activity['object']['type'] == 'Tag':
-        user = get_or_create_remote_user(activity['actor'])
-        if not user.local:
-            book = activity['target']['id'].split('/')[-1]
-            status_builder.create_tag(user, book, activity['object']['name'])
-            return HttpResponse()
-        return HttpResponse()
-    return HttpResponseNotFound()
+    user = get_or_create_remote_user(activity['actor'])
+    if not user.local:
+        book = activity['target']['id'].split('/')[-1]
+        status_builder.create_tag(user, book, activity['object']['name'])
 
