@@ -168,8 +168,9 @@ class Connector(AbstractConnector):
         author = update_from_mappings(author, data, mappings)
         # TODO this is making some BOLD assumption
         name = data.get('name')
-        author.last_name = name.split(' ')[-1]
-        author.first_name = ' '.join(name.split(' ')[:-1])
+        if name:
+            author.last_name = name.split(' ')[-1]
+            author.first_name = ' '.join(name.split(' ')[:-1])
         author.save()
 
         return author
