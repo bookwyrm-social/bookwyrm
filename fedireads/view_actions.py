@@ -1,9 +1,11 @@
 ''' views for actions you can take in the application '''
-from io import TextIOWrapper
+from io import BytesIO, TextIOWrapper
 import re
+from PIL import Image
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -80,7 +82,31 @@ def edit_profile(request):
 
     request.user.name = form.data['name']
     if 'avatar' in form.files:
-        request.user.avatar = form.files['avatar']
+        # crop and resize avatar upload
+        original = Image.open(form.files['avatar'])
+        target_size = 120
+        height, width = original.size
+        scale = height / target_size if height < width else width / target_size
+        resized = original.resize((
+            int(height / scale),
+            int(width / scale)
+        ))
+        height, width = resized.size
+
+        cropped = resized.crop((
+            int((width - target_size) / 2),
+            int((height - target_size) / 2),
+            int(width - (width - target_size) / 2),
+            int(height - (height - target_size) / 2)
+        ))
+        output = BytesIO()
+        cropped.save(output, format='JPEG')
+        ContentFile(output.getvalue())
+        request.user.avatar.save(
+            form.files['avatar'].name,
+            ContentFile(output.getvalue())
+        )
+
     request.user.summary = form.data['summary']
     request.user.manually_approves_followers = \
         form.cleaned_data['manually_approves_followers']
