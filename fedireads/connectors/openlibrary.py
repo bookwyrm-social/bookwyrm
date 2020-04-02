@@ -119,6 +119,9 @@ class Connector(AbstractConnector):
             author_id = author_blob['key']
             author_id = author_id.split('/')[-1]
             book.authors.add(self.get_or_create_author(author_id))
+        if not data.get('authors'):
+            book.authors.set(book.parent_work.authors.all())
+
 
         if book.sync_cover and data.get('covers') and len(data['covers']):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
