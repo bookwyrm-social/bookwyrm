@@ -371,8 +371,16 @@ def import_data(request):
 
         outgoing.handle_import_books(request.user, results)
         for item in reviews:
+            review_title = "Review of {!r} on Goodreads".format(
+                item.book.title,
+            ) if item.review else ""
             outgoing.handle_review(
-                request.user, item.book, "", item.review, item.rating)
+                request.user,
+                item.book,
+                review_title,
+                item.review,
+                item.rating,
+            )
         return TemplateResponse(request, 'import_results.html', {
             'success_count': len(results),
             'failures': failures,
