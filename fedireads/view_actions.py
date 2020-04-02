@@ -364,7 +364,7 @@ def import_data(request):
                 encoding=request.encoding)):
             if item.book:
                 results.append(item)
-                if item.rating:
+                if item.rating or item.review:
                     reviews.append(item)
             else:
                 failures.append(item)
