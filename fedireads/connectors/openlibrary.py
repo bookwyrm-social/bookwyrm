@@ -82,7 +82,7 @@ class Connector(AbstractConnector):
             'publish_date': ('published_date', get_date),
             'first_publish_date': ('first_published_date', get_date),
             'description': ('description', get_description),
-            'isbn_13': ('isbn', None),
+            'isbn_13': ('isbn', lambda a: a[0]),
             'oclc_numbers': ('oclc_number', lambda a: a[0]),
             'lccn': ('lccn', lambda a: a[0]),
             'languages': ('languages', get_languages),
@@ -91,7 +91,7 @@ class Connector(AbstractConnector):
 
         if 'identifiers' in data:
             if 'goodreads' in data['identifiers']:
-                book.goodreads_key = data['identifiers']['goodreads']
+                book.goodreads_key = data['identifiers']['goodreads'][0]
 
         if not book.connector:
             book.connector = self.connector
