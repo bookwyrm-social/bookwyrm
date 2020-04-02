@@ -76,13 +76,13 @@ class Connector(AbstractConnector):
         return self.update_from_data(book, data)
 
 
-    def update_from_data(self, book, data, work=None):
+    def update_from_data(self, book, data):
         ''' update a book from a json blob '''
         mappings = {
             'publish_date': ('published_date', get_date),
             'first_publish_date': ('first_published_date', get_date),
             'description': ('description', get_description),
-            'isbn_13': ('isbn', None),
+            'isbn_13': ('isbn', lambda a: a[0]),
             'oclc_numbers': ('oclc_number', lambda a: a[0]),
             'lccn': ('lccn', lambda a: a[0]),
             'languages': ('languages', get_languages),
@@ -91,20 +91,18 @@ class Connector(AbstractConnector):
 
         if 'identifiers' in data:
             if 'goodreads' in data['identifiers']:
-                book.goodreads_key = data['identifiers']['goodreads']
+                book.goodreads_key = data['identifiers']['goodreads'][0]
 
         if not book.connector:
             book.connector = self.connector
         book.save()
 
         # this book sure as heck better be an edition
-        if not work:
-            work = None
-            if data.get('works'):
-                key = data.get('works')[0]['key']
-                key = key.split('/')[-1]
-                work = self.get_or_create_book(key)
-        book.parent_work = work
+        if data.get('works'):
+            key = data.get('works')[0]['key']
+            key = key.split('/')[-1]
+            work = self.get_or_create_book(key)
+            book.parent_work = work
 
         if isinstance(book, models.Work):
             # load editions of a work
@@ -124,25 +122,48 @@ class Connector(AbstractConnector):
         return book
 
 
-    def get_editions_of_work(self, work):
+    def expand_book_data(self, book):
+        work = book
+        if isinstance(book, models.Edition):
+            work = book.parent_work
+        self.get_editions_of_work(work, default_only=False)
+
+
+    def get_editions_of_work(self, work, default_only=True):
         ''' get all editions of a work '''
         response = requests.get(
             '%s/works/%s/editions.json' % (self.url, work.openlibrary_key))
         edition_data = response.json()
-        for data in edition_data.get('entries', []):
+
+        options = edition_data.get('entries', [])
+        if default_only:
+            options = [e for e in options if e.get('cover')] or options
+            options = [e for e in options if \
+                '/languages/eng' in str(e.get('languages'))] or options
+            formats = ['paperback', 'hardcover', 'mass market paperback']
+            options = [e for e in options if \
+                str(e.get('physical_format')).lower() in formats] or options
+            options = sorted(
+                options,
+                key=lambda e: e.get('publish_date', '3000')
+            )
+
+            if not options:
+                return
+            options = options[:1]
+
+        for data in options:
             try:
                 olkey = data['key'].split('/')[-1]
             except KeyError:
                 # bad data I guess?
-                continue
+                return
 
             try:
                 models.Edition.objects.get(openlibrary_key=olkey)
-                continue
             except ObjectDoesNotExist:
                 book = models.Edition.objects.create(openlibrary_key=olkey)
-                self.update_from_data(book, data, work=work)
-        set_default_edition(work)
+                self.update_from_data(book, data)
 
 
     def get_or_create_author(self, olkey):
