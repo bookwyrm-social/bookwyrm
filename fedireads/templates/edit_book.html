@@ -29,10 +29,17 @@
 
     <h3>Book Identifiers</h2>
     <div>
+        <p><label for="id_isbn">ISBN:</label> {{ form.isbn }} </p>
         <p><label for="id_fedireads_key">Fedireads key:</label> {{ form.fedireads_key }} </p>
         <p><label for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
         <p><label for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
         <p><label for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+    </div>
+
+    <h3>Physical Properties</h3>
+    <div>
+        <p><label for="id_physical_format">Format:</label> {{ form.physical_format }} </p>
+        <p><label for="id_pages">Pages:</label> {{ form.pages }} </p>
     </div>
 
     <h3>Metadata</h3>

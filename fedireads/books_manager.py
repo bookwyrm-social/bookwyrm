@@ -29,7 +29,6 @@ def load_more_data(book_id):
     connector.expand_book_data(book)
 
 
-
 def search(query):
     ''' try an external datasource for books '''
     connector = get_connector()

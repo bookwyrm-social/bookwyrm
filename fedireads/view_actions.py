@@ -95,11 +95,11 @@ def edit_book(request, book_id):
         return redirect('/book/%s' % request.user.localname)
 
     try:
-        book = models.Book.objects.get(id=book_id)
-    except models.Book.DoesNotExist:
+        book = models.Edition.objects.get(id=book_id)
+    except models.Edition.DoesNotExist:
         return HttpResponseNotFound()
 
-    form = forms.BookForm(request.POST, request.FILES, instance=book)
+    form = forms.EditionForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
         return redirect(request.headers.get('Referer', '/'))
     form.save()

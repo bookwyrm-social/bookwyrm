@@ -78,9 +78,9 @@ class CoverForm(ModelForm):
         help_texts = {f: None for f in fields}
 
 
-class BookForm(ModelForm):
+class EditionForm(ModelForm):
     class Meta:
-        model = models.Book
+        model = models.Edition
         exclude = [
             'created_date',
             'updated_date',
@@ -91,8 +91,8 @@ class BookForm(ModelForm):
             'shelves',
             'misc_identifiers',
 
-            'subjects',
-            'subject_places',
+            'subjects',# TODO
+            'subject_places',# TODO
 
             'source_url',
             'connector',

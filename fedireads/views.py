@@ -433,7 +433,7 @@ def edit_book_page(request, book_identifier):
     book = books_manager.get_or_create_book(book_identifier)
     data = {
         'book': book,
-        'form': forms.BookForm(instance=book)
+        'form': forms.EditionForm(instance=book)
     }
     return TemplateResponse(request, 'edit_book.html', data)
 
