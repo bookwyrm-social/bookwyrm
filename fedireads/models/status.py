@@ -134,6 +134,21 @@ class Tag(FedireadsModel):
         unique_together = ('user', 'book', 'name')
 
 
+class ReadThrough(FedireadsModel):
+    ''' Store progress through a book in the database. '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    pages_read = models.IntegerField(
+        null=True,
+        blank=True)
+    start_date = models.DateTimeField(
+        blank=True,
+        null=True)
+    finish_date = models.DateTimeField(
+        blank=True,
+        null=True)
+
+
 NotificationType = models.TextChoices(
     'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST')
 
