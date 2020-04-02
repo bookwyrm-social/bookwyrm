@@ -81,9 +81,7 @@ def handle_account_search(query):
 def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
     activity = activitypub.get_follow_request(user, to_follow)
-    errors = broadcast(user, activity, [to_follow.inbox])
-    for error in errors:
-        raise(error['error'])
+    broadcast(user, activity, [to_follow.inbox])
 
 
 def handle_unfollow(user, to_unfollow):
@@ -93,10 +91,8 @@ def handle_unfollow(user, to_unfollow):
         user_object=to_unfollow
     )
     activity = activitypub.get_unfollow(relationship)
-    errors = broadcast(user, activity, [to_unfollow.inbox])
+    broadcast(user, activity, [to_unfollow.inbox])
     to_unfollow.followers.remove(user)
-    for error in errors:
-        raise(error['error'])
 
 
 def handle_accept(user, to_follow, follow_request):
@@ -187,7 +183,8 @@ def handle_import_books(user, items):
 
         create_activity = activitypub.get_create(
             user, activitypub.get_status(status))
-        broadcast(user, create_activity, get_recipients(user, 'public'))
+        recipients = get_recipients(user, 'public')
+        broadcast(user, create_activity, recipients)
 
 
 def handle_review(user, book, name, content, rating):

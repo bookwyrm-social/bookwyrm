@@ -9,6 +9,7 @@ import requests
 from urllib.parse import urlparse
 
 from fedireads import models
+from fedireads.tasks import app
 
 
 def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
@@ -39,6 +40,9 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
         fedireads_user = limit == 'fedireads'
         followers = user.followers.filter(fedireads_user=fedireads_user).all()
 
+    # we don't need to broadcast to ourself
+    followers = followers.filter(local=False)
+
     # TODO I don't think this is actually accomplishing pubic/followers only?
     if post_privacy == 'public':
         # post to public shared inboxes
@@ -58,6 +62,13 @@ def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
 
 def broadcast(sender, activity, recipients):
     ''' send out an event '''
+    broadcast_task.delay(sender.id, activity, recipients)
+
+
+@app.task
+def broadcast_task(sender_id, activity, recipients):
+    ''' the celery task for broadcast '''
+    sender = models.User.objects.get(id=sender_id)
     errors = []
     for recipient in recipients:
         try:

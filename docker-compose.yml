@@ -20,25 +20,32 @@ services:
             - celery_worker
         networks:
             - main
-    rabbitmq:
+    redis:
+        image: redis
         env_file: .env
-        image: rabbitmq:latest
+        ports:
+          - "6379:6379"
         networks:
             - main
-        ports:
-            - "5672:5672"
         restart: on-failure
     celery_worker:
         env_file: .env
         build: .
         networks:
             - main
-        command: celery -A fedireads worker -l info
+        command: celery -A fr_celery worker -l info
         volumes:
             - .:/app
         depends_on:
             - db
-            - rabbitmq
+            - redis
+        restart: on-failure
+    flower:
+        image: mher/flower
+        command: ["flower", "--broker=redis://redis:6379/0", "--port=5555"]
+        env_file: .env
+        ports:
+            - "5555:5555"
         restart: on-failure
 volumes:
     pgdata:
