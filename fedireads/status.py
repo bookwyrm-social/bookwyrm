@@ -27,6 +27,7 @@ def create_review_from_activity(author, activity):
 
 def create_review(user, book, name, content, rating):
     ''' a book review has been added '''
+    name = sanitize(name)
     content = sanitize(content)
 
     # no ratings outside of 0-5
