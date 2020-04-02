@@ -11,7 +11,9 @@
     {% endif %}
     </h2>
 
-    {% include 'snippets/status_content.html' with status=status %}
+    <div class="status-content">
+        {% include 'snippets/status_content.html' with status=status %}
+    </div>
 
 </div>
 {% if status.status_type == 'Boost' %}

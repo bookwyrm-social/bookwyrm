@@ -203,7 +203,7 @@ def set_default_edition(work):
     options = [e for e in options if e.cover] or options
     options = sorted(
         options,
-        key=lambda e: e.published_date.year if e.published_date else None
+        key=lambda e: e.published_date.year if e.published_date else 3000
     )
     if len(options):
         options[0].default = True

@@ -1,36 +1,52 @@
 {% load fr_display %}
 
 {% if not hide_book and status.mention_books.count %}
-<div class="row book-row">
-{% for book in status.mention_books.all|slice:"0:3" %}
-<div class="book-preview">
-    {% if status.status_type == 'Review' %}
-        {% include 'snippets/book.html' with book=book %}
-    {% else %}
-        {% include 'snippets/book.html' with book=book description=True %}
-    {% endif %}
-</div>
-{% endfor %}
-</div>
+    <div class="row">
+    {% for book in status.mention_books.all|slice:"0:4" %}
+        <div class="row">
+            <div class="cover-container">
+                {% include 'snippets/book_cover.html' with book=book %}
+                {% if status.mention_books.count > 1 %}
+                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
+                {% endif %}
+                {% include 'snippets/shelve_button.html' with book=book %}
+            </div>
+            {% if status.mention_books.count == 1 %}
+            <div>
+                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
+                {% include 'snippets/book_description.html' with book=book %}
+            </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
 {% endif %}
 
-{% if not hide_book and status.book%}
-<div class="book-preview">
-    {% if status.status_type == 'Review' %}
-        {% include 'snippets/book.html' with book=status.book %}
-    {% else %}
-        {% include 'snippets/book.html' with book=status.book description=True %}
+<div class="row">
+    {% if not hide_book and status.book %}
+    <div class="cover-container">
+        {% include 'snippets/book_cover.html' with book=status.book %}
+        {% include 'snippets/shelve_button.html' with book=status.book %}
+    </div>
     {% endif %}
+
+    <div>
+        {% if status.status_type == 'Review' %}
+        <h3>
+            {{ status.name }}<br>
+            {{ status.rating | stars }}
+        </h3>
+        {% endif %}
+
+        {% if status.status_type != 'Update' and status.status_type != 'Boost' %}
+            <blockquote>{{ status.content | safe }}</blockquote>
+        {% endif %}
+
+        {% if status.status_type == 'Boost' %}
+            {% include 'snippets/status_content.html' with status=status|boosted_status %}
+        {% endif %}
+
+        {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.absolute_id }}">Thread</a>{% endif %}
+    </div>
 </div>
-{% endif %}
-{% if status.status_type == 'Review' %}<h4>{{ status.name }}
-    <small>{{ status.rating | stars }} stars, by {% include 'snippets/username.html' with user=status.user %}</small>
-</h4>{% endif %}
-{% if status.status_type != 'Update' and status.status_type != 'Boost' %}
-<blockquote>{{ status.content | safe }}</blockquote>
-{% endif %}
-{% if status.status_type == 'Boost' %}
-    {% include 'snippets/status_content.html' with status=status|boosted_status %}
-{% endif %}
-{% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.absolute_id }}">Thread</a>{% endif %}
 

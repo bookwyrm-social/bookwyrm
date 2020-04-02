@@ -1,9 +1,9 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div class="content-container user-profile">
-    <h2><q>{{ book.title }}</q> by
-        {% include 'snippets/authors.html' with book=book %}
+<div class="content-container">
+    <h2>
+        {% include 'snippets/book_titleby.html' with book=book %}
 
         {% if request.user.is_authenticated %}
         <a href="{{ book.fedireads_key }}/edit" class="edit-link">edit
@@ -13,27 +13,14 @@
         </a>
         {% endif %}
     </h2>
-    <div>
-        <div class="book-preview">
 
+    <div class="row">
+
+        <div class="cover-container">
             {% include 'snippets/book_cover.html' with book=book size=large %}
-            <p>{{ active_tab }} rating: {{ rating | stars }}</p>
-            {% if book.parent_work.description %}
-            <blockquote>{{ book.parent_work.description | description }}</blockquote>
-            {% endif %}
-            <div>
-                <div id="tag-cloud">
-                    {% for tag in tags %}
-                    {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
-                    {% endfor %}
-                </div>
-            </div>
-            <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} other editions</a></p>
 
             {% include 'snippets/shelve_button.html' %}
 
-        </div>
-        <div>
             {% if request.user.is_authenticated and not book.cover %}
             <form name="add-cover" method="POST" action="/upload_cover/{{book.id}}" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -41,21 +28,48 @@
                 <button type="submit">Add cover</button>
             </form>
             {% endif %}
+
+            <dl>
+                {% for field in info_fields %}
+                {% if field.value %}
+                <dt>{{ field.name }}:</dt>
+                <dd>{{ field.value }}</dd>
+                {% endif %}
+                {% endfor %}
+            </dl>
         </div>
+
+        <div class="column">
+            <h3>{{ active_tab }} rating: {{ rating | stars }}</h3>
+
+            {% include 'snippets/book_description.html' %}
+
+            {% if book.parent_work.edition_set.count > 1 %}
+            <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} editions</a></p>
+            {% endif %}
+
+            <div id="tag-cloud">
+                {% for tag in tags %}
+                {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
+                {% endfor %}
+            </div>
+
+            <div>
+                {% if request.user.is_authenticated %}
+                <h3>Leave a review</h3>
+                <form class="review-form" name="review" action="/review/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
+                    {{ review_form.as_p }}
+                    <button type="submit">Post review</button>
+                </form>
+                {% endif %}
+            </div>
     </div>
 </div>
 
-{% if request.user.is_authenticated %}
-<div class="content-container">
-    <h2>Leave a review</h2>
-    <form class="review-form" name="review" action="/review/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
-        {{ review_form.as_p }}
-        <button type="submit">Post review</button>
-    </form>
-</div>
 
+{% if request.user.is_authenticated %}
 <div class="content-container tabs">
     {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
 </div>

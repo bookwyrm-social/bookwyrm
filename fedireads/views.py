@@ -415,6 +415,14 @@ def book_page(request, book_identifier, tab='friends'):
         'active_tab': tab,
         'path': '/book/%s' % book_identifier,
         'cover_form': forms.CoverForm(instance=book),
+        'info_fields': [
+            {'name': 'ISBN', 'value': book.isbn},
+            {'name': 'OCLC number', 'value': book.oclc_number},
+            {'name': 'OpenLibrary ID', 'value': book.openlibrary_key},
+            {'name': 'Goodreads ID', 'value': book.goodreads_key},
+            {'name': 'Format', 'value': book.physical_format},
+            {'name': 'Pages', 'value': book.pages},
+        ],
     }
     return TemplateResponse(request, 'book.html', data)
 
