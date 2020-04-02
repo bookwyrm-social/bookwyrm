@@ -44,6 +44,12 @@ class AbstractConnector(ABC):
 
 
     @abstractmethod
+    def expand_book_data(self, book):
+        ''' get more info on a book '''
+        pass
+
+
+    @abstractmethod
     def get_or_create_author(self, book_id):
         ''' request and format a book given an identifier '''
         # return book model obj

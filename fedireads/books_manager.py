@@ -2,6 +2,7 @@
 import importlib
 
 from fedireads import models
+from fedireads.tasks import app
 
 
 def get_or_create_book(key):
@@ -15,7 +16,18 @@ def get_or_create_book(key):
         pass
 
     connector = get_connector()
-    return connector.get_or_create_book(key)
+    book = connector.get_or_create_book(key)
+    load_more_data.delay(book.id)
+    return book
+
+
+@app.task
+def load_more_data(book_id):
+    ''' background the work of getting all 10,000 editions of LoTR '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    connector = get_connector(book)
+    connector.expand_book_data(book)
+
 
 
 def search(query):
