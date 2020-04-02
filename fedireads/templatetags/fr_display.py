@@ -19,6 +19,8 @@ def stars(number):
         number = int(number)
     except (ValueError, TypeError):
         number = 0
+    if not number:
+        return ''
     return ('★' * number) + '☆' * (5 - number)
 
 

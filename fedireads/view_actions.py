@@ -1,16 +1,18 @@
 ''' views for actions you can take in the application '''
+from io import TextIOWrapper
+import re
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from io import TextIOWrapper
-import re
 
 from fedireads import forms, models, books_manager, outgoing
 from fedireads.goodreads_import import GoodreadsCsv
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+from fedireads.books_manager import get_or_create_book
 
 
 def user_login(request):
@@ -170,9 +172,12 @@ def review(request):
     # TODO: validation, htmlification
     name = form.data.get('name')
     content = form.data.get('content')
-    rating = form.data.get('rating')
+    rating = form.cleaned_data.get('rating')
 
-    outgoing.handle_review(request.user, book_identifier, name, content, rating)
+    # throws a value error if the book is not found
+    book = get_or_create_book(book_identifier)
+
+    outgoing.handle_review(request.user, book, name, content, rating)
     return redirect('/book/%s' % book_identifier)
 
 
@@ -352,20 +357,32 @@ def import_data(request):
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
         results = []
+        reviews = []
         failures = []
         for item in GoodreadsCsv(TextIOWrapper(
                 request.FILES['csv_file'],
                 encoding=request.encoding)):
             if item.book:
                 results.append(item)
+                if item.rating or item.review:
+                    reviews.append(item)
             else:
                 failures.append(item)
 
         outgoing.handle_import_books(request.user, results)
+        for item in reviews:
+            review_title = "Review of {!r} on Goodreads".format(
+                item.book.title,
+            ) if item.review else ""
+            outgoing.handle_review(
+                request.user,
+                item.book,
+                review_title,
+                item.review,
+                item.rating,
+            )
         return TemplateResponse(request, 'import_results.html', {
             'success_count': len(results),
             'failures': failures,
         })
-    else:
-        return HttpResponseBadRequest()
-
+    return HttpResponseBadRequest()

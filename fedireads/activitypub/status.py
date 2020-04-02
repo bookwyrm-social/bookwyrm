@@ -25,11 +25,16 @@ def get_comment(comment):
 def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(review)
-    if review.rating:
+    if review.rating and review.name:
         name = 'Review of "%s" (%d stars): %s' % (
             review.book.title,
             review.rating,
             review.name
+        )
+    elif review.rating:
+        name = 'Rated "%s" (%d stars)' % (
+            review.book.title,
+            review.rating,
         )
     else:
         name = 'Review of "%s": %s' % (

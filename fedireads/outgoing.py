@@ -1,9 +1,10 @@
 ''' handles all the activity coming out of the server '''
+from urllib.parse import urlencode
+
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
-from urllib.parse import urlencode
 
 from fedireads import activitypub
 from fedireads import models
