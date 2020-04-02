@@ -86,12 +86,16 @@ class Connector(AbstractConnector):
             'oclc_numbers': ('oclc_number', lambda a: a[0]),
             'lccn': ('lccn', lambda a: a[0]),
             'languages': ('languages', get_languages),
+            'number_of_pages': ('pages', None),
+            'series': ('series', lambda a: a[0]),
         }
         book = update_from_mappings(book, data, mappings)
 
         if 'identifiers' in data:
             if 'goodreads' in data['identifiers']:
                 book.goodreads_key = data['identifiers']['goodreads'][0]
+        if 'series' in data and len(data['series']) > 1:
+            book.series_number = data['series'][1]
 
         if not book.connector:
             book.connector = self.connector
@@ -136,20 +140,18 @@ class Connector(AbstractConnector):
         edition_data = response.json()
 
         options = edition_data.get('entries', [])
-        if default_only:
+        if default_only and len(options) > 1:
             options = [e for e in options if e.get('cover')] or options
             options = [e for e in options if \
                 '/languages/eng' in str(e.get('languages'))] or options
             formats = ['paperback', 'hardcover', 'mass market paperback']
             options = [e for e in options if \
                 str(e.get('physical_format')).lower() in formats] or options
-            options = sorted(
-                options,
-                key=lambda e: e.get('publish_date', '3000')
-            )
+            options = [e for e in options if e.get('isbn_13')] or options
+            options = [e for e in options if e.get('ocaid')] or options
 
             if not options:
-                return
+                options = edition_data.get('entries', [])
             options = options[:1]
 
         for data in options:
@@ -207,28 +209,6 @@ class Connector(AbstractConnector):
             response.raise_for_status()
         image_content = ContentFile(response.content)
         return [image_name, image_content]
-
-
-def set_default_edition(work):
-    ''' pick one edition to be what gets shown by default '''
-    # check for an existing default work, in which case we're done
-    if models.Edition.objects.filter(
-            parent_work=work,
-            default=True
-        ).count():
-        return
-    editions = models.Edition.objects.filter(
-        parent_work=work,
-    ).all()
-    options = [e for e in editions if 'English' in e.languages] or editions
-    options = [e for e in options if e.cover] or options
-    options = sorted(
-        options,
-        key=lambda e: e.published_date.year if e.published_date else 3000
-    )
-    if len(options):
-        options[0].default = True
-        options[0].save()
 
 
 def get_description(description_blob):
