@@ -172,7 +172,7 @@ def review(request):
     # TODO: validation, htmlification
     name = form.data.get('name')
     content = form.data.get('content')
-    rating = form.data.get('rating')
+    rating = form.cleaned_data.get('rating')
 
     # throws a value error if the book is not found
     book = get_or_create_book(book_identifier)

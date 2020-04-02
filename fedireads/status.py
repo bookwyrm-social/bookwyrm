@@ -30,10 +30,9 @@ def create_review(user, book, name, content, rating):
     content = sanitize(content)
 
     # no ratings outside of 0-5
-    try:
-        rating = int(rating)
+    if rating:
         rating = rating if 1 <= rating <= 5 else None
-    except ValueError:
+    else:
         rating = None
 
     return models.Review.objects.create(
