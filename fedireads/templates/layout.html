@@ -22,10 +22,14 @@
 <body>
 
 <div id="top-bar">
-    <header>
-        <div id="branding"><a href="/"><img id="logo" src="/static/images/logo-small.png" alt="BookWyrm"></img></a></div>
+    <header class="row">
+        <div id="branding">
+            <a href="/">
+                <img id="logo" src="/static/images/logo-small.png" alt="BookWyrm"></img>
+            </a>
+        </div>
 
-        <ul class="menu">
+        <ul id="menu">
             {% if request.user.is_authenticated %}
             <li><a href="/user/{{request.user.localname}}/shelves">Your shelves</a></li>
             {% endif %}

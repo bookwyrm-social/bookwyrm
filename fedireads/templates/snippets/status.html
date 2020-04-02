@@ -1,59 +1,24 @@
-{% load humanize %}
 {% load fr_display %}
-<div class="post {{ status.status_type|lower }} depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}">
+
+<div class="post {{ status.status_type | lower }} depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}">
+
     <h2>
-        {% include 'snippets/avatar.html' with user=status.user %}
-        {% include 'snippets/username.html' with user=status.user %}
-        {% if status.status_type == 'Update' %}
-            {{ status.content | safe }}
-        {% elif status.status_type == 'Review' %}
-            reviewed {{ status.book.title }}
-        {% elif status.status_type == 'Comment' %}
-            commented on {{ status.book.title }}
-        {% elif status.status_type == 'Boost' %}
-            boosted
-        {% elif status.reply_parent %}
-            {% with parent_status=status|parent %}
-            replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.absolute_id }}">{{ parent_status.status_type|lower }}</a>
-            {% endwith %}
-        {% endif %}
-        <span class="time-ago">
-            <a href="{{ status.absolute_id }}">{{ status.published_date | naturaltime }}</a>
-        </span>
+    {% if status.boosted_status %}
+        {% include 'snippets/status_header.html' with status=status.boosted_status %}
+        <small class="subhead">{% include 'snippets/status_header.html' with status=status %}</small>
+    {% else %}
+        {% include 'snippets/status_header.html' with status=status %}
+    {% endif %}
     </h2>
 
-    {% if not hide_book and status.mention_books.count %}
-    {% for book in status.mention_books.all|slice:"0:3" %}
-    <div class="book-preview">
-        {% if status.status_type == 'Review' %}
-            {% include 'snippets/book.html' with book=book %}
-        {% else %}
-            {% include 'snippets/book.html' with book=book description=True %}
-        {% endif %}
+    <div class="status-content">
+        {% include 'snippets/status_content.html' with status=status %}
     </div>
-    {% endfor %}
-    {% endif %}
-    {% if not hide_book and status.book%}
-    <div class="book-preview">
-        {% if status.status_type == 'Review' %}
-            {% include 'snippets/book.html' with book=status.book %}
-        {% else %}
-            {% include 'snippets/book.html' with book=status.book description=True %}
-        {% endif %}
-    </div>
-    {% endif %}
-    {% if status.status_type == 'Review' %}<h4>{{ status.name }}
-        <small>{{ status.rating | stars }} stars, by {% include 'snippets/username.html' with user=status.user %}</small>
-    </h4>{% endif %}
-    {% if status.status_type != 'Update' and status.status_type != 'Boost' %}
-    <blockquote>{{ status.content | safe }}</blockquote>
-    {% endif %}
-    {% if status.status_type == 'Boost' %}
-        {% include 'snippets/status.html' with status=status.boosted_status depth=depth|add:1 %}
-    {% endif %}
-    {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.absolute_id }}">Thread</a>{% endif %}
+
 </div>
-{% if status.status_type != 'Boost' %}
+{% if status.status_type == 'Boost' %}
+{% include 'snippets/interaction.html' with activity=status|boosted_status %}
+{% else %}
 {% include 'snippets/interaction.html' with activity=status %}
 {% endif %}
 

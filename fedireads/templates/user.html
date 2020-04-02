@@ -2,9 +2,7 @@
 {% block content %}
 
 {% include 'user_header.html' with user=user %}
-<div class="all-shelves content-container">
-    {% include 'snippets/covers_shelf.html' with shelves=shelves user=user %}
-</div>
+{% include 'snippets/covers_shelf.html' with shelves=shelves user=user %}
 
 <div>
     <div class="content-container"><h2>User Activity</h2></div>

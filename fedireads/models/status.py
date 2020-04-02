@@ -48,12 +48,11 @@ class Status(FedireadsModel):
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''
-    name = models.CharField(max_length=255)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
         self.status_type = 'Comment'
-        self.activity_type = 'Article'
+        self.activity_type = 'Note'
         super().save(*args, **kwargs)
 
 
@@ -62,8 +61,10 @@ class Review(Status):
     name = models.CharField(max_length=255)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     rating = models.IntegerField(
-        default=0,
-        validators=[MinValueValidator(0), MaxValueValidator(5)]
+        default=None,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
     def save(self, *args, **kwargs):
@@ -100,6 +101,7 @@ class Boost(Status):
         self.status_type = 'Boost'
         self.activity_type = 'Announce'
         super().save(*args, **kwargs)
+
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')

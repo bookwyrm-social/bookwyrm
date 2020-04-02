@@ -1,0 +1,9 @@
+<span class="title">
+    <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
+</span>
+{% if book.authors %}
+<span class="author">
+    by {% include 'snippets/authors.html' with book=book %}
+</span>
+{% endif %}
+

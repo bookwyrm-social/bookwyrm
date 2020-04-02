@@ -188,9 +188,10 @@ class Connector(AbstractConnector):
         }
         author = update_from_mappings(author, data, mappings)
         # TODO this is making some BOLD assumption
-        name = data['name']
-        author.last_name = name.split(' ')[-1]
-        author.first_name = ' '.join(name.split(' ')[:-1])
+        name = data.get('name')
+        if name:
+            author.last_name = name.split(' ')[-1]
+            author.first_name = ' '.join(name.split(' ')[:-1])
         author.save()
 
         return author
@@ -223,10 +224,11 @@ def set_default_edition(work):
     options = [e for e in options if e.cover] or options
     options = sorted(
         options,
-        key=lambda e: e.published_date.year if e.published_date else None
+        key=lambda e: e.published_date.year if e.published_date else 3000
     )
-    options[0].default = True
-    options[0].save()
+    if len(options):
+        options[0].default = True
+        options[0].save()
 
 
 def get_description(description_blob):

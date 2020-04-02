@@ -1,0 +1,21 @@
+{% load humanize %}
+{% load fr_display %}
+{% include 'snippets/avatar.html' with user=status.user %}
+{% include 'snippets/username.html' with user=status.user %}
+
+{% if status.status_type == 'Update' %}
+    {{ status.content | safe }}
+{% elif status.status_type == 'Review' %}
+    reviewed {{ status.book.title }}
+{% elif status.status_type == 'Comment' %}
+    commented on {{ status.book.title }}
+{% elif status.status_type == 'Boost' %}
+    boosted
+{% elif status.reply_parent %}
+    {% with parent_status=status|parent %}
+    replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.absolute_id }}">{{ parent_status.status_type | lower }}</a>
+    {% endwith %}
+{% endif %}
+<span class="time-ago">
+    <a href="{{ status.absolute_id }}">{{ status.published_date | naturaltime }}</a>
+</span>

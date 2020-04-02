@@ -1,57 +1,55 @@
 /* some colors that are okay: #247BA0 #70C1B2 #B2DBBF #F3FFBD #FF1654 */
+
+/* general override */
 * {
     margin: 0;
     padding: 0;
     line-height: 1.3em;
     font-family: sans-serif;
 }
-
 html {
     background-color: #FFF;
     color: black;
 }
-body {
-    padding-top: 90px;
-}
-
 
 a {
     color: #247BA0;
 }
 
-input, button {
-    padding: 0.2em 0.5em;
-}
-button {
-    cursor: pointer;
-    width: max-content;
-}
-
-h1, h2, h3, h4 {
-    font-weight: normal;
-}
-
 h1 {
+    font-weight: normal;
     font-size: 1.5rem;
 }
-
 h2 {
+    font-weight: normal;
     font-size: 1rem;
     padding: 0.5rem 0.2rem;
     margin-bottom: 1rem;
     border-bottom: 3px solid #B2DBBF;
 }
 
+h2 .edit-link {
+    text-decoration: none;
+    font-size: 0.9em;
+    float: right;
+}
+h2 .edit-link .icon {
+    font-size: 1.2em;
+}
 h3 {
     font-size: 1rem;
-    margin: 1rem 0 0.5rem 0;
-    border-bottom: 3px solid #70C1B2;
     font-weight: bold;
+    margin-bottom: 0.5em;
 }
 h3 small {
     font-weight: normal;
 }
 
+
+/* fixed display top bar */
+body {
+    padding-top: 90px;
+}
 #top-bar {
     overflow: visible;
     padding: 0.5rem;
@@ -65,18 +63,31 @@ h3 small {
     z-index: 2;
 }
 
-#warning {
-    background-color: #FF1654;
+/* --- header bar content */
+#branding {
+    flex-grow: 0;
+}
+#menu {
+    list-style: none;
     text-align: center;
+    margin-top: 1.5rem;
+    flex-grow: 2;
+    font-size: 0.9em;
+}
+#menu li {
+    display: inline-block;
+    padding: 0 0.5em;
+    text-transform: uppercase;
+}
+#menu a {
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9em;
 }
 
-#branding a {
-    text-decoration: none;
-}
 #actions {
     margin-top: 1em;
 }
-
 #actions > * {
     display: inline-block;
 }
@@ -106,7 +117,6 @@ h3 small {
     height: 1rem;
     width: 1rem;
 }
-
 .notification {
     margin-bottom: 1em;
     padding: 1em 0;
@@ -116,11 +126,6 @@ h3 small {
     background-color: #DDD;
 }
 
-
-button .icon {
-    font-size: 1.1rem;
-    vertical-align: sub;
-}
 #search button {
     border: none;
     background: none;
@@ -130,29 +135,6 @@ button .icon {
     margin: 0 auto;
     max-width: 55rem;
     padding-right: 1em;
-}
-header {
-    display: flex;
-    flex-direction: row;
-}
-
-ul.menu {
-    list-style: none;
-    text-align: center;
-    margin-top: 1.5rem;
-    flex-grow: 1;
-    font-size: 0.9em;
-}
-ul.menu li {
-    display: inline-block;
-    background-color: white;
-    padding: 0 0.5em;
-    text-transform: uppercase;
-}
-ul.menu a {
-    color: #555;
-    text-decoration: none;
-    font-size: 0.9em;
 }
 
 .pulldown-container {
@@ -175,15 +157,24 @@ ul.menu a {
     margin-bottom: 0.5em;
 }
 
+/* content area */
+.content-container {
+    margin: 1rem;
+}
+.content-container > * {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
 #feed {
     display: flex;
     flex-direction: column;
     padding-top: 70px;
     position: relative;
-    top: -50px;
     z-index: 0;
 }
 
+/* row component */
 .row {
     display: flex;
     flex-direction: row;
@@ -204,6 +195,16 @@ ul.menu a {
     flex-wrap: wrap;
 }
 
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.column > * {
+    margin-bottom: 1em;
+}
+
+
+/* discover books page grid of covers */
 .book-grid .book-cover {
     height: 11em;
     width: auto;
@@ -212,12 +213,24 @@ ul.menu a {
     margin-bottom: 2em;
 }
 
+/* special case forms */
+.review-form label {
+    display: block;
+}
+.review-form textarea {
+    width: 30rem;
+    height: 10rem;
+}
+
+
+
 .follow-requests .row {
     margin-bottom: 0.5em;
 }
 .follow-requests .row > *:first-child {
     width: 20em;
 }
+
 
 .login form {
     margin-top: 1em;
@@ -247,14 +260,14 @@ ul.menu a {
 .book-form .row label {
     width: max-content;
 }
-form input {
-    flex-grow: 1;
+
+/* general form stuff */
+input, button {
+    padding: 0.2em 0.5em;
 }
-form div {
-    margin-bottom: 1em;
-}
-textarea {
-    padding: 0.5em;
+button, input[type="submit"] {
+    cursor: pointer;
+    width: max-content;
 }
 .content-container button {
     border: none;
@@ -273,6 +286,36 @@ button.warning {
     background-color: #FF1654;
 }
 
+form input {
+    flex-grow: 1;
+}
+form div {
+    margin-bottom: 1em;
+}
+textarea {
+    padding: 0.5em;
+}
+
+
+/* icons */
+a .icon {
+    color: black;
+    text-decoration: none;
+}
+button .icon {
+    font-size: 1.1rem;
+    vertical-align: sub;
+}
+.hidden-text {
+    height: 0;
+    width: 0;
+    position: absolute;
+    overflow: hidden;
+}
+
+
+
+/* re-usable tab styles */
 .tabs {
     display: flex;
     flex-direction: row;
@@ -299,9 +342,10 @@ button.warning {
     color: black;
 }
 
+
 .user-pic {
-    width: 2rem;
-    height: 2rem;
+    width: 2em;
+    height: 2em;
     border-radius: 50%;
     vertical-align: top;
     position: relative;
@@ -312,51 +356,54 @@ button.warning {
     height: 5em;
 }
 
-h2 .edit-link {
-    text-decoration: none;
-    font-size: 0.9em;
-    float: right;
-}
-h2 .edit-link .icon {
-    font-size: 1.2em;
-}
+
 .user-profile .row > * {
     flex-grow: 0;
 }
 .user-profile .row > *:last-child {
     flex-grow: 1;
+    margin-left: 2em;
 }
 
-.review-form label {
-    display: block;
-}
-
-.time-ago {
-    float: right;
-    display: block;
-    text-align: right;
-}
-
+/* general book display */
 .book-preview {
     overflow: hidden;
     z-index: 1;
 }
-
-.book-preview img {
-    float: left;
-    margin-right: 1em;
-}
-
 .book-preview.grid {
     float: left;
 }
 
-.content-container {
-    margin: 1rem;
+.cover-container {
+    flex-grow: 0;
 }
-.content-container > * {
-    padding-left: 1em;
-    padding-right: 1em;
+.cover-container button {
+    display: block;
+    margin: 0 auto;
+}
+.book-cover {
+    width: 180px;
+    height: auto;
+}
+.book-cover.small {
+    width: 50px;
+    height: auto;
+}
+
+.no-cover {
+    position: relative;
+}
+.no-cover div {
+    position: absolute;
+    padding: 1em;
+    color: white;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+.no-cover .title {
+    text-transform: uppercase;
+    margin-bottom: 1em;
 }
 
 .all-shelves {
@@ -379,50 +426,31 @@ h2 .edit-link .icon {
     padding-left: 1em;
 }
 
-.user-shelves .covers-shelf {
-    flex-wrap: wrap;
-}
-.user-shelves > div {
-    margin: 1em 0;
-    padding: 0;
-}
-.user-shelves > div > * {
-    padding-left: 1em;
-}
-.user-shelves .covers-shelf .book-cover {
-    height: 9em;
-}
-
 .covers-shelf {
     display: flex;
     flex-direction: row;
 }
-.covers-shelf .book-preview {
+.covers-shelf .cover-container {
     margin-right: 1em;
     font-size: 0.9em;
     overflow: unset;
     width: min-content;
     position: relative;
 }
-.covers-shelf .book-preview button {
-    display: block;
-    margin: 0 auto;
-    border: none;
-}
-.covers-shelf .book-preview:last-child {
+.covers-shelf .cover-container:last-child {
     margin-right: 0;
 }
-.covers-shelf .book-preview:hover {
+.covers-shelf img:hover {
     cursor: pointer;
-}
-.covers-shelf .book-preview:hover img {
     box-shadow: #F3FFBD 0em 0em 1em 1em;
 }
 .covers-shelf .book-cover {
-    float: none;
     height: 11rem;
     width: auto;
     margin: 0;
+}
+.covers-shelf button {
+    border: none;
 }
 
 .close {
@@ -436,29 +464,6 @@ h2 .edit-link .icon {
 }
 .compose-suggestion.visible {
     display: block;
-}
-
-.no-cover {
-    position: relative;
-}
-.no-cover div {
-    position: absolute;
-    padding: 1em;
-    color: white;
-    top: 0;
-    left: 0;
-    text-align: center;
-}
-.no-cover .title {
-    text-transform: uppercase;
-    margin-bottom: 1em;
-}
-.book-cover {
-    width: 180px;
-}
-.book-cover.small {
-    width: 50px;
-    height: auto;
 }
 .compose-suggestion .book-preview {
     background-color: #EEE;
@@ -476,14 +481,8 @@ h2 .edit-link .icon {
     display: inline;
 }
 
-.review-form textarea {
-    width: 30rem;
-    height: 10rem;
-}
-
 blockquote {
     white-space: pre-line;
-    margin-left: 2em;
 }
 blockquote .icon-quote-open {
     float: left;
@@ -557,8 +556,11 @@ th, td {
     color: #FF1654;
 }
 
-.comment-thread .reply h2 {
-    background: none;
+/* status css */
+.time-ago {
+    float: right;
+    display: block;
+    text-align: right;
 }
 .post {
     background-color: #EFEFEF;
@@ -577,7 +579,18 @@ th, td {
 .post .user-pic, .compose-suggestion .user-pic {
     right: 0.25em;
 }
+.post h2 .subhead {
+    display: block;
+    margin-left: 2em;
+}
+.post .subhead .time-ago {
+    display: none;
+}
 
+/* status page with replies */
+.comment-thread .reply h2 {
+    background: none;
+}
 .comment-thread .post {
     margin-left: 4em;
     border-left: 2px solid #247BA0;
@@ -596,14 +609,16 @@ th, td {
     margin-left: 3em;
 }
 
-a .icon {
-    color: black;
+/* pagination */
+.pagination a {
     text-decoration: none;
 }
+.pagination .next {
+    text-align: right;
+}
 
-.hidden-text {
-    height: 0;
-    width: 0;
-    position: absolute;
-    overflow: hidden;
+/* special one-off "delete all data" banner */
+#warning {
+    background-color: #FF1654;
+    text-align: center;
 }
