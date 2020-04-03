@@ -333,35 +333,36 @@ button .icon {
     margin: 0;
     color: goldenrod;
 }
-.rate-stars:hover .icon:before {
+
+.review-form .rate-stars:hover .icon:before {
     content: '\e9d9';
 }
-.rate-stars label {
+.review-form .rate-stars label {
     display: inline;
 }
-.rate-stars form:hover ~ form .icon:before{
+.review-form .rate-stars form:hover ~ form .icon:before{
     content: '\e9d7';
 }
 
-.rate-stars input + .icon:before {
+.review-form .rate-stars input + .icon:before {
     content: '\e9d9';
 }
-.rate-stars input:checked + .icon:before {
+.review-form .rate-stars input:checked + .icon:before {
     content: '\e9d9';
 }
-.rate-stars input:checked + * ~ .icon:before {
+.review-form .rate-stars input:checked + * ~ .icon:before {
     content: '\e9d7';
 }
-.rate-stars:hover label.icon:before {
+.review-form .rate-stars:hover label.icon:before {
     content: '\e9d9';
 }
-.rate-stars label.icon:hover:before {
+.review-form .rate-stars label.icon:hover:before {
      content: '\e9d9';
  }
-.rate-stars label.icon:hover ~ label.icon:before{
+.review-form .rate-stars label.icon:hover ~ label.icon:before{
     content: '\e9d7';
 }
-.rate-stars input[type="radio"] {
+.review-form .rate-stars input[type="radio"] {
     display: none;
 }
 

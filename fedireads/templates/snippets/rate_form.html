@@ -1,0 +1,12 @@
+{% load fr_display %}
+<span class="hidden-text">Rating</span>
+<div class="stars rate-stars">
+    <input type="radio" name="rating" value="" checked></input>
+    {% for i in '12345'|make_list %}
+        <input id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}"></input>
+        <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+            <span class="hidden-text">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+        </label>
+    {% endfor %}
+</div>
+
