@@ -213,9 +213,13 @@ def review(request):
         return redirect('/book/%s' % book_identifier)
 
     # TODO: validation, htmlification
-    name = form.data.get('name')
-    content = form.data.get('content')
-    rating = form.cleaned_data.get('rating')
+    name = form.cleaned_data.get('name')
+    content = form.cleaned_data.get('content')
+    rating = form.data.get('rating', None)
+    try:
+        rating = int(rating)
+    except ValueError:
+        rating = None
 
     # throws a value error if the book is not found
     book = get_or_create_book(book_identifier)

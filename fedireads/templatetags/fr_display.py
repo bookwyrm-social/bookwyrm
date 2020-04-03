@@ -20,7 +20,6 @@ def get_rating(book, user):
         book=book,
         rating__isnull=False,
     ).order_by('-published_date').first()
-    print(rating.rating, '\n\n\n')
     if rating:
         return rating.rating
     return 0

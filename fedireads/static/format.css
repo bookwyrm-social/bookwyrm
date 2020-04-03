@@ -326,7 +326,7 @@ button .icon {
     display: inline;
     width: min-content;
 }
-.rate-stars form button.icon {
+.rate-stars button.icon {
     background: none;
     border: none;
     padding: 0;
@@ -336,8 +336,33 @@ button .icon {
 .rate-stars:hover .icon:before {
     content: '\e9d9';
 }
+.rate-stars label {
+    display: inline;
+}
 .rate-stars form:hover ~ form .icon:before{
     content: '\e9d7';
+}
+
+.rate-stars input + .icon:before {
+    content: '\e9d9';
+}
+.rate-stars input:checked + .icon:before {
+    content: '\e9d9';
+}
+.rate-stars input:checked + * ~ .icon:before {
+    content: '\e9d7';
+}
+.rate-stars:hover label.icon:before {
+    content: '\e9d9';
+}
+.rate-stars label.icon:hover:before {
+     content: '\e9d9';
+ }
+.rate-stars label.icon:hover ~ label.icon:before{
+    content: '\e9d7';
+}
+.rate-stars input[type="radio"] {
+    display: none;
 }
 
 /* re-usable tab styles */

@@ -35,11 +35,10 @@ class RatingForm(ModelForm):
 class ReviewForm(ModelForm):
     class Meta:
         model = models.Review
-        fields = ['name', 'rating', 'content']
+        fields = ['name', 'content']
         help_texts = {f: None for f in fields}
         labels = {
             'name': 'Title',
-            'rating': 'Rating (out of 5)',
             'content': 'Review',
         }
 

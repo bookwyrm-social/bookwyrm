@@ -4,7 +4,7 @@
 <h2>
     {% include 'snippets/avatar.html' with user=user %}
     Your thoughts on
-    <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
+a   <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
     by {% include 'snippets/authors.html' with book=book %}
 </h2>
 
@@ -27,6 +27,7 @@
     <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
+        {% include 'snippets/rate_form.html' with book=book %}
         {{ review_form.as_p }}
         <button type="submit">post review</button>
     </form>
