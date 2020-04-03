@@ -4,35 +4,38 @@ set -e
 set -x
 
 case "$1" in
-	up)
-		docker-compose build
-		docker-compose up
-		;;
-	initdb)
-		docker-compose exec web python manage.py migrate
-		docker-compose exec web python manage.py shell -c 'import init_db'
-		;;
-	resetdb)
-		docker-compose stop web
-		docker-compose exec db dropdb -U fedireads fedireads
-		docker-compose exec db createdb -U fedireads fedireads
-		docker-compose start web
-		docker-compose exec web python manage.py migrate
-		docker-compose exec web python manage.py shell -c 'import init_db'
-		;;
-	makemigrations)
-		docker-compose exec web python manage.py makemigrations
-		;;
-	migrate)
-		docker-compose exec web python manage.py migrate
-		;;
-	shell)
-		docker-compose exec web python manage.py shell
-		;;
-	dbshell)
-		docker-compose exec db psql -U fedireads fedireads
-		;;
-	*)
-		echo "Unrecognised command."
-		;;
+    up)
+        docker-compose up --build
+        ;;
+    run)
+        docker-compose run --service-ports web
+        ;;
+    initdb)
+        docker-compose exec web python manage.py migrate
+        docker-compose exec web python manage.py shell -c 'import init_db'
+        ;;
+    resetdb)
+        docker-compose stop web
+        docker-compose exec db dropdb -U fedireads fedireads
+        docker-compose exec db createdb -U fedireads fedireads
+        docker-compose start web
+        docker-compose exec web python manage.py migrate
+        docker-compose exec web python manage.py shell -c 'import init_db'
+        ;;
+    makemigrations)
+        docker-compose exec web python manage.py makemigrations
+        ;;
+    migrate)
+        docker-compose exec web python manage.py migrate
+        ;;
+    shell)
+        docker-compose exec web python manage.py shell
+        ;;
+    dbshell)
+        docker-compose exec db psql -U fedireads fedireads
+        ;;
+    *)
+        echo "Unrecognised command. Try: up, initdb, resetdb,makemigrations, migrate, shell, dbshell "
+        docker-compose build
+        ;;
 esac
