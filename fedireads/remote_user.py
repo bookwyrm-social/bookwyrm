@@ -1,6 +1,9 @@
 ''' manage remote users '''
 import requests
 from urllib.parse import urlparse
+from uuid import uuid4
+
+from django.core.files.base import ContentFile
 
 from fedireads import models
 from fedireads.status import create_review_from_activity
@@ -28,8 +31,8 @@ def get_or_create_remote_user(actor):
     shared_inbox = data.get('endpoints').get('sharedInbox') if \
         data.get('endpoints') else None
 
-
     server = get_or_create_remote_server(actor_parts.netloc)
+    avatar = get_avatar(data)
 
     # throws a key error if it can't find any of these fields
     user = models.User.objects.create_user(
@@ -49,9 +52,25 @@ def get_or_create_remote_user(actor):
             'manuallyApprovesFollowers', False),
         federated_server=server,
     )
+    user.avatar.save(*avatar)
     if user.fedireads_user:
         get_remote_reviews(user)
     return user
+
+
+def get_avatar(data):
+    ''' find the icon attachment and load the image from the remote sever '''
+    icon_blob = data.get('icon')
+    if not icon_blob or not icon_blob.get('url'):
+        return None
+
+    response = requests.get(icon_blob['url'])
+    if not response.ok:
+        return None
+
+    image_name = str(uuid4()) + '.' + icon_blob['url'].split('.')[-1]
+    image_content = ContentFile(response.content)
+    return [image_name, image_content]
 
 
 def get_remote_reviews(user):
