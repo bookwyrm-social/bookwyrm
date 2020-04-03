@@ -314,6 +314,34 @@ button .icon {
 }
 
 
+/* star ratings */
+.stars {
+    letter-spacing: -0.15em;
+    display: inline-block;
+}
+.rate-stars .icon {
+    cursor: pointer;
+}
+.rate-stars form {
+    display: inline;
+    width: min-content;
+}
+.rate-stars form button.icon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: black;
+}
+.rate-stars form > .icon:before {
+    content: '\e9d7';
+}
+.rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.rate-stars form:hover ~ form .icon:before{
+    content: '\e9d7';
+}
 
 /* re-usable tab styles */
 .tabs {
@@ -405,6 +433,20 @@ button .icon {
     text-transform: uppercase;
     margin-bottom: 1em;
 }
+
+
+dl {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+}
+dt {
+    float: left;
+    margin-right: 0.5em;
+}
+dd {
+    margin-bottom: 0.25em;
+}
+
 
 .all-shelves {
     display: flex;

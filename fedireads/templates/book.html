@@ -40,7 +40,8 @@
         </div>
 
         <div class="column">
-            <h3>{{ active_tab }} rating: {{ rating | stars }}</h3>
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            <h3>{{ active_tab }} rating: {% include 'snippets/stars.html' with rating=rating %}</h3>
 
             {% include 'snippets/book_description.html' %}
 

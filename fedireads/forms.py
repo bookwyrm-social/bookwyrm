@@ -26,6 +26,12 @@ class RegisterForm(ModelForm):
         }
 
 
+class RatingForm(ModelForm):
+    class Meta:
+        model = models.Review
+        fields = ['rating']
+
+
 class ReviewForm(ModelForm):
     class Meta:
         model = models.Review

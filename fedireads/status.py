@@ -25,6 +25,17 @@ def create_review_from_activity(author, activity):
     return review
 
 
+def create_rating(user, book, rating):
+    ''' a review that's just a rating '''
+    if not rating or rating < 1 or rating > 5:
+        raise ValueError('Invalid rating')
+    return models.Review.objects.create(
+        user=user,
+        book=book,
+        rating=rating,
+    )
+
+
 def create_review(user, book, name, content, rating):
     ''' a book review has been added '''
     name = sanitize(name)

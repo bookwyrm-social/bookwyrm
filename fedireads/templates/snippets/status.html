@@ -1,5 +1,15 @@
 {% load fr_display %}
 
+{% if status.status_type == 'Review' and not status.name or not status.content %}
+<div class="post rating">
+    <h2>
+        {% include 'snippets/status_header.html' with status=status %}
+        {% include 'snippets/stars.html' with book=book rating=status.rating %}
+    </h2>
+</div>
+
+{% else %}
+
 <div class="post {{ status.status_type | lower }} depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}">
 
     <h2>
@@ -22,3 +32,4 @@
 {% include 'snippets/interaction.html' with activity=status %}
 {% endif %}
 
+{% endif %}

@@ -187,6 +187,24 @@ def shelve(request):
 
 
 @login_required
+def rate(request):
+    ''' just a star rating for a book '''
+    form = forms.RatingForm(request.POST)
+    book_identifier = request.POST.get('book')
+    # TODO: better failure behavior
+    import pdb;pdb.set_trace()
+    if not form.is_valid():
+        return redirect('/book/%s' % book_identifier)
+
+    rating = form.cleaned_data.get('rating')
+    # throws a value error if the book is not found
+    book = get_or_create_book(book_identifier)
+
+    outgoing.handle_rate(request.user, book, rating)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
 def review(request):
     ''' create a book review '''
     form = forms.ReviewForm(request.POST)
