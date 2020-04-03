@@ -192,7 +192,6 @@ def rate(request):
     form = forms.RatingForm(request.POST)
     book_identifier = request.POST.get('book')
     # TODO: better failure behavior
-    import pdb;pdb.set_trace()
     if not form.is_valid():
         return redirect('/book/%s' % book_identifier)
 

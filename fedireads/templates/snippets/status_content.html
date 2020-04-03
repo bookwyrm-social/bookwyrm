@@ -34,7 +34,7 @@
         {% if status.status_type == 'Review' %}
         <h3>
             {{ status.name }}<br>
-            {{ status.rating | stars }}
+            {% include 'snippets/stars.html' with rating=status.rating %}
         </h3>
         {% endif %}
 

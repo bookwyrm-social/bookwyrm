@@ -8,9 +8,9 @@
 {% elif status.status_type == 'Review' and not status.name and not status.content%}
     rated <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Review' %}
-    reviewed {{ status.book.title }}
+    reviewed <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Comment' %}
-    commented on {{ status.book.title }}
+    commented on <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Boost' %}
     boosted
 {% elif status.reply_parent %}
