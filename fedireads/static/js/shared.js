@@ -37,6 +37,17 @@ function reply(e) {
     return true;
 }
 
+function rate(e) {
+    e.preventDefault();
+    ajaxPost(e.target);
+    rating = e.target.value;
+    var stars = e.target.parentElement.getElementsByClassName('icon');
+    for (var i = 0; i < stars.length ; i++) {
+        stars[i].className = rating < i ? 'icon icon-star-full' : 'icon icon-star-empty';
+    }
+    return true;
+}
+
 function tabChange(e) {
     e.preventDefault();
     var target = e.target.parentElement;
