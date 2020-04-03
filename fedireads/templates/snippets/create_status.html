@@ -20,8 +20,10 @@
     </div>
 </div>
 
-<div class="book-preview">
-    {% include 'snippets/book_cover.html' with book=book %}
+<div class="book-preview row">
+    <div class="cover-container">
+        {% include 'snippets/book_cover.html' with book=book %}
+    </div>
     <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
