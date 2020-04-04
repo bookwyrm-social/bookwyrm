@@ -144,7 +144,7 @@ def upload_cover(request, book_id):
         return redirect('/book/%s' % request.user.localname)
 
     try:
-        book = models.Book.objects.get(id=book_id)
+        book = models.Edition.objects.get(id=book_id)
     except models.Book.DoesNotExist:
         return HttpResponseNotFound()
 
