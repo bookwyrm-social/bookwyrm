@@ -1,12 +1,16 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div id="content">
-    <div>
-        <h2>Books tagged "{{ tag.name }}"</h2>
+<div class="content-container">
+    <h2>Books tagged "{{ tag.name }}"</h2>
+    <div class="book-grid row wrap shrink">
         {% for book in books.all %}
-        <div class="book-preview grid">
-            {% include 'snippets/book.html' with book=book size=large %}
+        <div class="cover-container">
+            <a href="{{ book.absolute_id }}">
+            {% include 'snippets/book_cover.html' with book=book %}
+            </a>
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            {% include 'snippets/shelve_button.html' with book=book %}
         </div>
         {% endfor %}
     </div>

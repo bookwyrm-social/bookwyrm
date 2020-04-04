@@ -48,14 +48,8 @@
             <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} editions</a></p>
             {% endif %}
 
-            <div id="tag-cloud">
-                {% for tag in tags %}
-                {% include 'snippets/tag.html' with tag=tag user=request.user user_tags=user_tag_names %}
-                {% endfor %}
-            </div>
-
+            {% if request.user.is_authenticated %}
             <div>
-                {% if request.user.is_authenticated %}
                 <h3>Leave a review</h3>
                 <form class="review-form" name="review" action="/review/" method="post">
                     {% csrf_token %}
@@ -64,8 +58,24 @@
                     {{ review_form.as_p }}
                     <button type="submit">Post review</button>
                 </form>
-                {% endif %}
             </div>
+
+            <div>
+                <h3>Tags</h3>
+                <form name="tag" action="/tag/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
+                    <input type="text" name="name"></input>
+                    <button type="submit">Add tag</button>
+                </form>
+            </div>
+            <div class="tag-cloud">
+                {% for tag in tags %}
+                    {% include 'snippets/tag.html' with book=book tag=tag user_tags=user_tags %}
+                {% endfor %}
+            </div>
+
+            {% endif %}
     </div>
 </div>
 

@@ -354,6 +354,8 @@ def book_page(request, book_identifier, tab='friends'):
         book = book.default_edition
 
     work = book.parent_work
+    if not work:
+        return HttpResponseNotFound()
 
     book_reviews = models.Review.objects.filter(book__in=work.edition_set.all())
 
@@ -375,18 +377,13 @@ def book_page(request, book_identifier, tab='friends'):
 
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
-        ).all()
-        user_tag_names = user_tags.values_list('identifier', flat=True)
-
-        user_rating = user_reviews.aggregate(Avg('rating')),
+        ).values_list('identifier', flat=True)
     else:
         tab = 'public'
         reviews = book_reviews.filter(privacy='public')
         shelf = None
         user_reviews = []
-        user_rating = None
         user_tags = []
-        user_tag_names = []
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -399,12 +396,10 @@ def book_page(request, book_identifier, tab='friends'):
         'book': book,
         'shelf': shelf,
         'user_reviews': user_reviews,
-        'user_rating': user_rating,
         'reviews': reviews.distinct(),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
-        'user_tag_names': user_tag_names,
         'review_form': forms.ReviewForm(),
         'tag_form': forms.TagForm(),
         'feed_tabs': [

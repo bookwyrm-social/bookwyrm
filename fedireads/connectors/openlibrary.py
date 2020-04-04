@@ -49,9 +49,9 @@ class Connector(AbstractConnector):
         annotated with work data. '''
 
         try:
-            book = models.Book.objects.select_subclasses().get(
+            book = models.Book.objects.select_subclasses().filter(
                 openlibrary_key=olkey
-            )
+            ).first()
             return book
         except ObjectDoesNotExist:
             pass
@@ -119,7 +119,7 @@ class Connector(AbstractConnector):
             author_id = author_blob['key']
             author_id = author_id.split('/')[-1]
             book.authors.add(self.get_or_create_author(author_id))
-        if not data.get('authors'):
+        if not data.get('authors') and book.parent_work.authors.count():
             book.authors.set(book.parent_work.authors.all())
 
 
@@ -166,7 +166,7 @@ class Connector(AbstractConnector):
 
             try:
                 models.Edition.objects.get(openlibrary_key=olkey)
-            except ObjectDoesNotExist:
+            except models.Edition.DoesNotExist:
                 book = models.Edition.objects.create(openlibrary_key=olkey)
                 self.update_from_data(book, data)
 
@@ -177,7 +177,7 @@ class Connector(AbstractConnector):
             raise ValueError('Invalid OpenLibrary author ID')
         try:
             return models.Author.objects.get(openlibrary_key=olkey)
-        except ObjectDoesNotExist:
+        except models.Author.DoesNotExist:
             pass
 
         response = requests.get('%s/authors/%s.json' % (self.url, olkey))
