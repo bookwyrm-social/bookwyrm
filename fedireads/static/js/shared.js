@@ -37,13 +37,13 @@ function reply(e) {
     return true;
 }
 
-function rate(e) {
+function rate_stars(e) {
     e.preventDefault();
     ajaxPost(e.target);
-    rating = e.target.value;
+    rating = e.target.rating.value;
     var stars = e.target.parentElement.getElementsByClassName('icon');
     for (var i = 0; i < stars.length ; i++) {
-        stars[i].className = rating < i ? 'icon icon-star-full' : 'icon icon-star-empty';
+        stars[i].className = rating > i ? 'icon icon-star-full' : 'icon icon-star-empty';
     }
     return true;
 }
