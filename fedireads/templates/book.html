@@ -18,7 +18,7 @@
 
         <div class="cover-container">
             {% include 'snippets/book_cover.html' with book=book size=large %}
-
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
@@ -40,7 +40,6 @@
         </div>
 
         <div class="column">
-            {% include 'snippets/rate_action.html' with user=request.user book=book %}
             <h3>{{ active_tab }} rating: {% include 'snippets/stars.html' with rating=rating %}</h3>
 
             {% include 'snippets/book_description.html' %}
