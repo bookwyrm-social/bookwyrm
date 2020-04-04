@@ -426,6 +426,8 @@ def book_page(request, book_identifier, tab='friends'):
 def edit_book_page(request, book_identifier):
     ''' info about a book '''
     book = books_manager.get_or_create_book(book_identifier)
+    if not book.description:
+        book.description = book.parent_work.description
     data = {
         'book': book,
         'form': forms.EditionForm(instance=book)

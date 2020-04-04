@@ -48,13 +48,11 @@ class Connector(AbstractConnector):
         if you give a work key, it should give you the default edition,
         annotated with work data. '''
 
-        try:
-            book = models.Book.objects.select_subclasses().filter(
-                openlibrary_key=olkey
-            ).first()
+        book = models.Book.objects.select_subclasses().filter(
+            openlibrary_key=olkey
+        ).first()
+        if book:
             return book
-        except ObjectDoesNotExist:
-            pass
         # no book was found, so we start creating a new one
         model = models.Edition
         if re.match(r'^OL\d+W$', olkey):
@@ -121,7 +119,6 @@ class Connector(AbstractConnector):
             book.authors.add(self.get_or_create_author(author_id))
         if not data.get('authors') and book.parent_work.authors.count():
             book.authors.set(book.parent_work.authors.all())
-
 
         if book.sync_cover and data.get('covers') and len(data['covers']):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
