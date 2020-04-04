@@ -9,6 +9,7 @@
                 {% if status.mention_books.count > 1 %}
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
                 {% endif %}
+                {% include 'snippets/rate_action.html' with book=book user=request.user %}
                 {% include 'snippets/shelve_button.html' with book=book %}
             </div>
             {% if status.mention_books.count == 1 %}
@@ -26,6 +27,7 @@
     {% if not hide_book and status.book %}
     <div class="cover-container">
         {% include 'snippets/book_cover.html' with book=status.book %}
+        {% include 'snippets/rate_action.html' with book=status.book user=request.user %}
         {% include 'snippets/shelve_button.html' with book=status.book %}
     </div>
     {% endif %}
