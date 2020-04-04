@@ -2,11 +2,22 @@
 {% load humanize %}
 {% block content %}
 <div class="content-container">
-    <h2>Edit "{{ book.title }}"</h2>
-    <div class="book-preview">
-        {% include 'snippets/book_cover.html' with book=book size="small" %}
-        <p>Added: {{ book.created_date | naturaltime }}</p>
-        <p>Updated: {{ book.updated_date | naturaltime }}</p>
+    <h2>
+        Edit "{{ book.title }}"
+        <a href="/book/{{ book.fedireads_key }}">
+            <span class="edit-link icon icon-close">
+                <span class="hidden-text">Close</span>
+            </span>
+        </a>
+    </h2>
+    <div class="book-preview row">
+        <div class="cover-container">
+            {% include 'snippets/book_cover.html' with book=book size="small" %}
+        </div>
+        <div>
+            <p>Added: {{ book.created_date | naturaltime }}</p>
+            <p>Updated: {{ book.updated_date | naturaltime }}</p>
+        </div>
     </div>
 </div>
 
@@ -54,7 +65,6 @@
         <p><label for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
         <p><label for="id_published_date">Published date:</label> {{ form.published_date }} </p>
     </div>
-    <button type="submit">Update book</button>
 </form>
 
 {% endblock %}

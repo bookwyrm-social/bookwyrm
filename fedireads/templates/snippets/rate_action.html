@@ -1,0 +1,14 @@
+{% load fr_display %}
+<span class="hidden-text">Leave a rating</span>
+<div class="stars rate-stars">
+    {% for i in '12345'|make_list %}
+    <form name="rate" action="/rate/" method="POST" onsubmit="return rate_stars(event)">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
+        <input type="hidden" name="rating" value="{{ forloop.counter }}"></input>
+        <button type="submit" class="icon icon-star-{% if book|rating:user < forloop.counter %}empty{% else %}full{% endif %}">
+            <span class="hidden-text">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+        </button>
+    </form>
+    {% endfor %}
+</div>

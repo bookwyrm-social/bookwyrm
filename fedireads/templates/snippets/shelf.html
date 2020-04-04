@@ -49,7 +49,7 @@
     </td>
     {% if ratings %}
     <td>
-        {{ ratings | dict_key:book.id | stars}}
+        {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
     </td>
     {% endif %}
 </tr>

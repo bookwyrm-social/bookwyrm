@@ -314,6 +314,62 @@ button .icon {
 }
 
 
+/* star ratings */
+.stars {
+    letter-spacing: -0.15em;
+    display: inline-block;
+}
+.rate-stars .icon {
+    cursor: pointer;
+    color: goldenrod;
+}
+.rate-stars label.icon {
+    color: black;
+}
+.rate-stars form {
+    display: inline;
+    width: min-content;
+}
+.rate-stars button.icon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+.rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.rate-stars form:hover ~ form .icon:before{
+    content: '\e9d7';
+}
+
+.review-form .rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.review-form .rate-stars label {
+    display: inline;
+}
+.review-form .rate-stars input + .icon:before {
+    content: '\e9d9';
+}
+.review-form .rate-stars input:checked + .icon:before {
+    content: '\e9d9';
+}
+.review-form .rate-stars input:checked + * ~ .icon:before {
+    content: '\e9d7';
+}
+.review-form .rate-stars:hover label.icon:before {
+    content: '\e9d9';
+}
+.review-form .rate-stars label.icon:hover:before {
+     content: '\e9d9';
+ }
+.review-form .rate-stars label.icon:hover ~ label.icon:before{
+    content: '\e9d7';
+}
+.review-form .rate-stars input[type="radio"] {
+    display: none;
+}
 
 /* re-usable tab styles */
 .tabs {
@@ -405,6 +461,20 @@ button .icon {
     text-transform: uppercase;
     margin-bottom: 1em;
 }
+
+
+dl {
+    font-size: 0.9em;
+    margin-top: 0.5em;
+}
+dt {
+    float: left;
+    margin-right: 0.5em;
+}
+dd {
+    margin-bottom: 0.25em;
+}
+
 
 .all-shelves {
     display: flex;

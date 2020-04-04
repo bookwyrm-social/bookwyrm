@@ -33,13 +33,17 @@
     <div>
         {% if status.status_type == 'Review' %}
         <h3>
-            {{ status.name }}<br>
-            {{ status.rating | stars }}
+            {% if status.name %}{{ status.name }}<br>{% endif %}
+            {% include 'snippets/stars.html' with rating=status.rating %}
         </h3>
         {% endif %}
 
-        {% if status.status_type != 'Update' and status.status_type != 'Boost' %}
+        {% if status.content and  status.status_type != 'Update' and status.status_type != 'Boost' %}
             <blockquote>{{ status.content | safe }}</blockquote>
+        {% endif %}
+
+        {% if not status.content and status.book and not hide_book and status.status_type != 'Boost' %}
+            {% include 'snippets/book_description.html' with book=status.book %}
         {% endif %}
 
         {% if status.status_type == 'Boost' %}

@@ -40,7 +40,8 @@
         </div>
 
         <div class="column">
-            <h3>{{ active_tab }} rating: {{ rating | stars }}</h3>
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            <h3>{{ active_tab }} rating: {% include 'snippets/stars.html' with rating=rating %}</h3>
 
             {% include 'snippets/book_description.html' %}
 
@@ -59,6 +60,7 @@
                 <h3>Leave a review</h3>
                 <form class="review-form" name="review" action="/review/" method="post">
                     {% csrf_token %}
+                    {% include 'snippets/rate_form.html' with book=book %}
                     <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
                     {{ review_form.as_p }}
                     <button type="submit">Post review</button>

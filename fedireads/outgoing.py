@@ -10,7 +10,7 @@ from fedireads import activitypub
 from fedireads import models
 from fedireads.broadcast import get_recipients, broadcast
 from fedireads.status import create_review, create_status, create_comment
-from fedireads.status import create_tag, create_notification
+from fedireads.status import create_tag, create_notification, create_rating
 from fedireads.remote_user import get_or_create_remote_user
 
 
@@ -186,6 +186,12 @@ def handle_import_books(user, items):
             user, activitypub.get_status(status))
         recipients = get_recipients(user, 'public')
         broadcast(user, create_activity, recipients)
+
+
+def handle_rate(user, book, rating):
+    ''' a review that's just a rating '''
+    review = create_rating(user, book, rating)
+    # TODO: serialize and broadcast
 
 
 def handle_review(user, book, name, content, rating):

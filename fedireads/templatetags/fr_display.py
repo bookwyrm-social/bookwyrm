@@ -12,16 +12,17 @@ def dict_key(d, k):
     return d.get(k) or 0
 
 
-@register.filter(name='stars')
-def stars(number):
-    ''' turn integers into stars '''
-    try:
-        number = int(number)
-    except (ValueError, TypeError):
-        number = 0
-    if not number:
-        return ''
-    return ('★' * number) + '☆' * (5 - number)
+@register.filter(name='rating')
+def get_rating(book, user):
+    ''' get a user's rating of a book '''
+    rating = models.Review.objects.filter(
+        user=user,
+        book=book,
+        rating__isnull=False,
+    ).order_by('-published_date').first()
+    if rating:
+        return rating.rating
+    return 0
 
 
 @register.filter(name='description')

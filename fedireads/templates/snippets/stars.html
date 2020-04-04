@@ -1,0 +1,8 @@
+<div class="stars">
+    <span class="hidden-text">{{ rating|floatformat }} star{{ rating|floatformat | pluralize }}</span>
+    {% for i in '12345'|make_list %}
+    <span class="icon icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}">
+    </span>
+    {% endfor %}
+</div>
+

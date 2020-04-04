@@ -58,7 +58,7 @@ class Comment(Status):
 
 class Review(Status):
     ''' a book review '''
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     rating = models.IntegerField(
         default=None,
