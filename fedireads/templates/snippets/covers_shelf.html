@@ -12,10 +12,20 @@
         <div class="covers-shelf {{ shelf.identifier }} ">
             {% for book in shelf.books %}
             <div class="cover-container">
-            <div >
-                <a href="{{ book.absolute_id }}" onclick="show_compose(this, event)" id="book-{{ book.id }}">
+            <div>
+                <label for="book-{{ book.id }}-radio">
                     {% include 'snippets/book_cover.html' with book=book %}
-                </a>
+                </label>
+                <input name="book-{{ book.id }}" type="radio" id="book-{{ book.id }}-radio"></input>
+                <div class="compose-suggestion" id="compose-book-{{ book.id }}">
+                    <label class="close icon icon-close" for="book-{{ book.id }}-radio-close" onclick="hide_element(this)">
+                        <span class="hidden-text">Close</span>
+                    </label>
+                    <input name="book-{{ book.id }}" type="radio" id="book-{{ book.id }}-radio-close"></input>
+                    <div class="content-container">
+                        {% include 'snippets/create_status.html' with book=book user=request.user %}
+                    </div>
+                </div>
             </div>
             {% include 'snippets/shelve_button.html' with book=book %}
             </div>
@@ -28,13 +38,5 @@
 
 {% for shelf in shelves %}
     {% for book in shelf.books %}
-<div class="compose-suggestion" id="compose-book-{{ book.id }}">
-    <span class="close icon icon-close" onclick="hide_element(this)">
-        <span class="hidden-text">Close</span>
-    </span>
-    <div class="content-container">
-        {% include 'snippets/create_status.html' with book=book user=request.user %}
-    </div>
-</div>
     {% endfor %}
 {% endfor %}

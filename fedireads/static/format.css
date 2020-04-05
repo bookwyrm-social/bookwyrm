@@ -172,6 +172,7 @@ body {
     padding-top: 70px;
     position: relative;
     z-index: 0;
+    margin-top: -2em;
 }
 
 /* row component */
@@ -484,8 +485,9 @@ dd {
 .all-shelves {
     display: flex;
     flex-direction: row;
-    overflow-y: hidden;
     margin-left: 0;
+    position: relative;
+    z-index: 1;
 }
 .all-shelves > div {
     flex-grow: 0;
@@ -510,7 +512,6 @@ dd {
     font-size: 0.9em;
     overflow: unset;
     width: min-content;
-    position: relative;
 }
 .covers-shelf .cover-container:last-child {
     margin-right: 0;
@@ -534,15 +535,32 @@ dd {
     padding: 1rem;
 }
 
-.compose-suggestion {
+.all-shelves input[type='radio'] {
     display: none;
 }
-.compose-suggestion.visible {
+.compose-suggestion {
+    display: none;
+    background-color: white;
+    z-index: 1;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.45);
+}
+input:checked ~ .compose-suggestion {
     display: block;
+    position: absolute;
+    top: 5em;
+    left: 0;
 }
 .compose-suggestion .book-preview {
     background-color: #EEE;
     padding: 1em;
+}
+.compose-suggestion button {
+    margin: 0;
+}
+.compose-suggestion .stars {
+    text-align: left;
 }
 
 .tag {
