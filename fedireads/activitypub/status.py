@@ -4,6 +4,16 @@ from uuid import uuid4
 from fedireads.settings import DOMAIN
 
 
+def get_rating(review):
+    ''' activitypub serialize rating activity '''
+    status = get_status(review)
+    status['inReplyToBook'] = review.book.absolute_id
+    status['fedireadsType'] = review.status_type
+    status['rating'] = review.rating
+    status['content'] = '%d star rating of "%s"' % (
+        review.rating, review.book.title)
+    return status
+
 def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
@@ -22,27 +32,31 @@ def get_comment(comment):
     return status
 
 
+def get_rating_note(review):
+    ''' simple rating, send it as a note not an artciel '''
+    status = get_status(review)
+    status['content'] = 'Rated "%s": %d stars' % (
+        review.book.title,
+        review.rating,
+    )
+    status['type'] = 'Note'
+    return status
+
 def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(review)
-    if review.rating and review.name:
-        name = 'Review of "%s" (%d stars): %s' % (
+    if review.rating:
+        status['name'] = 'Review of "%s" (%d stars): %s' % (
             review.book.title,
             review.rating,
             review.name
         )
-    elif review.rating:
-        name = 'Rated "%s" (%d stars)' % (
-            review.book.title,
-            review.rating,
-        )
     else:
-        name = 'Review of "%s": %s' % (
+        status['name'] = 'Review of "%s": %s' % (
             review.book.title,
             review.name
         )
 
-    status['name'] = name
     return status
 
 

@@ -190,8 +190,18 @@ def handle_import_books(user, items):
 
 def handle_rate(user, book, rating):
     ''' a review that's just a rating '''
-    review = create_rating(user, book, rating)
-    # TODO: serialize and broadcast
+    rating = create_rating(user, book, rating)
+    rating_activity = activitypub.get_rating(rating)
+    rating_create_activity = activitypub.get_create(user, rating_activity)
+    fr_recipients = get_recipients(user, 'public', limit='fedireads')
+    broadcast(user, rating_create_activity, fr_recipients)
+
+    # re-format the activity for non-fedireads servers
+    note_activity = activitypub.get_rating_note(rating)
+    note_create_activity = activitypub.get_create(user, note_activity)
+
+    other_recipients = get_recipients(user, 'public', limit='other')
+    broadcast(user, note_create_activity, other_recipients)
 
 
 def handle_review(user, book, name, content, rating):
