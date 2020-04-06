@@ -489,6 +489,9 @@ dd {
     position: relative;
     z-index: 1;
 }
+.all-shelves h2 {
+    white-space: nowrap;
+}
 .all-shelves > div {
     flex-grow: 0;
 }
@@ -538,19 +541,14 @@ dd {
 .all-shelves input[type='radio'] {
     display: none;
 }
+.compose-popout input[type="radio"] {
+    display: none;
+}
 .compose-suggestion {
     display: none;
-    background-color: white;
-    z-index: 1;
-    width: -webkit-fill-available;
-    width: -moz-available;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.45);
 }
 input:checked ~ .compose-suggestion {
     display: block;
-    position: absolute;
-    top: 5em;
-    left: 0;
 }
 .compose-suggestion .book-preview {
     background-color: #EEE;
