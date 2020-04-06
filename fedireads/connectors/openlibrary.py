@@ -1,6 +1,6 @@
 ''' openlibrary data connector '''
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
+from django.db import transaction
 import re
 import requests
 
@@ -13,6 +13,18 @@ from .openlibrary_languages import languages
 class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
     def __init__(self, identifier):
+        get_first = lambda a: a[0]
+        self.book_mappings = {
+            'publish_date': ('published_date', get_date),
+            'first_publish_date': ('first_published_date', get_date),
+            'description': ('description', get_description),
+            'isbn_13': ('isbn', get_first),
+            'oclc_numbers': ('oclc_number', get_first),
+            'lccn': ('lccn', get_first),
+            'languages': ('languages', get_languages),
+            'number_of_pages': ('pages', None),
+            'series': ('series', get_first),
+        }
         super().__init__(identifier)
 
 
@@ -52,120 +64,125 @@ class Connector(AbstractConnector):
             openlibrary_key=olkey
         ).first()
         if book:
+            if isinstance(book, models.Work):
+                return book.default_edition
             return book
+
         # no book was found, so we start creating a new one
-        model = models.Edition
         if re.match(r'^OL\d+W$', olkey):
-            model = models.Work
-        book = model(openlibrary_key=olkey)
-        return self.update_book(book)
+            with transaction.atomic():
+                # create both work and a default edition
+                work_data = self.load_book_data(olkey)
+                work = self.create_book(olkey, work_data, models.Work)
+
+                edition_options = self.load_edition_data(olkey).get('entries')
+                edition_data = pick_default_edition(edition_options)
+                key = edition_data.get('key').split('/')[-1]
+                edition = self.create_book(key, edition_data, models.Edition)
+                edition.parent_work = work
+                edition.save()
+        else:
+            with transaction.atomic():
+                edition_data = self.load_book_data(olkey)
+                edition = self.create_book(olkey, edition_data, models.Edition)
+
+                work_key = edition_data.get('works')[0]['key'].split('/')[-1]
+                work = models.Work.objects.filter(
+                    openlibrary_key=work_key
+                ).first()
+                if not work:
+                    work_data = self.load_book_data(work_key)
+                    work = self.create_book(work_key, work_data, models.Work)
+                edition.parent_work = work
+                edition.save()
+        if not edition.authors and work.authors:
+            edition.authors.set(work.authors.all())
+
+        return edition
+
+
+    def create_book(self, key, data, model):
+        ''' create a work or edition from data '''
+        book = model.objects.create(
+            openlibrary_key=key,
+            title=data['title'],
+            connector=self.connector,
+        )
+        return self.update_book_from_data(book, data)
+
+
+    def update_book_from_data(self, book, data):
+        ''' updaet a book model instance from ol data '''
+        # populate the simple data fields
+        update_from_mappings(book, data, self.book_mappings)
+        book.save()
+
+        for author in self.get_authors_from_data(data):
+            book.authors.add(author)
+
+        if data.get('covers'):
+            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
+        return book
 
 
     def update_book(self, book):
+        ''' load new data '''
+        if not book.sync and not book.sync_cover:
+            return
+
+        data = self.load_book_data(book.openlibrary_key)
+        if book.sync_cover and data.get('covers'):
+            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
+        if book.sync:
+            book = self.update_book_from_data(book, data)
+        return book
+
+
+    def get_authors_from_data(self, data):
+        ''' parse author json and load or create authors '''
+        authors = []
+        for author_blob in data.get('authors', []):
+            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
+            author_blob = author_blob.get('author', author_blob)
+            author_id = author_blob['key'].split('/')[-1]
+            authors.append(self.get_or_create_author(author_id))
+        return authors
+
+
+    def load_book_data(self, olkey):
         ''' query openlibrary for data on a book '''
-        olkey = book.openlibrary_key
-        # load the book json from openlibrary.org
         response = requests.get('%s/works/%s.json' % (self.url, olkey))
         if not response.ok:
             response.raise_for_status()
         data = response.json()
-        if not book.source_url:
-            book.source_url = response.url
-        return self.update_from_data(book, data)
+        return data
 
 
-    def update_from_data(self, book, data):
-        ''' update a book from a json blob '''
-        mappings = {
-            'publish_date': ('published_date', get_date),
-            'first_publish_date': ('first_published_date', get_date),
-            'description': ('description', get_description),
-            'isbn_13': ('isbn', lambda a: a[0]),
-            'oclc_numbers': ('oclc_number', lambda a: a[0]),
-            'lccn': ('lccn', lambda a: a[0]),
-            'languages': ('languages', get_languages),
-            'number_of_pages': ('pages', None),
-            'series': ('series', lambda a: a[0]),
-        }
-        book = update_from_mappings(book, data, mappings)
-
-        if 'identifiers' in data:
-            if 'goodreads' in data['identifiers']:
-                book.goodreads_key = data['identifiers']['goodreads'][0]
-        if 'series' in data and len(data['series']) > 1:
-            book.series_number = data['series'][1]
-
-        if not book.connector:
-            book.connector = self.connector
-        book.save()
-
-        # this book sure as heck better be an edition
-        if data.get('works'):
-            key = data.get('works')[0]['key']
-            key = key.split('/')[-1]
-            work = self.get_or_create_book(key)
-            book.parent_work = work
-
-        if isinstance(book, models.Work):
-            # load editions of a work
-            self.get_editions_of_work(book)
-
-        # we also need to know the author get the cover
-        for author_blob in data.get('authors', []):
-            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
-            author_blob = author_blob.get('author', author_blob)
-            author_id = author_blob['key']
-            author_id = author_id.split('/')[-1]
-            book.authors.add(self.get_or_create_author(author_id))
-        if not data.get('authors') and book.parent_work.authors.count():
-            book.authors.set(book.parent_work.authors.all())
-
-        if book.sync_cover and data.get('covers') and len(data['covers']):
-            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
-
-        return book
+    def load_edition_data(self, olkey):
+        ''' query openlibrary for editions of a work '''
+        response = requests.get(
+            '%s/works/%s/editions.json' % (self.url, olkey))
+        if not response.ok:
+            response.raise_for_status()
+        data = response.json()
+        return data
 
 
     def expand_book_data(self, book):
         work = book
         if isinstance(book, models.Edition):
             work = book.parent_work
-        self.get_editions_of_work(work, default_only=False)
 
-
-    def get_editions_of_work(self, work, default_only=True):
-        ''' get all editions of a work '''
-        response = requests.get(
-            '%s/works/%s/editions.json' % (self.url, work.openlibrary_key))
-        edition_data = response.json()
-
-        options = edition_data.get('entries', [])
-        if default_only and len(options) > 1:
-            options = [e for e in options if e.get('cover')] or options
-            options = [e for e in options if \
-                '/languages/eng' in str(e.get('languages'))] or options
-            formats = ['paperback', 'hardcover', 'mass market paperback']
-            options = [e for e in options if \
-                str(e.get('physical_format')).lower() in formats] or options
-            options = [e for e in options if e.get('isbn_13')] or options
-            options = [e for e in options if e.get('ocaid')] or options
-
-            if not options:
-                options = edition_data.get('entries', [])
-            options = options[:1]
-
-        for data in options:
-            try:
-                olkey = data['key'].split('/')[-1]
-            except KeyError:
-                # bad data I guess?
-                return
-
-            try:
-                models.Edition.objects.get(openlibrary_key=olkey)
-            except models.Edition.DoesNotExist:
-                book = models.Edition.objects.create(openlibrary_key=olkey)
-                self.update_from_data(book, data)
+        edition_options = self.load_edition_data(work.openlibrary_key)
+        for edition_data in edition_options.get('entries'):
+            olkey = edition_data.get('key').split('/')[-1]
+            if models.Edition.objects.filter(openlibrary_key=olkey).count():
+                continue
+            edition = self.create_book(olkey, edition_data, models.Edition)
+            edition.parent_work = work
+            edition.save()
+            if not edition.authors and work.authors:
+                edition.authors.set(work.authors.all())
 
 
     def get_or_create_author(self, olkey):
@@ -226,5 +243,23 @@ def get_languages(language_blob):
             languages.get(lang.get('key', ''), None)
         )
     return langs
+
+
+def pick_default_edition(options):
+    ''' favor physical copies with covers in english '''
+    if not len(options):
+        return None
+    if len(options) == 1:
+        return options[0]
+
+    options = [e for e in options if e.get('cover')] or options
+    options = [e for e in options if \
+        '/languages/eng' in str(e.get('languages'))] or options
+    formats = ['paperback', 'hardcover', 'mass market paperback']
+    options = [e for e in options if \
+        str(e.get('physical_format')).lower() in formats] or options
+    options = [e for e in options if e.get('isbn_13')] or options
+    options = [e for e in options if e.get('ocaid')] or options
+    return options[0]
 
 

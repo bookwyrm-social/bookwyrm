@@ -352,6 +352,8 @@ def book_page(request, book_identifier, tab='friends'):
 
     if isinstance(book, models.Work):
         book = book.default_edition
+    if not book:
+        return HttpResponseNotFound()
 
     work = book.parent_work
     if not work:
