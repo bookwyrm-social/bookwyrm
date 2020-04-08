@@ -716,3 +716,52 @@ th, td {
     background-color: #FF1654;
     text-align: center;
 }
+
+div.dropdown {
+    display: block;
+    white-space: nowrap;
+    background-color: #EEE;
+    border: 2px solid #247BA0;
+    border-radius: 0.3em;
+    color: #247BA0;
+    width: max-content;
+}
+
+.dropdown form {
+    display: inline;
+}
+
+button.dropdown-button {
+    display: inline;
+    border: none;
+    border-radius: 0;
+    background-color: inherit;
+    color: inherit;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    align: left;
+    border-radius: 3px;
+    border: 2px solid #247BA0;
+}
+
+.dropdown-content button {
+    text-align: left;
+    width: 100%;
+    border-radius: 0;
+    border: none;
+}
+
+.dropdown-content button:hover {
+    background-color: #ddd;
+}
+
+.dropdown-content button {
+    border-radius: 0;
+}
+
+.dropdown-arrow:hover .dropdown-content {
+    display: block;
+}

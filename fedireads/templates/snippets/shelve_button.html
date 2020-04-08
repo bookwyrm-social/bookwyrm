@@ -2,12 +2,23 @@
 {% if request.user.is_authenticated %}
 {% if not pulldown %}
 
+<div class="dropdown secondary">
 <form name="shelve" action="/shelve/" method="post">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}"></input>
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
-    <button class="secondary" type="submit">{% shelve_button_text book %}</button>
-</form>
+    <button class="dropdown-button" type="submit" style="">{% shelve_button_text book %}</button></form><div class="dropdown-arrow" style="display: inline;"><button class="dropdown-button">&dArr;</button>
+<div class="dropdown-content">
+    <form name="shelve" action="/shelve/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.id }}"></input>
+        {% for shelf in request.user.shelf_set.all %}
+            <button class="secondary" name="shelf" type="submit" value="{{ shelf.identifier }}">{{ shelf.name }}</button>
+        {% endfor %}
+    </form>
+</div>
+</div>
+</div>
 
 {% else %}
 
