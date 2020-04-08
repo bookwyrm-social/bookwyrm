@@ -222,6 +222,9 @@ body {
     width: 30rem;
     height: 10rem;
 }
+.review-form.quote-form textarea#id_content {
+    height: 4rem;
+}
 
 
 
@@ -578,11 +581,32 @@ input:checked ~ .compose-suggestion {
 blockquote {
     white-space: pre-line;
 }
-blockquote .icon-quote-open {
-    float: left;
+blockquote .icon-quote-open, blockquote .icon-quote-close, .quote .icon-quote-open, .quote .icon-quote-close {
     font-size: 2rem;
     margin-right: 0.5rem;
     color: #888;
+}
+blockquote .icon-quote-open, .quote .icon-quote-close {
+    float: left;
+}
+.quote {
+    margin-bottom: 2em;
+    position: relative;
+}
+.quote .icon-quote-open, .quote .icon-quote-close {
+    position: absolute;
+}
+.quote .icon-quote-open {
+    top: -0.5rem;
+}
+.quote .icon-quote-close {
+    right: 0;
+    bottom: 1.5rem;
+}
+.quote blockquote {
+    background-color: white;
+    margin: 1em;
+    padding: 1em;
 }
 
 .interaction {

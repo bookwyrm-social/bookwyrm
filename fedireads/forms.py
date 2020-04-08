@@ -53,6 +53,17 @@ class CommentForm(ModelForm):
         }
 
 
+class QuotationForm(ModelForm):
+    class Meta:
+        model = models.Quotation
+        fields = ['quote', 'content']
+        help_texts = {f: None for f in fields}
+        labels = {
+            'quote': 'Quote',
+            'content': 'Comment',
+        }
+
+
 class ReplyForm(ModelForm):
     class Meta:
         model = models.Status

@@ -229,6 +229,21 @@ def review(request):
 
 
 @login_required
+def quotate(request):
+    ''' create a book quotation '''
+    form = forms.QuotationForm(request.POST)
+    book_identifier = request.POST.get('book')
+    if not form.is_valid():
+        return redirect('/book/%s' % book_identifier)
+
+    quote = form.cleaned_data.get('quote')
+    content = form.cleaned_data.get('content')
+
+    outgoing.handle_quotation(request.user, book_identifier, content, quote)
+    return redirect('/book/%s' % book_identifier)
+
+
+@login_required
 def comment(request):
     ''' create a book comment '''
     form = forms.CommentForm(request.POST)

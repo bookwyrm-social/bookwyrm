@@ -92,6 +92,7 @@ def home_tab(request, tab):
         ],
         'active_tab': tab,
         'review_form': forms.ReviewForm(),
+        'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),
         'next': next_page if activity_count > (page_size * page) else None,
         'prev': prev_page if page > 1 else None,

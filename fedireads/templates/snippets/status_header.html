@@ -11,6 +11,8 @@
     reviewed <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Comment' %}
     commented on <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
+{% elif status.status_type == 'Quotation' %}
+    quoted <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Boost' %}
     boosted
 {% elif status.reply_parent %}

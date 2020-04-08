@@ -9,7 +9,8 @@ import requests
 from fedireads import activitypub
 from fedireads import models
 from fedireads.broadcast import get_recipients, broadcast
-from fedireads.status import create_review, create_status, create_comment
+from fedireads.status import create_review, create_status
+from fedireads.status import create_quotation, create_comment
 from fedireads.status import create_tag, create_notification, create_rating
 from fedireads.remote_user import get_or_create_remote_user
 
@@ -216,6 +217,24 @@ def handle_review(user, book, name, content, rating):
 
     # re-format the activity for non-fedireads servers
     article_activity = activitypub.get_review_article(review)
+    article_create_activity = activitypub.get_create(user, article_activity)
+
+    other_recipients = get_recipients(user, 'public', limit='other')
+    broadcast(user, article_create_activity, other_recipients)
+
+
+def handle_quotation(user, book, content, quote):
+    ''' post a review '''
+    # validated and saves the review in the database so it has an id
+    quotation = create_quotation(user, book, content, quote)
+
+    quotation_activity = activitypub.get_quotation(quotation)
+    quotation_create_activity = activitypub.get_create(user, quotation_activity)
+    fr_recipients = get_recipients(user, 'public', limit='fedireads')
+    broadcast(user, quotation_create_activity, fr_recipients)
+
+    # re-format the activity for non-fedireads servers
+    article_activity = activitypub.get_quotation_article(quotation)
     article_create_activity = activitypub.get_create(user, article_activity)
 
     other_recipients = get_recipients(user, 'public', limit='other')

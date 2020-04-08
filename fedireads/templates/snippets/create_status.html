@@ -15,8 +15,8 @@ a   <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
     <div class="tab" data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
         <a href="{{ book.absolute_id }}/comment" onclick="tabChange(event)">Comment</a>
     </div>
-    <div class="tab" data-id="tab-quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        Quote
+    <div class="tab" data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+        <a href="{{ book.absolute_id }}/quotation" onclick="tabChange(event)">Quote</a>
     </div>
 </div>
 
@@ -37,5 +37,12 @@ a   <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
         <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
         {{ comment_form.as_p }}
         <button type="submit">post comment</button>
+    </form>
+
+    <form class="hidden tab-option-{{ book.id }} review-form quote-form" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
+        {{ quotation_form.as_p }}
+        <button typr="submit">post quote</button>
     </form>
 </div>

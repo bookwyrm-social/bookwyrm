@@ -56,6 +56,38 @@ def create_review(user, book, name, content, rating):
     )
 
 
+def create_quotation_from_activity(author, activity):
+    ''' parse an activity json blob into a status '''
+    book = activity['inReplyToBook']
+    book = book.split('/')[-1]
+    quote = activity.get('quote')
+    content = activity.get('content')
+    published = activity.get('published')
+    remote_id = activity['id']
+
+    quotation = create_quotation(author, book, content, quote)
+    quotation.published_date = published
+    quotation.remote_id = remote_id
+    quotation.save()
+    return quotation
+
+
+def create_quotation(user, possible_book, content, quote):
+    ''' a quotation has been added '''
+    # throws a value error if the book is not found
+    book = get_or_create_book(possible_book)
+    content = sanitize(content)
+    quote = sanitize(quote)
+
+    return models.Quotation.objects.create(
+        user=user,
+        book=book,
+        content=content,
+        quote=quote,
+    )
+
+
+
 def create_comment_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book = activity['inReplyToBook']

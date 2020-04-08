@@ -36,6 +36,5 @@ case "$1" in
         ;;
     *)
         echo "Unrecognised command. Try: up, initdb, resetdb,makemigrations, migrate, shell, dbshell "
-        docker-compose build
         ;;
 esac

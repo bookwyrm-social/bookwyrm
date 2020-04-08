@@ -56,6 +56,17 @@ class Comment(Status):
         super().save(*args, **kwargs)
 
 
+class Quotation(Status):
+    ''' like a review but without a rating and transient '''
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
+    quote = models.TextField()
+
+    def save(self, *args, **kwargs):
+        self.status_type = 'Quotation'
+        self.activity_type = 'Note'
+        super().save(*args, **kwargs)
+
+
 class Review(Status):
     ''' a book review '''
     name = models.CharField(max_length=255, null=True)

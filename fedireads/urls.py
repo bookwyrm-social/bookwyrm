@@ -80,6 +80,7 @@ urlpatterns = [
 
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),
+    re_path(r'^quotate/?$', actions.quotate),
     re_path(r'^comment/?$', actions.comment),
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),

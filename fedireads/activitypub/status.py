@@ -14,6 +14,29 @@ def get_rating(review):
         review.rating, review.book.title)
     return status
 
+
+def get_quotation(quotation):
+    ''' fedireads json for quotations '''
+    status = get_status(quotation)
+    status['inReplyToBook'] = quotation.book.absolute_id
+    status['fedireadsType'] = quotation.status_type
+    status['quote'] = quotation.quote
+    return status
+
+
+def get_quotation_article(quotation):
+    ''' a book quotation formatted for a non-fedireads isntance (mastodon) '''
+    status = get_status(quotation)
+    content = '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
+        quotation.quote,
+        quotation.book.absolute_id,
+        quotation.book.title,
+        quotation.content,
+    )
+    status['content'] = content
+    return status
+
+
 def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
