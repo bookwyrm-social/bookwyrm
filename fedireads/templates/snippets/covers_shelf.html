@@ -28,7 +28,7 @@
 
 {% for shelf in shelves %}
     {% for book in shelf.books %}
-<div class="content-container compose-popout">
+<div class="compose-popout">
     <input name="book-popout" type="radio" id="book-{{ book.id }}-radio"></input>
     <div class="compose-suggestion" id="compose-book-{{ book.id }}">
         <label class="close icon icon-close" for="book-{{ book.id }}-radio-close" onclick="hide_element(this)">
