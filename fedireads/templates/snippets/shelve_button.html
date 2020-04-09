@@ -7,15 +7,17 @@
     <input type="hidden" name="book" value="{{ book.id }}"></input>
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
     <button type="submit" style="">{% shelve_button_text book %}</button></form><div class="pulldown-container"><button>&dArr;</button>
-<div class="pulldown">
+<ul class="pulldown">
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}"></input>
         {% for shelf in request.user.shelf_set.all %}
+        <li>
         <button name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+        </li>
         {% endfor %}
     </form>
-</div>
+</ul>
 </div>
 </div>
 
