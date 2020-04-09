@@ -1,6 +1,5 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
-{% if not pulldown %}
 
 <div class="dropdown secondary">
 <form name="shelve" action="/shelve/" method="post">
@@ -20,21 +19,4 @@
 </div>
 </div>
 
-{% else %}
-
-<form name="shelve" action="/shelve/" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="book" value="{{ book.id }}"></input>
-
-    <select name="shelf">
-        {% for shelf in request.user.shelf_set.all %}
-        <option value="{{ shelf.identifier }}" {% if book in shelf.books.all %} selected {% endif %}>
-             {{ shelf.name }}{% if book in shelf.books.all %} ✓ {% endif %}
-        </option>
-        {% endfor %}
-    </select>
-    <button class="secondary" type="submit">Shelve</button>
-</form>
-
-{% endif %}
 {% endif %}
