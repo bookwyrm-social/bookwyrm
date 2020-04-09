@@ -754,6 +754,14 @@ button.dropdown-button {
     border: none;
 }
 
+.dropdown-content button[disabled] {
+    color: #aaa;
+}
+
+.dropdown-content button[disabled]:hover {
+    background-color: #eee;
+}
+
 .dropdown-content button:hover {
     background-color: #ddd;
 }

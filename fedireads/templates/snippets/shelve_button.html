@@ -13,7 +13,7 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}"></input>
         {% for shelf in request.user.shelf_set.all %}
-            <button class="secondary" name="shelf" type="submit" value="{{ shelf.identifier }}">{{ shelf.name }}</button>
+            <button class="secondary" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
         {% endfor %}
     </form>
 </div>
