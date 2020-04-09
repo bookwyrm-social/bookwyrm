@@ -139,7 +139,9 @@ body {
 
 .pulldown-container {
     position: relative;
+    display: inline;
 }
+
 .pulldown {
     display: none;
     position: absolute;
@@ -149,12 +151,59 @@ body {
     right: 0;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     width: max-content;
+    border: 2px solid #247BA0;
+    align: left;
 }
+
 .pulldown-container:hover .pulldown {
     display: block;
 }
+
 .pulldown li {
     margin-bottom: 0.5em;
+}
+
+div.pulldown-button {
+    background-color: #eee;
+    border: 2px solid #247BA0;
+    border-radius: 0.3em;
+    color: #247BA0;
+    width: max-content;
+    white-space: nowrap;
+}
+
+.pulldown-button form {
+    display: inline;
+}
+
+div.pulldown-button button {
+    display: inline;
+    border: none;
+    border-radius: 0;
+    background-color: inherit;
+    color: #247BA0;
+}
+
+div.pulldown button {
+    display: block;
+    text-align: left;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    background-color: white;
+    color: #247BA0;
+}
+
+.pulldown button[disabled] {
+    color: #aaa;
+}
+
+.pulldown button[disabled]:hover {
+    background-color: white;
+}
+
+.pulldown button:hover {
+    background-color: #ddd;
 }
 
 /* content area */
@@ -717,59 +766,3 @@ th, td {
     text-align: center;
 }
 
-div.dropdown {
-    display: block;
-    white-space: nowrap;
-    background-color: #EEE;
-    border: 2px solid #247BA0;
-    border-radius: 0.3em;
-    color: #247BA0;
-    width: max-content;
-}
-
-.dropdown form {
-    display: inline;
-}
-
-button.dropdown-button {
-    display: inline;
-    border: none;
-    border-radius: 0;
-    background-color: inherit;
-    color: inherit;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    align: left;
-    border-radius: 3px;
-    border: 2px solid #247BA0;
-}
-
-.dropdown-content button {
-    text-align: left;
-    width: 100%;
-    border-radius: 0;
-    border: none;
-}
-
-.dropdown-content button[disabled] {
-    color: #aaa;
-}
-
-.dropdown-content button[disabled]:hover {
-    background-color: #eee;
-}
-
-.dropdown-content button:hover {
-    background-color: #ddd;
-}
-
-.dropdown-content button {
-    border-radius: 0;
-}
-
-.dropdown-arrow:hover .dropdown-content {
-    display: block;
-}

@@ -1,18 +1,18 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
 
-<div class="dropdown secondary">
+<div class="pulldown-button">
 <form name="shelve" action="/shelve/" method="post">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}"></input>
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
-    <button class="dropdown-button" type="submit" style="">{% shelve_button_text book %}</button></form><div class="dropdown-arrow" style="display: inline;"><button class="dropdown-button">&dArr;</button>
-<div class="dropdown-content">
+    <button type="submit" style="">{% shelve_button_text book %}</button></form><div class="pulldown-container"><button>&dArr;</button>
+<div class="pulldown">
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}"></input>
         {% for shelf in request.user.shelf_set.all %}
-            <button class="secondary" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+        <button name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
         {% endfor %}
     </form>
 </div>
