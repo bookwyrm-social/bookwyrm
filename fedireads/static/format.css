@@ -150,6 +150,7 @@ body {
     background: white;
     padding: 1em;
     right: 0;
+    font-size: 0.9rem;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     width: max-content;
     text-align: left;
@@ -160,9 +161,11 @@ body {
     display: block;
 }
 
-.pulldown a {
+.pulldown li a {
     display: block;
     margin-bottom: 0.5em;
+    text-decoration: none;
+    padding: 0.3em 0.8em
 }
 
 div.pulldown-button {
@@ -211,7 +214,7 @@ ul.pulldown button {
     background-color: white;
 }
 
-.pulldown button:hover {
+.pulldown button:hover, .pulldown li:hover {
     background-color: #ddd;
 }
 
