@@ -137,6 +137,7 @@ body {
     padding-right: 1em;
 }
 
+/* pulldown */
 .pulldown-container {
     position: relative;
     display: inline;
@@ -151,8 +152,8 @@ body {
     right: 0;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     width: max-content;
-    border: 2px solid #247BA0;
     text-align: left;
+    z-index: 1;
 }
 
 .pulldown-container:hover .pulldown {
@@ -170,6 +171,7 @@ div.pulldown-button {
     border-radius: 0.3em;
     color: #247BA0;
     width: max-content;
+    margin: 0 auto;
     white-space: nowrap;
 }
 
@@ -185,7 +187,8 @@ div.pulldown-button button {
     color: #247BA0;
 }
 div.pulldown-button .pulldown-toggle {
-    padding: 0;
+    padding-right: 0;
+    padding-left: 0;
     position: relative;
     left: -0.5em;
 }
