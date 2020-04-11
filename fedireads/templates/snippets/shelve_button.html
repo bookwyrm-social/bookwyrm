@@ -7,7 +7,7 @@
     <input type="hidden" name="book" value="{{ book.id }}"></input>
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}"></input>
     <button type="submit" style="">{% shelve_button_text book %}</button></form><div class="pulldown-container">
-    <button>
+    <button class="pulldown-toggle">
         <span class="icon icon-arrow-down"><span class="hidden-text">More shelves</span></span>
     </button>
 <ul class="pulldown">

@@ -152,7 +152,7 @@ body {
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     width: max-content;
     border: 2px solid #247BA0;
-    align: left;
+    text-align: left;
 }
 
 .pulldown-container:hover .pulldown {
@@ -183,6 +183,11 @@ div.pulldown-button button {
     border-radius: 0;
     background-color: inherit;
     color: #247BA0;
+}
+div.pulldown-button .pulldown-toggle {
+    padding: 0;
+    position: relative;
+    left: -0.5em;
 }
 
 ul.pulldown button {
