@@ -2,6 +2,7 @@
 from io import BytesIO, TextIOWrapper
 import re
 from PIL import Image
+from requests import HTTPError
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -424,6 +425,10 @@ def import_data(request):
         for item in GoodreadsCsv(TextIOWrapper(
                 request.FILES['csv_file'],
                 encoding=request.encoding)):
+            try:
+                item.resolve()
+            except HttpError:
+                pass
             if item.book:
                 results.append(item)
                 if item.rating or item.review:

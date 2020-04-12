@@ -2,7 +2,6 @@
 import re
 import csv
 import itertools
-from requests import HTTPError
 
 from fedireads import books_manager
 
@@ -42,13 +41,7 @@ class GoodreadsCsv:
 
     def __iter__(self):
         for line in itertools.islice(self.reader, MAX_ENTRIES):
-            entry = GoodreadsItem(line)
-            try:
-                entry.resolve()
-            except HTTPError:
-                pass
-            yield entry
-
+            yield GoodreadsItem(line)
 
 class GoodreadsItem:
     ''' a processed line in a goodreads csv '''
