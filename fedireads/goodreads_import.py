@@ -4,6 +4,7 @@ import csv
 import itertools
 
 from fedireads import books_manager
+from fedireads.models import Edition
 
 
 # Mapping goodreads -> fedireads shelf titles.
@@ -49,21 +50,26 @@ class GoodreadsItem:
         self.line = line
         self.book = None
 
-
     def resolve(self):
         ''' try various ways to lookup a book '''
-        self.book = self.get_book_from_isbn()
-        if not self.book:
-            self.book = self.get_book_from_title_author()
+        self.book = (
+            self.get_book_from_db_isbn() or
+            self.get_book_from_isbn() or
+            self.get_book_from_title_author()
+        )
 
+    def get_book_from_db_isbn(self):
+        ''' see if we already know about the book '''
+        try:
+            return Edition.objects.get(isbn=self.isbn)
+        except Edition.DoesNotExist:
+            return None
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        isbn = unquote_string(self.line['ISBN13'])
-        search_results = books_manager.search(isbn)
+        search_results = books_manager.search(self.isbn)
         if search_results:
             return books_manager.get_or_create_book(search_results[0].key)
-
 
     def get_book_from_title_author(self):
         ''' search by title and author '''
@@ -74,6 +80,10 @@ class GoodreadsItem:
         search_results = books_manager.search(search_term)
         if search_results:
             return books_manager.get_or_create_book(search_results[0].key)
+
+    @property
+    def isbn(self):
+        return unquote_string(self.line['ISBN13'])
 
     @property
     def shelf(self):
