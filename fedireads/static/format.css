@@ -645,32 +645,37 @@ input:checked ~ .compose-suggestion {
 blockquote {
     white-space: pre-line;
 }
-blockquote .icon-quote-open, blockquote .icon-quote-close, .quote .icon-quote-open, .quote .icon-quote-close {
+blockquote .icon-quote-open, blockquote .icon-quote-close, .quote blockquote:before, .quote blockquote:after {
     font-size: 2rem;
     margin-right: 0.5rem;
     color: #888;
 }
-blockquote .icon-quote-open, .quote .icon-quote-close {
+blockquote .icon-quote-open {
     float: left;
 }
+
 .quote {
     margin-bottom: 2em;
     position: relative;
-}
-.quote .icon-quote-open, .quote .icon-quote-close {
-    position: absolute;
-}
-.quote .icon-quote-open {
-    top: -0.5rem;
-}
-.quote .icon-quote-close {
-    right: 0;
-    bottom: 1.5rem;
 }
 .quote blockquote {
     background-color: white;
     margin: 1em;
     padding: 1em;
+}
+.quote blockquote:before, .quote blockquote:after {
+    font-family: 'icomoon';
+    position: absolute;
+}
+.quote blockquote:before {
+    content: "\e904";
+    top: 0;
+    left: 0;
+}
+.quote blockquote:after {
+    content: "\e903";
+    bottom: 1em;
+    right: 0;
 }
 
 .interaction {

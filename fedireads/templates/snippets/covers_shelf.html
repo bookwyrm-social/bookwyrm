@@ -12,11 +12,9 @@
         <div class="covers-shelf {{ shelf.identifier }} ">
             {% for book in shelf.books %}
             <div class="cover-container">
-            <div>
                 <label for="book-{{ book.id }}-radio">
                     {% include 'snippets/book_cover.html' with book=book %}
                 </label>
-            </div>
             {% include 'snippets/shelve_button.html' with book=book %}
             </div>
             {% endfor %}

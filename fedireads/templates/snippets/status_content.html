@@ -42,9 +42,7 @@
 
         {% if status.quote %}
         <div class="quote">
-            <span class="icon icon-quote-open"></span>
             <blockquote>{{ status.quote }}</blockquote>
-            <span class="icon icon-quote-close"></span>
 
             <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
         </div>
