@@ -2,9 +2,10 @@
 import re
 import csv
 import itertools
+import dateutil.parser
 
 from fedireads import books_manager
-from fedireads.models import Edition
+from fedireads.models import Edition, ReadThrough
 
 
 # Mapping goodreads -> fedireads shelf titles.
@@ -98,6 +99,25 @@ class GoodreadsItem:
     @property
     def rating(self):
         return int(self.line['My Rating'])
+
+    @property
+    def date_added(self):
+        if self.line['Date Added']:
+            return dateutil.parser.parse(self.line['Date Added'])
+
+    @property
+    def date_read(self):
+        if self.line['Date Read']:
+            return dateutil.parser.parse(self.line['Date Read'])
+
+    @property
+    def reads(self):
+        return [ReadThrough(
+            # Date added isn't the start date, but it's (perhaps) better than nothing.
+            start_date=self.date_added,
+            finish_date=self.date_read,
+            pages_read=None,
+        )]
 
     def __repr__(self):
         return "<GoodreadsItem {!r}>".format(self.line['Title'])

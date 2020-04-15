@@ -177,6 +177,11 @@ def handle_import_books(user, items):
                 recipients = get_recipients(user, 'public')
                 broadcast(user, activity, recipients)
 
+                for read in item.reads:
+                    read.book = item.book
+                    read.user = user
+                    read.save()
+
     if new_books:
         message = 'imported {} books'.format(len(new_books))
         status = create_status(user, message, mention_books=new_books)
