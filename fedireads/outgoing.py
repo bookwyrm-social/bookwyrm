@@ -1,4 +1,5 @@
 ''' handles all the activity coming out of the server '''
+from datetime import datetime
 from urllib.parse import urlencode
 
 from django.db import IntegrityError, transaction
@@ -137,6 +138,25 @@ def handle_shelve(user, book, shelf):
     status = create_status(user, message, mention_books=[book])
     status.status_type = 'Update'
     status.save()
+
+    if shelf.identifier == 'reading':
+        read = models.ReadThrough(
+            user=user,
+            book=book,
+            start_date=datetime.now())
+        read.save()
+    elif shelf.identifier == 'read':
+        read = models.ReadThrough.objects.filter(
+            user=user,
+            book=book,
+            finish_date=None).order_by('-created_date').first()
+        if not read:
+            read = models.ReadThrough(
+                user=user,
+                book=book,
+                start_date=datetime.now())
+        read.finish_date = datetime.now()
+        read.save()
 
     activity = activitypub.get_status(status)
     create_activity = activitypub.get_create(user, activity)
