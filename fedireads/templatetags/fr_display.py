@@ -168,3 +168,8 @@ def current_shelf(context, book):
         return None
     return shelf.name
 
+@register.simple_tag(takes_context=False)
+def latest_read_through(book, user):
+    return models.ReadThrough.objects.filter(
+        user=user,
+        book=book).order_by('-created_date').first()
