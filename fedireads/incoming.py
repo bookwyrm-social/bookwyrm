@@ -224,11 +224,13 @@ def handle_create(activity):
         # we really oughtn't even be sending in this case
         return
 
-    if activity['object'].get('fedireadsType') in ['Review', 'Comment']  and \
+    if activity['object'].get('fedireadsType') and \
             'inReplyToBook' in activity['object']:
         try:
             if activity['object']['fedireadsType'] == 'Review':
                 builder = status_builder.create_review_from_activity
+            elif activity['object']['fedireadsType'] == 'Quotation':
+                builder = status_builder.create_quotation_from_activity
             else:
                 builder = status_builder.create_comment_from_activity
 
