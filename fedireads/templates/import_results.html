@@ -2,17 +2,9 @@
 {% block content %}
 <div id="content">
     <div>
-        <h1>The following books could not be imported: </h1>
+        <h1>Import</h1>
 
-        <ul>
-        {% for item in failures %}
-            <li>
-            {{ item }}
-            </li>
-        {% endfor %}
-        </ul>
-
-        <p>{{ success_count }} books imported successfully</p>
+        Import uploaded successfully. The import is being processed.
     </div>
 </div>
 {% endblock %}

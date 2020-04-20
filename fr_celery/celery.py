@@ -21,4 +21,5 @@ app.autodiscover_tasks()
 app.autodiscover_tasks(['fedireads'], related_name='incoming')
 app.autodiscover_tasks(['fedireads'], related_name='broadcast')
 app.autodiscover_tasks(['fedireads'], related_name='books_manager')
+app.autodiscover_tasks(['fedireads'], related_name='goodreads_import')
 

@@ -203,6 +203,7 @@ def handle_import_books(user, items):
         status.status_type = 'Update'
         status.save()
 
+        create_notification(user, 'IMPORT_RESULT', related_status=status)
         create_activity = activitypub.get_create(
             user, activitypub.get_status(status))
         broadcast(user, create_activity)
@@ -356,4 +357,3 @@ def handle_update_user(user):
     actor = activitypub.get_actor(user)
     update_activity = activitypub.get_update(user, actor)
     broadcast(user, update_activity)
-

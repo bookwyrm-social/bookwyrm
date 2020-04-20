@@ -1,11 +1,13 @@
 ''' handle reading a csv from goodreads '''
 import re
 import csv
-import itertools
 import dateutil.parser
+from requests import HTTPError
 
 from fedireads import books_manager
-from fedireads.models import Edition, ReadThrough
+from fedireads import outgoing
+from fedireads.models import Edition, ReadThrough, User
+from fedireads.tasks import app
 
 
 # Mapping goodreads -> fedireads shelf titles.
@@ -36,14 +38,42 @@ def construct_search_term(title, author):
     return ' '.join([title, author])
 
 
-class GoodreadsCsv:
-    ''' define a goodreads csv '''
-    def __init__(self, csv_file):
-        self.reader = csv.DictReader(csv_file)
+def async_import(user, csv_file):
+    entries = list(csv.DictReader(csv_file))[:MAX_ENTRIES]
+    return import_data.delay(user.id, entries)
 
-    def __iter__(self):
-        for line in itertools.islice(self.reader, MAX_ENTRIES):
-            yield GoodreadsItem(line)
+@app.task
+def import_data(user_id, entries):
+    user = User.objects.get(pk=user_id)
+    results = []
+    reviews = []
+    failures = []
+    for item in entries:
+        item = GoodreadsItem(item)
+        try:
+            item.resolve()
+        except HTTPError:
+            pass
+        if item.book:
+            results.append(item)
+            if item.rating or item.review:
+                reviews.append(item)
+        else:
+            failures.append(item)
+
+    outgoing.handle_import_books(user, results)
+    for item in reviews:
+        review_title = "Review of {!r} on Goodreads".format(
+            item.book.title,
+        ) if item.review else ""
+        outgoing.handle_review(
+            user,
+            item.book,
+            review_title,
+            item.review,
+            item.rating,
+        )
+
 
 class GoodreadsItem:
     ''' a processed line in a goodreads csv '''

@@ -150,7 +150,8 @@ class ReadThrough(FedireadsModel):
 
 
 NotificationType = models.TextChoices(
-    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST')
+    'NotificationType',
+    'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT_RESULT')
 
 class Notification(FedireadsModel):
     ''' you've been tagged, liked, followed, etc '''

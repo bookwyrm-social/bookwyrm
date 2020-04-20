@@ -14,6 +14,7 @@
     {% for notification in notifications %}
     <div class="notification{% if notification.id in unread %} unread{% endif %}">
         <small class="time-ago">{{ notification.created_date | naturaltime }}</small>
+        {% if notification.related_user %}
         {% include 'snippets/username.html' with user=notification.related_user %}
         {% if notification.notification_type == 'FAVORITE' %}
             favorited your
@@ -35,6 +36,10 @@
 
         {% elif notification.notification_type == 'BOOST' %}
             boosted your <a href="{{ notification.related_status.absolute_id}}">status</a>
+        {% endif %}
+        {% else %}
+            your <a href="{{ notification.related_status.absolute_id }}">import</a> succeeded. 
+
         {% endif %}
     </div>
     {% endfor %}
