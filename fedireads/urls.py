@@ -40,6 +40,7 @@ urlpatterns = [
     re_path(r'^notifications/?', views.notifications_page),
     re_path(r'books/?$', views.books_page),
     re_path(r'import/?$', views.import_page),
+    re_path(r'import_status/(\d+)/?$', views.import_status),
     re_path(r'user-edit/?$', views.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested

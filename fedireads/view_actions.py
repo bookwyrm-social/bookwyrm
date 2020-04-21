@@ -418,10 +418,10 @@ def import_data(request):
     ''' ingest a goodreads csv '''
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
-        goodreads_import.async_import(
+        job = goodreads_import.create_job(
             request.user,
             TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)
         )
-        return TemplateResponse(request, 'import_results.html', {})
+        goodreads_import.start_import(job)
+        return redirect('/import_status/%d' % (job.id,))
     return HttpResponseBadRequest()
-
