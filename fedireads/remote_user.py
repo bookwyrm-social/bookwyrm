@@ -75,13 +75,13 @@ def get_avatar(data):
 
 def get_remote_reviews(user):
     ''' ingest reviews by a new remote fedireads user '''
-    # TODO: use the server as the data source instead of OL
     outbox_page = user.outbox + '?page=true'
     response = requests.get(
         outbox_page,
         headers={'Accept': 'application/activity+json'}
     )
     data = response.json()
+    # TODO: pagination?
     for status in data['orderedItems']:
         if status.get('fedireadsType') == 'Review':
             create_review_from_activity(user, status)

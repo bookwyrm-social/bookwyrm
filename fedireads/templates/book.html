@@ -49,15 +49,8 @@
             {% endif %}
 
             {% if request.user.is_authenticated %}
-            <div>
-                <h3>Leave a review</h3>
-                <form class="review-form" name="review" action="/review/" method="post">
-                    {% csrf_token %}
-                    {% include 'snippets/rate_form.html' with book=book %}
-                    <input type="hidden" name="book" value="{{ book.fedireads_key }}"></input>
-                    {{ review_form.as_p }}
-                    <button type="submit">Post review</button>
-                </form>
+            <div class="compose">
+                {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </div>
 
             <div>
