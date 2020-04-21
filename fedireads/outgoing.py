@@ -216,72 +216,65 @@ def handle_import_books(user, items):
 
 def handle_rate(user, book, rating):
     ''' a review that's just a rating '''
-    rating = create_rating(user, book, rating)
-    rating_activity = activitypub.get_rating(rating)
-    rating_create_activity = activitypub.get_create(user, rating_activity)
-    fr_recipients = get_recipients(user, 'public', limit='fedireads')
-    broadcast(user, rating_create_activity, fr_recipients)
+    builder = create_rating
+    local_serializer = activitypub.get_rating
+    remote_serializer = activitypub.get_rating_note
 
-    # re-format the activity for non-fedireads servers
-    note_activity = activitypub.get_rating_note(rating)
-    note_create_activity = activitypub.get_create(user, note_activity)
-
-    other_recipients = get_recipients(user, 'public', limit='other')
-    broadcast(user, note_create_activity, other_recipients)
+    handle_status(
+        user, book,
+        builder, local_serializer, remote_serializer,
+        rating
+    )
 
 
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    review = create_review(user, book, name, content, rating)
-
-    review_activity = activitypub.get_review(review)
-    review_create_activity = activitypub.get_create(user, review_activity)
-    fr_recipients = get_recipients(user, 'public', limit='fedireads')
-    broadcast(user, review_create_activity, fr_recipients)
-
-    # re-format the activity for non-fedireads servers
-    article_activity = activitypub.get_review_article(review)
-    article_create_activity = activitypub.get_create(user, article_activity)
-
-    other_recipients = get_recipients(user, 'public', limit='other')
-    broadcast(user, article_create_activity, other_recipients)
+    builder = create_review
+    local_serializer = activitypub.get_review
+    remote_serializer = activitypub.get_review_article
+    handle_status(
+        user, book, builder, local_serializer, remote_serializer,
+        name, content, rating)
 
 
 def handle_quotation(user, book, content, quote):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    quotation = create_quotation(user, book, content, quote)
-
-    quotation_activity = activitypub.get_quotation(quotation)
-    quotation_create_activity = activitypub.get_create(user, quotation_activity)
-    fr_recipients = get_recipients(user, 'public', limit='fedireads')
-    broadcast(user, quotation_create_activity, fr_recipients)
-
-    # re-format the activity for non-fedireads servers
-    article_activity = activitypub.get_quotation_article(quotation)
-    article_create_activity = activitypub.get_create(user, article_activity)
-
-    other_recipients = get_recipients(user, 'public', limit='other')
-    broadcast(user, article_create_activity, other_recipients)
+    builder = create_quotation
+    local_serializer = activitypub.get_quotation
+    remote_serializer = activitypub.get_quotation_article
+    handle_status(
+        user, book, builder, local_serializer, remote_serializer,
+        content, quote)
 
 
 def handle_comment(user, book, content):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
-    comment = create_comment(user, book, content)
+    builder = create_comment
+    local_serializer = activitypub.get_comment
+    remote_serializer = activitypub.get_comment_article
+    handle_status(
+        user, book, builder, local_serializer, remote_serializer, content)
 
-    comment_activity = activitypub.get_comment(comment)
-    comment_create_activity = activitypub.get_create(user, comment_activity)
-    fr_recipients = get_recipients(user, 'public', limit='fedireads')
-    broadcast(user, comment_create_activity, fr_recipients)
+
+def handle_status(user, book, \
+        builder, local_serializer, remote_serializer, *args):
+    ''' generic handler for statuses '''
+    status = builder(user, book, *args)
+
+    activity = local_serializer(status)
+    create_activity = activitypub.get_create(user, activity)
+    local_recipients = get_recipients(user, 'public', limit='fedireads')
+    broadcast(user, create_activity, local_recipients)
 
     # re-format the activity for non-fedireads servers
-    article_activity = activitypub.get_comment_article(comment)
-    article_create_activity = activitypub.get_create(user, article_activity)
+    remote_activity = remote_serializer(status)
+    remote_create_activity = activitypub.get_create(user, remote_activity)
 
-    other_recipients = get_recipients(user, 'public', limit='other')
-    broadcast(user, article_create_activity, other_recipients)
+    remote_recipients = get_recipients(user, 'public', limit='other')
+    broadcast(user, remote_create_activity, remote_recipients)
 
 
 def handle_tag(user, book, name):
