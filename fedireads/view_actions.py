@@ -84,24 +84,24 @@ def edit_profile(request):
     request.user.name = form.data['name']
     if 'avatar' in form.files:
         # crop and resize avatar upload
-        original = Image.open(form.files['avatar'])
+        image = Image.open(form.files['avatar'])
         target_size = 120
-        height, width = original.size
-        scale = height / target_size if height < width else width / target_size
-        resized = original.resize((
-            int(height / scale),
-            int(width / scale)
-        ))
-        height, width = resized.size
+        width, height = image.size
+        thumbnail_scale = height / (width / target_size) if height > width \
+            else width / (height / target_size)
+        image.thumbnail([thumbnail_scale, thumbnail_scale])
+        width, height = image.size
 
-        cropped = resized.crop((
-            int((width - target_size) / 2),
-            int((height - target_size) / 2),
-            int(width - (width - target_size) / 2),
-            int(height - (height - target_size) / 2)
+        width_diff = width - target_size
+        height_diff = height - target_size
+        cropped = image.crop((
+            int(width_diff / 2),
+            int(height_diff / 2),
+            int(width - (width_diff / 2)),
+            int(height - (height_diff / 2))
         ))
         output = BytesIO()
-        cropped.save(output, format='JPEG')
+        cropped.save(output, format=image.format)
         ContentFile(output.getvalue())
         request.user.avatar.save(
             form.files['avatar'].name,
@@ -453,3 +453,4 @@ def import_data(request):
             'failures': failures,
         })
     return HttpResponseBadRequest()
+
