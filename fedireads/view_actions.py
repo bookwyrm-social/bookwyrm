@@ -427,7 +427,7 @@ def import_data(request):
                 encoding=request.encoding)):
             try:
                 item.resolve()
-            except HttpError:
+            except HTTPError:
                 pass
             if item.book:
                 results.append(item)
