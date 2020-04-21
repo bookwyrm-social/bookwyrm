@@ -9,7 +9,7 @@ import requests
 
 from fedireads import activitypub
 from fedireads import models
-from fedireads.broadcast import get_recipients, broadcast
+from fedireads.broadcast import broadcast
 from fedireads.status import create_review, create_status
 from fedireads.status import create_quotation, create_comment
 from fedireads.status import create_tag, create_notification, create_rating
@@ -106,8 +106,7 @@ def handle_accept(user, to_follow, follow_request):
         relationship.save()
 
     activity = activitypub.get_accept(to_follow, follow_request)
-    recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
-    broadcast(to_follow, activity, recipient)
+    broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
 def handle_reject(user, to_follow, relationship):
@@ -115,8 +114,7 @@ def handle_reject(user, to_follow, relationship):
     relationship.delete()
 
     activity = activitypub.get_reject(to_follow, relationship)
-    recipient = get_recipients(to_follow, 'direct', direct_recipients=[user])
-    broadcast(to_follow, activity, recipient)
+    broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
 def handle_shelve(user, book, shelf):
@@ -125,8 +123,7 @@ def handle_shelve(user, book, shelf):
     models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
     activity = activitypub.get_add(user, book, shelf)
-    recipients = get_recipients(user, 'public')
-    broadcast(user, activity, recipients)
+    broadcast(user, activity)
 
     # tell the world about this cool thing that happened
     verb = {
@@ -171,9 +168,8 @@ def handle_unshelve(user, book, shelf):
     row.delete()
 
     activity = activitypub.get_remove(user, book, shelf)
-    recipients = get_recipients(user, 'public')
 
-    broadcast(user, activity, recipients)
+    broadcast(user, activity)
 
 
 def handle_import_books(user, items):
@@ -194,8 +190,7 @@ def handle_import_books(user, items):
             if created:
                 new_books.append(item.book)
                 activity = activitypub.get_add(user, item.book, desired_shelf)
-                recipients = get_recipients(user, 'public')
-                broadcast(user, activity, recipients)
+                broadcast(user, activity)
 
                 for read in item.reads:
                     read.book = item.book
@@ -210,71 +205,62 @@ def handle_import_books(user, items):
 
         create_activity = activitypub.get_create(
             user, activitypub.get_status(status))
-        recipients = get_recipients(user, 'public')
-        broadcast(user, create_activity, recipients)
+        broadcast(user, create_activity)
 
 
 def handle_rate(user, book, rating):
     ''' a review that's just a rating '''
     builder = create_rating
-    local_serializer = activitypub.get_rating
-    remote_serializer = activitypub.get_rating_note
+    fr_serializer = activitypub.get_rating
+    ap_serializer = activitypub.get_rating_note
 
-    handle_status(
-        user, book,
-        builder, local_serializer, remote_serializer,
-        rating
-    )
+    handle_status(user, book, builder, fr_serializer, ap_serializer, rating)
 
 
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_review
-    local_serializer = activitypub.get_review
-    remote_serializer = activitypub.get_review_article
+    fr_serializer = activitypub.get_review
+    ap_serializer = activitypub.get_review_article
     handle_status(
-        user, book, builder, local_serializer, remote_serializer,
-        name, content, rating)
+        user, book, builder, fr_serializer, ap_serializer, name, content, rating)
 
 
 def handle_quotation(user, book, content, quote):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_quotation
-    local_serializer = activitypub.get_quotation
-    remote_serializer = activitypub.get_quotation_article
+    fr_serializer = activitypub.get_quotation
+    ap_serializer = activitypub.get_quotation_article
     handle_status(
-        user, book, builder, local_serializer, remote_serializer,
-        content, quote)
+        user, book, builder, fr_serializer, ap_serializer, content, quote)
 
 
 def handle_comment(user, book, content):
-    ''' post a review '''
+    ''' post a comment '''
     # validated and saves the review in the database so it has an id
     builder = create_comment
-    local_serializer = activitypub.get_comment
-    remote_serializer = activitypub.get_comment_article
+    fr_serializer = activitypub.get_comment
+    ap_serializer = activitypub.get_comment_article
     handle_status(
-        user, book, builder, local_serializer, remote_serializer, content)
+        user, book, builder, fr_serializer, ap_serializer, content)
 
 
 def handle_status(user, book, \
-        builder, local_serializer, remote_serializer, *args):
+        builder, fr_serializer, ap_serializer, *args):
     ''' generic handler for statuses '''
     status = builder(user, book, *args)
 
-    activity = local_serializer(status)
+    activity = fr_serializer(status)
     create_activity = activitypub.get_create(user, activity)
-    local_recipients = get_recipients(user, 'public', limit='fedireads')
-    broadcast(user, create_activity, local_recipients)
+    broadcast(user, create_activity, software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = remote_serializer(status)
+    remote_activity = ap_serializer(status)
     remote_create_activity = activitypub.get_create(user, remote_activity)
 
-    remote_recipients = get_recipients(user, 'public', limit='other')
-    broadcast(user, remote_create_activity, remote_recipients)
+    broadcast(user, remote_create_activity, software='other')
 
 
 def handle_tag(user, book, name):
@@ -282,8 +268,7 @@ def handle_tag(user, book, name):
     tag = create_tag(user, book, name)
     tag_activity = activitypub.get_add_tag(tag)
 
-    recipients = get_recipients(user, 'public')
-    broadcast(user, tag_activity, recipients)
+    broadcast(user, tag_activity)
 
 
 def handle_untag(user, book, name):
@@ -293,8 +278,7 @@ def handle_untag(user, book, name):
     tag_activity = activitypub.get_remove_tag(tag)
     tag.delete()
 
-    recipients = get_recipients(user, 'public')
-    broadcast(user, tag_activity, recipients)
+    broadcast(user, tag_activity)
 
 
 def handle_reply(user, review, content):
@@ -311,8 +295,7 @@ def handle_reply(user, review, content):
     reply_activity = activitypub.get_status(reply)
     create_activity = activitypub.get_create(user, reply_activity)
 
-    recipients = get_recipients(user, 'public')
-    broadcast(user, create_activity, recipients)
+    broadcast(user, create_activity)
 
 
 def handle_favorite(user, status):
@@ -327,8 +310,7 @@ def handle_favorite(user, status):
         return
 
     fav_activity = activitypub.get_favorite(favorite)
-    recipients = get_recipients(user, 'direct', [status.user])
-    broadcast(user, fav_activity, recipients)
+    broadcast(user, fav_activity, privacy='direct', direct_recipients=[status.user])
 
 
 def handle_unfavorite(user, status):
@@ -343,8 +325,8 @@ def handle_unfavorite(user, status):
         return
 
     fav_activity = activitypub.get_unfavorite(favorite)
-    recipients = get_recipients(user, 'direct', [status.user])
-    broadcast(user, fav_activity, recipients)
+    broadcast(user, fav_activity, [status.user])
+
 
 def handle_boost(user, status):
     ''' a user wishes to boost a status '''
@@ -359,21 +341,19 @@ def handle_boost(user, status):
     boost.save()
 
     boost_activity = activitypub.get_boost(boost)
-    recipients = get_recipients(user, 'public')
-    broadcast(user, boost_activity, recipients)
+    broadcast(user, boost_activity)
+
 
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''
     book_activity = activitypub.get_book(book)
     update_activity = activitypub.get_update(user, book_activity)
-    recipients = get_recipients(None, 'public')
-    broadcast(user, update_activity, recipients)
+    broadcast(user, update_activity)
 
 
 def handle_update_user(user):
     ''' broadcast editing a user's profile '''
     actor = activitypub.get_actor(user)
     update_activity = activitypub.get_update(user, actor)
-    recipients = get_recipients(user, 'public')
-    broadcast(user, update_activity, recipients)
+    broadcast(user, update_activity)
 

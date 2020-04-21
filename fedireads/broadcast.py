@@ -12,56 +12,31 @@ from fedireads import models
 from fedireads.tasks import app
 
 
-def get_recipients(user, post_privacy, direct_recipients=None, limit=False):
-    ''' deduplicated list of recipient inboxes '''
-    # we're always going to broadcast to any direct recipients
-    direct_recipients = direct_recipients or []
-    recipients = [u.inbox for u in direct_recipients]
+def get_public_recipients(user, software=None):
+    ''' everybody and their public inboxes '''
+    followers = user.followers.filter(local=False)
+    if software:
+        # TODO: eventually we may want to handle particular software differently
+        followers = followers.filter(fedireads_user=(software == 'fedireads'))
 
-    # if we're federating a book, it isn't related to any user's followers, we
-    # just want to send it out. To whom? I'm not sure, but for now, everyone.
-    if not user:
-        users = models.User.objects.filter(local=False).all()
-        recipients += list(set(
-            u.shared_inbox if u.shared_inbox else u.inbox for u in users
-        ))
-        return recipients
+    shared = followers.filter(
+        shared_inbox__isnull=False
+    ).values_list('shared_inbox', flat=True).distinct()
 
-    if post_privacy == 'direct':
-        # all we care about is direct_recipients, not followers, so we're done
-        return recipients
+    inboxes = followers.filter(
+        shared_inbox__isnull=True
+    ).values_list('inbox', flat=True)
 
-    # load all the followers of the user who is sending the message
-    # "limit" refers to whether we want to send to other fedireads instances,
-    # or to only non-fedireads instances. this is confusing (TODO)
-    if not limit:
-        followers = user.followers.all()
-    else:
-        fedireads_user = limit == 'fedireads'
-        followers = user.followers.filter(fedireads_user=fedireads_user).all()
-
-    # we don't need to broadcast to ourself
-    followers = followers.filter(local=False)
-
-    # TODO I don't think this is actually accomplishing pubic/followers only?
-    if post_privacy == 'public':
-        # post to public shared inboxes
-        shared_inboxes = set(
-            u.shared_inbox for u in followers if u.shared_inbox
-        )
-        recipients += list(shared_inboxes)
-        recipients += [u.inbox for u in followers if not u.shared_inbox]
-
-    if post_privacy == 'followers':
-        # don't send it to the shared inboxes
-        inboxes = set(u.inbox for u in followers)
-        recipients += list(inboxes)
-
-    return recipients
+    return list(shared) + list(inboxes)
 
 
-def broadcast(sender, activity, recipients):
+def broadcast(sender, activity, software=None, \
+              privacy='public', direct_recipients=None):
     ''' send out an event '''
+    recipients = [u.inbox for u in direct_recipients or []]
+    # TODO: other kinds of privacy
+    if privacy == 'public':
+        recipients = get_public_recipients(sender, software=software)
     broadcast_task.delay(sender.id, activity, recipients)
 
 
