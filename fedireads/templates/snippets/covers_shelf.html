@@ -27,12 +27,12 @@
 {% for shelf in shelves %}
     {% for book in shelf.books %}
 <div class="compose-popout">
-    <input name="book-popout" type="radio" id="book-{{ book.id }}-radio"></input>
+    <input name="book-popout" type="radio" id="book-{{ book.id }}-radio">
     <div class="compose compose-suggestion" id="compose-book-{{ book.id }}">
         <label class="close icon icon-close" for="book-{{ book.id }}-radio-close" onclick="hide_element(this)">
             <span class="hidden-text">Close</span>
         </label>
-        <input name="book-popout" type="radio" id="book-{{ book.id }}-radio-close"></input>
+        <input name="book-popout" type="radio" id="book-{{ book.id }}-radio-close">
         <div class="content-container">
             <h2>
                 {% include 'snippets/avatar.html' with user=user %}

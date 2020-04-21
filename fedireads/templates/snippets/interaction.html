@@ -3,7 +3,7 @@
     {% if request.user.is_authenticated %}
     <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
         {% csrf_token %}
-        <input type="hidden" name="parent" value="{{ activity.id }}"></input>
+        <input type="hidden" name="parent" value="{{ activity.id }}">
         <textarea name="content" placeholder="Leave a comment..." id="id_content" required="true"></textarea>
         <button type="submit">
             <span class="icon icon-comment">
