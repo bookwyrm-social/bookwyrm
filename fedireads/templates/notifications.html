@@ -38,7 +38,7 @@
             boosted your <a href="{{ notification.related_status.absolute_id}}">status</a>
         {% endif %}
         {% else %}
-            your <a href="{{ notification.related_status.absolute_id }}">import</a> succeeded. 
+            your <a href="/import_status/{{ notification.related_import.id }}">import</a> completed. 
 
         {% endif %}
     </div>
