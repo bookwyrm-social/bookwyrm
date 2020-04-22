@@ -16,6 +16,10 @@
         <p>
         {{ task.info }}
         {% endif %}
+
+        {% if job.import_status %}
+            {% include 'snippets/status.html' with status=job.import_status %}
+        {% endif %}
         {% else %}
         Import still in progress.
         <p>

@@ -36,6 +36,8 @@ class ImportJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
+    import_status = models.ForeignKey(
+        'Status', null=True, on_delete=models.PROTECT)
 
 class ImportItem(models.Model):
     job = models.ForeignKey(

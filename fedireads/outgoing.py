@@ -158,7 +158,7 @@ def handle_shelve(user, book, shelf):
     activity = activitypub.get_status(status)
     create_activity = activitypub.get_create(user, activity)
 
-    broadcast(user, create_activity, recipients)
+    broadcast(user, create_activity)
 
 
 def handle_unshelve(user, book, shelf):
@@ -206,6 +206,7 @@ def handle_import_books(user, items):
         create_activity = activitypub.get_create(
             user, activitypub.get_status(status))
         broadcast(user, create_activity)
+        return status
 
 
 def handle_rate(user, book, rating):

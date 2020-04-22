@@ -42,7 +42,7 @@ def import_data(job_id):
                 item.fail_reason = "Could not match book on OpenLibrary"
                 item.save()
 
-        outgoing.handle_import_books(job.user, results)
+        status = outgoing.handle_import_books(job.user, results)
         for item in reviews:
             review_title = "Review of {!r} on Goodreads".format(
                 item.book.title,
@@ -54,5 +54,8 @@ def import_data(job_id):
                 item.review,
                 item.rating,
             )
+        if status:
+            job.import_status = status
+            job.save()
     finally:
         create_notification(job.user, 'IMPORT', related_import=job)
