@@ -9,11 +9,6 @@ from .abstract_connector import update_from_mappings, get_date
 
 
 class Connector(AbstractConnector):
-    ''' instantiate a connector  '''
-    def __init__(self, identifier):
-        super().__init__(identifier)
-
-
     def search(self, query):
         ''' right now you can't search fedireads, but... '''
         resp = requests.get(
@@ -80,7 +75,7 @@ class Connector(AbstractConnector):
             author_id = author_id.split('/')[-1]
             book.authors.add(self.get_or_create_author(author_id))
 
-        if book.sync_cover and data.get('covers') and len(data['covers']):
+        if book.sync_cover and data.get('covers') and data['covers']:
             book.cover.save(*get_cover(data['covers'][0]), save=True)
 
         return book
@@ -119,4 +114,3 @@ def get_cover(cover_url):
         response.raise_for_status()
     image_content = ContentFile(response.content)
     return [image_name, image_content]
-

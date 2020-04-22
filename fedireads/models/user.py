@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
 
-from fedireads.models import Shelf
+from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
 from fedireads.utils.models import FedireadsModel
 
@@ -190,4 +190,3 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             user=instance,
             editable=False
         ).save()
-

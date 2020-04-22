@@ -1,6 +1,5 @@
 ''' usin django model forms '''
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.forms import ModelForm, PasswordInput, IntegerField
+from django.forms import ModelForm, PasswordInput
 from django import forms
 
 from fedireads import models
@@ -117,4 +116,3 @@ class EditionForm(ModelForm):
 
 class ImportForm(forms.Form):
     csv_file = forms.FileField()
-

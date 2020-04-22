@@ -1,4 +1,5 @@
 ''' handles all of the activity coming in to the server '''
+import json
 from base64 import b64decode
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
@@ -7,7 +8,6 @@ import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-import json
 import requests
 
 from fedireads import models, outgoing
@@ -318,4 +318,3 @@ def handle_tag(activity):
     if not user.local:
         book = activity['target']['id'].split('/')[-1]
         status_builder.create_tag(user, book, activity['object']['name'])
-

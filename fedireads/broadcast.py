@@ -1,12 +1,12 @@
 ''' send out activitypub messages '''
+import json
+from urllib.parse import urlparse
 from base64 import b64encode
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.utils.http import http_date
-import json
 import requests
-from urllib.parse import urlparse
 
 from fedireads import models
 from fedireads.tasks import app
@@ -93,4 +93,3 @@ def sign_and_send(sender, activity, destination):
     if not response.ok:
         response.raise_for_status()
     return response
-

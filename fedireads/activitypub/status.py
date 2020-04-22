@@ -252,5 +252,3 @@ def get_remove_tag(tag):
             'id': tag.book.absolute_id,
         }
     }
-
-

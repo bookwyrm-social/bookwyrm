@@ -1,9 +1,10 @@
 ''' models for storing different kinds of Activities '''
+import urllib.parse
+
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
-import urllib.parse
 
 from fedireads.utils.models import FedireadsModel
 
@@ -15,7 +16,8 @@ class Status(FedireadsModel):
     status_type = models.CharField(max_length=255, default='Note')
     content = models.TextField(blank=True, null=True)
     mention_users = models.ManyToManyField('User', related_name='mention_user')
-    mention_books = models.ManyToManyField('Edition', related_name='mention_book')
+    mention_books = models.ManyToManyField(
+        'Edition', related_name='mention_book')
     activity_type = models.CharField(max_length=255, default='Note')
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')

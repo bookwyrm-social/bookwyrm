@@ -20,4 +20,3 @@ class FedireadsModel(models.Model):
 
     class Meta:
         abstract = True
-

@@ -37,10 +37,10 @@ def outbox(request, username):
         filters = {}
         # params for the outbox page id
         params = {'page': 'true'}
-        if min_id != None:
+        if min_id is not None:
             params['min_id'] = min_id
             filters['id__gt'] = min_id
-        if max_id != None:
+        if max_id is not None:
             params['max_id'] = max_id
             filters['id__lte'] = max_id
 
@@ -224,7 +224,8 @@ def handle_review(user, book, name, content, rating):
     fr_serializer = activitypub.get_review
     ap_serializer = activitypub.get_review_article
     handle_status(
-        user, book, builder, fr_serializer, ap_serializer, name, content, rating)
+        user, book, builder, fr_serializer,
+        ap_serializer, name, content, rating)
 
 
 def handle_quotation(user, book, content, quote):
@@ -310,7 +311,8 @@ def handle_favorite(user, status):
         return
 
     fav_activity = activitypub.get_favorite(favorite)
-    broadcast(user, fav_activity, privacy='direct', direct_recipients=[status.user])
+    broadcast(
+        user, fav_activity, privacy='direct', direct_recipients=[status.user])
 
 
 def handle_unfavorite(user, status):
@@ -356,4 +358,3 @@ def handle_update_user(user):
     actor = activitypub.get_actor(user)
     update_activity = activitypub.get_update(user, actor)
     broadcast(user, update_activity)
-

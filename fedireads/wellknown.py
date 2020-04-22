@@ -107,4 +107,3 @@ def peers(request):
 
     names = models.FederatedServer.objects.values_list('server_name', flat=True)
     return JsonResponse(list(names), safe=False)
-

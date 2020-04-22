@@ -207,18 +207,18 @@ def user_page(request, username, subpage=None):
     if subpage == 'followers':
         data['followers'] = user.followers.all()
         return TemplateResponse(request, 'followers.html', data)
-    elif subpage == 'following':
+    if subpage == 'following':
         data['following'] = user.following.all()
         return TemplateResponse(request, 'following.html', data)
-    elif subpage == 'shelves':
+    if subpage == 'shelves':
         data['shelves'] = user.shelf_set.all()
         return TemplateResponse(request, 'user_shelves.html', data)
-    else:
-        shelves = get_user_shelf_preview(user)
-        data['shelves'] = shelves
-        activities = get_activity_feed(user, 'self')[:15]
-        data['activities'] = activities
-        return TemplateResponse(request, 'user.html', data)
+
+    shelves = get_user_shelf_preview(user)
+    data['shelves'] = shelves
+    activities = get_activity_feed(user, 'self')[:15]
+    data['activities'] = activities
+    return TemplateResponse(request, 'user.html', data)
 
 
 @csrf_exempt
@@ -531,4 +531,3 @@ def get_user_shelf_preview(user, shelf_proportions=None):
             'size': shelf.books.count(),
         })
     return shelves
-

@@ -1,7 +1,7 @@
 ''' manage remote users '''
-import requests
 from urllib.parse import urlparse
 from uuid import uuid4
+import requests
 
 from django.core.files.base import ContentFile
 
@@ -118,4 +118,3 @@ def get_or_create_remote_server(domain):
         application_version=data['software']['version'],
     )
     return server
-

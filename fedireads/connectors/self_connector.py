@@ -38,4 +38,3 @@ class Connector(AbstractConnector):
 
     def update_book(self, book_obj):
         pass
-

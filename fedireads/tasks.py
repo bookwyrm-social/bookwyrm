@@ -1,6 +1,6 @@
 ''' background tasks '''
-from celery import Celery
 import os
+from celery import Celery
 
 from fedireads import settings
 
@@ -10,5 +10,3 @@ app = Celery(
     'tasks',
     broker=settings.CELERY_BROKER,
 )
-
-

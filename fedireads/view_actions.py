@@ -453,4 +453,3 @@ def import_data(request):
             'failures': failures,
         })
     return HttpResponseBadRequest()
-

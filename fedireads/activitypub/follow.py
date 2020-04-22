@@ -111,6 +111,3 @@ def get_follow_page(user_list, id_slug, page):
     if start > 0:
         data['prev'] = '%s?page=%d' % (id_slug, page - 1)
     return data
-
-
-

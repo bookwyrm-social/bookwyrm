@@ -55,7 +55,7 @@ if 'sqlite' in settings.DATABASES['default']['ENGINE']:
             """Care for DjangoArrayField's kwargs."""
             self.base_field = base_field
             self.size = size
-            return super().__init__(**kwargs)
+            super().__init__(**kwargs)
 
         def deconstruct(self):
             """Need to create migrations properly."""

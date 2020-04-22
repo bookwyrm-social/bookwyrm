@@ -49,4 +49,3 @@ def get_actor(user):
             "url": icon_url,
         },
     }
-
