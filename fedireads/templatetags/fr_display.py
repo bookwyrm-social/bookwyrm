@@ -132,7 +132,7 @@ def shelve_button_identifier(context, book):
     identifier = shelf.shelf.identifier
     if identifier == 'to-read':
         return 'reading'
-    elif identifier == 'reading':
+    if identifier == 'reading':
         return 'read'
     return 'to-read'
 
@@ -151,7 +151,7 @@ def shelve_button_text(context, book):
     identifier = shelf.shelf.identifier
     if identifier == 'to-read':
         return 'Start reading'
-    elif identifier == 'reading':
+    if identifier == 'reading':
         return 'I\'m done!'
     return 'Want to read'
 

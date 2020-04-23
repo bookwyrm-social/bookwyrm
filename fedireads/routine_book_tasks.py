@@ -14,4 +14,3 @@ def sync_book_data():
     for book in books:
         # TODO: create background tasks
         books_manager.update_book(book)
-

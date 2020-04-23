@@ -1,8 +1,9 @@
 ''' openlibrary data connector '''
-from django.core.files.base import ContentFile
-from django.db import transaction
 import re
 import requests
+
+from django.core.files.base import ContentFile
+from django.db import transaction
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -247,7 +248,7 @@ def get_languages(language_blob):
 
 def pick_default_edition(options):
     ''' favor physical copies with covers in english '''
-    if not len(options):
+    if not options:
         return None
     if len(options) == 1:
         return options[0]
@@ -261,5 +262,3 @@ def pick_default_edition(options):
     options = [e for e in options if e.get('isbn_13')] or options
     options = [e for e in options if e.get('ocaid')] or options
     return options[0]
-
-

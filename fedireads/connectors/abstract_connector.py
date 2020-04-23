@@ -33,34 +33,29 @@ class AbstractConnector(ABC):
     def search(self, query):
         ''' free text search '''
         # return list of search result objs
-        pass
 
 
     @abstractmethod
     def get_or_create_book(self, book_id):
         ''' request and format a book given an identifier '''
         # return book model obj
-        pass
 
 
     @abstractmethod
     def expand_book_data(self, book):
         ''' get more info on a book '''
-        pass
 
 
     @abstractmethod
     def get_or_create_author(self, book_id):
         ''' request and format a book given an identifier '''
         # return book model obj
-        pass
 
 
     @abstractmethod
     def update_book(self, book_obj):
         ''' sync a book with the canonical remote copy '''
         # return book model obj
-        pass
 
 
 def update_from_mappings(obj, data, mappings):
@@ -96,7 +91,7 @@ def get_date(date_string):
         return None
 
 
-class SearchResult(object):
+class SearchResult:
     ''' standardized search result object '''
     def __init__(self, title, key, author, year, raw_data):
         self.title = title
@@ -108,4 +103,3 @@ class SearchResult(object):
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author)
-

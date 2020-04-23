@@ -41,6 +41,3 @@ def get_outbox_page(user, page_id, statuses, max_id, min_id):
             urlencode({'max_id': min_id, 'page': 'true'})
 
     return page
-
-
-

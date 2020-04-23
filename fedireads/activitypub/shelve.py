@@ -31,5 +31,3 @@ def get_add_remove(user, book, shelf, action='Add'):
             'id': shelf.absolute_id,
         }
     }
-
-

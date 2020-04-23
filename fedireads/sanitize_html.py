@@ -48,4 +48,3 @@ class InputHtmlParser(HTMLParser):
         if not self.allow_html:
             return ''.join(v for (k, v) in self.output if k == 'data')
         return ''.join(v for (k, v) in self.output)
-
