@@ -15,7 +15,7 @@
                 <label for="book-{{ book.id }}-radio">
                     {% include 'snippets/book_cover.html' with book=book %}
                 </label>
-            {% include 'snippets/shelve_button.html' with book=book %}
+            {% include 'snippets/shelve_button.html' with book=book hide_pulldown=True %}
             </div>
             {% endfor %}
         </div>

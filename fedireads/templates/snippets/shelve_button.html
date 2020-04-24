@@ -6,22 +6,26 @@
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}">
-    <button type="submit" style="">{% shelve_button_text book %}</button></form><div class="pulldown-container">
+    <button type="submit" style="">{% shelve_button_text book %}</button>
+</form>
+{% if not hide_pulldown %}
+<div class="pulldown-container">
     <button class="pulldown-toggle">
         <span class="icon icon-arrow-down"><span class="hidden-text">More shelves</span></span>
     </button>
-<ul class="pulldown">
-    <form name="shelve" action="/shelve/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {% for shelf in request.user.shelf_set.all %}
-        <li>
-        <button name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
-        </li>
-        {% endfor %}
-    </form>
-</ul>
+    <ul class="pulldown">
+        <form name="shelve" action="/shelve/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="book" value="{{ book.id }}">
+            {% for shelf in request.user.shelf_set.all %}
+            <li>
+            <button name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+            </li>
+            {% endfor %}
+        </form>
+    </ul>
 </div>
+{% endif %}
 </div>
 
 {% endif %}
