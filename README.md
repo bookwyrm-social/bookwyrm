@@ -14,37 +14,45 @@ Social reading and reviewing, decentralized with ActivityPub
 
 ## The overall idea
 ### What it is and isn't
-FediReads is meant to be a platform for social reading; specifically, for tracking what you're reading and sharing your updates with friends, and reviewing and commenting on books. It isn't meant primarily for cataloguing or as a datasource for books, but it may incidentally act in that way even when that isn't the focus of the software. For example, listing books you've read can be a way for you to catalog their personal reading, even though the feature is designed with the intent of sharing updates on what you've read.
+FediReads is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
 
 ### The role of federation
-FediReads is built on [ActivityPub](http://activitypub.rocks/) and uses that standard to inter-operate between different instances of FediReads run on different servers by different people, and to inter-operate with other ActivityPub compliant services, like Mastodon and Pixelfed. This means, for example, that your friend on mastodon can read and comment on your Fedireads book review.
+FediReads is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of FediReads, and other ActivityPub compliant services, like Mastodon and Pixelfed. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your Fedireads instance.
 
-Federation also makes it possible to have small, self-determining communities, as opposed to a monolithic service like you find on GoodReads or Twitter. An instance could be focused on a particular type of literature, just for use by people who are in a book club together, or anything else that brings them together. Each community can choose what other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy I'm working from for how social networks out to be.
+Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular type of literature, be just for use by people who are in a book club together, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
 ### Features
-This project is still in its very early stages, but these are the higher-level features it should have:
- - Book reviews
-    - Post and comment on reviews
-    - Find reviews of a book across connected FediReads instances
+Since the project is still in its early stages, not everything here is fully implemented. There is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/fedireads/issues) to get the conversation going!
+ - Posting about books
+    - Compose reviews, with or without ratings, which are aggregated in the book page
+    - Compose other kinds of statuses about books, such as:
+     - Comments on a book
+     - Quotes or excerpts
+     - Recommenations of other books
+    - Reply to statuses
+    - Aggregate reviews of a book across connected FediReads instances
     - Differentiate local and federated reviews and rating
  - Track reading activity
-    - Store "shelves" that list books a user wants to read/is reading/has read
-    - Allow users to create their own shelves
-    - Update followers about user activity (optionally, and with granular privacy controls)
-    - Allow users to comment on reading activity (optionally, and with granular privacy controls)
+    - Shelve books on default "to-read," "currently reading," and "read" shelves
+    - Create custom shleves
+    - Store started reading/finished reading dates
+    - Update followers about reading activity (optionally, and with granular privacy controls)
  - Federation with ActivityPub
-    - Identify shared books across instances
-    - Follow and interact across FediReads instances
+    - Broadcast and receive user statuses and activity
+    - Broadcast copies of books that can be used as canonical data sources
+    - Identify shared books across instances and aggregate related content
+    - Follow and interact with users across FediReads instances
     - Inter-operate with non-FediReads ActivityPub services
  - Granular privacy controls
     - Local-only, followers-only, and public posting
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation
-    - Control over which instances you want to federate with
-
-But this isn't a set in stone, unchangeable list, so if you have ideas about how this could be tweaked, changed, or improved, please open an issue and start a conversation about it.
+    - Control which instances you want to federate with
 
 ## Setting up the developer environment
+For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
+
+### Without Docker
 You will need postgres installed and running on your computer.
 
 ``` bash
@@ -68,11 +76,8 @@ This creates two users, `mouse` with password `password123` and `rat` with passw
 
 And go to the app at `localhost:8000`
 
-For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
-
-
-### Docker
-You can also run the application in a docker container. You'll have to install the Docker and docker-compose:
+#### With Docker
+You'll have to install the Docker and docker-compose:
 
 ```bash
 docker-compose build
@@ -87,23 +92,23 @@ All the url routing is in `fedireads/urls.py`. This includes the application vie
 
 The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/connectors/openlibrary.py`. ActivityPub serialization is handled in the `activitypub/` directory.
 
-There's some organization/refactoring work to be done to clarify the separation of concerns and keep the code readable and well organized.
+Celery is used for background tasks, which includes receiving incoming ActivityPub activities, ActivityPub broadcasting, and external data import. 
 
 The UI is all django templates because that is the default. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
 
 
 ## Book data
-The application is set up to get book data from arbitary outside source -- right now, it's only able to connect to OpenLibrary, but other connectors could be written. By default, a book is non-canonical copy of an OpenLibrary book, and will be updated with OpenLibrary if the data there changes. However, theoretically a book can edited and decoupled from its original data source, or added locally with no external data source.
+The application is set up to get book data from arbitrary outside sources -- right now, it's only able to connect to OpenLibrary, but other connectors could be written. By default, a book is non-canonical copy of an OpenLibrary book, and will be updated with OpenLibrary if the data there changes. However, a book can edited and decoupled from its original data source, or added locally with no external data source.
 
-There are three structures for storing book data:
- - `Book`, a general high-level concept that could mean either a `Work` or an `Edition`
- - `Work`, a theoretical umbrella concept of a book that encompasses every edition of the book, and
- - `Edition`, a concreet, actually published version of a book
+There are three concepts in the book data model:
+ - `Book`, an abstract, high-level concept that could mean either a `Work` or an `Edition`. No data is saved as a `Book`, it serves as shared model for `Work` and `Edition`
+ - `Work`, the theoretical umbrella concept of a book that encompasses every edition of the book, and
+ - `Edition`, a concrete, actually published version of a book
  
-Usually, a review is tied to a `Work`, because your review is relevent regardless of whether you're talking about the hardcover, the paperback, the reprint or whatever. But in some cases a review is specfic to an `Edition` -- if you're reviewing a particular translation, the voice acting on an audiobook, or whatever. 
+Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
 
 
 ## Contributing
-There are many ways you can contribute to this project! You are welcome and encouraged to create or contribute a github issue to report a bug, request a feature, make a usability suggestion, or express a nevulous desire.
+There are many ways you can contribute to this project! You are welcome and encouraged to create or contribute an issue to report a bug, request a feature, make a usability suggestion, or express a nebulous desire.
 
-If you'd like to add to the codebase, the issues are a good place to start to get a sense of what needs to be done -- feel free to ask questions and tag @mouse-reeve. This isn't a formalized process at this point.
+If you'd like to add to the codebase, that's super rad and you should do it! At this point, there isn't a formalized process, but you can take a look at the open issues, or contact me directly and chat about it.
