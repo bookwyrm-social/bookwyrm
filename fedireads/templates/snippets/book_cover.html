@@ -1,8 +1,8 @@
 {% if book.cover %}
-<img class="book-cover {{ size }}" src="/images/{{ book.cover }}">
+<img class="book-cover {{ size }}" src="/images/{{ book.cover }}" alt="'{{ book.title }}' Cover">
 {% else %}
-<div class="no-cover book-cover">
-    <img class="book-cover {{ size }}" src="/static/images/no_cover.jpg">
+<div class="no-cover book-cover {{ size }}">
+    <img class="book-cover {{ size }}" src="/static/images/no_cover.jpg" alt="'{{ book.title }}' Cover">
     <div>
         <p class="title">{{ book.title }}</p>
         <p>{{ book.authors.first.name }}</p>
