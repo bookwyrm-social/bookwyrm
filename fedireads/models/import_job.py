@@ -111,12 +111,14 @@ class ImportItem(models.Model):
 
     @property
     def reads(self):
-        return [ReadThrough(
-            # date_added isn't the start date, but maybe better than nothing.
-            start_date=self.date_added,
-            finish_date=self.date_read,
-            pages_read=None,
-        )]
+        if (self.shelf == 'reading'
+                and self.date_added and not self.date_read):
+            return [ReadThrough(start_date=self.date_added)]
+        if self.date_read:
+            return [ReadThrough(
+                finish_date=self.date_read,
+            )]
+        return []
 
     def __repr__(self):
         return "<GoodreadsItem {!r}>".format(self.data['Title'])
