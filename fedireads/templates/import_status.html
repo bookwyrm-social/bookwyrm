@@ -29,6 +29,7 @@
         <table>
             <tr>
                 <th>
+                    Book
                 </th>
                 <th>
                     Title
@@ -37,13 +38,16 @@
                     Author
                 </th>
                 <th>
-                    Book
                 </th>
             </tr>
             {% for item in items %}
             <tr>
                 <td>
-                    {% if item.book %}✓{% endif %}
+                    {% if item.book %}
+                    <a href="{{ item.book.absolute_id }}">
+                    {% include 'snippets/book_cover.html' with book=item.book size='small' %}
+                    </a>
+                    {% endif %}
                 </td>
                 <td>
                     {{ item.data|dict_key:'Title' }}
@@ -52,10 +56,9 @@
                     {{ item.data|dict_key:'Author' }}
                 </td>
                 <td>
-                    {% if item.book %}
-                    <a href="{{ item.book.absolute_id }}">
-                    {% include 'snippets/book_cover.html' with book=item.book size='small' %}
-                    </a>
+                    {% if item.book %}✓
+                    {% elif item.fail_reason %}
+                        {{ item.fail_reason }}
                     {% endif %}
                 </td>
             </tr>
