@@ -70,6 +70,9 @@ def update_from_mappings(obj, data, mappings):
         if not formatter:
             formatter = noop
 
+        if key == 'id':
+            continue
+
         if has_attr(obj, key):
             obj.__setattr__(key, formatter(value))
     return obj
