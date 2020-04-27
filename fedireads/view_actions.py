@@ -2,7 +2,6 @@
 from io import BytesIO, TextIOWrapper
 import re
 from PIL import Image
-from requests import HTTPError
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -12,7 +11,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
 from fedireads import forms, models, books_manager, outgoing
-from fedireads.goodreads_import import GoodreadsCsv
+from fedireads import goodreads_import
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
 from fedireads.books_manager import get_or_create_book
@@ -419,37 +418,10 @@ def import_data(request):
     ''' ingest a goodreads csv '''
     form = forms.ImportForm(request.POST, request.FILES)
     if form.is_valid():
-        results = []
-        reviews = []
-        failures = []
-        for item in GoodreadsCsv(TextIOWrapper(
-                request.FILES['csv_file'],
-                encoding=request.encoding)):
-            try:
-                item.resolve()
-            except HTTPError:
-                pass
-            if item.book:
-                results.append(item)
-                if item.rating or item.review:
-                    reviews.append(item)
-            else:
-                failures.append(item)
-
-        outgoing.handle_import_books(request.user, results)
-        for item in reviews:
-            review_title = "Review of {!r} on Goodreads".format(
-                item.book.title,
-            ) if item.review else ""
-            outgoing.handle_review(
-                request.user,
-                item.book,
-                review_title,
-                item.review,
-                item.rating,
-            )
-        return TemplateResponse(request, 'import_results.html', {
-            'success_count': len(results),
-            'failures': failures,
-        })
+        job = goodreads_import.create_job(
+            request.user,
+            TextIOWrapper(request.FILES['csv_file'], encoding=request.encoding)
+        )
+        goodreads_import.start_import(job)
+        return redirect('/import_status/%d' % (job.id,))
     return HttpResponseBadRequest()

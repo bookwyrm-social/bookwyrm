@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load humanize %}
 {% block content %}
 <div class="content-container">
     <h2>Import Books from GoodReads</h2>
@@ -6,7 +7,13 @@
         {% csrf_token %}
         {{ import_form.as_p }}
         <button type="submit">Import</button>
-        <small>Hang tight, this may take a minute!</small>
     </form>
+
+    <h2>Recent Imports</h2>
+    <ul>
+        {% for job in jobs %}
+            <li><a href="/import_status/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

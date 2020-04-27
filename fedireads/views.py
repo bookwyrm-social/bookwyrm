@@ -1,13 +1,15 @@
 ''' views for pages you can go to in the application '''
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
-from django.http import HttpResponseBadRequest, HttpResponseNotFound, \
+from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
+from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import activitypub
 from fedireads import forms, models, books_manager
+from fedireads.tasks import app
 
 
 def get_user_from_username(username):
@@ -158,8 +160,23 @@ def import_page(request):
     ''' import history from goodreads '''
     return TemplateResponse(request, 'import.html', {
         'import_form': forms.ImportForm(),
+        'jobs': models.ImportJob.
+                objects.filter(user=request.user).order_by('-created_date'),
     })
 
+
+@login_required
+def import_status(request, job_id):
+    ''' status of an import job '''
+    job = models.ImportJob.objects.get(id=job_id)
+    if job.user != request.user:
+        raise PermissionDenied
+    task = app.AsyncResult(job.task_id)
+    return TemplateResponse(request, 'import_status.html', {
+        'job': job,
+        'items': job.items.order_by('index').all(),
+        'task': task
+    })
 
 
 def login_page(request):

@@ -5,3 +5,4 @@ from .status import Status, Review, Comment, Quotation
 from .status import Favorite, Boost, Tag, Notification, ReadThrough
 from .user import User, UserFollows, UserFollowRequest, UserBlocks
 from .user import FederatedServer
+from .import_job import ImportJob, ImportItem

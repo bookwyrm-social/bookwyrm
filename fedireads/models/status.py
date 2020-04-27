@@ -152,7 +152,8 @@ class ReadThrough(FedireadsModel):
 
 
 NotificationType = models.TextChoices(
-    'NotificationType', 'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST')
+    'NotificationType',
+    'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
 
 class Notification(FedireadsModel):
     ''' you've been tagged, liked, followed, etc '''
@@ -164,6 +165,8 @@ class Notification(FedireadsModel):
         on_delete=models.PROTECT, null=True, related_name='related_user')
     related_status = models.ForeignKey(
         'Status', on_delete=models.PROTECT, null=True)
+    related_import = models.ForeignKey(
+        'ImportJob', on_delete=models.PROTECT, null=True)
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices)

@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+{% load fr_display %}
+{% load humanize %}
+{% block content %}
+<div id="content">
+    <div>
+        <h1>Import Status</h1>
+
+        <p>
+        Import started: {{ job.created_date | naturaltime }}
+        <p>
+        {% if task.ready %}
+        Import completed: {{ task.date_done | naturaltime }}
+        {% if task.failed %}
+        <h3><span style="background-color: #ffaaaa;">TASK FAILED</span></h3>
+        <p>
+        {{ task.info }}
+        {% endif %}
+
+        {% if job.import_status %}
+            {% include 'snippets/status.html' with status=job.import_status %}
+        {% endif %}
+        {% else %}
+        Import still in progress.
+        <p>
+        (Hit reload to update!)
+        {% endif %}
+
+        <table>
+            <tr>
+                <th>
+                    Book
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Author
+                </th>
+                <th>
+                </th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {% if item.book %}
+                    <a href="{{ item.book.absolute_id }}">
+                    {% include 'snippets/book_cover.html' with book=item.book size='small' %}
+                    </a>
+                    {% endif %}
+                </td>
+                <td>
+                    {{ item.data|dict_key:'Title' }}
+                </td>
+                <td>
+                    {{ item.data|dict_key:'Author' }}
+                </td>
+                <td>
+                    {% if item.book %}✓
+                    {% elif item.fail_reason %}
+                        {{ item.fail_reason }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

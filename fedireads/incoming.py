@@ -14,6 +14,7 @@ from fedireads import models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.tasks import app
+from fedireads.status import create_notification
 
 
 @csrf_exempt
