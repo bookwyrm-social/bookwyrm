@@ -61,7 +61,7 @@ class ImportItem(models.Model):
     def get_book_from_db_isbn(self):
         ''' see if we already know about the book '''
         try:
-            return Edition.objects.get(isbn=self.isbn)
+            return Edition.objects.filter(isbn=self.isbn).first()
         except Edition.DoesNotExist:
             return None
 
