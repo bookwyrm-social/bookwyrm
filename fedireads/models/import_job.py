@@ -89,7 +89,7 @@ class ImportItem(models.Model):
     def shelf(self):
         ''' the goodreads shelf field '''
         if self.data['Exclusive Shelf']:
-            return GOODREADS_SHELVES[self.data['Exclusive Shelf']]
+            return GOODREADS_SHELVES.get(self.data['Exclusive Shelf'])
 
     @property
     def review(self):
