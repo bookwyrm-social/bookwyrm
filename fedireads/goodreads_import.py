@@ -7,8 +7,8 @@ from fedireads.tasks import app
 from fedireads.models import ImportJob, ImportItem
 from fedireads.status import create_notification
 
-# TODO: remove or notify about this in the UI
-MAX_ENTRIES = 20
+# TODO: remove or increase once we're confident it's not causing problems.
+MAX_ENTRIES = 500
 
 
 def create_job(user, csv_file):
