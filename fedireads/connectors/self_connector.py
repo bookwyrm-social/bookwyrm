@@ -29,6 +29,7 @@ class Connector(AbstractConnector):
                    SearchVector('description', weight='C') +\
                    SearchVector('series', weight='C')
         ).filter(search=query)
+        results = results.filter(default=True) or results
 
         search_results = []
         for book in results[:10]:
