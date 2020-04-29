@@ -80,6 +80,7 @@ class Connector(AbstractConnector):
                 edition_data = pick_default_edition(edition_options)
                 key = edition_data.get('key').split('/')[-1]
                 edition = self.create_book(key, edition_data, models.Edition)
+                edition.default = True
                 edition.parent_work = work
                 edition.save()
         else:
