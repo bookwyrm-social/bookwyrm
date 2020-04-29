@@ -31,8 +31,21 @@ def load_more_data(book_id):
 
 def search(query):
     ''' try an external datasource for books '''
+    self = self_connector()
+    results = self.search(query)
+    if len(results) >= 10:
+        return results
+
     connector = get_connector()
-    return connector.search(query)
+    external_results = connector.search(query)
+    dedupe_slug = lambda r: '%s %s %s' % (r.title, r.author, r.year)
+    result_index = [dedupe_slug(r) for r in results]
+    for result in external_results:
+        if dedupe_slug(result) in result_index:
+            continue
+        results.append(result)
+
+    return results
 
 def update_book(book):
     ''' re-sync with the original data source '''
@@ -40,12 +53,24 @@ def update_book(book):
     connector.update_book(book)
 
 
-def get_connector(book=None):
+def self_connector():
+    ''' load the connector for the local database '''
+    return get_connector(self=True)
+
+
+def get_connector(book=None, self=False):
     ''' pick a book data connector '''
     if book and book.connector:
         connector_info = book.connector
+    elif self:
+        connector_info = models.Connector.objects.filter(
+            connector_file='self_connector'
+        ).first()
     else:
-        connector_info = models.Connector.objects.first()
+        # only select from external connectors
+        connector_info = models.Connector.objects.exclude(
+            connector_file='self_connector'
+        ).first()
 
     connector = importlib.import_module(
         'fedireads.connectors.%s' % connector_info.connector_file
