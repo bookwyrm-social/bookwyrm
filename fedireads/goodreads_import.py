@@ -29,7 +29,6 @@ def import_data(job_id):
     job = ImportJob.objects.get(id=job_id)
     try:
         results = []
-        reviews = []
         for item in job.items.all():
             try:
                 item.resolve()
@@ -38,24 +37,11 @@ def import_data(job_id):
             if item.book:
                 item.save()
                 results.append(item)
-                if item.rating or item.review:
-                    reviews.append(item)
             else:
                 item.fail_reason = "Could not match book on OpenLibrary"
                 item.save()
 
         status = outgoing.handle_import_books(job.user, results)
-        for item in reviews:
-            review_title = "Review of {!r} on Goodreads".format(
-                item.book.title,
-            ) if item.review else ""
-            outgoing.handle_review(
-                job.user,
-                item.book,
-                review_title,
-                item.review,
-                item.rating,
-            )
         if status:
             job.import_status = status
             job.save()

@@ -192,6 +192,17 @@ def handle_import_books(user, items):
                 activity = activitypub.get_add(user, item.book, desired_shelf)
                 broadcast(user, activity)
 
+                if item.rating or item.review:
+                    review_title = "Review of {!r} on Goodreads".format(
+                        item.book.title,
+                    ) if item.review else ""
+                    handle_review(
+                        user,
+                        item.book,
+                        review_title,
+                        item.review,
+                        item.rating,
+                    )
                 for read in item.reads:
                     read.book = item.book
                     read.user = user
