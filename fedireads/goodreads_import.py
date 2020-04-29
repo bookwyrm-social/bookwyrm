@@ -14,6 +14,8 @@ MAX_ENTRIES = 20
 def create_job(user, csv_file):
     job = ImportJob.objects.create(user=user)
     for index, entry in enumerate(list(csv.DictReader(csv_file))[:MAX_ENTRIES]):
+        if not all(x in entry for x in ('ISBN13', 'Title', 'Author')):
+            raise ValueError("Author, title, and isbn must be in data.")
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
