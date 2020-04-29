@@ -82,6 +82,8 @@ class Book(FedireadsModel):
     )
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = models.ManyToManyField('Author')
+    # preformatted authorship string for search and easier display
+    author_text = models.CharField(max_length=255, blank=True, null=True)
     cover = models.ImageField(upload_to='covers/', blank=True, null=True)
     first_published_date = models.DateTimeField(blank=True, null=True)
     published_date = models.DateTimeField(blank=True, null=True)
@@ -123,10 +125,13 @@ class Work(Book):
 
 class Edition(Book):
     ''' an edition of a book '''
+    # default -> this is what gets displayed for a work
     default = models.BooleanField(default=False)
-    # these identifiers only apply to work
-    isbn = models.CharField(max_length=255, blank=True, null=True)
+    # these identifiers only apply to editions, not works
+    isbn_10 = models.CharField(max_length=255, blank=True, null=True)
+    isbn_13 = models.CharField(max_length=255, blank=True, null=True)
     oclc_number = models.CharField(max_length=255, blank=True, null=True)
+    asin = models.CharField(max_length=255, blank=True, null=True)
     pages = models.IntegerField(blank=True, null=True)
     physical_format = models.CharField(max_length=255, blank=True, null=True)
     publishers = ArrayField(

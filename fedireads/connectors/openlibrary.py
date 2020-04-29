@@ -19,7 +19,7 @@ class Connector(AbstractConnector):
             'publish_date': ('published_date', get_date),
             'first_publish_date': ('first_published_date', get_date),
             'description': ('description', get_description),
-            'isbn_13': ('isbn', get_first),
+            'isbn_13': ('isbn_13', get_first),
             'oclc_numbers': ('oclc_number', get_first),
             'lccn': ('lccn', get_first),
             'languages': ('languages', get_languages),
@@ -118,8 +118,10 @@ class Connector(AbstractConnector):
         update_from_mappings(book, data, self.book_mappings)
         book.save()
 
-        for author in self.get_authors_from_data(data):
+        authors = self.get_authors_from_data(data)
+        for author in authors:
             book.authors.add(author)
+        book.author_text = ', '.join(a.name for a in authors)
 
         if data.get('covers'):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)

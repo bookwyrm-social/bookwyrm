@@ -431,7 +431,7 @@ def book_page(request, book_identifier, tab='friends'):
         'path': '/book/%s' % book_identifier,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
-            {'name': 'ISBN', 'value': book.isbn},
+            {'name': 'ISBN', 'value': book.isbn_13},
             {'name': 'OCLC number', 'value': book.oclc_number},
             {'name': 'OpenLibrary ID', 'value': book.openlibrary_key},
             {'name': 'Goodreads ID', 'value': book.goodreads_key},
