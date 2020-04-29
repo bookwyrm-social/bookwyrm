@@ -98,6 +98,7 @@ class Connector(AbstractConnector):
                 edition.save()
         if not edition.authors and work.authors:
             edition.authors.set(work.authors.all())
+            edition.author_text = ', '.join(a.name for a in edition.authors)
 
         return edition
 
@@ -121,7 +122,8 @@ class Connector(AbstractConnector):
         authors = self.get_authors_from_data(data)
         for author in authors:
             book.authors.add(author)
-        book.author_text = ', '.join(a.name for a in authors)
+        if authors:
+            book.author_text = ', '.join(a.name for a in authors)
 
         if data.get('covers'):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
