@@ -170,12 +170,14 @@ body {
 
 div.pulldown-button {
     background-color: #eee;
-    border: 2px solid #247BA0;
     border-radius: 0.3em;
     color: #247BA0;
     width: max-content;
     margin: 0 auto;
     white-space: nowrap;
+}
+.post div.pulldown-button {
+    border: 2px solid #247BA0;
 }
 
 .pulldown-button form {
@@ -348,9 +350,12 @@ button, input[type="submit"] {
 }
 button.secondary {
     background-color: #EEE;
-    border: 2px solid #247BA0;
     color: #247BA0;
 }
+.post button.secondary {
+    border: 2px solid #247BA0;
+}
+
 button.warning {
     background-color: #FF1654;
 }
@@ -499,6 +504,7 @@ button .icon {
 .book-preview {
     overflow: hidden;
     z-index: 1;
+    text-align: center;
 }
 .book-preview.grid {
     float: left;
@@ -596,9 +602,6 @@ dd {
     height: 11rem;
     width: auto;
     margin: 0;
-}
-.covers-shelf button, .covers-shelf .pulldown-button {
-    border: none;
 }
 
 .close {

@@ -7,7 +7,7 @@
         {% for book in editions %}
         <li class="book-preview">
             <a href="{{ book.absolute_id }}">
-            {% include 'snippets/book_cover.html' with book=book %}
+                {% include 'snippets/book_cover.html' with book=book %}
             </a>
             {% include 'snippets/shelve_button.html' with book=book %}
         </li>

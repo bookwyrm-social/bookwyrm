@@ -118,6 +118,18 @@ def get_boosted(boost):
     ).get()
 
 
+@register.filter(name='edition_info')
+def get_edition_info(book):
+    ''' paperback, French language, 1982 '''
+    items = [
+        book.physical_format,
+        book.languages[0] + ' language' if book.languages and \
+                book.languages[0] != 'English' else None,
+        str(book.published_date.year) if book.published_date else None,
+    ]
+    return ', '.join(i for i in items if i)
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''

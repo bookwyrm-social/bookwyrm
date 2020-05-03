@@ -1,1 +1,2 @@
-'{{ book.title }}' Cover ({% if book.physical_format %}{{ book.physical_format }}{% if book.published_date %}, {% endif %}{% endif %}{% if book.published_date %}{{ book.published_date.year }}{% endif %})
+{% load fr_display %}
+'{{ book.title }}' Cover ({{ book|edition_info }})
