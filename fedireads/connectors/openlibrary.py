@@ -88,7 +88,13 @@ class Connector(AbstractConnector):
                 edition_data = self.load_book_data(olkey)
                 edition = self.create_book(olkey, edition_data, models.Edition)
 
-                work_key = edition_data.get('works')[0]['key'].split('/')[-1]
+                work_data = edition_data.get('works')
+                if not work_data:
+                    # hack: we're re-using the edition data as the work data
+                    work_key = olkey
+                else:
+                    work_key = work_data[0]['key'].split('/')[-1]
+
                 work = models.Work.objects.filter(
                     openlibrary_key=work_key
                 ).first()
