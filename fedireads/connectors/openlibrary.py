@@ -78,6 +78,9 @@ class Connector(AbstractConnector):
 
                 edition_options = self.load_edition_data(olkey).get('entries')
                 edition_data = pick_default_edition(edition_options)
+                if not edition_data:
+                    # hack: re-use the work data as the edition data
+                    edition_data = work_data
                 key = edition_data.get('key').split('/')[-1]
                 edition = self.create_book(key, edition_data, models.Edition)
                 edition.default = True
