@@ -14,7 +14,6 @@ from fedireads import models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.tasks import app
-from fedireads.status import create_notification
 
 
 @csrf_exempt
@@ -219,11 +218,11 @@ def handle_create(activity):
     user = get_or_create_remote_user(activity['actor'])
 
     if not 'object' in activity:
-        return HttpResponseBadRequest()
+        return False
 
     if user.local:
         # we really oughtn't even be sending in this case
-        return
+        return True
 
     if activity['object'].get('fedireadsType') and \
             'inReplyToBook' in activity['object']:
@@ -238,10 +237,12 @@ def handle_create(activity):
             # create the status, it'll throw a valueerror if anything is missing
             builder(user, activity['object'])
         except ValueError:
-            return HttpResponseBadRequest()
-    else:
-        # TODO: should only create notes if they are relevent to a book,
-        # so, not every single thing someone posts on mastodon
+            return False
+    elif activity['object'].get('inReplyTo'):
+        # only create the status if it's in reply to a status we already know
+        if not status_builder.get_status(activity['object']['inReplyTo']):
+            return True
+
         try:
             status = status_builder.create_status_from_activity(
                 user,
@@ -255,8 +256,8 @@ def handle_create(activity):
                     related_status=status,
                 )
         except ValueError:
-            return HttpResponseBadRequest()
-
+            return False
+    return True
 
 
 @app.task
