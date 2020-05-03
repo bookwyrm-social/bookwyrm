@@ -21,7 +21,7 @@ class AbstractConnector(ABC):
         self.key_name = info.key_name
         self.max_query_count = info.max_query_count
         self.name = info.name
-        self.self = info.self
+        self.local = info.local
 
 
     def is_available(self):

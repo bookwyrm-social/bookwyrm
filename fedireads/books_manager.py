@@ -63,7 +63,7 @@ def get_connector(book=None):
     else:
         # only select from external connectors
         connector_info = models.Connector.objects.filter(
-            self=False
+            local=False
         ).order_by('priority').first()
     return load_connector(connector_info)
 

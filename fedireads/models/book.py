@@ -18,7 +18,7 @@ class Connector(FedireadsModel):
     identifier = models.CharField(max_length=255, unique=True)
     priority = models.IntegerField(default=2)
     name = models.CharField(max_length=255, null=True)
-    self = models.BooleanField(default=False)
+    local = models.BooleanField(default=False)
     connector_file = models.CharField(
         max_length=255,
         choices=ConnectorFiles.choices

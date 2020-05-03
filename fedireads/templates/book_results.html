@@ -4,7 +4,7 @@
     <h2>Search results</h2>
     {% for result_set in results %}
     <section>
-        {% if not result_set.connector.self %}
+        {% if not result_set.connector.local %}
         <h3>
             Results from <a href="{{ result_set.connector.base_url }}">{{ result_set.connector.name }}</a>
         </h3>
