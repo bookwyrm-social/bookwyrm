@@ -157,7 +157,7 @@ class Connector(AbstractConnector):
 
     def load_book_data(self, olkey):
         ''' query openlibrary for data on a book '''
-        response = requests.get('%s/works/%s.json' % (self.url, olkey))
+        response = requests.get('%s/works/%s.json' % (self.books_url, olkey))
         if not response.ok:
             response.raise_for_status()
         data = response.json()
@@ -167,7 +167,7 @@ class Connector(AbstractConnector):
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
         response = requests.get(
-            '%s/works/%s/editions.json' % (self.url, olkey))
+            '%s/works/%s/editions.json' % (self.books_url, olkey))
         if not response.ok:
             response.raise_for_status()
         data = response.json()
@@ -200,7 +200,7 @@ class Connector(AbstractConnector):
         except models.Author.DoesNotExist:
             pass
 
-        response = requests.get('%s/authors/%s.json' % (self.url, olkey))
+        response = requests.get('%s/authors/%s.json' % (self.base_url, olkey))
         if not response.ok:
             response.raise_for_status()
 
