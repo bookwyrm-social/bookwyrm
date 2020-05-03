@@ -46,6 +46,8 @@ def search(query, first=False):
             'results': result,
         })
 
+    if first:
+        return None
 
     return results
 
