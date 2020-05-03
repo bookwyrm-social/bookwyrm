@@ -29,23 +29,20 @@ def load_more_data(book_id):
     connector.expand_book_data(book)
 
 
-def search(query):
-    ''' try an external datasource for books '''
-    self = self_connector()
-    results = self.search(query)
-    if len(results) >= 10:
-        return results
-
-    connector = get_connector()
-    external_results = connector.search(query)
-    dedupe_slug = lambda r: '%s %s %s' % (r.title, r.author, r.year)
-    result_index = [dedupe_slug(r) for r in results]
-    for result in external_results:
-        if dedupe_slug(result) in result_index:
-            continue
-        results.append(result)
+def search(query, first=False):
+    ''' find books based on arbitary keywords '''
+    results = []
+    for connector in get_connectors():
+        result = connector.search(query)
+        if first and result:
+            return result[0]
+        results.append({
+            'connector': connector,
+            'results': result,
+        })
 
     return results
+
 
 def update_book(book):
     ''' re-sync with the original data source '''
@@ -53,25 +50,26 @@ def update_book(book):
     connector.update_book(book)
 
 
-def self_connector():
-    ''' load the connector for the local database '''
-    return get_connector(self=True)
+def get_connectors():
+    ''' load all connectors '''
+    connectors_info = models.Connector.objects.order_by('priority').all()
+    return [load_connector(c) for c in connectors_info]
 
 
-def get_connector(book=None, self=False):
+def get_connector(book=None):
     ''' pick a book data connector '''
     if book and book.connector:
         connector_info = book.connector
-    elif self:
-        connector_info = models.Connector.objects.filter(
-            connector_file='self_connector'
-        ).first()
     else:
         # only select from external connectors
-        connector_info = models.Connector.objects.exclude(
-            connector_file='self_connector'
-        ).first()
+        connector_info = models.Connector.objects.filter(
+            self=False
+        ).order_by('priority').first()
+    return load_connector(connector_info)
 
+
+def load_connector(connector_info):
+    ''' instantiate the connector class '''
     connector = importlib.import_module(
         'fedireads.connectors.%s' % connector_info.connector_file
     )

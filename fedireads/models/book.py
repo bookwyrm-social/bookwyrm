@@ -16,14 +16,17 @@ ConnectorFiles = models.TextChoices('ConnectorFiles', CONNECTORS)
 class Connector(FedireadsModel):
     ''' book data source connectors '''
     identifier = models.CharField(max_length=255, unique=True)
+    priority = models.IntegerField(default=2)
+    name = models.CharField(max_length=255, null=True)
+    self = models.BooleanField(default=False)
     connector_file = models.CharField(
         max_length=255,
-        default='openlibrary',
         choices=ConnectorFiles.choices
     )
     api_key = models.CharField(max_length=255, null=True)
 
     base_url = models.CharField(max_length=255)
+    books_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True)
 

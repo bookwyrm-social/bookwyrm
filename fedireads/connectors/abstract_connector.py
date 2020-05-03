@@ -14,11 +14,14 @@ class AbstractConnector(ABC):
         info = models.Connector.objects.get(identifier=identifier)
         self.connector = info
 
-        self.url = info.base_url
+        self.base_url = info.base_url
+        self.books_url = info.books_url
         self.covers_url = info.covers_url
         self.search_url = info.search_url
         self.key_name = info.key_name
         self.max_query_count = info.max_query_count
+        self.name = info.name
+        self.self = info.self
 
 
     def is_available(self):

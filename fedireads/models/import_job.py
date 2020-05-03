@@ -67,9 +67,9 @@ class ImportItem(models.Model):
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_results = books_manager.search(self.isbn)
-        if search_results:
-            return books_manager.get_or_create_book(search_results[0].key)
+        search_result = books_manager.search(self.isbn, first=True)
+        if search_result:
+            return books_manager.get_or_create_book(search_result.key)
 
     def get_book_from_title_author(self):
         ''' search by title and author '''
@@ -77,9 +77,9 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_results = books_manager.search(search_term)
-        if search_results:
-            return books_manager.get_or_create_book(search_results[0].key)
+        search_result = books_manager.search(search_term, first=True)
+        if search_result:
+            return books_manager.get_or_create_book(search_result.key)
 
     @property
     def isbn(self):
