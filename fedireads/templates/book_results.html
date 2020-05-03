@@ -6,13 +6,13 @@
     <section>
         {% if not result_set.connector.local %}
         <h3>
-            Results from <a href="{{ result_set.connector.base_url }}">{{ result_set.connector.name }}</a>
+            Results from <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name }}</a>
         </h3>
         {% endif %}
 
         {% for result in result_set.results %}
         <div>
-            <a href="/book/{{ result.key }}" target="_blank">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
+            <a href="/book/{{ result.key }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
         </div>
         {% endfor %}
     </section>
