@@ -29,27 +29,33 @@ def load_more_data(book_id):
     connector.expand_book_data(book)
 
 
-def search(query, first=False):
+def search(query):
     ''' find books based on arbitary keywords '''
     results = []
     dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
-    result_index = []
+    result_index = set()
     for connector in get_connectors():
-        result = connector.search(query)
-        if first and result:
-            return result[0]
+        result_set = connector.search(query)
 
-        result = [r for r in result if dedup_slug(r) not in result_index]
-        result_index += [dedup_slug(r) for r in result]
+        result_set = [r for r in result_set \
+                if dedup_slug(r) not in result_index]
+        # `|=` concats two sets. WE ARE GETTING FANCY HERE
+        result_index |= set(dedup_slug(r) for r in result_set)
         results.append({
             'connector': connector,
-            'results': result,
+            'results': result_set,
         })
 
-    if first:
-        return None
-
     return results
+
+
+def first_search_result(query):
+    ''' search until you find a result that fits '''
+    for connector in get_connectors():
+        result = connector.search(query)
+        if result:
+            return result[0]
+    return None
 
 
 def update_book(book):
