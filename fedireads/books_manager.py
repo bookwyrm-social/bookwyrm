@@ -32,14 +32,20 @@ def load_more_data(book_id):
 def search(query, first=False):
     ''' find books based on arbitary keywords '''
     results = []
+    dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
+    result_index = []
     for connector in get_connectors():
         result = connector.search(query)
         if first and result:
             return result[0]
+
+        result = [r for r in result if dedup_slug(r) not in result_index]
+        result_index += [dedup_slug(r) for r in result]
         results.append({
             'connector': connector,
             'results': result,
         })
+
 
     return results
 
