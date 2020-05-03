@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import activitypub
 from fedireads import forms, models, books_manager
+from fedireads import goodreads_import
 from fedireads.tasks import app
 
 
@@ -162,6 +163,7 @@ def import_page(request):
         'import_form': forms.ImportForm(),
         'jobs': models.ImportJob.
                 objects.filter(user=request.user).order_by('-created_date'),
+        'limit': goodreads_import.MAX_ENTRIES,
     })
 
 
