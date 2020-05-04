@@ -5,15 +5,9 @@
     <h2>Editions of <a href="/book/{{ work.id }}">"{{ work.title }}"</a></h2>
     <ol class="book-grid row wrap">
         {% for book in editions %}
-<<<<<<< HEAD
         <li class="book-preview">
-            <a href="{{ book.absolute_id }}">
-                {% include 'snippets/book_cover.html' with book=book %}
-=======
-        <div class="book-preview">
             <a href="/book/{{ book.id }}">
-            {% include 'snippets/book_cover.html' with book=book %}
->>>>>>> Don't use book absolute ids for nav
+                {% include 'snippets/book_cover.html' with book=book %}
             </a>
             {% include 'snippets/shelve_button.html' with book=book %}
         </li>
