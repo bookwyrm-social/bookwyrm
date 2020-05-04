@@ -18,6 +18,7 @@ class Connector(AbstractConnector):
         get_first = lambda a: a[0]
         self.key_mappings = {
             'isbn_13': ('isbn_13', get_first),
+            'isbn_10': ('isbn_10', get_first),
             'oclc_numbers': ('oclc_number', get_first),
             'lccn': ('lccn', get_first),
         }
