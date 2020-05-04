@@ -140,7 +140,7 @@ class Connector(AbstractConnector):
         return book
 
 
-    def update_book(self, book):
+    def update_book(self, book, data=None):
         ''' load new data '''
         if not book.sync and not book.sync_cover:
             return

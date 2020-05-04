@@ -36,5 +36,5 @@ Connector.objects.create(
 )
 
 
-get_or_create_book('OL1715344W')
-get_or_create_book('OL102749W')
+get_or_create_book('OL1715344W', key='openlibrary_key', connector_id=1)
+get_or_create_book('OL102749W', key='openlibrary_key', connector_id=1)

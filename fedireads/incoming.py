@@ -10,7 +10,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from fedireads import models, outgoing
+from fedireads import books_manager, models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.tasks import app
@@ -63,7 +63,7 @@ def shared_inbox(request):
         },
         'Update': {
             'Person': None,# TODO: handle_update_user
-            'Document': None# TODO: handle_update_book
+            'Document': handle_update_book,
         },
     }
     activity_type = activity['type']
@@ -320,3 +320,18 @@ def handle_tag(activity):
     if not user.local:
         book = activity['target']['id'].split('/')[-1]
         status_builder.create_tag(user, book, activity['object']['name'])
+
+
+@app.task
+def handle_update_book(activity):
+    ''' a remote instance changed a book (Document) '''
+    document = activity['object']
+    # check if we have their copy and care about their updates
+    book = models.Book.objects.select_subclasses().filter(
+        remote_id=document['url'],
+        sync=True,
+    ).first()
+    if not book:
+        return
+
+    books_manager.update_book(book, data=document)

@@ -57,7 +57,7 @@ class AbstractConnector(ABC):
 
 
     @abstractmethod
-    def update_book(self, book_obj):
+    def update_book(self, book_obj, data=None):
         ''' sync a book with the canonical remote copy '''
         # return book model obj
 

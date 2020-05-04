@@ -57,10 +57,10 @@ def first_search_result(query):
     return None
 
 
-def update_book(book):
+def update_book(book, data=None):
     ''' re-sync with the original data source '''
     connector = load_connector(book.connector)
-    connector.update_book(book)
+    connector.update_book(book, data=data)
 
 
 def get_connectors():

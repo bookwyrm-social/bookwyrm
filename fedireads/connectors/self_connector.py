@@ -23,7 +23,6 @@ class Connector(AbstractConnector):
                    SearchVector('isbn_10', weight='A') +\
                    SearchVector('openlibrary_key', weight='B') +\
                    SearchVector('goodreads_key', weight='B') +\
-                   SearchVector('source_url', weight='B') +\
                    SearchVector('asin', weight='B') +\
                    SearchVector('oclc_number', weight='B') +\
                    SearchVector('description', weight='C') +\

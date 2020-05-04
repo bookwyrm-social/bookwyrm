@@ -1,6 +1,4 @@
 ''' database schema for books and shelves '''
-from uuid import uuid4
-
 from django.utils import timezone
 from django.db import models
 from model_utils.managers import InheritanceManager
@@ -50,6 +48,7 @@ class Connector(FedireadsModel):
 
 class Book(FedireadsModel):
     ''' a generic book, which can mean either an edition or a work '''
+    remote_id = models.CharField(max_length=255, null=True)
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
@@ -57,7 +56,6 @@ class Book(FedireadsModel):
     misc_identifiers = JSONField(null=True)
 
     # info about where the data comes from and where/if to sync
-    source_url = models.CharField(max_length=255, unique=True, null=True)
     sync = models.BooleanField(default=True)
     sync_cover = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=timezone.now)
@@ -130,6 +128,7 @@ class Edition(Book):
     ''' an edition of a book '''
     # default -> this is what gets displayed for a work
     default = models.BooleanField(default=False)
+
     # these identifiers only apply to editions, not works
     isbn_10 = models.CharField(max_length=255, blank=True, null=True)
     isbn_13 = models.CharField(max_length=255, blank=True, null=True)
@@ -152,6 +151,8 @@ class Edition(Book):
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
+    sync = models.BooleanField(default=True)
+    last_sync_date = models.DateTimeField(default=timezone.now)
     wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
     # idk probably other keys would be useful here?
     born = models.DateTimeField(blank=True, null=True)
