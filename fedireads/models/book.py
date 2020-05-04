@@ -51,7 +51,6 @@ class Connector(FedireadsModel):
 class Book(FedireadsModel):
     ''' a generic book, which can mean either an edition or a work '''
     # these identifiers apply to both works and editions
-    fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
     goodreads_key = models.CharField(max_length=255, blank=True, null=True)
@@ -151,7 +150,6 @@ class Edition(Book):
 
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
-    fedireads_key = models.CharField(max_length=255, unique=True, default=uuid4)
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
     # idk probably other keys would be useful here?

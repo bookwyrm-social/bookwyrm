@@ -2,7 +2,7 @@
 {% load fr_display %}
 {% block content %}
 <div class="content-container">
-    <h2>Editions of <a href="/book/{{ work.fedireads_key }}">"{{ work.title }}"</a></h2>
+    <h2>Editions of <a href="/book/{{ work.id }}">"{{ work.title }}"</a></h2>
     <div class="book-grid row wrap">
         {% for book in editions %}
         <div class="book-preview">

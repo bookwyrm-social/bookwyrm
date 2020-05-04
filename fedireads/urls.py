@@ -11,7 +11,7 @@ localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
-book_path = r'^book/(?P<book_identifier>[\w\-]+)'
+book_path = r'^book/(?P<book_id>\d+)'
 
 handler404 = 'fedireads.views.not_found_page'
 handler500 = 'fedireads.views.server_error_page'
@@ -58,7 +58,7 @@ urlpatterns = [
     re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
 
     # books
-    re_path(r'%s(.json)?/?$' % book_path, views.book_page),
+    re_path(r'book/(?P<book_id>[\w_:\d]+)(.json)?/?$', views.book_page),
     re_path(r'%s/(?P<tab>friends|local|federated)?$' % book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),

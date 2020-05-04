@@ -5,18 +5,17 @@ from fedireads import models
 from fedireads.tasks import app
 
 
-def get_or_create_book(key):
+def get_or_create_book(value, key='id', connector_id=None):
     ''' pull up a book record by whatever means possible '''
     try:
-        book = models.Book.objects.select_subclasses().get(
-            fedireads_key=key
-        )
+        book = models.Book.objects.select_subclasses().get(**{key: value})
         return book
     except models.Book.DoesNotExist:
         pass
 
-    connector = get_connector()
-    book = connector.get_or_create_book(key)
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    book = connector.get_or_create_book(value)
     load_more_data.delay(book.id)
     return book
 
@@ -25,7 +24,7 @@ def get_or_create_book(key):
 def load_more_data(book_id):
     ''' background the work of getting all 10,000 editions of LoTR '''
     book = models.Book.objects.select_subclasses().get(id=book_id)
-    connector = get_connector(book)
+    connector = load_connector(book.connector)
     connector.expand_book_data(book)
 
 
@@ -60,7 +59,7 @@ def first_search_result(query):
 
 def update_book(book):
     ''' re-sync with the original data source '''
-    connector = get_connector(book)
+    connector = load_connector(book.connector)
     connector.update_book(book)
 
 
@@ -68,18 +67,6 @@ def get_connectors():
     ''' load all connectors '''
     connectors_info = models.Connector.objects.order_by('priority').all()
     return [load_connector(c) for c in connectors_info]
-
-
-def get_connector(book=None):
-    ''' pick a book data connector '''
-    if book and book.connector:
-        connector_info = book.connector
-    else:
-        # only select from external connectors
-        connector_info = models.Connector.objects.filter(
-            local=False
-        ).order_by('priority').first()
-    return load_connector(connector_info)
 
 
 def load_connector(connector_info):

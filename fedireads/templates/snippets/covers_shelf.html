@@ -37,7 +37,7 @@
             <h2>
                 {% include 'snippets/avatar.html' with user=user %}
                 Your thoughts on
-            a   <a href="/book/{{ book.fedireads_key }}">{{ book.title }}</a>
+            a   <a href="/book/{{ book.id }}">{{ book.title }}</a>
                 by {% include 'snippets/authors.html' with book=book %}
             </h2>
 
