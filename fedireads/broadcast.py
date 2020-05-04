@@ -36,7 +36,7 @@ def broadcast(sender, activity, software=None, \
     recipients = [u.inbox for u in direct_recipients or []]
     # TODO: other kinds of privacy
     if privacy == 'public':
-        recipients = get_public_recipients(sender, software=software)
+        recipients += get_public_recipients(sender, software=software)
     broadcast_task.delay(sender.id, activity, recipients)
 
 
