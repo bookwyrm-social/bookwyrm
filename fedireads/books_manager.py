@@ -1,5 +1,6 @@
 ''' select and call a connector for whatever book task needs doing '''
 import importlib
+from urllib.parse import urlparse
 
 from fedireads import models
 from fedireads.tasks import app
@@ -13,11 +14,70 @@ def get_or_create_book(value, key='id', connector_id=None):
     except models.Book.DoesNotExist:
         pass
 
+    if key == 'remote_id':
+        book = get_by_absolute_id(value, models.Book)
+        if book:
+            return book
+        connector = get_or_create_connector(value)
+        return connector.get_or_create_book(value)
+
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
     book = connector.get_or_create_book(value)
     load_more_data.delay(book.id)
     return book
+
+
+def get_or_create_connector(remote_id):
+    ''' get the connector related to the author's server '''
+    url = urlparse(remote_id)
+    identifier = url.netloc
+    if not identifier:
+        raise(ValueError)
+
+    try:
+        connector_info = models.Connector.objects.get(identifier=identifier)
+    except models.Connector.DoesNotExist:
+        connector_info = models.Connector.objects.create(
+            identifier=identifier,
+            connector_file='fedireads_connector',
+            base_url='https://%s' % identifier,
+            books_url='https://%s/book' % identifier,
+            covers_url='https://%s/images/covers' % identifier,
+            search_url='https://%s/search?q=' % identifier,
+            key_name='remote_id',
+            priority=3
+        )
+
+    return load_connector(connector_info)
+
+
+def get_by_absolute_id(absolute_id, model):
+    ''' generalized function to get from a model with a remote_id field '''
+    if not absolute_id:
+        return None
+
+    # check if it's a remote status
+    try:
+        return model.objects.get(remote_id=absolute_id)
+    except model.DoesNotExist:
+        pass
+
+    # try finding a local status with that id
+    local_id = absolute_id.split('/')[-1]
+    try:
+        if hasattr(model.objects, 'select_subclasses'):
+            possible_match = model.objects.select_subclasses().get(id=local_id)
+        else:
+            possible_match = model.objects.get(id=local_id)
+    except model.DoesNotExist:
+        return None
+
+    # make sure it's not actually a remote status with an id that
+    # clashes with a local id
+    if possible_match.absolute_id == absolute_id:
+        return possible_match
+    return None
 
 
 @app.task

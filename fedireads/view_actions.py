@@ -189,27 +189,25 @@ def shelve(request):
 def rate(request):
     ''' just a star rating for a book '''
     form = forms.RatingForm(request.POST)
-    book_identifier = request.POST.get('book')
+    book_id = request.POST.get('book')
     # TODO: better failure behavior
     if not form.is_valid():
-        return redirect('/book/%s' % book_identifier)
+        return redirect('/book/%s' % book_id)
 
     rating = form.cleaned_data.get('rating')
     # throws a value error if the book is not found
-    book = get_or_create_book(book_identifier)
 
-    outgoing.handle_rate(request.user, book, rating)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_rate(request.user, book_id, rating)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required
 def review(request):
     ''' create a book review '''
     form = forms.ReviewForm(request.POST)
-    book_identifier = request.POST.get('book')
-    # TODO: better failure behavior
+    book_id = request.POST.get('book')
     if not form.is_valid():
-        return redirect('/book/%s' % book_identifier)
+        return redirect('/book/%s' % book_id)
 
     # TODO: validation, htmlification
     name = form.cleaned_data.get('name')
@@ -220,42 +218,39 @@ def review(request):
     except ValueError:
         rating = None
 
-    # throws a value error if the book is not found
-    book = get_or_create_book(book_identifier)
-
-    outgoing.handle_review(request.user, book, name, content, rating)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_review(request.user, book_id, name, content, rating)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required
 def quotate(request):
     ''' create a book quotation '''
     form = forms.QuotationForm(request.POST)
-    book_identifier = request.POST.get('book')
+    book_id = request.POST.get('book')
     if not form.is_valid():
-        return redirect('/book/%s' % book_identifier)
+        return redirect('/book/%s' % book_id)
 
     quote = form.cleaned_data.get('quote')
     content = form.cleaned_data.get('content')
 
-    outgoing.handle_quotation(request.user, book_identifier, content, quote)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_quotation(request.user, book_id, content, quote)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required
 def comment(request):
     ''' create a book comment '''
     form = forms.CommentForm(request.POST)
-    book_identifier = request.POST.get('book')
+    book_id = request.POST.get('book')
     # TODO: better failure behavior
     if not form.is_valid():
-        return redirect('/book/%s' % book_identifier)
+        return redirect('/book/%s' % book_id)
 
     # TODO: validation, htmlification
     content = form.data.get('content')
 
-    outgoing.handle_comment(request.user, book_identifier, content)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_comment(request.user, book_id, content)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required
@@ -264,20 +259,20 @@ def tag(request):
     # I'm not using a form here because sometimes "name" is sent as a hidden
     # field which doesn't validate
     name = request.POST.get('name')
-    book_identifier = request.POST.get('book')
+    book_id = request.POST.get('book')
 
-    outgoing.handle_tag(request.user, book_identifier, name)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_tag(request.user, book_id, name)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
-    book_identifier = request.POST.get('book')
+    book_id = request.POST.get('book')
 
-    outgoing.handle_untag(request.user, book_identifier, name)
-    return redirect('/book/%s' % book_identifier)
+    outgoing.handle_untag(request.user, book_id, name)
+    return redirect('/book/%s' % book_id)
 
 
 @login_required

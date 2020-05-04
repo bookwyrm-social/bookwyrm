@@ -102,6 +102,10 @@ class Connector(AbstractConnector):
         return author
 
 
+    def expand_book_data(self, book):
+        pass
+
+
 def get_cover(cover_url):
     ''' ask openlibrary for the cover '''
     image_name = cover_url.split('/')[-1]
