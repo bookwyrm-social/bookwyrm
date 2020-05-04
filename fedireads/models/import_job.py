@@ -53,23 +53,15 @@ class ImportItem(models.Model):
     def resolve(self):
         ''' try various ways to lookup a book '''
         self.book = (
-            self.get_book_from_db_isbn() or
             self.get_book_from_isbn() or
             self.get_book_from_title_author()
         )
 
-    def get_book_from_db_isbn(self):
-        ''' see if we already know about the book '''
-        try:
-            return Edition.objects.filter(isbn_13=self.isbn).first()
-        except Edition.DoesNotExist:
-            return None
-
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_results = books_manager.search(self.isbn)
-        if search_results:
-            return books_manager.get_or_create_book(search_results[0].key)
+        search_result = books_manager.first_search_result(self.isbn)
+        if search_result:
+            return books_manager.get_or_create_book(search_result.key)
 
     def get_book_from_title_author(self):
         ''' search by title and author '''
@@ -77,9 +69,9 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_results = books_manager.search(search_term)
-        if search_results:
-            return books_manager.get_or_create_book(search_results[0].key)
+        search_result = books_manager.first_search_result(search_term)
+        if search_result:
+            return books_manager.get_or_create_book(search_result.key)
 
     @property
     def isbn(self):
