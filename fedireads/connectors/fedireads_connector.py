@@ -40,19 +40,20 @@ class Connector(AbstractConnector):
             book = models.Book(remote_id=remote_id)
 
 
-    def update_book(self, book):
+    def update_book(self, book, data=None):
         ''' add remote data to a local book '''
         remote_id = book.remote_id
-        response = requests.get(
-            '%s/%s' % (self.base_url, remote_id),
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
-        if not response.ok:
-            response.raise_for_status()
+        if not data:
+            response = requests.get(
+                '%s/%s' % (self.base_url, remote_id),
+                headers={
+                    'Accept': 'application/activity+json; charset=utf-8',
+                },
+            )
+            if not response.ok:
+                response.raise_for_status()
 
-        data = response.json()
+            data = response.json()
 
         # great, we can update our book.
         mappings = {

@@ -31,7 +31,7 @@ Connector.objects.create(
     books_url='https://%s/book' % DOMAIN,
     covers_url='https://%s/images/covers' % DOMAIN,
     search_url='https://%s/search?q=' % DOMAIN,
-    key_name='openlibrary_key',
+    key_name='id',
     priority=1,
 )
 

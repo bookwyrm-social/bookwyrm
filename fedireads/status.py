@@ -1,8 +1,9 @@
 ''' Handle user activity '''
+from urllib.parse import urlparse
+
 from django.db import IntegrityError
 
-from fedireads import models
-from fedireads.books_manager import get_or_create_book
+from fedireads import books_manager, models
 from fedireads.sanitize_html import InputHtmlParser
 
 
@@ -23,6 +24,41 @@ def create_review_from_activity(author, activity):
     review.remote_id = remote_id
     review.save()
     return review
+
+
+def get_or_create_book(remote_id):
+    ''' try the remote id and then figure out the right connector '''
+    book = get_by_absolute_id(remote_id, models.Book)
+    if book:
+        return book
+
+    connector = get_or_create_connector(remote_id)
+    return books_manager.get_or_create_book(
+        remote_id,
+        key=connector.key_name,
+        connector_id=connector.id
+    )
+
+
+def get_or_create_connector(remote_id):
+    ''' get the connector related to the author's server '''
+    url = urlparse(remote_id)
+    identifier = url.netloc
+    try:
+        connector_info = models.Connector.objects.get(identifier=identifier)
+    except models.Connector.DoesNotExist:
+        models.Connector.objects.create(
+            identifier=identifier,
+            connector_file='fedireads_connector',
+            base_url='https://%s' % identifier,
+            books_url='https://%s/book' % identifier,
+            covers_url='https://%s/images/covers' % identifier,
+            search_url='https://%s/search?q=' % identifier,
+            key_name='remote_id',
+            priority=3
+        )
+
+    return books_manager.load_connector(connector_info)
 
 
 def create_rating(user, book, rating):
