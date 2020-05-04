@@ -94,9 +94,10 @@ class Book(FedireadsModel):
     @property
     def absolute_id(self):
         ''' constructs the absolute reference to any db object '''
+        if self.sync and self.remote_id:
+            return self.remote_id
         base_path = 'https://%s' % DOMAIN
-        model_name = type(self).__name__.lower()
-        return '%s/book/%s' % (base_path, self.openlibrary_key)
+        return '%s/book/%d' % (base_path, self.id)
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''

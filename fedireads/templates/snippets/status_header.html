@@ -6,13 +6,13 @@
 {% if status.status_type == 'Update' %}
     {{ status.content | safe }}
 {% elif status.status_type == 'Review' and not status.name and not status.content%}
-    rated <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
+    rated <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Review' %}
-    reviewed <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
+    reviewed <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Comment' %}
-    commented on <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
+    commented on <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Quotation' %}
-    quoted <a href="{{ status.book.absolute_id }}">{{ status.book.title }}</a>
+    quoted <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
 {% elif status.status_type == 'Boost' %}
     boosted
 {% elif status.reply_parent %}

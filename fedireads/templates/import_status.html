@@ -44,7 +44,7 @@
             <tr>
                 <td>
                     {% if item.book %}
-                    <a href="{{ item.book.absolute_id }}">
+                    <a href="/book/{{ item.book.id }}">
                     {% include 'snippets/book_cover.html' with book=item.book size='small' %}
                     </a>
                     {% endif %}

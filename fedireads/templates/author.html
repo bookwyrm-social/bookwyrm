@@ -16,7 +16,7 @@
     <div class="book-grid row shrink wrap">
         {% for book in books %}
         <div class="book-preview">
-            <a href="{{ book.absolute_id }}">
+            <a href="/book/{{ book.id }}">
             {% include 'snippets/book_cover.html' with book=book %}
             </a>
             {% include 'snippets/shelve_button.html' with book=book %}
