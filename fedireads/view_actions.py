@@ -133,7 +133,7 @@ def edit_book(request, book_id):
     form.save()
 
     outgoing.handle_update_book(request.user, book)
-    return redirect('/book/%s' % book.fedireads_key)
+    return redirect('/book/%s' % book.id)
 
 
 @login_required
@@ -157,7 +157,7 @@ def upload_cover(request, book_id):
     book.save()
 
     outgoing.handle_update_book(request.user, book)
-    return redirect('/book/%s' % book.fedireads_key)
+    return redirect('/book/%s' % book.id)
 
 
 @login_required

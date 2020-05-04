@@ -11,7 +11,6 @@ def get_book(book):
         'oclc_number',
         'openlibrary_key',
         'librarything_key',
-        'fedireads_key',
         'lccn',
         'oclc_number',
         'pages',

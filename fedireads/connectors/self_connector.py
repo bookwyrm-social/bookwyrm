@@ -36,7 +36,7 @@ class Connector(AbstractConnector):
             search_results.append(
                 SearchResult(
                     book.title,
-                    book.fedireads_key,
+                    book.id,
                     book.author_text,
                     book.published_date.year if book.published_date else None,
                     None
@@ -45,21 +45,21 @@ class Connector(AbstractConnector):
         return search_results
 
 
-    def get_or_create_book(self, fedireads_key):
+    def get_or_create_book(self, book_id):
         ''' since this is querying its own data source, it can only
         get a book, not load one from an external source '''
         try:
             return models.Book.objects.select_subclasses().get(
-                fedireads_key=fedireads_key
+                id=book_id
             )
         except ObjectDoesNotExist:
             return None
 
 
-    def get_or_create_author(self, fedireads_key):
+    def get_or_create_author(self, author_id):
         ''' load that author '''
         try:
-            return models.Author.objects.get(fedreads_key=fedireads_key)
+            return models.Author.objects.get(id=author_id)
         except ObjectDoesNotExist:
             pass
 

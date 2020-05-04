@@ -22,12 +22,13 @@ class AbstractConnector(ABC):
         self.max_query_count = info.max_query_count
         self.name = info.name
         self.local = info.local
+        self.id = info.id
 
 
     def is_available(self):
         ''' check if you're allowed to use this connector '''
-        if self.connector.max_query_count is not None:
-            if self.connector.query_count >= self.connector.max_query_count:
+        if self.max_query_count is not None:
+            if self.connector.query_count >= self.max_query_count:
                 return False
         return True
 

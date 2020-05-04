@@ -12,7 +12,7 @@
 
         {% for result in result_set.results %}
         <div>
-            <a href="/book/{{ result.key }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
+            <a href="/book/{% if not result_set.connector.local %}{{ result_set.connector.id }}:{{ result_set.connector.key_name}}:{% endif %}{{ result.key }}">{{ result.title }}</a> by {{ result.author }} ({{ result.year }})
         </div>
         {% endfor %}
     </section>

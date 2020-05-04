@@ -6,7 +6,7 @@
         {% include 'snippets/book_titleby.html' with book=book %}
 
         {% if request.user.is_authenticated %}
-        <a href="{{ book.fedireads_key }}/edit" class="edit-link">edit
+        <a href="{{ book.id }}/edit" class="edit-link">edit
             <span class="icon icon-pencil">
                 <span class="hidden-text">Edit Book</span>
             </span>
@@ -22,7 +22,7 @@
             {% include 'snippets/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
-            <form name="add-cover" method="POST" action="/upload_cover/{{book.id}}" enctype="multipart/form-data">
+            <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ cover_form.as_p }}
                 <button type="submit">Add cover</button>
@@ -57,7 +57,7 @@
                 <h3>Tags</h3>
                 <form name="tag" action="/tag/" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.fedireads_key }}">
+                    <input type="hidden" name="book" value="{{ book.id }}">
                     <input type="text" name="name">
                     <button type="submit">Add tag</button>
                 </form>

@@ -286,7 +286,7 @@ def handle_tag(user, book, name):
 
 def handle_untag(user, book, name):
     ''' tag a book '''
-    book = models.Book.objects.get(fedireads_key=book)
+    book = models.Book.objects.get(id=book)
     tag = models.Tag.objects.get(name=name, book=book, user=user)
     tag_activity = activitypub.get_remove_tag(tag)
     tag.delete()

@@ -4,7 +4,7 @@
 <div class="content-container">
     <h2>
         Edit "{{ book.title }}"
-        <a href="/book/{{ book.fedireads_key }}">
+        <a href="/book/{{ book.id }}">
             <span class="edit-link icon icon-close">
                 <span class="hidden-text">Close</span>
             </span>
@@ -40,8 +40,8 @@
 
     <h3>Book Identifiers</h2>
     <div>
-        <p><label for="id_isbn">ISBN 13:</label> {{ form.isbn_13 }} </p>
-        <p><label for="id_fedireads_key">Fedireads key:</label> {{ form.fedireads_key }} </p>
+        <p><label for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
+        <p><label for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
         <p><label for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
         <p><label for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
         <p><label for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>

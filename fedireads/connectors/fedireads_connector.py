@@ -9,6 +9,8 @@ from .abstract_connector import update_from_mappings, get_date
 
 
 class Connector(AbstractConnector):
+    ''' interact with other instances '''
+
     def search(self, query):
         ''' right now you can't search fedireads, but... '''
         resp = requests.get(
@@ -23,11 +25,11 @@ class Connector(AbstractConnector):
         return resp.json()
 
 
-    def get_or_create_book(self, fedireads_key):
+    def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
         try:
             book = models.Book.objects.select_subclasses().get(
-                fedireads_key=fedireads_key
+                remote_id=remote_id
             )
             return book
         except ObjectDoesNotExist:
@@ -35,14 +37,14 @@ class Connector(AbstractConnector):
                 # we can't load a book from a remote server, this is it
                 return None
             # no book was found, so we start creating a new one
-            book = models.Book(fedireads_key=fedireads_key)
+            book = models.Book(remote_id=remote_id)
 
 
     def update_book(self, book):
         ''' add remote data to a local book '''
-        fedireads_key = book.fedireads_key
+        remote_id = book.remote_id
         response = requests.get(
-            '%s/%s' % (self.base_url, fedireads_key),
+            '%s/%s' % (self.base_url, remote_id),
             headers={
                 'Accept': 'application/activity+json; charset=utf-8',
             },
@@ -81,21 +83,21 @@ class Connector(AbstractConnector):
         return book
 
 
-    def get_or_create_author(self, fedireads_key):
+    def get_or_create_author(self, remote_id):
         ''' load that author '''
         try:
-            return models.Author.objects.get(fedireads_key=fedireads_key)
+            return models.Author.objects.get(remote_id=remote_id)
         except ObjectDoesNotExist:
             pass
 
-        resp = requests.get('%s/authors/%s.json' % (self.url, fedireads_key))
+        resp = requests.get('%s/authors/%s.json' % (self.url, remote_id))
         if not resp.ok:
             resp.raise_for_status()
 
         data = resp.json()
 
         # ingest a new author
-        author = models.Author(fedireads_key=fedireads_key)
+        author = models.Author(remote_id=remote_id)
         mappings = {
             'born': ('born', get_date),
             'died': ('died', get_date),

@@ -8,8 +8,9 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import activitypub
-from fedireads import forms, models, books_manager
+from fedireads import forms, models
 from fedireads import goodreads_import
+from fedireads.books_manager import get_or_create_book
 from fedireads.tasks import app
 
 
@@ -363,9 +364,16 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-def book_page(request, book_identifier, tab='friends'):
+def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
-    book = books_manager.get_or_create_book(book_identifier)
+    key = 'id'
+    connector_id = None
+    if ':' in book_id:
+        try:
+            connector_id, key, book_id = book_id.split(':')
+        except ValueError:
+            return HttpResponseNotFound()
+    book = get_or_create_book(book_id, key=key, connector_id=connector_id)
 
     if is_api_request(request):
         return JsonResponse(activitypub.get_book(book))
@@ -430,7 +438,7 @@ def book_page(request, book_identifier, tab='friends'):
             {'id': 'federated', 'display': 'Federated'}
         ],
         'active_tab': tab,
-        'path': '/book/%s' % book_identifier,
+        'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
             {'name': 'ISBN', 'value': book.isbn_13},
@@ -445,9 +453,9 @@ def book_page(request, book_identifier, tab='friends'):
 
 
 @login_required
-def edit_book_page(request, book_identifier):
+def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = books_manager.get_or_create_book(book_identifier)
+    book = get_or_create_book(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {
@@ -468,10 +476,10 @@ def editions_page(request, work_id):
     return TemplateResponse(request, 'editions.html', data)
 
 
-def author_page(request, author_identifier):
+def author_page(request, author_id):
     ''' landing page for an author '''
     try:
-        author = models.Author.objects.get(fedireads_key=author_identifier)
+        author = models.Author.objects.get(id=author_id)
     except ValueError:
         return HttpResponseNotFound()
 
