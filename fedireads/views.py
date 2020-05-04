@@ -1,4 +1,6 @@
 ''' views for pages you can go to in the application '''
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
@@ -8,8 +10,8 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import activitypub
-from fedireads import forms, models
+from fedireads import activitypub, outgoing
+from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
 from fedireads.books_manager import get_or_create_book
 from fedireads.tasks import app
@@ -139,6 +141,22 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = activities.filter(privacy='public')
 
     return activities
+
+
+@login_required
+def search(request):
+    ''' that search bar up top '''
+    query = request.GET.get('q')
+    if re.match(r'\w+@\w+.\w+', query):
+        # if something looks like a username, search with webfinger
+        results = [outgoing.handle_account_search(query)]
+        template = 'user_results.html'
+    else:
+        # just send the question over to book search
+        results = books_manager.search(query)
+        template = 'book_results.html'
+
+    return TemplateResponse(request, template, {'results': results})
 
 
 def books_page(request):

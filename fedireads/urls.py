@@ -68,13 +68,14 @@ urlpatterns = [
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % username_regex, views.shelf_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % localname_regex, views.shelf_page),
 
+    re_path(r'^search/?$', views.search),
+
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
     re_path(r'^user-login/?$', actions.user_login),
     re_path(r'^register/?$', actions.register),
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
-    re_path(r'^search/?$', actions.search),
     re_path(r'^import_data/?', actions.import_data),
     re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
     re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),

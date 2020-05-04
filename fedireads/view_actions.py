@@ -1,6 +1,5 @@
 ''' views for actions you can take in the application '''
 from io import BytesIO, TextIOWrapper
-import re
 from PIL import Image
 
 from django.contrib.auth import authenticate, login, logout
@@ -10,7 +9,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-from fedireads import forms, models, books_manager, outgoing
+from fedireads import forms, models, outgoing
 from fedireads import goodreads_import
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
@@ -344,22 +343,6 @@ def unfollow(request):
     user_slug = to_unfollow.localname if to_unfollow.localname \
         else to_unfollow.username
     return redirect('/user/%s' % user_slug)
-
-
-@login_required
-def search(request):
-    ''' that search bar up top '''
-    query = request.GET.get('q')
-    if re.match(r'\w+@\w+.\w+', query):
-        # if something looks like a username, search with webfinger
-        results = [outgoing.handle_account_search(query)]
-        template = 'user_results.html'
-    else:
-        # just send the question over to book search
-        results = books_manager.search(query)
-        template = 'book_results.html'
-
-    return TemplateResponse(request, template, {'results': results})
 
 
 @login_required
