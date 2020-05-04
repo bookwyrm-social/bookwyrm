@@ -4,48 +4,37 @@ from django.core.files.base import ContentFile
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector
-from .abstract_connector import update_from_mappings, get_date
+from .abstract_connector import AbstractConnector, SearchResult, get_date
+from .abstract_connector import match_from_mappings, update_from_mappings
 
 
 class Connector(AbstractConnector):
     ''' interact with other instances '''
 
-    def search(self, query):
-        ''' right now you can't search fedireads, but... '''
-        resp = requests.get(
-            '%s%s' % (self.search_url, query),
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
-        if not resp.ok:
-            resp.raise_for_status()
-
-        return resp.json()
+    def format_search_result(self, search_result):
+        return SearchResult(**search_result)
 
 
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
-        try:
-            book = models.Book.objects.select_subclasses().get(
-                remote_id=remote_id
-            )
+        book = models.Book.objects.select_subclasses().filter(
+            remote_id=remote_id
+        ).first()
+        if book:
+            if isinstance(book, models.Work):
+                return book.default_edition
             return book
-        except ObjectDoesNotExist:
-            if self.model.is_self:
-                # we can't load a book from a remote server, this is it
-                return None
-            # no book was found, so we start creating a new one
-            book = models.Book(remote_id=remote_id)
+
+        # no book was found, so we start creating a new one
+        book = models.Book(remote_id=remote_id)
+        self.update_book(book)
 
 
     def update_book(self, book, data=None):
         ''' add remote data to a local book '''
-        remote_id = book.remote_id
         if not data:
             response = requests.get(
-                '%s/%s' % (self.base_url, remote_id),
+                book.remote_id,
                 headers={
                     'Accept': 'application/activity+json; charset=utf-8',
                 },
@@ -54,6 +43,10 @@ class Connector(AbstractConnector):
                 response.raise_for_status()
 
             data = response.json()
+
+        match = match_from_mappings(data, {})
+        if match:
+            return match
 
         # great, we can update our book.
         mappings = {

@@ -7,7 +7,8 @@ from django.db import transaction
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
-from .abstract_connector import update_from_mappings, get_date
+from .abstract_connector import match_from_mappings, update_from_mappings
+from .abstract_connector import get_date
 from .openlibrary_languages import languages
 
 
@@ -15,45 +16,34 @@ class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
     def __init__(self, identifier):
         get_first = lambda a: a[0]
-        self.book_mappings = {
-            'publish_date': ('published_date', get_date),
-            'first_publish_date': ('first_published_date', get_date),
-            'description': ('description', get_description),
+        self.key_mappings = {
             'isbn_13': ('isbn_13', get_first),
             'oclc_numbers': ('oclc_number', get_first),
             'lccn': ('lccn', get_first),
+        }
+
+        self.book_mappings = self.key_mappings.copy()
+        self.book_mappings.update({
+            'publish_date': ('published_date', get_date),
+            'first_publish_date': ('first_published_date', get_date),
+            'description': ('description', get_description),
             'languages': ('languages', get_languages),
             'number_of_pages': ('pages', None),
             'series': ('series', get_first),
-        }
+        })
         super().__init__(identifier)
 
 
-    def search(self, query):
-        ''' query openlibrary search '''
-        resp = requests.get(
-            '%s%s' % (self.search_url, query),
-            headers={
-                'Accept': 'application/json; charset=utf-8',
-            },
+    def format_search_result(self, doc):
+        key = doc['key']
+        key = key.split('/')[-1]
+        author = doc.get('author_name') or ['Unknown']
+        return SearchResult(
+            doc.get('title'),
+            key,
+            author[0],
+            doc.get('first_publish_year'),
         )
-        if not resp.ok:
-            resp.raise_for_status()
-        data = resp.json()
-        results = []
-
-        for doc in data['docs'][:5]:
-            key = doc['key']
-            key = key.split('/')[-1]
-            author = doc.get('author_name') or ['Unknown']
-            results.append(SearchResult(
-                doc.get('title'),
-                key,
-                author[0],
-                doc.get('first_publish_year'),
-                doc
-            ))
-        return results
 
 
     def get_or_create_book(self, olkey):
@@ -115,6 +105,11 @@ class Connector(AbstractConnector):
 
     def create_book(self, key, data, model):
         ''' create a work or edition from data '''
+        # we really would rather use an existing book than make a new one
+        match = match_from_mappings(data, self.key_mappings)
+        if match:
+            return match
+
         book = model.objects.create(
             openlibrary_key=key,
             title=data['title'],
@@ -145,7 +140,9 @@ class Connector(AbstractConnector):
         if not book.sync and not book.sync_cover:
             return
 
-        data = self.load_book_data(book.openlibrary_key)
+        if not data:
+            data = self.load_book_data(book.openlibrary_key)
+
         if book.sync_cover and data.get('covers'):
             book.cover.save(*self.get_cover(data['covers'][0]), save=True)
         if book.sync:

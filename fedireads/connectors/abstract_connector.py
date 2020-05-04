@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 from dateutil import parser
 import pytz
+import requests
 
 from fedireads import models
 
@@ -33,10 +34,27 @@ class AbstractConnector(ABC):
         return True
 
 
-    @abstractmethod
     def search(self, query):
         ''' free text search '''
-        # return list of search result objs
+        resp = requests.get(
+            '%s%s' % (self.search_url, query),
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+            },
+        )
+        if not resp.ok:
+            resp.raise_for_status()
+        data = resp.json()
+        results = []
+
+        for doc in data['docs'][:10]:
+            results.append(self.format_search_result(doc))
+        return results
+
+
+    @abstractmethod
+    def format_search_result(self, search_result):
+        ''' create a SearchResult obj from json '''
 
 
     @abstractmethod
@@ -82,6 +100,37 @@ def update_from_mappings(obj, data, mappings):
     return obj
 
 
+def match_from_mappings(data, mappings):
+    ''' try to find existing copies of this book using various keys '''
+    keys = [
+        ('openlibrary_key', models.Book),
+        ('librarything_key', models.Book),
+        ('goodreads_key', models.Book),
+        ('lccn', models.Work),
+        ('isbn_10', models.Edition),
+        ('isbn_13', models.Edition),
+        ('oclc_number', models.Edition),
+        ('asin', models.Edition),
+    ]
+    noop = lambda x: x
+    for key, model in keys:
+        formatter = None
+        if key in mappings:
+            key, formatter = mappings[key]
+        if not formatter:
+            formatter = noop
+
+        value = data.get(key)
+        if not value:
+            continue
+        value = formatter(value)
+
+        match = model.objects.select_subclasses().filter(
+            **{key: value}).first()
+        if match:
+            return match
+
+
 def has_attr(obj, key):
     ''' helper function to check if a model object has a key '''
     try:
@@ -100,12 +149,11 @@ def get_date(date_string):
 
 class SearchResult:
     ''' standardized search result object '''
-    def __init__(self, title, key, author, year, raw_data):
+    def __init__(self, title, key, author, year):
         self.title = title
         self.key = key
         self.author = author
         self.year = year
-        self.raw_data = raw_data
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
