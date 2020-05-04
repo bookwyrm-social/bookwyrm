@@ -150,13 +150,19 @@ def search(request):
     if re.match(r'\w+@\w+.\w+', query):
         # if something looks like a username, search with webfinger
         results = [outgoing.handle_account_search(query)]
-        template = 'user_results.html'
-    else:
-        # just send the question over to book search
-        results = books_manager.search(query)
-        template = 'book_results.html'
+        return TemplateResponse(
+            request, 'user_results.html', {'results': results}
+        )
 
-    return TemplateResponse(request, template, {'results': results})
+    # or just send the question over to book search
+
+    if is_api_request(request):
+        # only return local results via json so we don't cause a cascade
+        results = books_manager.local_search(query)
+        return JsonResponse([r.__dict__ for r in results], safe=False)
+
+    results = books_manager.search(query)
+    return TemplateResponse(request, 'book_results.html', {'results': results})
 
 
 def books_page(request):

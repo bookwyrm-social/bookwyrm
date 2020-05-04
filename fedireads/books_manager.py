@@ -48,6 +48,13 @@ def search(query):
     return results
 
 
+def local_search(query):
+    ''' only look at local search results '''
+    connector = load_connector(models.Connector.objects.get(local=True))
+    return connector.search(query)
+
+
+
 def first_search_result(query):
     ''' search until you find a result that fits '''
     for connector in get_connectors():
