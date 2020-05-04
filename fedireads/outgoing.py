@@ -84,7 +84,7 @@ def handle_account_search(query):
 def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
     activity = activitypub.get_follow_request(user, to_follow)
-    broadcast(user, activity, [to_follow.inbox])
+    broadcast(user, activity, direct_recipients=[to_follow])
 
 
 def handle_unfollow(user, to_unfollow):
@@ -94,7 +94,7 @@ def handle_unfollow(user, to_unfollow):
         user_object=to_unfollow
     )
     activity = activitypub.get_unfollow(relationship)
-    broadcast(user, activity, [to_unfollow.inbox])
+    broadcast(user, activity, direct_recipients=[to_unfollow])
     to_unfollow.followers.remove(user)
 
 
@@ -340,7 +340,7 @@ def handle_unfavorite(user, status):
         return
 
     fav_activity = activitypub.get_unfavorite(favorite)
-    broadcast(user, fav_activity, [status.user])
+    broadcast(user, fav_activity, direct_recipients=[status.user])
 
 
 def handle_boost(user, status):
