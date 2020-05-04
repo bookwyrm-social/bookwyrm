@@ -17,8 +17,6 @@ def get_book(book):
         'physical_format',
         'misc_identifiers',
 
-        'source_url',
-
         'description',
         'languages',
         'series',

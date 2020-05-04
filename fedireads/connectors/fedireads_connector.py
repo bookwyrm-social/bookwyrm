@@ -61,8 +61,8 @@ class Connector(AbstractConnector):
         }
         book = update_from_mappings(book, data, mappings)
 
-        if not book.source_url:
-            book.source_url = response.url
+        if not book.remote_id:
+            book.remote_id = response.url
         if not book.connector:
             book.connector = self.connector
         book.save()
