@@ -25,6 +25,7 @@ class Connector(AbstractConnector):
                    SearchVector('goodreads_key', weight='B') +\
                    SearchVector('asin', weight='B') +\
                    SearchVector('oclc_number', weight='B') +\
+                   SearchVector('remote_id', weight='B') +\
                    SearchVector('description', weight='C') +\
                    SearchVector('series', weight='C')
         ).filter(search=query)
@@ -63,7 +64,7 @@ class Connector(AbstractConnector):
             pass
 
 
-    def update_book(self, book_obj):
+    def update_book(self, book_obj, data=None):
         pass
 
 
