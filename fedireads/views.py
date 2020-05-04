@@ -4,6 +4,7 @@ from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -366,15 +367,15 @@ def edit_profile_page(request):
 
 def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
-    key = 'id'
-    connector_id = None
     if ':' in book_id:
         try:
             connector_id, key, book_id = book_id.split(':')
         except ValueError:
             return HttpResponseNotFound()
-    book = get_or_create_book(book_id, key=key, connector_id=connector_id)
+        book = get_or_create_book(book_id, key=key, connector_id=connector_id)
+        return redirect('/book/%d' % book.id)
 
+    book = get_or_create_book(book_id)
     if is_api_request(request):
         return JsonResponse(activitypub.get_book(book))
 
