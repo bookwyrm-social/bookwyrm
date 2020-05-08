@@ -18,11 +18,13 @@ def get_or_create_book(value, key='id', connector_id=None):
         book = get_by_absolute_id(value, models.Book)
         if book:
             return book
-        connector = get_or_create_connector(value)
-        return connector.get_or_create_book(value)
 
-    connector_info = models.Connector.objects.get(id=connector_id)
-    connector = load_connector(connector_info)
+    if connector_id:
+        connector_info = models.Connector.objects.get(id=connector_id)
+        connector = load_connector(connector_info)
+    else:
+        connector = get_or_create_connector(value)
+
     book = connector.get_or_create_book(value)
     load_more_data.delay(book.id)
     return book
@@ -33,7 +35,7 @@ def get_or_create_connector(remote_id):
     url = urlparse(remote_id)
     identifier = url.netloc
     if not identifier:
-        raise(ValueError)
+        raise ValueError('Invalid remote id')
 
     try:
         connector_info = models.Connector.objects.get(identifier=identifier)

@@ -52,6 +52,33 @@ class AbstractConnector(ABC):
         return results
 
 
+    def create_book(self, key, data, model):
+        ''' create a work or edition from data '''
+        # we really would rather use an existing book than make a new one
+        match = match_from_mappings(data, self.key_mappings)
+        if match:
+            if not isinstance(match, model):
+                if type(match).__name__ == 'Edition':
+                    return match.parent_work
+                else:
+                    return match.default_edition
+            return match
+
+        kwargs = {
+            self.key_name: key,
+            'title': data['title'],
+            'connector': self.connector
+        }
+        book = model.objects.create(**kwargs)
+        return self.update_book_from_data(book, data)
+
+
+    def update_book_from_data(self, book, data):
+        ''' simple function to save data to a book '''
+        update_from_mappings(book, data, self.book_mappings)
+        book.save()
+
+
     @abstractmethod
     def format_search_result(self, search_result):
         ''' create a SearchResult obj from json '''

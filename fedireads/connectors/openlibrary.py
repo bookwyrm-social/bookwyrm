@@ -7,7 +7,7 @@ from django.db import transaction
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
-from .abstract_connector import match_from_mappings, update_from_mappings
+from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date
 from .openlibrary_languages import languages
 
@@ -104,26 +104,10 @@ class Connector(AbstractConnector):
         return edition
 
 
-    def create_book(self, key, data, model):
-        ''' create a work or edition from data '''
-        # we really would rather use an existing book than make a new one
-        match = match_from_mappings(data, self.key_mappings)
-        if match:
-            return match
-
-        book = model.objects.create(
-            openlibrary_key=key,
-            title=data['title'],
-            connector=self.connector,
-        )
-        return self.update_book_from_data(book, data)
-
-
     def update_book_from_data(self, book, data):
         ''' updaet a book model instance from ol data '''
         # populate the simple data fields
-        update_from_mappings(book, data, self.book_mappings)
-        book.save()
+        super().update_book_from_data(book, data)
 
         authors = self.get_authors_from_data(data)
         for author in authors:

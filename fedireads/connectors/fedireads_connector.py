@@ -1,7 +1,9 @@
 ''' using another fedireads instance as a source of book data '''
+import requests
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
-import requests
+from django.db import transaction
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult, get_date
@@ -10,6 +12,15 @@ from .abstract_connector import match_from_mappings, update_from_mappings
 
 class Connector(AbstractConnector):
     ''' interact with other instances '''
+    def __init__(self, identifier):
+        self.key_mappings = {
+            'isbn_13': ('isbn_13', None),
+            'isbn_10': ('isbn_10', None),
+            'oclc_numbers': ('oclc_number', None),
+            'lccn': ('lccn', None),
+        }
+        super().__init__(identifier)
+
 
     def format_search_result(self, search_result):
         return SearchResult(**search_result)
@@ -26,8 +37,44 @@ class Connector(AbstractConnector):
             return book
 
         # no book was found, so we start creating a new one
-        book = models.Book(remote_id=remote_id)
-        self.update_book(book)
+        response = requests.get(
+            remote_id,
+            headers={
+                'Accept': 'application/activity+json; charset=utf-8',
+            },
+        )
+        if not response.ok:
+            response.raise_for_status()
+        data = response.json()
+
+        if data['book_type'] == 'work':
+            work_data = data
+            try:
+                edition_data = data['editions'][0]
+            except KeyError:
+                # hack: re-use the work data as the edition data
+                edition_data = data
+        else:
+            edition_data = data
+            try:
+                work_data = data['work']
+            except KeyError:
+                # hack: re-use the work data as the edition data
+                work_data = data
+
+        with transaction.atomic():
+            # create both work and a default edition
+            work_key = edition_data.get('url')
+            work = self.create_book(work_key, work_data, models.Work)
+
+            ed_key = edition_data.get('url')
+            edition = self.create_book(ed_key, edition_data, models.Edition)
+            edition.default = True
+            edition.parent_work = work
+            edition.save()
+
+        print(work, edition)
+        return edition
 
 
     def update_book(self, book, data=None):

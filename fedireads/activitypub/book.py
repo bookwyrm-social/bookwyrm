@@ -5,6 +5,7 @@ def get_book(book):
     ''' activitypub serialize a book '''
 
     fields = [
+        'title',
         'sort_title',
         'subtitle',
         'isbn_13',
@@ -27,10 +28,11 @@ def get_book(book):
         'physical_format',
     ]
 
+    book_type = type(book).__name__
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'type': 'Document',
-        'book_type': type(book).__name__,
+        'book_type': book_type,
         'name': book.title,
         'url': book.absolute_id,
 
@@ -39,9 +41,13 @@ def get_book(book):
                 book.first_published_date else None,
         'published_date': book.published_date.isoformat() if \
                 book.published_date else None,
-        'parent_work': book.parent_work.absolute_id if \
-                hasattr(book, 'parent_work') else None,
     }
+    if book_type == 'Edition':
+        activity['work'] = book.parent_work.absolute_id
+    else:
+        editions = book.edition_set.order_by('default')
+        activity['editions'] = [get_book(b) for b in editions]
+
     for field in fields:
         if hasattr(book, field):
             activity[field] = book.__getattribute__(field)
