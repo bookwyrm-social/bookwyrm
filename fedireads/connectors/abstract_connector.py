@@ -26,6 +26,7 @@ class AbstractConnector(ABC):
         self.name = info.name
         self.local = info.local
         self.id = info.id
+        self.identifier = info.identifier
 
 
     def is_available(self):
