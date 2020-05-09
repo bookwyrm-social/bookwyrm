@@ -1,4 +1,5 @@
 ''' using another fedireads instance as a source of book data '''
+import re
 import requests
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -32,6 +33,9 @@ class Connector(AbstractConnector):
 
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
+        # re-construct a remote id from the int and books_url
+        if re.match(r'^\d+$', remote_id):
+            remote_id = self.books_url + '/' + remote_id
         book = models.Book.objects.select_subclasses().filter(
             remote_id=remote_id
         ).first()
@@ -146,7 +150,7 @@ class Connector(AbstractConnector):
         except ObjectDoesNotExist:
             pass
 
-        resp = requests.get('%s/authors/%s.json' % (self.url, remote_id))
+        resp = requests.get('%s/authors/%s.json' % (self.base_url, remote_id))
         if not resp.ok:
             resp.raise_for_status()
 

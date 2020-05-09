@@ -150,6 +150,7 @@ class Edition(Book):
 
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
+    remote_id = models.CharField(max_length=255, null=True)
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     sync = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=timezone.now)
