@@ -231,7 +231,7 @@ def get_data(url):
     )
     if not resp.ok:
         resp.raise_for_status()
-    data = response.json()
+    data = resp.json()
     return data
 
 

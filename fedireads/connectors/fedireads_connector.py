@@ -84,14 +84,15 @@ class Connector(AbstractConnector):
 
 
     def get_cover_from_data(self, data):
-        cover_url = data.get('cover')
-        if not cover_url:
+        cover_data = data.get('attachment')
+        if not cover_data:
             return None
+        cover_url = cover_data[0].get('url')
         response = requests.get(cover_url)
         if not response.ok:
             response.raise_for_status()
 
-        image_name = uuid4() + cover_url.split('.')[-1]
+        image_name = str(uuid4()) + cover_url.split('.')[-1]
         image_content = ContentFile(response.content)
         return [image_name, image_content]
 
