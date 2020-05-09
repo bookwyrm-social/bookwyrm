@@ -39,16 +39,6 @@ class Connector(AbstractConnector):
         return search_results
 
 
-    def get_authors_from_data(self, data):
-        return None
-
-    def get_cover_from_data(self, data):
-        return None
-
-    def parse_search_data(self, data):
-        return data
-
-
     def format_search_result(self, book):
         return SearchResult(
             book.title,
@@ -77,9 +67,18 @@ class Connector(AbstractConnector):
             pass
 
 
+    def parse_search_data(self, data):
+        ''' it's already in the right format, don't even worry about it '''
+        return data
+
+    def get_authors_from_data(self, data):
+        return None
+
+    def get_cover_from_data(self, data):
+        return None
+
     def update_book(self, book_obj, data=None):
         pass
-
 
     def expand_book_data(self, book):
         pass

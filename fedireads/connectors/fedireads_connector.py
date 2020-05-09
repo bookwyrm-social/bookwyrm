@@ -9,8 +9,7 @@ import requests
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
-from .abstract_connector import get_date, get_data
-from .abstract_connector import match_from_mappings, update_from_mappings
+from .abstract_connector import update_from_mappings, get_date, get_data
 
 
 class Connector(AbstractConnector):
@@ -97,7 +96,6 @@ class Connector(AbstractConnector):
         return [image_name, image_content]
 
 
-
     def get_authors_from_data(self, data):
         authors = []
 
@@ -128,6 +126,7 @@ class Connector(AbstractConnector):
 
 
     def expand_book_data(self, book):
+        # TODO
         pass
 
 
