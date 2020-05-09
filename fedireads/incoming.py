@@ -42,6 +42,9 @@ def shared_inbox(request):
     except json.decoder.JSONDecodeError:
         return HttpResponseBadRequest()
 
+    if not activity.get('object'):
+        return HttpResponseBadRequest()
+
     try:
         verify_signature(request)
     except ValueError:
@@ -128,9 +131,13 @@ def verify_signature(request):
 @app.task
 def handle_follow(activity):
     ''' someone wants to follow a local user '''
-    # figure out who they want to follow
-    to_follow = models.User.objects.get(actor=activity['object'])
-    # figure out who they are
+    # figure out who they want to follow -- not using get_or_create because
+    # we only allow you to follow local users
+    try:
+        to_follow = models.User.objects.get(actor=activity['object'])
+    except models.User.DoesNotExist:
+        return False
+    # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
     try:
         request = models.UserFollowRequest.objects.create(
@@ -165,14 +172,11 @@ def handle_follow(activity):
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    if not obj['type'] == 'Follow':
-        #idk how to undo other things
-        return HttpResponseNotFound()
     try:
         requester = get_or_create_remote_user(obj['actor'])
         to_unfollow = models.User.objects.get(actor=obj['object'])
     except models.User.DoesNotExist:
-        return HttpResponseNotFound()
+        return False
 
     to_unfollow.followers.remove(requester)
 
@@ -209,7 +213,7 @@ def handle_follow_reject(activity):
         )
         request.delete()
     except models.UserFollowRequest.DoesNotExist:
-        pass
+        return False
 
 
 @app.task
@@ -217,46 +221,37 @@ def handle_create(activity):
     ''' someone did something, good on them '''
     user = get_or_create_remote_user(activity['actor'])
 
-    if not 'object' in activity:
-        return False
-
     if user.local:
         # we really oughtn't even be sending in this case
         return True
 
     if activity['object'].get('fedireadsType') and \
             'inReplyToBook' in activity['object']:
-        try:
-            if activity['object']['fedireadsType'] == 'Review':
-                builder = status_builder.create_review_from_activity
-            elif activity['object']['fedireadsType'] == 'Quotation':
-                builder = status_builder.create_quotation_from_activity
-            else:
-                builder = status_builder.create_comment_from_activity
+        if activity['object']['fedireadsType'] == 'Review':
+            builder = status_builder.create_review_from_activity
+        elif activity['object']['fedireadsType'] == 'Quotation':
+            builder = status_builder.create_quotation_from_activity
+        else:
+            builder = status_builder.create_comment_from_activity
 
-            # create the status, it'll throw a valueerror if anything is missing
-            builder(user, activity['object'])
-        except ValueError:
-            return False
+        # create the status, it'll throw a ValueError if anything is missing
+        builder(user, activity['object'])
     elif activity['object'].get('inReplyTo'):
         # only create the status if it's in reply to a status we already know
         if not status_builder.get_status(activity['object']['inReplyTo']):
             return True
 
-        try:
-            status = status_builder.create_status_from_activity(
-                user,
-                activity['object']
+        status = status_builder.create_status_from_activity(
+            user,
+            activity['object']
+        )
+        if status and status.reply_parent:
+            status_builder.create_notification(
+                status.reply_parent.user,
+                'REPLY',
+                related_user=status.user,
+                related_status=status,
             )
-            if status and status.reply_parent:
-                status_builder.create_notification(
-                    status.reply_parent.user,
-                    'REPLY',
-                    related_user=status.user,
-                    related_status=status,
-                )
-        except ValueError:
-            return False
     return True
 
 
@@ -268,7 +263,7 @@ def handle_favorite(activity):
         status = models.Status.objects.get(id=status_id)
         liker = get_or_create_remote_user(activity['actor'])
     except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return
+        return False
 
     if not liker.local:
         status_builder.create_favorite_from_activity(liker, activity)
@@ -287,7 +282,7 @@ def handle_unfavorite(activity):
     favorite_id = activity['object']['id']
     fav = status_builder.get_favorite(favorite_id)
     if not fav:
-        return HttpResponseNotFound()
+        return False
 
     fav.delete()
 
@@ -300,7 +295,7 @@ def handle_boost(activity):
         status = models.Status.objects.get(id=status_id)
         booster = get_or_create_remote_user(activity['actor'])
     except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return HttpResponseNotFound()
+        return False
 
     if not booster.local:
         status_builder.create_boost_from_activity(booster, activity)
@@ -318,7 +313,7 @@ def handle_tag(activity):
     ''' someone is tagging or shelving a book '''
     user = get_or_create_remote_user(activity['actor'])
     if not user.local:
-        book = activity['target']['id'].split('/')[-1]
+        book = activity['target']['id']
         status_builder.create_tag(user, book, activity['object']['name'])
 
 

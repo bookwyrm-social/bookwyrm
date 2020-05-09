@@ -12,7 +12,7 @@ def get_remove(*args):
 
 
 def get_add_remove(user, book, shelf, action='Add'):
-    ''' format an Add or Remove json blob '''
+    ''' format a shelve book json blob '''
     uuid = uuid4()
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
