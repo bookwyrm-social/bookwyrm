@@ -15,6 +15,8 @@ class AbstractConnector(ABC):
         info = models.Connector.objects.get(identifier=identifier)
         self.connector = info
 
+        self.book_mappings = {}
+
         self.base_url = info.base_url
         self.books_url = info.books_url
         self.covers_url = info.covers_url
@@ -55,7 +57,6 @@ class AbstractConnector(ABC):
     def create_book(self, key, data, model):
         ''' create a work or edition from data '''
         # we really would rather use an existing book than make a new one
-        print(data)
         match = match_from_mappings(data, self.key_mappings)
         if match:
             if not isinstance(match, model):
@@ -78,6 +79,7 @@ class AbstractConnector(ABC):
         ''' simple function to save data to a book '''
         update_from_mappings(book, data, self.book_mappings)
         book.save()
+        return book
 
 
     @abstractmethod

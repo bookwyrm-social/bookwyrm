@@ -73,7 +73,6 @@ class Connector(AbstractConnector):
             edition.parent_work = work
             edition.save()
 
-        print(work, edition)
         return edition
 
 
