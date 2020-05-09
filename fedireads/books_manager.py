@@ -10,11 +10,13 @@ from fedireads.tasks import app
 
 def get_or_create_book(value, key='id', connector_id=None):
     ''' pull up a book record by whatever means possible '''
-    try:
-        book = models.Book.objects.select_subclasses().get(**{key: value})
+    book = models.Book.objects.select_subclasses().filter(
+        **{key: value}
+    ).first()
+    if book:
+        if not isinstance(book, models.Edition):
+            return book.default_edition
         return book
-    except models.Book.DoesNotExist:
-        pass
 
     if key == 'remote_id':
         book = get_by_absolute_id(value, models.Book)

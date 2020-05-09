@@ -71,7 +71,7 @@ class Connector(AbstractConnector):
 
         with transaction.atomic():
             # create both work and a default edition
-            work_key = edition_data.get('url')
+            work_key = work_data.get('url')
             work = self.create_book(work_key, work_data, models.Work)
 
             ed_key = edition_data.get('url')
