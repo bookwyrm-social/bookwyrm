@@ -198,6 +198,8 @@ def has_attr(obj, key):
 
 def get_date(date_string):
     ''' helper function to try to interpret dates '''
+    if not date_string:
+        return None
     try:
         return pytz.utc.localize(parser.parse(date_string))
     except ValueError:

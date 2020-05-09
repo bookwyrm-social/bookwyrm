@@ -150,7 +150,12 @@ class Connector(AbstractConnector):
         except ObjectDoesNotExist:
             pass
 
-        resp = requests.get('%s/authors/%s.json' % (self.base_url, remote_id))
+        resp = requests.get(
+            remote_id,
+            headers={
+                'Accept': 'application/activity+json; charset=utf-8',
+            },
+        )
         if not resp.ok:
             resp.raise_for_status()
 
