@@ -49,7 +49,7 @@ class AbstractConnector(ABC):
         data = resp.json()
         results = []
 
-        for doc in data['docs'][:10]:
+        for doc in self.parse_search_data(data)[:10]:
             results.append(self.format_search_result(doc))
         return results
 
@@ -80,6 +80,11 @@ class AbstractConnector(ABC):
         update_from_mappings(book, data, self.book_mappings)
         book.save()
         return book
+
+
+    @abstractmethod
+    def parse_search_data(self, data):
+        ''' turn the result json from a search into a list '''
 
 
     @abstractmethod

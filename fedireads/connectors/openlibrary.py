@@ -47,6 +47,10 @@ class Connector(AbstractConnector):
         )
 
 
+    def parse_search_data(self, data):
+        return data.get('docs')
+
+
     def get_or_create_book(self, olkey):
         ''' pull up a book record by whatever means possible.
         if you give a work key, it should give you the default edition,

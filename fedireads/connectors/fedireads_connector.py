@@ -26,6 +26,10 @@ class Connector(AbstractConnector):
         return SearchResult(**search_result)
 
 
+    def parse_search_data(self, data):
+        return data
+
+
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
         book = models.Book.objects.select_subclasses().filter(

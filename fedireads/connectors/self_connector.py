@@ -39,6 +39,10 @@ class Connector(AbstractConnector):
         return search_results
 
 
+    def parse_search_data(self, data):
+        return data
+
+
     def format_search_result(self, book):
         return SearchResult(
             book.title,

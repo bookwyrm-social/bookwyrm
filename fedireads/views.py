@@ -143,7 +143,6 @@ def get_activity_feed(user, filter_level, model=models.Status):
     return activities
 
 
-@login_required
 def search(request):
     ''' that search bar up top '''
     query = request.GET.get('q')
