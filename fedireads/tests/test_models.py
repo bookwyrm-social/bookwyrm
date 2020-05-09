@@ -75,6 +75,7 @@ class ImportJob(TestCase):
 
         unknown_read_data = currently_reading_data.copy()
         unknown_read_data['Exclusive Shelf'] = 'read'
+        unknown_read_data['Date Read'] = ''
 
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword')
@@ -117,29 +118,35 @@ class ImportJob(TestCase):
 
     def test_reads(self):
         ''' various states of reading '''
-        expected_current = [models.ReadThrough(
-            start_date=datetime.datetime(2019, 4, 9, 0, 0),
-            finish_date=None
-        )]
-        expected_read = [models.ReadThrough(
-            start_date=datetime.datetime(2019, 4, 9, 0, 0),
-            finish_date=datetime.datetime(2019, 4, 9, 0, 0),
-        )]
-        expected_unknown = [models.ReadThrough(
-            start_date=None,
-            finish_date=None
-        )]
-        expecteds = [expected_current, expected_read, expected_unknown]
+        # currently reading
+        expected = [models.ReadThrough(
+            start_date=datetime.datetime(2019, 4, 9, 0, 0))]
+        actual = models.ImportItem.objects.get(index=1)
+        self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
+        self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
-        actuals = [
-            models.ImportItem.objects.get(index=1),
-            models.ImportItem.objects.get(index=2),
-            models.ImportItem.objects.get(index=3),
-        ]
-        for (expected, actual) in zip(expecteds, actuals):
-            actual = actual.reads
+        # read
+        expected = [models.ReadThrough(
+            finish_date=datetime.datetime(2019, 4, 9, 0, 0))]
+        actual = models.ImportItem.objects.get(index=2)
+        self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
+        self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
-            self.assertIsInstance(actual, list)
-            self.assertIsInstance(actual, models.ReadThrough)
-            self.assertEqual(actual[0].start_date, expected[0].start_date)
-            self.assertEqual(actual[0].finish_date, expected[0].finish_date)
+        # unknown dates
+        expected = []
+        actual = models.ImportItem.objects.get(index=3)
+        self.assertEqual(actual.reads, expected)
+
+
+class Shelf(TestCase):
+    def setUp(self):
+        user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword')
+        models.Shelf.objects.create(
+            name='Test Shelf', identifier='test-shelf', user=user)
+
+    def test_absolute_id(self):
+        ''' editions and works use the same absolute id syntax '''
+        shelf = models.Shelf.objects.get(identifier='test-shelf')
+        expected_id = 'https://%s/user/mouse/shelf/test-shelf' % settings.DOMAIN
+        self.assertEqual(shelf.absolute_id, expected_id)
