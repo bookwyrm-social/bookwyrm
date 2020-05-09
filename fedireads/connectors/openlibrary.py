@@ -8,7 +8,7 @@ from django.db import transaction
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
 from .abstract_connector import update_from_mappings
-from .abstract_connector import get_date
+from .abstract_connector import get_date, get_data
 from .openlibrary_languages import languages
 
 
@@ -136,21 +136,14 @@ class Connector(AbstractConnector):
 
     def load_book_data(self, olkey):
         ''' query openlibrary for data on a book '''
-        response = requests.get('%s/works/%s.json' % (self.books_url, olkey))
-        if not response.ok:
-            response.raise_for_status()
-        data = response.json()
-        return data
+        url = '%s/works/%s.json' % (self.books_url, olkey)
+        return get_data(url)
 
 
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
-        response = requests.get(
-            '%s/works/%s/editions.json' % (self.books_url, olkey))
-        if not response.ok:
-            response.raise_for_status()
-        data = response.json()
-        return data
+        url = '%s/works/%s/editions.json' % (self.books_url, olkey)
+        return get_data(url)
 
 
     def expand_book_data(self, book):
@@ -179,11 +172,9 @@ class Connector(AbstractConnector):
         except models.Author.DoesNotExist:
             pass
 
-        response = requests.get('%s/authors/%s.json' % (self.base_url, olkey))
-        if not response.ok:
-            response.raise_for_status()
+        url = '%s/authors/%s.json' % (self.base_url, olkey)
+        data = get_data(url)
 
-        data = response.json()
         author = models.Author(openlibrary_key=olkey)
         mappings = {
             'birth_date': ('born', get_date),

@@ -206,6 +206,20 @@ def get_date(date_string):
         return None
 
 
+def get_data(url):
+    ''' wrapper for request.get '''
+    resp = requests.get(
+        url,
+        headers={
+            'Accept': 'application/activity+json; charset=utf-8',
+        },
+    )
+    if not resp.ok:
+        resp.raise_for_status()
+    data = response.json()
+    return data
+
+
 class SearchResult:
     ''' standardized search result object '''
     def __init__(self, title, key, author, year):

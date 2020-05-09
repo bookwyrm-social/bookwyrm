@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult, get_date
+from .abstract_connector import AbstractConnector, SearchResult, get_date, get_data
 from .abstract_connector import match_from_mappings, update_from_mappings
 
 
@@ -45,15 +45,7 @@ class Connector(AbstractConnector):
             return book
 
         # no book was found, so we start creating a new one
-        response = requests.get(
-            remote_id,
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
-        if not response.ok:
-            response.raise_for_status()
-        data = response.json()
+        data = get_data(remote_id)
 
         if data['book_type'] == 'work':
             work_data = data
@@ -99,16 +91,7 @@ class Connector(AbstractConnector):
     def update_book(self, book, data=None):
         ''' add remote data to a local book '''
         if not data:
-            response = requests.get(
-                book.remote_id,
-                headers={
-                    'Accept': 'application/activity+json; charset=utf-8',
-                },
-            )
-            if not response.ok:
-                response.raise_for_status()
-
-            data = response.json()
+            data = get_data(book.remote_id)
 
         match = match_from_mappings(data, {})
         if match:
@@ -150,16 +133,7 @@ class Connector(AbstractConnector):
         except ObjectDoesNotExist:
             pass
 
-        resp = requests.get(
-            remote_id,
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
-        if not resp.ok:
-            resp.raise_for_status()
-
-        data = resp.json()
+        data = get_data(remote_id)
 
         # ingest a new author
         author = models.Author(remote_id=remote_id)
