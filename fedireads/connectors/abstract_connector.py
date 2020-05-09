@@ -55,6 +55,7 @@ class AbstractConnector(ABC):
     def create_book(self, key, data, model):
         ''' create a work or edition from data '''
         # we really would rather use an existing book than make a new one
+        print(data)
         match = match_from_mappings(data, self.key_mappings)
         if match:
             if not isinstance(match, model):

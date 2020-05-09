@@ -1,7 +1,7 @@
 ''' federate book data '''
 from fedireads.settings import DOMAIN
 
-def get_book(book):
+def get_book(book, recursive=True):
     ''' activitypub serialize a book '''
 
     fields = [
@@ -42,11 +42,13 @@ def get_book(book):
         'published_date': book.published_date.isoformat() if \
                 book.published_date else None,
     }
-    if book_type == 'Edition':
-        activity['work'] = book.parent_work.absolute_id
-    else:
-        editions = book.edition_set.order_by('default')
-        activity['editions'] = [get_book(b) for b in editions]
+    if recursive:
+        if book_type == 'Edition':
+            activity['work'] = get_book(book.parent_work, recursive=False)
+        else:
+            editions = book.edition_set.order_by('default')
+            activity['editions'] = [
+                get_book(b, recursive=False) for b in editions]
 
     for field in fields:
         if hasattr(book, field):
