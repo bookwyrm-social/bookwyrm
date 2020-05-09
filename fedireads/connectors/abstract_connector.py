@@ -94,6 +94,27 @@ class AbstractConnector(ABC):
         return book
 
 
+    def update_book(self, book, data=None):
+        ''' load new data '''
+        if not book.sync and not book.sync_cover:
+            return
+
+        if not data:
+            key = getattr(book, self.key_name)
+            data = self.load_book_data(key)
+
+        if book.sync_cover:
+            book.cover.save(*self.get_cover_from_data(data), save=True)
+        if book.sync:
+            book = self.update_book_from_data(book, data)
+        return book
+
+
+    def load_book_data(self, remote_id):
+        ''' default method for loading book data '''
+        return get_data(remote_id)
+
+
     @abstractmethod
     def get_authors_from_data(self, data):
         ''' load author data '''
@@ -128,12 +149,6 @@ class AbstractConnector(ABC):
     @abstractmethod
     def get_or_create_author(self, book_id):
         ''' request and format a book given an identifier '''
-        # return book model obj
-
-
-    @abstractmethod
-    def update_book(self, book_obj, data=None):
-        ''' sync a book with the canonical remote copy '''
         # return book model obj
 
 

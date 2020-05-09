@@ -1,13 +1,15 @@
 ''' using another fedireads instance as a source of book data '''
 import re
-import requests
+from uuid import uuid4
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.db import transaction
+import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult, get_date, get_data
+from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import get_date, get_data
 from .abstract_connector import match_from_mappings, update_from_mappings
 
 
@@ -20,6 +22,11 @@ class Connector(AbstractConnector):
             'oclc_numbers': ('oclc_number', None),
             'lccn': ('lccn', None),
         }
+        self.book_mappings = self.key_mappings.copy()
+        self.book_mappings.update({
+            'published_date': ('published_date', get_date),
+            'first_published_date': ('first_published_date', get_date),
+        })
         super().__init__(identifier)
 
 
@@ -77,7 +84,17 @@ class Connector(AbstractConnector):
 
 
     def get_cover_from_data(self, data):
-        return None
+        cover_url = data.get('cover')
+        if not cover_url:
+            return None
+        response = requests.get(cover_url)
+        if not response.ok:
+            response.raise_for_status()
+
+        image_name = uuid4() + cover_url.split('.')[-1]
+        image_content = ContentFile(response.content)
+        return [image_name, image_content]
+
 
 
     def get_authors_from_data(self, data):
@@ -86,44 +103,6 @@ class Connector(AbstractConnector):
         for author_url in data.get('authors', []):
             authors.append(self.get_or_create_author(author_url))
         return authors
-
-
-    def update_book(self, book, data=None):
-        ''' add remote data to a local book '''
-        if not data:
-            data = get_data(book.remote_id)
-
-        match = match_from_mappings(data, {})
-        if match:
-            return match
-
-        # great, we can update our book.
-        mappings = {
-            'published_date': ('published_date', get_date),
-            'first_published_date': ('first_published_date', get_date),
-        }
-        book = update_from_mappings(book, data, mappings)
-
-        if not book.remote_id:
-            book.remote_id = response.url
-        if not book.connector:
-            book.connector = self.connector
-        book.save()
-
-        if data.get('parent_work'):
-            work = self.get_or_create_book(data.get('parent_work'))
-            book.parent_work = work
-
-        for author_blob in data.get('authors', []):
-            author_blob = author_blob.get('author', author_blob)
-            author_id = author_blob['key']
-            author_id = author_id.split('/')[-1]
-            book.authors.add(self.get_or_create_author(author_id))
-
-        if book.sync_cover and data.get('covers') and data['covers']:
-            book.cover.save(*get_cover(data['covers'][0]), save=True)
-
-        return book
 
 
     def get_or_create_author(self, remote_id):

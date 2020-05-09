@@ -108,21 +108,6 @@ class Connector(AbstractConnector):
         return edition
 
 
-    def update_book(self, book, data=None):
-        ''' load new data '''
-        if not book.sync and not book.sync_cover:
-            return
-
-        if not data:
-            data = self.load_book_data(book.openlibrary_key)
-
-        if book.sync_cover and data.get('covers'):
-            book.cover.save(*self.get_cover_from_data(data, save=True))
-        if book.sync:
-            book = self.update_book_from_data(book, data)
-        return book
-
-
     def get_authors_from_data(self, data):
         ''' parse author json and load or create authors '''
         authors = []
