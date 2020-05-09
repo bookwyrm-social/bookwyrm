@@ -39,6 +39,12 @@ class Connector(AbstractConnector):
         return search_results
 
 
+    def get_authors_from_data(self, data):
+        return None
+
+    def get_cover_from_data(self, data):
+        return None
+
     def parse_search_data(self, data):
         return data
 

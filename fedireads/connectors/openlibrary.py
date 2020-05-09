@@ -108,22 +108,6 @@ class Connector(AbstractConnector):
         return edition
 
 
-    def update_book_from_data(self, book, data):
-        ''' updaet a book model instance from ol data '''
-        # populate the simple data fields
-        super().update_book_from_data(book, data)
-
-        authors = self.get_authors_from_data(data)
-        for author in authors:
-            book.authors.add(author)
-        if authors:
-            book.author_text = ', '.join(a.name for a in authors)
-
-        if data.get('covers'):
-            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
-        return book
-
-
     def update_book(self, book, data=None):
         ''' load new data '''
         if not book.sync and not book.sync_cover:
@@ -133,7 +117,7 @@ class Connector(AbstractConnector):
             data = self.load_book_data(book.openlibrary_key)
 
         if book.sync_cover and data.get('covers'):
-            book.cover.save(*self.get_cover(data['covers'][0]), save=True)
+            book.cover.save(*self.get_cover_from_data(data, save=True))
         if book.sync:
             book = self.update_book_from_data(book, data)
         return book
@@ -217,9 +201,12 @@ class Connector(AbstractConnector):
         return author
 
 
-    def get_cover(self, cover_id):
+    def get_cover_from_data(self, data):
         ''' ask openlibrary for the cover '''
-        # TODO: get medium and small versions
+        if not data.get('covers'):
+            return None
+
+        cover_id = data.get('covers')[0]
         image_name = '%s-M.jpg' % cover_id
         url = '%s/b/id/%s' % (self.covers_url, image_name)
         response = requests.get(url)

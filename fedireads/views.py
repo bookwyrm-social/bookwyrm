@@ -507,6 +507,9 @@ def author_page(request, author_id):
     except ValueError:
         return HttpResponseNotFound()
 
+    if is_api_request(request):
+        return JsonResponse(activitypub.get_author(author))
+
     books = models.Work.objects.filter(authors=author)
     data = {
         'author': author,

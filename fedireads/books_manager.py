@@ -1,4 +1,6 @@
 ''' select and call a connector for whatever book task needs doing '''
+from requests import HTTPError
+
 import importlib
 from urllib.parse import urlparse
 
@@ -96,7 +98,10 @@ def search(query):
     dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
     result_index = set()
     for connector in get_connectors():
-        result_set = connector.search(query)
+        try:
+            result_set = connector.search(query)
+        except HTTPError:
+            continue
 
         result_set = [r for r in result_set \
                 if dedup_slug(r) not in result_index]

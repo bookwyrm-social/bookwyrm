@@ -36,7 +36,7 @@ def get_book(book, recursive=True):
         'name': book.title,
         'url': book.absolute_id,
 
-        'authors': [get_author(a) for a in book.authors.all()],
+        'authors': [a.absolute_id for a in book.authors.all()],
         'first_published_date': book.first_published_date.isoformat() if \
                 book.first_published_date else None,
         'published_date': book.published_date.isoformat() if \
@@ -68,7 +68,21 @@ def get_book(book, recursive=True):
 
 def get_author(author):
     ''' serialize an author '''
-    return {
-        'name': author.name,
+    fields = [
+        'name',
+        'born',
+        'died',
+        'aliases',
+        'bio'
+        'openlibrary_key',
+        'wikipedia_link',
+    ]
+    activity = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
         'url': author.absolute_id,
+        'type': 'Person',
     }
+    for field in fields:
+        if hasattr(author, field):
+            activity[field] = author.__getattribute__(field)
+    return activity

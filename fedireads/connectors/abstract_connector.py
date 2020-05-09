@@ -79,7 +79,28 @@ class AbstractConnector(ABC):
         ''' simple function to save data to a book '''
         update_from_mappings(book, data, self.book_mappings)
         book.save()
+
+        authors = self.get_authors_from_data(data)
+        for author in authors:
+            book.authors.add(author)
+        if authors:
+            book.author_text = ', '.join(a.name for a in authors)
+            book.save()
+
+        cover = self.get_cover_from_data(data)
+        if cover:
+            book.cover.save(*cover, save=True)
         return book
+
+
+    @abstractmethod
+    def get_authors_from_data(self, data):
+        ''' load author data '''
+
+
+    @abstractmethod
+    def get_cover_from_data(self, data):
+        ''' load cover '''
 
 
     @abstractmethod

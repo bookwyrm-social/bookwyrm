@@ -80,6 +80,18 @@ class Connector(AbstractConnector):
         return edition
 
 
+    def get_cover_from_data(self, data):
+        return None
+
+
+    def get_authors_from_data(self, data):
+        authors = []
+
+        for author_url in data.get('authors', []):
+            authors.append(self.get_or_create_author(author_url))
+        return authors
+
+
     def update_book(self, book, data=None):
         ''' add remote data to a local book '''
         if not data:
