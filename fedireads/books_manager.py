@@ -4,7 +4,7 @@ from requests import HTTPError
 import importlib
 from urllib.parse import urlparse
 
-from fedireads import models
+from fedireads import models, settings
 from fedireads.tasks import app
 
 
@@ -68,6 +68,10 @@ def get_by_absolute_id(absolute_id, model):
         return model.objects.get(remote_id=absolute_id)
     except model.DoesNotExist:
         pass
+
+    url = urlparse(absolute_id)
+    if url.netloc != settings.DOMAIN:
+        return None
 
     # try finding a local status with that id
     local_id = absolute_id.split('/')[-1]

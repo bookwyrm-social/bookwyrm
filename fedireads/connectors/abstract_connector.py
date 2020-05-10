@@ -4,6 +4,8 @@ from dateutil import parser
 import pytz
 import requests
 
+from django.db import transaction
+
 from fedireads import models
 
 
@@ -16,18 +18,26 @@ class AbstractConnector(ABC):
         self.connector = info
 
         self.book_mappings = {}
+        self.key_mappings = {
+            'isbn_13': ('isbn_13', None),
+            'isbn_10': ('isbn_10', None),
+            'oclc_numbers': ('oclc_number', None),
+            'lccn': ('lccn', None),
+        }
 
-        self.base_url = info.base_url
-        self.books_url = info.books_url
-        self.covers_url = info.covers_url
-        self.search_url = info.search_url
-        self.key_name = info.key_name
-        self.max_query_count = info.max_query_count
-        self.name = info.name
-        self.local = info.local
-        self.id = info.id
-        self.identifier = info.identifier
-
+        fields = [
+            'base_url',
+            'books_url',
+            'covers_url',
+            'search_url',
+            'key_name',
+            'max_query_count',
+            'name',
+            'identifier',
+            'local'
+        ]
+        for field in fields:
+            setattr(self, field, getattr(info, field))
 
     def is_available(self):
         ''' check if you're allowed to use this connector '''
@@ -55,38 +65,94 @@ class AbstractConnector(ABC):
         return results
 
 
-    def create_book(self, key, data, model):
-        ''' create a work or edition from data '''
-        # we really would rather use an existing book than make a new one
-        match = match_from_mappings(data, self.key_mappings)
-        if match:
-            if not isinstance(match, model):
-                if type(match).__name__ == 'Edition':
-                    return match.parent_work
-                else:
-                    return match.default_edition
-            return match
+    def get_or_create_book(self, remote_id):
+        ''' pull up a book record by whatever means possible '''
+        # try to load the book
+        book = models.Book.objects.select_subclasses().filter(
+            remote_id=remote_id
+        ).first()
+        if book:
+            if isinstance(book, models.Work):
+                return book.default_edition
+            return book
 
-        kwargs = {
-            self.key_name: key,
-            'title': data['title'],
-            'connector': self.connector
-        }
-        book = model.objects.create(**kwargs)
+        # no book was found, so we start creating a new one
+        data = get_data(remote_id)
+
+        work = None
+        edition = None
+        if self.is_work_data(data):
+            work_data = data
+            # if we requested a work and there's already an edition, we're set
+            work = self.match_from_mappings(work_data)
+            if work and work.default_edition:
+                return work.default_edition
+
+            # no such luck, we need more information.
+            try:
+                edition_data = self.get_edition_from_work_data(work_data)
+            except KeyError:
+                # hack: re-use the work data as the edition data
+                # this is why remote ids aren't necessarily unique
+                edition_data = data
+        else:
+            edition_data = data
+            edition = self.match_from_mappings(edition_data)
+            # no need to figure out about the work if we already know about it
+            if edition and edition.parent_work:
+                return edition
+
+            # no such luck, we need more information.
+            try:
+                work_data = self.get_work_from_edition_date(edition_data)
+            except KeyError:
+                # remember this hack: re-use the work data as the edition data
+                work_data = data
+
+        # at this point, we need to figure out the work, edition, or both
+        # atomic so that we don't save a work with no edition for vice versa
+        with transaction.atomic():
+            if not work:
+                work_key = work_data.get('url')
+                work = self.create_book(work_key, work_data, models.Work)
+
+            if not edition:
+                ed_key = edition_data.get('url')
+                edition = self.create_book(ed_key, edition_data, models.Edition)
+                edition.default = True
+                edition.parent_work = work
+                edition.save()
+
+        # now's our change to fill in author gaps
+        if not edition.authors and work.authors:
+            edition.authors.set(work.authors.all())
+            edition.author_text = work.author_text
+            edition.save()
+
+        return edition
+
+
+    def create_book(self, remote_id, data, model):
+        ''' create a work or edition from data '''
+        book = model.objects.create(
+            remote_id=remote_id,
+            title=data['title'],
+            connector=self.connector,
+        )
         return self.update_book_from_data(book, data)
 
 
-    def update_book_from_data(self, book, data):
-        ''' simple function to save data to a book '''
-        update_from_mappings(book, data, self.book_mappings)
+    def update_book_from_data(self, book, data, update_cover=True):
+        ''' for creating a new book or syncing with data '''
+        book = update_from_mappings(book, data, self.book_mappings)
+
+        for author in self.get_authors_from_data(data):
+            book.authors.add(author)
+        book.author_text = ', '.join(a.name for a in book.authors.all())
         book.save()
 
-        authors = self.get_authors_from_data(data)
-        for author in authors:
-            book.authors.add(author)
-        if authors:
-            book.author_text = ', '.join(a.name for a in authors)
-            book.save()
+        if not update_cover:
+            return book
 
         cover = self.get_cover_from_data(data)
         if cover:
@@ -103,16 +169,61 @@ class AbstractConnector(ABC):
             key = getattr(book, self.key_name)
             data = self.load_book_data(key)
 
-        if book.sync_cover:
-            book.cover.save(*self.get_cover_from_data(data), save=True)
         if book.sync:
-            book = self.update_book_from_data(book, data)
+            book = self.update_book_from_data(
+                book, data, update_cover=book.sync_cover)
+        else:
+            cover = self.get_cover_from_data(data)
+            if cover:
+                book.cover.save(*cover, save=True)
+
         return book
 
 
-    def load_book_data(self, remote_id):
-        ''' default method for loading book data '''
-        return get_data(remote_id)
+    def match_from_mappings(self, data):
+        ''' try to find existing copies of this book using various keys '''
+        keys = [
+            ('openlibrary_key', models.Book),
+            ('librarything_key', models.Book),
+            ('goodreads_key', models.Book),
+            ('lccn', models.Work),
+            ('isbn_10', models.Edition),
+            ('isbn_13', models.Edition),
+            ('oclc_number', models.Edition),
+            ('asin', models.Edition),
+        ]
+        noop = lambda x: x
+        for key, model in keys:
+            formatter = None
+            if key in self.key_mappings:
+                key, formatter = self.key_mappings[key]
+            if not formatter:
+                formatter = noop
+
+            value = data.get(key)
+            if not value:
+                continue
+            value = formatter(value)
+
+            match = model.objects.select_subclasses().filter(
+                **{key: value}).first()
+            if match:
+                return match
+
+
+    @abstractmethod
+    def is_work_data(self, data):
+        ''' differentiate works and editions '''
+
+
+    @abstractmethod
+    def get_edition_from_work_data(self, data):
+        ''' every work needs at least one edition '''
+
+
+    @abstractmethod
+    def get_work_from_edition_date(self, data):
+        ''' every edition needs a work '''
 
 
     @abstractmethod
@@ -136,20 +247,8 @@ class AbstractConnector(ABC):
 
 
     @abstractmethod
-    def get_or_create_book(self, book_id):
-        ''' request and format a book given an identifier '''
-        # return book model obj
-
-
-    @abstractmethod
     def expand_book_data(self, book):
         ''' get more info on a book '''
-
-
-    @abstractmethod
-    def get_or_create_author(self, book_id):
-        ''' request and format a book given an identifier '''
-        # return book model obj
 
 
 def update_from_mappings(obj, data, mappings):
@@ -170,37 +269,6 @@ def update_from_mappings(obj, data, mappings):
         if has_attr(obj, key):
             obj.__setattr__(key, formatter(value))
     return obj
-
-
-def match_from_mappings(data, mappings):
-    ''' try to find existing copies of this book using various keys '''
-    keys = [
-        ('openlibrary_key', models.Book),
-        ('librarything_key', models.Book),
-        ('goodreads_key', models.Book),
-        ('lccn', models.Work),
-        ('isbn_10', models.Edition),
-        ('isbn_13', models.Edition),
-        ('oclc_number', models.Edition),
-        ('asin', models.Edition),
-    ]
-    noop = lambda x: x
-    for key, model in keys:
-        formatter = None
-        if key in mappings:
-            key, formatter = mappings[key]
-        if not formatter:
-            formatter = noop
-
-        value = data.get(key)
-        if not value:
-            continue
-        value = formatter(value)
-
-        match = model.objects.select_subclasses().filter(
-            **{key: value}).first()
-        if match:
-            return match
 
 
 def has_attr(obj, key):
@@ -226,7 +294,7 @@ def get_data(url):
     resp = requests.get(
         url,
         headers={
-            'Accept': 'application/activity+json; charset=utf-8',
+            'Accept': 'application/json; charset=utf-8',
         },
     )
     if not resp.ok:
@@ -235,7 +303,7 @@ def get_data(url):
     return data
 
 
-class SearchResult:
+class SearchResult(object):
     ''' standardized search result object '''
     def __init__(self, title, key, author, year):
         self.title = title

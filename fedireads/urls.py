@@ -58,7 +58,7 @@ urlpatterns = [
     re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
 
     # books
-    re_path(r'book/(?P<book_id>[\w_:\d]+)(.json)?/?$', views.book_page),
+    re_path(r'%s(.json)?/?$' % book_path, views.book_page),
     re_path(r'%s/(?P<tab>friends|local|federated)?$' % book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
@@ -77,6 +77,7 @@ urlpatterns = [
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
     re_path(r'^import_data/?', actions.import_data),
+    re_path(r'^resolve_book/?', actions.resolve_book),
     re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
     re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
 

@@ -115,6 +115,13 @@ def edit_profile(request):
     return redirect('/user/%s' % request.user.localname)
 
 
+def resolve_book(request):
+    ''' figure out the local path to a book from a remote_id '''
+    remote_id = request.POST.get('remote_id')
+    book = get_or_create_book(remote_id, key='remote_id')
+    return redirect('/book/%d' % book.id)
+
+
 @login_required
 def edit_book(request, book_id):
     ''' edit a book cool '''

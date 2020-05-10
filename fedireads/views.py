@@ -390,14 +390,6 @@ def edit_profile_page(request):
 
 def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
-    if ':' in book_id:
-        try:
-            connector_id, key, book_id = book_id.split(':')
-        except ValueError:
-            return HttpResponseNotFound()
-        book = get_or_create_book(book_id, key=key, connector_id=connector_id)
-        return redirect('/book/%d' % book.id)
-
     book = get_or_create_book(book_id)
     if is_api_request(request):
         return JsonResponse(activitypub.get_book(book))
