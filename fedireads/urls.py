@@ -10,7 +10,7 @@ username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
-status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
+status_path = r'%s/(status|review|comment|quotation)/(?P<status_id>\d+)' % local_user_path
 book_path = r'^book/(?P<book_id>\d+)'
 
 handler404 = 'fedireads.views.not_found_page'
