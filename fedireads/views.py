@@ -330,7 +330,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(activitypub.get_status(status))
+        return JsonResponse(status.activitypub_serialize)
 
     data = {
         'status': status,
