@@ -17,16 +17,19 @@ class AbstractConnector(ABC):
 
         self.book_mappings = {}
 
-        self.base_url = info.base_url
-        self.books_url = info.books_url
-        self.covers_url = info.covers_url
-        self.search_url = info.search_url
-        self.key_name = info.key_name
-        self.max_query_count = info.max_query_count
-        self.name = info.name
-        self.local = info.local
-        self.id = info.id
-        self.identifier = info.identifier
+        fields = [
+            'base_url',
+            'books_url',
+            'covers_url',
+            'search_url',
+            'key_name',
+            'max_query_count',
+            'name',
+            'identifier',
+            'local'
+        ]
+        for field in fields:
+            setattr(self, field, getattr(info, field))
 
 
     def is_available(self):
@@ -235,7 +238,7 @@ def get_data(url):
     return data
 
 
-class SearchResult:
+class SearchResult(object):
     ''' standardized search result object '''
     def __init__(self, title, key, author, year):
         self.title = title

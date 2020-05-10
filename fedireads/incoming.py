@@ -310,7 +310,7 @@ def handle_boost(activity):
 
 @app.task
 def handle_tag(activity):
-    ''' someone is tagging or shelving a book '''
+    ''' someone is tagging a book '''
     user = get_or_create_remote_user(activity['actor'])
     if not user.local:
         book = activity['target']['id']

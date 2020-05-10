@@ -131,7 +131,7 @@ class Connector(AbstractConnector):
 
 
 def get_cover(cover_url):
-    ''' ask openlibrary for the cover '''
+    ''' download the cover '''
     image_name = cover_url.split('/')[-1]
     response = requests.get(cover_url)
     if not response.ok:
