@@ -39,6 +39,7 @@ class AbstractConnector(ABC):
         for field in fields:
             setattr(self, field, getattr(info, field))
 
+
     def is_available(self):
         ''' check if you're allowed to use this connector '''
         if self.max_query_count is not None:
@@ -266,25 +267,25 @@ def update_from_mappings(obj, data, mappings):
         if key == 'id':
             continue
 
-        if has_attr(obj, key):
+        try:
+            hasattr(obj, key)
+        except ValueError:
             obj.__setattr__(key, formatter(value))
     return obj
-
-
-def has_attr(obj, key):
-    ''' helper function to check if a model object has a key '''
-    try:
-        return hasattr(obj, key)
-    except ValueError:
-        return False
 
 
 def get_date(date_string):
     ''' helper function to try to interpret dates '''
     if not date_string:
         return None
+
     try:
         return pytz.utc.localize(parser.parse(date_string))
+    except ValueError:
+        pass
+
+    try:
+        return parser.parse(date_string)
     except ValueError:
         return None
 

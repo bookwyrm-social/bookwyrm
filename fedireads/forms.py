@@ -101,7 +101,7 @@ class EditionForm(ModelForm):
             'updated_date',
             'last_sync_date',
 
-            'authors',
+            'authors',# TODO
             'parent_work',
             'shelves',
             'misc_identifiers',

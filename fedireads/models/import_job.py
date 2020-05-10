@@ -1,3 +1,4 @@
+''' track progress of goodreads imports '''
 import re
 import dateutil.parser
 
@@ -5,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 
 from fedireads import books_manager
-from fedireads.models import Edition, ReadThrough, User, Book
+from fedireads.models import ReadThrough, User, Book
 from fedireads.utils.fields import JSONField
 
 # Mapping goodreads -> fedireads shelf titles.
@@ -31,6 +32,7 @@ def construct_search_term(title, author):
     author = re.sub(r'(\w\.)+\s*', '', author)
 
     return ' '.join([title, author])
+
 
 class ImportJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

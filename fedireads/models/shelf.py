@@ -1,7 +1,8 @@
 ''' puttin' books on shelves '''
 from django.db import models
 
-from fedireads.utils.models import FedireadsModel
+from fedireads import activitypub
+from .base_model import FedireadsModel
 
 
 class Shelf(FedireadsModel):

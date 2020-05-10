@@ -35,7 +35,7 @@ class Connector(AbstractConnector):
 
 
     def is_work_data(self, data):
-        return not re.match(r'^OL\d+M$', data['key'])
+        return bool(re.match(r'^[\/\w]+OL\d+W$', data['key']))
 
 
     def get_edition_from_work_data(self, data):
@@ -86,14 +86,13 @@ class Connector(AbstractConnector):
 
 
     def format_search_result(self, doc):
-        key = doc['key']
         # build the absolute id from the openlibrary key
-        key = self.books_url + key
+        key = self.books_url + doc['key']
         author = doc.get('author_name') or ['Unknown']
         return SearchResult(
             doc.get('title'),
             key,
-            author[0],
+            ', '.join(author),
             doc.get('first_publish_year'),
         )
 

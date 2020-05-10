@@ -53,23 +53,23 @@ def nodeinfo(request):
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.count()
     return JsonResponse({
-        "version": "2.0",
-        "software": {
-            "name": "fedireads",
-            "version": "0.0.1"
+        'version': '2.0',
+        'software': {
+            'name': 'fedireads',
+            'version': '0.0.1'
         },
-        "protocols": [
-            "activitypub"
+        'protocols': [
+            'activitypub'
         ],
-        "usage": {
-            "users": {
-                "total": user_count,
-                "activeMonth": user_count, # TODO
-                "activeHalfyear": user_count, # TODO
+        'usage': {
+            'users': {
+                'total': user_count,
+                'activeMonth': user_count, # TODO
+                'activeHalfyear': user_count, # TODO
             },
-            "localPosts": status_count,
+            'localPosts': status_count,
         },
-        "openRegistrations": True,
+        'openRegistrations': True,
     })
 
 

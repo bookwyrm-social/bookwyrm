@@ -19,10 +19,13 @@ def get_public_recipients(user, software=None):
         # TODO: eventually we may want to handle particular software differently
         followers = followers.filter(fedireads_user=(software == 'fedireads'))
 
+    # we want shared inboxes when available
     shared = followers.filter(
         shared_inbox__isnull=False
     ).values_list('shared_inbox', flat=True).distinct()
 
+    # if a user doesn't have a shared inbox, we need their personal inbox
+    # iirc pixelfed doesn't have shared inboxes
     inboxes = followers.filter(
         shared_inbox__isnull=True
     ).values_list('inbox', flat=True)
@@ -33,7 +36,9 @@ def get_public_recipients(user, software=None):
 def broadcast(sender, activity, software=None, \
               privacy='public', direct_recipients=None):
     ''' send out an event '''
+    # start with parsing the direct recipients
     recipients = [u.inbox for u in direct_recipients or []]
+    # and then add any other recipients
     # TODO: other kinds of privacy
     if privacy == 'public':
         recipients += get_public_recipients(sender, software=software)
@@ -69,7 +74,9 @@ def sign_and_send(sender, activity, destination):
     ]
     message_to_sign = '\n'.join(signature_headers)
 
-    # TODO: raise an error if the user doesn't have a private key
+    if not sender.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError('No private key found for sender')
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
 

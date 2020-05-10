@@ -12,6 +12,7 @@ MAX_ENTRIES = 500
 
 
 def create_job(user, csv_file):
+    ''' check over a csv and creates a database entry for the job'''
     job = ImportJob.objects.create(user=user)
     for index, entry in enumerate(list(csv.DictReader(csv_file))[:MAX_ENTRIES]):
         if not all(x in entry for x in ('ISBN13', 'Title', 'Author')):
@@ -19,13 +20,17 @@ def create_job(user, csv_file):
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
+
 def start_import(job):
+    ''' initalizes a csv import job '''
     result = import_data.delay(job.id)
     job.task_id = result.id
     job.save()
 
+
 @app.task
 def import_data(job_id):
+    ''' does the actual lookup work in a celery task '''
     job = ImportJob.objects.get(id=job_id)
     try:
         results = []

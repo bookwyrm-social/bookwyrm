@@ -6,7 +6,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
-from fedireads.utils.models import FedireadsModel
+from fedireads import activitypub
+from .base_model import FedireadsModel
 
 
 class Status(FedireadsModel):
@@ -48,6 +49,11 @@ class Status(FedireadsModel):
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
 
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_status(self)
+
+
 class Comment(Status):
     ''' like a review but without a rating and transient '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
@@ -56,6 +62,11 @@ class Comment(Status):
         self.status_type = 'Comment'
         self.activity_type = 'Note'
         super().save(*args, **kwargs)
+
+
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_comment(self)
 
 
 class Quotation(Status):
@@ -67,6 +78,11 @@ class Quotation(Status):
         self.status_type = 'Quotation'
         self.activity_type = 'Note'
         super().save(*args, **kwargs)
+
+
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_quotation(self)
 
 
 class Review(Status):
@@ -86,18 +102,16 @@ class Review(Status):
         super().save(*args, **kwargs)
 
 
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_review(self)
+
+
 class Favorite(FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
     remote_id = models.CharField(max_length=255, unique=True, null=True)
-
-    @property
-    def absolute_id(self):
-        ''' constructs the absolute reference to any db object '''
-        if self.remote_id:
-            return self.remote_id
-        return super().absolute_id
 
     class Meta:
         unique_together = ('user', 'status')

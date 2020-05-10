@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
-from fedireads.utils.models import FedireadsModel
+from .base_model import FedireadsModel
 
 
 class User(AbstractUser):
@@ -72,6 +72,10 @@ class User(AbstractUser):
         model_name = type(self).__name__.lower()
         username = self.localname or self.username
         return 'https://%s/%s/%s' % (DOMAIN, model_name, username)
+
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_actor(self)
 
 
 class UserRelationship(FedireadsModel):

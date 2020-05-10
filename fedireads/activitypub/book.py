@@ -86,3 +86,42 @@ def get_author(author):
         if hasattr(author, field):
             activity[field] = author.__getattribute__(field)
     return activity
+
+
+def get_shelf(shelf, page=None):
+    ''' serialize shelf object '''
+    id_slug = shelf.absolute_id
+    if page:
+        return get_shelf_page(shelf, page)
+    count = shelf.books.count()
+    return {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': id_slug,
+        'type': 'OrderedCollection',
+        'totalItems': count,
+        'first': '%s?page=1' % id_slug,
+    }
+
+
+def get_shelf_page(shelf, page):
+    ''' list of books on a shelf '''
+    page = int(page)
+    page_length = 10
+    start = (page - 1) * page_length
+    end = start + page_length
+    shelf_page = shelf.books.all()[start:end]
+    id_slug = shelf.absolute_id
+    data = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        'id': '%s?page=%d' % (id_slug, page),
+        'type': 'OrderedCollectionPage',
+        'totalItems': shelf.books.count(),
+        'partOf': id_slug,
+        'orderedItems': [get_book(b) for b in shelf_page],
+    }
+    if end <= shelf.books.count():
+        # there are still more pages
+        data['next'] = '%s?page=%d' % (id_slug, page + 1)
+    if start > 0:
+        data['prev'] = '%s?page=%d' % (id_slug, page - 1)
+    return data
