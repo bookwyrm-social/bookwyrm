@@ -89,23 +89,21 @@ class ImportJob(TestCase):
         self.assertEqual(item.date_read, expected)
 
 
-    def test_reads(self):
-        ''' various states of reading '''
-        # currently reading
+    def test_currently_reading_reads(self):
         expected = [models.ReadThrough(
             start_date=datetime.datetime(2019, 4, 9, 0, 0))]
         actual = models.ImportItem.objects.get(index=1)
         self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
         self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
-        # read
+    def test_read_reads(self):
         expected = [models.ReadThrough(
             finish_date=datetime.datetime(2019, 4, 9, 0, 0))]
         actual = models.ImportItem.objects.get(index=2)
         self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
         self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
-        # unknown dates
+    def test_unread_reads(self):
         expected = []
         actual = models.ImportItem.objects.get(index=3)
         self.assertEqual(actual.reads, expected)
