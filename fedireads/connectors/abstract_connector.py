@@ -267,17 +267,11 @@ def update_from_mappings(obj, data, mappings):
         if key == 'id':
             continue
 
-        if has_attr(obj, key):
+        try:
+            hasattr(obj, key)
+        except ValueError:
             obj.__setattr__(key, formatter(value))
     return obj
-
-
-def has_attr(obj, key):
-    ''' helper function to check if a model object has a key '''
-    try:
-        return hasattr(obj, key)
-    except ValueError:
-        return False
 
 
 def get_date(date_string):

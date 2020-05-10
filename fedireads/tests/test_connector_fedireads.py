@@ -3,7 +3,6 @@ from dateutil import parser
 from django.test import TestCase
 import json
 import pathlib
-import pytz
 
 from fedireads import models
 from fedireads.connectors.fedireads_connector import Connector
