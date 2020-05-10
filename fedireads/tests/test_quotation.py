@@ -60,7 +60,7 @@ class Quotation(TestCase):
         quotation = status_builder.create_quotation_from_activity(
             self.user, activity)
         self.assertEqual(quotation.content, 'commentary')
-        self.assertEqual(quotation.name, 'quote body')
+        self.assertEqual(quotation.quote, 'quote body')
         self.assertEqual(quotation.book, self.book)
         self.assertEqual(
             quotation.published_date, '2020-05-10T02:38:31.150343+00:00')
