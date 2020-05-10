@@ -2,21 +2,19 @@
 from django.db import IntegrityError
 
 from fedireads import models
-from fedireads.books_manager import get_or_create_book
+from fedireads.books_manager import get_or_create_book, get_by_absolute_id
 from fedireads.sanitize_html import InputHtmlParser
 
 
 def create_review_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book_id = activity['inReplyToBook']
-    book_id = book_id.split('/')[-1]
+    book = get_or_create_book(book_id, key='remote_id')
     name = activity.get('name')
     rating = activity.get('rating')
     content = activity.get('content')
     published = activity.get('published')
     remote_id = activity['id']
-
-    book = get_or_create_book(book_id)
 
     review = create_review(author, book, name, content, rating)
     review.published_date = published
@@ -58,8 +56,8 @@ def create_review(user, book, name, content, rating):
 
 def create_quotation_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
-    book = activity['inReplyToBook']
-    book = book.split('/')[-1]
+    book_id = activity['inReplyToBook']
+    book = get_or_create_book(book_id, key='remote_id')
     quote = activity.get('quote')
     content = activity.get('content')
     published = activity.get('published')
@@ -72,10 +70,9 @@ def create_quotation_from_activity(author, activity):
     return quotation
 
 
-def create_quotation(user, possible_book, content, quote):
+def create_quotation(user, book, content, quote):
     ''' a quotation has been added '''
     # throws a value error if the book is not found
-    book = get_or_create_book(possible_book)
     content = sanitize(content)
     quote = sanitize(quote)
 
@@ -87,11 +84,10 @@ def create_quotation(user, possible_book, content, quote):
     )
 
 
-
 def create_comment_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
-    book = activity['inReplyToBook']
-    book = book.split('/')[-1]
+    book_id = activity['inReplyToBook']
+    book = get_or_create_book(book_id, key='remote_id')
     content = activity.get('content')
     published = activity.get('published')
     remote_id = activity['id']
@@ -103,10 +99,9 @@ def create_comment_from_activity(author, activity):
     return comment
 
 
-def create_comment(user, possible_book, content):
+def create_comment(user, book, content):
     ''' a book comment has been added '''
     # throws a value error if the book is not found
-    book = get_or_create_book(possible_book)
     content = sanitize(content)
 
     return models.Comment.objects.create(
@@ -170,34 +165,6 @@ def get_favorite(absolute_id):
     return get_by_absolute_id(absolute_id, models.Favorite)
 
 
-def get_by_absolute_id(absolute_id, model):
-    ''' generalized function to get from a model with a remote_id field '''
-    if not absolute_id:
-        return None
-
-    # check if it's a remote status
-    try:
-        return model.objects.get(remote_id=absolute_id)
-    except model.DoesNotExist:
-        pass
-
-    # try finding a local status with that id
-    local_id = absolute_id.split('/')[-1]
-    try:
-        if hasattr(model.objects, 'select_subclasses'):
-            possible_match = model.objects.select_subclasses().get(id=local_id)
-        else:
-            possible_match = model.objects.get(id=local_id)
-    except model.DoesNotExist:
-        return None
-
-    # make sure it's not actually a remote status with an id that
-    # clashes with a local id
-    if possible_match.absolute_id == absolute_id:
-        return possible_match
-    return None
-
-
 def create_status(user, content, reply_parent=None, mention_books=None,
                   remote_id=None):
     ''' a status update '''
@@ -224,7 +191,7 @@ def create_status(user, content, reply_parent=None, mention_books=None,
 
 def create_tag(user, possible_book, name):
     ''' add a tag to a book '''
-    book = get_or_create_book(possible_book)
+    book = get_or_create_book(possible_book, key='remote_id')
 
     try:
         tag = models.Tag.objects.create(name=name, book=book, user=user)

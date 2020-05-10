@@ -11,7 +11,7 @@ localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 status_path = r'%s/(status|review|comment)/(?P<status_id>\d+)' % local_user_path
-book_path = r'^book/(?P<book_identifier>[\w\-]+)'
+book_path = r'^book/(?P<book_id>\d+)'
 
 handler404 = 'fedireads.views.not_found_page'
 handler500 = 'fedireads.views.server_error_page'
@@ -63,10 +63,12 @@ urlpatterns = [
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
 
-    re_path(r'^author/(?P<author_identifier>[\w\-]+)/?$', views.author_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % username_regex, views.shelf_page),
     re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % localname_regex, views.shelf_page),
+
+    re_path(r'^search/?$', views.search),
 
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
@@ -74,8 +76,8 @@ urlpatterns = [
     re_path(r'^register/?$', actions.register),
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
-    re_path(r'^search/?$', actions.search),
     re_path(r'^import_data/?', actions.import_data),
+    re_path(r'^resolve_book/?', actions.resolve_book),
     re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
     re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
 

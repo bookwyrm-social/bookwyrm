@@ -1,24 +1,22 @@
 ''' federate book data '''
 from fedireads.settings import DOMAIN
 
-def get_book(book):
+def get_book(book, recursive=True):
     ''' activitypub serialize a book '''
 
     fields = [
+        'title',
         'sort_title',
         'subtitle',
         'isbn_13',
         'oclc_number',
         'openlibrary_key',
         'librarything_key',
-        'fedireads_key',
         'lccn',
         'oclc_number',
         'pages',
         'physical_format',
         'misc_identifiers',
-
-        'source_url',
 
         'description',
         'languages',
@@ -30,21 +28,28 @@ def get_book(book):
         'physical_format',
     ]
 
+    book_type = type(book).__name__
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'type': 'Document',
-        'book_type': type(book).__name__,
+        'book_type': book_type,
         'name': book.title,
         'url': book.absolute_id,
 
-        'authors': [get_author(a) for a in book.authors.all()],
+        'authors': [a.absolute_id for a in book.authors.all()],
         'first_published_date': book.first_published_date.isoformat() if \
                 book.first_published_date else None,
         'published_date': book.published_date.isoformat() if \
                 book.published_date else None,
-        'parent_work': book.parent_work.absolute_id if \
-                hasattr(book, 'parent_work') else None,
     }
+    if recursive:
+        if book_type == 'Edition':
+            activity['work'] = get_book(book.parent_work, recursive=False)
+        else:
+            editions = book.edition_set.order_by('default')
+            activity['editions'] = [
+                get_book(b, recursive=False) for b in editions]
+
     for field in fields:
         if hasattr(book, field):
             activity[field] = book.__getattribute__(field)
@@ -63,7 +68,21 @@ def get_book(book):
 
 def get_author(author):
     ''' serialize an author '''
-    return {
-        'name': author.name,
+    fields = [
+        'name',
+        'born',
+        'died',
+        'aliases',
+        'bio'
+        'openlibrary_key',
+        'wikipedia_link',
+    ]
+    activity = {
+        '@context': 'https://www.w3.org/ns/activitystreams',
         'url': author.absolute_id,
+        'type': 'Person',
     }
+    for field in fields:
+        if hasattr(author, field):
+            activity[field] = author.__getattribute__(field)
+    return activity

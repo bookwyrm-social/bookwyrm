@@ -1,101 +1,68 @@
 ''' using another fedireads instance as a source of book data '''
+from uuid import uuid4
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector
-from .abstract_connector import update_from_mappings, get_date
+from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import update_from_mappings, get_date, get_data
 
 
 class Connector(AbstractConnector):
-    def search(self, query):
-        ''' right now you can't search fedireads, but... '''
-        resp = requests.get(
-            '%s%s' % (self.search_url, query),
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
-        if not resp.ok:
-            resp.raise_for_status()
-
-        return resp.json()
+    ''' interact with other instances '''
+    def __init__(self, identifier):
+        super().__init__(identifier)
+        self.book_mappings = self.key_mappings.copy()
+        self.book_mappings.update({
+            'published_date': ('published_date', get_date),
+            'first_published_date': ('first_published_date', get_date),
+        })
 
 
-    def get_or_create_book(self, fedireads_key):
-        ''' pull up a book record by whatever means possible '''
-        try:
-            book = models.Book.objects.select_subclasses().get(
-                fedireads_key=fedireads_key
-            )
-            return book
-        except ObjectDoesNotExist:
-            if self.model.is_self:
-                # we can't load a book from a remote server, this is it
-                return None
-            # no book was found, so we start creating a new one
-            book = models.Book(fedireads_key=fedireads_key)
+    def is_work_data(self, data):
+        return data['book_type'] == 'Work'
 
 
-    def update_book(self, book):
-        ''' add remote data to a local book '''
-        fedireads_key = book.fedireads_key
-        response = requests.get(
-            '%s/%s' % (self.base_url, fedireads_key),
-            headers={
-                'Accept': 'application/activity+json; charset=utf-8',
-            },
-        )
+    def get_edition_from_work_data(self, data):
+        return data['editions'][0]
+
+
+    def get_work_from_edition_date(self, data):
+        return data['work']
+
+
+    def get_authors_from_data(self, data):
+        for author_url in data.get('authors', []):
+            yield self.get_or_create_author(author_url)
+
+
+    def get_cover_from_data(self, data):
+        cover_data = data.get('attachment')
+        if not cover_data:
+            return None
+        cover_url = cover_data[0].get('url')
+        response = requests.get(cover_url)
         if not response.ok:
             response.raise_for_status()
 
-        data = response.json()
-
-        # great, we can update our book.
-        mappings = {
-            'published_date': ('published_date', get_date),
-            'first_published_date': ('first_published_date', get_date),
-        }
-        book = update_from_mappings(book, data, mappings)
-
-        if not book.source_url:
-            book.source_url = response.url
-        if not book.connector:
-            book.connector = self.connector
-        book.save()
-
-        if data.get('parent_work'):
-            work = self.get_or_create_book(data.get('parent_work'))
-            book.parent_work = work
-
-        for author_blob in data.get('authors', []):
-            author_blob = author_blob.get('author', author_blob)
-            author_id = author_blob['key']
-            author_id = author_id.split('/')[-1]
-            book.authors.add(self.get_or_create_author(author_id))
-
-        if book.sync_cover and data.get('covers') and data['covers']:
-            book.cover.save(*get_cover(data['covers'][0]), save=True)
-
-        return book
+        image_name = str(uuid4()) + cover_url.split('.')[-1]
+        image_content = ContentFile(response.content)
+        return [image_name, image_content]
 
 
-    def get_or_create_author(self, fedireads_key):
+    def get_or_create_author(self, remote_id):
         ''' load that author '''
         try:
-            return models.Author.objects.get(fedireads_key=fedireads_key)
+            return models.Author.objects.get(remote_id=remote_id)
         except ObjectDoesNotExist:
             pass
 
-        resp = requests.get('%s/authors/%s.json' % (self.url, fedireads_key))
-        if not resp.ok:
-            resp.raise_for_status()
-
-        data = resp.json()
+        data = get_data(remote_id)
 
         # ingest a new author
-        author = models.Author(fedireads_key=fedireads_key)
+        author = models.Author(remote_id=remote_id)
         mappings = {
             'born': ('born', get_date),
             'died': ('died', get_date),
@@ -106,11 +73,14 @@ class Connector(AbstractConnector):
         return author
 
 
-def get_cover(cover_url):
-    ''' ask openlibrary for the cover '''
-    image_name = cover_url.split('/')[-1]
-    response = requests.get(cover_url)
-    if not response.ok:
-        response.raise_for_status()
-    image_content = ContentFile(response.content)
-    return [image_name, image_content]
+    def parse_search_data(self, data):
+        return data
+
+
+    def format_search_result(self, search_result):
+        return SearchResult(**search_result)
+
+
+    def expand_book_data(self, book):
+        # TODO
+        pass

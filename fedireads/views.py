@@ -1,15 +1,19 @@
 ''' views for pages you can go to in the application '''
+import re
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import activitypub
+from fedireads import activitypub, outgoing
 from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
+from fedireads.books_manager import get_or_create_book
 from fedireads.tasks import app
 
 
@@ -137,6 +141,27 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = activities.filter(privacy='public')
 
     return activities
+
+
+def search(request):
+    ''' that search bar up top '''
+    query = request.GET.get('q')
+    if re.match(r'\w+@\w+.\w+', query):
+        # if something looks like a username, search with webfinger
+        results = [outgoing.handle_account_search(query)]
+        return TemplateResponse(
+            request, 'user_results.html', {'results': results}
+        )
+
+    # or just send the question over to book search
+
+    if is_api_request(request):
+        # only return local results via json so we don't cause a cascade
+        results = books_manager.local_search(query)
+        return JsonResponse([r.__dict__ for r in results], safe=False)
+
+    results = books_manager.search(query)
+    return TemplateResponse(request, 'book_results.html', {'results': results})
 
 
 def books_page(request):
@@ -363,10 +388,9 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-def book_page(request, book_identifier, tab='friends'):
+def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
-    book = books_manager.get_or_create_book(book_identifier)
-
+    book = get_or_create_book(book_id)
     if is_api_request(request):
         return JsonResponse(activitypub.get_book(book))
 
@@ -430,7 +454,7 @@ def book_page(request, book_identifier, tab='friends'):
             {'id': 'federated', 'display': 'Federated'}
         ],
         'active_tab': tab,
-        'path': '/book/%s' % book_identifier,
+        'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
             {'name': 'ISBN', 'value': book.isbn_13},
@@ -445,9 +469,9 @@ def book_page(request, book_identifier, tab='friends'):
 
 
 @login_required
-def edit_book_page(request, book_identifier):
+def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = books_manager.get_or_create_book(book_identifier)
+    book = get_or_create_book(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {
@@ -468,12 +492,15 @@ def editions_page(request, work_id):
     return TemplateResponse(request, 'editions.html', data)
 
 
-def author_page(request, author_identifier):
+def author_page(request, author_id):
     ''' landing page for an author '''
     try:
-        author = models.Author.objects.get(fedireads_key=author_identifier)
+        author = models.Author.objects.get(id=author_id)
     except ValueError:
         return HttpResponseNotFound()
+
+    if is_api_request(request):
+        return JsonResponse(activitypub.get_author(author))
 
     books = models.Work.objects.filter(authors=author)
     data = {

@@ -109,7 +109,6 @@ class EditionForm(ModelForm):
             'subjects',# TODO
             'subject_places',# TODO
 
-            'source_url',
             'connector',
         ]
 

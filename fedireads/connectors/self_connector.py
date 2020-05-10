@@ -23,9 +23,9 @@ class Connector(AbstractConnector):
                    SearchVector('isbn_10', weight='A') +\
                    SearchVector('openlibrary_key', weight='B') +\
                    SearchVector('goodreads_key', weight='B') +\
-                   SearchVector('source_url', weight='B') +\
                    SearchVector('asin', weight='B') +\
                    SearchVector('oclc_number', weight='B') +\
+                   SearchVector('remote_id', weight='B') +\
                    SearchVector('description', weight='C') +\
                    SearchVector('series', weight='C')
         ).filter(search=query)
@@ -34,39 +34,49 @@ class Connector(AbstractConnector):
         search_results = []
         for book in results[:10]:
             search_results.append(
-                SearchResult(
-                    book.title,
-                    book.fedireads_key,
-                    book.author_text,
-                    book.published_date.year if book.published_date else None,
-                    None
-                )
+                self.format_search_result(book)
             )
         return search_results
 
 
-    def get_or_create_book(self, fedireads_key):
+    def format_search_result(self, book):
+        return SearchResult(
+            book.title,
+            book.absolute_id,
+            book.author_text,
+            book.published_date.year if book.published_date else None,
+        )
+
+
+    def get_or_create_book(self, book_id):
         ''' since this is querying its own data source, it can only
         get a book, not load one from an external source '''
         try:
             return models.Book.objects.select_subclasses().get(
-                fedireads_key=fedireads_key
+                id=book_id
             )
         except ObjectDoesNotExist:
             return None
 
 
-    def get_or_create_author(self, fedireads_key):
-        ''' load that author '''
-        try:
-            return models.Author.objects.get(fedreads_key=fedireads_key)
-        except ObjectDoesNotExist:
-            pass
-
-
-    def update_book(self, book_obj):
+    def is_work_data(self, data):
         pass
 
+    def get_edition_from_work_data(self, data):
+        pass
+
+    def get_work_from_edition_date(self, data):
+        pass
+
+    def get_authors_from_data(self, data):
+        return None
+
+    def get_cover_from_data(self, data):
+        return None
+
+    def parse_search_data(self, data):
+        ''' it's already in the right format, don't even worry about it '''
+        return data
 
     def expand_book_data(self, book):
         pass

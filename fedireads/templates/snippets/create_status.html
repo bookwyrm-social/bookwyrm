@@ -3,13 +3,13 @@
 
 <div class="tabs secondary">
     <div class="tab active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="{{ book.absolute_id }}/review" onclick="tabChange(event)">Review</a>
+        <a href="/book/{{ book.id }}/review" onclick="tabChange(event)">Review</a>
     </div>
     <div class="tab" data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="{{ book.absolute_id }}/comment" onclick="tabChange(event)">Comment</a>
+        <a href="/book/{{ book.id }}/comment" onclick="tabChange(event)">Comment</a>
     </div>
     <div class="tab" data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="{{ book.absolute_id }}/quotation" onclick="tabChange(event)">Quote</a>
+        <a href="/book/{{ book.id }}/quotation" onclick="tabChange(event)">Quote</a>
     </div>
 </div>
 
@@ -21,7 +21,7 @@
     {% endif %}
     <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.fedireads_key }}">
+        <input type="hidden" name="book" value="{{ book.id }}">
         {% include 'snippets/rate_form.html' with book=book %}
         {{ review_form.as_p }}
         <button type="submit">post review</button>
@@ -29,14 +29,14 @@
 
     <form class="hidden tab-option-{{ book.id }} review-form" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.fedireads_key }}">
+        <input type="hidden" name="book" value="{{ book.id }}">
         {{ comment_form.as_p }}
         <button type="submit">post comment</button>
     </form>
 
     <form class="hidden tab-option-{{ book.id }} review-form quote-form" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.fedireads_key }}">
+        <input type="hidden" name="book" value="{{ book.id }}">
         {{ quotation_form.as_p }}
         <button typr="submit">post quote</button>
     </form>
