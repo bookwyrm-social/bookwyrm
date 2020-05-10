@@ -3,7 +3,6 @@ import re
 import requests
 
 from django.core.files.base import ContentFile
-from django.db import transaction
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -15,6 +14,7 @@ from .openlibrary_languages import languages
 class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
     def __init__(self, identifier):
+        super().__init__(identifier)
         get_first = lambda a: a[0]
         self.key_mappings = {
             'isbn_13': ('isbn_13', get_first),
@@ -32,12 +32,62 @@ class Connector(AbstractConnector):
             'number_of_pages': ('pages', None),
             'series': ('series', get_first),
         })
-        super().__init__(identifier)
+
+
+    def is_work_data(self, data):
+        return not re.match(r'^OL\d+M$', data['key'])
+
+
+    def get_edition_from_work_data(self, data):
+        try:
+            key = data['key']
+        except KeyError:
+            return False
+        url = '%s/%s/editions' % (self.books_url, key)
+        data = get_data(url)
+        return pick_default_edition(data['entries'])
+
+
+    def get_work_from_edition_date(self, data):
+        try:
+            key = data['works'][0]['key']
+        except (IndexError, KeyError):
+            return False
+        url = '%s/%s' % (self.books_url, key)
+        return get_data(url)
+
+
+    def get_authors_from_data(self, data):
+        ''' parse author json and load or create authors '''
+        for author_blob in data.get('authors', []):
+            author_blob = author_blob.get('author', author_blob)
+            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
+            author_id = author_blob['key'].split('/')[-1]
+            yield self.get_or_create_author(author_id)
+
+
+    def get_cover_from_data(self, data):
+        ''' ask openlibrary for the cover '''
+        if not data.get('covers'):
+            return None
+
+        cover_id = data.get('covers')[0]
+        image_name = '%s-M.jpg' % cover_id
+        url = '%s/b/id/%s' % (self.covers_url, image_name)
+        response = requests.get(url)
+        if not response.ok:
+            response.raise_for_status()
+        image_content = ContentFile(response.content)
+        return [image_name, image_content]
+
+
+    def parse_search_data(self, data):
+        return data.get('docs')
 
 
     def format_search_result(self, doc):
-        key = doc['key']
-        key = key.split('/')[-1]
+        # build the absolute id from the openlibrary key
+        key = self.books_url + doc['key']
         author = doc.get('author_name') or ['Unknown']
         return SearchResult(
             doc.get('title'),
@@ -45,84 +95,6 @@ class Connector(AbstractConnector):
             ', '.join(author),
             doc.get('first_publish_year'),
         )
-
-
-    def parse_search_data(self, data):
-        return data.get('docs')
-
-
-    def get_or_create_book(self, olkey):
-        ''' pull up a book record by whatever means possible.
-        if you give a work key, it should give you the default edition,
-        annotated with work data. '''
-
-        book = models.Book.objects.select_subclasses().filter(
-            openlibrary_key=olkey
-        ).first()
-        if book:
-            if isinstance(book, models.Work):
-                return book.default_edition
-            return book
-
-        # no book was found, so we start creating a new one
-        if re.match(r'^OL\d+W$', olkey):
-            with transaction.atomic():
-                # create both work and a default edition
-                work_data = self.load_book_data(olkey)
-                work = self.create_book(olkey, work_data, models.Work)
-
-                edition_options = self.load_edition_data(olkey).get('entries')
-                edition_data = pick_default_edition(edition_options)
-                if not edition_data:
-                    # hack: re-use the work data as the edition data
-                    edition_data = work_data
-                key = edition_data.get('key').split('/')[-1]
-                edition = self.create_book(key, edition_data, models.Edition)
-                edition.default = True
-                edition.parent_work = work
-                edition.save()
-        else:
-            with transaction.atomic():
-                edition_data = self.load_book_data(olkey)
-                edition = self.create_book(olkey, edition_data, models.Edition)
-
-                work_data = edition_data.get('works')
-                if not work_data:
-                    # hack: we're re-using the edition data as the work data
-                    work_key = olkey
-                else:
-                    work_key = work_data[0]['key'].split('/')[-1]
-
-                work = models.Work.objects.filter(
-                    openlibrary_key=work_key
-                ).first()
-                if not work:
-                    work_data = self.load_book_data(work_key)
-                    work = self.create_book(work_key, work_data, models.Work)
-                edition.parent_work = work
-                edition.save()
-        if not edition.authors and work.authors:
-            edition.authors.set(work.authors.all())
-            edition.author_text = ', '.join(a.name for a in edition.authors)
-
-        return edition
-
-
-    def get_authors_from_data(self, data):
-        ''' parse author json and load or create authors '''
-        authors = []
-        for author_blob in data.get('authors', []):
-            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
-            author_blob = author_blob.get('author', author_blob)
-            author_id = author_blob['key'].split('/')[-1]
-            authors.append(self.get_or_create_author(author_id))
-        return authors
-
-
-    def load_book_data(self, olkey):
-        ''' query openlibrary for data on a book '''
-        url = '%s/works/%s.json' % (self.books_url, olkey)
-        return get_data(url)
 
 
     def load_edition_data(self, olkey):
@@ -167,29 +139,14 @@ class Connector(AbstractConnector):
             'bio': ('bio', get_description),
         }
         author = update_from_mappings(author, data, mappings)
-        # TODO this is making some BOLD assumption
         name = data.get('name')
+        # TODO this is making some BOLD assumption
         if name:
             author.last_name = name.split(' ')[-1]
             author.first_name = ' '.join(name.split(' ')[:-1])
         author.save()
 
         return author
-
-
-    def get_cover_from_data(self, data):
-        ''' ask openlibrary for the cover '''
-        if not data.get('covers'):
-            return None
-
-        cover_id = data.get('covers')[0]
-        image_name = '%s-M.jpg' % cover_id
-        url = '%s/b/id/%s' % (self.covers_url, image_name)
-        response = requests.get(url)
-        if not response.ok:
-            response.raise_for_status()
-        image_content = ContentFile(response.content)
-        return [image_name, image_content]
 
 
 def get_description(description_blob):

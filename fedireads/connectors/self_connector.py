@@ -42,7 +42,7 @@ class Connector(AbstractConnector):
     def format_search_result(self, book):
         return SearchResult(
             book.title,
-            book.id,
+            book.absolute_id,
             book.author_text,
             book.published_date.year if book.published_date else None,
         )
@@ -59,17 +59,14 @@ class Connector(AbstractConnector):
             return None
 
 
-    def get_or_create_author(self, author_id):
-        ''' load that author '''
-        try:
-            return models.Author.objects.get(id=author_id)
-        except ObjectDoesNotExist:
-            pass
+    def is_work_data(self, data):
+        pass
 
+    def get_edition_from_work_data(self, data):
+        pass
 
-    def parse_search_data(self, data):
-        ''' it's already in the right format, don't even worry about it '''
-        return data
+    def get_work_from_edition_date(self, data):
+        pass
 
     def get_authors_from_data(self, data):
         return None
@@ -77,8 +74,9 @@ class Connector(AbstractConnector):
     def get_cover_from_data(self, data):
         return None
 
-    def update_book(self, book_obj, data=None):
-        pass
+    def parse_search_data(self, data):
+        ''' it's already in the right format, don't even worry about it '''
+        return data
 
     def expand_book_data(self, book):
         pass
