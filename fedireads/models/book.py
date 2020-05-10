@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.db import models
 from model_utils.managers import InheritanceManager
 
+from fedireads import activitypub
 from fedireads.settings import DOMAIN
 from fedireads.utils.fields import JSONField, ArrayField
 from fedireads.utils.models import FedireadsModel
@@ -110,6 +111,10 @@ class Book(FedireadsModel):
             self.title,
         )
 
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_book(self)
+
 
 class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
@@ -165,3 +170,7 @@ class Author(FedireadsModel):
         models.CharField(max_length=255), blank=True, default=list
     )
     bio = models.TextField(null=True, blank=True)
+
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_author(self)

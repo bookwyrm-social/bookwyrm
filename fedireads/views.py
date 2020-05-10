@@ -539,7 +539,8 @@ def shelf_page(request, username, shelf_identifier):
     shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
 
     if is_api_request(request):
-        return activitypub.get_shelf(shelf)
+        page = request.GET.get('page')
+        return JsonResponse(activitypub.get_shelf(shelf, page=page))
 
     data = {
         'shelf': shelf,

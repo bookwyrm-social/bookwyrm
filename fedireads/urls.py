@@ -65,8 +65,8 @@ urlpatterns = [
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
-    re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % username_regex, views.shelf_page),
-    re_path(r'^shelf/%s/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % localname_regex, views.shelf_page),
+    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % user_path, views.shelf_page),
+    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % local_user_path, views.shelf_page),
 
     re_path(r'^search/?$', views.search),
 
