@@ -24,10 +24,6 @@ class Shelf(FedireadsModel):
         model_name = type(self).__name__.lower()
         return '%s/%s/%s' % (base_path, model_name, self.identifier)
 
-    @property
-    def activitypub_serialize(self):
-        return activitypub.get_shelf(self)
-
     class Meta:
         unique_together = ('user', 'identifier')
 

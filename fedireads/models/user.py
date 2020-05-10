@@ -73,6 +73,10 @@ class User(AbstractUser):
         username = self.localname or self.username
         return 'https://%s/%s/%s' % (DOMAIN, model_name, username)
 
+    @property
+    def activitypub_serialize(self):
+        return activitypub.get_actor(self)
+
 
 class UserRelationship(FedireadsModel):
     ''' many-to-many through table for followers '''

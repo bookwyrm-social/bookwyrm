@@ -239,7 +239,7 @@ def user_page(request, username, subpage=None):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(activitypub.get_actor(user))
+        return JsonResponse(user.activitypub_serialize)
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
