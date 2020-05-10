@@ -1,5 +1,4 @@
 ''' starter data '''
-from fedireads.books_manager import get_or_create_book
 from fedireads.models import Connector, User
 from fedireads.settings import DOMAIN
 
@@ -34,7 +33,3 @@ Connector.objects.create(
     key_name='id',
     priority=1,
 )
-
-
-get_or_create_book('OL1715344W', key='openlibrary_key', connector_id=1)
-get_or_create_book('OL102749W', key='openlibrary_key', connector_id=1)
