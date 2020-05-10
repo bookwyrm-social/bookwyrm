@@ -43,7 +43,7 @@ class Openlibrary(TestCase):
         result = self.connector.format_search_result(results[0])
         self.assertIsInstance(result, SearchResult)
         self.assertEqual(result.title, 'This Is How You Lose the Time War')
-        self.assertEqual(result.key, 'OL20639540W')
+        self.assertEqual(result.key, 'https://openlibrary.org/works/OL20639540W')
         self.assertEqual(result.author, 'Amal El-Mohtar, Max Gladstone')
         self.assertEqual(result.year, 2019)
 
