@@ -8,6 +8,7 @@ import pytz
 from fedireads import models
 from fedireads.connectors.openlibrary import Connector
 from fedireads.connectors.openlibrary import get_languages, get_description
+from fedireads.connectors.openlibrary import pick_default_edition
 from fedireads.connectors.abstract_connector import SearchResult, get_date
 
 
@@ -29,8 +30,21 @@ class Openlibrary(TestCase):
             'data/ol_work.json')
         edition_file = pathlib.Path(__file__).parent.joinpath(
             'data/ol_edition.json')
+        edition_list_file = pathlib.Path(__file__).parent.joinpath(
+            'data/ol_edition_list.json')
         self.work_data = json.loads(work_file.read_bytes())
         self.edition_data = json.loads(edition_file.read_bytes())
+        self.edition_list_data = json.loads(edition_list_file.read_bytes())
+
+
+    def test_is_work_data(self):
+        self.assertEqual(self.connector.is_work_data(self.work_data), True)
+        self.assertEqual(self.connector.is_work_data(self.edition_data), False)
+
+
+    def test_pick_default_edition(self):
+        edition = pick_default_edition(self.edition_list_data['entries'])
+        self.assertEqual(edition['key'], '/books/OL9952943M')
 
 
     def test_format_search_result(self):

@@ -35,7 +35,7 @@ class Connector(AbstractConnector):
 
 
     def is_work_data(self, data):
-        return not re.match(r'^OL\d+M$', data['key'])
+        return bool(re.match(r'^[\/\w]+OL\d+W$', data['key']))
 
 
     def get_edition_from_work_data(self, data):
