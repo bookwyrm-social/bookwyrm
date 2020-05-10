@@ -42,7 +42,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             doc.get('title'),
             key,
-            author[0],
+            ', '.join(author),
             doc.get('first_publish_year'),
         )
 
