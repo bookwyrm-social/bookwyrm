@@ -7,7 +7,7 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
-from fedireads.utils.models import FedireadsModel
+from .base_model import FedireadsModel
 
 
 class Status(FedireadsModel):
@@ -112,13 +112,6 @@ class Favorite(FedireadsModel):
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
     remote_id = models.CharField(max_length=255, unique=True, null=True)
-
-    @property
-    def absolute_id(self):
-        ''' constructs the absolute reference to any db object '''
-        if self.remote_id:
-            return self.remote_id
-        return super().absolute_id
 
     class Meta:
         unique_together = ('user', 'status')

@@ -2,7 +2,7 @@
 from django.db import models
 
 from fedireads import activitypub
-from fedireads.utils.models import FedireadsModel
+from .base_model import FedireadsModel
 
 
 class Shelf(FedireadsModel):

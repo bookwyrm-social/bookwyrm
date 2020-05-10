@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
-from fedireads.utils.models import FedireadsModel
+from .base_model import FedireadsModel
 
 
 class User(AbstractUser):

@@ -6,7 +6,7 @@ from model_utils.managers import InheritanceManager
 from fedireads import activitypub
 from fedireads.settings import DOMAIN
 from fedireads.utils.fields import JSONField, ArrayField
-from fedireads.utils.models import FedireadsModel
+from .base_model import FedireadsModel
 
 from fedireads.connectors.settings import CONNECTORS
 
