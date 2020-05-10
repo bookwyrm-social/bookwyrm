@@ -18,7 +18,6 @@ class FedireadsConnector(TestCase):
             books_url='https://example.com',
             covers_url='https://example.com/images/covers',
             search_url='https://example.com/search?q=',
-            key_name='remote_id',
         )
         self.connector = Connector('example.com')
 

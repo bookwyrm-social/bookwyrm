@@ -29,8 +29,6 @@ class Connector(FedireadsModel):
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True)
 
-    key_name = models.CharField(max_length=255)
-
     politeness_delay = models.IntegerField(null=True) #seconds
     max_query_count = models.IntegerField(null=True)
     # how many queries executed in a unit of time, like a day
@@ -54,7 +52,6 @@ class Book(FedireadsModel):
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
     goodreads_key = models.CharField(max_length=255, blank=True, null=True)
-    misc_identifiers = JSONField(null=True)
 
     # info about where the data comes from and where/if to sync
     sync = models.BooleanField(default=True)

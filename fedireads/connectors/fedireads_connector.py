@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 import requests
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import update_from_mappings, get_date, get_data
 
 
@@ -14,11 +14,37 @@ class Connector(AbstractConnector):
     ''' interact with other instances '''
     def __init__(self, identifier):
         super().__init__(identifier)
-        self.book_mappings = self.key_mappings.copy()
-        self.book_mappings.update({
-            'published_date': ('published_date', get_date),
-            'first_published_date': ('first_published_date', get_date),
-        })
+        self.key_mappings = [
+            Mapping('isbn_13', model=models.Edition),
+            Mapping('isbn_10', model=models.Edition),
+            Mapping('lccn', model=models.Work),
+            Mapping('oclc_number', model=models.Edition),
+            Mapping('openlibrary_key'),
+            Mapping('goodreads_key'),
+            Mapping('asin'),
+        ]
+
+        self.book_mappings = self.key_mappings + [
+            Mapping('sort_title'),
+            Mapping('subtitle'),
+            Mapping('description'),
+            Mapping('languages'),
+            Mapping('series'),
+            Mapping('series_number'),
+            Mapping('subjects'),
+            Mapping('subject_places'),
+            Mapping('first_published_date'),
+            Mapping('published_date'),
+            Mapping('pages'),
+            Mapping('physical_format'),
+            Mapping('publishers'),
+        ]
+
+        self.author_mappings = [
+            Mapping('born', remote_field='birth_date', formatter=get_date),
+            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('bio'),
+        ]
 
 
     def is_work_data(self, data):
@@ -63,11 +89,7 @@ class Connector(AbstractConnector):
 
         # ingest a new author
         author = models.Author(remote_id=remote_id)
-        mappings = {
-            'born': ('born', get_date),
-            'died': ('died', get_date),
-        }
-        author = update_from_mappings(author, data, mappings)
+        author = update_from_mappings(author, data, self.author_mappings)
         author.save()
 
         return author

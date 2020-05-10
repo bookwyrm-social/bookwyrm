@@ -5,7 +5,7 @@ import requests
 from django.core.files.base import ContentFile
 
 from fedireads import models
-from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date, get_data
 from .openlibrary_languages import languages
@@ -15,23 +15,61 @@ class Connector(AbstractConnector):
     ''' instantiate a connector for OL '''
     def __init__(self, identifier):
         super().__init__(identifier)
-        get_first = lambda a: a[0]
-        self.key_mappings = {
-            'isbn_13': ('isbn_13', get_first),
-            'isbn_10': ('isbn_10', get_first),
-            'oclc_numbers': ('oclc_number', get_first),
-            'lccn': ('lccn', get_first),
-        }
 
-        self.book_mappings = self.key_mappings.copy()
-        self.book_mappings.update({
-            'publish_date': ('published_date', get_date),
-            'first_publish_date': ('first_published_date', get_date),
-            'description': ('description', get_description),
-            'languages': ('languages', get_languages),
-            'number_of_pages': ('pages', None),
-            'series': ('series', get_first),
-        })
+        get_first = lambda a: a[0]
+        self.key_mappings = [
+            Mapping('isbn_13', model=models.Edition, formatter=get_first),
+            Mapping('isbn_10', model=models.Edition, formatter=get_first),
+            Mapping('lccn', model=models.Work, formatter=get_first),
+            Mapping(
+                'oclc_number',
+                remote_field='oclc_numbers',
+                model=models.Edition,
+                formatter=get_first
+            ),
+            Mapping(
+                'openlibrary_key',
+                remote_field='key',
+                formatter=get_openlibrary_key
+            ),
+            Mapping('goodreads_key'),
+            Mapping('asin'),
+        ]
+
+        self.book_mappings = self.key_mappings + [
+            Mapping('sort_title'),
+            Mapping('subtitle'),
+            Mapping('description', formatter=get_description),
+            Mapping('languages', formatter=get_languages),
+            Mapping('series', formatter=get_first),
+            Mapping('series_number'),
+            Mapping('subjects'),
+            Mapping('subject_places'),
+            Mapping(
+                'first_published_date',
+                remote_field='first_publish_date',
+                formatter=get_date
+            ),
+            Mapping(
+                'published_date',
+                remote_field='publish_date',
+                formatter=get_date
+            ),
+            Mapping(
+                'pages',
+                model=models.Edition,
+                remote_field='number_of_pages'
+            ),
+            Mapping('physical_format', model=models.Edition),
+            Mapping('publishers'),
+        ]
+
+        self.author_mappings = [
+            Mapping('born', remote_field='birth_date', formatter=get_date),
+            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('bio', formatter=get_description),
+        ]
+
 
 
     def is_work_data(self, data):
@@ -133,12 +171,7 @@ class Connector(AbstractConnector):
         data = get_data(url)
 
         author = models.Author(openlibrary_key=olkey)
-        mappings = {
-            'birth_date': ('born', get_date),
-            'death_date': ('died', get_date),
-            'bio': ('bio', get_description),
-        }
-        author = update_from_mappings(author, data, mappings)
+        author = update_from_mappings(author, data, self.author_mappings)
         name = data.get('name')
         # TODO this is making some BOLD assumption
         if name:
@@ -154,6 +187,11 @@ def get_description(description_blob):
     if isinstance(description_blob, dict):
         return description_blob.get('value')
     return  description_blob
+
+
+def get_openlibrary_key(key):
+    ''' convert /books/OL27320736M into OL27320736M '''
+    return key.split('/')[-1]
 
 
 def get_languages(language_blob):

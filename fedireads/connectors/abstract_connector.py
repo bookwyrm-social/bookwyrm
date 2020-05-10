@@ -17,26 +17,24 @@ class AbstractConnector(ABC):
         info = models.Connector.objects.get(identifier=identifier)
         self.connector = info
 
-        self.book_mappings = {}
-        self.key_mappings = {
-            'isbn_13': ('isbn_13', None),
-            'isbn_10': ('isbn_10', None),
-            'oclc_numbers': ('oclc_number', None),
-            'lccn': ('lccn', None),
-        }
+        self.key_mappings = []
 
-        fields = [
+        # fields we want to look for in book data to copy over
+        # title we handle separately.
+        self.book_mappings = []
+
+        # the things in the connector model to copy over
+        self_fields = [
             'base_url',
             'books_url',
             'covers_url',
             'search_url',
-            'key_name',
             'max_query_count',
             'name',
             'identifier',
             'local'
         ]
-        for field in fields:
+        for field in self_fields:
             setattr(self, field, getattr(info, field))
 
 
@@ -85,7 +83,7 @@ class AbstractConnector(ABC):
         if self.is_work_data(data):
             work_data = data
             # if we requested a work and there's already an edition, we're set
-            work = self.match_from_mappings(work_data)
+            work = self.match_from_mappings(work_data, models.Work)
             if work and work.default_edition:
                 return work.default_edition
 
@@ -98,7 +96,7 @@ class AbstractConnector(ABC):
                 edition_data = data
         else:
             edition_data = data
-            edition = self.match_from_mappings(edition_data)
+            edition = self.match_from_mappings(edition_data, models.Edition)
             # no need to figure out about the work if we already know about it
             if edition and edition.parent_work:
                 return edition
@@ -181,35 +179,25 @@ class AbstractConnector(ABC):
         return book
 
 
-    def match_from_mappings(self, data):
+    def match_from_mappings(self, data, model):
         ''' try to find existing copies of this book using various keys '''
-        keys = [
-            ('openlibrary_key', models.Book),
-            ('librarything_key', models.Book),
-            ('goodreads_key', models.Book),
-            ('lccn', models.Work),
-            ('isbn_10', models.Edition),
-            ('isbn_13', models.Edition),
-            ('oclc_number', models.Edition),
-            ('asin', models.Edition),
-        ]
-        noop = lambda x: x
-        for key, model in keys:
-            formatter = None
-            if key in self.key_mappings:
-                key, formatter = self.key_mappings[key]
-            if not formatter:
-                formatter = noop
-
-            value = data.get(key)
+        relevent_mappings = [m for m in self.key_mappings if \
+                m.model and model == m.model]
+        for mapping in relevent_mappings:
+            # check if this field is present in the data
+            value = data.get(mapping.remote_field)
             if not value:
                 continue
-            value = formatter(value)
 
-            match = model.objects.select_subclasses().filter(
-                **{key: value}).first()
+            # extract the value in the right format
+            value = mapping.formatter(value)
+
+            # search our database for a matching book
+            kwargs = {mapping.local_field: value}
+            match = model.objects.filter(**kwargs).first()
             if match:
                 return match
+        return None
 
 
     @abstractmethod
@@ -254,23 +242,17 @@ class AbstractConnector(ABC):
 
 def update_from_mappings(obj, data, mappings):
     ''' assign data to model with mappings '''
-    noop = lambda x: x
-    mappings['authors'] = ('', noop)
-    mappings['parent_work'] = ('', noop)
-    for (key, value) in data.items():
-        formatter = None
-        if key in mappings:
-            key, formatter = mappings[key]
-        if not formatter:
-            formatter = noop
-
-        if key == 'id':
+    for mapping in mappings:
+        # check if this field is present in the data
+        value = data.get(mapping.remote_field)
+        if not value:
             continue
 
-        try:
-            hasattr(obj, key)
-        except ValueError:
-            obj.__setattr__(key, formatter(value))
+        # extract the value in the right format
+        value = mapping.formatter(value)
+
+        # assign the formatted value to the model
+        obj.__setattr__(mapping.local_field, value)
     return obj
 
 
@@ -315,3 +297,15 @@ class SearchResult(object):
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author)
+
+
+class Mapping(object):
+    ''' associate a local database field with a field in an external dataset '''
+    def __init__(
+            self, local_field, remote_field=None, formatter=None, model=None):
+        noop = lambda x: x
+
+        self.local_field = local_field
+        self.remote_field = remote_field or local_field
+        self.formatter = formatter or noop
+        self.model = model

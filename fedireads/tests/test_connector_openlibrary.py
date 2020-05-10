@@ -8,7 +8,7 @@ import pytz
 from fedireads import models
 from fedireads.connectors.openlibrary import Connector
 from fedireads.connectors.openlibrary import get_languages, get_description
-from fedireads.connectors.openlibrary import pick_default_edition
+from fedireads.connectors.openlibrary import pick_default_edition, get_openlibrary_key
 from fedireads.connectors.abstract_connector import SearchResult, get_date
 
 
@@ -22,7 +22,6 @@ class Openlibrary(TestCase):
             books_url='https://openlibrary.org',
             covers_url='https://covers.openlibrary.org',
             search_url='https://openlibrary.org/search?q=',
-            key_name='openlibrary_key',
         )
         self.connector = Connector('openlibrary.org')
 
@@ -77,3 +76,9 @@ class Openlibrary(TestCase):
     def test_get_languages(self):
         languages = get_languages(self.edition_data['languages'])
         self.assertEqual(languages, ['English'])
+
+
+    def test_get_ol_key(self):
+        key = get_openlibrary_key('/books/OL27320736M')
+        self.assertEqual(key, 'OL27320736M')
+
