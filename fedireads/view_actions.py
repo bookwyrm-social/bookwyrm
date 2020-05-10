@@ -13,6 +13,7 @@ from fedireads import forms, models, outgoing
 from fedireads import goodreads_import
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
+from fedireads.books_manager import get_or_create_book
 
 
 def user_login(request):

@@ -6,7 +6,6 @@ from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -390,7 +389,7 @@ def edit_profile_page(request):
 
 def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
-    book = get_or_create_book(book_id)
+    book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
         return JsonResponse(activitypub.get_book(book))
 
