@@ -19,19 +19,19 @@ class InputHtmlParser(HTMLParser):
             self.output.append(('tag', self.get_starttag_text()))
             self.tag_stack.append(tag)
         else:
-            self.output.append(('data', ' '))
+            self.output.append(('data', ''))
 
 
     def handle_endtag(self, tag):
         ''' keep the close tag '''
         if not self.allow_html or tag not in self.whitelist:
-            self.output.append(('data', ' '))
+            self.output.append(('data', ''))
             return
 
         if not self.tag_stack or self.tag_stack[-1] != tag:
             # the end tag doesn't match the most recent start tag
             self.allow_html = False
-            self.output.append(('data', ' '))
+            self.output.append(('data', ''))
             return
 
         self.tag_stack = self.tag_stack[:-1]
@@ -45,6 +45,8 @@ class InputHtmlParser(HTMLParser):
 
     def get_output(self):
         ''' convert the output from a list of tuples to a string '''
+        if self.tag_stack:
+            self.allow_html = False
         if not self.allow_html:
             return ''.join(v for (k, v) in self.output if k == 'data')
         return ''.join(v for (k, v) in self.output)
