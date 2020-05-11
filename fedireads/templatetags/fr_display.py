@@ -121,8 +121,10 @@ def get_boosted(boost):
 @register.filter(name='edition_info')
 def get_edition_info(book):
     ''' paperback, French language, 1982 '''
+    if not book:
+        return
     items = [
-        book.physical_format,
+        book.physical_format if isinstance(book, models.Edition) else None,
         book.languages[0] + ' language' if book.languages and \
                 book.languages[0] != 'English' else None,
         str(book.published_date.year) if book.published_date else None,
