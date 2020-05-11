@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
 
+from fedireads import activitypub
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
 from .base_model import FedireadsModel
