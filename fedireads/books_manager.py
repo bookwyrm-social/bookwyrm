@@ -8,6 +8,14 @@ from fedireads import models, settings
 from fedireads.tasks import app
 
 
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.default_edition
+    return book
+
+
 def get_or_create_book(remote_id):
     ''' pull up a book record by whatever means possible '''
     book = get_by_absolute_id(remote_id, models.Book)

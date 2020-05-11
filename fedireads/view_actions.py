@@ -9,11 +9,11 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
+from fedireads import books_manager
 from fedireads import forms, models, outgoing
 from fedireads import goodreads_import
 from fedireads.settings import DOMAIN
 from fedireads.views import get_user_from_username
-from fedireads.books_manager import get_or_create_book
 
 
 def user_login(request):
@@ -118,7 +118,7 @@ def edit_profile(request):
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    book = get_or_create_book(remote_id)
+    book = books_manager.get_or_create_book(remote_id)
     return redirect('/book/%d' % book.id)
 
 
@@ -151,7 +151,7 @@ def upload_cover(request, book_id):
 
     try:
         book = models.Edition.objects.get(id=book_id)
-    except models.Book.DoesNotExist:
+    except models.Edition.DoesNotExist:
         return HttpResponseNotFound()
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
@@ -169,9 +169,7 @@ def upload_cover(request, book_id):
 @login_required
 def shelve(request):
     ''' put a  on a user's shelf '''
-    book = models.Book.objects.select_subclasses().get(id=request.POST['book'])
-    if isinstance(book, models.Work):
-        book = book.default_edition
+    book = books_manager.get_edition(request.POST['book'])
 
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],

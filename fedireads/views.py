@@ -469,7 +469,7 @@ def book_page(request, book_id, tab='friends'):
 @login_required
 def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = models.Book.objects.get(id=book_id)
+    book = books_manager.get_edition(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {

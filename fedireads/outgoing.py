@@ -263,7 +263,7 @@ def handle_comment(user, book, content):
 def handle_status(user, book_id, \
         builder, fr_serializer, ap_serializer, *args):
     ''' generic handler for statuses '''
-    book = models.Book.objects.get(id=book_id)
+    book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
     activity = fr_serializer(status)
