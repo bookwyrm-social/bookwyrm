@@ -9,7 +9,7 @@ from fedireads.sanitize_html import InputHtmlParser
 def create_review_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book_id = activity['inReplyToBook']
-    book = get_or_create_book(book_id, key='remote_id')
+    book = get_or_create_book(book_id)
     name = activity.get('name')
     rating = activity.get('rating')
     content = activity.get('content')
@@ -57,7 +57,7 @@ def create_review(user, book, name, content, rating):
 def create_quotation_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book_id = activity['inReplyToBook']
-    book = get_or_create_book(book_id, key='remote_id')
+    book = get_or_create_book(book_id)
     quote = activity.get('quote')
     content = activity.get('content')
     published = activity.get('published')
@@ -87,7 +87,7 @@ def create_quotation(user, book, content, quote):
 def create_comment_from_activity(author, activity):
     ''' parse an activity json blob into a status '''
     book_id = activity['inReplyToBook']
-    book = get_or_create_book(book_id, key='remote_id')
+    book = get_or_create_book(book_id)
     content = activity.get('content')
     published = activity.get('published')
     remote_id = activity['id']
@@ -191,7 +191,7 @@ def create_status(user, content, reply_parent=None, mention_books=None,
 
 def create_tag(user, possible_book, name):
     ''' add a tag to a book '''
-    book = get_or_create_book(possible_book, key='remote_id')
+    book = get_or_create_book(possible_book)
 
     try:
         tag = models.Tag.objects.create(name=name, book=book, user=user)

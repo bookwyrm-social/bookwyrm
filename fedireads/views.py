@@ -12,7 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 from fedireads import activitypub, outgoing
 from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
-from fedireads.books_manager import get_or_create_book
 from fedireads.tasks import app
 
 
@@ -470,7 +469,7 @@ def book_page(request, book_id, tab='friends'):
 @login_required
 def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = get_or_create_book(book_id)
+    book = models.Book.objects.get(id=book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {

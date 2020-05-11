@@ -8,28 +8,15 @@ from fedireads import models, settings
 from fedireads.tasks import app
 
 
-def get_or_create_book(value, key='id', connector_id=None):
+def get_or_create_book(remote_id):
     ''' pull up a book record by whatever means possible '''
-    book = models.Book.objects.select_subclasses().filter(
-        **{key: value}
-    ).first()
+    book = get_by_absolute_id(remote_id, models.Book)
     if book:
-        if not isinstance(book, models.Edition):
-            return book.default_edition
         return book
 
-    if key == 'remote_id':
-        book = get_by_absolute_id(value, models.Book)
-        if book:
-            return book
+    connector = get_or_create_connector(remote_id)
 
-    if connector_id:
-        connector_info = models.Connector.objects.get(id=connector_id)
-        connector = load_connector(connector_info)
-    else:
-        connector = get_or_create_connector(value)
-
-    book = connector.get_or_create_book(value)
+    book = connector.get_or_create_book(remote_id)
     load_more_data.delay(book.id)
     return book
 
@@ -51,7 +38,6 @@ def get_or_create_connector(remote_id):
             books_url='https://%s/book' % identifier,
             covers_url='https://%s/images/covers' % identifier,
             search_url='https://%s/search?q=' % identifier,
-            key_name='remote_id',
             priority=3
         )
 

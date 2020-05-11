@@ -18,7 +18,6 @@ Connector.objects.create(
     books_url='https://openlibrary.org',
     covers_url='https://covers.openlibrary.org',
     search_url='https://openlibrary.org/search?q=',
-    key_name='openlibrary_key',
 )
 
 Connector.objects.create(
@@ -30,6 +29,5 @@ Connector.objects.create(
     books_url='https://%s/book' % DOMAIN,
     covers_url='https://%s/images/covers' % DOMAIN,
     search_url='https://%s/search?q=' % DOMAIN,
-    key_name='id',
     priority=1,
 )

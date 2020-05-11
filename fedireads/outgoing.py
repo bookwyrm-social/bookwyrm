@@ -7,7 +7,7 @@ from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from fedireads import activitypub, books_manager
+from fedireads import activitypub
 from fedireads import models
 from fedireads.broadcast import broadcast
 from fedireads.status import create_review, create_status
@@ -263,7 +263,7 @@ def handle_comment(user, book, content):
 def handle_status(user, book_id, \
         builder, fr_serializer, ap_serializer, *args):
     ''' generic handler for statuses '''
-    book = books_manager.get_or_create_book(book_id)
+    book = models.Book.objects.get(id=book_id)
     status = builder(user, book, *args)
 
     activity = fr_serializer(status)

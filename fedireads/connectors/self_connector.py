@@ -1,6 +1,5 @@
 ''' using a fedireads instance as a source of book data '''
 from django.contrib.postgres.search import SearchVector
-from django.core.exceptions import ObjectDoesNotExist
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -48,15 +47,9 @@ class Connector(AbstractConnector):
         )
 
 
-    def get_or_create_book(self, book_id):
-        ''' since this is querying its own data source, it can only
-        get a book, not load one from an external source '''
-        try:
-            return models.Book.objects.select_subclasses().get(
-                id=book_id
-            )
-        except ObjectDoesNotExist:
-            return None
+    def get_or_create_book(self, remote_id):
+        ''' this COULD be semi-implemented but I think it shouldn't be used '''
+        pass
 
 
     def is_work_data(self, data):
