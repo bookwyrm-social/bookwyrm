@@ -11,3 +11,9 @@ class BaseModel(TestCase):
         instance.id = 1
         expected = instance.absolute_id
         self.assertEqual(expected, 'https://%s/fedireadsmodel/1' % DOMAIN)
+
+    def test_absolute_id_with_remote(self):
+        instance = FedireadsModel()
+        instance.remote_id = 'boop doop'
+        expected = instance.absolute_id
+        self.assertEqual(expected, 'boop doop')
