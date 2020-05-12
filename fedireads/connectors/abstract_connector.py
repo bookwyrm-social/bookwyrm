@@ -182,7 +182,7 @@ class AbstractConnector(ABC):
     def match_from_mappings(self, data, model):
         ''' try to find existing copies of this book using various keys '''
         relevent_mappings = [m for m in self.key_mappings if \
-                m.model and model == m.model]
+                not m.model or model == m.model]
         for mapping in relevent_mappings:
             # check if this field is present in the data
             value = data.get(mapping.remote_field)
