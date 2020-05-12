@@ -34,11 +34,16 @@ case "$1" in
     dbshell)
         docker-compose exec db psql -U fedireads fedireads
         ;;
-
     restart_celery)
         docker-compose restart celery_worker
         ;;
+    test)
+        docker-compose exec web coverage run --source='.' manage.py test
+        ;;
+    test_report)
+        docker-compose exec web coverage report
+        ;;
     *)
-        echo "Unrecognised command. Try: up, initdb, resetdb,makemigrations, migrate, shell, dbshell,restart_celery"
+        echo "Unrecognised command. Try: up, initdb, resetdb,makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
         ;;
 esac
