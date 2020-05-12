@@ -1,5 +1,5 @@
 ''' using a fedireads instance as a source of book data '''
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchRank, SearchVector
 
 from fedireads import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -14,20 +14,26 @@ class Connector(AbstractConnector):
     def search(self, query):
         ''' right now you can't search fedireads sorry, but when
         that gets implemented it will totally rule '''
+        vector = SearchVector('title', weight='A') +\
+            SearchVector('subtitle', weight='B') +\
+            SearchVector('author_text', weight='A') +\
+            SearchVector('isbn_13', weight='A') +\
+            SearchVector('isbn_10', weight='A') +\
+            SearchVector('openlibrary_key', weight='B') +\
+            SearchVector('goodreads_key', weight='B') +\
+            SearchVector('asin', weight='B') +\
+            SearchVector('oclc_number', weight='B') +\
+            SearchVector('remote_id', weight='B') +\
+            SearchVector('description', weight='C') +\
+            SearchVector('series', weight='C')
+
         results = models.Edition.objects.annotate(
-            search=SearchVector('title', weight='A') +\
-                   SearchVector('subtitle', weight='B') +\
-                   SearchVector('author_text', weight='A') +\
-                   SearchVector('isbn_13', weight='A') +\
-                   SearchVector('isbn_10', weight='A') +\
-                   SearchVector('openlibrary_key', weight='B') +\
-                   SearchVector('goodreads_key', weight='B') +\
-                   SearchVector('asin', weight='B') +\
-                   SearchVector('oclc_number', weight='B') +\
-                   SearchVector('remote_id', weight='B') +\
-                   SearchVector('description', weight='C') +\
-                   SearchVector('series', weight='C')
-        ).filter(search=query)
+            search=vector
+        ).annotate(
+            rank=SearchRank(vector, query)
+        ).filter(
+            rank__gt=0
+        ).order_by('-rank')
         results = results.filter(default=True) or results
 
         search_results = []
