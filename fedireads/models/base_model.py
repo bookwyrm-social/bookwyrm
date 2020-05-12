@@ -11,7 +11,7 @@ class FedireadsModel(models.Model):
     @property
     def absolute_id(self):
         ''' constructs the absolute reference to any db object '''
-        if self.remote_id:
+        if hasattr(self, 'remote_id') and self.remote_id:
             return self.remote_id
 
         base_path = 'https://%s' % DOMAIN
