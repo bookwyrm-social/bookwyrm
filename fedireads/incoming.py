@@ -1,6 +1,8 @@
 ''' handles all of the activity coming in to the server '''
 import json
 from base64 import b64decode
+from urllib.parse import urldefrag
+
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -46,7 +48,7 @@ def shared_inbox(request):
         return HttpResponseBadRequest()
 
     try:
-        verify_signature(request)
+        verify_signature(activity.get('actor'), request)
     except ValueError:
         return HttpResponse(status=401)
 
@@ -82,7 +84,24 @@ def shared_inbox(request):
     return HttpResponse()
 
 
-def verify_signature(request):
+def get_public_key(key_actor):
+    try:
+        user = models.User.objects.get(actor=key_actor)
+        public_key = user.public_key
+        actor = user.actor
+    except models.User.DoesNotExist:
+        response = requests.get(
+            key_actor,
+            headers={'Accept': 'application/activity+json'}
+        )
+        if not response.ok:
+            raise ValueError('Could not load public key')
+        user_data = response.json()
+        public_key = user_data['publicKey']['publicKeyPem']
+
+    return RSA.import_key(public_key)
+
+def verify_signature(required_actor, request):
     ''' verify rsa signature '''
     signature_dict = {}
     for pair in request.headers['Signature'].split(','):
@@ -97,15 +116,13 @@ def verify_signature(request):
     except KeyError:
         raise ValueError('Invalid auth header')
 
-    response = requests.get(
-        key_id,
-        headers={'Accept': 'application/activity+json'}
-    )
-    if not response.ok:
-        raise ValueError('Could not load public key')
+    # TODO Use the fragment - actors can have multiple keys?
+    key_actor = urldefrag(key_id).url
 
-    actor = response.json()
-    key = RSA.import_key(actor['publicKey']['publicKeyPem'])
+    if key_actor != required_actor:
+        raise ValueError("Wrong actor created signature.")
+
+    key = get_public_key(key_actor)
 
     comparison_string = []
     for signed_header_name in headers.split(' '):
@@ -124,8 +141,6 @@ def verify_signature(request):
 
     # raises a ValueError if it fails
     signer.verify(digest, signature)
-
-    return True
 
 
 @app.task
