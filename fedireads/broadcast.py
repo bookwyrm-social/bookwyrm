@@ -63,37 +63,38 @@ def broadcast_task(sender_id, activity, recipients):
     return errors
 
 
-def sign_and_send(sender, activity, destination):
-    ''' crpyto whatever and http junk '''
+def make_signature(sender, destination, date):
     inbox_parts = urlparse(destination)
-    now = http_date()
     signature_headers = [
         '(request-target): post %s' % inbox_parts.path,
         'host: %s' % inbox_parts.netloc,
-        'date: %s' % now
+        'date: %s' % date,
     ]
     message_to_sign = '\n'.join(signature_headers)
-
-    if not sender.private_key:
-        # this shouldn't happen. it would be bad if it happened.
-        raise ValueError('No private key found for sender')
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
-
     signature = {
         'keyId': '%s#main-key' % sender.actor,
         'algorithm': 'rsa-sha256',
         'headers': '(request-target) host date',
         'signature': b64encode(signed_message).decode('utf8'),
     }
-    signature = ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
+    return ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
+
+def sign_and_send(sender, activity, destination):
+    ''' crpyto whatever and http junk '''
+    now = http_date()
+
+    if not sender.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError('No private key found for sender')
 
     response = requests.post(
         destination,
         data=json.dumps(activity),
         headers={
             'Date': now,
-            'Signature': signature,
+            'Signature': make_signature(sender, destination, now),
             'Content-Type': 'application/activity+json; charset=utf-8',
         },
     )
