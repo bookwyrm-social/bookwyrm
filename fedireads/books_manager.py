@@ -121,7 +121,6 @@ def local_search(query):
     return connector.search(query)
 
 
-
 def first_search_result(query):
     ''' search until you find a result that fits '''
     for connector in get_connectors():
@@ -139,8 +138,8 @@ def update_book(book, data=None):
 
 def get_connectors():
     ''' load all connectors '''
-    connectors_info = models.Connector.objects.order_by('priority').all()
-    return [load_connector(c) for c in connectors_info]
+    for info in models.Connector.objects.order_by('priority').all():
+        yield load_connector(info)
 
 
 def load_connector(connector_info):
