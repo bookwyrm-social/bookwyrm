@@ -4,7 +4,7 @@ from requests import HTTPError
 import importlib
 from urllib.parse import urlparse
 
-from fedireads import models, settings
+from fedireads import models
 from fedireads.tasks import app
 
 
@@ -18,7 +18,9 @@ def get_edition(book_id):
 
 def get_or_create_book(remote_id):
     ''' pull up a book record by whatever means possible '''
-    book = get_by_absolute_id(remote_id, models.Book)
+    book = models.Book.objects.select_subclasses().filter(
+        remote_id=remote_id
+    ).first()
     if book:
         return book
 
@@ -50,38 +52,6 @@ def get_or_create_connector(remote_id):
         )
 
     return load_connector(connector_info)
-
-
-def get_by_absolute_id(absolute_id, model):
-    ''' generalized function to get from a model with a remote_id field '''
-    if not absolute_id:
-        return None
-
-    # check if it's a remote status
-    try:
-        return model.objects.get(remote_id=absolute_id)
-    except model.DoesNotExist:
-        pass
-
-    url = urlparse(absolute_id)
-    if url.netloc != settings.DOMAIN:
-        return None
-
-    # try finding a local status with that id
-    local_id = absolute_id.split('/')[-1]
-    try:
-        if hasattr(model.objects, 'select_subclasses'):
-            possible_match = model.objects.select_subclasses().get(id=local_id)
-        else:
-            possible_match = model.objects.get(id=local_id)
-    except model.DoesNotExist:
-        return None
-
-    # make sure it's not actually a remote status with an id that
-    # clashes with a local id
-    if possible_match.absolute_id == absolute_id:
-        return possible_match
-    return None
 
 
 @app.task

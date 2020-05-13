@@ -60,7 +60,7 @@
             {% include 'snippets/status_content.html' with status=status|boosted_status %}
         {% endif %}
 
-        {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.absolute_id }}">Thread</a>{% endif %}
+        {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.remote_id }}">Thread</a>{% endif %}
     </div>
 </div>
 

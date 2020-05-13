@@ -14,10 +14,9 @@ class User(TestCase):
         ''' username instead of id here '''
         user = models.User.objects.get(localname='mouse')
         expected_id = 'https://%s/user/mouse' % DOMAIN
-        self.assertEqual(user.absolute_id, expected_id)
+        self.assertEqual(user.remote_id, expected_id)
         self.assertEqual(user.username, 'mouse@%s' % DOMAIN)
         self.assertEqual(user.localname, 'mouse')
-        self.assertEqual(user.actor, 'https://%s/user/mouse' % DOMAIN)
         self.assertEqual(user.shared_inbox, 'https://%s/inbox' % DOMAIN)
         self.assertEqual(user.inbox, '%s/inbox' % expected_id)
         self.assertEqual(user.outbox, '%s/outbox' % expected_id)

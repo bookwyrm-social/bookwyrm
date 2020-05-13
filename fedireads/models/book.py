@@ -5,7 +5,7 @@ from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
 from fedireads.settings import DOMAIN
-from fedireads.utils.fields import JSONField, ArrayField
+from fedireads.utils.fields import ArrayField
 from .base_model import FedireadsModel
 
 from fedireads.connectors.settings import CONNECTORS
@@ -47,7 +47,6 @@ class Connector(FedireadsModel):
 
 class Book(FedireadsModel):
     ''' a generic book, which can mean either an edition or a work '''
-    remote_id = models.CharField(max_length=255, null=True)
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
@@ -87,19 +86,26 @@ class Book(FedireadsModel):
     published_date = models.DateTimeField(blank=True, null=True)
     objects = InheritanceManager()
 
-    @property
-    def absolute_id(self):
-        ''' constructs the absolute reference to any db object '''
-        if self.sync and self.remote_id:
-            return self.remote_id
-        base_path = 'https://%s' % DOMAIN
-        return '%s/book/%d' % (base_path, self.id)
-
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
+
         super().save(*args, **kwargs)
+
+    def get_remote_id(self):
+        ''' editions and works both use "book" instead of model_name '''
+        return 'https://%s/book/%d' % (DOMAIN, self.id)
+
+
+    @property
+    def local_id(self):
+        ''' when a book is ingested from an outside source, it becomes local to
+        an instance, so it needs a local url for federation. but it still needs
+        the remote_id for easier deduplication and, if appropriate, to sync with
+        the remote canonical copy '''
+        return 'https://%s/book/%d' % (DOMAIN, self.id)
+
 
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(
@@ -152,7 +158,6 @@ class Edition(Book):
 
 class Author(FedireadsModel):
     ''' copy of an author from OL '''
-    remote_id = models.CharField(max_length=255, null=True)
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     sync = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=timezone.now)
@@ -167,6 +172,14 @@ class Author(FedireadsModel):
         models.CharField(max_length=255), blank=True, default=list
     )
     bio = models.TextField(null=True, blank=True)
+
+    @property
+    def local_id(self):
+        ''' when a book is ingested from an outside source, it becomes local to
+        an instance, so it needs a local url for federation. but it still needs
+        the remote_id for easier deduplication and, if appropriate, to sync with
+        the remote canonical copy (ditto here for author)'''
+        return 'https://%s/book/%d' % (DOMAIN, self.id)
 
     @property
     def activitypub_serialize(self):

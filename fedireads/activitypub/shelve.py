@@ -18,16 +18,15 @@ def get_add_remove(user, book, shelf, action='Add'):
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': str(uuid),
         'type': action,
-        'actor': user.actor,
+        'actor': user.remote_id,
         'object': {
-            # TODO: document??
             'type': 'Document',
             'name': book.title,
-            'url': book.absolute_id,
+            'url': book.local_id,
         },
         'target': {
             'type': 'Collection',
             'name': shelf.name,
-            'id': shelf.absolute_id,
+            'id': shelf.remote_id,
         }
     }

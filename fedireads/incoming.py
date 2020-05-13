@@ -295,7 +295,7 @@ def handle_favorite(activity):
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
     favorite_id = activity['object']['id']
-    fav = status_builder.get_favorite(favorite_id)
+    fav = models.Favorite.objects.filter(remote_id=favorite_id).first()
     if not fav:
         return False
 

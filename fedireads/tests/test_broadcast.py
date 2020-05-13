@@ -11,7 +11,7 @@ class Book(TestCase):
 
         follower = models.User.objects.create_user(
             'rat', 'rat@mouse.mouse', 'ratword', local=False,
-            actor='http://example.com/u/1',
+            remote_id='http://example.com/u/1',
             outbox='http://example.com/u/1/o',
             shared_inbox='http://example.com/inbox',
             inbox='http://example.com/u/1/inbox')
@@ -20,14 +20,14 @@ class Book(TestCase):
         no_inbox_follower = models.User.objects.create_user(
             'hamster', 'hamster@mouse.mouse', 'hamword',
             shared_inbox=None, local=False,
-            actor='http://example.com/u/2',
+            remote_id='http://example.com/u/2',
             outbox='http://example.com/u/2/o',
             inbox='http://example.com/u/2/inbox')
         self.user.followers.add(no_inbox_follower)
 
         non_fr_follower = models.User.objects.create_user(
             'gerbil', 'gerb@mouse.mouse', 'gerbword',
-            actor='http://example.com/u/3',
+            remote_id='http://example.com/u/3',
             outbox='http://example2.com/u/3/o',
             inbox='http://example2.com/u/3/inbox',
             shared_inbox='http://example2.com/inbox',
@@ -40,7 +40,7 @@ class Book(TestCase):
 
         models.User.objects.create_user(
             'nutria', 'nutria@mouse.mouse', 'nuword',
-            actor='http://example.com/u/4',
+            remote_id='http://example.com/u/4',
             outbox='http://example.com/u/4/o',
             shared_inbox='http://example.com/inbox',
             inbox='http://example.com/u/4/inbox',

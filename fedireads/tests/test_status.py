@@ -22,6 +22,7 @@ class Status(TestCase):
         self.assertEqual(reply.content, content)
         self.assertEqual(reply.reply_parent, status)
 
+
     def test_create_status_from_activity(self):
         book = models.Edition.objects.create(title='Example Edition')
         review = status_builder.create_review(
@@ -29,7 +30,7 @@ class Status(TestCase):
         activity = {
             'id': 'https://example.com/user/mouse/status/12',
             'url': 'https://example.com/user/mouse/status/12',
-            'inReplyTo': review.absolute_id,
+            'inReplyTo': review.remote_id,
             'published': '2020-05-10T02:15:59.635557+00:00',
             'attributedTo': 'https://example.com/user/mouse',
             'to': [

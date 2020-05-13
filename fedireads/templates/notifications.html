@@ -18,12 +18,12 @@
         {% include 'snippets/username.html' with user=notification.related_user %}
         {% if notification.notification_type == 'FAVORITE' %}
             favorited your
-            <a href="{{ notification.related_status.absolute_id}}">status</a>
+            <a href="{{ notification.related_status.remote_id}}">status</a>
 
         {% elif notification.notification_type == 'REPLY' %}
-            <a href="{{ notification.related_status.absolute_id}}">replied</a>
+            <a href="{{ notification.related_status.remote_id}}">replied</a>
             to your
-            <a href="{{ notification.related_status.reply_parent.absolute_id}}">status</a>
+            <a href="{{ notification.related_status.reply_parent.remote_id}}">status</a>
 
         {% elif notification.notification_type == 'FOLLOW' %}
             followed you
@@ -35,10 +35,10 @@
             </div>
 
         {% elif notification.notification_type == 'BOOST' %}
-            boosted your <a href="{{ notification.related_status.absolute_id}}">status</a>
+            boosted your <a href="{{ notification.related_status.remote_id}}">status</a>
         {% endif %}
         {% else %}
-            your <a href="/import_status/{{ notification.related_import.id }}">import</a> completed. 
+            your <a href="/import_status/{{ notification.related_import.id }}">import</a> completed.
 
         {% endif %}
     </div>

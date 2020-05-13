@@ -74,7 +74,7 @@ def make_signature(sender, destination, date):
     signer = pkcs1_15.new(RSA.import_key(sender.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
     signature = {
-        'keyId': '%s#main-key' % sender.actor,
+        'keyId': '%s#main-key' % sender.remote_id,
         'algorithm': 'rsa-sha256',
         'headers': '(request-target) host date',
         'signature': b64encode(signed_message).decode('utf8'),

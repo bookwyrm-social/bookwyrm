@@ -2,7 +2,7 @@
 from django.db import IntegrityError
 
 from fedireads import models
-from fedireads.books_manager import get_or_create_book, get_by_absolute_id
+from fedireads.books_manager import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
 
 
@@ -155,14 +155,11 @@ def create_boost_from_activity(user, activity):
         return models.Boost.objects.get(status=status, user=user)
 
 
-def get_status(absolute_id):
+def get_status(remote_id):
     ''' find a status in the database '''
-    return get_by_absolute_id(absolute_id, models.Status)
-
-
-def get_favorite(absolute_id):
-    ''' find a status in the database '''
-    return get_by_absolute_id(absolute_id, models.Favorite)
+    return models.Status.objects.select_subclasses().filter(
+        remote_id=remote_id
+    ).first()
 
 
 def create_status(user, content, reply_parent=None, mention_books=None,
