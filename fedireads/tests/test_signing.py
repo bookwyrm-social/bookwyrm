@@ -14,23 +14,14 @@ class Signature(TestCase):
         self.rat = User.objects.create_user('rat', 'rat@example.com', '')
         self.cat = User.objects.create_user('cat', 'cat@example.com', '')
 
-    def test_wrong_signature(self):
-        ''' All messages must be signed by the right actor.
-
-            (cat cannot sign messages on behalf of mouse)
-        '''
-        activity = get_follow_request(
-            self.mouse,
-            self.rat,
-        )
-
-        now = http_date()
-        signature = make_signature(self.cat, self.rat.inbox, now)
-
+    def send_follow(self, signature, now):
         c = Client()
-        response = c.post(
+        return c.post(
             urlsplit(self.rat.inbox).path,
-            data=activity,
+            data=get_follow_request(
+                self.mouse,
+                self.rat,
+            ),
             content_type='application/json',
             **{
                 'HTTP_DATE': now,
@@ -40,4 +31,15 @@ class Signature(TestCase):
             }
         )
 
-        assert response.status_code == 401
+    def test_correct_signature(self):
+        now = http_date()
+        signature = make_signature(self.mouse, self.rat.inbox, now)
+        return self.send_follow(signature, now).status_code == 200
+
+    def test_wrong_signature(self):
+        ''' Messages must be signed by the right actor.
+            (cat cannot sign messages on behalf of mouse)
+        '''
+        now = http_date()
+        signature = make_signature(self.cat, self.rat.inbox, now)
+        assert self.send_follow(signature, now).status_code == 401

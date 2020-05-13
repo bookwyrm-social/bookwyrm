@@ -1,6 +1,8 @@
 ''' handles all of the activity coming in to the server '''
 import json
 from base64 import b64decode
+from urllib.parse import urldefrag
+
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -46,7 +48,7 @@ def shared_inbox(request):
         return HttpResponseBadRequest()
 
     try:
-        verify_signature(request)
+        verify_signature(activity.get('actor'), request)
     except ValueError:
         return HttpResponse(status=401)
 
@@ -82,24 +84,24 @@ def shared_inbox(request):
     return HttpResponse()
 
 
-def get_public_key(key_id):
-    # TODO Use the anchor - actors can have multiple keys?
-    key_actor = key_id.split('#', 1)[0]
+def get_public_key(key_actor):
     try:
-        public_key = models.User.objects.get(actor=key_actor).public_key
+        user = models.User.objects.get(actor=key_actor)
+        public_key = user.public_key
+        actor = user.actor
     except models.User.DoesNotExist:
         response = requests.get(
-            key_id,
+            key_actor,
             headers={'Accept': 'application/activity+json'}
         )
         if not response.ok:
             raise ValueError('Could not load public key')
-        actor = response.json()
-        public_key = actor['publicKey']['publicKeyPem']
+        user_data = response.json()
+        public_key = user_data['publicKey']['publicKeyPem']
 
     return RSA.import_key(public_key)
 
-def verify_signature(request):
+def verify_signature(required_actor, request):
     ''' verify rsa signature '''
     signature_dict = {}
     for pair in request.headers['Signature'].split(','):
@@ -114,7 +116,13 @@ def verify_signature(request):
     except KeyError:
         raise ValueError('Invalid auth header')
 
-    key = get_public_key(key_id)
+    # TODO Use the fragment - actors can have multiple keys?
+    key_actor = urldefrag(key_id).url
+
+    if key_actor != required_actor:
+        raise ValueError("Wrong actor created signature.")
+
+    key = get_public_key(key_actor)
 
     comparison_string = []
     for signed_header_name in headers.split(' '):
@@ -133,8 +141,6 @@ def verify_signature(request):
 
     # raises a ValueError if it fails
     signer.verify(digest, signature)
-
-    return True
 
 
 @app.task
