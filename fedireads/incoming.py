@@ -82,6 +82,23 @@ def shared_inbox(request):
     return HttpResponse()
 
 
+def get_public_key(key_id):
+    # TODO Use the anchor - actors can have multiple keys?
+    key_actor = key_id.split('#', 1)[0]
+    try:
+        public_key = models.User.objects.get(actor=key_actor).public_key
+    except models.User.DoesNotExist:
+        response = requests.get(
+            key_id,
+            headers={'Accept': 'application/activity+json'}
+        )
+        if not response.ok:
+            raise ValueError('Could not load public key')
+        actor = response.json()
+        public_key = actor['publicKey']['publicKeyPem']
+
+    return RSA.import_key(public_key)
+
 def verify_signature(request):
     ''' verify rsa signature '''
     signature_dict = {}
@@ -97,15 +114,7 @@ def verify_signature(request):
     except KeyError:
         raise ValueError('Invalid auth header')
 
-    response = requests.get(
-        key_id,
-        headers={'Accept': 'application/activity+json'}
-    )
-    if not response.ok:
-        raise ValueError('Could not load public key')
-
-    actor = response.json()
-    key = RSA.import_key(actor['publicKey']['publicKeyPem'])
+    key = get_public_key(key_id)
 
     comparison_string = []
     for signed_header_name in headers.split(' '):
