@@ -22,10 +22,10 @@ class FedireadsModel(models.Model):
         abstract = True
 
 
-@receiver(models.signals.post_save, sender=FedireadsModel)
+@receiver(models.signals.post_save)
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' set the remote_id after save (when the id is available) '''
-    if not created:
+    if not created or not hasattr(instance, 'get_remote_id'):
         return
     instance.remote_id = instance.get_remote_id()
     instance.save()
