@@ -7,13 +7,23 @@ from fedireads import models, settings
 class Book(TestCase):
     ''' not too much going on in the books model but here we are '''
     def setUp(self):
-        self.work = models.Work.objects.create(title='Example Work')
-        models.Edition.objects.create(title='Example Edition', parent_work=self.work)
+        self.work = models.Work.objects.create(
+            title='Example Work',
+            remote_id='https://example.com/book/1'
+        )
+        self.first_edition = models.Edition.objects.create(
+            title='Example Edition',
+            parent_work=self.work,
+        )
+        self.second_edition = models.Edition.objects.create(
+            title='Another Example Edition',
+            parent_work=self.work,
+        )
 
     def test_remote_id(self):
-        ''' editions and works use the same remote_id syntax '''
-        expected_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
-        self.assertEqual(self.work.get_remote_id(), expected_id)
+        local_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
+        self.assertEqual(self.work.get_remote_id(), local_id)
+        self.assertEqual(self.work.remote_id, 'https://example.com/book/1')
 
     def test_local_id(self):
         ''' the local_id property for books '''
@@ -30,8 +40,13 @@ class Book(TestCase):
 
     def test_default_edition(self):
         ''' a work should always be able to produce a deafult edition '''
-        default_edition = models.Work.objects.first().default_edition
-        self.assertIsInstance(default_edition, models.Edition)
+        self.assertIsInstance(self.work.default_edition, models.Edition)
+        self.assertEqual(self.work.default_edition, self.first_edition)
+
+        self.second_edition.default = True
+        self.second_edition.save()
+
+        self.assertEqual(self.work.default_edition, self.second_edition)
 
 
 class Shelf(TestCase):
