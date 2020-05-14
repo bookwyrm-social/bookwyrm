@@ -50,7 +50,7 @@ class SelfConnector(TestCase):
     def test_format_search_result(self):
         result = self.connector.format_search_result(self.edition)
         self.assertEqual(result.title, 'Edition of Example Work')
-        self.assertEqual(result.key, self.edition.absolute_id)
+        self.assertEqual(result.key, self.edition.remote_id)
         self.assertEqual(result.author, 'Anonymous')
         self.assertEqual(result.year, 1980)
 
