@@ -1,21 +1,18 @@
 ''' handles all of the activity coming in to the server '''
 import json
-from base64 import b64decode
 from urllib.parse import urldefrag
+import requests
 
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
 import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-import requests
 
 from fedireads import books_manager, models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user
 from fedireads.tasks import app
+from fedireads.signatures import Signature
 
 
 @csrf_exempt
@@ -48,7 +45,16 @@ def shared_inbox(request):
         return HttpResponseBadRequest()
 
     try:
-        verify_signature(activity.get('actor'), request)
+        signature = Signature.parse(request)
+
+        key_actor = urldefrag(signature.key_id).url
+        if key_actor != activity.get('actor'):
+            print("Wrong sig: ", key_actor, activity.get('actor'))
+            raise ValueError("Wrong actor created signature.")
+
+        key = get_public_key(key_actor)
+
+        signature.verify(key, request)
     except ValueError:
         return HttpResponse(status=401)
 
@@ -88,7 +94,6 @@ def get_public_key(key_actor):
     try:
         user = models.User.objects.get(remote_id=key_actor)
         public_key = user.public_key
-        actor = user.remote_id
     except models.User.DoesNotExist:
         response = requests.get(
             key_actor,
@@ -99,49 +104,7 @@ def get_public_key(key_actor):
         user_data = response.json()
         public_key = user_data['publicKey']['publicKeyPem']
 
-    return RSA.import_key(public_key)
-
-def verify_signature(required_actor, request):
-    ''' verify rsa signature '''
-    signature_dict = {}
-    for pair in request.headers['Signature'].split(','):
-        k, v = pair.split('=', 1)
-        v = v.replace('"', '')
-        signature_dict[k] = v
-
-    try:
-        key_id = signature_dict['keyId']
-        headers = signature_dict['headers']
-        signature = b64decode(signature_dict['signature'])
-    except KeyError:
-        raise ValueError('Invalid auth header')
-
-    # TODO Use the fragment - actors can have multiple keys?
-    key_actor = urldefrag(key_id).url
-
-    if key_actor != required_actor:
-        raise ValueError("Wrong actor created signature.")
-
-    key = get_public_key(key_actor)
-
-    comparison_string = []
-    for signed_header_name in headers.split(' '):
-        if signed_header_name == '(request-target)':
-            comparison_string.append('(request-target): post %s' % request.path)
-        else:
-            comparison_string.append('%s: %s' % (
-                signed_header_name,
-                request.headers[signed_header_name]
-            ))
-    comparison_string = '\n'.join(comparison_string)
-
-    signer = pkcs1_15.new(key)
-    digest = SHA256.new()
-    digest.update(comparison_string.encode())
-
-    # raises a ValueError if it fails
-    signer.verify(digest, signature)
-
+    return public_key
 
 @app.task
 def handle_follow(activity):

@@ -1,6 +1,4 @@
 ''' database schema for user data '''
-from Crypto import Random
-from Crypto.PublicKey import RSA
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
@@ -8,6 +6,7 @@ from django.dispatch import receiver
 from fedireads import activitypub
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
+from fedireads.signatures import create_key_pair
 from .base_model import FedireadsModel
 
 
@@ -158,10 +157,7 @@ def execute_before_save(sender, instance, *args, **kwargs):
     instance.shared_inbox = 'https://%s/inbox' % DOMAIN
     instance.outbox = '%s/outbox' % instance.remote_id
     if not instance.private_key:
-        random_generator = Random.new().read
-        key = RSA.generate(1024, random_generator)
-        instance.private_key = key.export_key().decode('utf8')
-        instance.public_key = key.publickey().export_key().decode('utf8')
+        instance.private_key, instance.public_key = create_key_pair()
 
 
 @receiver(models.signals.post_save, sender=User)
