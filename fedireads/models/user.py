@@ -15,7 +15,6 @@ class User(AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
-    actor = models.CharField(max_length=255, unique=True)
     inbox = models.CharField(max_length=255, unique=True)
     shared_inbox = models.CharField(max_length=255, blank=True, null=True)
     federated_server = models.ForeignKey(
@@ -63,16 +62,10 @@ class User(AbstractUser):
         through_fields=('user', 'status'),
         related_name='favorite_statuses'
     )
+    remote_id = models.CharField(max_length=255, null=True, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = models.BooleanField(default=False)
-
-    @property
-    def absolute_id(self):
-        ''' users are identified by their username, so overriding this prop '''
-        model_name = type(self).__name__.lower()
-        username = self.localname or self.username
-        return 'https://%s/%s/%s' % (DOMAIN, model_name, username)
 
     @property
     def activitypub_serialize(self):
@@ -107,10 +100,9 @@ class UserRelationship(FedireadsModel):
             )
         ]
 
-    @property
-    def absolute_id(self):
-        ''' use shelf identifier as absolute id '''
-        base_path = self.user_subject.absolute_id
+    def get_remote_id(self):
+        ''' use shelf identifier in remote_id '''
+        base_path = self.user_subject.remote_id
         return '%s#%s/%d' % (base_path, self.status, self.id)
 
 
@@ -158,12 +150,13 @@ def execute_before_save(sender, instance, *args, **kwargs):
         return
 
     # populate fields for local users
+    instance.remote_id = 'https://%s/user/%s' % (DOMAIN, instance.username)
     instance.localname = instance.username
     instance.username = '%s@%s' % (instance.username, DOMAIN)
-    instance.actor = instance.absolute_id
-    instance.inbox = '%s/inbox' % instance.absolute_id
+    instance.actor = instance.remote_id
+    instance.inbox = '%s/inbox' % instance.remote_id
     instance.shared_inbox = 'https://%s/inbox' % DOMAIN
-    instance.outbox = '%s/outbox' % instance.absolute_id
+    instance.outbox = '%s/outbox' % instance.remote_id
     if not instance.private_key:
         random_generator = Random.new().read
         key = RSA.generate(1024, random_generator)

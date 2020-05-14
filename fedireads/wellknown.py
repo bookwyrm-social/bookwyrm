@@ -24,7 +24,7 @@ def webfinger(request):
             {
                 'rel': 'self',
                 'type': 'application/activity+json',
-                'href': user.actor
+                'href': user.remote_id
             }
         ]
     })

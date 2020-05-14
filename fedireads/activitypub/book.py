@@ -34,9 +34,9 @@ def get_book(book, recursive=True):
         'type': 'Document',
         'book_type': book_type,
         'name': book.title,
-        'url': book.absolute_id,
+        'url': book.local_id,
 
-        'authors': [a.absolute_id for a in book.authors.all()],
+        'authors': [a.local_id for a in book.authors.all()],
         'first_published_date': book.first_published_date.isoformat() if \
                 book.first_published_date else None,
         'published_date': book.published_date.isoformat() if \
@@ -79,7 +79,7 @@ def get_author(author):
     ]
     activity = {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'url': author.absolute_id,
+        'url': author.local_id,
         'type': 'Person',
     }
     for field in fields:
@@ -90,7 +90,7 @@ def get_author(author):
 
 def get_shelf(shelf, page=None):
     ''' serialize shelf object '''
-    id_slug = shelf.absolute_id
+    id_slug = shelf.remote_id
     if page:
         return get_shelf_page(shelf, page)
     count = shelf.books.count()
@@ -110,7 +110,7 @@ def get_shelf_page(shelf, page):
     start = (page - 1) * page_length
     end = start + page_length
     shelf_page = shelf.books.all()[start:end]
-    id_slug = shelf.absolute_id
+    id_slug = shelf.local_id
     data = {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': '%s?page=%d' % (id_slug, page),

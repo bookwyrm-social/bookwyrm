@@ -12,22 +12,22 @@ def get_follow_request(user, to_follow):
         'id': 'https://%s/%s' % (DOMAIN, str(uuid)),
         'summary': '',
         'type': 'Follow',
-        'actor': user.actor,
-        'object': to_follow.actor,
+        'actor': user.remote_id,
+        'object': to_follow.remote_id,
     }
 
 def get_unfollow(relationship):
     ''' undo that precious bond of friendship '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s/undo' % relationship.absolute_id,
+        'id': '%s/undo' % relationship.remote_id,
         'type': 'Undo',
-        'actor': relationship.user_subject.actor,
+        'actor': relationship.user_subject.remote_id,
         'object': {
             'id': relationship.relationship_id,
             'type': 'Follow',
-            'actor': relationship.user_subject.actor,
-            'object': relationship.user_object.actor,
+            'actor': relationship.user_subject.remote_id,
+            'object': relationship.user_object.remote_id,
         }
     }
 
@@ -36,14 +36,14 @@ def get_accept(user, relationship):
     ''' accept a follow request '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s#accepts/follows/' % user.absolute_id,
+        'id': '%s#accepts/follows/' % user.remote_id,
         'type': 'Accept',
-        'actor': user.actor,
+        'actor': user.remote_id,
         'object': {
             'id': relationship.relationship_id,
             'type': 'Follow',
-            'actor': relationship.user_subject.actor,
-            'object': relationship.user_object.actor,
+            'actor': relationship.user_subject.remote_id,
+            'object': relationship.user_object.remote_id,
         }
     }
 
@@ -52,27 +52,27 @@ def get_reject(user, relationship):
     ''' reject a follow request '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s#rejects/follows/' % user.absolute_id,
+        'id': '%s#rejects/follows/' % user.remote_id,
         'type': 'Reject',
-        'actor': user.actor,
+        'actor': user.remote_id,
         'object': {
             'id': relationship.relationship_id,
             'type': 'Follow',
-            'actor': relationship.user_subject.actor,
-            'object': relationship.user_object.actor,
+            'actor': relationship.user_subject.remote_id,
+            'object': relationship.user_object.remote_id,
         }
     }
 
 
 def get_followers(user, page, follow_queryset):
     ''' list of people who follow a user '''
-    id_slug = '%s/followers' % user.actor
+    id_slug = '%s/followers' % user.remote_id
     return get_follow_info(id_slug, page, follow_queryset)
 
 
 def get_following(user, page, follow_queryset):
     ''' list of people who follow a user '''
-    id_slug = '%s/following' % user.actor
+    id_slug = '%s/following' % user.remote_id
     return get_follow_info(id_slug, page, follow_queryset)
 
 
@@ -103,7 +103,7 @@ def get_follow_page(user_list, id_slug, page):
         'type': 'OrderedCollectionPage',
         'totalItems': user_list.count(),
         'partOf': id_slug,
-        'orderedItems': [u.actor for u in follower_page],
+        'orderedItems': [u.remote_id for u in follower_page],
     }
     if end <= user_list.count():
         # there are still more pages

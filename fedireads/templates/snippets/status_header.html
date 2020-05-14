@@ -17,9 +17,9 @@
     boosted
 {% elif status.reply_parent %}
     {% with parent_status=status|parent %}
-    replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.absolute_id }}">{{ parent_status.status_type | lower }}</a>
+    replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{{ parent_status.status_type | lower }}</a>
     {% endwith %}
 {% endif %}
 <span class="time-ago">
-    <a href="{{ status.absolute_id }}">{{ status.published_date | naturaltime }}</a>
+    <a href="{{ status.remote_id }}">{{ status.published_date | naturaltime }}</a>
 </span>

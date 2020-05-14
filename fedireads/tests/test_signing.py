@@ -14,7 +14,7 @@ from fedireads.broadcast import make_signature
 from fedireads.activitypub import get_follow_request
 from fedireads.settings import DOMAIN
 
-Sender = namedtuple('Sender', ('actor', 'private_key', 'public_key'))
+Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
 
 class Signature(TestCase):
     def setUp(self):
@@ -67,7 +67,7 @@ class Signature(TestCase):
     def test_remote_signer(self):
         responses.add(
             responses.GET,
-            self.fake_remote.actor,
+            self.fake_remote.remote_id,
             json={'publicKey': {
                 'publicKeyPem': self.fake_remote.public_key
             }},
@@ -82,7 +82,7 @@ class Signature(TestCase):
     def test_nonexistent_signer(self):
         responses.add(
             responses.GET,
-            self.fake_remote.actor,
+            self.fake_remote.remote_id,
             json={'error': 'not found'},
             status=404)
 

@@ -66,7 +66,7 @@ class Review(TestCase):
                     'items': []
                     }
                 },
-            'inReplyToBook': self.book.absolute_id,
+            'inReplyToBook': self.book.remote_id,
             'fedireadsType': 'Review',
             'name': 'review title',
             'rating': 3

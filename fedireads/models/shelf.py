@@ -1,7 +1,6 @@
 ''' puttin' books on shelves '''
 from django.db import models
 
-from fedireads import activitypub
 from .base_model import FedireadsModel
 
 
@@ -17,12 +16,10 @@ class Shelf(FedireadsModel):
         through_fields=('shelf', 'book')
     )
 
-    @property
-    def absolute_id(self):
-        ''' use shelf identifier as absolute id '''
-        base_path = self.user.absolute_id
-        model_name = type(self).__name__.lower()
-        return '%s/%s/%s' % (base_path, model_name, self.identifier)
+    def get_remote_id(self):
+        ''' shelf identifier instead of id '''
+        base_path = self.user.remote_id
+        return '%s/shelf/%s' % (base_path, self.identifier)
 
     class Meta:
         unique_together = ('user', 'identifier')

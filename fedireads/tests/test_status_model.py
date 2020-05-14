@@ -23,7 +23,7 @@ class Status(TestCase):
         self.assertEqual(status.activity_type, 'Note')
         expected_id = 'https://%s/user/mouse/status/%d' % \
                 (settings.DOMAIN, status.id)
-        self.assertEqual(status.absolute_id, expected_id)
+        self.assertEqual(status.remote_id, expected_id)
 
     def test_comment(self):
         comment = models.Comment.objects.first()
@@ -31,7 +31,7 @@ class Status(TestCase):
         self.assertEqual(comment.activity_type, 'Note')
         expected_id = 'https://%s/user/mouse/comment/%d' % \
                 (settings.DOMAIN, comment.id)
-        self.assertEqual(comment.absolute_id, expected_id)
+        self.assertEqual(comment.remote_id, expected_id)
 
     def test_quotation(self):
         quotation = models.Quotation.objects.first()
@@ -39,7 +39,7 @@ class Status(TestCase):
         self.assertEqual(quotation.activity_type, 'Note')
         expected_id = 'https://%s/user/mouse/quotation/%d' % \
                 (settings.DOMAIN, quotation.id)
-        self.assertEqual(quotation.absolute_id, expected_id)
+        self.assertEqual(quotation.remote_id, expected_id)
 
     def test_review(self):
         review = models.Review.objects.first()
@@ -47,7 +47,7 @@ class Status(TestCase):
         self.assertEqual(review.activity_type, 'Article')
         expected_id = 'https://%s/user/mouse/review/%d' % \
                 (settings.DOMAIN, review.id)
-        self.assertEqual(review.absolute_id, expected_id)
+        self.assertEqual(review.remote_id, expected_id)
 
 
 class Tag(TestCase):

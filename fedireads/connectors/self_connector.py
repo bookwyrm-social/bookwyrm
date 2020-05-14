@@ -47,7 +47,7 @@ class Connector(AbstractConnector):
     def format_search_result(self, book):
         return SearchResult(
             book.title,
-            book.absolute_id,
+            book.local_id,
             book.author_text,
             book.published_date.year if book.published_date else None,
         )

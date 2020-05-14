@@ -45,7 +45,7 @@ class Comment(TestCase):
                     "items": []
                 }
             },
-            "inReplyToBook": self.book.absolute_id,
+            "inReplyToBook": self.book.remote_id,
             "fedireadsType": "Comment"
         }
         comment = status_builder.create_comment_from_activity(

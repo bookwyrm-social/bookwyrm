@@ -86,9 +86,9 @@ def shared_inbox(request):
 
 def get_public_key(key_actor):
     try:
-        user = models.User.objects.get(actor=key_actor)
+        user = models.User.objects.get(remote_id=key_actor)
         public_key = user.public_key
-        actor = user.actor
+        actor = user.remote_id
     except models.User.DoesNotExist:
         response = requests.get(
             key_actor,
@@ -149,7 +149,7 @@ def handle_follow(activity):
     # figure out who they want to follow -- not using get_or_create because
     # we only allow you to follow local users
     try:
-        to_follow = models.User.objects.get(actor=activity['object'])
+        to_follow = models.User.objects.get(remote_id=activity['object'])
     except models.User.DoesNotExist:
         return False
     # figure out who the actor is
@@ -189,7 +189,7 @@ def handle_unfollow(activity):
     obj = activity['object']
     try:
         requester = get_or_create_remote_user(obj['actor'])
-        to_unfollow = models.User.objects.get(actor=obj['object'])
+        to_unfollow = models.User.objects.get(remote_id=obj['object'])
     except models.User.DoesNotExist:
         return False
 
@@ -200,7 +200,7 @@ def handle_unfollow(activity):
 def handle_follow_accept(activity):
     ''' hurray, someone remote accepted a follow request '''
     # figure out who they want to follow
-    requester = models.User.objects.get(actor=activity['object']['actor'])
+    requester = models.User.objects.get(remote_id=activity['object']['actor'])
     # figure out who they are
     accepter = get_or_create_remote_user(activity['actor'])
 
@@ -218,7 +218,7 @@ def handle_follow_accept(activity):
 @app.task
 def handle_follow_reject(activity):
     ''' someone is rejecting a follow request '''
-    requester = models.User.objects.get(actor=activity['object']['actor'])
+    requester = models.User.objects.get(remote_id=activity['object']['actor'])
     rejecter = get_or_create_remote_user(activity['actor'])
 
     try:
@@ -295,7 +295,7 @@ def handle_favorite(activity):
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
     favorite_id = activity['object']['id']
-    fav = status_builder.get_favorite(favorite_id)
+    fav = models.Favorite.objects.filter(remote_id=favorite_id).first()
     if not fav:
         return False
 

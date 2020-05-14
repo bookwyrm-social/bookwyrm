@@ -14,16 +14,16 @@ def get_create(user, status_json):
 
         'id': '%s/activity' % status_json['id'],
         'type': 'Create',
-        'actor': user.actor,
+        'actor': user.remote_id,
         'published': status_json['published'],
 
-        'to': ['%s/followers' % user.actor],
+        'to': ['%s/followers' % user.remote_id],
         'cc': ['https://www.w3.org/ns/activitystreams#Public'],
 
         'object': status_json,
         'signature': {
             'type': 'RsaSignature2017',
-            'creator': '%s#main-key' % user.absolute_id,
+            'creator': '%s#main-key' % user.remote_id,
             'created': status_json['published'],
             'signatureValue': b64encode(signed_message).decode('utf8'),
         }
@@ -37,7 +37,7 @@ def get_update(user, activity_json):
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': 'https://friend.camp/users/tripofmice#updates/1585446332',
         'type': 'Update',
-        'actor': user.actor,
+        'actor': user.remote_id,
         'to': [
             'https://www.w3.org/ns/activitystreams#Public'
         ],

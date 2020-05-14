@@ -7,7 +7,7 @@ from fedireads.settings import DOMAIN
 def get_rating(review):
     ''' activitypub serialize rating activity '''
     status = get_status(review)
-    status['inReplyToBook'] = review.book.absolute_id
+    status['inReplyToBook'] = review.book.local_id
     status['fedireadsType'] = review.status_type
     status['rating'] = review.rating
     status['content'] = '%d star rating of "%s"' % (
@@ -18,7 +18,7 @@ def get_rating(review):
 def get_quotation(quotation):
     ''' fedireads json for quotations '''
     status = get_status(quotation)
-    status['inReplyToBook'] = quotation.book.absolute_id
+    status['inReplyToBook'] = quotation.book.local_id
     status['fedireadsType'] = quotation.status_type
     status['quote'] = quotation.quote
     return status
@@ -29,7 +29,7 @@ def get_quotation_article(quotation):
     status = get_status(quotation)
     content = '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
         quotation.quote,
-        quotation.book.absolute_id,
+        quotation.book.local_id,
         quotation.book.title,
         quotation.content,
     )
@@ -40,7 +40,7 @@ def get_quotation_article(quotation):
 def get_review(review):
     ''' fedireads json for book reviews '''
     status = get_status(review)
-    status['inReplyToBook'] = review.book.absolute_id
+    status['inReplyToBook'] = review.book.local_id
     status['fedireadsType'] = review.status_type
     status['name'] = review.name
     status['rating'] = review.rating
@@ -50,7 +50,7 @@ def get_review(review):
 def get_comment(comment):
     ''' fedireads json for book reviews '''
     status = get_status(comment)
-    status['inReplyToBook'] = comment.book.absolute_id
+    status['inReplyToBook'] = comment.book.local_id
     status['fedireadsType'] = comment.status_type
     return status
 
@@ -87,15 +87,15 @@ def get_comment_article(comment):
     ''' a book comment formatted for a non-fedireads isntance (mastodon) '''
     status = get_status(comment)
     status['content'] += '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-        (comment.book.absolute_id, comment.book.title)
+        (comment.book.local_id, comment.book.title)
     return status
 
 
 def get_status(status):
     ''' create activitypub json for a status '''
     user = status.user
-    uri = status.absolute_id
-    reply_parent_id = status.reply_parent.absolute_id \
+    uri = status.remote_id
+    reply_parent_id = status.reply_parent.remote_id \
         if status.reply_parent else None
 
     image_attachments = []
@@ -117,10 +117,10 @@ def get_status(status):
         'url': uri,
         'inReplyTo': reply_parent_id,
         'published': status.published_date.isoformat(),
-        'attributedTo': user.actor,
+        'attributedTo': user.remote_id,
         # TODO: assuming all posts are public -- should check privacy db field
         'to': ['https://www.w3.org/ns/activitystreams#Public'],
-        'cc': ['%s/followers' % user.absolute_id],
+        'cc': ['%s/followers' % user.remote_id],
         'sensitive': status.sensitive,
         'content': status.content,
         'type': status.activity_type,
@@ -142,7 +142,7 @@ def get_status(status):
 
 def get_replies(status, replies):
     ''' collection of replies '''
-    id_slug = status.absolute_id + '/replies'
+    id_slug = status.remote_id + '/replies'
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': id_slug,
@@ -159,7 +159,7 @@ def get_replies(status, replies):
 
 def get_replies_page(status, replies):
     ''' actual reply list content '''
-    id_slug = status.absolute_id + '/replies?page=true&only_other_accounts=true'
+    id_slug = status.remote_id + '/replies?page=true&only_other_accounts=true'
     items = []
     for reply in replies:
         if reply.user.local:
@@ -171,7 +171,7 @@ def get_replies_page(status, replies):
         'id': id_slug,
         'type': 'CollectionPage',
         'next': '%s&min_id=%d' % (id_slug, replies[len(replies) - 1].id),
-        'partOf': status.absolute_id + '/replies',
+        'partOf': status.remote_id + '/replies',
         'items': [items]
     }
 
@@ -180,10 +180,10 @@ def get_favorite(favorite):
     ''' like a post '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': favorite.absolute_id,
+        'id': favorite.remote_id,
         'type': 'Like',
-        'actor': favorite.user.actor,
-        'object': favorite.status.absolute_id,
+        'actor': favorite.user.remote_id,
+        'object': favorite.status.remote_id,
     }
 
 
@@ -191,14 +191,14 @@ def get_unfavorite(favorite):
     ''' like a post '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': '%s/undo' % favorite.absolute_id,
+        'id': '%s/undo' % favorite.remote_id,
         'type': 'Undo',
-        'actor': favorite.user.actor,
+        'actor': favorite.user.remote_id,
         'object': {
-            'id': favorite.absolute_id,
+            'id': favorite.remote_id,
             'type': 'Like',
-            'actor': favorite.user.actor,
-            'object': favorite.status.absolute_id,
+            'actor': favorite.user.remote_id,
+            'object': favorite.status.remote_id,
         }
     }
 
@@ -207,10 +207,10 @@ def get_boost(boost):
     ''' boost/announce a post '''
     return {
         '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': boost.absolute_id,
+        'id': boost.remote_id,
         'type': 'Announce',
-        'actor': boost.user.actor,
-        'object': boost.boosted_status.absolute_id,
+        'actor': boost.user.remote_id,
+        'object': boost.boosted_status.remote_id,
     }
 
 
@@ -221,15 +221,15 @@ def get_add_tag(tag):
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': str(uuid),
         'type': 'Add',
-        'actor': tag.user.actor,
+        'actor': tag.user.remote_id,
         'object': {
             'type': 'Tag',
-            'id': tag.absolute_id,
+            'id': tag.remote_id,
             'name': tag.name,
         },
         'target': {
             'type': 'Book',
-            'id': tag.book.absolute_id,
+            'id': tag.book.local_id,
         }
     }
 
@@ -241,14 +241,14 @@ def get_remove_tag(tag):
         '@context': 'https://www.w3.org/ns/activitystreams',
         'id': str(uuid),
         'type': 'Remove',
-        'actor': tag.user.actor,
+        'actor': tag.user.remote_id,
         'object': {
             'type': 'Tag',
-            'id': tag.absolute_id,
+            'id': tag.remote_id,
             'name': tag.name,
         },
         'target': {
             'type': 'Book',
-            'id': tag.book.absolute_id,
+            'id': tag.book.local_id,
         }
     }
