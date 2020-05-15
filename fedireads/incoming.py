@@ -49,7 +49,6 @@ def shared_inbox(request):
 
         key_actor = urldefrag(signature.key_id).url
         if key_actor != activity.get('actor'):
-            print("Wrong sig: ", key_actor, activity.get('actor'))
             raise ValueError("Wrong actor created signature.")
 
         key = get_public_key(key_actor)
