@@ -42,7 +42,7 @@ def get_or_create_remote_user(actor):
 
 def create_remote_user(data):
     ''' parse the activitypub actor data into a user '''
-    actor = data.get('id')
+    actor = data['id']
     actor_parts = urlparse(actor)
 
     # the webfinger format for the username.
