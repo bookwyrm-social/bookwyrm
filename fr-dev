@@ -38,7 +38,8 @@ case "$1" in
         docker-compose restart celery_worker
         ;;
     test)
-        docker-compose exec web coverage run --source='.' manage.py test
+        shift 1
+        docker-compose exec web coverage run --source='.' manage.py test "$@"
         ;;
     test_report)
         docker-compose exec web coverage report

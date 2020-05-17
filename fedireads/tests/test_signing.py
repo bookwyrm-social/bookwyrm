@@ -1,18 +1,15 @@
 from collections import namedtuple
 from urllib.parse import urlsplit
 
-from Crypto import Random
-from Crypto.PublicKey import RSA
-
 import responses
 
 from django.test import TestCase, Client
 from django.utils.http import http_date
 
 from fedireads.models import User
-from fedireads.broadcast import make_signature
 from fedireads.activitypub import get_follow_request
 from fedireads.settings import DOMAIN
+from fedireads.signatures import create_key_pair, make_signature
 
 Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
 
@@ -22,10 +19,7 @@ class Signature(TestCase):
         self.rat = User.objects.create_user('rat', 'rat@example.com', '')
         self.cat = User.objects.create_user('cat', 'cat@example.com', '')
 
-        random_generator = Random.new().read
-        key = RSA.generate(1024, random_generator)
-        private_key = key.export_key().decode('utf8')
-        public_key = key.publickey().export_key().decode('utf8')
+        private_key, public_key = create_key_pair()
 
         self.fake_remote = Sender(
             'http://localhost/user/remote',
@@ -76,7 +70,8 @@ class Signature(TestCase):
         now = http_date()
         sender = self.fake_remote
         signature = make_signature(sender, self.rat.inbox, now)
-        assert self.send_follow(sender, signature, now).status_code == 200
+        response = self.send_follow(sender, signature, now)
+        self.assertEqual(response.status_code, 200)
 
     @responses.activate
     def test_nonexistent_signer(self):
@@ -89,4 +84,5 @@ class Signature(TestCase):
         now = http_date()
         sender = self.fake_remote
         signature = make_signature(sender, self.rat.inbox, now)
-        assert self.send_follow(sender, signature, now).status_code == 401
+        response = self.send_follow(sender, signature, now)
+        self.assertEqual(response.status_code, 401)

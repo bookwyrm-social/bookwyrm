@@ -1,15 +1,11 @@
 ''' send out activitypub messages '''
 import json
-from urllib.parse import urlparse
-from base64 import b64encode
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
-from Crypto.Hash import SHA256
 from django.utils.http import http_date
 import requests
 
 from fedireads import models
 from fedireads.tasks import app
+from fedireads.signatures import make_signature
 
 
 def get_public_recipients(user, software=None):
@@ -62,24 +58,6 @@ def broadcast_task(sender_id, activity, recipients):
             })
     return errors
 
-
-def make_signature(sender, destination, date):
-    inbox_parts = urlparse(destination)
-    signature_headers = [
-        '(request-target): post %s' % inbox_parts.path,
-        'host: %s' % inbox_parts.netloc,
-        'date: %s' % date,
-    ]
-    message_to_sign = '\n'.join(signature_headers)
-    signer = pkcs1_15.new(RSA.import_key(sender.private_key))
-    signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
-    signature = {
-        'keyId': '%s#main-key' % sender.remote_id,
-        'algorithm': 'rsa-sha256',
-        'headers': '(request-target) host date',
-        'signature': b64encode(signed_message).decode('utf8'),
-    }
-    return ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
 
 def sign_and_send(sender, activity, destination):
     ''' crpyto whatever and http junk '''
