@@ -1,6 +1,17 @@
 version: '3'
 
 services:
+    nginx:
+        build: ./nginx
+        ports:
+            - 1333:80
+        depends_on:
+            - web
+        networks:
+            - main
+        volumes:
+            - static_volume:/app/static
+            - media_volume:/app/images
     db:
         image: postgres
         env_file: .env
@@ -13,13 +24,15 @@ services:
         command: python manage.py runserver 0.0.0.0:8000
         volumes:
             - .:/app
-        ports:
-            - "8000:8000"
+            - static_volume:/app/static
+            - media_volume:/app/images
         depends_on:
             - db
             - celery_worker
         networks:
             - main
+        expose:
+            - 8000
     redis:
         image: redis
         env_file: .env
@@ -40,14 +53,9 @@ services:
             - db
             - redis
         restart: on-failure
-    flower:
-        image: mher/flower
-        command: ["flower", "--broker=redis://redis:6379/0", "--port=5555"]
-        env_file: .env
-        ports:
-            - "5555:5555"
-        restart: on-failure
 volumes:
     pgdata:
+    static_volume:
+    media_volume:
 networks:
     main:
