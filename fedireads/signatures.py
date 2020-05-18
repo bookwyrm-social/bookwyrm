@@ -1,3 +1,4 @@
+import hashlib
 from urllib.parse import urlparse
 from base64 import b64encode, b64decode
 
@@ -34,6 +35,18 @@ def make_signature(sender, destination, date):
     }
     return ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
 
+def verify_digest(request):
+    algorithm, digest = request.headers['digest'].split('=', 1)
+    if algorithm == 'SHA-256':
+        hash_function = hashlib.sha256
+    elif algorithm == 'SHA-512':
+        hash_function = hashlib.sha512
+    else:
+        raise ValueError("Unsupported hash function.")
+
+    expected = hash_function(request.body).digest()
+    if b64decode(digest) != expected:
+        return ValueError("Invalid HTTP Digest header")
 
 class Signature:
     def __init__(self, key_id, headers, signature):
@@ -68,6 +81,8 @@ class Signature:
                 comparison_string.append(
                     '(request-target): post %s' % request.path)
             else:
+                if signed_header_name == 'digest':
+                    verify_digest(request)
                 comparison_string.append('%s: %s' % (
                     signed_header_name,
                     request.headers[signed_header_name]
