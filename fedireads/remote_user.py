@@ -26,6 +26,9 @@ def get_or_create_remote_user(actor):
         response.raise_for_status()
     data = response.json()
 
+    # make sure our actor is who they say they are
+    assert actor == data['id']
+
     actor_parts = urlparse(actor)
     with transaction.atomic():
         user = create_remote_user(data)

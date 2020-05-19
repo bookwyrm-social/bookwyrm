@@ -90,6 +90,7 @@ def shared_inbox(request):
 
 
 def get_public_key(key_actor):
+    ''' try a stored key or load it from remote '''
     try:
         user = models.User.objects.get(remote_id=key_actor)
         public_key = user.public_key
