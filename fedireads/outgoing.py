@@ -368,6 +368,6 @@ def handle_update_book(user, book):
 
 def handle_update_user(user):
     ''' broadcast editing a user's profile '''
-    actor = activitypub.get_actor(user)
+    actor = user.activitypub_serialize
     update_activity = activitypub.get_update(user, actor)
     broadcast(user, update_activity)

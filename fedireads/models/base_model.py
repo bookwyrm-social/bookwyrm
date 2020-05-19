@@ -1,11 +1,12 @@
 ''' base model with default fields '''
 from django.db import models
 from django.dispatch import receiver
+from typing import List
 
 from fedireads.settings import DOMAIN
 
 class FedireadsModel(models.Model):
-    ''' fields and functions for every model '''
+    ''' these models are activitypub compatible '''
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = models.CharField(max_length=255, null=True)
@@ -30,3 +31,20 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
     if not instance.remote_id:
         instance.remote_id = instance.get_remote_id()
         instance.save()
+
+
+class ActivitypubMixin(object):
+    ''' add this mixin for models that are AP serializable '''
+    activity_type = 'Object'
+    activity_fields = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+    ]
+    activity_serializer = None
+
+    @property
+    def activitypub_serialize(self):
+        fields = {k: getattr(self, v) for k, v in self.activity_fields}
+        return self.activity_serializer(
+            **fields
+        ).serialize()

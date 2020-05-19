@@ -7,10 +7,10 @@ from fedireads import activitypub
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair
-from .base_model import FedireadsModel
+from .base_model import ActivitypubMixin, FedireadsModel
 
 
-class User(AbstractUser):
+class User(ActivitypubMixin, AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
@@ -66,9 +66,53 @@ class User(AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = models.BooleanField(default=False)
 
+    # ---- activitypub serialization settings for this model ----- #
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_actor(self)
+    def ap_followers(self):
+        return '%s/followers' % self.remote_id
+
+    @property
+    def ap_publicKey(self):
+        return {
+            'id': '%s/#main-key' % self.remote_id,
+            'owner': self.remote_id,
+            'publicKeyPem': self.public_key,
+        }
+
+    @property
+    def ap_icon(self):
+        if self.avatar:
+            url = self.avatar.url
+            media_type = 'image/%s' % url.split('.')[-1]
+        else:
+            url = '%s/static/images/default_avi.jpg' % DOMAIN
+            media_type = 'image/jpeg'
+        return {
+            'mediaType': media_type,
+            'url': url,
+            'type': 'Image',
+        }
+
+    @property
+    def ap_endpoints(self):
+        return {}
+
+    activity_type = 'Person'
+    activity_fields = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+        ('preferredUsername', 'name'),
+        ('inbox', 'inbox'),
+        ('outbox', 'outbox'),
+        ('followers', 'ap_followers'),
+        ('summary', 'summary'),
+        ('publicKey', 'ap_publicKey'),
+        ('endpoints', 'ap_endpoints'),
+        ('icon', 'ap_icon'),
+        ('manuallyApprovesFollowers', 'manually_approves_followers'),
+    ]
+    activity_serializer = activitypub.User
+
 
 
 class UserRelationship(FedireadsModel):
