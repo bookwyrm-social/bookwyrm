@@ -5,7 +5,7 @@ import requests
 
 from fedireads import models
 from fedireads.tasks import app
-from fedireads.signatures import make_signature
+from fedireads.signatures import make_signature, make_digest
 
 
 def get_public_recipients(user, software=None):
@@ -67,12 +67,16 @@ def sign_and_send(sender, activity, destination):
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError('No private key found for sender')
 
+    data = json.dumps(activity).encode('utf-8')
+    digest = make_digest(data)
+
     response = requests.post(
         destination,
-        data=json.dumps(activity),
+        data=data,
         headers={
             'Date': now,
-            'Signature': make_signature(sender, destination, now),
+            'Digest': digest,
+            'Signature': make_signature(sender, destination, now, digest),
             'Content-Type': 'application/activity+json; charset=utf-8',
         },
     )
