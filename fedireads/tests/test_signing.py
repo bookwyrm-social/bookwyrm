@@ -1,6 +1,8 @@
+import time
 from collections import namedtuple
 from urllib.parse import urlsplit
 
+import json
 import responses
 
 from django.test import TestCase, Client
@@ -9,7 +11,10 @@ from django.utils.http import http_date
 from fedireads.models import User
 from fedireads.activitypub import get_follow_request
 from fedireads.settings import DOMAIN
-from fedireads.signatures import create_key_pair, make_signature
+from fedireads.signatures import create_key_pair, make_signature, make_digest
+
+def get_follow_data(follower, followee):
+    return json.dumps(get_follow_request(follower, followee)).encode('utf-8')
 
 Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
 
@@ -27,35 +32,44 @@ class Signature(TestCase):
             public_key,
         )
 
-    def send_follow(self, sender, signature, now):
+    def send(self, signature, now, data):
         c = Client()
         return c.post(
             urlsplit(self.rat.inbox).path,
-            data=get_follow_request(
-                sender,
-                self.rat,
-            ),
+            data=data,
             content_type='application/json',
             **{
                 'HTTP_DATE': now,
                 'HTTP_SIGNATURE': signature,
+                'HTTP_DIGEST': make_digest(data),
                 'HTTP_CONTENT_TYPE': 'application/activity+json; charset=utf-8',
                 'HTTP_HOST': DOMAIN,
             }
         )
 
+    def send_test_request(
+            self,
+            sender,
+            signer=None,
+            send_data=None,
+            digest=None,
+            date=None):
+        now = date or http_date()
+        data = get_follow_data(sender, self.rat)
+        signature = make_signature(
+            signer or sender, self.rat.inbox, now, digest or make_digest(data))
+        return self.send(signature, now, send_data or data)
+
     def test_correct_signature(self):
-        now = http_date()
-        signature = make_signature(self.mouse, self.rat.inbox, now)
-        return self.send_follow(self.mouse, signature, now).status_code == 200
+        response = self.send_test_request(sender=self.mouse)
+        self.assertEqual(response.status_code, 200)
 
     def test_wrong_signature(self):
         ''' Messages must be signed by the right actor.
             (cat cannot sign messages on behalf of mouse)
         '''
-        now = http_date()
-        signature = make_signature(self.cat, self.rat.inbox, now)
-        assert self.send_follow(self.mouse, signature, now).status_code == 401
+        response = self.send_test_request(sender=self.mouse, signer=self.cat)
+        self.assertEqual(response.status_code, 401)
 
     @responses.activate
     def test_remote_signer(self):
@@ -67,10 +81,7 @@ class Signature(TestCase):
             }},
             status=200)
 
-        now = http_date()
-        sender = self.fake_remote
-        signature = make_signature(sender, self.rat.inbox, now)
-        response = self.send_follow(sender, signature, now)
+        response = self.send_test_request(sender=self.fake_remote)
         self.assertEqual(response.status_code, 200)
 
     @responses.activate
@@ -81,8 +92,26 @@ class Signature(TestCase):
             json={'error': 'not found'},
             status=404)
 
-        now = http_date()
-        sender = self.fake_remote
-        signature = make_signature(sender, self.rat.inbox, now)
-        response = self.send_follow(sender, signature, now)
+        response = self.send_test_request(sender=self.fake_remote)
+        self.assertEqual(response.status_code, 401)
+
+    def test_changed_data(self):
+        '''Message data must match the digest header.'''
+        response = self.send_test_request(
+            self.mouse,
+            send_data=get_follow_data(self.mouse, self.cat))
+        self.assertEqual(response.status_code, 401)
+
+    def test_invalid_digest(self):
+        response = self.send_test_request(
+            self.mouse,
+            digest='SHA-256=AAAAAAAAAAAAAAAAAA')
+        self.assertEqual(response.status_code, 401)
+
+    def test_old_message(self):
+        '''Old messages should be rejected to prevent replay attacks.'''
+        response = self.send_test_request(
+            self.mouse,
+            date=http_date(time.time() - 301)
+        )
         self.assertEqual(response.status_code, 401)

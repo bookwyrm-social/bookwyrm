@@ -114,6 +114,10 @@ def get_or_create_remote_server(domain):
         'https://%s/.well-known/nodeinfo' % domain,
         headers={'Accept': 'application/activity+json'}
     )
+
+    if response.status_code != 200:
+        return None
+
     data = response.json()
     try:
         nodeinfo_url = data.get('links')[0].get('href')
