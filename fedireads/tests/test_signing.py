@@ -1,3 +1,4 @@
+import time
 from collections import namedtuple
 from urllib.parse import urlsplit
 
@@ -51,8 +52,9 @@ class Signature(TestCase):
             sender,
             signer=None,
             send_data=None,
-            digest=None):
-        now = http_date()
+            digest=None,
+            date=None):
+        now = date or http_date()
         data = get_follow_data(sender, self.rat)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest or make_digest(data))
@@ -104,4 +106,12 @@ class Signature(TestCase):
         response = self.send_test_request(
             self.mouse,
             digest='SHA-256=AAAAAAAAAAAAAAAAAA')
+        self.assertEqual(response.status_code, 401)
+
+    def test_old_message(self):
+        '''Old messages should be rejected to prevent replay attacks.'''
+        response = self.send_test_request(
+            self.mouse,
+            date=http_date(time.time() - 301)
+        )
         self.assertEqual(response.status_code, 401)

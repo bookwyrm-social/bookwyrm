@@ -1,5 +1,6 @@
 import hashlib
 from urllib.parse import urlparse
+import datetime
 from base64 import b64encode, b64decode
 
 from Crypto import Random
@@ -7,6 +8,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15 #pylint: disable=no-name-in-module
 from Crypto.Hash import SHA256
 
+MAX_SIGNATURE_AGE = 300
 
 def create_key_pair():
     random_generator = Random.new().read
@@ -77,6 +79,9 @@ class Signature:
 
     def verify(self, public_key, request):
         ''' verify rsa signature '''
+        if http_date_age(request.headers['date']) > MAX_SIGNATURE_AGE:
+            raise ValueError(
+                "Request too old: %s" % (request.headers['date'],))
         public_key = RSA.import_key(public_key)
 
         comparison_string = []
@@ -99,3 +104,8 @@ class Signature:
 
         # raises a ValueError if it fails
         signer.verify(digest, self.signature)
+
+def http_date_age(datestr):
+    parsed = datetime.datetime.strptime(datestr, '%a, %d %b %Y %H:%M:%S GMT')
+    delta = datetime.datetime.utcnow() - parsed
+    return delta.total_seconds()
