@@ -36,7 +36,8 @@ def get_or_create_remote_user(actor):
         user.save()
 
     avatar = get_avatar(data)
-    user.avatar.save(*avatar)
+    if avatar:
+        user.avatar.save(*avatar)
 
     if user.fedireads_user:
         get_remote_reviews(user)

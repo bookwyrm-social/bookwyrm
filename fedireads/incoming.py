@@ -54,7 +54,7 @@ def shared_inbox(request):
         key = get_public_key(key_actor)
 
         signature.verify(key, request)
-    except ValueError:
+    except (ValueError, requests.exceptions.HTTPError):
         return HttpResponse(status=401)
 
     handlers = {
@@ -91,20 +91,8 @@ def shared_inbox(request):
 
 def get_public_key(key_actor):
     ''' try a stored key or load it from remote '''
-    try:
-        user = models.User.objects.get(remote_id=key_actor)
-        public_key = user.public_key
-    except models.User.DoesNotExist:
-        response = requests.get(
-            key_actor,
-            headers={'Accept': 'application/activity+json'}
-        )
-        if not response.ok:
-            raise ValueError('Could not load public key')
-        user_data = response.json()
-        public_key = user_data['publicKey']['publicKeyPem']
-
-    return public_key
+    user = get_or_create_remote_user(key_actor)
+    return user.public_key
 
 @app.task
 def handle_follow(activity):
