@@ -44,24 +44,7 @@ def shared_inbox(request):
     if not activity.get('object'):
         return HttpResponseBadRequest()
 
-    try:
-        signature = Signature.parse(request)
-
-        key_actor = urldefrag(signature.key_id).url
-        if key_actor != activity.get('actor'):
-            raise ValueError("Wrong actor created signature.")
-
-        remote_user = get_or_create_remote_user(key_actor)
-
-        try:
-            signature.verify(remote_user.public_key, request)
-        except ValueError:
-            old_key = remote_user.public_key
-            refresh_remote_user(remote_user)
-            if remote_user.public_key == old_key:
-                raise # Key unchanged.
-            signature.verify(remote_user.public_key, request)
-    except (ValueError, requests.exceptions.HTTPError):
+    if not has_valid_signature(request, activity):
         return HttpResponse(status=401)
 
     handlers = {
@@ -94,6 +77,29 @@ def shared_inbox(request):
 
     handler.delay(activity)
     return HttpResponse()
+
+
+def has_valid_signature(request, activity):
+    try:
+        signature = Signature.parse(request)
+
+        key_actor = urldefrag(signature.key_id).url
+        if key_actor != activity.get('actor'):
+            raise ValueError("Wrong actor created signature.")
+
+        remote_user = get_or_create_remote_user(key_actor)
+
+        try:
+            signature.verify(remote_user.public_key, request)
+        except ValueError:
+            old_key = remote_user.public_key
+            refresh_remote_user(remote_user)
+            if remote_user.public_key == old_key:
+                raise # Key unchanged.
+            signature.verify(remote_user.public_key, request)
+    except (ValueError, requests.exceptions.HTTPError):
+        return False
+    return True
 
 
 @app.task
