@@ -45,6 +45,10 @@ def shared_inbox(request):
         return HttpResponseBadRequest()
 
     if not has_valid_signature(request, activity):
+        if activity['type'] == 'Delete':
+            # Pretend that unauth'd deletes succeed. Auth may be failing because
+            # the resource or owner of the resource might have been deleted.
+            return HttpResponse()
         return HttpResponse(status=401)
 
     handlers = {
