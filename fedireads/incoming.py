@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import books_manager, models, outgoing
 from fedireads import status as status_builder
-from fedireads.remote_user import get_or_create_remote_user
+from fedireads.remote_user import get_or_create_remote_user, refresh_remote_user
 from fedireads.tasks import app
 from fedireads.signatures import Signature
 
@@ -51,9 +51,16 @@ def shared_inbox(request):
         if key_actor != activity.get('actor'):
             raise ValueError("Wrong actor created signature.")
 
-        key = get_public_key(key_actor)
+        remote_user = get_or_create_remote_user(key_actor)
 
-        signature.verify(key, request)
+        try:
+            signature.verify(remote_user.public_key, request)
+        except ValueError:
+            old_key = remote_user.public_key
+            refresh_remote_user(remote_user)
+            if remote_user.public_key == old_key:
+                raise # Key unchanged.
+            signature.verify(remote_user.public_key, request)
     except (ValueError, requests.exceptions.HTTPError):
         return HttpResponse(status=401)
 
@@ -88,11 +95,6 @@ def shared_inbox(request):
     handler.delay(activity)
     return HttpResponse()
 
-
-def get_public_key(key_actor):
-    ''' try a stored key or load it from remote '''
-    user = get_or_create_remote_user(key_actor)
-    return user.public_key
 
 @app.task
 def handle_follow(activity):

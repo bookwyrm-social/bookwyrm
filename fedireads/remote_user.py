@@ -17,17 +17,7 @@ def get_or_create_remote_user(actor):
     except models.User.DoesNotExist:
         pass
 
-    # load the user's info from the actor url
-    response = requests.get(
-        actor,
-        headers={'Accept': 'application/activity+json'}
-    )
-    if not response.ok:
-        response.raise_for_status()
-    data = response.json()
-
-    # make sure our actor is who they say they are
-    assert actor == data['id']
+    data = fetch_user_data(actor)
 
     actor_parts = urlparse(actor)
     with transaction.atomic():
@@ -42,6 +32,21 @@ def get_or_create_remote_user(actor):
     if user.fedireads_user:
         get_remote_reviews(user)
     return user
+
+def fetch_user_data(actor):
+    # load the user's info from the actor url
+    response = requests.get(
+        actor,
+        headers={'Accept': 'application/activity+json'}
+    )
+    if not response.ok:
+        response.raise_for_status()
+    data = response.json()
+
+    # make sure our actor is who they say they are
+    if actor != data['id']:
+        raise ValueError("Remote actor id must match url.")
+    return data
 
 
 def create_remote_user(data):
@@ -72,6 +77,24 @@ def create_remote_user(data):
             'manuallyApprovesFollowers', False),
     )
 
+def refresh_remote_user(user):
+    data = fetch_user_data(user.remote_id)
+
+    shared_inbox = data.get('endpoints').get('sharedInbox') if \
+        data.get('endpoints') else None
+
+    # TODO - I think dataclasses change will mean less repetition here later.
+    user.name = data.get('name')
+    user.summary = data.get('summary')
+    user.inbox = data['inbox'] #fail if there's no inbox
+    user.outbox = data['outbox'] # fail if there's no outbox
+    user.shared_inbox = shared_inbox
+    user.public_key = data.get('publicKey').get('publicKeyPem')
+    user.local = False
+    user.fedireads_user = data.get('fedireadsUser', False)
+    user.manually_approves_followers = data.get(
+        'manuallyApprovesFollowers', False)
+    user.save()
 
 def get_avatar(data):
     ''' find the icon attachment and load the image from the remote sever '''
