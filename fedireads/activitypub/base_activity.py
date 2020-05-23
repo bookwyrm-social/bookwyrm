@@ -17,10 +17,24 @@ class Image:
 
 
 @dataclass
+class PublicKey:
+    id: str
+    owner: str
+    publicKeyPem: str
+
+
+@dataclass
 class ActivityObject:
     ''' actor activitypub json '''
     id: str
     type: str
+
+    def __init__(self, **kwargs):
+        ''' silently ignore unexpected fields '''
+        names = set([f.name for f in dataclasses.fields(self)])
+        for k, v in kwargs.items():
+            if k in names:
+                setattr(self, k, v)
 
     def serialize(self):
         data = self.__dict__

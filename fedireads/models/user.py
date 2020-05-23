@@ -73,11 +73,11 @@ class User(ActivitypubMixin, AbstractUser):
 
     @property
     def ap_publicKey(self):
-        return {
+        return activitypub.PublicKey(**{
             'id': '%s/#main-key' % self.remote_id,
             'owner': self.remote_id,
             'publicKeyPem': self.public_key,
-        }
+        })
 
     @property
     def ap_icon(self):
@@ -97,7 +97,8 @@ class User(ActivitypubMixin, AbstractUser):
     activity_fields = [
         ('id', 'remote_id'),
         ('type', 'activity_type'),
-        ('preferredUsername', 'name'),
+        ('preferredUsername', 'localname'),
+        ('name', 'name'),
         ('inbox', 'inbox'),
         ('outbox', 'outbox'),
         ('followers', 'ap_followers'),
