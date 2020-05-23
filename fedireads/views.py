@@ -10,6 +10,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import activitypub, outgoing
+from fedireads.activitypub import ActivityEncoder
 from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
 from fedireads.tasks import app
@@ -237,7 +238,7 @@ def user_page(request, username, subpage=None):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.activitypub_serialize)
+        return JsonResponse(user.activitypub_serialize, encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations

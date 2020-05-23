@@ -87,11 +87,7 @@ class User(ActivitypubMixin, AbstractUser):
         else:
             url = '%s/static/images/default_avi.jpg' % DOMAIN
             media_type = 'image/jpeg'
-        return {
-            'mediaType': media_type,
-            'url': url,
-            'type': 'Image',
-        }
+        return activitypub.Image(media_type, url, 'Image')
 
     @property
     def ap_endpoints(self):

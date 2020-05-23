@@ -1,6 +1,13 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass
+from json import JSONEncoder
 from typing import Dict
+
+
+class ActivityEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
+
 
 @dataclass
 class Image:
@@ -19,4 +26,3 @@ class ActivityObject:
         data = self.__dict__
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
-
