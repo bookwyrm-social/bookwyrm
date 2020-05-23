@@ -1,6 +1,6 @@
 ''' bring activitypub functions into the namespace '''
 from .base_activity import ActivityEncoder, Image, PublicKey
-from .actor import User
+from .actor import Person
 from .book import get_book, get_author, get_shelf
 from .create import get_create, get_update
 from .follow import get_following, get_followers

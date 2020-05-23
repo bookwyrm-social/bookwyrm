@@ -6,7 +6,7 @@ import requests
 from django.core.files.base import ContentFile
 from django.db import transaction
 
-from fedireads import models
+from fedireads import activitypub, models
 from fedireads.status import create_review_from_activity
 
 
@@ -51,30 +51,25 @@ def fetch_user_data(actor):
 
 def create_remote_user(data):
     ''' parse the activitypub actor data into a user '''
-    actor = data['id']
-    actor_parts = urlparse(actor)
+    actor = activitypub.Person(**data)
 
     # the webfinger format for the username.
-    username = '%s@%s' % (actor_parts.path.split('/')[-1], actor_parts.netloc)
+    actor_parts = urlparse(actor.id)
+    username = '%s@%s' % (actor.preferredUsername, actor_parts.netloc)
 
-    shared_inbox = data.get('endpoints').get('sharedInbox') if \
-        data.get('endpoints') else None
-
-    # throws a key error if it can't find any of these fields
     return models.User.objects.create_user(
         username,
         '', '', # email and passwords are left blank
-        remote_id=actor,
-        name=data.get('name'),
-        summary=data.get('summary'),
-        inbox=data['inbox'], #fail if there's no inbox
-        outbox=data['outbox'], # fail if there's no outbox
-        shared_inbox=shared_inbox,
-        public_key=data.get('publicKey').get('publicKeyPem'),
+        remote_id=actor.id,
+        name=actor.name,
+        summary=actor.summary,
+        inbox=actor.inbox,
+        outbox=actor.outbox,
+        shared_inbox=actor.endpoints['sharedInbox'],
+        public_key=actor.publicKey['publicKeyPem'],
         local=False,
-        fedireads_user=data.get('fedireadsUser', False),
-        manually_approves_followers=data.get(
-            'manuallyApprovesFollowers', False),
+        fedireads_user=actor.fedireadsUser,
+        manually_approves_followers=actor.manuallyApprovesFollowers,
     )
 
 def refresh_remote_user(user):

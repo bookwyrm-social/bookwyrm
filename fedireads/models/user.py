@@ -108,7 +108,7 @@ class User(ActivitypubMixin, AbstractUser):
         ('icon', 'ap_icon'),
         ('manuallyApprovesFollowers', 'manually_approves_followers'),
     ]
-    activity_serializer = activitypub.User
+    activity_serializer = activitypub.Person
 
 
 

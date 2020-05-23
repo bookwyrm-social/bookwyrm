@@ -1,4 +1,5 @@
 ''' basics for an activitypub serializer '''
+import dataclasses
 from dataclasses import dataclass
 from json import JSONEncoder
 from typing import Dict
@@ -23,7 +24,7 @@ class PublicKey:
     publicKeyPem: str
 
 
-@dataclass
+@dataclass(init=False)
 class ActivityObject:
     ''' actor activitypub json '''
     id: str

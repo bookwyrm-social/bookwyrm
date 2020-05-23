@@ -4,8 +4,8 @@ from typing import Dict
 
 from .base_activity import ActivityObject, Image, PublicKey
 
-@dataclass
-class User(ActivityObject):
+@dataclass(init=False)
+class Person(ActivityObject):
     ''' actor activitypub json '''
     preferredUsername: str
     name: str
