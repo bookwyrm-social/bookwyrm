@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from fedireads import books_manager, models, outgoing
 from fedireads import status as status_builder
-from fedireads.remote_user import get_or_create_remote_user
+from fedireads.remote_user import get_or_create_remote_user, refresh_remote_user
 from fedireads.tasks import app
 from fedireads.signatures import Signature
 
@@ -44,17 +44,11 @@ def shared_inbox(request):
     if not activity.get('object'):
         return HttpResponseBadRequest()
 
-    try:
-        signature = Signature.parse(request)
-
-        key_actor = urldefrag(signature.key_id).url
-        if key_actor != activity.get('actor'):
-            raise ValueError("Wrong actor created signature.")
-
-        key = get_public_key(key_actor)
-
-        signature.verify(key, request)
-    except ValueError:
+    if not has_valid_signature(request, activity):
+        if activity['type'] == 'Delete':
+            # Pretend that unauth'd deletes succeed. Auth may be failing because
+            # the resource or owner of the resource might have been deleted.
+            return HttpResponse()
         return HttpResponse(status=401)
 
     handlers = {
@@ -89,22 +83,28 @@ def shared_inbox(request):
     return HttpResponse()
 
 
-def get_public_key(key_actor):
-    ''' try a stored key or load it from remote '''
+def has_valid_signature(request, activity):
     try:
-        user = models.User.objects.get(remote_id=key_actor)
-        public_key = user.public_key
-    except models.User.DoesNotExist:
-        response = requests.get(
-            key_actor,
-            headers={'Accept': 'application/activity+json'}
-        )
-        if not response.ok:
-            raise ValueError('Could not load public key')
-        user_data = response.json()
-        public_key = user_data['publicKey']['publicKeyPem']
+        signature = Signature.parse(request)
 
-    return public_key
+        key_actor = urldefrag(signature.key_id).url
+        if key_actor != activity.get('actor'):
+            raise ValueError("Wrong actor created signature.")
+
+        remote_user = get_or_create_remote_user(key_actor)
+
+        try:
+            signature.verify(remote_user.public_key, request)
+        except ValueError:
+            old_key = remote_user.public_key
+            refresh_remote_user(remote_user)
+            if remote_user.public_key == old_key:
+                raise # Key unchanged.
+            signature.verify(remote_user.public_key, request)
+    except (ValueError, requests.exceptions.HTTPError):
+        return False
+    return True
+
 
 @app.task
 def handle_follow(activity):
