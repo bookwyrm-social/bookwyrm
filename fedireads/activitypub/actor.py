@@ -2,18 +2,11 @@
 from dataclasses import dataclass
 from typing import Dict
 
-@dataclass
-class Image:
-    mediaType: str
-    url: str
-    type: str = 'Image'
-
+from .base_activity import ActivityObject, Image
 
 @dataclass
-class User:
+class User(ActivityObject):
     ''' actor activitypub json '''
-    id: str
-    type: str
     preferredUsername: str
     inbox: str
     outbox: str
