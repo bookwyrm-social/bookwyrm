@@ -1,6 +1,5 @@
 ''' basics for an activitypub serializer '''
-import dataclasses
-from dataclasses import dataclass
+from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 from typing import Dict
 
@@ -31,11 +30,16 @@ class ActivityObject:
     type: str
 
     def __init__(self, **kwargs):
-        ''' silently ignore unexpected fields '''
-        names = set([f.name for f in dataclasses.fields(self)])
-        for k, v in kwargs.items():
-            if k in names:
-                setattr(self, k, v)
+        ''' treat fields as required but not exhaustive '''
+        for field in fields(self):
+            try:
+                value = kwargs[field.name]
+            except KeyError:
+                if field.default == MISSING:
+                    raise TypeError('Missing required field: %s' % field.name)
+                value = field.default
+            setattr(self, field.name, value)
+
 
     def serialize(self):
         data = self.__dict__

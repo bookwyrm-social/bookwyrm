@@ -2,15 +2,16 @@
 import urllib.parse
 
 from django.utils import timezone
+from django.utils.http import http_date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
-from .base_model import FedireadsModel
+from .base_model import ActivitypubMixin, FedireadsModel
 
 
-class Status(FedireadsModel):
+class Status(ActivitypubMixin, FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status_type = models.CharField(max_length=255, default='Note')
@@ -38,9 +39,49 @@ class Status(FedireadsModel):
     )
     objects = InheritanceManager()
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    # ---- activitypub serialization settings for this model ----- #
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_status(self)
+    def ap_reply_parent(self):
+        return self.reply_parent.remote_id
+
+    @property
+    def ap_date(self):
+        return http_date(self.published_date.timestamp())
+
+    @property
+    def ap_user(self):
+        return self.user.remote_id
+
+    @property
+    def ap_to(self):
+        return ['https://www.w3.org/ns/activitystreams#Public']
+
+    @property
+    def ap_cc(self):
+        return ['https://friend.camp/users/tripofmice/followers']
+
+    @property
+    def ap_replies(self):
+        # TODO
+        return {}
+
+
+    activity_fields = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+        ('url', 'remote_id'),
+        ('inReplyTo', 'ap_reply_parent'),
+        ('published', 'ap_date'),
+        ('attributedTo', 'ap_user'),
+        ('to', 'ap_to'),
+        ('cc', 'ap_cc'),
+        ('content', 'content'),
+        ('replies', 'ap_replies'),
+    ]
+    activity_serializer = activitypub.Note
 
 
 class Comment(Status):

@@ -42,7 +42,7 @@ class RemoteUser(TestCase):
         data = json.loads(self.datafile.read_bytes())
         del data['inbox']
         self.assertRaises(
-            AttributeError,
+            TypeError,
             remote_user.create_remote_user,
             data
         )
@@ -52,7 +52,7 @@ class RemoteUser(TestCase):
         data = json.loads(self.datafile.read_bytes())
         del data['outbox']
         self.assertRaises(
-            AttributeError,
+            TypeError,
             remote_user.create_remote_user,
             data
         )

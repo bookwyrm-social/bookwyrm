@@ -6,7 +6,7 @@ from typing import List
 from fedireads.settings import DOMAIN
 
 class FedireadsModel(models.Model):
-    ''' these models are activitypub compatible '''
+    ''' shared fields '''
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     remote_id = models.CharField(max_length=255, null=True)

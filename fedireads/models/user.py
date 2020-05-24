@@ -111,7 +111,6 @@ class User(ActivitypubMixin, AbstractUser):
     activity_serializer = activitypub.Person
 
 
-
 class UserRelationship(FedireadsModel):
     ''' many-to-many through table for followers '''
     user_subject = models.ForeignKey(

@@ -1,5 +1,5 @@
 ''' actor serializer '''
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict
 
 from .base_activity import ActivityObject, Image, PublicKey
@@ -15,7 +15,7 @@ class Person(ActivityObject):
     summary: str
     publicKey: PublicKey
     endpoints: Dict
-    icon: Image
+    icon: Image = field(default=lambda: {})
     fedireadsUser: str = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
