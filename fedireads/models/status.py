@@ -14,12 +14,10 @@ from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
 class Status(ActivitypubMixin, FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    status_type = models.CharField(max_length=255, default='Note')
     content = models.TextField(blank=True, null=True)
     mention_users = models.ManyToManyField('User', related_name='mention_user')
     mention_books = models.ManyToManyField(
         'Edition', related_name='mention_book')
-    activity_type = models.CharField(max_length=255, default='Note')
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
@@ -39,13 +37,10 @@ class Status(ActivitypubMixin, FedireadsModel):
     )
     objects = InheritanceManager()
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
     # ---- activitypub serialization settings for this model ----- #
     @property
     def ap_reply_parent(self):
-        return self.reply_parent.remote_id
+        return self.reply_parent.remote_id if self.reply_parent else None
 
     @property
     def ap_date(self):
@@ -54,6 +49,10 @@ class Status(ActivitypubMixin, FedireadsModel):
     @property
     def ap_user(self):
         return self.user.remote_id
+
+    @property
+    def ap_book(self):
+        return self.book.remote_id
 
     @property
     def ap_to(self):
@@ -81,6 +80,7 @@ class Status(ActivitypubMixin, FedireadsModel):
         ('content', 'content'),
         ('replies', 'ap_replies'),
     ]
+    activity_type = 'Note'
     activity_serializer = activitypub.Note
 
     activity_to_model = [
@@ -93,36 +93,51 @@ class Status(ActivitypubMixin, FedireadsModel):
     ]
 
 
-
 class Comment(Status):
     ''' like a review but without a rating and transient '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
     def save(self, *args, **kwargs):
-        self.status_type = 'Comment'
-        self.activity_type = 'Note'
         super().save(*args, **kwargs)
 
-
-    @property
-    def activitypub_serialize(self):
-        return activitypub.get_comment(self)
+    model_to_activity = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+        ('url', 'remote_id'),
+        ('inReplyTo', 'ap_reply_parent'),
+        ('inReplyToBook', 'ap_book'),
+        ('published', 'ap_date'),
+        ('attributedTo', 'ap_user'),
+        ('to', 'ap_to'),
+        ('cc', 'ap_cc'),
+        ('content', 'content'),
+        ('replies', 'ap_replies'),
+    ]
+    activity_type = 'Comment'
+    activity_serializer = activitypub.Comment
 
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     quote = models.TextField()
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
-    def save(self, *args, **kwargs):
-        self.status_type = 'Quotation'
-        self.activity_type = 'Note'
-        super().save(*args, **kwargs)
-
-
-    @property
-    def activitypub_serialize(self):
-        return activitypub.get_quotation(self)
+    model_to_activity = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+        ('url', 'remote_id'),
+        ('inReplyTo', 'ap_reply_parent'),
+        ('inReplyToBook', 'ap_book'),
+        ('published', 'ap_date'),
+        ('attributedTo', 'ap_user'),
+        ('to', 'ap_to'),
+        ('cc', 'ap_cc'),
+        ('quote', 'quote'),
+        ('content', 'content'),
+        ('replies', 'ap_replies'),
+    ]
+    activity_type = 'Quotation'
+    activity_serializer = activitypub.Quotation
 
 
 class Review(Status):
@@ -136,15 +151,23 @@ class Review(Status):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
-    def save(self, *args, **kwargs):
-        self.status_type = 'Review'
-        self.activity_type = 'Article'
-        super().save(*args, **kwargs)
-
-
-    @property
-    def activitypub_serialize(self):
-        return activitypub.get_review(self)
+    model_to_activity = [
+        ('id', 'remote_id'),
+        ('type', 'activity_type'),
+        ('url', 'remote_id'),
+        ('inReplyTo', 'ap_reply_parent'),
+        ('inReplyToBook', 'ap_book'),
+        ('published', 'ap_date'),
+        ('attributedTo', 'ap_user'),
+        ('to', 'ap_to'),
+        ('cc', 'ap_cc'),
+        ('name', 'name'),
+        ('rating', 'rating'),
+        ('content', 'content'),
+        ('replies', 'ap_replies'),
+    ]
+    activity_type = 'Reviw'
+    activity_serializer = activitypub.Review
 
 
 class Favorite(FedireadsModel):
@@ -164,7 +187,6 @@ class Boost(Status):
         related_name="boosters")
 
     def save(self, *args, **kwargs):
-        self.status_type = 'Boost'
         self.activity_type = 'Announce'
         super().save(*args, **kwargs)
 
