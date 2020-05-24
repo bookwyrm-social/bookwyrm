@@ -94,7 +94,7 @@ class User(ActivitypubMixin, AbstractUser):
         return {}
 
     activity_type = 'Person'
-    activity_fields = [
+    model_to_activity = [
         ('id', 'remote_id'),
         ('type', 'activity_type'),
         ('preferredUsername', 'localname'),
