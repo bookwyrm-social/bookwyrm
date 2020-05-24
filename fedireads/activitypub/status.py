@@ -3,58 +3,6 @@ from uuid import uuid4
 
 from fedireads.settings import DOMAIN
 
-
-def get_rating(review):
-    ''' activitypub serialize rating activity '''
-    status = get_status(review)
-    status['inReplyToBook'] = review.book.local_id
-    status['fedireadsType'] = review.status_type
-    status['rating'] = review.rating
-    status['content'] = '%d star rating of "%s"' % (
-        review.rating, review.book.title)
-    return status
-
-
-def get_quotation(quotation):
-    ''' fedireads json for quotations '''
-    status = get_status(quotation)
-    status['inReplyToBook'] = quotation.book.local_id
-    status['fedireadsType'] = quotation.status_type
-    status['quote'] = quotation.quote
-    return status
-
-
-def get_quotation_article(quotation):
-    ''' a book quotation formatted for a non-fedireads isntance (mastodon) '''
-    status = get_status(quotation)
-    content = '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
-        quotation.quote,
-        quotation.book.local_id,
-        quotation.book.title,
-        quotation.content,
-    )
-    status['content'] = content
-    return status
-
-
-def get_review(review):
-    ''' fedireads json for book reviews '''
-    status = get_status(review)
-    status['inReplyToBook'] = review.book.local_id
-    status['fedireadsType'] = review.status_type
-    status['name'] = review.name
-    status['rating'] = review.rating
-    return status
-
-
-def get_comment(comment):
-    ''' fedireads json for book reviews '''
-    status = get_status(comment)
-    status['inReplyToBook'] = comment.book.local_id
-    status['fedireadsType'] = comment.status_type
-    return status
-
-
 def get_rating_note(review):
     ''' simple rating, send it as a note not an artciel '''
     status = get_status(review)
@@ -90,54 +38,6 @@ def get_comment_article(comment):
         (comment.book.local_id, comment.book.title)
     return status
 
-
-def get_status(status):
-    ''' create activitypub json for a status '''
-    user = status.user
-    uri = status.remote_id
-    reply_parent_id = status.reply_parent.remote_id \
-        if status.reply_parent else None
-
-    image_attachments = []
-    books = list(status.mention_books.all()[:3])
-    if hasattr(status, 'book'):
-        books.append(status.book)
-    for book in books:
-        if book and book.cover:
-            image_path = book.cover.url
-            image_type = image_path.split('.')[-1]
-            image_attachments.append({
-                'type': 'Document',
-                'mediaType': 'image/%s' % image_type,
-                'url': 'https://%s%s' % (DOMAIN, image_path),
-                'name': 'Cover of "%s"' % book.title,
-            })
-    status_json = {
-        'id': uri,
-        'url': uri,
-        'inReplyTo': reply_parent_id,
-        'published': status.published_date.isoformat(),
-        'attributedTo': user.remote_id,
-        # TODO: assuming all posts are public -- should check privacy db field
-        'to': ['https://www.w3.org/ns/activitystreams#Public'],
-        'cc': ['%s/followers' % user.remote_id],
-        'sensitive': status.sensitive,
-        'content': status.content,
-        'type': status.activity_type,
-        'attachment': image_attachments,
-        'replies': {
-            'id': '%s/replies' % uri,
-            'type': 'Collection',
-            'first': {
-                'type': 'CollectionPage',
-                'next': '%s/replies?only_other_accounts=true&page=true' % uri,
-                'partOf': '%s/replies' % uri,
-                'items': [], # TODO: populate with replies
-            }
-        }
-    }
-
-    return status_json
 
 
 def get_replies(status, replies):

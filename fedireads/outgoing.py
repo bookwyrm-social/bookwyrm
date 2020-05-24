@@ -155,7 +155,7 @@ def handle_shelve(user, book, shelf):
         read.finish_date = datetime.now()
         read.save()
 
-    activity = activitypub.get_status(status)
+    activity = status.to_activity
     create_activity = activitypub.get_create(user, activity)
 
     broadcast(user, create_activity)
@@ -215,7 +215,7 @@ def handle_import_books(user, items):
         status.save()
 
         create_activity = activitypub.get_create(
-            user, activitypub.get_status(status))
+            user, status.to_activity)
         broadcast(user, create_activity)
         return status
 
@@ -223,55 +223,41 @@ def handle_import_books(user, items):
 def handle_rate(user, book, rating):
     ''' a review that's just a rating '''
     builder = create_rating
-    fr_serializer = activitypub.get_rating
-    ap_serializer = activitypub.get_rating_note
-
-    handle_status(user, book, builder, fr_serializer, ap_serializer, rating)
+    handle_status(user, book, builder, rating)
 
 
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_review
-    fr_serializer = activitypub.get_review
-    ap_serializer = activitypub.get_review_article
-    handle_status(
-        user, book, builder, fr_serializer,
-        ap_serializer, name, content, rating)
+    handle_status(user, book, builder, name, content, rating)
 
 
 def handle_quotation(user, book, content, quote):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_quotation
-    fr_serializer = activitypub.get_quotation
-    ap_serializer = activitypub.get_quotation_article
-    handle_status(
-        user, book, builder, fr_serializer, ap_serializer, content, quote)
+    handle_status(user, book, builder, content, quote)
 
 
 def handle_comment(user, book, content):
     ''' post a comment '''
     # validated and saves the review in the database so it has an id
     builder = create_comment
-    fr_serializer = activitypub.get_comment
-    ap_serializer = activitypub.get_comment_article
-    handle_status(
-        user, book, builder, fr_serializer, ap_serializer, content)
+    handle_status(user, book, builder, content)
 
 
-def handle_status(user, book_id, \
-        builder, fr_serializer, ap_serializer, *args):
+def handle_status(user, book_id, builder, *args):
     ''' generic handler for statuses '''
     book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
-    activity = fr_serializer(status)
+    activity = status.to_activity
     create_activity = activitypub.get_create(user, activity)
     broadcast(user, create_activity, software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = ap_serializer(status)
+    remote_activity = status.to_activity
     remote_create_activity = activitypub.get_create(user, remote_activity)
 
     broadcast(user, remote_create_activity, software='other')
@@ -306,7 +292,7 @@ def handle_reply(user, review, content):
             related_user=user,
             related_status=reply,
         )
-    reply_activity = activitypub.get_status(reply)
+    reply_activity = reply.to_activity
     create_activity = activitypub.get_create(user, reply_activity)
 
     broadcast(user, create_activity)
