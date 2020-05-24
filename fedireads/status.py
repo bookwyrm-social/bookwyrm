@@ -1,7 +1,7 @@
 ''' Handle user activity '''
 from django.db import IntegrityError
 
-from fedireads import models
+from fedireads import activitypub, models
 from fedireads.books_manager import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
 
@@ -113,16 +113,17 @@ def create_comment(user, book, content):
 
 def create_status_from_activity(author, activity):
     ''' parse a status object out of an activity json blob '''
-    content = activity.get('content')
-    reply_parent_id = activity.get('inReplyTo')
+    activity = activitypub.Note(**activity)
+    reply_parent_id = activity.inReplyTo
     reply_parent = get_status(reply_parent_id)
 
-    remote_id = activity['id']
+    remote_id = activity.id
     if models.Status.objects.filter(remote_id=remote_id).count():
+        # status already exists
         return None
-    status = create_status(author, content, reply_parent=reply_parent,
+    status = create_status(author, activity.content, reply_parent=reply_parent,
                            remote_id=remote_id)
-    status.published_date = activity.get('published')
+    status.published_date = activity.published
     status.save()
     return status
 
