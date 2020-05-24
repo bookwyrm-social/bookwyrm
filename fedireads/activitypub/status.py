@@ -11,32 +11,6 @@ def get_rating_note(review):
     status['type'] = 'Note'
     return status
 
-def get_review_article(review):
-    ''' a book review formatted for a non-fedireads isntance (mastodon) '''
-    status = review.to_activity()
-    if review.rating:
-        status['name'] = 'Review of "%s" (%d stars): %s' % (
-            review.book.title,
-            review.rating,
-            review.name
-        )
-    else:
-        status['name'] = 'Review of "%s": %s' % (
-            review.book.title,
-            review.name
-        )
-
-    return status
-
-
-def get_comment_article(comment):
-    ''' a book comment formatted for a non-fedireads isntance (mastodon) '''
-    status = comment.to_activity()
-    status['content'] += '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-        (comment.book.local_id, comment.book.title)
-    return status
-
-
 
 def get_replies(status, replies):
     ''' collection of replies '''

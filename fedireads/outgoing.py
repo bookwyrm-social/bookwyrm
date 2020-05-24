@@ -257,7 +257,7 @@ def handle_status(user, book_id, builder, *args):
     broadcast(user, create_activity, software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = status.to_activity()
+    remote_activity = status.to_activity(pure=True)
     remote_create_activity = activitypub.get_create(user, remote_activity)
 
     broadcast(user, remote_create_activity, software='other')

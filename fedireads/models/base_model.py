@@ -50,10 +50,15 @@ class ActivitypubMixin:
     ]
     activity_serializer = lambda: {}
 
-    def to_activity(self):
+    def to_activity(self, pure=False):
         ''' convert from a model to an activity '''
+        if pure:
+            mappings = self.pure_activity_mappings
+        else:
+            mappings = self.activity_mappings
+
         fields = {}
-        for mapping in self.activity_mappings:
+        for mapping in mappings:
             if not hasattr(self, mapping.model_key):
                 continue
             value = getattr(self, mapping.model_key)

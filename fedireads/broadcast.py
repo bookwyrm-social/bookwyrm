@@ -4,6 +4,7 @@ from django.utils.http import http_date
 import requests
 
 from fedireads import models
+from fedireads.activitypub import ActivityEncoder
 from fedireads.tasks import app
 from fedireads.signatures import make_signature, make_digest
 
@@ -38,7 +39,7 @@ def broadcast(sender, activity, software=None, \
     # TODO: other kinds of privacy
     if privacy == 'public':
         recipients += get_public_recipients(sender, software=software)
-    broadcast_task.delay(sender.id, activity, recipients)
+    broadcast_task.delay(sender.id, json.dumps(activity, cls=ActivityEncoder), recipients)
 
 
 @app.task

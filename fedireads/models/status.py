@@ -54,16 +54,10 @@ class Status(ActivitypubMixin, FedireadsModel):
         # TODO: actual replies
         return {}
 
-
-    activity_mappings = [
+    shared_mappings = [
         ActivityMapping('id', 'remote_id'),
-        ActivityMapping('type', 'activity_type'),
         ActivityMapping('url', 'remote_id'),
         ActivityMapping('inReplyTo', 'reply_parent'),
-        ActivityMapping('inReplyToBook', 'book'),
-        ActivityMapping('name', 'name'),
-        ActivityMapping('rating', 'rating'),
-        ActivityMapping('quote', 'quote'),
         ActivityMapping(
             'published',
             'published_date',
@@ -72,9 +66,26 @@ class Status(ActivitypubMixin, FedireadsModel):
         ActivityMapping('attributedTo', 'user'),
         ActivityMapping('to', 'ap_to'),
         ActivityMapping('cc', 'ap_cc'),
-        ActivityMapping('content', 'content'),
         ActivityMapping('replies', 'ap_replies'),
     ]
+
+    # serializing to fedireads expanded activitypub
+    activity_mappings = shared_mappings + [
+        ActivityMapping('name', 'name'),
+        ActivityMapping('type', 'activity_type'),
+        ActivityMapping('inReplyToBook', 'book'),
+        ActivityMapping('rating', 'rating'),
+        ActivityMapping('quote', 'quote'),
+        ActivityMapping('content', 'content'),
+    ]
+
+    # for serializing to standard activitypub without extended types
+    pure_activity_mappings = shared_mappings + [
+        ActivityMapping('type', 'pure_activity_type'),
+        ActivityMapping('name', 'pure_ap_name'),
+        ActivityMapping('content', 'ap_pure_content'),
+    ]
+
     activity_type = 'Note'
     activity_serializer = activitypub.Note
 
@@ -83,8 +94,16 @@ class Comment(Status):
     ''' like a review but without a rating and transient '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
+    @property
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
+                (self.book.local_id, self.book.title)
+
     activity_type = 'Comment'
+    pure_activity_type = 'Note'
     activity_serializer = activitypub.Comment
+    pure_activity_serializer = activitypub.Note
 
 
 class Quotation(Status):
@@ -92,7 +111,18 @@ class Quotation(Status):
     quote = models.TextField()
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
+    @property
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
+            self.quote,
+            self.book.local_id,
+            self.book.title,
+            self.content,
+        )
+
     activity_type = 'Quotation'
+    pure_activity_type = 'Note'
     activity_serializer = activitypub.Quotation
 
 
@@ -107,7 +137,23 @@ class Review(Status):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
+    @property
+    def ap_pure_name(self):
+        ''' clarify review names for mastodon serialization '''
+        return 'Review of "%s" (%d stars): %s' % (
+            self.book.title,
+            self.rating,
+            self.name
+        )
+
+    @property
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
+                (self.book.local_id, self.book.title)
+
     activity_type = 'Review'
+    pure_activity_type = 'Article'
     activity_serializer = activitypub.Review
 
 
