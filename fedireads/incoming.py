@@ -1,4 +1,5 @@
 ''' handles all of the activity coming in to the server '''
+import importlib
 import json
 from urllib.parse import urldefrag
 import requests
@@ -84,6 +85,7 @@ def shared_inbox(request):
 
 
 def has_valid_signature(request, activity):
+    ''' verify incoming signature '''
     try:
         signature = Signature.parse(request)
 
@@ -129,7 +131,7 @@ def handle_follow(activity):
         # Duplicate follow request. Not sure what the correct behaviour is, but
         # just dropping it works for now. We should perhaps generate the
         # Accept, but then do we need to match the activity id?
-        return
+        return True
 
     if not to_follow.manually_approves_followers:
         status_builder.create_notification(
@@ -144,6 +146,7 @@ def handle_follow(activity):
             'FOLLOW_REQUEST',
             related_user=user
         )
+    return True
 
 
 @app.task
@@ -157,6 +160,7 @@ def handle_unfollow(activity):
         return False
 
     to_unfollow.followers.remove(requester)
+    return True
 
 
 @app.task
@@ -176,6 +180,7 @@ def handle_follow_accept(activity):
     except models.UserFollowRequest.DoesNotExist:
         pass
     accepter.followers.add(requester)
+    return True
 
 
 @app.task
@@ -192,6 +197,7 @@ def handle_follow_reject(activity):
         request.delete()
     except models.UserFollowRequest.DoesNotExist:
         return False
+    return True
 
 
 @app.task
@@ -203,26 +209,15 @@ def handle_create(activity):
         # we really oughtn't even be sending in this case
         return True
 
-    if activity['object'].get('fedireadsType') and \
-            'inReplyToBook' in activity['object']:
-        if activity['object']['fedireadsType'] == 'Review':
-            builder = status_builder.create_review_from_activity
-        elif activity['object']['fedireadsType'] == 'Quotation':
-            builder = status_builder.create_quotation_from_activity
-        else:
-            builder = status_builder.create_comment_from_activity
+    if activity['object']['type'] in ['Review', 'Quotation', 'Comment'] or \
+            activity['object'].get('inReplyTo'):
+        serializer = importlib.import_module(
+            'fedireads.activitypub.%s' % activity['object'].get('type'))
+        model = importlib.import_module(
+            'fedireads.models.%s' % activity['object'].get('type'))
+        activity_obj = serializer(**activity)
+        status = models.from_activity(model, activity_obj)
 
-        # create the status, it'll throw a ValueError if anything is missing
-        builder(user, activity['object'])
-    elif activity['object'].get('inReplyTo'):
-        # only create the status if it's in reply to a status we already know
-        if not status_builder.get_status(activity['object']['inReplyTo']):
-            return True
-
-        status = status_builder.create_status_from_activity(
-            user,
-            activity['object']
-        )
         if status and status.reply_parent:
             status_builder.create_notification(
                 status.reply_parent.user,
@@ -252,6 +247,7 @@ def handle_favorite(activity):
         related_user=liker,
         related_status=status,
     )
+    return True
 
 
 @app.task
@@ -263,6 +259,7 @@ def handle_unfavorite(activity):
         return False
 
     fav.delete()
+    return True
 
 
 @app.task
@@ -284,6 +281,7 @@ def handle_boost(activity):
         related_user=booster,
         related_status=status,
     )
+    return True
 
 
 @app.task

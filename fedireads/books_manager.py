@@ -1,8 +1,8 @@
 ''' select and call a connector for whatever book task needs doing '''
-from requests import HTTPError
-
 import importlib
 from urllib.parse import urlparse
+
+from requests import HTTPError
 
 from fedireads import models
 from fedireads.tasks import app
