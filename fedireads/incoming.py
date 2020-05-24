@@ -203,28 +203,41 @@ def handle_follow_reject(activity):
 @app.task
 def handle_create(activity):
     ''' someone did something, good on them '''
-    user = get_or_create_remote_user(activity['actor'])
+    if activity['object'].get('type') not in \
+            ['Note', 'Comment', 'Quotation', 'Review']:
+        # if it's an article or unknown type, ignore it
+        return True
 
+    user = get_or_create_remote_user(activity['actor'])
     if user.local:
         # we really oughtn't even be sending in this case
         return True
 
-    if activity['object']['type'] in ['Review', 'Quotation', 'Comment'] or \
-            activity['object'].get('inReplyTo'):
-        serializer = importlib.import_module(
-            'fedireads.activitypub.%s' % activity['object'].get('type'))
-        model = importlib.import_module(
-            'fedireads.models.%s' % activity['object'].get('type'))
-        activity_obj = serializer(**activity)
-        status = models.from_activity(model, activity_obj)
+    # render the json into an activity object
+    serializer = importlib.import_module(
+        'fedireads.activitypub.%s' % activity['object'].get('type'))
 
-        if status and status.reply_parent:
-            status_builder.create_notification(
-                status.reply_parent.user,
-                'REPLY',
-                related_user=status.user,
-                related_status=status,
-            )
+    activity = serializer(**activity['object'])
+
+    # notes that aren't replies to known statuses
+    if activity.type == 'Note':
+        reply = models.Status.objects.filter(
+            remote_id=activity.inReplyTo
+        ).first()
+        if not reply:
+            return True
+
+    model = importlib.import_module('fedireads.models.%s' % activity.type)
+    status = models.from_activity(model, activity)
+
+    # create a notification if this is a reply
+    if status.reply_parent and status.reply_parent.user.local:
+        status_builder.create_notification(
+            status.reply_parent.user,
+            'REPLY',
+            related_user=status.user,
+            related_status=status,
+        )
     return True
 
 
