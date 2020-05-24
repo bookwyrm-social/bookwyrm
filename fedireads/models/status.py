@@ -8,7 +8,7 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
-from .base_model import ActivitypubMixin, FedireadsModel
+from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
 
 
 class Status(ActivitypubMixin, FedireadsModel):
@@ -69,7 +69,7 @@ class Status(ActivitypubMixin, FedireadsModel):
         return {}
 
 
-    activity_fields = [
+    model_to_activity = [
         ('id', 'remote_id'),
         ('type', 'activity_type'),
         ('url', 'remote_id'),
@@ -82,6 +82,16 @@ class Status(ActivitypubMixin, FedireadsModel):
         ('replies', 'ap_replies'),
     ]
     activity_serializer = activitypub.Note
+
+    activity_to_model = [
+        ActivityMapping('remote_id', 'id'),
+        ActivityMapping('activity_type', 'type'),
+        ActivityMapping('reply_parent', 'inReplyTo'),
+        ActivityMapping('published_date', 'published'),
+        ActivityMapping('user', 'attributedTo'),
+        ActivityMapping('content', 'content'),
+    ]
+
 
 
 class Comment(Status):

@@ -1,7 +1,10 @@
 ''' base model with default fields '''
+from collections import namedtuple
+from dataclasses import dataclass
 from django.db import models
+from django.db.models.fields.related_descriptors import ForwardManyToOneDescriptor
 from django.dispatch import receiver
-from typing import List
+from typing import Callable, List
 
 from fedireads.settings import DOMAIN
 
@@ -36,15 +39,56 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 class ActivitypubMixin(object):
     ''' add this mixin for models that are AP serializable '''
     activity_type = 'Object'
-    activity_fields = [
+    model_to_activity = [
         ('id', 'remote_id'),
         ('type', 'activity_type'),
+    ]
+    activity_to_model = [
+        ('remote_id', 'id'),
+        ('activity_type', 'type'),
     ]
     activity_serializer = None
 
     @property
-    def activitypub_serialize(self):
-        fields = {k: getattr(self, v) for k, v in self.activity_fields}
+    def to_activity(self):
+        fields = {k: getattr(self, v) for k, v in self.model_to_activity}
         return self.activity_serializer(
             **fields
         ).serialize()
+
+
+def from_activity(model, activity):
+    if not isinstance(activity, model.activity_serializer):
+        raise TypeError('Wrong activity type for model')
+
+    fields = {}
+    for mapping in model.activity_to_model:
+        value = getattr(activity, mapping.activity_key)
+        print(mapping.model_key)
+        model_field = getattr(model, mapping.model_key)
+        print(type(model_field))
+        if isinstance(model_field, ForwardManyToOneDescriptor):
+            formatter_model = model_field.field.related_model
+            print(formatter_model)
+            value = resolve_foreign_key(formatter_model, value)
+        print(mapping.formatter(value))
+        fields[mapping.model_key] = mapping.formatter(value)
+    return model.objects.create(**fields)
+
+
+def resolve_foreign_key(model, remote_id):
+    if hasattr(model.objects, 'select_subclasses'):
+        return model.objects.select_subclasses().filter(
+            remote_id=remote_id
+        ).first()
+    return model.objects.filter(
+        remote_id=remote_id
+    ).first()
+
+
+@dataclass(frozen=True)
+class ActivityMapping:
+    model_key: str
+    activity_key: str
+    formatter: Callable = lambda x: x
+

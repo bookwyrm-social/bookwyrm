@@ -114,18 +114,7 @@ def create_comment(user, book, content):
 def create_status_from_activity(author, activity):
     ''' parse a status object out of an activity json blob '''
     activity = activitypub.Note(**activity)
-    reply_parent_id = activity.inReplyTo
-    reply_parent = get_status(reply_parent_id)
-
-    remote_id = activity.id
-    if models.Status.objects.filter(remote_id=remote_id).count():
-        # status already exists
-        return None
-    status = create_status(author, activity.content, reply_parent=reply_parent,
-                           remote_id=remote_id)
-    status.published_date = activity.published
-    status.save()
-    return status
+    return models.from_activity(models.Status, activity)
 
 
 def create_favorite_from_activity(user, activity):
