@@ -155,7 +155,7 @@ def handle_shelve(user, book, shelf):
         read.finish_date = datetime.now()
         read.save()
 
-    activity = status.to_activity
+    activity = status.to_activity()
     create_activity = activitypub.get_create(user, activity)
 
     broadcast(user, create_activity)
@@ -215,7 +215,7 @@ def handle_import_books(user, items):
         status.save()
 
         create_activity = activitypub.get_create(
-            user, status.to_activity)
+            user, status.to_activity())
         broadcast(user, create_activity)
         return status
 
@@ -252,12 +252,12 @@ def handle_status(user, book_id, builder, *args):
     book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
-    activity = status.to_activity
+    activity = status.to_activity()
     create_activity = activitypub.get_create(user, activity)
     broadcast(user, create_activity, software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = status.to_activity
+    remote_activity = status.to_activity()
     remote_create_activity = activitypub.get_create(user, remote_activity)
 
     broadcast(user, remote_create_activity, software='other')
@@ -292,7 +292,7 @@ def handle_reply(user, review, content):
             related_user=user,
             related_status=reply,
         )
-    reply_activity = reply.to_activity
+    reply_activity = reply.to_activity()
     create_activity = activitypub.get_create(user, reply_activity)
 
     broadcast(user, create_activity)

@@ -1,10 +1,11 @@
 ''' base model with default fields '''
-from collections import namedtuple
 from dataclasses import dataclass
+from typing import Callable
+
 from django.db import models
-from django.db.models.fields.related_descriptors import ForwardManyToOneDescriptor
+from django.db.models.fields.related_descriptors \
+        import ForwardManyToOneDescriptor
 from django.dispatch import receiver
-from typing import Callable, List
 
 from fedireads.settings import DOMAIN
 
@@ -36,7 +37,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         instance.save()
 
 
-class ActivitypubMixin(object):
+class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_type = 'Object'
     model_to_activity = [
@@ -47,36 +48,45 @@ class ActivitypubMixin(object):
         ('remote_id', 'id'),
         ('activity_type', 'type'),
     ]
-    activity_serializer = None
+    activity_serializer = lambda: {}
 
-    @property
     def to_activity(self):
-        fields = {k: getattr(self, v) for k, v in self.model_to_activity}
+        ''' convert from a model to an activity '''
+        fields = {}
+        for mapping in self.activity_mappings:
+            if not hasattr(self, mapping.model_key):
+                continue
+            value = getattr(self, mapping.model_key)
+            if hasattr(value, 'remote_id'):
+                value = value.remote_id
+            fields[mapping.activity_key] = mapping.formatter(value)
+
         return self.activity_serializer(
             **fields
         ).serialize()
 
 
 def from_activity(model, activity):
+    ''' convert from an activity to a model '''
     if not isinstance(activity, model.activity_serializer):
         raise TypeError('Wrong activity type for model')
 
     fields = {}
-    for mapping in model.activity_to_model:
+    for mapping in model.activity_mappings:
         value = getattr(activity, mapping.activity_key)
-        print(mapping.model_key)
         model_field = getattr(model, mapping.model_key)
-        print(type(model_field))
+
+        # remote_id -> foreign key resolver
         if isinstance(model_field, ForwardManyToOneDescriptor):
-            formatter_model = model_field.field.related_model
-            print(formatter_model)
-            value = resolve_foreign_key(formatter_model, value)
-        print(mapping.formatter(value))
-        fields[mapping.model_key] = mapping.formatter(value)
+            fk_model = model_field.field.related_model
+            value = resolve_foreign_key(fk_model, value)
+
+        fields[mapping.model_key] = value
     return model.objects.create(**fields)
 
 
 def resolve_foreign_key(model, remote_id):
+    ''' look up the remote_id on an activity json field '''
     if hasattr(model.objects, 'select_subclasses'):
         return model.objects.select_subclasses().filter(
             remote_id=remote_id
@@ -88,7 +98,7 @@ def resolve_foreign_key(model, remote_id):
 
 @dataclass(frozen=True)
 class ActivityMapping:
-    model_key: str
+    ''' translate between an activitypub json field and a model field '''
     activity_key: str
+    model_key: str
     formatter: Callable = lambda x: x
-

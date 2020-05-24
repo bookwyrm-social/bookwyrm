@@ -1,8 +1,6 @@
 ''' activitypub json for collections '''
 from urllib.parse import urlencode
 
-from .status import get_status, get_review
-
 def get_outbox(user, size):
     ''' helper function for creating an outbox '''
     return {
@@ -28,9 +26,9 @@ def get_outbox_page(user, page_id, statuses, max_id, min_id):
 
     for status in statuses:
         if status.status_type == 'Review':
-            status_activity = get_review(status)
+            status_activity = status.to_activity()
         else:
-            status_activity = get_status(status)
+            status_activity = status.to_activity()
         page['orderedItems'].append(status_activity)
 
     if max_id:

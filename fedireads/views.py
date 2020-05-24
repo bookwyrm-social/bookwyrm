@@ -238,7 +238,7 @@ def user_page(request, username, subpage=None):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.to_activity, encoder=ActivityEncoder)
+        return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
@@ -329,7 +329,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(status.to_activity, encoder=ActivityEncoder)
+        return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
 
     data = {
         'status': status,

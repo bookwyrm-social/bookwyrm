@@ -1,5 +1,4 @@
 ''' note serializer '''
-from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Dict, List
 
@@ -29,15 +28,18 @@ class Article(Note):
 
 @dataclass(init=False)
 class Comment(Note):
+    ''' like a note but with a book '''
     inReplyToBook: str
 
 
 @dataclass(init=False)
 class Review(Comment):
+    ''' a full book review '''
     name: str
     rating: int
 
 
 @dataclass(init=False)
 class Quotation(Comment):
+    ''' a quote and commentary on a book '''
     quotation: str

@@ -7,7 +7,7 @@ from fedireads import activitypub
 from fedireads.models.shelf import Shelf
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair
-from .base_model import ActivitypubMixin, FedireadsModel
+from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
 
 
 class User(ActivitypubMixin, AbstractUser):
@@ -69,10 +69,12 @@ class User(ActivitypubMixin, AbstractUser):
     # ---- activitypub serialization settings for this model ----- #
     @property
     def ap_followers(self):
+        ''' generates url for activitypub followers page '''
         return '%s/followers' % self.remote_id
 
     @property
     def ap_publicKey(self):
+        ''' format the public key block for activitypub '''
         return activitypub.PublicKey(**{
             'id': '%s/#main-key' % self.remote_id,
             'owner': self.remote_id,
@@ -81,8 +83,10 @@ class User(ActivitypubMixin, AbstractUser):
 
     @property
     def ap_icon(self):
+        ''' send default icon if one isn't set '''
         if self.avatar:
             url = self.avatar.url
+            # TODO not the right way to get the media type
             media_type = 'image/%s' % url.split('.')[-1]
         else:
             url = '%s/static/images/default_avi.jpg' % DOMAIN
@@ -91,22 +95,27 @@ class User(ActivitypubMixin, AbstractUser):
 
     @property
     def ap_endpoints(self):
+        ''' should include shared inbox '''
+        # TODO
         return {}
 
     activity_type = 'Person'
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-        ('preferredUsername', 'localname'),
-        ('name', 'name'),
-        ('inbox', 'inbox'),
-        ('outbox', 'outbox'),
-        ('followers', 'ap_followers'),
-        ('summary', 'summary'),
-        ('publicKey', 'ap_publicKey'),
-        ('endpoints', 'ap_endpoints'),
-        ('icon', 'ap_icon'),
-        ('manuallyApprovesFollowers', 'manually_approves_followers'),
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('type', 'activity_type'),
+        ActivityMapping('preferredUsername', 'localname'),
+        ActivityMapping('name', 'name'),
+        ActivityMapping('inbox', 'inbox'),
+        ActivityMapping('outbox', 'outbox'),
+        ActivityMapping('followers', 'ap_followers'),
+        ActivityMapping('summary', 'summary'),
+        ActivityMapping('publicKey', 'ap_publicKey'),
+        ActivityMapping('endpoints', 'ap_endpoints'),
+        ActivityMapping('icon', 'ap_icon'),
+        ActivityMapping(
+            'manuallyApprovesFollowers',
+            'manually_approves_followers'
+        ),
     ]
     activity_serializer = activitypub.Person
 

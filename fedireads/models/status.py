@@ -39,80 +39,50 @@ class Status(ActivitypubMixin, FedireadsModel):
 
     # ---- activitypub serialization settings for this model ----- #
     @property
-    def ap_reply_parent(self):
-        return self.reply_parent.remote_id if self.reply_parent else None
-
-    @property
-    def ap_date(self):
-        return http_date(self.published_date.timestamp())
-
-    @property
-    def ap_user(self):
-        return self.user.remote_id
-
-    @property
-    def ap_book(self):
-        return self.book.remote_id
-
-    @property
     def ap_to(self):
+        ''' should be related to post privacy I think '''
         return ['https://www.w3.org/ns/activitystreams#Public']
 
     @property
     def ap_cc(self):
-        return ['https://friend.camp/users/tripofmice/followers']
+        ''' should be related to post privacy I think '''
+        return [self.user.ap_followers]
 
     @property
     def ap_replies(self):
-        # TODO
+        ''' structured replies block '''
+        # TODO: actual replies
         return {}
 
 
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-        ('url', 'remote_id'),
-        ('inReplyTo', 'ap_reply_parent'),
-        ('published', 'ap_date'),
-        ('attributedTo', 'ap_user'),
-        ('to', 'ap_to'),
-        ('cc', 'ap_cc'),
-        ('content', 'content'),
-        ('replies', 'ap_replies'),
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('type', 'activity_type'),
+        ActivityMapping('url', 'remote_id'),
+        ActivityMapping('inReplyTo', 'reply_parent'),
+        ActivityMapping('inReplyToBook', 'book'),
+        ActivityMapping('name', 'name'),
+        ActivityMapping('rating', 'rating'),
+        ActivityMapping('quote', 'quote'),
+        ActivityMapping(
+            'published',
+            'published_date',
+            lambda d: http_date(d.timestamp())
+        ),
+        ActivityMapping('attributedTo', 'user'),
+        ActivityMapping('to', 'ap_to'),
+        ActivityMapping('cc', 'ap_cc'),
+        ActivityMapping('content', 'content'),
+        ActivityMapping('replies', 'ap_replies'),
     ]
     activity_type = 'Note'
     activity_serializer = activitypub.Note
-
-    activity_to_model = [
-        ActivityMapping('remote_id', 'id'),
-        ActivityMapping('activity_type', 'type'),
-        ActivityMapping('reply_parent', 'inReplyTo'),
-        ActivityMapping('published_date', 'published'),
-        ActivityMapping('user', 'attributedTo'),
-        ActivityMapping('content', 'content'),
-    ]
 
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-        ('url', 'remote_id'),
-        ('inReplyTo', 'ap_reply_parent'),
-        ('inReplyToBook', 'ap_book'),
-        ('published', 'ap_date'),
-        ('attributedTo', 'ap_user'),
-        ('to', 'ap_to'),
-        ('cc', 'ap_cc'),
-        ('content', 'content'),
-        ('replies', 'ap_replies'),
-    ]
     activity_type = 'Comment'
     activity_serializer = activitypub.Comment
 
@@ -122,20 +92,6 @@ class Quotation(Status):
     quote = models.TextField()
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-        ('url', 'remote_id'),
-        ('inReplyTo', 'ap_reply_parent'),
-        ('inReplyToBook', 'ap_book'),
-        ('published', 'ap_date'),
-        ('attributedTo', 'ap_user'),
-        ('to', 'ap_to'),
-        ('cc', 'ap_cc'),
-        ('quote', 'quote'),
-        ('content', 'content'),
-        ('replies', 'ap_replies'),
-    ]
     activity_type = 'Quotation'
     activity_serializer = activitypub.Quotation
 
@@ -151,22 +107,7 @@ class Review(Status):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-        ('url', 'remote_id'),
-        ('inReplyTo', 'ap_reply_parent'),
-        ('inReplyToBook', 'ap_book'),
-        ('published', 'ap_date'),
-        ('attributedTo', 'ap_user'),
-        ('to', 'ap_to'),
-        ('cc', 'ap_cc'),
-        ('name', 'name'),
-        ('rating', 'rating'),
-        ('content', 'content'),
-        ('replies', 'ap_replies'),
-    ]
-    activity_type = 'Reviw'
+    activity_type = 'Review'
     activity_serializer = activitypub.Review
 
 
@@ -186,10 +127,6 @@ class Boost(Status):
         on_delete=models.PROTECT,
         related_name="boosters")
 
-    def save(self, *args, **kwargs):
-        self.activity_type = 'Announce'
-        super().save(*args, **kwargs)
-
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
@@ -202,6 +139,7 @@ class Tag(FedireadsModel):
     identifier = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
+        ''' create a url-safe lookup key for the tag '''
         if not self.id:
             # add identifiers to new tags
             self.identifier = urllib.parse.quote_plus(self.name)
@@ -245,6 +183,7 @@ class Notification(FedireadsModel):
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices)
+
     class Meta:
         constraints = [
             models.CheckConstraint(

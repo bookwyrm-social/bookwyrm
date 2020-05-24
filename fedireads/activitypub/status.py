@@ -1,11 +1,9 @@
 ''' status serializers '''
 from uuid import uuid4
 
-from fedireads.settings import DOMAIN
-
 def get_rating_note(review):
     ''' simple rating, send it as a note not an artciel '''
-    status = get_status(review)
+    status = review.to_activity()
     status['content'] = 'Rated "%s": %d stars' % (
         review.book.title,
         review.rating,
@@ -15,7 +13,7 @@ def get_rating_note(review):
 
 def get_review_article(review):
     ''' a book review formatted for a non-fedireads isntance (mastodon) '''
-    status = get_status(review)
+    status = review.to_activity()
     if review.rating:
         status['name'] = 'Review of "%s" (%d stars): %s' % (
             review.book.title,
@@ -33,7 +31,7 @@ def get_review_article(review):
 
 def get_comment_article(comment):
     ''' a book comment formatted for a non-fedireads isntance (mastodon) '''
-    status = get_status(comment)
+    status = comment.to_activity()
     status['content'] += '<br><br>(comment on <a href="%s">"%s"</a>)' % \
         (comment.book.local_id, comment.book.title)
     return status
@@ -52,7 +50,7 @@ def get_replies(status, replies):
             'type': 'CollectionPage',
             'next': '%s?only_other_accounts=true&page=true' % id_slug,
             'partOf': id_slug,
-            'items': [get_status(r) for r in replies],
+            'items': [r.to_activity() for r in replies],
         }
     }
 
@@ -63,7 +61,7 @@ def get_replies_page(status, replies):
     items = []
     for reply in replies:
         if reply.user.local:
-            items.append(get_status(reply))
+            items.append(reply.to_activity())
         else:
             items.append(reply.remote_id)
     return {
