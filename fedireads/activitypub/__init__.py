@@ -1,4 +1,7 @@
 ''' bring activitypub functions into the namespace '''
+import inspect
+import sys
+
 from .base_activity import ActivityEncoder, Image, PublicKey
 from .note import Note, Article, Comment, Review, Quotation
 from .person import Person
@@ -14,3 +17,7 @@ from .status import get_replies_page
 from .status import get_favorite, get_unfavorite
 from .status import get_boost
 from .status import get_add_tag, get_remove_tag
+
+cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
+activity_objects = {c[0]: c[1] for c in cls_members \
+    if hasattr(c[1], 'to_model')}

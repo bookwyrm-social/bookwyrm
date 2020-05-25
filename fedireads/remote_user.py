@@ -7,7 +7,6 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 
 from fedireads import activitypub, models
-from fedireads.status import create_review_from_activity
 
 
 def get_or_create_remote_user(actor):
@@ -117,7 +116,7 @@ def get_remote_reviews(user):
     # TODO: pagination?
     for status in data['orderedItems']:
         if status.get('fedireadsType') == 'Review':
-            create_review_from_activity(user, status)
+            pass#create_review_from_activity(user, status)
 
 
 def get_or_create_remote_server(domain):

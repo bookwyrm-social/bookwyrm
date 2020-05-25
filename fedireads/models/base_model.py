@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from typing import Callable
 
 from django.db import models
-from django.db.models.fields.related_descriptors \
-        import ForwardManyToOneDescriptor
 from django.dispatch import receiver
 
 from fedireads.settings import DOMAIN
@@ -69,36 +67,6 @@ class ActivitypubMixin:
         return self.activity_serializer(
             **fields
         ).serialize()
-
-
-def from_activity(model, activity):
-    ''' convert from an activity to a model '''
-    if not isinstance(activity, model.activity_serializer):
-        raise TypeError('Wrong activity type for model')
-
-    fields = {}
-    for mapping in model.activity_mappings:
-        value = getattr(activity, mapping.activity_key)
-        model_field = getattr(model, mapping.model_key)
-
-        # remote_id -> foreign key resolver
-        if isinstance(model_field, ForwardManyToOneDescriptor):
-            fk_model = model_field.field.related_model
-            value = resolve_foreign_key(fk_model, value)
-
-        fields[mapping.model_key] = value
-    return model.objects.create(**fields)
-
-
-def resolve_foreign_key(model, remote_id):
-    ''' look up the remote_id on an activity json field '''
-    if hasattr(model.objects, 'select_subclasses'):
-        return model.objects.select_subclasses().filter(
-            remote_id=remote_id
-        ).first()
-    return model.objects.filter(
-        remote_id=remote_id
-    ).first()
 
 
 @dataclass(frozen=True)

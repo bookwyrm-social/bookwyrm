@@ -1,15 +1,14 @@
 ''' handles all of the activity coming in to the server '''
-import importlib
 import json
 from urllib.parse import urldefrag
-import requests
 
 import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+import requests
 
-from fedireads import books_manager, models, outgoing
+from fedireads import activitypub, books_manager, models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user, refresh_remote_user
 from fedireads.tasks import app
@@ -214,9 +213,7 @@ def handle_create(activity):
         return True
 
     # render the json into an activity object
-    serializer = importlib.import_module(
-        'fedireads.activitypub.%s' % activity['object'].get('type'))
-
+    serializer = activitypub.activity_objects[activity['object']['type']]
     activity = serializer(**activity['object'])
 
     # notes that aren't replies to known statuses
@@ -227,8 +224,8 @@ def handle_create(activity):
         if not reply:
             return True
 
-    model = importlib.import_module('fedireads.models.%s' % activity.type)
-    status = models.from_activity(model, activity)
+    model = models.activity_models[activity.type]
+    status = activity.to_model(model)
 
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
