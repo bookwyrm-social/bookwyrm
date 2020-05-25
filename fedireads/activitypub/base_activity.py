@@ -14,6 +14,14 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
+class Image:
+    ''' image block '''
+    mediaType: str
+    url: str
+    type: str = 'Image'
+
+
+@dataclass
 class PublicKey:
     ''' public key block '''
     id: str
@@ -126,4 +134,3 @@ def resolve_foreign_key(model, remote_id):
     return model.objects.filter(
         remote_id=remote_id
     ).first()
-
