@@ -21,11 +21,13 @@ class Person(TestCase):
         activity = activitypub.Person(**self.user_data)
         self.assertEqual(activity.id, 'https://example.com/user/mouse')
         self.assertEqual(activity.preferredUsername, 'mouse')
-        self.assertRaises(activity.type, 'Person')
+        self.assertEqual(activity.type, 'Person')
 
 
     def test_serialize_model(self):
         activity = self.user.to_activity()
-        self.assertEqual(activity.id, self.user.remote_id)
-        self.assertEqual(activity.url, self.user.remote_id)
-        self.assertEqual(activity.endpoints, {'sharedInbox': self.user.sharedInbox})
+        self.assertEqual(activity['id'], self.user.remote_id)
+        self.assertEqual(
+            activity['endpoints'],
+            {'sharedInbox': self.user.shared_inbox}
+        )

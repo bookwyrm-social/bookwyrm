@@ -49,7 +49,7 @@ class ActivitypubMixin:
 
         fields = {}
         for mapping in mappings:
-            if not hasattr(self, mapping.model_key):
+            if not hasattr(self, mapping.model_key) or not mapping.activity_key:
                 continue
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
@@ -68,4 +68,3 @@ class ActivityMapping:
     model_key: str
     activity_formatter: Callable = lambda x: x
     model_formatter: Callable = lambda x: x
-

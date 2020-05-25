@@ -75,15 +75,6 @@ class User(ActivitypubMixin, AbstractUser):
         return '%s/followers' % self.remote_id
 
     @property
-    def ap_publicKey(self):
-        ''' format the public key block for activitypub '''
-        return activitypub.PublicKey(**{
-            'id': '%s/#main-key' % self.remote_id,
-            'owner': self.remote_id,
-            'publicKeyPem': self.public_key,
-        })
-
-    @property
     def ap_icon(self):
         ''' send default icon if one isn't set '''
         if self.avatar:
@@ -95,6 +86,14 @@ class User(ActivitypubMixin, AbstractUser):
             media_type = 'image/jpeg'
         return activitypub.Image(media_type, url, 'Image')
 
+    @property
+    def ap_public_key(self):
+        ''' format the public key block for activitypub '''
+        return activitypub.PublicKey(**{
+            'id': '%s/#main-key' % self.remote_id,
+            'owner': self.remote_id,
+            'publicKeyPem': self.public_key,
+        })
 
     activity_type = 'Person'
     activity_mappings = [
@@ -113,9 +112,9 @@ class User(ActivitypubMixin, AbstractUser):
         ActivityMapping(
             'publicKey',
             'public_key',
-            activity_formatter=ap_publicKey,
             model_formatter=lambda x: x.get('publicKeyPem')
         ),
+        ActivityMapping('publicKey', 'ap_public_key'),
         ActivityMapping(
             'endpoints',
             'shared_inbox',
