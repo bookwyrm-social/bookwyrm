@@ -242,14 +242,16 @@ def handle_create(activity):
 def handle_favorite(activity):
     ''' approval of your good good post '''
     try:
-        status_id = activity['object'].split('/')[-1]
-        status = models.Status.objects.get(id=status_id)
-        liker = get_or_create_remote_user(activity['actor'])
-    except (models.Status.DoesNotExist, models.User.DoesNotExist):
+        fav = activitypub.Like(**activity['object'])
+    except ValueError:
+        # raised in to_model if a foreign key could not be resolved in
         return False
 
-    if not liker.local:
-        status_builder.create_favorite_from_activity(liker, activity)
+    liker = get_or_create_remote_user(activity['actor'])
+    if liker.local:
+        return True
+
+    status = fav.to_model(models.Favorite)
 
     status_builder.create_notification(
         status.user,
@@ -263,8 +265,8 @@ def handle_favorite(activity):
 @app.task
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
-    favorite_id = activity['object']['id']
-    fav = models.Favorite.objects.filter(remote_id=favorite_id).first()
+    like = activitypub.Like(**activity['object'])
+    fav = models.Favorite.objects.filter(remote_id=like.id).first()
     if not fav:
         return False
 

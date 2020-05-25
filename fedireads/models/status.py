@@ -157,10 +157,22 @@ class Review(Status):
     activity_serializer = activitypub.Review
 
 
-class Favorite(FedireadsModel):
+class Favorite(ActivitypubMixin, FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
+
+    # ---- activitypub serialization settings for this model ----- #
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('type', 'activity_type'),
+        ActivityMapping('actor', 'user'),
+        ActivityMapping('object', 'status'),
+    ]
+
+    activity_type = 'Like'
+    activity_serializer = activitypub.Like
+
 
     class Meta:
         unique_together = ('user', 'status')

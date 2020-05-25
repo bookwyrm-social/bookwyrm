@@ -4,7 +4,6 @@ from json import JSONEncoder
 
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor
-from django.db.models.query_utils import DeferredAttribute
 
 
 class ActivityEncoder(JSONEncoder):
@@ -14,19 +13,18 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Image:
-    ''' image block '''
-    mediaType: str
-    url: str
-    type: str = 'Image'
-
-
-@dataclass
 class PublicKey:
     ''' public key block '''
     id: str
     owner: str
     publicKeyPem: str
+
+@dataclass
+class Image:
+    ''' image block '''
+    mediaType: str
+    url: str
+    type: str = 'Image'
 
 
 @dataclass(init=False)
@@ -52,8 +50,14 @@ class ActivityObject:
         if not isinstance(self, model.activity_serializer):
             raise TypeError('Wrong activity type for model')
 
-        model_fields = {}
+        model_fields = [m.name for m in model._meta.get_fields()]
+        mapped_fields = {}
+
         for mapping in model.activity_mappings:
+            if mapping.model_key not in model_fields:
+                continue
+            # value is None if there's a default that isn't supplied
+            # in the activity but is supplied in the formatter
             value = None
             if mapping.activity_key:
                 value = getattr(self, mapping.activity_key)
@@ -64,19 +68,18 @@ class ActivityObject:
                 fk_model = model_field.field.related_model
                 value = resolve_foreign_key(fk_model, value)
 
-            # ignore model properties
-            if isinstance(model_field, DeferredAttribute):
-                model_fields[mapping.model_key] = mapping.model_formatter(value)
+            mapped_fields[mapping.model_key] = mapping.model_formatter(value)
+
 
         # updating an existing model isntance
         if instance:
-            for k, v in model_fields.items():
+            for k, v in mapped_fields.items():
                 setattr(instance, k, v)
             instance.save()
             return instance
 
         # creating a new model instance
-        return model.objects.create(**model_fields)
+        return model.objects.create(**mapped_fields)
 
 
     def serialize(self):
@@ -88,10 +91,14 @@ class ActivityObject:
 
 def resolve_foreign_key(model, remote_id):
     ''' look up the remote_id on an activity json field '''
+    result = model.objects
     if hasattr(model.objects, 'select_subclasses'):
-        return model.objects.select_subclasses().filter(
-            remote_id=remote_id
-        ).first()
-    return model.objects.filter(
+        result = model.objects.select_subclasses()
+
+    result = result.filter(
         remote_id=remote_id
     ).first()
+
+    if not result:
+        raise ValueError('Could not resolve remote_id: %s' % remote_id)
+    return result

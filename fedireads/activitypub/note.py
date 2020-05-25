@@ -43,3 +43,9 @@ class Review(Comment):
 class Quotation(Comment):
     ''' a quote and commentary on a book '''
     quotation: str
+
+
+@dataclass(init=False)
+class Like(ActivityObject):
+    actor: str
+    object: str

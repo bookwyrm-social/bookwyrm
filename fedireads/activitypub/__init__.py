@@ -3,7 +3,7 @@ import inspect
 import sys
 
 from .base_activity import ActivityEncoder, Image, PublicKey
-from .note import Note, Article, Comment, Review, Quotation
+from .note import Note, Article, Comment, Review, Quotation, Like
 from .person import Person
 
 from .book import get_book, get_author, get_shelf
