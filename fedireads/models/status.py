@@ -61,7 +61,7 @@ class Status(ActivitypubMixin, FedireadsModel):
         ActivityMapping(
             'published',
             'published_date',
-            lambda d: http_date(d.timestamp())
+            activity_formatter=lambda d: http_date(d.timestamp())
         ),
         ActivityMapping('attributedTo', 'user'),
         ActivityMapping('to', 'ap_to'),

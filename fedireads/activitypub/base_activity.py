@@ -4,6 +4,7 @@ from json import JSONEncoder
 
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor
+from django.db.models.query_utils import DeferredAttribute
 
 
 class ActivityEncoder(JSONEncoder):
@@ -53,7 +54,9 @@ class ActivityObject:
 
         model_fields = {}
         for mapping in model.activity_mappings:
-            value = getattr(self, mapping.activity_key)
+            value = None
+            if mapping.activity_key:
+                value = getattr(self, mapping.activity_key)
             model_field = getattr(model, mapping.model_key)
 
             # remote_id -> foreign key resolver
@@ -61,10 +64,12 @@ class ActivityObject:
                 fk_model = model_field.field.related_model
                 value = resolve_foreign_key(fk_model, value)
 
-            model_fields[mapping.model_key] = value
+            # ignore model properties
+            if isinstance(model_field, DeferredAttribute):
+                model_fields[mapping.model_key] = mapping.model_formatter(value)
 
+        # updating an existing model isntance
         if instance:
-            # updating an existing model isntance
             for k, v in model_fields.items():
                 setattr(instance, k, v)
             instance.save()

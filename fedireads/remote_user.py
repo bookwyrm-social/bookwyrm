@@ -52,7 +52,7 @@ def fetch_user_data(actor):
 def create_remote_user(data):
     ''' parse the activitypub actor data into a user '''
     actor = activitypub.Person(**data)
-    return actor.to_model()
+    return actor.to_model(models.User)
 
 
 def refresh_remote_user(user):

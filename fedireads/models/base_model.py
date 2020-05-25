@@ -38,14 +38,6 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_type = 'Object'
-    model_to_activity = [
-        ('id', 'remote_id'),
-        ('type', 'activity_type'),
-    ]
-    activity_to_model = [
-        ('remote_id', 'id'),
-        ('activity_type', 'type'),
-    ]
     activity_serializer = lambda: {}
 
     def to_activity(self, pure=False):
@@ -62,7 +54,7 @@ class ActivitypubMixin:
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
                 value = value.remote_id
-            fields[mapping.activity_key] = mapping.formatter(value)
+            fields[mapping.activity_key] = mapping.activity_formatter(value)
 
         return self.activity_serializer(
             **fields
@@ -74,4 +66,6 @@ class ActivityMapping:
     ''' translate between an activitypub json field and a model field '''
     activity_key: str
     model_key: str
-    formatter: Callable = lambda x: x
+    activity_formatter: Callable = lambda x: x
+    model_formatter: Callable = lambda x: x
+

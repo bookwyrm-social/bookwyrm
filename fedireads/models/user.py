@@ -1,4 +1,6 @@
 ''' database schema for user data '''
+from urllib.parse import urlparse
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
@@ -93,29 +95,40 @@ class User(ActivitypubMixin, AbstractUser):
             media_type = 'image/jpeg'
         return activitypub.Image(media_type, url, 'Image')
 
-    @property
-    def ap_endpoints(self):
-        ''' should include shared inbox '''
-        # TODO
-        return {}
 
     activity_type = 'Person'
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
         ActivityMapping('type', 'activity_type'),
-        ActivityMapping('preferredUsername', 'localname'),
+        ActivityMapping(
+            'preferredUsername',
+            'username',
+            activity_formatter=lambda x: x.split('@')[0]
+        ),
         ActivityMapping('name', 'name'),
         ActivityMapping('inbox', 'inbox'),
         ActivityMapping('outbox', 'outbox'),
         ActivityMapping('followers', 'ap_followers'),
         ActivityMapping('summary', 'summary'),
-        ActivityMapping('publicKey', 'ap_publicKey'),
-        ActivityMapping('endpoints', 'ap_endpoints'),
+        ActivityMapping(
+            'publicKey',
+            'public_key',
+            activity_formatter=ap_publicKey,
+            model_formatter=lambda x: x.get('publicKeyPem')
+        ),
+        ActivityMapping(
+            'endpoints',
+            'shared_inbox',
+            activity_formatter=lambda x: {'sharedInbox': x},
+            model_formatter=lambda x: x.get('sharedInbox')
+        ),
         ActivityMapping('icon', 'ap_icon'),
         ActivityMapping(
             'manuallyApprovesFollowers',
             'manually_approves_followers'
         ),
+        # this field isn't in the activity but should always be false
+        ActivityMapping(None, 'local', model_formatter=lambda x: False),
     ]
     activity_serializer = activitypub.Person
 
@@ -194,7 +207,12 @@ class FederatedServer(FedireadsModel):
 def execute_before_save(sender, instance, *args, **kwargs):
     ''' populate fields for new local users '''
     # this user already exists, no need to poplate fields
-    if instance.id or not instance.local:
+    if instance.id:
+        return
+    if not instance.local:
+        # we need to generate a username that uses the domain (webfinger format)
+        actor_parts = urlparse(instance.remote_id)
+        instance.username = '%s@%s' % (instance.username, actor_parts.netloc)
         return
 
     # populate fields for local users
