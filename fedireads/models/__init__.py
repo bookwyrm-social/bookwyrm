@@ -10,12 +10,8 @@ from .user import User, UserFollows, UserFollowRequest, UserBlocks
 from .user import FederatedServer
 
 from .import_job import ImportJob, ImportItem
-<<<<<<< HEAD
-from .site import SiteSettings
+from .site import SiteSettings, SiteInvite
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[0]: c[1].activity_serializer for c in cls_members \
     if hasattr(c[1], 'activity_serializer')}
-=======
-from .site import SiteSettings, SiteInvite
->>>>>>> Allow account registration with invites.
