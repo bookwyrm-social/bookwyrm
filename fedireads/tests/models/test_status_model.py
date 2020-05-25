@@ -19,7 +19,6 @@ class Status(TestCase):
 
     def test_status(self):
         status = models.Status.objects.first()
-        self.assertEqual(status.status_type, 'Note')
         self.assertEqual(status.activity_type, 'Note')
         expected_id = 'https://%s/user/mouse/status/%d' % \
                 (settings.DOMAIN, status.id)
@@ -27,24 +26,21 @@ class Status(TestCase):
 
     def test_comment(self):
         comment = models.Comment.objects.first()
-        self.assertEqual(comment.status_type, 'Comment')
-        self.assertEqual(comment.activity_type, 'Note')
+        self.assertEqual(comment.activity_type, 'Comment')
         expected_id = 'https://%s/user/mouse/comment/%d' % \
                 (settings.DOMAIN, comment.id)
         self.assertEqual(comment.remote_id, expected_id)
 
     def test_quotation(self):
         quotation = models.Quotation.objects.first()
-        self.assertEqual(quotation.status_type, 'Quotation')
-        self.assertEqual(quotation.activity_type, 'Note')
+        self.assertEqual(quotation.activity_type, 'Quotation')
         expected_id = 'https://%s/user/mouse/quotation/%d' % \
                 (settings.DOMAIN, quotation.id)
         self.assertEqual(quotation.remote_id, expected_id)
 
     def test_review(self):
         review = models.Review.objects.first()
-        self.assertEqual(review.status_type, 'Review')
-        self.assertEqual(review.activity_type, 'Article')
+        self.assertEqual(review.activity_type, 'Review')
         expected_id = 'https://%s/user/mouse/review/%d' % \
                 (settings.DOMAIN, review.id)
         self.assertEqual(review.remote_id, expected_id)
