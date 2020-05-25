@@ -32,8 +32,9 @@ def get_or_create_remote_user(actor):
         get_remote_reviews(user)
     return user
 
+
 def fetch_user_data(actor):
-    # load the user's info from the actor url
+    ''' load the user's info from the actor url '''
     response = requests.get(
         actor,
         headers={'Accept': 'application/activity+json'}
@@ -51,44 +52,16 @@ def fetch_user_data(actor):
 def create_remote_user(data):
     ''' parse the activitypub actor data into a user '''
     actor = activitypub.Person(**data)
+    return actor.to_model()
 
-    # the webfinger format for the username.
-    actor_parts = urlparse(actor.id)
-    username = '%s@%s' % (actor.preferredUsername, actor_parts.netloc)
-
-    return models.User.objects.create_user(
-        username,
-        '', '', # email and passwords are left blank
-        remote_id=actor.id,
-        name=actor.name,
-        summary=actor.summary,
-        inbox=actor.inbox,
-        outbox=actor.outbox,
-        shared_inbox=actor.endpoints['sharedInbox'],
-        public_key=actor.publicKey['publicKeyPem'],
-        local=False,
-        fedireads_user=actor.fedireadsUser,
-        manually_approves_followers=actor.manuallyApprovesFollowers,
-    )
 
 def refresh_remote_user(user):
+    ''' get updated user data from its home instance '''
     data = fetch_user_data(user.remote_id)
 
-    shared_inbox = data.get('endpoints').get('sharedInbox') if \
-        data.get('endpoints') else None
+    activity = activitypub.Person(**data)
+    activity.to_model(models.User, instance=user)
 
-    # TODO - I think dataclasses change will mean less repetition here later.
-    user.name = data.get('name')
-    user.summary = data.get('summary')
-    user.inbox = data['inbox'] #fail if there's no inbox
-    user.outbox = data['outbox'] # fail if there's no outbox
-    user.shared_inbox = shared_inbox
-    user.public_key = data.get('publicKey').get('publicKeyPem')
-    user.local = False
-    user.fedireads_user = data.get('fedireadsUser', False)
-    user.manually_approves_followers = data.get(
-        'manuallyApprovesFollowers', False)
-    user.save()
 
 def get_avatar(data):
     ''' find the icon attachment and load the image from the remote sever '''
@@ -116,7 +89,7 @@ def get_remote_reviews(user):
     # TODO: pagination?
     for status in data['orderedItems']:
         if status.get('fedireadsType') == 'Review':
-            pass#create_review_from_activity(user, status)
+            activitypub.Review(**status).to_model(models.Review)
 
 
 def get_or_create_remote_server(domain):

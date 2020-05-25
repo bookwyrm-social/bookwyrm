@@ -46,7 +46,7 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, model):
+    def to_model(self, model, instance=None):
         ''' convert from an activity to a model '''
         if not isinstance(self, model.activity_serializer):
             raise TypeError('Wrong activity type for model')
@@ -62,6 +62,15 @@ class ActivityObject:
                 value = resolve_foreign_key(fk_model, value)
 
             model_fields[mapping.model_key] = value
+
+        if instance:
+            # updating an existing model isntance
+            for k, v in model_fields.items():
+                setattr(instance, k, v)
+            instance.save()
+            return instance
+
+        # creating a new model instance
         return model.objects.create(**model_fields)
 
 
