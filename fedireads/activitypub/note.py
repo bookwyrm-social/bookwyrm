@@ -42,7 +42,7 @@ class Review(Comment):
 @dataclass(init=False)
 class Quotation(Comment):
     ''' a quote and commentary on a book '''
-    quotation: str
+    quote: str
 
 
 @dataclass(init=False)
