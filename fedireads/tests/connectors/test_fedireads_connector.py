@@ -22,9 +22,9 @@ class FedireadsConnector(TestCase):
         self.connector = Connector('example.com')
 
         work_file = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_work.json')
+            '../data/fr_work.json')
         edition_file = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_edition.json')
+            '../data/fr_edition.json')
         self.work_data = json.loads(work_file.read_bytes())
         self.edition_data = json.loads(edition_file.read_bytes())
 
@@ -45,7 +45,7 @@ class FedireadsConnector(TestCase):
 
 
     def test_format_search_result(self):
-        datafile = pathlib.Path(__file__).parent.joinpath('data/fr_search.json')
+        datafile = pathlib.Path(__file__).parent.joinpath('../data/fr_search.json')
         search_data = json.loads(datafile.read_bytes())
         results = self.connector.parse_search_data(search_data)
         self.assertIsInstance(results, list)

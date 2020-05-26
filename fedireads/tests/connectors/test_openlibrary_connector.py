@@ -26,11 +26,11 @@ class Openlibrary(TestCase):
         self.connector = Connector('openlibrary.org')
 
         work_file = pathlib.Path(__file__).parent.joinpath(
-            'data/ol_work.json')
+            '../data/ol_work.json')
         edition_file = pathlib.Path(__file__).parent.joinpath(
-            'data/ol_edition.json')
+            '../data/ol_edition.json')
         edition_list_file = pathlib.Path(__file__).parent.joinpath(
-            'data/ol_edition_list.json')
+            '../data/ol_edition_list.json')
         self.work_data = json.loads(work_file.read_bytes())
         self.edition_data = json.loads(edition_file.read_bytes())
         self.edition_list_data = json.loads(edition_list_file.read_bytes())
@@ -48,7 +48,7 @@ class Openlibrary(TestCase):
 
     def test_format_search_result(self):
         ''' translate json from openlibrary into SearchResult '''
-        datafile = pathlib.Path(__file__).parent.joinpath('data/ol_search.json')
+        datafile = pathlib.Path(__file__).parent.joinpath('../data/ol_search.json')
         search_data = json.loads(datafile.read_bytes())
         results = self.connector.parse_search_data(search_data)
         self.assertIsInstance(results, list)
