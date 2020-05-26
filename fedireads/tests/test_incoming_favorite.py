@@ -55,3 +55,6 @@ class Favorite(TestCase):
         self.assertTrue(result)
 
         fav = models.Favorite.objects.get(remote_id='http://example.com/fav/1')
+        self.assertEqual(fav.status, self.status)
+        self.assertEqual(fav.remote_id, 'http://example.com/fav/1')
+        self.assertEqual(fav.user, self.remote_user)
