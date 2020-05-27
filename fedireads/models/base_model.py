@@ -37,7 +37,6 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
-    activity_type = 'Object'
     activity_serializer = lambda: {}
 
     def to_activity(self, pure=False):

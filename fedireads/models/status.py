@@ -72,7 +72,6 @@ class Status(ActivitypubMixin, FedireadsModel):
     # serializing to fedireads expanded activitypub
     activity_mappings = shared_mappings + [
         ActivityMapping('name', 'name'),
-        ActivityMapping('type', 'activity_type'),
         ActivityMapping('inReplyToBook', 'book'),
         ActivityMapping('rating', 'rating'),
         ActivityMapping('quote', 'quote'),
@@ -81,12 +80,10 @@ class Status(ActivitypubMixin, FedireadsModel):
 
     # for serializing to standard activitypub without extended types
     pure_activity_mappings = shared_mappings + [
-        ActivityMapping('type', 'pure_activity_type'),
         ActivityMapping('name', 'pure_ap_name'),
         ActivityMapping('content', 'ap_pure_content'),
     ]
 
-    activity_type = 'Note'
     activity_serializer = activitypub.Note
 
 
@@ -100,8 +97,6 @@ class Comment(Status):
         return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
                 (self.book.local_id, self.book.title)
 
-    activity_type = 'Comment'
-    pure_activity_type = 'Note'
     activity_serializer = activitypub.Comment
     pure_activity_serializer = activitypub.Note
 
@@ -121,8 +116,6 @@ class Quotation(Status):
             self.content,
         )
 
-    activity_type = 'Quotation'
-    pure_activity_type = 'Note'
     activity_serializer = activitypub.Quotation
 
 
@@ -152,8 +145,6 @@ class Review(Status):
         return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
                 (self.book.local_id, self.book.title)
 
-    activity_type = 'Review'
-    pure_activity_type = 'Article'
     activity_serializer = activitypub.Review
 
 
@@ -165,12 +156,10 @@ class Favorite(ActivitypubMixin, FedireadsModel):
     # ---- activitypub serialization settings for this model ----- #
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
-        ActivityMapping('type', 'activity_type'),
         ActivityMapping('actor', 'user'),
         ActivityMapping('object', 'status'),
     ]
 
-    activity_type = 'Like'
     activity_serializer = activitypub.Like
 
 
