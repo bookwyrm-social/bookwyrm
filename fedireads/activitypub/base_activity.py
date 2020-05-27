@@ -19,6 +19,7 @@ class PublicKey:
     owner: str
     publicKeyPem: str
 
+
 @dataclass
 class Image:
     ''' image block '''
@@ -64,7 +65,7 @@ class ActivityObject:
             model_field = getattr(model, mapping.model_key)
 
             # remote_id -> foreign key resolver
-            if isinstance(model_field, ForwardManyToOneDescriptor):
+            if isinstance(model_field, ForwardManyToOneDescriptor) and value:
                 fk_model = model_field.field.related_model
                 value = resolve_foreign_key(fk_model, value)
 
@@ -100,5 +101,6 @@ def resolve_foreign_key(model, remote_id):
     ).first()
 
     if not result:
-        raise ValueError('Could not resolve remote_id: %s' % remote_id)
+        raise ValueError('Could not resolve remote_id in %s model: %s' % \
+                (model.__name__, remote_id))
     return result

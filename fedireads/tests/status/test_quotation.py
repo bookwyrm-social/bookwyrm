@@ -24,17 +24,3 @@ class Quotation(TestCase):
             self.user, self.book, 'commentary', 'a quote')
         self.assertEqual(quotation.quote, 'a quote')
         self.assertEqual(quotation.content, 'commentary')
-
-
-    def test_quotation_from_activity(self):
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_quotation.json'
-        )
-        status_data = json.loads(datafile.read_bytes())
-
-        quotation = activitypub.Quotation(**status_data)
-        self.assertEqual(quotation.content, 'commentary')
-        self.assertEqual(quotation.quote, 'quote body')
-        self.assertEqual(quotation.book, self.book)
-        self.assertEqual(
-            quotation.published_date, '2020-05-10T02:38:31.150343+00:00')
