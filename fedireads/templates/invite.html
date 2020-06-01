@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="content-container">
+    <h2>About {{ site_settings.name }}</h2>
+    <p>
+    {{ site_settings.instance_description }}
+    </p>
+
+    <p>
+    <small>
+        <a href="/about/">More about this site</a>
+    </small>
+    </p>
+</div>
+
+<div class="content-container login">
+    <h2>Create an Account</h2>
+    <p><small>
+        With a BookWyrm account, you can track and share your reading activity with
+        friends here and on any other federated server, like Mastodon and PixelFed.
+    </small></p>
+
+    <div>
+        <form name="register" method="post" action="/register">
+            {% csrf_token %}
+            {{ register_form.as_p }}
+            <input type=hidden name="invite_code" value="{{ invite.code }}">
+            <button type="submit">Create account</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

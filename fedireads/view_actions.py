@@ -51,7 +51,17 @@ def register(request):
         return redirect('/login')
 
     if not models.SiteSettings.get().allow_registration:
-        raise PermissionDenied
+        invite_code = request.POST.get('invite_code')
+
+        if not invite_code:
+            raise PermissionDenied
+
+        try:
+            invite = models.SiteInvite.objects.get(code=invite_code)
+        except models.SiteInvite.DoesNotExist:
+            raise PermissionDenied
+    else:
+        invite = None
 
     form = forms.RegisterForm(request.POST)
     if not form.is_valid():
@@ -62,6 +72,10 @@ def register(request):
     password = form.data['password']
 
     user = models.User.objects.create_user(username, email, password)
+    if invite:
+        invite.times_used += 1
+        invite.save()
+
     login(request, user)
     return redirect('/')
 
