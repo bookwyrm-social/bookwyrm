@@ -3,6 +3,7 @@ import base64
 from Crypto import Random
 from django.db import models
 from django.utils import timezone
+import datetime
 
 from fedireads.settings import DOMAIN
 from .user import User
@@ -42,3 +43,8 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         return "https://{}/invite/{}".format(DOMAIN, self.code)
+
+    def valid(self):
+        return (
+            (self.expiry is None or self.expiry > datetime.datetime.now()) and
+            (self.use_limit is None or self.times_used < self.use_limit))
