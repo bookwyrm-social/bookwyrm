@@ -223,6 +223,22 @@ def about_page(request):
     }
     return TemplateResponse(request, 'about.html', data)
 
+def invite_page(request, code):
+    ''' Handle invites. '''
+    try:
+        invite = models.SiteInvite.objects.get(code=code)
+        if not invite.valid():
+            raise PermissionDenied
+    except models.SiteInvite.DoesNotExist:
+        raise PermissionDenied
+
+    data = {
+        'site_settings': models.SiteSettings.get(),
+        'register_form': forms.RegisterForm(),
+        'invite': invite,
+    }
+    return TemplateResponse(request, 'invite.html', data)
+
 
 def invite_page(request, code):
     ''' Handle invites. '''
