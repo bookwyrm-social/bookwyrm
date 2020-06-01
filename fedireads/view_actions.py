@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.core.exceptions import PermissionDenied
 
 from fedireads import books_manager
 from fedireads import forms, models, outgoing
@@ -48,6 +49,9 @@ def register(request):
     ''' join the server '''
     if request.method == 'GET':
         return redirect('/login')
+
+    if not models.SiteSettings.get().allow_registration:
+        raise PermissionDenied
 
     form = forms.RegisterForm(request.POST)
     if not form.is_valid():
