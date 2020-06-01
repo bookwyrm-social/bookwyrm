@@ -209,10 +209,19 @@ def login_page(request):
     ''' authentication '''
     # send user to the login page
     data = {
+        'site_settings': models.SiteSettings.get(),
         'login_form': forms.LoginForm(),
         'register_form': forms.RegisterForm(),
     }
     return TemplateResponse(request, 'login.html', data)
+
+
+def about_page(request):
+    ''' more information about the instance '''
+    data = {
+        'site_settings': models.SiteSettings.get(),
+    }
+    return TemplateResponse(request, 'about.html', data)
 
 
 @login_required

@@ -10,6 +10,7 @@ from .user import User, UserFollows, UserFollowRequest, UserBlocks
 from .user import FederatedServer
 
 from .import_job import ImportJob, ImportItem
+from .site import SiteSettings
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[0]: c[1].activity_serializer for c in cls_members \
