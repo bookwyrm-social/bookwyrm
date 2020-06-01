@@ -223,6 +223,7 @@ def about_page(request):
     }
     return TemplateResponse(request, 'about.html', data)
 
+
 def invite_page(request, code):
     ''' Handle invites. '''
     try:
@@ -246,7 +247,6 @@ def manage_invites(request):
         'form': forms.CreateInviteForm(),
     }
     return TemplateResponse(request, 'manage_invites.html', data)
-
 
 @login_required
 def notifications_page(request):
