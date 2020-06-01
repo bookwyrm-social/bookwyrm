@@ -6,3 +6,4 @@ from .status import Favorite, Boost, Tag, Notification, ReadThrough
 from .user import User, UserFollows, UserFollowRequest, UserBlocks
 from .user import FederatedServer
 from .import_job import ImportJob, ImportItem
+from .site import SiteSettings
