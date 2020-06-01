@@ -1,5 +1,5 @@
 ''' usin django model forms '''
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm, PasswordInput, HiddenInput
 from django import forms
 
 from fedireads import models
@@ -21,7 +21,7 @@ class RegisterForm(ModelForm):
         fields = ['username', 'email', 'password']
         help_texts = {f: None for f in fields}
         widgets = {
-            'password': PasswordInput(),
+            'password': PasswordInput()
         }
 
 

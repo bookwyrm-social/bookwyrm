@@ -1,4 +1,9 @@
+import base64
+import datetime
+
+from Crypto import Random
 from django.db import models
+
 from fedireads.settings import DOMAIN
 
 class SiteSettings(models.Model):
@@ -17,3 +22,17 @@ class SiteSettings(models.Model):
             default_settings = SiteSettings(id=1)
             default_settings.save()
             return default_settings
+
+def new_invite_code():
+    return base64.b32encode(Random.get_random_bytes(5)).decode('ascii')
+
+class SiteInvite(models.Model):
+    code = models.CharField(max_length=32, default=new_invite_code)
+    expiry = models.DateTimeField(blank=True, null=True)
+    use_limit = models.IntegerField(blank=True, null=True)
+    times_used = models.IntegerField(default=0)
+
+    def valid(self):
+        return (
+            (self.expiry is None or self.expiry > datetime.datetime.now()) and
+            (self.use_limit is None or self.times_used < self.use_limit))
