@@ -431,3 +431,15 @@ def import_data(request):
         goodreads_import.start_import(job)
         return redirect('/import_status/%d' % (job.id,))
     return HttpResponseBadRequest()
+
+@login_required
+def create_invite(request):
+    form = forms.CreateInviteForm(request.POST)
+    if not form.is_valid():
+        return HttpResponseBadRequest("ERRORS : %s" % (form.errors,))
+
+    invite = form.save(commit=False)
+    invite.user = request.user
+    invite.save()
+
+    return redirect('/manage_invites')

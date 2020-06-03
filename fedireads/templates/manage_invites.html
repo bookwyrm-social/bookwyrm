@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+{% block content %}
+<div class="content-container">
+    <div class="manage-invites">
+        <h2>Invites</h2>
+        <table>
+            <tr>
+                <th>Link</th>
+                <th>Expires</th>
+                <th>Max uses</th>
+                <th>Times used</th>
+            </tr>
+        {% for invite in invites %}
+        <tr>
+            <td><a href="{{ invite.link }}">{{ invite.link }}</td>
+            <td>{{ invite.expiry|naturaltime }}</td>
+            <td>{{ invite.use_limit }}</td>
+            <td>{{ invite.times_used }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <h2>Generate New Invite</h2>
+
+        <form name="avatar" action="/create_invite/" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Invite</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
