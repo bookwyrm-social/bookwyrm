@@ -1,10 +1,11 @@
 import base64
-import datetime
 
 from Crypto import Random
 from django.db import models
+from django.utils import timezone
 
 from fedireads.settings import DOMAIN
+from .user import User
 
 class SiteSettings(models.Model):
     name = models.CharField(default=DOMAIN, max_length=100)
@@ -31,8 +32,13 @@ class SiteInvite(models.Model):
     expiry = models.DateTimeField(blank=True, null=True)
     use_limit = models.IntegerField(blank=True, null=True)
     times_used = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def valid(self):
         return (
-            (self.expiry is None or self.expiry > datetime.datetime.now()) and
+            (self.expiry is None or self.expiry > timezone.now()) and
             (self.use_limit is None or self.times_used < self.use_limit))
+
+    @property
+    def link(self):
+        return "https://{}/invite/{}".format(DOMAIN, self.code)

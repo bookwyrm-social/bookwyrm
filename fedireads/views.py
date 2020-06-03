@@ -238,6 +238,14 @@ def invite_page(request, code):
     }
     return TemplateResponse(request, 'invite.html', data)
 
+@login_required
+def manage_invites(request):
+    data = {
+        'invites': models.SiteInvite.objects.filter(user=request.user),
+        'form': forms.CreateInviteForm(),
+    }
+    return TemplateResponse(request, 'manage_invites.html', data)
+
 
 @login_required
 def notifications_page(request):
