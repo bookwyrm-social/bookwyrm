@@ -31,8 +31,8 @@ services:
             - celery_worker
         networks:
             - main
-        expose:
-            - 8000
+        ports:
+            - 8000:8000
     redis:
         image: redis
         env_file: .env
