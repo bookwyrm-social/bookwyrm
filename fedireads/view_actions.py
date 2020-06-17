@@ -8,6 +8,7 @@ from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.core.exceptions import PermissionDenied
 
 from fedireads import books_manager
 from fedireads import forms, models, outgoing
@@ -49,6 +50,19 @@ def register(request):
     if request.method == 'GET':
         return redirect('/login')
 
+    if not models.SiteSettings.get().allow_registration:
+        invite_code = request.POST.get('invite_code')
+
+        if not invite_code:
+            raise PermissionDenied
+
+        try:
+            invite = models.SiteInvite.objects.get(code=invite_code)
+        except models.SiteInvite.DoesNotExist:
+            raise PermissionDenied
+    else:
+        invite = None
+
     form = forms.RegisterForm(request.POST)
     if not form.is_valid():
         return redirect('/register/')
@@ -58,6 +72,10 @@ def register(request):
     password = form.data['password']
 
     user = models.User.objects.create_user(username, email, password)
+    if invite:
+        invite.times_used += 1
+        invite.save()
+
     login(request, user)
     return redirect('/')
 
@@ -413,3 +431,15 @@ def import_data(request):
         goodreads_import.start_import(job)
         return redirect('/import_status/%d' % (job.id,))
     return HttpResponseBadRequest()
+
+@login_required
+def create_invite(request):
+    form = forms.CreateInviteForm(request.POST)
+    if not form.is_valid():
+        return HttpResponseBadRequest("ERRORS : %s" % (form.errors,))
+
+    invite = form.save(commit=False)
+    invite.user = request.user
+    invite.save()
+
+    return redirect('/manage_invites')

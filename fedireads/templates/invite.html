@@ -14,7 +14,6 @@
     </p>
 </div>
 
-<div class="row">
 <div class="content-container login">
     <h2>Create an Account</h2>
     <p><small>
@@ -22,33 +21,13 @@
         friends here and on any other federated server, like Mastodon and PixelFed.
     </small></p>
 
-    {% if site_settings.allow_registration %}
     <div>
         <form name="register" method="post" action="/register">
             {% csrf_token %}
             {{ register_form.as_p }}
+            <input type=hidden name="invite_code" value="{{ invite.code }}">
             <button type="submit">Create account</button>
         </form>
     </div>
-    {% else %}
-
-    <small>
-    This instance is not open for registration.
-    </small>
-    {% endif %}
-</div>
-
-<div class="content-container login">
-    <h2>Log in</h2>
-    <div>
-        <form name="login" method="post" action="/user-login">
-            {% csrf_token %}
-            {{ login_form.as_p }}
-            <button type="submit">Log in</button>
-        </form>
-        <p><small><a href="/reset-password">Forgot your password?</a></small></p>
-    </div>
-</div>
-
 </div>
 {% endblock %}

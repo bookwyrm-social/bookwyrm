@@ -208,10 +208,43 @@ def login_page(request):
     ''' authentication '''
     # send user to the login page
     data = {
+        'site_settings': models.SiteSettings.get(),
         'login_form': forms.LoginForm(),
         'register_form': forms.RegisterForm(),
     }
     return TemplateResponse(request, 'login.html', data)
+
+
+def about_page(request):
+    ''' more information about the instance '''
+    data = {
+        'site_settings': models.SiteSettings.get(),
+    }
+    return TemplateResponse(request, 'about.html', data)
+
+def invite_page(request, code):
+    ''' Handle invites. '''
+    try:
+        invite = models.SiteInvite.objects.get(code=code)
+        if not invite.valid():
+            raise PermissionDenied
+    except models.SiteInvite.DoesNotExist:
+        raise PermissionDenied
+
+    data = {
+        'site_settings': models.SiteSettings.get(),
+        'register_form': forms.RegisterForm(),
+        'invite': invite,
+    }
+    return TemplateResponse(request, 'invite.html', data)
+
+@login_required
+def manage_invites(request):
+    data = {
+        'invites': models.SiteInvite.objects.filter(user=request.user),
+        'form': forms.CreateInviteForm(),
+    }
+    return TemplateResponse(request, 'manage_invites.html', data)
 
 
 @login_required

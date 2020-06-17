@@ -34,6 +34,9 @@ urlpatterns = [
 
     # ui views
     re_path(r'^login/?$', views.login_page),
+    re_path(r'^about/?$', views.about_page),
+    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
+    re_path(r'^manage_invites/?$', views.manage_invites),
 
     path('', views.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
@@ -101,5 +104,7 @@ urlpatterns = [
     re_path(r'^delete_follow_request/?$', actions.delete_follow_request),
 
     re_path(r'^clear-notifications/?$', actions.clear_notifications),
+
+    re_path(r'^create_invite/?$', actions.create_invite),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
