@@ -2,7 +2,7 @@
 {% load fr_display %}
 {% block content %}
 <div class="content-container">
-    <h2>{{ author.name }}</h2>
+    <h2>{{ author.display_name }}</h2>
 
     {% if author.bio %}
     <p>
@@ -12,7 +12,7 @@
 </div>
 
 <div class="content-container">
-    <h2>Books by {{ author.name }}</h2>
+    <h2>Books by {{ author.display_name }}</h2>
     <div class="book-grid row shrink wrap">
         {% for book in books %}
         <div class="book-preview">
