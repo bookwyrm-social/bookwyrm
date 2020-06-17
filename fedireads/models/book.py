@@ -184,3 +184,14 @@ class Author(FedireadsModel):
     @property
     def activitypub_serialize(self):
         return activitypub.get_author(self)
+
+    @property
+    def display_name(self):
+        ''' Helper to return a displayable name'''
+        if self.name:
+            return name
+        # don't want to return a spurious space if all of these are None
+        elif self.first_name and self.last_name:
+            return self.first_name + ' ' + self.last_name
+        else:
+            return self.last_name or self.first_name
