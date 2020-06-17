@@ -50,6 +50,13 @@ Since the project is still in its early stages, not everything here is fully imp
     - Control which instances you want to federate with
 
 ## Setting up the developer environment
+
+Set up the environment file:
+
+``` bash
+cp .env.example .env
+```
+
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
 
 ### Without Docker
