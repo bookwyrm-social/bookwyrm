@@ -1,4 +1,4 @@
-# Book Wyrm (aka FediReads)
+# BookWyrm
 
 Social reading and reviewing, decentralized with ActivityPub
 
@@ -14,15 +14,15 @@ Social reading and reviewing, decentralized with ActivityPub
 
 ## The overall idea
 ### What it is and isn't
-FediReads is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
+BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
 
 ### The role of federation
-FediReads is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of FediReads, and other ActivityPub compliant services, like Mastodon and Pixelfed. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your Fedireads instance.
+BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon and Pixelfed. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
 
 Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular type of literature, be just for use by people who are in a book club together, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
 ### Features
-Since the project is still in its early stages, not everything here is fully implemented. There is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/fedireads/issues) to get the conversation going!
+Since the project is still in its early stages, not everything here is fully implemented. There is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/bookwyrm/issues) to get the conversation going!
  - Posting about books
     - Compose reviews, with or without ratings, which are aggregated in the book page
     - Compose other kinds of statuses about books, such as:
@@ -30,7 +30,7 @@ Since the project is still in its early stages, not everything here is fully imp
      - Quotes or excerpts
      - Recommenations of other books
     - Reply to statuses
-    - Aggregate reviews of a book across connected FediReads instances
+    - Aggregate reviews of a book across connected BookWyrm instances
     - Differentiate local and federated reviews and rating
  - Track reading activity
     - Shelve books on default "to-read," "currently reading," and "read" shelves
@@ -41,8 +41,8 @@ Since the project is still in its early stages, not everything here is fully imp
     - Broadcast and receive user statuses and activity
     - Broadcast copies of books that can be used as canonical data sources
     - Identify shared books across instances and aggregate related content
-    - Follow and interact with users across FediReads instances
-    - Inter-operate with non-FediReads ActivityPub services
+    - Follow and interact with users across BookWyrm instances
+    - Inter-operate with non-BookWyrm ActivityPub services
  - Granular privacy controls
     - Local-only, followers-only, and public posting
     - Option for users to manually approve followers
@@ -95,9 +95,9 @@ docker-compose exec web python manage.py shell -c 'import init_db'
 
 
 ## Project structure
-All the url routing is in `fedireads/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
+All the url routing is in `bookwyrm/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
 
-The application views and actions are in `fedireads/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `fedireads/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `fedireads/incoming.py`. Connection to openlibrary.org to get book data is handled in `fedireads/connectors/openlibrary.py`. ActivityPub serialization is handled in the `activitypub/` directory.
+The application views and actions are in `bookwyrm/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `bookwyrm/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `bookwyrm/incoming.py`. Connection to openlibrary.org to get book data is handled in `bookwyrm/connectors/openlibrary.py`. ActivityPub serialization is handled in the `bookwyrm/activitypub/` directory.
 
 Celery is used for background tasks, which includes receiving incoming ActivityPub activities, ActivityPub broadcasting, and external data import. 
 
