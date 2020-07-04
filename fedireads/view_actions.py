@@ -283,8 +283,9 @@ def tag(request):
     # field which doesn't validate
     name = request.POST.get('name')
     book_id = request.POST.get('book')
+    remote_id = 'https://%s/book/%s' % (DOMAIN, book_id)
 
-    outgoing.handle_tag(request.user, book_id, name)
+    outgoing.handle_tag(request.user, remote_id, name)
     return redirect('/book/%s' % book_id)
 
 
