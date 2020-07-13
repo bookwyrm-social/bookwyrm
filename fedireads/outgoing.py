@@ -50,13 +50,27 @@ def outbox(request, username):
             **filters
         ).select_subclasses().all()[:limit]
 
+        print([s.to_activity() for s in statuses])
         return JsonResponse(
-            activitypub.get_outbox_page(user, page_id, statuses, max_id, min_id)
+            activitypub.OutboxPage(
+                id=page_id,
+                partOf=user.outbox,
+                orderedItems=[s.to_activity() for s in statuses],
+                next=max_id,
+                prev=min_id
+            ).serialize(), encoder=activitypub.ActivityEncoder
         )
 
     # collection overview
     size = models.Status.objects.filter(user=user).count()
-    return JsonResponse(activitypub.get_outbox(user, size))
+    return JsonResponse(
+        activitypub.Outbox(
+            id=user.outbox,
+            totalItems=size,
+            first=user.outbox + '?page=true',# idk if there's a better way
+            last=user.outbox + '?min_id=0&page=true' # than this, seems janky
+        ).serialize()
+    )
 
 
 def handle_account_search(query):

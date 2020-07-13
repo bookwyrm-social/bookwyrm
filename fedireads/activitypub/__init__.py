@@ -5,12 +5,12 @@ import sys
 from .base_activity import ActivityEncoder, Image, PublicKey
 from .note import Note, Article, Comment, Review, Quotation, Like
 from .person import Person
+from .outbox import Outbox, OutboxPage
 
 from .book import get_book, get_author, get_shelf
 from .create import get_create, get_update
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
-from .outbox import get_outbox, get_outbox_page
 from .shelve import get_add, get_remove
 from .status import get_rating_note
 from .status import get_replies_page
