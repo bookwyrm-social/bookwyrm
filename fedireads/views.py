@@ -264,6 +264,7 @@ def manage_invites(request):
     }
     return TemplateResponse(request, 'manage_invites.html', data)
 
+
 @login_required
 def notifications_page(request):
     ''' list notitications '''
