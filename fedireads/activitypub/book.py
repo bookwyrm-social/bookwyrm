@@ -1,95 +1,70 @@
-''' federate book data '''
-from fedireads.settings import DOMAIN
+''' book and author data '''
+from dataclasses import dataclass, field
+from typing import List
 
-def get_book(book, recursive=True):
-    ''' activitypub serialize a book '''
+from .base_activity import ActivityObject, Image
 
-    fields = [
-        'title',
-        'sort_title',
-        'subtitle',
-        'isbn_13',
-        'oclc_number',
-        'openlibrary_key',
-        'librarything_key',
-        'lccn',
-        'oclc_number',
-        'pages',
-        'physical_format',
-        'misc_identifiers',
+@dataclass(init=False)
+class Book(ActivityObject):
+    authors: List[str]
+    first_published_date: str
+    published_date: str
 
-        'description',
-        'languages',
-        'series',
-        'series_number',
-        'subjects',
-        'subject_places',
-        'pages',
-        'physical_format',
-    ]
+    title: str
+    sort_title: str
+    subtitle: str
+    description: str
+    languages: List[str]
+    series: str
+    series_number: str
+    subjects: List[str]
+    subject_places: List[str]
 
-    book_type = type(book).__name__
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'type': 'Document',
-        'book_type': book_type,
-        'name': book.title,
-        'url': book.local_id,
+    openlibrary_key: str
+    librarything_key: str
+    goodreads_key: str
 
-        'authors': [a.local_id for a in book.authors.all()],
-        'first_published_date': book.first_published_date.isoformat() if \
-                book.first_published_date else None,
-        'published_date': book.published_date.isoformat() if \
-                book.published_date else None,
-    }
-    if recursive:
-        if book_type == 'Edition':
-            activity['work'] = get_book(book.parent_work, recursive=False)
-        else:
-            editions = book.edition_set.order_by('default')
-            activity['editions'] = [
-                get_book(b, recursive=False) for b in editions]
-
-    for field in fields:
-        if hasattr(book, field):
-            activity[field] = book.__getattribute__(field)
-
-    if book.cover:
-        image_path = book.cover.url
-        image_type = image_path.split('.')[-1]
-        activity['attachment'] = [{
-            'type': 'Document',
-            'mediaType': 'image/%s' % image_type,
-            'url': 'https://%s%s' % (DOMAIN, image_path),
-            'name': 'Cover of "%s"' % book.title,
-        }]
-    return {k: v for (k, v) in activity.items() if v}
+    attachment: List[Image] = field(default=lambda: [])
+    type: str = 'Book'
 
 
-def get_author(author):
-    ''' serialize an author '''
-    fields = [
-        'name',
-        'born',
-        'died',
-        'aliases',
-        'bio'
-        'openlibrary_key',
-        'wikipedia_link',
-    ]
-    activity = {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'url': author.local_id,
-        'type': 'Person',
-    }
-    for field in fields:
-        if hasattr(author, field):
-            activity[field] = author.__getattribute__(field)
-    return activity
+@dataclass(init=False)
+class Edition(Book):
+    ''' Edition instance of a book object '''
+    isbn_10: str
+    isbn_13: str
+    oclc_number: str
+    asin: str
+    pages: str
+    physical_format: str
+    publishers: List[str]
+
+    work: str
+    type: str = 'Edition'
+
+
+@dataclass(init=False)
+class Work(Book):
+    lccn: str
+    editions: List[str]
+    type: str = 'Work'
+
+
+
+@dataclass(init=False)
+class Author(ActivityObject):
+    url: str
+    name: str
+    born: str
+    died: str
+    aliases: str
+    bio: str
+    openlibrary_key: str
+    wikipedia_link: str
+    type: str = 'Person'
 
 
 def get_shelf(shelf, page=None):
-    ''' serialize shelf object '''
     id_slug = shelf.remote_id
     if page:
         return get_shelf_page(shelf, page)
@@ -104,7 +79,6 @@ def get_shelf(shelf, page=None):
 
 
 def get_shelf_page(shelf, page):
-    ''' list of books on a shelf '''
     page = int(page)
     page_length = 10
     start = (page - 1) * page_length

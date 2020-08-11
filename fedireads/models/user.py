@@ -95,10 +95,8 @@ class User(ActivitypubMixin, AbstractUser):
             'publicKeyPem': self.public_key,
         })
 
-    activity_type = 'Person'
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
-        ActivityMapping('type', 'activity_type'),
         ActivityMapping(
             'preferredUsername',
             'username',

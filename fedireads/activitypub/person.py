@@ -19,6 +19,7 @@ class Person(ActivityObject):
     fedireadsUser: str = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
+    type: str = 'Person'
 
     def serialize(self):
         data = self.__dict__

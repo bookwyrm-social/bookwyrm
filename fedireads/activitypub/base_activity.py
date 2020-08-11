@@ -8,7 +8,7 @@ from django.db.models.fields.related_descriptors \
 
 
 class ActivityEncoder(JSONEncoder):
-    ''' allows conversion to JSON '''
+    '''  used to convert an Activity object into json '''
     def default(self, o):
         return o.__dict__
 

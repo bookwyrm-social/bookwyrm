@@ -441,7 +441,7 @@ def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
-        return JsonResponse(activitypub.get_book(book))
+        return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 
     if isinstance(book, models.Work):
         book = book.default_edition
@@ -549,7 +549,7 @@ def author_page(request, author_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(activitypub.get_author(author))
+        return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
 
     books = models.Work.objects.filter(authors=author)
     data = {

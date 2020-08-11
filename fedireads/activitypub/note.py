@@ -52,6 +52,7 @@ class Quotation(Comment):
 
 @dataclass(init=False)
 class Like(ActivityObject):
+    ''' a user faving an object '''
     actor: str
     object: str
     type: str = 'Like'
