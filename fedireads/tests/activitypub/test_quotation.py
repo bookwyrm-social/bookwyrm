@@ -1,9 +1,8 @@
-from django.test import TestCase
 import json
 import pathlib
 
+from django.test import TestCase
 from fedireads import activitypub, models
-from fedireads import status as status_builder
 
 
 class Quotation(TestCase):
@@ -24,7 +23,6 @@ class Quotation(TestCase):
             '../data/ap_quotation.json'
         )
         self.status_data = json.loads(datafile.read_bytes())
-
 
 
     def test_quotation_activity(self):
