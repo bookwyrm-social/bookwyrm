@@ -1,8 +1,7 @@
-import json
-import pathlib
+import datetime
 
 from django.test import TestCase
-from fedireads import activitypub, models
+from fedireads import models
 
 
 class Author(TestCase):
@@ -15,8 +14,6 @@ class Author(TestCase):
             name='Author fullname',
             first_name='Auth',
             last_name='Or',
-            #born='1900',
-            #died='2012',
             aliases=['One', 'Two'],
             bio='bio bio bio',
         )
