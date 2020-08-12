@@ -355,7 +355,7 @@ def handle_boost(user, status):
     )
     boost.save()
 
-    boost_activity = activitypub.get_boost(boost)
+    boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
 
 

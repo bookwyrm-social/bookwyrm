@@ -4,6 +4,7 @@ import sys
 
 from .base_activity import ActivityEncoder, Image, PublicKey
 from .note import Note, Article, Comment, Review, Quotation, Like
+from .note import Boost
 from .person import Person
 from .outbox import Outbox, OutboxPage
 
@@ -17,7 +18,6 @@ from .shelve import get_add, get_remove
 from .status import get_rating_note
 from .status import get_replies_page
 from .status import get_favorite, get_unfavorite
-from .status import get_boost
 from .status import get_add_tag, get_remove_tag
 
 # this creates a list of all the Activity types that we can serialize,

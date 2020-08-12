@@ -1,6 +1,8 @@
 ''' status serializers '''
 from uuid import uuid4
 
+
+
 def get_rating_note(review):
     ''' simple rating, send it as a note not an artciel '''
     status = review.to_activity()
@@ -72,17 +74,6 @@ def get_unfavorite(favorite):
             'actor': favorite.user.remote_id,
             'object': favorite.status.remote_id,
         }
-    }
-
-
-def get_boost(boost):
-    ''' boost/announce a post '''
-    return {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': boost.remote_id,
-        'type': 'Announce',
-        'actor': boost.user.remote_id,
-        'object': boost.boosted_status.remote_id,
     }
 
 

@@ -56,3 +56,11 @@ class Like(ActivityObject):
     actor: str
     object: str
     type: str = 'Like'
+
+
+@dataclass(init=False)
+class Boost(ActivityObject):
+    ''' boosting a status '''
+    actor: str
+    object: str
+    type: str = 'Announce'

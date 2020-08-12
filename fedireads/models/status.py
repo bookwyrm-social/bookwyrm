@@ -174,6 +174,14 @@ class Boost(Status):
         on_delete=models.PROTECT,
         related_name="boosters")
 
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('actor', 'user'),
+        ActivityMapping('object', 'boosted_status'),
+    ]
+
+    activity_serializer = activitypub.Like
+
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
