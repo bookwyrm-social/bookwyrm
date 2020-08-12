@@ -6,13 +6,12 @@ from fedireads import activitypub, models
 
 
 class Person(TestCase):
-    ''' not too much going on in the books model but here we are '''
     def setUp(self):
         self.user = models.User.objects.create_user(
             'rat', 'rat@rat.com', 'ratword',
         )
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_user.json'
+            '../data/ap_user.json'
         )
         self.user_data = json.loads(datafile.read_bytes())
 
