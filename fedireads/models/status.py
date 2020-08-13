@@ -164,6 +164,7 @@ class Favorite(ActivitypubMixin, FedireadsModel):
 
 
     class Meta:
+        ''' can't fav things twice '''
         unique_together = ('user', 'status')
 
 
@@ -201,6 +202,7 @@ class Tag(FedireadsModel):
         super().save(*args, **kwargs)
 
     class Meta:
+        ''' unqiueness constraint '''
         unique_together = ('user', 'book', 'name')
 
 
@@ -240,6 +242,7 @@ class Notification(FedireadsModel):
         max_length=255, choices=NotificationType.choices)
 
     class Meta:
+        ''' checks if notifcation is in enum list for valid types '''
         constraints = [
             models.CheckConstraint(
                 check=models.Q(notification_type__in=NotificationType.values),

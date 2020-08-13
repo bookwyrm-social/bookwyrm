@@ -50,17 +50,6 @@ def get_replies_page(status, replies):
     }
 
 
-def get_favorite(favorite):
-    ''' like a post '''
-    return {
-        '@context': 'https://www.w3.org/ns/activitystreams',
-        'id': favorite.remote_id,
-        'type': 'Like',
-        'actor': favorite.user.remote_id,
-        'object': favorite.status.remote_id,
-    }
-
-
 def get_unfavorite(favorite):
     ''' like a post '''
     return {

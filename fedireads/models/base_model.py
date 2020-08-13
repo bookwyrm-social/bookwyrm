@@ -1,10 +1,15 @@
 ''' base model with default fields '''
+from base64 import b64encode
 from dataclasses import dataclass
 from typing import Callable
 
+from Crypto.PublicKey import RSA
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
 from django.db import models
 from django.dispatch import receiver
 
+from fedireads import activitypub
 from fedireads.settings import DOMAIN
 
 class FedireadsModel(models.Model):
@@ -22,6 +27,7 @@ class FedireadsModel(models.Model):
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
     class Meta:
+        ''' this is just here to provide default fields for other models '''
         abstract = True
 
 
@@ -55,8 +61,37 @@ class ActivitypubMixin:
                 value = value.remote_id
             fields[mapping.activity_key] = mapping.activity_formatter(value)
 
+        if pure:
+            return self.pure_activity_serializer(
+                **fields
+            ).serialize()
         return self.activity_serializer(
             **fields
+        ).serialize()
+
+
+    def create_activity(self, user, pure=False):
+        ''' returns the object wrapped in a Create activity '''
+        activity_object = self.to_activity(pure=pure)
+
+        signer = pkcs1_15.new(RSA.import_key(user.private_key))
+        content = activity_object['content']
+        signed_message = signer.sign(SHA256.new(content.encode('utf8')))
+        create_id = self.remote_id + '/activity'
+
+        signature = activitypub.Signature(
+            creator='%s#main-key' % user.remote_id,
+            created=activity_object['published'],
+            signatureValue=b64encode(signed_message).decode('utf8')
+        )
+
+        return activitypub.Create(
+            id=create_id,
+            actor=user.remote_id,
+            to=['%s/followers' % user.remote_id],
+            cc=['https://www.w3.org/ns/activitystreams#Public'],
+            object=activity_object,
+            signature=signature,
         ).serialize()
 
 

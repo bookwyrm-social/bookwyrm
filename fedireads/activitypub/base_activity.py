@@ -30,11 +30,12 @@ class PublicKey:
 
 
 @dataclass
-class Image:
-    ''' image block '''
-    mediaType: str
-    url: str
-    type: str = 'Image'
+class Signature:
+    ''' public key block '''
+    creator: str
+    created: str
+    signatureValue: str
+    type: str = 'RsaSignature2017'
 
 
 @dataclass(init=False)
@@ -44,7 +45,10 @@ class ActivityObject:
     type: str
 
     def __init__(self, **kwargs):
-        ''' treat fields as required but not exhaustive '''
+        ''' this lets you pass in an object with fields
+        that aren't in the dataclass, which it ignores.
+        Any field in the dataclass is required or has a
+        default value '''
         for field in fields(self):
             try:
                 value = kwargs[field.name]
