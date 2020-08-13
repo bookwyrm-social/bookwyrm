@@ -169,7 +169,7 @@ def handle_shelve(user, book, shelf):
         read.finish_date = datetime.now()
         read.save()
 
-    broadcast(user, status.create_activity(user))
+    broadcast(user, status.to_create_activity(user))
 
 
 def handle_unshelve(user, book, shelf):
@@ -225,7 +225,7 @@ def handle_import_books(user, items):
         status.status_type = 'Update'
         status.save()
 
-        broadcast(user, status.create_activity(user))
+        broadcast(user, status.to_create_activity(user))
         return status
 
 
@@ -261,10 +261,10 @@ def handle_status(user, book_id, builder, *args):
     book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
-    broadcast(user, status.create_activity(user), software='fedireads')
+    broadcast(user, status.to_create_activity(user), software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = status.create_activity(user, pure=True)
+    remote_activity = status.to_create_activity(user, pure=True)
 
     broadcast(user, remote_activity, software='other')
 
@@ -299,7 +299,7 @@ def handle_reply(user, review, content):
             related_status=reply,
         )
 
-    broadcast(user, reply.create_activity(user))
+    broadcast(user, reply.to_create_activity(user))
 
 
 def handle_favorite(user, status):
@@ -351,13 +351,9 @@ def handle_boost(user, status):
 
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''
-    book_activity = activitypub.get_book(book)
-    update_activity = activitypub.get_update(user, book_activity)
-    broadcast(user, update_activity)
+    broadcast(user, book.to_update_activity(user))
 
 
 def handle_update_user(user):
     ''' broadcast editing a user's profile '''
-    actor = user.activitypub_serialize
-    update_activity = activitypub.get_update(user, actor)
-    broadcast(user, update_activity)
+    broadcast(user, user.to_update_activity())

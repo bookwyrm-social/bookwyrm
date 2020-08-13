@@ -70,7 +70,7 @@ class ActivitypubMixin:
         ).serialize()
 
 
-    def create_activity(self, user, pure=False):
+    def to_create_activity(self, user, pure=False):
         ''' returns the object wrapped in a Create activity '''
         activity_object = self.to_activity(pure=pure)
 
@@ -92,6 +92,18 @@ class ActivitypubMixin:
             cc=['https://www.w3.org/ns/activitystreams#Public'],
             object=activity_object,
             signature=signature,
+        ).serialize()
+
+
+    def to_update_activity(self, user):
+        ''' wrapper for Updates to an activity '''
+        # TODO: this should have an identifier???
+        activity_id = '%s#updates' % user.remote_id
+        return activitypub.Update(
+            id=activity_id,
+            actor=user.remote_id,
+            to=['https://www.w3.org/ns/activitystreams#Public'],
+            object=self.to_activity()
         ).serialize()
 
 
