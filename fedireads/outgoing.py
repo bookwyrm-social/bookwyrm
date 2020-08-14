@@ -133,10 +133,9 @@ def handle_reject(user, to_follow, relationship):
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
-    models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
+    shelve = models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
-    activity = activitypub.get_add(user, book, shelf)
-    broadcast(user, activity)
+    broadcast(user, shelve.to_add_activity(user))
 
     # tell the world about this cool thing that happened
     verb = {
@@ -175,9 +174,8 @@ def handle_unshelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
+    activity = row.to_remove_activity(user)
     row.delete()
-
-    activity = activitypub.get_remove(user, book, shelf)
 
     broadcast(user, activity)
 

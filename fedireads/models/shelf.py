@@ -36,5 +36,26 @@ class ShelfBook(FedireadsModel):
         on_delete=models.PROTECT
     )
 
+    def to_add_activity(self, user):
+        ''' AP for shelving a book'''
+        return activitypub.Add(
+            id='%s#add' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=shelf.shelf.to_activity()
+        ).serialize()
+
+    def to_remove_activity(self, user):
+        ''' AP for un-shelving a book'''
+        return activitypub.Remove(
+            id='%s#add' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=shelf.shelf.to_activity()
+        ).serialize()
+
+
     class Meta:
+        ''' an opinionated constraint!
+            you can't put a book on shelf twice '''
         unique_together = ('book', 'shelf')

@@ -44,12 +44,26 @@ class Follow(Verb):
 @dataclass(init=False)
 class Accept(Verb):
     ''' Accept activity '''
-    type: str = 'Accept'
     object: Follow
+    type: str = 'Accept'
 
 
 @dataclass(init=False)
 class Reject(Verb):
     ''' Reject activity '''
-    type: str = 'Reject'
     object: Follow
+    type: str = 'Reject'
+
+
+@dataclass(init=False)
+class Add(Verb):
+    '''Add activity '''
+    target: ActivityObject
+    type: str = 'Add'
+
+
+@dataclass(init=False)
+class Remove(Verb):
+    '''Remove activity '''
+    target: ActivityObject
+    type: str = 'Remove'
