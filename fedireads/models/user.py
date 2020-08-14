@@ -1,5 +1,5 @@
 ''' database schema for user data '''
-from urllib.parse import urlencode, urlparse
+from urllib.parse import urlparse
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -132,47 +132,23 @@ class User(ActivitypubMixin, AbstractUser):
 
     def to_outbox(self):
         ''' an ordered collection of statuses '''
-        size = Status.objects.filter(user=self).count()
-        return activitypub.Outbox(
-            id=self.outbox,
-            totalItems=size,
-            first='%s?page=true' % self.outbox,
-            last='%s?min_id=0&page=true' % self.outbox
-        ).serialize()
+        return self.to_ordered_collection(
+            Status.objects.filter(user=self),
+            remote_id=self.outbox,
+        )
 
     def to_outbox_page(self, min_id=None, max_id=None):
         ''' get this user's paginated outbox content '''
         # TODO: weird place to define this
-        limit = 20
-        # filters for use in the django queryset min/max
-        filters = {}
-        # params for the outbox page id
-        params = {'page': 'true'}
-        if min_id is not None:
-            params['min_id'] = min_id
-            filters['id__gt'] = min_id
-        if max_id is not None:
-            params['max_id'] = max_id
-            filters['id__lte'] = max_id
-        page_id = self.outbox + '?' + urlencode(params)
         statuses = Status.objects.filter(
             user=self,
-            **filters
-        ).select_subclasses().all()[:limit]
-
-        prev_page = next_page = ''
-        if statuses.count():
-            min_id = statuses[0].id
-            max_id = statuses[len(statuses) - 1].id
-            next_page = '%s?page=true&min_id=%d' % (self.outbox, max_id)
-            prev_page = '%s?page=true&max_id=%d' % (self.outbox, min_id)
-        return activitypub.OrderedCollectionPage(
-            id=page_id,
-            partOf=self.outbox,
-            orderedItems=[s.to_activity() for s in statuses],
-            next=next_page,
-            prev=prev_page,
-        ).serialize()
+        ).select_subclasses()
+        return self.to_ordered_collection_page(
+            statuses,
+            min_id=min_id,
+            max_id=max_id,
+            remote_id=self.outbox
+        )
 
     def to_follow_activity(self, user):
         ''' generate a request to follow this user '''
