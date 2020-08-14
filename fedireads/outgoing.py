@@ -119,15 +119,14 @@ def handle_accept(user, to_follow, follow_request):
         follow_request.delete()
         relationship.save()
 
-    activity = activitypub.get_accept(to_follow, follow_request)
+    activity = follow_request.to_accept_activity(user)
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
 def handle_reject(user, to_follow, relationship):
     ''' a local user who managed follows rejects a follow request '''
+    activity = relationship.to_reject_activity(user)
     relationship.delete()
-
-    activity = activitypub.get_reject(to_follow, relationship)
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
@@ -227,6 +226,7 @@ def handle_import_books(user, items):
 
         broadcast(user, status.to_create_activity(user))
         return status
+    return None
 
 
 def handle_rate(user, book, rating):

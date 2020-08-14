@@ -2,6 +2,7 @@
 from base64 import b64encode
 from dataclasses import dataclass
 from typing import Callable
+from uuid import uuid4
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -97,14 +98,22 @@ class ActivitypubMixin:
 
     def to_update_activity(self, user):
         ''' wrapper for Updates to an activity '''
-        # TODO: this should have an identifier???
-        activity_id = '%s#updates' % user.remote_id
+        activity_id = '%s#update/%s' % (user.remote_id, uuid4())
         return activitypub.Update(
             id=activity_id,
             actor=user.remote_id,
             to=['https://www.w3.org/ns/activitystreams#Public'],
             object=self.to_activity()
         ).serialize()
+
+
+    def to_undo_activity(self, user):
+        ''' undo an action '''
+        return activitypub.Undo(
+            id='%s#undo' % user.remote_id,
+            actor=user.remote_id,
+            object=self.to_activity()
+        )
 
 
 @dataclass(frozen=True)

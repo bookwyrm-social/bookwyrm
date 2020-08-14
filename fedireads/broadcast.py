@@ -39,7 +39,11 @@ def broadcast(sender, activity, software=None, \
     # TODO: other kinds of privacy
     if privacy == 'public':
         recipients += get_public_recipients(sender, software=software)
-    broadcast_task.delay(sender.id, json.dumps(activity, cls=ActivityEncoder), recipients)
+    broadcast_task.delay(
+        sender.id,
+        json.dumps(activity, cls=ActivityEncoder),
+        recipients
+    )
 
 
 @app.task

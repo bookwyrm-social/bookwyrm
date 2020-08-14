@@ -129,6 +129,14 @@ class User(ActivitypubMixin, AbstractUser):
     ]
     activity_serializer = activitypub.Person
 
+    def to_follow_activity(self, user):
+        ''' generate a follow request for this user '''
+        return activitypub.Follow(
+            id='%s#follow' % self.remote_id,
+            actor=user.remote_id,
+            object=self.to_activity()
+        )
+
 
 class UserRelationship(FedireadsModel):
     ''' many-to-many through table for followers '''
@@ -146,6 +154,7 @@ class UserRelationship(FedireadsModel):
     relationship_id = models.CharField(max_length=100)
 
     class Meta:
+        ''' relationships should be unique '''
         abstract = True
         constraints = [
             models.UniqueConstraint(
@@ -165,12 +174,14 @@ class UserRelationship(FedireadsModel):
 
 
 class UserFollows(UserRelationship):
+    ''' Following a user '''
     @property
     def status(self):
         return 'follows'
 
     @classmethod
     def from_request(cls, follow_request):
+        ''' converts a follow request into a follow relationship '''
         return cls(
             user_subject=follow_request.user_subject,
             user_object=follow_request.user_object,
@@ -179,9 +190,26 @@ class UserFollows(UserRelationship):
 
 
 class UserFollowRequest(UserRelationship):
+    ''' following a user requires manual or automatic confirmation '''
     @property
     def status(self):
         return 'follow_request'
+
+    def to_accept_activity(self, user):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Accept(
+            id='%s#accepts/follows/' % self.remote_id,
+            actor=user.remote_id,
+            object=self.to_activity()
+        )
+
+    def to_reject_activity(self, user):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Reject(
+            id='%s#rejects/follows/' % self.remote_id,
+            actor=user.remote_id,
+            object=self.to_activity()
+        )
 
 
 class UserBlocks(UserRelationship):

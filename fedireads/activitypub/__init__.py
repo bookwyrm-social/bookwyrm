@@ -11,9 +11,9 @@ from .outbox import Outbox, OutboxPage
 from .book import Edition, Work, Author
 
 from .verbs import Create, Undo, Update
+from .verbs import Follow, Accept, Reject
 
 from .book import get_shelf
-from .create import get_update
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
 from .shelve import get_add, get_remove
