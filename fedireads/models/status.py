@@ -187,12 +187,55 @@ class Boost(Status):
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
 
-class Tag(FedireadsModel):
+
+class Tag(ActivitypubMixin, FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
+
+    @classmethod
+    def book_count(cls, identifier):
+        ''' county of books associated with this tag '''
+        return cls.objects.filter(identifier=identifier).count()
+
+    @property
+    def total_items(self):
+        ''' how many books have this tag, for activitypub '''
+        return self.book_count(self.identifier)
+
+    @property
+    def first_page(self):
+        ''' generates the link to a collection first page '''
+        return '%s?page=true' % self.remote_id
+
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('name', 'name'),
+        ActivityMapping('first', 'first_page'),
+        ActivityMapping('totalItems', 'total_items'),
+    ]
+    activity_serializer = activitypub.OrderedCollection
+
+    def to_add_activity(self, user):
+        ''' AP for shelving a book'''
+        return activitypub.Add(
+            id='%s#add' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.to_activity(),
+        ).serialize()
+
+    def to_remove_activity(self, user):
+        ''' AP for un-shelving a book'''
+        return activitypub.Remove(
+            id='%s#remove' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.to_activity(),
+        ).serialize()
+
 
     def save(self, *args, **kwargs):
         ''' create a url-safe lookup key for the tag '''

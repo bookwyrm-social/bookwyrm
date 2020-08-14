@@ -193,11 +193,11 @@ def handle_import_books(user, items):
                 item.book = item.book.default_edition
             if not item.book:
                 continue
-            _, created = models.ShelfBook.objects.get_or_create(
+            shelf_book, created = models.ShelfBook.objects.get_or_create(
                 book=item.book, shelf=desired_shelf, added_by=user)
             if created:
                 new_books.append(item.book)
-                activity = activitypub.get_add(user, item.book, desired_shelf)
+                activity = shelf_book.to_add_activity(user)
                 broadcast(user, activity)
 
                 if item.rating or item.review:
@@ -270,16 +270,14 @@ def handle_status(user, book_id, builder, *args):
 def handle_tag(user, book, name):
     ''' tag a book '''
     tag = create_tag(user, book, name)
-    tag_activity = activitypub.get_add_tag(tag)
-
-    broadcast(user, tag_activity)
+    broadcast(user, tag.to_add_activity(user))
 
 
 def handle_untag(user, book, name):
     ''' tag a book '''
     book = models.Book.objects.get(id=book)
     tag = models.Tag.objects.get(name=name, book=book, user=user)
-    tag_activity = activitypub.get_remove_tag(tag)
+    tag_activity = tag.to_remove_activity(user)
     tag.delete()
 
     broadcast(user, tag_activity)

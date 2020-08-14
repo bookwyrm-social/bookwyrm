@@ -1,6 +1,7 @@
 ''' puttin' books on shelves '''
 from django.db import models
 
+from fedireads import activitypub
 from .base_model import FedireadsModel
 
 
@@ -26,7 +27,7 @@ class Shelf(FedireadsModel):
 
 
 class ShelfBook(FedireadsModel):
-    # many to many join table for books and shelves
+    ''' many to many join table for books and shelves '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
     added_by = models.ForeignKey(
@@ -42,16 +43,16 @@ class ShelfBook(FedireadsModel):
             id='%s#add' % self.remote_id,
             actor=user.remote_id,
             object=self.book.to_activity(),
-            target=shelf.shelf.to_activity()
+            target=self.shelf.to_activity()
         ).serialize()
 
     def to_remove_activity(self, user):
         ''' AP for un-shelving a book'''
         return activitypub.Remove(
-            id='%s#add' % self.remote_id,
+            id='%s#remove' % self.remote_id,
             actor=user.remote_id,
             object=self.book.to_activity(),
-            target=shelf.shelf.to_activity()
+            target=self.shelf.to_activity()
         ).serialize()
 
 

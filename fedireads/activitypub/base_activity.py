@@ -104,6 +104,15 @@ class ActivityObject:
 
 
 @dataclass(init=False)
+class OrderedCollection(ActivityObject):
+    ''' structure of an ordered collection activity '''
+    name: str
+    totalItems: int
+    first: str
+    type: str = 'OrderedCollection'
+
+
+@dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
     ''' structure of an ordered collection activity '''
     partOf: str
@@ -127,14 +136,3 @@ def resolve_foreign_key(model, remote_id):
         raise ValueError('Could not resolve remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
     return result
-
-
-def resolve_foreign_key(model, remote_id):
-    ''' look up the remote_id on an activity json field '''
-    if hasattr(model.objects, 'select_subclasses'):
-        return model.objects.select_subclasses().filter(
-            remote_id=remote_id
-        ).first()
-    return model.objects.filter(
-        remote_id=remote_id
-    ).first()

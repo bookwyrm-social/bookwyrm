@@ -2,7 +2,7 @@
 import inspect
 import sys
 
-from .base_activity import ActivityEncoder, Image, PublicKey, Signature
+from .base_activity import ActivityEncoder, Image, PublicKey, Signature, OrderedCollection
 from .note import Note, Article, Comment, Review, Quotation
 from .note import Boost, Like
 from .person import Person
@@ -19,7 +19,6 @@ from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
 from .status import get_rating_note
 from .status import get_replies_page
-from .status import get_add_tag, get_remove_tag
 
 # this creates a list of all the Activity types that we can serialize,
 # so when an Activity comes in from outside, we can check if it's known
