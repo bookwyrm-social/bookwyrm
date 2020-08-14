@@ -562,6 +562,12 @@ def author_page(request, author_id):
 def tag_page(request, tag_id):
     ''' books related to a tag '''
     tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
+    if not tag_obj:
+        return HttpResponseNotFound()
+
+    if is_api_request(request):
+        return JsonResponse(tag_obj.to_activity(), encoder=ActivityEncoder)
+
     books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {
         'books': books,

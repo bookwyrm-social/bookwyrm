@@ -10,7 +10,11 @@ username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
-status_path = r'%s/(status|review|comment|quotation|boost)/(?P<status_id>\d+)' % local_user_path
+
+status_types = ['status', 'review', 'comment', 'quotation', 'boost']
+status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
+        ('|'.join(status_types), local_user_path)
+
 book_path = r'^book/(?P<book_id>\d+)'
 
 handler404 = 'fedireads.views.not_found_page'
@@ -67,6 +71,7 @@ urlpatterns = [
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
+    # TODO: tag needs a .json path
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % user_path, views.shelf_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % local_user_path, views.shelf_page),
