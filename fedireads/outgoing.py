@@ -1,6 +1,5 @@
 ''' handles all the activity coming out of the server '''
 from datetime import datetime
-from urllib.parse import urlencode
 
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
@@ -29,47 +28,17 @@ def outbox(request, username):
 
     # paginated list of messages
     if request.GET.get('page'):
-        limit = 20
         min_id = request.GET.get('min_id')
         max_id = request.GET.get('max_id')
-
-        # filters for use in the django queryset min/max
-        filters = {}
-        # params for the outbox page id
-        params = {'page': 'true'}
-        if min_id is not None:
-            params['min_id'] = min_id
-            filters['id__gt'] = min_id
-        if max_id is not None:
-            params['max_id'] = max_id
-            filters['id__lte'] = max_id
-
-        page_id = user.outbox + '?' + urlencode(params)
-        statuses = models.Status.objects.filter(
-            user=user,
-            **filters
-        ).select_subclasses().all()[:limit]
-
-        print([s.to_activity() for s in statuses])
         return JsonResponse(
-            activitypub.OutboxPage(
-                id=page_id,
-                partOf=user.outbox,
-                orderedItems=[s.to_activity() for s in statuses],
-                next=max_id,
-                prev=min_id
-            ).serialize(), encoder=activitypub.ActivityEncoder
+            user.to_outbox_page(min_id=min_id, max_id=max_id),
+            encoder=activitypub.ActivityEncoder
         )
 
     # collection overview
-    size = models.Status.objects.filter(user=user).count()
     return JsonResponse(
-        activitypub.Outbox(
-            id=user.outbox,
-            totalItems=size,
-            first=user.outbox + '?page=true',# idk if there's a better way
-            last=user.outbox + '?min_id=0&page=true' # than this, seems janky
-        ).serialize()
+        user.to_outbox(),
+        encoder=activitypub.ActivityEncoder
     )
 
 

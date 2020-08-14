@@ -2,11 +2,12 @@
 import inspect
 import sys
 
-from .base_activity import ActivityEncoder, Image, PublicKey, Signature, OrderedCollection
+from .base_activity import ActivityEncoder, Image, PublicKey, Signature
+from .base_activity import OrderedCollection, OrderedCollectionPage
 from .note import Note, Article, Comment, Review, Quotation
 from .note import Boost, Like
 from .person import Person
-from .outbox import Outbox, OutboxPage
+from .outbox import Outbox
 
 from .book import Edition, Work, Author
 

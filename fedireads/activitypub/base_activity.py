@@ -106,9 +106,9 @@ class ActivityObject:
 @dataclass(init=False)
 class OrderedCollection(ActivityObject):
     ''' structure of an ordered collection activity '''
-    name: str
     totalItems: int
     first: str
+    name: str = ''
     type: str = 'OrderedCollection'
 
 
