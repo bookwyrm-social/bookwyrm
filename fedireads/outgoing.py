@@ -26,18 +26,9 @@ def outbox(request, username):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
-    # paginated list of messages
-    if request.GET.get('page'):
-        min_id = request.GET.get('min_id')
-        max_id = request.GET.get('max_id')
-        return JsonResponse(
-            user.to_outbox_page(min_id=min_id, max_id=max_id),
-            encoder=activitypub.ActivityEncoder
-        )
-
     # collection overview
     return JsonResponse(
-        user.to_outbox(),
+        user.to_outbox(**request.GET),
         encoder=activitypub.ActivityEncoder
     )
 

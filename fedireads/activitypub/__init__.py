@@ -15,7 +15,6 @@ from .verbs import Create, Undo, Update
 from .verbs import Follow, Accept, Reject
 from .verbs import Add, Remove
 
-from .book import get_shelf
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
 from .status import get_rating_note

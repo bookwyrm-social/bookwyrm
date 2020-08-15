@@ -566,7 +566,7 @@ def tag_page(request, tag_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(tag_obj.to_activity(), encoder=ActivityEncoder)
+        return JsonResponse(tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
 
     books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {

@@ -10,10 +10,11 @@ from fedireads.models.shelf import Shelf
 from fedireads.models.status import Status
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair
-from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
+from .base_model import OrderedCollectionPageMixin
+from .base_model import ActivityMapping, FedireadsModel
 
 
-class User(ActivitypubMixin, AbstractUser):
+class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
@@ -130,25 +131,21 @@ class User(ActivitypubMixin, AbstractUser):
     ]
     activity_serializer = activitypub.Person
 
-    def to_outbox(self):
-        ''' an ordered collection of statuses '''
-        return self.to_ordered_collection(
-            Status.objects.filter(user=self),
-            remote_id=self.outbox,
-        )
-
-    def to_outbox_page(self, min_id=None, max_id=None):
-        ''' get this user's paginated outbox content '''
-        # TODO: weird place to define this
-        statuses = Status.objects.filter(
+    @property
+    def collection_queryset(self):
+        ''' collection of statuses for outbox view '''
+        return Status.objects.filter(
             user=self,
         ).select_subclasses()
-        return self.to_ordered_collection_page(
-            statuses,
-            min_id=min_id,
-            max_id=max_id,
-            remote_id=self.outbox
-        )
+
+    @property
+    def collection_remote_id(self):
+        return self.outbox
+
+    def to_outbox(self, **kwargs):
+        ''' an ordered collection of statuses '''
+        return self.to_ordered_collection(**kwargs)
+
 
     def to_follow_activity(self, user):
         ''' generate a request to follow this user '''

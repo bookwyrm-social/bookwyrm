@@ -117,53 +117,93 @@ class ActivitypubMixin:
         )
 
 
-    def to_ordered_collection(self, queryset, remote_id=None):
-        ''' an ordered collection of whatevers '''
-        remote_id = remote_id or self.remote_id
-        size = queryset.count()
-        return activitypub.Outbox(
-            id=remote_id,
-            totalItems=size,
-            first='%s?page=true' % remote_id,
-            last='%s?min_id=0&page=true' % remote_id
-        ).serialize()
+class OrderedCollectionPageMixin(ActivitypubMixin):
+    ''' just the paginator utilities, so you don't HAVE to
+        override ActivitypubMixin's to_activity (ie, for outbox '''
+    @property
+    def collection_queryset(self):
+        ''' usually an ordered collection model aggregates a different model '''
+        raise NotImplementedError('Model must define collection_queryset')
 
+    @property
+    def collection_remote_id(self):
+        ''' this can be overriden if there's a special remote id, ie outbox '''
+        return self.remote_id
 
-    def to_ordered_collection_page(self, queryset, \
-            min_id=None, max_id=None, remote_id=None):
+    def page(self, min_id=None, max_id=None):
+        ''' helper function to create the pagination url '''
+        params = {'page': 'true'}
+        if min_id:
+            params['min_id'] = min_id
+        if max_id:
+            params['max_id'] = max_id
+        return '%s?%s' % (self.collection_remote_id, urlencode(params))
+
+    def last_page(self):
+        ''' helper function to create the pagination url '''
+        return self.page(min_id=0)
+
+    def next_page(self, items):
+        ''' use the max id of the last item '''
+        if not items.count():
+            return ''
+        return self.page(max_id=items[items.count() - 1].id)
+
+    def prev_page(self, items):
+        ''' use the min id of the first item '''
+        if not items.count():
+            return ''
+        return self.page(min_id=items[0].id)
+
+    def to_ordered_collection_page(self, min_id=None, max_id=None):
         ''' serialize and pagiante a queryset '''
-        remote_id = remote_id or self.remote_id
         # TODO: weird place to define this
         limit = 20
         # filters for use in the django queryset min/max
         filters = {}
-        # params for the url
-        params = {'page': 'true'}
         if min_id is not None:
-            params['min_id'] = min_id
             filters['id__gt'] = min_id
         if max_id is not None:
-            params['max_id'] = max_id
             filters['id__lte'] = max_id
-        page_id = remote_id + '?' + urlencode(params)
+        page_id = self.page(min_id, max_id)
 
-        items = queryset.filter(
+        items = self.collection_queryset.filter(
             **filters
         ).all()[:limit]
 
-        prev_page = next_page = ''
-        if items.count():
-            min_id = items[0].id
-            max_id = items[len(items) - 1].id
-            next_page = '%s?page=true&min_id=%d' % (remote_id, max_id)
-            prev_page = '%s?page=true&max_id=%d' % (remote_id, min_id)
         return activitypub.OrderedCollectionPage(
             id=page_id,
-            partOf=remote_id,
+            partOf=self.collection_remote_id,
             orderedItems=[s.to_activity() for s in items],
-            next=next_page,
-            prev=prev_page,
+            next=self.next_page(items),
+            prev=self.prev_page(items)
         ).serialize()
+
+    def to_ordered_collection(self, page=False, **kwargs):
+        ''' an ordered collection of whatevers '''
+        if page:
+            return self.to_ordered_collection_page(**kwargs)
+        name = ''
+        if hasattr(self, 'name'):
+            name = self.name
+
+        size = self.collection_queryset.count()
+        return activitypub.OrderedCollection(
+            id=self.collection_remote_id,
+            totalItems=size,
+            name=name,
+            first=self.page(),
+            last=self.last_page()
+        ).serialize()
+
+
+class OrderedCollectionMixin(OrderedCollectionPageMixin):
+    ''' extends activitypub models to work as ordered collections '''
+    activity_serializer = activitypub.OrderedCollection
+
+    def to_activity(self, **kwargs):
+        ''' an ordered collection of whatevers '''
+        return self.to_ordered_collection(**kwargs)
 
 
 @dataclass(frozen=True)

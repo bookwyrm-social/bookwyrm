@@ -8,7 +8,9 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
-from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
+from fedireads.settings import DOMAIN
+from .base_model import ActivitypubMixin, OrderedCollectionMixin
+from .base_model import ActivityMapping, FedireadsModel
 
 
 class Status(ActivitypubMixin, FedireadsModel):
@@ -188,7 +190,7 @@ class Boost(Status):
     #     unique_together = ('user', 'boosted_status')
 
 
-class Tag(ActivitypubMixin, FedireadsModel):
+class Tag(OrderedCollectionMixin, FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
@@ -196,27 +198,19 @@ class Tag(ActivitypubMixin, FedireadsModel):
     identifier = models.CharField(max_length=100)
 
     @classmethod
-    def book_count(cls, identifier):
+    def book_queryset(cls, identifier):
         ''' county of books associated with this tag '''
-        return cls.objects.filter(identifier=identifier).count()
+        return cls.objects.filter(identifier=identifier)
 
     @property
-    def total_items(self):
-        ''' how many books have this tag, for activitypub '''
-        return self.book_count(self.identifier)
+    def collection_queryset(self):
+        ''' books associated with this tag '''
+        return self.book_queryset(self.identifier)
 
-    @property
-    def first_page(self):
-        ''' generates the link to a collection first page '''
-        return '%s?page=true' % self.remote_id
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('name', 'name'),
-        ActivityMapping('first', 'first_page'),
-        ActivityMapping('totalItems', 'total_items'),
-    ]
-    activity_serializer = activitypub.OrderedCollection
+    def get_remote_id(self):
+        ''' tag should use identifier not id in remote_id '''
+        base_path = 'https://%s' % DOMAIN
+        return '%s/tag/%s' % (base_path, self.identifier)
 
     def to_add_activity(self, user):
         ''' AP for shelving a book'''
