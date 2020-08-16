@@ -147,15 +147,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(**kwargs)
 
 
-    def to_follow_activity(self, user):
-        ''' generate a request to follow this user '''
-        return activitypub.Follow(
-            id='%s#follow' % self.remote_id,
-            actor=user.remote_id,
-            object=self.to_activity()
-        )
-
-
 class UserRelationship(FedireadsModel):
     ''' many-to-many through table for followers '''
     user_subject = models.ForeignKey(
@@ -169,7 +160,6 @@ class UserRelationship(FedireadsModel):
         related_name='%(class)s_user_object'
     )
     # follow or follow_request for pending TODO: blocking?
-    relationship_id = models.CharField(max_length=100)
 
     class Meta:
         ''' relationships should be unique '''
@@ -213,20 +203,28 @@ class UserFollowRequest(UserRelationship):
     def status(self):
         return 'follow_request'
 
-    def to_accept_activity(self, user):
+    def to_activity(self):
+        ''' request activity '''
+        return activitypub.Follow(
+            id=self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        )
+
+    def to_accept_activity(self):
         ''' generate an Accept for this follow request '''
         return activitypub.Accept(
             id='%s#accepts/follows/' % self.remote_id,
-            actor=user.remote_id,
-            object=self.to_activity()
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
         )
 
-    def to_reject_activity(self, user):
+    def to_reject_activity(self):
         ''' generate an Accept for this follow request '''
         return activitypub.Reject(
             id='%s#rejects/follows/' % self.remote_id,
-            actor=user.remote_id,
-            object=self.to_activity()
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
         )
 
 

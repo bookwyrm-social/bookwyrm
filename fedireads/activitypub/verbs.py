@@ -37,7 +37,6 @@ class Undo(Verb):
 @dataclass(init=False)
 class Follow(Verb):
     ''' Follow activity '''
-    summary: str = ''
     type: str = 'Follow'
 
 

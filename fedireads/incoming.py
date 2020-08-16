@@ -119,10 +119,9 @@ def handle_follow(activity):
     # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
     try:
-        request = models.UserFollowRequest.objects.create(
+        relationship, _ = models.UserFollowRequest.objects.get_or_create(
             user_subject=user,
             user_object=to_follow,
-            relationship_id=activity['id']
         )
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
@@ -138,7 +137,7 @@ def handle_follow(activity):
             'FOLLOW',
             related_user=user
         )
-        outgoing.handle_accept(user, to_follow, request)
+        outgoing.handle_accept(user, to_follow, relationship)
     else:
         status_builder.create_notification(
             to_follow,

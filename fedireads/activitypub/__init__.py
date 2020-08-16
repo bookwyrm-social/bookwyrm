@@ -17,8 +17,6 @@ from .verbs import Add, Remove
 
 from .follow import get_following, get_followers
 from .follow import get_follow_request, get_unfollow, get_accept, get_reject
-from .status import get_rating_note
-from .status import get_replies_page
 
 # this creates a list of all the Activity types that we can serialize,
 # so when an Activity comes in from outside, we can check if it's known

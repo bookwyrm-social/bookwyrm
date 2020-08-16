@@ -223,25 +223,9 @@ def about_page(request):
     }
     return TemplateResponse(request, 'about.html', data)
 
-def invite_page(request, code):
-    ''' Handle invites. '''
-    try:
-        invite = models.SiteInvite.objects.get(code=code)
-        if not invite.valid():
-            raise PermissionDenied
-    except models.SiteInvite.DoesNotExist:
-        raise PermissionDenied
-
-    data = {
-        'site_settings': models.SiteSettings.get(),
-        'register_form': forms.RegisterForm(),
-        'invite': invite,
-    }
-    return TemplateResponse(request, 'invite.html', data)
-
 
 def invite_page(request, code):
-    ''' Handle invites. '''
+    ''' endpoint for sending invites '''
     try:
         invite = models.SiteInvite.objects.get(code=code)
         if not invite.valid():
@@ -258,6 +242,7 @@ def invite_page(request, code):
 
 @login_required
 def manage_invites(request):
+    ''' invite management page '''
     data = {
         'invites': models.SiteInvite.objects.filter(user=request.user),
         'form': forms.CreateInviteForm(),
@@ -400,28 +385,7 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    replies = models.Status.objects.filter(
-        reply_parent=status,
-    ).select_subclasses()
-
-    if request.GET.get('only_other_accounts'):
-        replies = replies.filter(
-            ~Q(user=status.user)
-        )
-    else:
-        replies = replies.filter(user=status.user)
-
-    if request.GET.get('page'):
-        min_id = request.GET.get('min_id')
-        if min_id:
-            replies = replies.filter(id__gt=min_id)
-        max_id = request.GET.get('max_id')
-        if max_id:
-            replies = replies.filter(id__lte=max_id)
-        activity = activitypub.get_replies_page(status, replies)
-        return JsonResponse(activity)
-
-    return JsonResponse(activitypub.get_replies(status, replies))
+    return JsonResponse(status.to_replies(**request.GET))
 
 
 @login_required
@@ -566,7 +530,8 @@ def tag_page(request, tag_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
+        return JsonResponse(
+            tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
 
     books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {
@@ -586,8 +551,7 @@ def shelf_page(request, username, shelf_identifier):
     shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
 
     if is_api_request(request):
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_shelf(shelf, page=page))
+        return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
         'shelf': shelf,

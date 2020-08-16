@@ -9,11 +9,12 @@ from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
 from fedireads.settings import DOMAIN
-from .base_model import ActivitypubMixin, OrderedCollectionMixin
+from .base_model import ActivitypubMixin, OrderedCollectionMixin, \
+        OrderedCollectionPageMixin
 from .base_model import ActivityMapping, FedireadsModel
 
 
-class Status(ActivitypubMixin, FedireadsModel):
+class Status(OrderedCollectionPageMixin, FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     content = models.TextField(blank=True, null=True)
@@ -53,8 +54,7 @@ class Status(ActivitypubMixin, FedireadsModel):
     @property
     def ap_replies(self):
         ''' structured replies block '''
-        # TODO: actual replies
-        return {}
+        return self.to_replies()
 
     shared_mappings = [
         ActivityMapping('id', 'remote_id'),
@@ -87,6 +87,25 @@ class Status(ActivitypubMixin, FedireadsModel):
     ]
 
     activity_serializer = activitypub.Note
+
+    #----- replies collection activitypub ----#
+    @classmethod
+    def replies(cls, status):
+        ''' load all replies to a status. idk if there's a better way
+            to write this so it's just a property '''
+        return cls.objects.filter(reply_parent=status)
+
+    @property
+    def collection_queryset(self):
+        return self.replies(self)
+
+    @property
+    def collection_remote_id(self):
+        return '%s/replies' % self.remote_id
+
+    def to_replies(self, **kwargs):
+        ''' helper function for loading AP serialized replies to a status '''
+        return self.to_ordered_collection(**kwargs)
 
 
 class Comment(Status):

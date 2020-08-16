@@ -57,7 +57,15 @@ def handle_account_search(query):
 
 def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
-    activity = activitypub.get_follow_request(user, to_follow)
+    try:
+        relationship, _ = models.UserFollowRequest.objects.get_or_create(
+            user_subject=user,
+            user_object=to_follow,
+        )
+    except IntegrityError as err:
+        if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
+            raise
+    activity = relationship.to_activity()
     broadcast(user, activity, direct_recipients=[to_follow])
 
 
@@ -67,7 +75,7 @@ def handle_unfollow(user, to_unfollow):
         user_subject=user,
         user_object=to_unfollow
     )
-    activity = activitypub.get_unfollow(relationship)
+    activity = relationship.to_undo_activity(user)
     broadcast(user, activity, direct_recipients=[to_unfollow])
     to_unfollow.followers.remove(user)
 
@@ -79,7 +87,7 @@ def handle_accept(user, to_follow, follow_request):
         follow_request.delete()
         relationship.save()
 
-    activity = follow_request.to_accept_activity(user)
+    activity = relationship.to_accept_activity()
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
