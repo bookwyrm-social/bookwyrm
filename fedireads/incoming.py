@@ -122,6 +122,7 @@ def handle_follow(activity):
         relationship, _ = models.UserFollowRequest.objects.get_or_create(
             user_subject=user,
             user_object=to_follow,
+            relationship_id=activity['id']
         )
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
@@ -215,7 +216,7 @@ def handle_create(activity):
     serializer = activitypub.activity_objects[activity['object']['type']]
     activity = serializer(**activity['object'])
 
-    # notes that aren't replies to known statuses
+    # ignore notes that aren't replies to known statuses
     if activity.type == 'Note':
         reply = models.Status.objects.filter(
             remote_id=activity.inReplyTo

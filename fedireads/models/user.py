@@ -181,6 +181,7 @@ class UserRelationship(FedireadsModel):
         related_name='%(class)s_user_object'
     )
     # follow or follow_request for pending TODO: blocking?
+    relationship_id = models.CharField(max_length=100)
 
     class Meta:
         ''' relationships should be unique '''

@@ -334,7 +334,6 @@ def boost(request, status_id):
     outgoing.handle_boost(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
-
 @login_required
 def follow(request):
     ''' follow another user, here or abroad '''

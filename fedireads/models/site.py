@@ -25,10 +25,8 @@ class SiteSettings(models.Model):
             default_settings.save()
             return default_settings
 
-
 def new_invite_code():
     return base64.b32encode(Random.get_random_bytes(5)).decode('ascii')
-
 
 class SiteInvite(models.Model):
     code = models.CharField(max_length=32, default=new_invite_code)
@@ -45,8 +43,3 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         return "https://{}/invite/{}".format(DOMAIN, self.code)
-
-    def valid(self):
-        return (
-            (self.expiry is None or self.expiry > datetime.datetime.now()) and
-            (self.use_limit is None or self.times_used < self.use_limit))
