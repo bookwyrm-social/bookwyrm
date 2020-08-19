@@ -231,7 +231,7 @@ class UserFollowRequest(UserRelationship):
             id=self.remote_id,
             actor=self.user_subject.remote_id,
             object=self.user_object.remote_id,
-        )
+        ).serialize()
 
     def to_accept_activity(self):
         ''' generate an Accept for this follow request '''
@@ -239,7 +239,7 @@ class UserFollowRequest(UserRelationship):
             id='%s#accepts/follows/' % self.remote_id,
             actor=self.user_subject.remote_id,
             object=self.user_object.remote_id,
-        )
+        ).serialize()
 
     def to_reject_activity(self):
         ''' generate an Accept for this follow request '''
@@ -247,7 +247,7 @@ class UserFollowRequest(UserRelationship):
             id='%s#rejects/follows/' % self.remote_id,
             actor=self.user_subject.remote_id,
             object=self.user_object.remote_id,
-        )
+        ).serialize()
 
 
 class UserBlocks(UserRelationship):
