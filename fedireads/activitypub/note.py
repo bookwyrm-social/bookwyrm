@@ -1,4 +1,4 @@
-''' note serializer '''
+''' note serializer and children thereof '''
 from dataclasses import dataclass, field
 from typing import Dict, List
 
@@ -48,19 +48,3 @@ class Quotation(Comment):
     ''' a quote and commentary on a book '''
     quote: str
     type: str = 'Quotation'
-
-
-@dataclass(init=False)
-class Like(ActivityObject):
-    ''' a user faving an object '''
-    actor: str
-    object: str
-    type: str = 'Like'
-
-
-@dataclass(init=False)
-class Boost(ActivityObject):
-    ''' boosting a status '''
-    actor: str
-    object: str
-    type: str = 'Announce'
