@@ -52,7 +52,7 @@ def verify_digest(request):
 
     expected = hash_function(request.body).digest()
     if b64decode(digest) != expected:
-        return ValueError("Invalid HTTP Digest header")
+        raise ValueError("Invalid HTTP Digest header")
 
 class Signature:
     def __init__(self, key_id, headers, signature):
