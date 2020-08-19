@@ -23,8 +23,6 @@ def get_follow_data(follower, followee):
         relationship.to_activity()
     ).encode('utf-8')
 
-Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
-
 class Signature(TestCase):
     def setUp(self):
         self.mouse = User.objects.create_user('mouse', 'mouse@example.com', '')
@@ -33,10 +31,12 @@ class Signature(TestCase):
 
         private_key, public_key = create_key_pair()
 
-        self.fake_remote = Sender(
-            'http://localhost/user/remote',
-            private_key,
-            public_key,
+        self.fake_remote = User.objects.create_user(
+            'fake remote',
+            'fakse@remote.com',
+            remote_id='http://localhost/user/remote',
+            private_key=private_key,
+            public_key=public_key,
         )
 
     def send(self, signature, now, data, digest):
@@ -130,8 +130,13 @@ class Signature(TestCase):
 
         # Second and subsequent fetches get a different key:
         new_private_key, new_public_key = create_key_pair()
-        new_sender = Sender(
-            self.fake_remote.remote_id, new_private_key, new_public_key)
+        new_sender = User.objects.create_user(
+            'a new fake remote',
+            'another_fake@remote.com',
+            remote_id=self.fake_remote.remote_id,
+            private_key=new_private_key,
+            public_key=new_public_key,
+        )
         data['publicKey']['publicKeyPem'] = new_public_key
         responses.add(
             responses.GET,
