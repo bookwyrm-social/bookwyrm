@@ -39,7 +39,7 @@ def make_signature(sender, destination, date, digest):
     return ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
 
 def make_digest(data):
-    return 'SHA-256=' + b64encode(hashlib.sha512(data).digest()).decode('utf-8')
+    return 'SHA-256=' + b64encode(hashlib.sha256(data).digest()).decode('utf-8')
 
 def verify_digest(request):
     algorithm, digest = request.headers['digest'].split('=', 1)
@@ -52,7 +52,7 @@ def verify_digest(request):
 
     expected = hash_function(request.body).digest()
     if b64decode(digest) != expected:
-        return ValueError("Invalid HTTP Digest header")
+        raise ValueError("Invalid HTTP Digest header")
 
 class Signature:
     def __init__(self, key_id, headers, signature):
