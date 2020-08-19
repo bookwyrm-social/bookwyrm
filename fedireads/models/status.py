@@ -93,19 +93,15 @@ class Status(OrderedCollectionPageMixin, FedireadsModel):
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
             to write this so it's just a property '''
-        return cls.objects.filter(reply_parent=status)
-
-    @property
-    def collection_queryset(self):
-        return self.replies(self)
-
-    @property
-    def collection_remote_id(self):
-        return '%s/replies' % self.remote_id
+        return cls.objects.filter(reply_parent=status).select_subclasses()
 
     def to_replies(self, **kwargs):
         ''' helper function for loading AP serialized replies to a status '''
-        return self.to_ordered_collection(**kwargs)
+        return self.to_ordered_collection(
+            self.replies(self),
+            remote_id='%s/replies' % self.remote_id,
+            **kwargs
+        )
 
 
 class Comment(Status):

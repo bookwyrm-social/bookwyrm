@@ -20,17 +20,3 @@ class Person(ActivityObject):
     manuallyApprovesFollowers: str = False
     discoverable: str = True
     type: str = 'Person'
-
-    def serialize(self):
-        data = self.__dict__
-        data['@context'] = [
-            'https://www.w3.org/ns/activitystreams',
-            'https://w3id.org/security/v1',
-            {
-                'manuallyApprovesFollowers': 'as:manuallyApprovesFollowers',
-                'schema': 'http://schema.org#',
-                'PropertyValue': 'schema:PropertyValue',
-                'value': 'schema:value',
-            }
-        ]
-        return data

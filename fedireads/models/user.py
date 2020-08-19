@@ -131,20 +131,41 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     ]
     activity_serializer = activitypub.Person
 
-    @property
-    def collection_queryset(self):
-        ''' collection of statuses for outbox view '''
-        return Status.objects.filter(
-            user=self,
-        ).select_subclasses()
-
-    @property
-    def collection_remote_id(self):
-        return self.outbox
-
     def to_outbox(self, **kwargs):
         ''' an ordered collection of statuses '''
-        return self.to_ordered_collection(**kwargs)
+        queryset = Status.objects.filter(
+            user=self,
+        ).select_subclasses()
+        return self.to_ordered_collection(queryset, \
+                remote_id=self.outbox, **kwargs)
+
+    def to_following_activity(self, **kwargs):
+        ''' activitypub following list '''
+        remote_id = '%s/following' % self.remote_id
+        return self.to_ordered_collection(self.following, \
+                remote_id=remote_id, id_only=True, **kwargs)
+
+    def to_followers_activity(self, **kwargs):
+        ''' activitypub followers list '''
+        remote_id = '%s/followers' % self.remote_id
+        return self.to_ordered_collection(self.followers, \
+                remote_id=remote_id, id_only=True, **kwargs)
+
+    def to_activity(self, pure=False):
+        ''' override default AP serializer to add context object
+            idk if this is the best way to go about this '''
+        activity_object = super().to_activity()
+        activity_object['@context'] = [
+            'https://www.w3.org/ns/activitystreams',
+            'https://w3id.org/security/v1',
+            {
+                'manuallyApprovesFollowers': 'as:manuallyApprovesFollowers',
+                'schema': 'http://schema.org#',
+                'PropertyValue': 'schema:PropertyValue',
+                'value': 'schema:value',
+            }
+        ]
+        return activity_object
 
 
 class UserRelationship(FedireadsModel):

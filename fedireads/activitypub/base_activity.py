@@ -1,7 +1,6 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
-from typing import List
 
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor
@@ -101,25 +100,6 @@ class ActivityObject:
         data = self.__dict__
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
-
-
-@dataclass(init=False)
-class OrderedCollection(ActivityObject):
-    ''' structure of an ordered collection activity '''
-    totalItems: int
-    first: str
-    name: str = ''
-    type: str = 'OrderedCollection'
-
-
-@dataclass(init=False)
-class OrderedCollectionPage(ActivityObject):
-    ''' structure of an ordered collection activity '''
-    partOf: str
-    orderedItems: List
-    next: str
-    prev: str
-    type: str = 'OrderedCollectionPage'
 
 
 def resolve_foreign_key(model, remote_id):

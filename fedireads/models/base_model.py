@@ -121,11 +121,6 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
     ''' just the paginator utilities, so you don't HAVE to
         override ActivitypubMixin's to_activity (ie, for outbox '''
     @property
-    def collection_queryset(self):
-        ''' usually an ordered collection model aggregates a different model '''
-        raise NotImplementedError('Model must define collection_queryset')
-
-    @property
     def collection_remote_id(self):
         ''' this can be overriden if there's a special remote id, ie outbox '''
         return self.remote_id
@@ -137,11 +132,7 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
             params['min_id'] = min_id
         if max_id:
             params['max_id'] = max_id
-        return '%s?%s' % (self.collection_remote_id, urlencode(params))
-
-    def last_page(self):
-        ''' helper function to create the pagination url '''
-        return self.page(min_id=0)
+        return '?%s' % urlencode(params)
 
     def next_page(self, items):
         ''' use the max id of the last item '''
@@ -155,7 +146,8 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
             return ''
         return self.page(min_id=items[0].id)
 
-    def to_ordered_collection_page(self, min_id=None, max_id=None):
+    def to_ordered_collection_page(self, queryset, remote_id, \
+            id_only=False, min_id=None, max_id=None):
         ''' serialize and pagiante a queryset '''
         # TODO: weird place to define this
         limit = 20
@@ -165,45 +157,57 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
             filters['id__gt'] = min_id
         if max_id is not None:
             filters['id__lte'] = max_id
-        page_id = self.page(min_id, max_id)
+        page_id = self.page(min_id=min_id, max_id=max_id)
 
-        items = self.collection_queryset.filter(
+        items = queryset.filter(
             **filters
         ).all()[:limit]
 
+        if id_only:
+            page = [s.remote_id for s in items]
+        else:
+            page = [s.to_activity() for s in items]
         return activitypub.OrderedCollectionPage(
-            id=page_id,
-            partOf=self.collection_remote_id,
-            orderedItems=[s.to_activity() for s in items],
-            next=self.next_page(items),
-            prev=self.prev_page(items)
+            id='%s%s' % (remote_id, page_id),
+            partOf=remote_id,
+            orderedItems=page,
+            next='%s%s' % (remote_id, self.next_page(items)),
+            prev='%s%s' % (remote_id, self.prev_page(items))
         ).serialize()
 
-    def to_ordered_collection(self, page=False, **kwargs):
+    def to_ordered_collection(self, queryset, \
+            remote_id=None, page=False, **kwargs):
         ''' an ordered collection of whatevers '''
+        remote_id = remote_id or self.remote_id
         if page:
-            return self.to_ordered_collection_page(**kwargs)
+            return self.to_ordered_collection_page(
+                queryset, remote_id, **kwargs)
         name = ''
         if hasattr(self, 'name'):
             name = self.name
 
-        size = self.collection_queryset.count()
+        size = queryset.count()
         return activitypub.OrderedCollection(
-            id=self.collection_remote_id,
+            id=remote_id,
             totalItems=size,
             name=name,
-            first=self.page(),
-            last=self.last_page()
+            first='%s%s' % (remote_id, self.page()),
+            last='%s%s' % (remote_id, self.page(min_id=0))
         ).serialize()
 
 
 class OrderedCollectionMixin(OrderedCollectionPageMixin):
     ''' extends activitypub models to work as ordered collections '''
+    @property
+    def collection_queryset(self):
+        ''' usually an ordered collection model aggregates a different model '''
+        raise NotImplementedError('Model must define collection_queryset')
+
     activity_serializer = activitypub.OrderedCollection
 
     def to_activity(self, **kwargs):
-        ''' an ordered collection of whatevers '''
-        return self.to_ordered_collection(**kwargs)
+        ''' an ordered collection of the specified model queryset  '''
+        return self.to_ordered_collection(self.collection_queryset, **kwargs)
 
 
 @dataclass(frozen=True)

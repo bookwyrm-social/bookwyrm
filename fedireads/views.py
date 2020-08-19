@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import activitypub, outgoing
+from fedireads import outgoing
 from fedireads.activitypub import ActivityEncoder
 from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
@@ -311,10 +311,7 @@ def followers_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        user = models.User.objects.get(localname=username)
-        followers = user.followers
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_followers(user, page, followers))
+        return JsonResponse(user.to_followers_activity(**request.GET))
 
     return user_page(request, username, subpage='followers')
 
@@ -331,10 +328,7 @@ def following_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        user = models.User.objects.get(localname=username)
-        following = user.following
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_following(user, page, following))
+        return JsonResponse(user.to_following_activity(**request.GET))
 
     return user_page(request, username, subpage='following')
 
@@ -385,7 +379,10 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    return JsonResponse(status.to_replies(**request.GET))
+    return JsonResponse(
+        status.to_replies(**request.GET),
+        encoder=ActivityEncoder
+    )
 
 
 @login_required
