@@ -33,7 +33,7 @@ class Signature(TestCase):
             public_key,
         )
 
-    def send(self, signature, now, data):
+    def send(self, signature, now, data, digest):
         c = Client()
         return c.post(
             urlsplit(self.rat.inbox).path,
@@ -42,7 +42,7 @@ class Signature(TestCase):
             **{
                 'HTTP_DATE': now,
                 'HTTP_SIGNATURE': signature,
-                'HTTP_DIGEST': make_digest(data),
+                'HTTP_DIGEST': digest,
                 'HTTP_CONTENT_TYPE': 'application/activity+json; charset=utf-8',
                 'HTTP_HOST': DOMAIN,
             }
@@ -57,9 +57,10 @@ class Signature(TestCase):
             date=None):
         now = date or http_date()
         data = get_follow_data(sender, self.rat)
+        digest = digest or make_digest(data)
         signature = make_signature(
-            signer or sender, self.rat.inbox, now, digest or make_digest(data))
-        return self.send(signature, now, send_data or data)
+            signer or sender, self.rat.inbox, now, digest)
+        return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
         response = self.send_test_request(sender=self.mouse)
