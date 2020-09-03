@@ -1,4 +1,6 @@
 ''' models for storing different kinds of Activities '''
+import urllib.parse
+
 from django.db import models
 
 from fedireads import activitypub
@@ -45,3 +47,14 @@ class Tag(OrderedCollectionMixin, FedireadsModel):
             object=self.book.to_activity(),
             target=self.to_activity(),
         ).serialize()
+
+    def save(self, *args, **kwargs):
+        ''' create a url-safe lookup key for the tag '''
+        if not self.id:
+            # add identifiers to new tags
+            self.identifier = urllib.parse.quote_plus(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ''' unqiueness constraint '''
+        unique_together = ('user', 'book', 'name')

@@ -1,6 +1,4 @@
 ''' models for storing different kinds of Activities '''
-import urllib.parse
-
 from django.utils import timezone
 from django.utils.http import http_date
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -201,18 +199,6 @@ class Boost(Status):
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
-
-
-    def save(self, *args, **kwargs):
-        ''' create a url-safe lookup key for the tag '''
-        if not self.id:
-            # add identifiers to new tags
-            self.identifier = urllib.parse.quote_plus(self.name)
-        super().save(*args, **kwargs)
-
-    class Meta:
-        ''' unqiueness constraint '''
-        unique_together = ('user', 'book', 'name')
 
 
 class ReadThrough(FedireadsModel):
