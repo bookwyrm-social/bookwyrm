@@ -112,10 +112,9 @@ def handle_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow -- not using get_or_create because
     # we only allow you to follow local users
-    try:
-        to_follow = models.User.objects.get(remote_id=activity['object'])
-    except models.User.DoesNotExist:
-        return False
+    to_follow = models.User.objects.get(remote_id=activity['object'])
+    # raises models.User.DoesNotExist id the remote id is not found
+
     # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
     try:
@@ -130,7 +129,7 @@ def handle_follow(activity):
         # Duplicate follow request. Not sure what the correct behaviour is, but
         # just dropping it works for now. We should perhaps generate the
         # Accept, but then do we need to match the activity id?
-        return True
+        return
 
     if not to_follow.manually_approves_followers:
         status_builder.create_notification(
@@ -145,21 +144,17 @@ def handle_follow(activity):
             'FOLLOW_REQUEST',
             related_user=user
         )
-    return True
 
 
 @app.task
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    try:
-        requester = get_or_create_remote_user(obj['actor'])
-        to_unfollow = models.User.objects.get(remote_id=obj['object'])
-    except models.User.DoesNotExist:
-        return False
+    requester = get_or_create_remote_user(obj['actor'])
+    to_unfollow = models.User.objects.get(remote_id=obj['object'])
+    # raises models.User.DoesNotExist
 
     to_unfollow.followers.remove(requester)
-    return True
 
 
 @app.task
@@ -179,7 +174,6 @@ def handle_follow_accept(activity):
     except models.UserFollowRequest.DoesNotExist:
         pass
     accepter.followers.add(requester)
-    return True
 
 
 @app.task
@@ -188,15 +182,12 @@ def handle_follow_reject(activity):
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
     rejecter = get_or_create_remote_user(activity['actor'])
 
-    try:
-        request = models.UserFollowRequest.objects.get(
-            user_subject=requester,
-            user_object=rejecter
-        )
-        request.delete()
-    except models.UserFollowRequest.DoesNotExist:
-        return False
-    return True
+    request = models.UserFollowRequest.objects.get(
+        user_subject=requester,
+        user_object=rejecter
+    )
+    request.delete()
+    #raises models.UserFollowRequest.DoesNotExist:
 
 
 @app.task
@@ -205,12 +196,12 @@ def handle_create(activity):
     if activity['object'].get('type') not in \
             ['Note', 'Comment', 'Quotation', 'Review']:
         # if it's an article or unknown type, ignore it
-        return True
+        return
 
     user = get_or_create_remote_user(activity['actor'])
     if user.local:
         # we really oughtn't even be sending in this case
-        return True
+        return
 
     # render the json into an activity object
     serializer = activitypub.activity_objects[activity['object']['type']]
@@ -222,7 +213,7 @@ def handle_create(activity):
             remote_id=activity.inReplyTo
         ).first()
         if not reply:
-            return True
+            return
 
     model = models.activity_models[activity.type]
     status = activity.to_model(model)
@@ -235,21 +226,17 @@ def handle_create(activity):
             related_user=status.user,
             related_status=status,
         )
-    return True
 
 
 @app.task
 def handle_favorite(activity):
     ''' approval of your good good post '''
-    try:
-        fav = activitypub.Like(**activity['object'])
-    except ValueError:
-        # raised in to_model if a foreign key could not be resolved in
-        return False
+    fav = activitypub.Like(**activity['object'])
+    # raises ValueError in to_model if a foreign key could not be resolved in
 
     liker = get_or_create_remote_user(activity['actor'])
     if liker.local:
-        return True
+        return
 
     status = fav.to_model(models.Favorite)
 
@@ -259,7 +246,6 @@ def handle_favorite(activity):
         related_user=liker,
         related_status=status,
     )
-    return True
 
 
 @app.task
@@ -267,22 +253,16 @@ def handle_unfavorite(activity):
     ''' approval of your good good post '''
     like = activitypub.Like(**activity['object'])
     fav = models.Favorite.objects.filter(remote_id=like.id).first()
-    if not fav:
-        return False
 
     fav.delete()
-    return True
 
 
 @app.task
 def handle_boost(activity):
     ''' someone gave us a boost! '''
-    try:
-        status_id = activity['object'].split('/')[-1]
-        status = models.Status.objects.get(id=status_id)
-        booster = get_or_create_remote_user(activity['actor'])
-    except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return False
+    status_id = activity['object'].split('/')[-1]
+    status = models.Status.objects.get(id=status_id)
+    booster = get_or_create_remote_user(activity['actor'])
 
     if not booster.local:
         status_builder.create_boost_from_activity(booster, activity)
@@ -293,7 +273,6 @@ def handle_boost(activity):
         related_user=booster,
         related_status=status,
     )
-    return True
 
 
 @app.task
