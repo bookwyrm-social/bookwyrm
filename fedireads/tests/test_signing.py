@@ -9,19 +9,20 @@ import responses
 from django.test import TestCase, Client
 from django.utils.http import http_date
 
-from fedireads.models import User, UserFollowRequest
+from fedireads.models import User
+from fedireads.activitypub import Follow
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair, make_signature, make_digest
 
-
 def get_follow_data(follower, followee):
-    relationship = UserFollowRequest(
-        user_object=follower,
-        user_subject=followee
-    )
-    return json.dumps(
-        relationship.to_activity()
-    ).encode('utf-8')
+    follow_activity = Follow(
+        id='https://test.com/user/follow/id',
+        actor=follower.remote_id,
+        object=followee.remote_id,
+    ).serialize()
+    return json.dumps(follow_activity)
+
+Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
 
 class Signature(TestCase):
     def setUp(self):
@@ -31,12 +32,10 @@ class Signature(TestCase):
 
         private_key, public_key = create_key_pair()
 
-        self.fake_remote = User.objects.create_user(
-            'fake remote',
-            'fakse@remote.com',
-            remote_id='http://localhost/user/remote',
-            private_key=private_key,
-            public_key=public_key,
+        self.fake_remote = Sender(
+            'http://localhost/user/remote',
+            private_key,
+            public_key,
         )
 
     def send(self, signature, now, data, digest):
@@ -130,13 +129,8 @@ class Signature(TestCase):
 
         # Second and subsequent fetches get a different key:
         new_private_key, new_public_key = create_key_pair()
-        new_sender = User.objects.create_user(
-            'a new fake remote',
-            'another_fake@remote.com',
-            remote_id=self.fake_remote.remote_id,
-            private_key=new_private_key,
-            public_key=new_public_key,
-        )
+        new_sender = Sender(
+            self.fake_remote.remote_id, new_private_key, new_public_key)
         data['publicKey']['publicKeyPem'] = new_public_key
         responses.add(
             responses.GET,
