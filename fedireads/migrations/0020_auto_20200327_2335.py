@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='connector',
-            constraint=models.CheckConstraint(check=models.Q(connector_file__in=fedireads.models.book.ConnectorFiles), name='connector_file_valid'),
+            constraint=models.CheckConstraint(check=models.Q(connector_file__in=fedireads.models.connector.ConnectorFiles), name='connector_file_valid'),
         ),
         migrations.AddField(
             model_name='book',

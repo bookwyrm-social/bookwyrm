@@ -2,12 +2,15 @@
 import inspect
 import sys
 
-from .book import Connector, Book, Work, Edition, Author
+from .book import Book, Work, Edition, Author
+from .connector import Connector
+from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .shelf import Shelf, ShelfBook
 from .status import Status, Review, Comment, Quotation
-from .status import Favorite, Boost, Tag, Notification, ReadThrough
-from .user import User, UserFollows, UserFollowRequest, UserBlocks
-from .user import FederatedServer
+from .status import Favorite, Boost, Notification, ReadThrough
+from .tag import Tag
+from .user import User
+from .federated_server import FederatedServer
 
 from .import_job import ImportJob, ImportItem
 from .site import SiteSettings, SiteInvite
