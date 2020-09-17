@@ -118,7 +118,7 @@ def handle_follow(activity):
     # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
     try:
-        relationship, _ = models.UserFollowRequest.objects.get_or_create(
+        relationship = models.UserFollowRequest.objects.create(
             user_subject=user,
             user_object=to_follow,
             relationship_id=activity['id']
