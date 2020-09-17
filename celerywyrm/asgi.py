@@ -1,5 +1,5 @@
 """
-ASGI config for fr_celery project.
+ASGI config for celerywyrm project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fr_celery.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'celerywyrm.settings')
 
 application = get_asgi_application()

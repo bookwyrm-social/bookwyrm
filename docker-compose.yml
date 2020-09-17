@@ -46,7 +46,7 @@ services:
         build: .
         networks:
             - main
-        command: celery -A fr_celery worker -l info
+        command: celery -A celerywyrm worker -l info
         volumes:
             - .:/app
         depends_on:
