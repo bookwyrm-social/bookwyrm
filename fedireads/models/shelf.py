@@ -1,10 +1,12 @@
 ''' puttin' books on shelves '''
 from django.db import models
 
-from .base_model import FedireadsModel
+from fedireads import activitypub
+from .base_model import FedireadsModel, OrderedCollectionMixin
 
 
-class Shelf(FedireadsModel):
+class Shelf(OrderedCollectionMixin, FedireadsModel):
+    ''' a list of books owned by a user '''
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -16,17 +18,23 @@ class Shelf(FedireadsModel):
         through_fields=('shelf', 'book')
     )
 
+    @property
+    def collection_queryset(self):
+        ''' list of books for this shelf, overrides OrderedCollectionMixin  '''
+        return self.books
+
     def get_remote_id(self):
         ''' shelf identifier instead of id '''
         base_path = self.user.remote_id
         return '%s/shelf/%s' % (base_path, self.identifier)
 
     class Meta:
+        ''' user/shelf unqiueness '''
         unique_together = ('user', 'identifier')
 
 
 class ShelfBook(FedireadsModel):
-    # many to many join table for books and shelves
+    ''' many to many join table for books and shelves '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
     added_by = models.ForeignKey(
@@ -36,5 +44,26 @@ class ShelfBook(FedireadsModel):
         on_delete=models.PROTECT
     )
 
+    def to_add_activity(self, user):
+        ''' AP for shelving a book'''
+        return activitypub.Add(
+            id='%s#add' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.shelf.to_activity()
+        ).serialize()
+
+    def to_remove_activity(self, user):
+        ''' AP for un-shelving a book'''
+        return activitypub.Remove(
+            id='%s#remove' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.shelf.to_activity()
+        ).serialize()
+
+
     class Meta:
+        ''' an opinionated constraint!
+            you can't put a book on shelf twice '''
         unique_together = ('book', 'shelf')

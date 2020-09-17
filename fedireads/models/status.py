@@ -2,23 +2,25 @@
 import urllib.parse
 
 from django.utils import timezone
+from django.utils.http import http_date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
 from fedireads import activitypub
-from .base_model import FedireadsModel
+from fedireads.settings import DOMAIN
+from .base_model import ActivitypubMixin, OrderedCollectionMixin, \
+        OrderedCollectionPageMixin
+from .base_model import ActivityMapping, FedireadsModel
 
 
-class Status(FedireadsModel):
+class Status(OrderedCollectionPageMixin, FedireadsModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    status_type = models.CharField(max_length=255, default='Note')
     content = models.TextField(blank=True, null=True)
     mention_users = models.ManyToManyField('User', related_name='mention_user')
     mention_books = models.ManyToManyField(
         'Edition', related_name='mention_book')
-    activity_type = models.CharField(max_length=255, default='Note')
     local = models.BooleanField(default=True)
     privacy = models.CharField(max_length=255, default='public')
     sensitive = models.BooleanField(default=False)
@@ -38,40 +40,100 @@ class Status(FedireadsModel):
     )
     objects = InheritanceManager()
 
+    # ---- activitypub serialization settings for this model ----- #
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_status(self)
+    def ap_to(self):
+        ''' should be related to post privacy I think '''
+        return ['https://www.w3.org/ns/activitystreams#Public']
+
+    @property
+    def ap_cc(self):
+        ''' should be related to post privacy I think '''
+        return [self.user.ap_followers]
+
+    @property
+    def ap_replies(self):
+        ''' structured replies block '''
+        return self.to_replies()
+
+    shared_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('url', 'remote_id'),
+        ActivityMapping('inReplyTo', 'reply_parent'),
+        ActivityMapping(
+            'published',
+            'published_date',
+            activity_formatter=lambda d: http_date(d.timestamp())
+        ),
+        ActivityMapping('attributedTo', 'user'),
+        ActivityMapping('to', 'ap_to'),
+        ActivityMapping('cc', 'ap_cc'),
+        ActivityMapping('replies', 'ap_replies'),
+    ]
+
+    # serializing to fedireads expanded activitypub
+    activity_mappings = shared_mappings + [
+        ActivityMapping('name', 'name'),
+        ActivityMapping('inReplyToBook', 'book'),
+        ActivityMapping('rating', 'rating'),
+        ActivityMapping('quote', 'quote'),
+        ActivityMapping('content', 'content'),
+    ]
+
+    # for serializing to standard activitypub without extended types
+    pure_activity_mappings = shared_mappings + [
+        ActivityMapping('name', 'pure_ap_name'),
+        ActivityMapping('content', 'ap_pure_content'),
+    ]
+
+    activity_serializer = activitypub.Note
+
+    #----- replies collection activitypub ----#
+    @classmethod
+    def replies(cls, status):
+        ''' load all replies to a status. idk if there's a better way
+            to write this so it's just a property '''
+        return cls.objects.filter(reply_parent=status).select_subclasses()
+
+    def to_replies(self, **kwargs):
+        ''' helper function for loading AP serialized replies to a status '''
+        return self.to_ordered_collection(
+            self.replies(self),
+            remote_id='%s/replies' % self.remote_id,
+            **kwargs
+        )
 
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
-    def save(self, *args, **kwargs):
-        self.status_type = 'Comment'
-        self.activity_type = 'Note'
-        super().save(*args, **kwargs)
-
-
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_comment(self)
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
+                (self.book.local_id, self.book.title)
+
+    activity_serializer = activitypub.Comment
+    pure_activity_serializer = activitypub.Note
 
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     quote = models.TextField()
-
-    def save(self, *args, **kwargs):
-        self.status_type = 'Quotation'
-        self.activity_type = 'Note'
-        super().save(*args, **kwargs)
-
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
 
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_quotation(self)
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
+            self.quote,
+            self.book.local_id,
+            self.book.title,
+            self.content,
+        )
+
+    activity_serializer = activitypub.Quotation
 
 
 class Review(Status):
@@ -85,23 +147,41 @@ class Review(Status):
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
 
-    def save(self, *args, **kwargs):
-        self.status_type = 'Review'
-        self.activity_type = 'Article'
-        super().save(*args, **kwargs)
-
+    @property
+    def ap_pure_name(self):
+        ''' clarify review names for mastodon serialization '''
+        return 'Review of "%s" (%d stars): %s' % (
+            self.book.title,
+            self.rating,
+            self.name
+        )
 
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_review(self)
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
+                (self.book.local_id, self.book.title)
+
+    activity_serializer = activitypub.Review
 
 
-class Favorite(FedireadsModel):
+class Favorite(ActivitypubMixin, FedireadsModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
 
+    # ---- activitypub serialization settings for this model ----- #
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('actor', 'user'),
+        ActivityMapping('object', 'status'),
+    ]
+
+    activity_serializer = activitypub.Like
+
+
     class Meta:
+        ''' can't fav things twice '''
         unique_together = ('user', 'status')
 
 
@@ -112,29 +192,69 @@ class Boost(Status):
         on_delete=models.PROTECT,
         related_name="boosters")
 
-    def save(self, *args, **kwargs):
-        self.status_type = 'Boost'
-        self.activity_type = 'Announce'
-        super().save(*args, **kwargs)
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('actor', 'user'),
+        ActivityMapping('object', 'boosted_status'),
+    ]
+
+    activity_serializer = activitypub.Like
 
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
 
-class Tag(FedireadsModel):
+
+class Tag(OrderedCollectionMixin, FedireadsModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
 
+    @classmethod
+    def book_queryset(cls, identifier):
+        ''' county of books associated with this tag '''
+        return cls.objects.filter(identifier=identifier)
+
+    @property
+    def collection_queryset(self):
+        ''' books associated with this tag '''
+        return self.book_queryset(self.identifier)
+
+    def get_remote_id(self):
+        ''' tag should use identifier not id in remote_id '''
+        base_path = 'https://%s' % DOMAIN
+        return '%s/tag/%s' % (base_path, self.identifier)
+
+    def to_add_activity(self, user):
+        ''' AP for shelving a book'''
+        return activitypub.Add(
+            id='%s#add' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.to_activity(),
+        ).serialize()
+
+    def to_remove_activity(self, user):
+        ''' AP for un-shelving a book'''
+        return activitypub.Remove(
+            id='%s#remove' % self.remote_id,
+            actor=user.remote_id,
+            object=self.book.to_activity(),
+            target=self.to_activity(),
+        ).serialize()
+
+
     def save(self, *args, **kwargs):
+        ''' create a url-safe lookup key for the tag '''
         if not self.id:
             # add identifiers to new tags
             self.identifier = urllib.parse.quote_plus(self.name)
         super().save(*args, **kwargs)
 
     class Meta:
+        ''' unqiueness constraint '''
         unique_together = ('user', 'book', 'name')
 
 
@@ -172,7 +292,9 @@ class Notification(FedireadsModel):
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices)
+
     class Meta:
+        ''' checks if notifcation is in enum list for valid types '''
         constraints = [
             models.CheckConstraint(
                 check=models.Q(notification_type__in=NotificationType.values),

@@ -1,0 +1,36 @@
+{
+    "id": "https://example.com/user/mouse/quotation/13",
+    "url": "https://example.com/user/mouse/quotation/13",
+    "inReplyTo": null,
+    "published": "2020-05-10T02:38:31.150343+00:00",
+    "attributedTo": "https://example.com/user/mouse",
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public"
+        ],
+    "cc": [
+        "https://example.com/user/mouse/followers"
+        ],
+    "sensitive": false,
+    "content": "commentary",
+    "type": "Quotation",
+    "attachment": [
+        {
+            "type": "Document",
+            "mediaType": "image//images/covers/2b4e4712-5a4d-4ac1-9df4-634cc9c7aff3jpg",
+            "url": "https://example.com/images/covers/2b4e4712-5a4d-4ac1-9df4-634cc9c7aff3jpg",
+            "name": "Cover of \"This Is How You Lose the Time War\""
+            }
+        ],
+    "replies": {
+        "id": "https://example.com/user/mouse/quotation/13/replies",
+        "type": "Collection",
+        "first": {
+            "type": "CollectionPage",
+            "next": "https://example.com/user/mouse/quotation/13/replies?only_other_accounts=true&page=true",
+            "partOf": "https://example.com/user/mouse/quotation/13/replies",
+            "items": []
+            }
+        },
+    "inReplyToBook": "https://example.com/book/1",
+    "quote": "quote body"
+}

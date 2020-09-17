@@ -1,14 +1,14 @@
 ''' handles all of the activity coming in to the server '''
 import json
 from urllib.parse import urldefrag
-import requests
 
 import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+import requests
 
-from fedireads import books_manager, models, outgoing
+from fedireads import activitypub, books_manager, models, outgoing
 from fedireads import status as status_builder
 from fedireads.remote_user import get_or_create_remote_user, refresh_remote_user
 from fedireads.tasks import app
@@ -84,6 +84,7 @@ def shared_inbox(request):
 
 
 def has_valid_signature(request, activity):
+    ''' verify incoming signature '''
     try:
         signature = Signature.parse(request)
 
@@ -111,14 +112,13 @@ def handle_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow -- not using get_or_create because
     # we only allow you to follow local users
-    try:
-        to_follow = models.User.objects.get(remote_id=activity['object'])
-    except models.User.DoesNotExist:
-        return False
+    to_follow = models.User.objects.get(remote_id=activity['object'])
+    # raises models.User.DoesNotExist id the remote id is not found
+
     # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
     try:
-        request = models.UserFollowRequest.objects.create(
+        relationship = models.UserFollowRequest.objects.create(
             user_subject=user,
             user_object=to_follow,
             relationship_id=activity['id']
@@ -137,7 +137,7 @@ def handle_follow(activity):
             'FOLLOW',
             related_user=user
         )
-        outgoing.handle_accept(user, to_follow, request)
+        outgoing.handle_accept(user, to_follow, relationship)
     else:
         status_builder.create_notification(
             to_follow,
@@ -150,11 +150,9 @@ def handle_follow(activity):
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    try:
-        requester = get_or_create_remote_user(obj['actor'])
-        to_unfollow = models.User.objects.get(remote_id=obj['object'])
-    except models.User.DoesNotExist:
-        return False
+    requester = get_or_create_remote_user(obj['actor'])
+    to_unfollow = models.User.objects.get(remote_id=obj['object'])
+    # raises models.User.DoesNotExist
 
     to_unfollow.followers.remove(requester)
 
@@ -184,67 +182,63 @@ def handle_follow_reject(activity):
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
     rejecter = get_or_create_remote_user(activity['actor'])
 
-    try:
-        request = models.UserFollowRequest.objects.get(
-            user_subject=requester,
-            user_object=rejecter
-        )
-        request.delete()
-    except models.UserFollowRequest.DoesNotExist:
-        return False
+    request = models.UserFollowRequest.objects.get(
+        user_subject=requester,
+        user_object=rejecter
+    )
+    request.delete()
+    #raises models.UserFollowRequest.DoesNotExist:
 
 
 @app.task
 def handle_create(activity):
     ''' someone did something, good on them '''
-    user = get_or_create_remote_user(activity['actor'])
+    if activity['object'].get('type') not in \
+            ['Note', 'Comment', 'Quotation', 'Review']:
+        # if it's an article or unknown type, ignore it
+        return
 
+    user = get_or_create_remote_user(activity['actor'])
     if user.local:
         # we really oughtn't even be sending in this case
-        return True
+        return
 
-    if activity['object'].get('fedireadsType') and \
-            'inReplyToBook' in activity['object']:
-        if activity['object']['fedireadsType'] == 'Review':
-            builder = status_builder.create_review_from_activity
-        elif activity['object']['fedireadsType'] == 'Quotation':
-            builder = status_builder.create_quotation_from_activity
-        else:
-            builder = status_builder.create_comment_from_activity
+    # render the json into an activity object
+    serializer = activitypub.activity_objects[activity['object']['type']]
+    activity = serializer(**activity['object'])
 
-        # create the status, it'll throw a ValueError if anything is missing
-        builder(user, activity['object'])
-    elif activity['object'].get('inReplyTo'):
-        # only create the status if it's in reply to a status we already know
-        if not status_builder.get_status(activity['object']['inReplyTo']):
-            return True
+    # ignore notes that aren't replies to known statuses
+    if activity.type == 'Note':
+        reply = models.Status.objects.filter(
+            remote_id=activity.inReplyTo
+        ).first()
+        if not reply:
+            return
 
-        status = status_builder.create_status_from_activity(
-            user,
-            activity['object']
+    model = models.activity_models[activity.type]
+    status = activity.to_model(model)
+
+    # create a notification if this is a reply
+    if status.reply_parent and status.reply_parent.user.local:
+        status_builder.create_notification(
+            status.reply_parent.user,
+            'REPLY',
+            related_user=status.user,
+            related_status=status,
         )
-        if status and status.reply_parent:
-            status_builder.create_notification(
-                status.reply_parent.user,
-                'REPLY',
-                related_user=status.user,
-                related_status=status,
-            )
-    return True
 
 
 @app.task
 def handle_favorite(activity):
     ''' approval of your good good post '''
-    try:
-        status_id = activity['object'].split('/')[-1]
-        status = models.Status.objects.get(id=status_id)
-        liker = get_or_create_remote_user(activity['actor'])
-    except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return False
+    fav = activitypub.Like(**activity['object'])
+    # raises ValueError in to_model if a foreign key could not be resolved in
 
-    if not liker.local:
-        status_builder.create_favorite_from_activity(liker, activity)
+    liker = get_or_create_remote_user(activity['actor'])
+    if liker.local:
+        return
+
+    status = fav.to_model(models.Favorite)
 
     status_builder.create_notification(
         status.user,
@@ -257,10 +251,8 @@ def handle_favorite(activity):
 @app.task
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
-    favorite_id = activity['object']['id']
-    fav = models.Favorite.objects.filter(remote_id=favorite_id).first()
-    if not fav:
-        return False
+    like = activitypub.Like(**activity['object'])
+    fav = models.Favorite.objects.filter(remote_id=like.id).first()
 
     fav.delete()
 
@@ -268,12 +260,9 @@ def handle_unfavorite(activity):
 @app.task
 def handle_boost(activity):
     ''' someone gave us a boost! '''
-    try:
-        status_id = activity['object'].split('/')[-1]
-        status = models.Status.objects.get(id=status_id)
-        booster = get_or_create_remote_user(activity['actor'])
-    except (models.Status.DoesNotExist, models.User.DoesNotExist):
-        return False
+    status_id = activity['object'].split('/')[-1]
+    status = models.Status.objects.get(id=status_id)
+    booster = get_or_create_remote_user(activity['actor'])
 
     if not booster.local:
         status_builder.create_boost_from_activity(booster, activity)

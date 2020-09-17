@@ -1,16 +1,20 @@
 ''' database schema for user data '''
+from urllib.parse import urlparse
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
 
 from fedireads import activitypub
 from fedireads.models.shelf import Shelf
+from fedireads.models.status import Status
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair
-from .base_model import FedireadsModel
+from .base_model import OrderedCollectionPageMixin
+from .base_model import ActivityMapping, FedireadsModel
 
 
-class User(AbstractUser):
+class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
@@ -66,9 +70,102 @@ class User(AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = models.BooleanField(default=False)
 
+    # ---- activitypub serialization settings for this model ----- #
     @property
-    def activitypub_serialize(self):
-        return activitypub.get_actor(self)
+    def ap_followers(self):
+        ''' generates url for activitypub followers page '''
+        return '%s/followers' % self.remote_id
+
+    @property
+    def ap_icon(self):
+        ''' send default icon if one isn't set '''
+        if self.avatar:
+            url = self.avatar.url
+            # TODO not the right way to get the media type
+            media_type = 'image/%s' % url.split('.')[-1]
+        else:
+            url = '%s/static/images/default_avi.jpg' % DOMAIN
+            media_type = 'image/jpeg'
+        return activitypub.Image(media_type, url, 'Image')
+
+    @property
+    def ap_public_key(self):
+        ''' format the public key block for activitypub '''
+        return activitypub.PublicKey(**{
+            'id': '%s/#main-key' % self.remote_id,
+            'owner': self.remote_id,
+            'publicKeyPem': self.public_key,
+        })
+
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping(
+            'preferredUsername',
+            'username',
+            activity_formatter=lambda x: x.split('@')[0]
+        ),
+        ActivityMapping('name', 'name'),
+        ActivityMapping('inbox', 'inbox'),
+        ActivityMapping('outbox', 'outbox'),
+        ActivityMapping('followers', 'ap_followers'),
+        ActivityMapping('summary', 'summary'),
+        ActivityMapping(
+            'publicKey',
+            'public_key',
+            model_formatter=lambda x: x.get('publicKeyPem')
+        ),
+        ActivityMapping('publicKey', 'ap_public_key'),
+        ActivityMapping(
+            'endpoints',
+            'shared_inbox',
+            activity_formatter=lambda x: {'sharedInbox': x},
+            model_formatter=lambda x: x.get('sharedInbox')
+        ),
+        ActivityMapping('icon', 'ap_icon'),
+        ActivityMapping(
+            'manuallyApprovesFollowers',
+            'manually_approves_followers'
+        ),
+        # this field isn't in the activity but should always be false
+        ActivityMapping(None, 'local', model_formatter=lambda x: False),
+    ]
+    activity_serializer = activitypub.Person
+
+    def to_outbox(self, **kwargs):
+        ''' an ordered collection of statuses '''
+        queryset = Status.objects.filter(
+            user=self,
+        ).select_subclasses()
+        return self.to_ordered_collection(queryset, \
+                remote_id=self.outbox, **kwargs)
+
+    def to_following_activity(self, **kwargs):
+        ''' activitypub following list '''
+        remote_id = '%s/following' % self.remote_id
+        return self.to_ordered_collection(self.following, \
+                remote_id=remote_id, id_only=True, **kwargs)
+
+    def to_followers_activity(self, **kwargs):
+        ''' activitypub followers list '''
+        remote_id = '%s/followers' % self.remote_id
+        return self.to_ordered_collection(self.followers, \
+                remote_id=remote_id, id_only=True, **kwargs)
+
+    def to_activity(self, pure=False):
+        ''' override default AP serializer to add context object
+            idk if this is the best way to go about this '''
+        activity_object = super().to_activity()
+        activity_object['@context'] = [
+            'https://www.w3.org/ns/activitystreams',
+            'https://w3id.org/security/v1',
+            {
+                'manuallyApprovesFollowers': 'as:manuallyApprovesFollowers',
+                'schema': 'http://schema.org#',
+                'PropertyValue': 'schema:PropertyValue',
+                'value': 'schema:value',
+            }
+        ]
+        return activity_object
 
 
 class UserRelationship(FedireadsModel):
@@ -87,6 +184,7 @@ class UserRelationship(FedireadsModel):
     relationship_id = models.CharField(max_length=100)
 
     class Meta:
+        ''' relationships should be unique '''
         abstract = True
         constraints = [
             models.UniqueConstraint(
@@ -106,12 +204,14 @@ class UserRelationship(FedireadsModel):
 
 
 class UserFollows(UserRelationship):
+    ''' Following a user '''
     @property
     def status(self):
         return 'follows'
 
     @classmethod
     def from_request(cls, follow_request):
+        ''' converts a follow request into a follow relationship '''
         return cls(
             user_subject=follow_request.user_subject,
             user_object=follow_request.user_object,
@@ -120,9 +220,34 @@ class UserFollows(UserRelationship):
 
 
 class UserFollowRequest(UserRelationship):
+    ''' following a user requires manual or automatic confirmation '''
     @property
     def status(self):
         return 'follow_request'
+
+    def to_activity(self):
+        ''' request activity '''
+        return activitypub.Follow(
+            id=self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        ).serialize()
+
+    def to_accept_activity(self):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Accept(
+            id='%s#accepts/follows/' % self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        ).serialize()
+
+    def to_reject_activity(self):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Reject(
+            id='%s#rejects/follows/' % self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        ).serialize()
 
 
 class UserBlocks(UserRelationship):
@@ -145,7 +270,12 @@ class FederatedServer(FedireadsModel):
 def execute_before_save(sender, instance, *args, **kwargs):
     ''' populate fields for new local users '''
     # this user already exists, no need to poplate fields
-    if instance.id or not instance.local:
+    if instance.id:
+        return
+    if not instance.local:
+        # we need to generate a username that uses the domain (webfinger format)
+        actor_parts = urlparse(instance.remote_id)
+        instance.username = '%s@%s' % (instance.username, actor_parts.netloc)
         return
 
     # populate fields for local users

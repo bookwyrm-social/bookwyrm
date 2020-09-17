@@ -9,7 +9,8 @@ from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import activitypub, outgoing
+from fedireads import outgoing
+from fedireads.activitypub import ActivityEncoder
 from fedireads import forms, models, books_manager
 from fedireads import goodreads_import
 from fedireads.tasks import app
@@ -222,8 +223,9 @@ def about_page(request):
     }
     return TemplateResponse(request, 'about.html', data)
 
+
 def invite_page(request, code):
-    ''' Handle invites. '''
+    ''' endpoint for sending invites '''
     try:
         invite = models.SiteInvite.objects.get(code=code)
         if not invite.valid():
@@ -240,6 +242,7 @@ def invite_page(request, code):
 
 @login_required
 def manage_invites(request):
+    ''' invite management page '''
     data = {
         'invites': models.SiteInvite.objects.filter(user=request.user),
         'form': forms.CreateInviteForm(),
@@ -270,7 +273,7 @@ def user_page(request, username, subpage=None):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.activitypub_serialize)
+        return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
     # TODO: change display with privacy and authentication considerations
@@ -308,10 +311,7 @@ def followers_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        user = models.User.objects.get(localname=username)
-        followers = user.followers
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_followers(user, page, followers))
+        return JsonResponse(user.to_followers_activity(**request.GET))
 
     return user_page(request, username, subpage='followers')
 
@@ -328,10 +328,7 @@ def following_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        user = models.User.objects.get(localname=username)
-        following = user.following
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_following(user, page, following))
+        return JsonResponse(user.to_following_activity(**request.GET))
 
     return user_page(request, username, subpage='following')
 
@@ -361,7 +358,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(status.activitypub_serialize)
+        return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
 
     data = {
         'status': status,
@@ -382,28 +379,10 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    replies = models.Status.objects.filter(
-        reply_parent=status,
-    ).select_subclasses()
-
-    if request.GET.get('only_other_accounts'):
-        replies = replies.filter(
-            ~Q(user=status.user)
-        )
-    else:
-        replies = replies.filter(user=status.user)
-
-    if request.GET.get('page'):
-        min_id = request.GET.get('min_id')
-        if min_id:
-            replies = replies.filter(id__gt=min_id)
-        max_id = request.GET.get('max_id')
-        if max_id:
-            replies = replies.filter(id__lte=max_id)
-        activity = activitypub.get_replies_page(status, replies)
-        return JsonResponse(activity)
-
-    return JsonResponse(activitypub.get_replies(status, replies))
+    return JsonResponse(
+        status.to_replies(**request.GET),
+        encoder=ActivityEncoder
+    )
 
 
 @login_required
@@ -423,7 +402,7 @@ def book_page(request, book_id, tab='friends'):
     ''' info about a book '''
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
-        return JsonResponse(activitypub.get_book(book))
+        return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 
     if isinstance(book, models.Work):
         book = book.default_edition
@@ -531,7 +510,7 @@ def author_page(request, author_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(activitypub.get_author(author))
+        return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
 
     books = models.Work.objects.filter(authors=author)
     data = {
@@ -544,6 +523,13 @@ def author_page(request, author_id):
 def tag_page(request, tag_id):
     ''' books related to a tag '''
     tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
+    if not tag_obj:
+        return HttpResponseNotFound()
+
+    if is_api_request(request):
+        return JsonResponse(
+            tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
+
     books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {
         'books': books,
@@ -562,8 +548,7 @@ def shelf_page(request, username, shelf_identifier):
     shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
 
     if is_api_request(request):
-        page = request.GET.get('page')
-        return JsonResponse(activitypub.get_shelf(shelf, page=page))
+        return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
         'shelf': shelf,

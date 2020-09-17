@@ -1,6 +1,5 @@
 ''' handles all the activity coming out of the server '''
 from datetime import datetime
-from urllib.parse import urlencode
 
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
@@ -27,36 +26,11 @@ def outbox(request, username):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
-    # paginated list of messages
-    if request.GET.get('page'):
-        limit = 20
-        min_id = request.GET.get('min_id')
-        max_id = request.GET.get('max_id')
-
-        # filters for use in the django queryset min/max
-        filters = {}
-        # params for the outbox page id
-        params = {'page': 'true'}
-        if min_id is not None:
-            params['min_id'] = min_id
-            filters['id__gt'] = min_id
-        if max_id is not None:
-            params['max_id'] = max_id
-            filters['id__lte'] = max_id
-
-        page_id = user.outbox + '?' + urlencode(params)
-        statuses = models.Status.objects.filter(
-            user=user,
-            **filters
-        ).select_subclasses().all()[:limit]
-
-        return JsonResponse(
-            activitypub.get_outbox_page(user, page_id, statuses, max_id, min_id)
-        )
-
     # collection overview
-    size = models.Status.objects.filter(user=user).count()
-    return JsonResponse(activitypub.get_outbox(user, size))
+    return JsonResponse(
+        user.to_outbox(**request.GET),
+        encoder=activitypub.ActivityEncoder
+    )
 
 
 def handle_account_search(query):
@@ -83,7 +57,15 @@ def handle_account_search(query):
 
 def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
-    activity = activitypub.get_follow_request(user, to_follow)
+    try:
+        relationship, _ = models.UserFollowRequest.objects.get_or_create(
+            user_subject=user,
+            user_object=to_follow,
+        )
+    except IntegrityError as err:
+        if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
+            raise
+    activity = relationship.to_activity()
     broadcast(user, activity, direct_recipients=[to_follow])
 
 
@@ -93,7 +75,7 @@ def handle_unfollow(user, to_unfollow):
         user_subject=user,
         user_object=to_unfollow
     )
-    activity = activitypub.get_unfollow(relationship)
+    activity = relationship.to_undo_activity(user)
     broadcast(user, activity, direct_recipients=[to_unfollow])
     to_unfollow.followers.remove(user)
 
@@ -105,25 +87,23 @@ def handle_accept(user, to_follow, follow_request):
         follow_request.delete()
         relationship.save()
 
-    activity = activitypub.get_accept(to_follow, follow_request)
+    activity = relationship.to_accept_activity()
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
 def handle_reject(user, to_follow, relationship):
     ''' a local user who managed follows rejects a follow request '''
+    activity = relationship.to_reject_activity(user)
     relationship.delete()
-
-    activity = activitypub.get_reject(to_follow, relationship)
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
-    models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
+    shelve = models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
 
-    activity = activitypub.get_add(user, book, shelf)
-    broadcast(user, activity)
+    broadcast(user, shelve.to_add_activity(user))
 
     # tell the world about this cool thing that happened
     verb = {
@@ -155,19 +135,15 @@ def handle_shelve(user, book, shelf):
         read.finish_date = datetime.now()
         read.save()
 
-    activity = activitypub.get_status(status)
-    create_activity = activitypub.get_create(user, activity)
-
-    broadcast(user, create_activity)
+    broadcast(user, status.to_create_activity(user))
 
 
 def handle_unshelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
+    activity = row.to_remove_activity(user)
     row.delete()
-
-    activity = activitypub.get_remove(user, book, shelf)
 
     broadcast(user, activity)
 
@@ -185,11 +161,11 @@ def handle_import_books(user, items):
                 item.book = item.book.default_edition
             if not item.book:
                 continue
-            _, created = models.ShelfBook.objects.get_or_create(
+            shelf_book, created = models.ShelfBook.objects.get_or_create(
                 book=item.book, shelf=desired_shelf, added_by=user)
             if created:
                 new_books.append(item.book)
-                activity = activitypub.get_add(user, item.book, desired_shelf)
+                activity = shelf_book.to_add_activity(user)
                 broadcast(user, activity)
 
                 if item.rating or item.review:
@@ -214,82 +190,62 @@ def handle_import_books(user, items):
         status.status_type = 'Update'
         status.save()
 
-        create_activity = activitypub.get_create(
-            user, activitypub.get_status(status))
-        broadcast(user, create_activity)
+        broadcast(user, status.to_create_activity(user))
         return status
+    return None
 
 
 def handle_rate(user, book, rating):
     ''' a review that's just a rating '''
     builder = create_rating
-    fr_serializer = activitypub.get_rating
-    ap_serializer = activitypub.get_rating_note
-
-    handle_status(user, book, builder, fr_serializer, ap_serializer, rating)
+    handle_status(user, book, builder, rating)
 
 
 def handle_review(user, book, name, content, rating):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_review
-    fr_serializer = activitypub.get_review
-    ap_serializer = activitypub.get_review_article
-    handle_status(
-        user, book, builder, fr_serializer,
-        ap_serializer, name, content, rating)
+    handle_status(user, book, builder, name, content, rating)
 
 
 def handle_quotation(user, book, content, quote):
     ''' post a review '''
     # validated and saves the review in the database so it has an id
     builder = create_quotation
-    fr_serializer = activitypub.get_quotation
-    ap_serializer = activitypub.get_quotation_article
-    handle_status(
-        user, book, builder, fr_serializer, ap_serializer, content, quote)
+    handle_status(user, book, builder, content, quote)
 
 
 def handle_comment(user, book, content):
     ''' post a comment '''
     # validated and saves the review in the database so it has an id
     builder = create_comment
-    fr_serializer = activitypub.get_comment
-    ap_serializer = activitypub.get_comment_article
-    handle_status(
-        user, book, builder, fr_serializer, ap_serializer, content)
+    handle_status(user, book, builder, content)
 
 
-def handle_status(user, book_id, \
-        builder, fr_serializer, ap_serializer, *args):
+def handle_status(user, book_id, builder, *args):
     ''' generic handler for statuses '''
     book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
-    activity = fr_serializer(status)
-    create_activity = activitypub.get_create(user, activity)
-    broadcast(user, create_activity, software='fedireads')
+    broadcast(user, status.to_create_activity(user), software='fedireads')
 
     # re-format the activity for non-fedireads servers
-    remote_activity = ap_serializer(status)
-    remote_create_activity = activitypub.get_create(user, remote_activity)
+    remote_activity = status.to_create_activity(user, pure=True)
 
-    broadcast(user, remote_create_activity, software='other')
+    broadcast(user, remote_activity, software='other')
 
 
 def handle_tag(user, book, name):
     ''' tag a book '''
     tag = create_tag(user, book, name)
-    tag_activity = activitypub.get_add_tag(tag)
-
-    broadcast(user, tag_activity)
+    broadcast(user, tag.to_add_activity(user))
 
 
 def handle_untag(user, book, name):
     ''' tag a book '''
     book = models.Book.objects.get(id=book)
     tag = models.Tag.objects.get(name=name, book=book, user=user)
-    tag_activity = activitypub.get_remove_tag(tag)
+    tag_activity = tag.to_remove_activity(user)
     tag.delete()
 
     broadcast(user, tag_activity)
@@ -306,10 +262,8 @@ def handle_reply(user, review, content):
             related_user=user,
             related_status=reply,
         )
-    reply_activity = activitypub.get_status(reply)
-    create_activity = activitypub.get_create(user, reply_activity)
 
-    broadcast(user, create_activity)
+    broadcast(user, reply.to_create_activity(user))
 
 
 def handle_favorite(user, status):
@@ -323,7 +277,7 @@ def handle_favorite(user, status):
         # you already fav'ed that
         return
 
-    fav_activity = activitypub.get_favorite(favorite)
+    fav_activity = favorite.to_activity()
     broadcast(
         user, fav_activity, privacy='direct', direct_recipients=[status.user])
 
@@ -339,7 +293,7 @@ def handle_unfavorite(user, status):
         # can't find that status, idk
         return
 
-    fav_activity = activitypub.get_unfavorite(favorite)
+    fav_activity = activitypub.Undo(actor=user, object=favorite)
     broadcast(user, fav_activity, direct_recipients=[status.user])
 
 
@@ -355,19 +309,15 @@ def handle_boost(user, status):
     )
     boost.save()
 
-    boost_activity = activitypub.get_boost(boost)
+    boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
 
 
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''
-    book_activity = activitypub.get_book(book)
-    update_activity = activitypub.get_update(user, book_activity)
-    broadcast(user, update_activity)
+    broadcast(user, book.to_update_activity(user))
 
 
 def handle_update_user(user):
     ''' broadcast editing a user's profile '''
-    actor = activitypub.get_actor(user)
-    update_activity = activitypub.get_update(user, actor)
-    broadcast(user, update_activity)
+    broadcast(user, user.to_update_activity())

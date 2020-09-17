@@ -6,23 +6,6 @@ from fedireads.books_manager import get_or_create_book
 from fedireads.sanitize_html import InputHtmlParser
 
 
-def create_review_from_activity(author, activity):
-    ''' parse an activity json blob into a status '''
-    book_id = activity['inReplyToBook']
-    book = get_or_create_book(book_id)
-    name = activity.get('name')
-    rating = activity.get('rating')
-    content = activity.get('content')
-    published = activity.get('published')
-    remote_id = activity['id']
-
-    review = create_review(author, book, name, content, rating)
-    review.published_date = published
-    review.remote_id = remote_id
-    review.save()
-    return review
-
-
 def create_rating(user, book, rating):
     ''' a review that's just a rating '''
     if not rating or rating < 1 or rating > 5:
@@ -109,50 +92,6 @@ def create_comment(user, book, content):
         book=book,
         content=content,
     )
-
-
-def create_status_from_activity(author, activity):
-    ''' parse a status object out of an activity json blob '''
-    content = activity.get('content')
-    reply_parent_id = activity.get('inReplyTo')
-    reply_parent = get_status(reply_parent_id)
-
-    remote_id = activity['id']
-    if models.Status.objects.filter(remote_id=remote_id).count():
-        return None
-    status = create_status(author, content, reply_parent=reply_parent,
-                           remote_id=remote_id)
-    status.published_date = activity.get('published')
-    status.save()
-    return status
-
-
-def create_favorite_from_activity(user, activity):
-    ''' create a new favorite entry '''
-    status = get_status(activity['object'])
-    remote_id = activity['id']
-    try:
-        return models.Favorite.objects.create(
-            status=status,
-            user=user,
-            remote_id=remote_id,
-        )
-    except IntegrityError:
-        return models.Favorite.objects.get(status=status, user=user)
-
-
-def create_boost_from_activity(user, activity):
-    ''' create a new boost activity '''
-    status = get_status(activity['object'])
-    remote_id = activity['id']
-    try:
-        return models.Boost.objects.create(
-            status=status,
-            user=user,
-            remote_id=remote_id,
-        )
-    except IntegrityError:
-        return models.Boost.objects.get(status=status, user=user)
 
 
 def get_status(remote_id):

@@ -10,12 +10,17 @@ from django.test import TestCase, Client
 from django.utils.http import http_date
 
 from fedireads.models import User
-from fedireads.activitypub import get_follow_request
+from fedireads.activitypub import Follow
 from fedireads.settings import DOMAIN
 from fedireads.signatures import create_key_pair, make_signature, make_digest
 
 def get_follow_data(follower, followee):
-    return json.dumps(get_follow_request(follower, followee)).encode('utf-8')
+    follow_activity = Follow(
+        id='https://test.com/user/follow/id',
+        actor=follower.remote_id,
+        object=followee.remote_id,
+    ).serialize()
+    return json.dumps(follow_activity)
 
 Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
 
