@@ -1,6 +1,6 @@
 ''' url routing for the app and api '''
 from django.conf.urls.static import static
-#from django.contrib import admin
+from django.contrib import admin
 from django.urls import path, re_path
 
 from bookwyrm import incoming, outgoing, views, settings, wellknown
@@ -20,7 +20,7 @@ book_path = r'^book/(?P<book_id>\d+)'
 handler404 = 'bookwyrm.views.not_found_page'
 handler500 = 'bookwyrm.views.server_error_page'
 urlpatterns = [
-#    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),
@@ -66,15 +66,18 @@ urlpatterns = [
 
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
-    re_path(r'%s/(?P<tab>friends|local|federated)?$' % book_path, views.book_page),
+    re_path(r'%s/(?P<tab>friends|local|federated)?$' % \
+            book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
     # TODO: tag needs a .json path
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
-    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % user_path, views.shelf_page),
-    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % local_user_path, views.shelf_page),
+    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
+            user_path, views.shelf_page),
+    re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
+            local_user_path, views.shelf_page),
 
     re_path(r'^search/?$', views.search),
 

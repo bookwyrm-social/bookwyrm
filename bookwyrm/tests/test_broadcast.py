@@ -1,7 +1,6 @@
 from django.test import TestCase
 
 from bookwyrm import models, broadcast
-from bookwyrm.settings import DOMAIN
 
 
 class Book(TestCase):

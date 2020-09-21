@@ -7,7 +7,7 @@ from bookwyrm.connectors.abstract_connector import Mapping,\
 from bookwyrm.connectors.bookwyrm_connector import Connector
 
 
-class BookWyrmConnector(TestCase):
+class AbstractConnector(TestCase):
     def setUp(self):
         self.book = models.Edition.objects.create(title='Example Edition')
 

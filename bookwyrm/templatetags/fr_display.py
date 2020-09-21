@@ -122,7 +122,7 @@ def get_boosted(boost):
 def get_edition_info(book):
     ''' paperback, French language, 1982 '''
     if not book:
-        return
+        return ''
     items = [
         book.physical_format if isinstance(book, models.Edition) else None,
         book.languages[0] + ' language' if book.languages and \
@@ -184,6 +184,7 @@ def current_shelf(context, book):
 
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
+    ''' the most recent read activity '''
     return models.ReadThrough.objects.filter(
         user=user,
         book=book).order_by('-created_date').first()

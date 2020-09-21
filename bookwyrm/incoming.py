@@ -38,10 +38,8 @@ def shared_inbox(request):
 
     try:
         activity = json.loads(request.body)
-    except json.decoder.JSONDecodeError:
-        return HttpResponseBadRequest()
-
-    if not activity.get('object'):
+        activity_object = activity['object']
+    except (json.decoder.JSONDecodeError, KeyError):
         return HttpResponseBadRequest()
 
     if not has_valid_signature(request, activity):
@@ -74,7 +72,7 @@ def shared_inbox(request):
 
     handler = handlers.get(activity_type, None)
     if isinstance(handler, dict):
-        handler = handler.get(activity['object']['type'], None)
+        handler = handler.get(activity_object['type'], None)
 
     if not handler:
         return HttpResponseNotFound()
