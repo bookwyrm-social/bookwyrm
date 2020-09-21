@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
 
-from fedireads import activitypub
-from fedireads.models.shelf import Shelf
-from fedireads.models.status import Status
-from fedireads.settings import DOMAIN
-from fedireads.signatures import create_key_pair
+from bookwyrm import activitypub
+from bookwyrm.models.shelf import Shelf
+from bookwyrm.models.status import Status
+from bookwyrm.settings import DOMAIN
+from bookwyrm.signatures import create_key_pair
 from .base_model import OrderedCollectionPageMixin
 from .base_model import ActivityMapping
 
@@ -28,7 +28,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
     local = models.BooleanField(default=True)
-    fedireads_user = models.BooleanField(default=True)
+    bookwyrm_user = models.BooleanField(default=True)
     localname = models.CharField(
         max_length=255,
         null=True,

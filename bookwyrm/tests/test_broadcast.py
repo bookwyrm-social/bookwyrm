@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from fedireads import models, broadcast
-from fedireads.settings import DOMAIN
+from bookwyrm import models, broadcast
+from bookwyrm.settings import DOMAIN
 
 
 class Book(TestCase):
@@ -31,7 +31,7 @@ class Book(TestCase):
             outbox='http://example2.com/u/3/o',
             inbox='http://example2.com/u/3/inbox',
             shared_inbox='http://example2.com/inbox',
-            fedireads_user=False, local=False)
+            bookwyrm_user=False, local=False)
         self.user.followers.add(non_fr_follower)
 
         local_follower = models.User.objects.create_user(
@@ -64,7 +64,7 @@ class Book(TestCase):
             'http://example.com/u/2/inbox',
         ]
 
-        recipients = broadcast.get_public_recipients(self.user, software='fedireads')
+        recipients = broadcast.get_public_recipients(self.user, software='bookwyrm')
         self.assertEqual(recipients, expected)
 
 

@@ -3,8 +3,8 @@ import urllib.parse
 
 from django.db import models
 
-from fedireads import activitypub
-from fedireads.settings import DOMAIN
+from bookwyrm import activitypub
+from bookwyrm.settings import DOMAIN
 from .base_model import OrderedCollectionMixin, FedireadsModel
 
 

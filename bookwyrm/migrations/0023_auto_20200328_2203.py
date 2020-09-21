@@ -7,7 +7,7 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0022_auto_20200328_2001'),
+        ('bookwyrm', '0022_auto_20200328_2001'),
     ]
 
     operations = [

@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0007_auto_20200223_0902'),
+        ('bookwyrm', '0007_auto_20200223_0902'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='user',
             name='followers',
-            field=models.ManyToManyField(related_name='following', through='fedireads.UserRelationship', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='following', through='bookwyrm.UserRelationship', to=settings.AUTH_USER_MODEL),
         ),
     ]

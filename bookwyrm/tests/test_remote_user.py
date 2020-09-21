@@ -2,7 +2,7 @@ import json
 import pathlib
 from django.test import TestCase
 
-from fedireads import models, remote_user
+from bookwyrm import models, remote_user
 
 
 class RemoteUser(TestCase):
@@ -42,7 +42,7 @@ class RemoteUser(TestCase):
             self.user_data['publicKey']['publicKeyPem']
         )
         self.assertEqual(user.local, False)
-        self.assertEqual(user.fedireads_user, True)
+        self.assertEqual(user.bookwyrm_user, True)
         self.assertEqual(user.manually_approves_followers, False)
 
 

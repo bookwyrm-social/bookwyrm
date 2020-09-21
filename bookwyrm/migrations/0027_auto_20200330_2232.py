@@ -2,13 +2,13 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import fedireads.utils.fields
+import bookwyrm.utils.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0026_auto_20200330_1456'),
+        ('bookwyrm', '0026_auto_20200330_1456'),
     ]
 
     operations = [
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='languages',
-            field=fedireads.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AddField(
             model_name='edition',
@@ -37,46 +37,46 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='edition',
             name='parent_work',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Work'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Work'),
         ),
         migrations.AddField(
             model_name='edition',
             name='shelves',
-            field=models.ManyToManyField(through='fedireads.ShelfBook', to='fedireads.Shelf'),
+            field=models.ManyToManyField(through='bookwyrm.ShelfBook', to='bookwyrm.Shelf'),
         ),
         migrations.AlterField(
             model_name='comment',
             name='book',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Edition'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='notification',
             name='related_book',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Edition'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='review',
             name='book',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Edition'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='shelf',
             name='books',
-            field=models.ManyToManyField(through='fedireads.ShelfBook', to='fedireads.Edition'),
+            field=models.ManyToManyField(through='bookwyrm.ShelfBook', to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='shelfbook',
             name='book',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Edition'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='status',
             name='mention_books',
-            field=models.ManyToManyField(related_name='mention_book', to='fedireads.Edition'),
+            field=models.ManyToManyField(related_name='mention_book', to='bookwyrm.Edition'),
         ),
         migrations.AlterField(
             model_name='tag',
             name='book',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Edition'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
         ),
     ]

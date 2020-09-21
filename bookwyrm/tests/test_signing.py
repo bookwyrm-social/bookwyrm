@@ -9,10 +9,10 @@ import responses
 from django.test import TestCase, Client
 from django.utils.http import http_date
 
-from fedireads.models import User
-from fedireads.activitypub import Follow
-from fedireads.settings import DOMAIN
-from fedireads.signatures import create_key_pair, make_signature, make_digest
+from bookwyrm.models import User
+from bookwyrm.activitypub import Follow
+from bookwyrm.settings import DOMAIN
+from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
 def get_follow_data(follower, followee):
     follow_activity = Follow(

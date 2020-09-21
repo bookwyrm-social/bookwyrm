@@ -7,7 +7,7 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import fedireads.utils.fields
+import bookwyrm.utils.fields
 
 
 class Migration(migrations.Migration):
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('openlibrary_key', models.CharField(max_length=255)),
-                ('data', fedireads.utils.fields.JSONField()),
+                ('data', bookwyrm.utils.fields.JSONField()),
             ],
             options={
                 'abstract': False,
@@ -75,10 +75,10 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('openlibrary_key', models.CharField(max_length=255, unique=True)),
-                ('data', fedireads.utils.fields.JSONField()),
+                ('data', bookwyrm.utils.fields.JSONField()),
                 ('cover', models.ImageField(blank=True, null=True, upload_to='covers/')),
                 ('added_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-                ('authors', models.ManyToManyField(to='fedireads.Author')),
+                ('authors', models.ManyToManyField(to='bookwyrm.Author')),
             ],
             options={
                 'abstract': False,
@@ -120,9 +120,9 @@ class Migration(migrations.Migration):
                 ('local', models.BooleanField(default=True)),
                 ('privacy', models.CharField(default='public', max_length=255)),
                 ('sensitive', models.BooleanField(default=False)),
-                ('mention_books', models.ManyToManyField(related_name='mention_book', to='fedireads.Book')),
+                ('mention_books', models.ManyToManyField(related_name='mention_book', to='bookwyrm.Book')),
                 ('mention_users', models.ManyToManyField(related_name='mention_user', to=settings.AUTH_USER_MODEL)),
-                ('reply_parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Status')),
+                ('reply_parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Status')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -151,8 +151,8 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('added_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Book')),
-                ('shelf', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Shelf')),
+                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Book')),
+                ('shelf', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Shelf')),
             ],
             options={
                 'unique_together': {('book', 'shelf')},
@@ -161,7 +161,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='shelf',
             name='books',
-            field=models.ManyToManyField(through='fedireads.ShelfBook', to='fedireads.Book'),
+            field=models.ManyToManyField(through='bookwyrm.ShelfBook', to='bookwyrm.Book'),
         ),
         migrations.AddField(
             model_name='shelf',
@@ -171,17 +171,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='shelves',
-            field=models.ManyToManyField(through='fedireads.ShelfBook', to='fedireads.Shelf'),
+            field=models.ManyToManyField(through='bookwyrm.ShelfBook', to='bookwyrm.Shelf'),
         ),
         migrations.AddField(
             model_name='user',
             name='federated_server',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.FederatedServer'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.FederatedServer'),
         ),
         migrations.AddField(
             model_name='user',
             name='followers',
-            field=models.ManyToManyField(through='fedireads.UserRelationship', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(through='bookwyrm.UserRelationship', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
@@ -200,14 +200,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Review',
             fields=[
-                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='fedireads.Status')),
+                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.Status')),
                 ('name', models.CharField(max_length=255)),
                 ('rating', models.IntegerField(default=0, validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(5)])),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Book')),
+                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Book')),
             ],
             options={
                 'abstract': False,
             },
-            bases=('fedireads.status',),
+            bases=('bookwyrm.status',),
         ),
     ]

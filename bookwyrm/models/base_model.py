@@ -11,8 +11,8 @@ from Crypto.Hash import SHA256
 from django.db import models
 from django.dispatch import receiver
 
-from fedireads import activitypub
-from fedireads.settings import DOMAIN
+from bookwyrm import activitypub
+from bookwyrm.settings import DOMAIN
 
 class FedireadsModel(models.Model):
     ''' shared fields '''

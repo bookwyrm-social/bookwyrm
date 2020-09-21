@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0008_auto_20200224_1504'),
+        ('bookwyrm', '0008_auto_20200224_1504'),
     ]
 
     operations = [

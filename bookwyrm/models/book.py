@@ -4,9 +4,9 @@ from django.utils import timezone
 from django.utils.http import http_date
 from model_utils.managers import InheritanceManager
 
-from fedireads import activitypub
-from fedireads.settings import DOMAIN
-from fedireads.utils.fields import ArrayField
+from bookwyrm import activitypub
+from bookwyrm.settings import DOMAIN
+from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
 

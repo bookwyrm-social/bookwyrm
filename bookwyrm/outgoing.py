@@ -6,13 +6,13 @@ from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from fedireads import activitypub
-from fedireads import models
-from fedireads.broadcast import broadcast
-from fedireads.status import create_review, create_status
-from fedireads.status import create_quotation, create_comment
-from fedireads.status import create_tag, create_notification, create_rating
-from fedireads.remote_user import get_or_create_remote_user
+from bookwyrm import activitypub
+from bookwyrm import models
+from bookwyrm.broadcast import broadcast
+from bookwyrm.status import create_review, create_status
+from bookwyrm.status import create_quotation, create_comment
+from bookwyrm.status import create_tag, create_notification, create_rating
+from bookwyrm.remote_user import get_or_create_remote_user
 
 
 @csrf_exempt
@@ -227,9 +227,9 @@ def handle_status(user, book_id, builder, *args):
     book = models.Edition.objects.get(id=book_id)
     status = builder(user, book, *args)
 
-    broadcast(user, status.to_create_activity(user), software='fedireads')
+    broadcast(user, status.to_create_activity(user), software='bookwyrm')
 
-    # re-format the activity for non-fedireads servers
+    # re-format the activity for non-bookwyrm servers
     remote_activity = status.to_create_activity(user, pure=True)
 
     broadcast(user, remote_activity, software='other')

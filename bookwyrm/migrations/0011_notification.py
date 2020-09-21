@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0010_auto_20200307_0655'),
+        ('bookwyrm', '0010_auto_20200307_0655'),
     ]
 
     operations = [
@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
                 ('updated_date', models.DateTimeField(auto_now=True)),
                 ('read', models.BooleanField(default=False)),
                 ('notification_type', models.CharField(max_length=255)),
-                ('related_book', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Book')),
-                ('related_status', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Status')),
+                ('related_book', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Book')),
+                ('related_status', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Status')),
                 ('related_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='related_user', to=settings.AUTH_USER_MODEL)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],

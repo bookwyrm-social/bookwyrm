@@ -4,13 +4,13 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import fedireads.utils.fields
+import bookwyrm.utils.fields
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0031_readthrough'),
+        ('bookwyrm', '0031_readthrough'),
     ]
 
     operations = [
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='ImportItem',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data', fedireads.utils.fields.JSONField()),
+                ('data', bookwyrm.utils.fields.JSONField()),
             ],
         ),
         migrations.CreateModel(
@@ -50,11 +50,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='importitem',
             name='book',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fedireads.Book'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bookwyrm.Book'),
         ),
         migrations.AddField(
             model_name='importitem',
             name='job',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='fedireads.ImportJob'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='bookwyrm.ImportJob'),
         ),
     ]

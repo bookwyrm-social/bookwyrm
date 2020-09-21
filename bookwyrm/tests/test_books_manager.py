@@ -1,8 +1,8 @@
 from django.test import TestCase
 
-from fedireads import books_manager, models
-from fedireads.connectors.fedireads_connector import Connector
-from fedireads.settings import DOMAIN
+from bookwyrm import books_manager, models
+from bookwyrm.connectors.bookwyrm_connector import Connector
+from bookwyrm.settings import DOMAIN
 
 
 class Book(TestCase):

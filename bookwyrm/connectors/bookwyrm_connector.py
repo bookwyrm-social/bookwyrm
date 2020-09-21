@@ -1,11 +1,11 @@
-''' using another fedireads instance as a source of book data '''
+''' using another bookwyrm instance as a source of book data '''
 from uuid import uuid4
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import requests
 
-from fedireads import models
+from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import update_from_mappings, get_date, get_data
 

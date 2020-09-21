@@ -9,11 +9,11 @@ from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from fedireads import outgoing
-from fedireads.activitypub import ActivityEncoder
-from fedireads import forms, models, books_manager
-from fedireads import goodreads_import
-from fedireads.tasks import app
+from bookwyrm import outgoing
+from bookwyrm.activitypub import ActivityEncoder
+from bookwyrm import forms, models, books_manager
+from bookwyrm import goodreads_import
+from bookwyrm.tasks import app
 
 
 def get_user_from_username(username):

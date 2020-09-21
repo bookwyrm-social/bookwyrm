@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0013_user_manually_approves_followers'),
+        ('bookwyrm', '0013_user_manually_approves_followers'),
     ]
 
     operations = [

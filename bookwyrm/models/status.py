@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
-from fedireads import activitypub
+from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, FedireadsModel
 
@@ -67,7 +67,7 @@ class Status(OrderedCollectionPageMixin, FedireadsModel):
         ActivityMapping('replies', 'ap_replies'),
     ]
 
-    # serializing to fedireads expanded activitypub
+    # serializing to bookwyrm expanded activitypub
     activity_mappings = shared_mappings + [
         ActivityMapping('name', 'name'),
         ActivityMapping('inReplyToBook', 'book'),

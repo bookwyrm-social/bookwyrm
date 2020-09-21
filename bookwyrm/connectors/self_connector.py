@@ -1,7 +1,7 @@
-''' using a fedireads instance as a source of book data '''
+''' using a bookwyrm instance as a source of book data '''
 from django.contrib.postgres.search import SearchRank, SearchVector
 
-from fedireads import models
+from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
 
 
@@ -12,7 +12,7 @@ class Connector(AbstractConnector):
 
 
     def search(self, query):
-        ''' right now you can't search fedireads sorry, but when
+        ''' right now you can't search bookwyrm sorry, but when
         that gets implemented it will totally rule '''
         vector = SearchVector('title', weight='A') +\
             SearchVector('subtitle', weight='B') +\

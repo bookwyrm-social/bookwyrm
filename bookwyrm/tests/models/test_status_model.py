@@ -1,7 +1,7 @@
 ''' testing models '''
 from django.test import TestCase
 
-from fedireads import models, settings
+from bookwyrm import models, settings
 
 
 class Status(TestCase):

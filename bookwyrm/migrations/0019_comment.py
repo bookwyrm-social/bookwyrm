@@ -7,20 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0018_favorite_remote_id'),
+        ('bookwyrm', '0018_favorite_remote_id'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='fedireads.Status')),
+                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.Status')),
                 ('name', models.CharField(max_length=255)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Book')),
+                ('book', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Book')),
             ],
             options={
                 'abstract': False,
             },
-            bases=('fedireads.status',),
+            bases=('bookwyrm.status',),
         ),
     ]

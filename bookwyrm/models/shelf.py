@@ -1,7 +1,7 @@
 ''' puttin' books on shelves '''
 from django.db import models
 
-from fedireads import activitypub
+from bookwyrm import activitypub
 from .base_model import FedireadsModel, OrderedCollectionMixin
 
 

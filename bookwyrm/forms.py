@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm, PasswordInput, widgets
 from django import forms
 
-from fedireads import models
+from bookwyrm import models
 
 
 class LoginForm(ModelForm):

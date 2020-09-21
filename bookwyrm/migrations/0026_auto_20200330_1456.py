@@ -7,19 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0025_auto_20200330_0037'),
+        ('bookwyrm', '0025_auto_20200330_0037'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Boost',
             fields=[
-                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='fedireads.Status')),
+                ('status_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.Status')),
             ],
             options={
                 'abstract': False,
             },
-            bases=('fedireads.status',),
+            bases=('bookwyrm.status',),
         ),
         migrations.RemoveConstraint(
             model_name='notification',
@@ -37,6 +37,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='boost',
             name='boosted_status',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='boosters', to='fedireads.Status'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='boosters', to='bookwyrm.Status'),
         ),
     ]

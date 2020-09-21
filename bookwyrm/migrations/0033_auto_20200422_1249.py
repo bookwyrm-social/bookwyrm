@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0032_auto_20200421_1347'),
+        ('bookwyrm', '0032_auto_20200421_1347'),
     ]
 
     operations = [
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='notification',
             name='related_import',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.ImportJob'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.ImportJob'),
         ),
         migrations.AlterField(
             model_name='notification',

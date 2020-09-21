@@ -6,8 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0044_siteinvite_user'),
-        ('fedireads', '0042_auto_20200524_0346'),
+        ('bookwyrm', '0044_siteinvite_user'),
+        ('bookwyrm', '0042_auto_20200524_0346'),
     ]
 
     operations = [

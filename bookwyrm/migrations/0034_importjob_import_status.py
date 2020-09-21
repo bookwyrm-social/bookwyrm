@@ -7,13 +7,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0033_auto_20200422_1249'),
+        ('bookwyrm', '0033_auto_20200422_1249'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='importjob',
             name='import_status',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Status'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Status'),
         ),
     ]

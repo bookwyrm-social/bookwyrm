@@ -6,7 +6,7 @@ import requests
 from django.core.files.base import ContentFile
 from django.db import transaction
 
-from fedireads import activitypub, models
+from bookwyrm import activitypub, models
 
 
 def get_or_create_remote_user(actor):
@@ -28,7 +28,7 @@ def get_or_create_remote_user(actor):
     if avatar:
         user.avatar.save(*avatar)
 
-    if user.fedireads_user:
+    if user.bookwyrm_user:
         get_remote_reviews(user)
     return user
 
@@ -79,7 +79,7 @@ def get_avatar(data):
 
 
 def get_remote_reviews(user):
-    ''' ingest reviews by a new remote fedireads user '''
+    ''' ingest reviews by a new remote bookwyrm user '''
     outbox_page = user.outbox + '?page=true'
     response = requests.get(
         outbox_page,
@@ -88,7 +88,7 @@ def get_remote_reviews(user):
     data = response.json()
     # TODO: pagination?
     for status in data['orderedItems']:
-        if status.get('fedireadsType') == 'Review':
+        if status.get('bookwyrmType') == 'Review':
             activitypub.Review(**status).to_model(models.Review)
 
 

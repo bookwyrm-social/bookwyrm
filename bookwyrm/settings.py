@@ -1,4 +1,4 @@
-''' fedireads settings and configuration '''
+''' bookwyrm settings and configuration '''
 import os
 
 from environs import Env
@@ -31,14 +31,14 @@ OL_URL = env('OL_URL')
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'fedireads',
+    'bookwyrm',
     'celery',
 ]
 
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'fedireads.urls'
+ROOT_URLCONF = 'bookwyrm.urls'
 
 TEMPLATES = [
     {
@@ -71,7 +71,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'fedireads.wsgi.application'
+WSGI_APPLICATION = 'bookwyrm.wsgi.application'
 
 
 # Database
@@ -100,7 +100,7 @@ DATABASES = {
 
 
 LOGIN_URL = '/login/'
-AUTH_USER_MODEL = 'fedireads.User'
+AUTH_USER_MODEL = 'bookwyrm.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

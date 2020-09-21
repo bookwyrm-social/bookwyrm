@@ -8,11 +8,11 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from fedireads import activitypub, books_manager, models, outgoing
-from fedireads import status as status_builder
-from fedireads.remote_user import get_or_create_remote_user, refresh_remote_user
-from fedireads.tasks import app
-from fedireads.signatures import Signature
+from bookwyrm import activitypub, books_manager, models, outgoing
+from bookwyrm import status as status_builder
+from bookwyrm.remote_user import get_or_create_remote_user, refresh_remote_user
+from bookwyrm.tasks import app
+from bookwyrm.signatures import Signature
 
 
 @csrf_exempt

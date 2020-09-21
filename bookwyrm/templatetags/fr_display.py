@@ -1,7 +1,7 @@
 ''' template filters '''
 from django import template
 
-from fedireads import models
+from bookwyrm import models
 
 
 register = template.Library()

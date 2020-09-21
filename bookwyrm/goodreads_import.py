@@ -2,10 +2,10 @@
 import csv
 from requests import HTTPError
 
-from fedireads import outgoing
-from fedireads.tasks import app
-from fedireads.models import ImportJob, ImportItem
-from fedireads.status import create_notification
+from bookwyrm import outgoing
+from bookwyrm.tasks import app
+from bookwyrm.models import ImportJob, ImportItem
+from bookwyrm.status import create_notification
 
 # TODO: remove or increase once we're confident it's not causing problems.
 MAX_ENTRIES = 500

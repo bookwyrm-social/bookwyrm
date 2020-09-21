@@ -4,8 +4,8 @@ from urllib.parse import urlparse
 
 from requests import HTTPError
 
-from fedireads import models
-from fedireads.tasks import app
+from bookwyrm import models
+from bookwyrm.tasks import app
 
 
 def get_edition(book_id):
@@ -43,7 +43,7 @@ def get_or_create_connector(remote_id):
     except models.Connector.DoesNotExist:
         connector_info = models.Connector.objects.create(
             identifier=identifier,
-            connector_file='fedireads_connector',
+            connector_file='bookwyrm_connector',
             base_url='https://%s' % identifier,
             books_url='https://%s/book' % identifier,
             covers_url='https://%s/images/covers' % identifier,
@@ -115,6 +115,6 @@ def get_connectors():
 def load_connector(connector_info):
     ''' instantiate the connector class '''
     connector = importlib.import_module(
-        'fedireads.connectors.%s' % connector_info.connector_file
+        'bookwyrm.connectors.%s' % connector_info.connector_file
     )
     return connector.Connector(connector_info.identifier)

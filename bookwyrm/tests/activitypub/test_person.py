@@ -2,7 +2,7 @@ import json
 import pathlib
 from django.test import TestCase
 
-from fedireads import activitypub, models
+from bookwyrm import activitypub, models
 
 
 class Person(TestCase):

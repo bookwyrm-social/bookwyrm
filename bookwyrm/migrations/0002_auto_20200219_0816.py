@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0001_initial'),
+        ('bookwyrm', '0001_initial'),
     ]
 
     operations = [
@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('status', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='fedireads.Status')),
+                ('status', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Status')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -28,11 +28,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='status',
             name='favorites',
-            field=models.ManyToManyField(related_name='user_favorites', through='fedireads.Favorite', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='user_favorites', through='bookwyrm.Favorite', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
             name='favorites',
-            field=models.ManyToManyField(related_name='favorite_statuses', through='fedireads.Favorite', to='fedireads.Status'),
+            field=models.ManyToManyField(related_name='favorite_statuses', through='bookwyrm.Favorite', to='bookwyrm.Status'),
         ),
     ]

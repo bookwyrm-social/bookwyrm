@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0014_status_remote_id'),
+        ('bookwyrm', '0014_status_remote_id'),
     ]
 
     operations = [
@@ -88,17 +88,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='blocks',
-            field=models.ManyToManyField(related_name='blocked_by', through='fedireads.UserBlocks', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='blocked_by', through='bookwyrm.UserBlocks', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
             name='follow_requests',
-            field=models.ManyToManyField(related_name='follower_requests', through='fedireads.UserFollowRequest', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='follower_requests', through='bookwyrm.UserFollowRequest', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
             name='following',
-            field=models.ManyToManyField(related_name='followers', through='fedireads.UserFollows', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='followers', through='bookwyrm.UserFollows', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddConstraint(
             model_name='userfollows',

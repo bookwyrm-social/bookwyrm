@@ -4,16 +4,16 @@ from django.test import TestCase
 import json
 import pathlib
 
-from fedireads import models
-from fedireads.connectors.fedireads_connector import Connector
-from fedireads.connectors.abstract_connector import SearchResult, get_date
+from bookwyrm import models
+from bookwyrm.connectors.bookwyrm_connector import Connector
+from bookwyrm.connectors.abstract_connector import SearchResult, get_date
 
 
 class FedireadsConnector(TestCase):
     def setUp(self):
         models.Connector.objects.create(
             identifier='example.com',
-            connector_file='fedireads_connector',
+            connector_file='bookwyrm_connector',
             base_url='https://example.com',
             books_url='https://example.com',
             covers_url='https://example.com/images/covers',

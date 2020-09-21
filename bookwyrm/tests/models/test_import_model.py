@@ -2,7 +2,7 @@
 import datetime
 from django.test import TestCase
 
-from fedireads import models
+from bookwyrm import models
 
 
 class ImportJob(TestCase):

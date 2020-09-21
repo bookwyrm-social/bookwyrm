@@ -1,5 +1,5 @@
 """
-WSGI config for fedireads project.
+WSGI config for bookwyrm project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -13,6 +13,6 @@ from django.core.wsgi import get_wsgi_application
 
 Env.read_env()
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "fedireads.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookwyrm.settings")
 
 application = get_wsgi_application()

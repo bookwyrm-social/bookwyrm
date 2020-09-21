@@ -2,7 +2,7 @@ import json
 import pathlib
 from django.test import TestCase
 
-from fedireads import models, incoming
+from bookwyrm import models, incoming
 
 
 class Favorite(TestCase):

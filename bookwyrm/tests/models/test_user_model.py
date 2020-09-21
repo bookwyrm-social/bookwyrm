@@ -1,8 +1,8 @@
 ''' testing models '''
 from django.test import TestCase
 
-from fedireads import models
-from fedireads.settings import DOMAIN
+from bookwyrm import models
+from bookwyrm.settings import DOMAIN
 
 
 class User(TestCase):

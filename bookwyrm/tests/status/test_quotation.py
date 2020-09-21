@@ -2,8 +2,8 @@ from django.test import TestCase
 import json
 import pathlib
 
-from fedireads import activitypub, models
-from fedireads import status as status_builder
+from bookwyrm import activitypub, models
+from bookwyrm import status as status_builder
 
 
 class Quotation(TestCase):

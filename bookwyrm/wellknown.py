@@ -2,8 +2,8 @@
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.http import JsonResponse
 
-from fedireads import models
-from fedireads.settings import DOMAIN
+from bookwyrm import models
+from bookwyrm.settings import DOMAIN
 
 
 def webfinger(request):
@@ -55,7 +55,7 @@ def nodeinfo(request):
     return JsonResponse({
         'version': '2.0',
         'software': {
-            'name': 'fedireads',
+            'name': 'bookwyrm',
             'version': '0.0.1'
         },
         'protocols': [

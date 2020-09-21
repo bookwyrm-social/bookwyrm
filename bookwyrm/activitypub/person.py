@@ -16,7 +16,7 @@ class Person(ActivityObject):
     publicKey: PublicKey
     endpoints: Dict
     icon: Image = field(default=lambda: {})
-    fedireadsUser: str = False
+    bookwyrmUser: str = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
     type: str = 'Person'

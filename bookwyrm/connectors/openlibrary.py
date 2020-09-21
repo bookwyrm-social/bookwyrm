@@ -4,7 +4,7 @@ import requests
 
 from django.core.files.base import ContentFile
 
-from fedireads import models
+from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date, get_data

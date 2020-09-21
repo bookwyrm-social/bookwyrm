@@ -5,11 +5,11 @@ import json
 import pathlib
 import pytz
 
-from fedireads import models
-from fedireads.connectors.openlibrary import Connector
-from fedireads.connectors.openlibrary import get_languages, get_description
-from fedireads.connectors.openlibrary import pick_default_edition, get_openlibrary_key
-from fedireads.connectors.abstract_connector import SearchResult, get_date
+from bookwyrm import models
+from bookwyrm.connectors.openlibrary import Connector
+from bookwyrm.connectors.openlibrary import get_languages, get_description
+from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
+from bookwyrm.connectors.abstract_connector import SearchResult, get_date
 
 
 class Openlibrary(TestCase):

@@ -10,11 +10,11 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.core.exceptions import PermissionDenied
 
-from fedireads import books_manager
-from fedireads import forms, models, outgoing
-from fedireads import goodreads_import
-from fedireads.settings import DOMAIN
-from fedireads.views import get_user_from_username
+from bookwyrm import books_manager
+from bookwyrm import forms, models, outgoing
+from bookwyrm import goodreads_import
+from bookwyrm.settings import DOMAIN
+from bookwyrm.views import get_user_from_username
 
 
 def user_login(request):

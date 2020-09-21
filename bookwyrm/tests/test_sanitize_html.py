@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from fedireads.sanitize_html import InputHtmlParser
+from bookwyrm.sanitize_html import InputHtmlParser
 
 
 class Sanitizer(TestCase):

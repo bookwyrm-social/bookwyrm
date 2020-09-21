@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0043_siteinvite'),
+        ('bookwyrm', '0043_siteinvite'),
     ]
 
     operations = [

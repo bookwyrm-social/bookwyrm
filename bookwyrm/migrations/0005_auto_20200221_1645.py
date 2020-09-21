@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 def populate_identifiers(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    tags = app_registry.get_model('fedireads', 'Tag')
+    tags = app_registry.get_model('bookwyrm', 'Tag')
     for tag in tags.objects.using(db_alias):
         tag.identifier = re.sub(r'\W+', '-', tag.name).lower()
         tag.save()
@@ -14,7 +14,7 @@ def populate_identifiers(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0004_tag'),
+        ('bookwyrm', '0004_tag'),
     ]
 
     operations = [

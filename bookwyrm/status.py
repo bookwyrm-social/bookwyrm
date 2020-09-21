@@ -1,9 +1,9 @@
 ''' Handle user activity '''
 from django.db import IntegrityError
 
-from fedireads import models
-from fedireads.books_manager import get_or_create_book
-from fedireads.sanitize_html import InputHtmlParser
+from bookwyrm import models
+from bookwyrm.books_manager import get_or_create_book
+from bookwyrm.sanitize_html import InputHtmlParser
 
 
 def create_rating(user, book, rating):

@@ -1,10 +1,10 @@
 ''' testing book data connectors '''
 from django.test import TestCase
 
-from fedireads import models
-from fedireads.connectors.abstract_connector import Mapping,\
+from bookwyrm import models
+from bookwyrm.connectors.abstract_connector import Mapping,\
         update_from_mappings
-from fedireads.connectors.fedireads_connector import Connector
+from bookwyrm.connectors.bookwyrm_connector import Connector
 
 
 class FedireadsConnector(TestCase):
@@ -13,7 +13,7 @@ class FedireadsConnector(TestCase):
 
         models.Connector.objects.create(
             identifier='example.com',
-            connector_file='fedireads_connector',
+            connector_file='bookwyrm_connector',
             base_url='https://example.com',
             books_url='https:/example.com',
             covers_url='https://example.com',

@@ -7,7 +7,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0036_auto_20200503_2007'),
+        ('bookwyrm', '0036_auto_20200503_2007'),
     ]
 
     operations = [

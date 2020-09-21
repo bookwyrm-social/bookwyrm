@@ -2,9 +2,9 @@
 import datetime
 from django.test import TestCase
 
-from fedireads import models
-from fedireads.connectors.self_connector import Connector
-from fedireads.settings import DOMAIN
+from bookwyrm import models
+from bookwyrm.connectors.self_connector import Connector
+from bookwyrm.settings import DOMAIN
 
 
 class SelfConnector(TestCase):

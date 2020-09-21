@@ -1,10 +1,10 @@
 ''' url routing for the app and api '''
 from django.conf.urls.static import static
-from django.contrib import admin
+#from django.contrib import admin
 from django.urls import path, re_path
 
-from fedireads import incoming, outgoing, views, settings, wellknown
-from fedireads import view_actions as actions
+from bookwyrm import incoming, outgoing, views, settings, wellknown
+from bookwyrm import view_actions as actions
 
 username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
 localname_regex = r'(?P<username>[\w\-_]+)'
@@ -17,10 +17,10 @@ status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
 
 book_path = r'^book/(?P<book_id>\d+)'
 
-handler404 = 'fedireads.views.not_found_page'
-handler500 = 'fedireads.views.server_error_page'
+handler404 = 'bookwyrm.views.not_found_page'
+handler500 = 'bookwyrm.views.server_error_page'
 urlpatterns = [
-    path('admin/', admin.site.urls),
+#    path('admin/', admin.site.urls),
 
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),

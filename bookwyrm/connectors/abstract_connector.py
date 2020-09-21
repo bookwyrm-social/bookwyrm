@@ -6,7 +6,7 @@ import requests
 
 from django.db import transaction
 
-from fedireads import models
+from bookwyrm import models
 
 
 class AbstractConnector(ABC):

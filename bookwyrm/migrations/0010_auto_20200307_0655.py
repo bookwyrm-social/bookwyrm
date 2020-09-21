@@ -3,21 +3,21 @@
 import datetime
 from django.db import migrations, models
 import django.db.models.deletion
-import fedireads.utils.fields
+import bookwyrm.utils.fields
 import uuid
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0009_status_published_date'),
+        ('bookwyrm', '0009_status_published_date'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Edition',
             fields=[
-                ('book_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='fedireads.Book')),
+                ('book_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.Book')),
                 ('isbn', models.CharField(max_length=255, null=True, unique=True)),
                 ('oclc_number', models.CharField(max_length=255, null=True, unique=True)),
                 ('pages', models.IntegerField(null=True)),
@@ -25,18 +25,18 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=('fedireads.book',),
+            bases=('bookwyrm.book',),
         ),
         migrations.CreateModel(
             name='Work',
             fields=[
-                ('book_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='fedireads.Book')),
+                ('book_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='bookwyrm.Book')),
                 ('lccn', models.CharField(max_length=255, null=True, unique=True)),
             ],
             options={
                 'abstract': False,
             },
-            bases=('fedireads.book',),
+            bases=('bookwyrm.book',),
         ),
         migrations.RemoveField(
             model_name='author',
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='author',
             name='aliases',
-            field=fedireads.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, size=None),
+            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, size=None),
         ),
         migrations.AddField(
             model_name='author',
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='misc_identifiers',
-            field=fedireads.utils.fields.JSONField(null=True),
+            field=bookwyrm.utils.fields.JSONField(null=True),
         ),
         migrations.AddField(
             model_name='book',
@@ -185,6 +185,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='parent_work',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Work'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Work'),
         ),
     ]

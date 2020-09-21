@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from fedireads import models
-from fedireads import status as status_builder
+from bookwyrm import models
+from bookwyrm import status as status_builder
 
 
 class Status(TestCase):

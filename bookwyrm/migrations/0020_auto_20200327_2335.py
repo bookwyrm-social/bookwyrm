@@ -2,13 +2,13 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import fedireads.models.book
+import bookwyrm.models.book
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0019_comment'),
+        ('bookwyrm', '0019_comment'),
     ]
 
     operations = [
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('updated_date', models.DateTimeField(auto_now=True)),
                 ('identifier', models.CharField(max_length=255, unique=True)),
-                ('connector_file', models.CharField(choices=[('openlibrary', 'Openlibrary'), ('fedireads', 'Fedireads')], default='openlibrary', max_length=255)),
+                ('connector_file', models.CharField(choices=[('openlibrary', 'Openlibrary'), ('bookwyrm', 'BookWyrm')], default='openlibrary', max_length=255)),
                 ('is_self', models.BooleanField(default=False)),
                 ('api_key', models.CharField(max_length=255, null=True)),
                 ('base_url', models.CharField(max_length=255)),
@@ -48,11 +48,11 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='connector',
-            constraint=models.CheckConstraint(check=models.Q(connector_file__in=fedireads.models.connector.ConnectorFiles), name='connector_file_valid'),
+            constraint=models.CheckConstraint(check=models.Q(connector_file__in=bookwyrm.models.connector.ConnectorFiles), name='connector_file_valid'),
         ),
         migrations.AddField(
             model_name='book',
             name='connector',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='fedireads.Connector'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Connector'),
         ),
     ]

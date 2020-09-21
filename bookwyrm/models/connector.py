@@ -1,6 +1,6 @@
 ''' manages interfaces with external sources of book data '''
 from django.db import models
-from fedireads.connectors.settings import CONNECTORS
+from bookwyrm.connectors.settings import CONNECTORS
 
 from .base_model import FedireadsModel
 

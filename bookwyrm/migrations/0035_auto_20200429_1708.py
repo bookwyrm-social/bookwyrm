@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fedireads', '0034_importjob_import_status'),
+        ('bookwyrm', '0034_importjob_import_status'),
     ]
 
     operations = [

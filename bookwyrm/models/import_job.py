@@ -5,11 +5,11 @@ import dateutil.parser
 from django.db import models
 from django.utils import timezone
 
-from fedireads import books_manager
-from fedireads.models import ReadThrough, User, Book
-from fedireads.utils.fields import JSONField
+from bookwyrm import books_manager
+from bookwyrm.models import ReadThrough, User, Book
+from bookwyrm.utils.fields import JSONField
 
-# Mapping goodreads -> fedireads shelf titles.
+# Mapping goodreads -> bookwyrm shelf titles.
 GOODREADS_SHELVES = {
     'read': 'read',
     'currently-reading': 'reading',

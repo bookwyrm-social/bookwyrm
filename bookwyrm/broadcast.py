@@ -3,10 +3,10 @@ import json
 from django.utils.http import http_date
 import requests
 
-from fedireads import models
-from fedireads.activitypub import ActivityEncoder
-from fedireads.tasks import app
-from fedireads.signatures import make_signature, make_digest
+from bookwyrm import models
+from bookwyrm.activitypub import ActivityEncoder
+from bookwyrm.tasks import app
+from bookwyrm.signatures import make_signature, make_digest
 
 
 def get_public_recipients(user, software=None):
@@ -14,7 +14,7 @@ def get_public_recipients(user, software=None):
     followers = user.followers.filter(local=False)
     if software:
         # TODO: eventually we may want to handle particular software differently
-        followers = followers.filter(fedireads_user=(software == 'fedireads'))
+        followers = followers.filter(bookwyrm_user=(software == 'bookwyrm'))
 
     # we want shared inboxes when available
     shared = followers.filter(

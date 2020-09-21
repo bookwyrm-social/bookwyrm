@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 import datetime
 
-from fedireads.settings import DOMAIN
+from bookwyrm.settings import DOMAIN
 from .user import User
 
 class SiteSettings(models.Model):
