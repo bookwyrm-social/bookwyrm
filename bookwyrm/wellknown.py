@@ -82,7 +82,7 @@ def instance_info(request):
     status_count = models.Status.objects.count()
     return JsonResponse({
         'uri': DOMAIN,
-        'title': 'FediReads',
+        'title': 'BookWyrm',
         'short_description': 'Social reading, decentralized',
         'description': '',
         'email': 'mousereeve@riseup.net',
