@@ -2,11 +2,11 @@
 from django.db import models
 from bookwyrm.connectors.settings import CONNECTORS
 
-from .base_model import FedireadsModel
+from .base_model import BookWyrmModel
 
 
 ConnectorFiles = models.TextChoices('ConnectorFiles', CONNECTORS)
-class Connector(FedireadsModel):
+class Connector(BookWyrmModel):
     ''' book data source connectors '''
     identifier = models.CharField(max_length=255, unique=True)
     priority = models.IntegerField(default=2)

@@ -5,10 +5,10 @@ from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .base_model import OrderedCollectionMixin, FedireadsModel
+from .base_model import OrderedCollectionMixin, BookWyrmModel
 
 
-class Tag(OrderedCollectionMixin, FedireadsModel):
+class Tag(OrderedCollectionMixin, BookWyrmModel):
     ''' freeform tags for books '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)

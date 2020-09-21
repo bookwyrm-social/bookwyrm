@@ -2,10 +2,10 @@
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import FedireadsModel, OrderedCollectionMixin
+from .base_model import BookWyrmModel, OrderedCollectionMixin
 
 
-class Shelf(OrderedCollectionMixin, FedireadsModel):
+class Shelf(OrderedCollectionMixin, BookWyrmModel):
     ''' a list of books owned by a user '''
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
@@ -33,7 +33,7 @@ class Shelf(OrderedCollectionMixin, FedireadsModel):
         unique_together = ('user', 'identifier')
 
 
-class ShelfBook(FedireadsModel):
+class ShelfBook(BookWyrmModel):
     ''' many to many join table for books and shelves '''
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)

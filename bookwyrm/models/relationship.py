@@ -2,10 +2,10 @@
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import FedireadsModel
+from .base_model import BookWyrmModel
 
 
-class UserRelationship(FedireadsModel):
+class UserRelationship(BookWyrmModel):
     ''' many-to-many through table for followers '''
     user_subject = models.ForeignKey(
         'User',

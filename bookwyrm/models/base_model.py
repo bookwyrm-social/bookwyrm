@@ -14,7 +14,7 @@ from django.dispatch import receiver
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 
-class FedireadsModel(models.Model):
+class BookWyrmModel(models.Model):
     ''' shared fields '''
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)

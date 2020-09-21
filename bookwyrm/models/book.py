@@ -8,10 +8,10 @@ from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils.fields import ArrayField
 
-from .base_model import ActivityMapping, ActivitypubMixin, FedireadsModel
+from .base_model import ActivityMapping, ActivitypubMixin, BookWyrmModel
 
 
-class Book(ActivitypubMixin, FedireadsModel):
+class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
@@ -175,7 +175,7 @@ class Edition(Book):
     activity_serializer = activitypub.Edition
 
 
-class Author(ActivitypubMixin, FedireadsModel):
+class Author(ActivitypubMixin, BookWyrmModel):
     ''' copy of an author from OL '''
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     sync = models.BooleanField(default=True)

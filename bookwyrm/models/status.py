@@ -7,10 +7,10 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import ActivityMapping, FedireadsModel
+from .base_model import ActivityMapping, BookWyrmModel
 
 
-class Status(OrderedCollectionPageMixin, FedireadsModel):
+class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     content = models.TextField(blank=True, null=True)
@@ -161,7 +161,7 @@ class Review(Status):
     activity_serializer = activitypub.Review
 
 
-class Favorite(ActivitypubMixin, FedireadsModel):
+class Favorite(ActivitypubMixin, BookWyrmModel):
     ''' fav'ing a post '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     status = models.ForeignKey('Status', on_delete=models.PROTECT)
@@ -201,7 +201,7 @@ class Boost(Status):
     #     unique_together = ('user', 'boosted_status')
 
 
-class ReadThrough(FedireadsModel):
+class ReadThrough(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
@@ -220,7 +220,7 @@ NotificationType = models.TextChoices(
     'NotificationType',
     'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
 
-class Notification(FedireadsModel):
+class Notification(BookWyrmModel):
     ''' you've been tagged, liked, followed, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     related_book = models.ForeignKey(
