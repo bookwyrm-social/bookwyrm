@@ -8,7 +8,7 @@ fi
 
 source .env
 
-if [ $FEDIREADS_DATABASE_BACKEND = 'sqlite' ]; then
+if [ $BOOKWYRM_DATABASE_BACKEND = 'sqlite' ]; then
   if [ -f fedireads.db ]; then
     rm fedireads.db
   fi

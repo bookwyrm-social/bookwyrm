@@ -85,9 +85,9 @@ WSGI_APPLICATION = 'celerywyrm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-FEDIREADS_DATABASE_BACKEND = env('FEDIREADS_DATABASE_BACKEND', 'postgres')
+BOOKWYRM_DATABASE_BACKEND = env('BOOKWYRM_DATABASE_BACKEND', 'postgres')
 
-FEDIREADS_DBS = {
+BOOKWYRM_DBS = {
     'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('POSTGRES_DB', 'bookwyrm'),
@@ -103,7 +103,7 @@ FEDIREADS_DBS = {
 }
 
 DATABASES = {
-    'default': FEDIREADS_DBS[FEDIREADS_DATABASE_BACKEND]
+    'default': BOOKWYRM_DBS[BOOKWYRM_DATABASE_BACKEND]
 }
 
 
