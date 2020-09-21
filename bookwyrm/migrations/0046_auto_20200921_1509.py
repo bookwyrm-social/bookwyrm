@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='connector',
             name='connector_file',
-            field=models.CharField(choices=[('openlibrary', 'Openlibrary'), ('self_connector', 'Self Connector'), ('bookwyrm_connector', 'Bookwyrm Connector')], max_length=255),
+            field=models.CharField(choices=[('openlibrary', 'Openlibrary'), ('self_connector', 'Self Connector'), ('bookwyrm_connector', 'BookWyrm Connector')], max_length=255),
         ),
         migrations.AlterField(
             model_name='sitesettings',
