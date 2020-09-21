@@ -9,7 +9,7 @@ from bookwyrm.connectors.bookwyrm_connector import Connector
 from bookwyrm.connectors.abstract_connector import SearchResult, get_date
 
 
-class FedireadsConnector(TestCase):
+class BookWyrmConnector(TestCase):
     def setUp(self):
         models.Connector.objects.create(
             identifier='example.com',
