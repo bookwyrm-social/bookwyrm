@@ -90,15 +90,15 @@ BOOKWYRM_DATABASE_BACKEND = env('BOOKWYRM_DATABASE_BACKEND', 'postgres')
 BOOKWYRM_DBS = {
     'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('POSTGRES_DB', 'bookwyrm'),
-        'USER': env('POSTGRES_USER', 'bookwyrm'),
-        'PASSWORD': env('POSTGRES_PASSWORD', 'bookwyrm'),
+        'NAME': env('POSTGRES_DB', 'fedireads'),
+        'USER': env('POSTGRES_USER', 'fedireads'),
+        'PASSWORD': env('POSTGRES_PASSWORD', 'fedireads'),
         'HOST': env('POSTGRES_HOST', ''),
         'PORT': 5432
     },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'bookwyrm.db')
+        'NAME': os.path.join(BASE_DIR, 'fedireads.db')
     }
 }
 
