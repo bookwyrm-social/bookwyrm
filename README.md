@@ -81,6 +81,8 @@ Initialize the database (or, more specifically, delete the existing database, ru
 ```
 This creates two users, `mouse` with password `password123` and `rat` with password `ratword`.
 
+The application uses Celery and Redis for task management, which must also be configured. (Further instructions pending, sorry!
+
 And go to the app at `localhost:8000`
 
 #### With Docker
