@@ -1,14 +1,15 @@
+''' the particulars for this instance of BookWyrm '''
 import base64
 
 from Crypto import Random
 from django.db import models
 from django.utils import timezone
-import datetime
 
 from bookwyrm.settings import DOMAIN
 from .user import User
 
 class SiteSettings(models.Model):
+    ''' customized settings for this instance '''
     name = models.CharField(default=DOMAIN, max_length=100)
     instance_description = models.TextField(
         default="This instance has no description.")
@@ -18,6 +19,7 @@ class SiteSettings(models.Model):
 
     @classmethod
     def get(cls):
+        ''' gets the site settings db entry or defaults '''
         try:
             return cls.objects.get(id=1)
         except cls.DoesNotExist:
@@ -26,9 +28,11 @@ class SiteSettings(models.Model):
             return default_settings
 
 def new_invite_code():
+    ''' the identifier for a user invite '''
     return base64.b32encode(Random.get_random_bytes(5)).decode('ascii')
 
 class SiteInvite(models.Model):
+    ''' gives someone access to create an account on the instance '''
     code = models.CharField(max_length=32, default=new_invite_code)
     expiry = models.DateTimeField(blank=True, null=True)
     use_limit = models.IntegerField(blank=True, null=True)
@@ -36,10 +40,12 @@ class SiteInvite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def valid(self):
+        ''' make sure it hasn't expired or been used '''
         return (
             (self.expiry is None or self.expiry > timezone.now()) and
             (self.use_limit is None or self.times_used < self.use_limit))
 
     @property
     def link(self):
+        ''' formats the invite link '''
         return "https://{}/invite/{}".format(DOMAIN, self.code)

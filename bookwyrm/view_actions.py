@@ -435,6 +435,7 @@ def import_data(request):
 
 @login_required
 def create_invite(request):
+    ''' creates a user invite database entry '''
     form = forms.CreateInviteForm(request.POST)
     if not form.is_valid():
         return HttpResponseBadRequest("ERRORS : %s" % (form.errors,))

@@ -45,6 +45,6 @@ case "$1" in
         docker-compose exec web coverage report
         ;;
     *)
-        echo "Unrecognised command. Try: up, initdb, resetdb,makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
+        echo "Unrecognised command. Try: up, initdb, resetdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
         ;;
 esac

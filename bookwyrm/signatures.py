@@ -1,3 +1,4 @@
+''' signs activitypub activities '''
 import hashlib
 from urllib.parse import urlparse
 import datetime
@@ -11,6 +12,7 @@ from Crypto.Hash import SHA256
 MAX_SIGNATURE_AGE = 300
 
 def create_key_pair():
+    ''' a new public/private key pair, used for creating new users '''
     random_generator = Random.new().read
     key = RSA.generate(1024, random_generator)
     private_key = key.export_key().decode('utf8')
@@ -20,6 +22,7 @@ def create_key_pair():
 
 
 def make_signature(sender, destination, date, digest):
+    ''' uses a private key to sign an outgoing message '''
     inbox_parts = urlparse(destination)
     signature_headers = [
         '(request-target): post %s' % inbox_parts.path,
@@ -38,10 +41,15 @@ def make_signature(sender, destination, date, digest):
     }
     return ','.join('%s="%s"' % (k, v) for (k, v) in signature.items())
 
+
 def make_digest(data):
-    return 'SHA-256=' + b64encode(hashlib.sha256(data.encode('utf-8')).digest()).decode('utf-8')
+    ''' creates a message digest for signing '''
+    return 'SHA-256=' + b64encode(hashlib.sha256(data.encode('utf-8'))\
+            .digest()).decode('utf-8')
+
 
 def verify_digest(request):
+    ''' checks if a digest is syntactically valid and matches the message '''
     algorithm, digest = request.headers['digest'].split('=', 1)
     if algorithm == 'SHA-256':
         hash_function = hashlib.sha256
@@ -55,6 +63,7 @@ def verify_digest(request):
         raise ValueError("Invalid HTTP Digest header")
 
 class Signature:
+    ''' read and validate incoming signatures '''
     def __init__(self, key_id, headers, signature):
         self.key_id = key_id
         self.headers = headers
@@ -62,6 +71,7 @@ class Signature:
 
     @classmethod
     def parse(cls, request):
+        ''' extract and parse a signature from an http request '''
         signature_dict = {}
         for pair in request.headers['Signature'].split(','):
             k, v = pair.split('=', 1)
@@ -105,7 +115,9 @@ class Signature:
         # raises a ValueError if it fails
         signer.verify(digest, self.signature)
 
+
 def http_date_age(datestr):
+    ''' age of a signature in seconds '''
     parsed = datetime.datetime.strptime(datestr, '%a, %d %b %Y %H:%M:%S GMT')
     delta = datetime.datetime.utcnow() - parsed
     return delta.total_seconds()

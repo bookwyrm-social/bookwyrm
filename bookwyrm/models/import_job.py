@@ -35,6 +35,7 @@ def construct_search_term(title, author):
 
 
 class ImportJob(models.Model):
+    ''' entry for a specific request for book data import '''
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
@@ -42,6 +43,7 @@ class ImportJob(models.Model):
         'Status', null=True, on_delete=models.PROTECT)
 
 class ImportItem(models.Model):
+    ''' a single line of a csv being imported '''
     job = models.ForeignKey(
         ImportJob,
         on_delete=models.CASCADE,
@@ -77,6 +79,7 @@ class ImportItem(models.Model):
 
     @property
     def isbn(self):
+        ''' pulls out the isbn13 field from the csv line data '''
         return unquote_string(self.data['ISBN13'])
 
     @property
@@ -87,24 +90,29 @@ class ImportItem(models.Model):
 
     @property
     def review(self):
+        ''' a user-written review, to be imported with the book data '''
         return self.data['My Review']
 
     @property
     def rating(self):
+        ''' x/5 star rating for a book '''
         return int(self.data['My Rating'])
 
     @property
     def date_added(self):
+        ''' when the book was added to this dataset '''
         if self.data['Date Added']:
             return dateutil.parser.parse(self.data['Date Added'])
 
     @property
     def date_read(self):
+        ''' the date a book was completed '''
         if self.data['Date Read']:
             return dateutil.parser.parse(self.data['Date Read'])
 
     @property
     def reads(self):
+        ''' formats a read through dataset for the book in this line '''
         if (self.shelf == 'reading'
                 and self.date_added and not self.date_read):
             return [ReadThrough(start_date=self.date_added)]

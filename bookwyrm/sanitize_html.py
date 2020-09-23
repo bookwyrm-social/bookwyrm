@@ -2,11 +2,11 @@
 from html.parser import HTMLParser
 
 class InputHtmlParser(HTMLParser):
-    ''' Removes any html that isn't whitelisted from a block '''
+    ''' Removes any html that isn't allowed_tagsed from a block '''
 
     def __init__(self):
         HTMLParser.__init__(self)
-        self.whitelist = ['p', 'b', 'i', 'pre', 'a', 'span']
+        self.allowed_tags = ['p', 'b', 'i', 'pre', 'a', 'span']
         self.tag_stack = []
         self.output = []
         # if the html appears invalid, we just won't allow any at all
@@ -15,7 +15,7 @@ class InputHtmlParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         ''' check if the tag is valid '''
-        if self.allow_html and tag in self.whitelist:
+        if self.allow_html and tag in self.allowed_tags:
             self.output.append(('tag', self.get_starttag_text()))
             self.tag_stack.append(tag)
         else:
@@ -24,7 +24,7 @@ class InputHtmlParser(HTMLParser):
 
     def handle_endtag(self, tag):
         ''' keep the close tag '''
-        if not self.allow_html or tag not in self.whitelist:
+        if not self.allow_html or tag not in self.allowed_tags:
             self.output.append(('data', ''))
             return
 

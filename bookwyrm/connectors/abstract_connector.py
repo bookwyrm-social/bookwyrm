@@ -162,7 +162,7 @@ class AbstractConnector(ABC):
     def update_book(self, book, data=None):
         ''' load new data '''
         if not book.sync and not book.sync_cover:
-            return
+            return book
 
         if not data:
             key = getattr(book, self.key_name)
@@ -286,7 +286,7 @@ def get_data(url):
     return data
 
 
-class SearchResult(object):
+class SearchResult:
     ''' standardized search result object '''
     def __init__(self, title, key, author, year):
         self.title = title
@@ -299,7 +299,7 @@ class SearchResult(object):
             self.key, self.title, self.author)
 
 
-class Mapping(object):
+class Mapping:
     ''' associate a local database field with a field in an external dataset '''
     def __init__(
             self, local_field, remote_field=None, formatter=None, model=None):

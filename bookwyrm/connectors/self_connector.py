@@ -7,10 +7,6 @@ from .abstract_connector import AbstractConnector, SearchResult
 
 class Connector(AbstractConnector):
     ''' instantiate a connector  '''
-    def __init__(self, identifier):
-        super().__init__(identifier)
-
-
     def search(self, query):
         ''' right now you can't search bookwyrm sorry, but when
         that gets implemented it will totally rule '''
@@ -44,18 +40,18 @@ class Connector(AbstractConnector):
         return search_results
 
 
-    def format_search_result(self, book):
+    def format_search_result(self, search_result):
         return SearchResult(
-            book.title,
-            book.local_id,
-            book.author_text,
-            book.published_date.year if book.published_date else None,
+            search_result.title,
+            search_result.local_id,
+            search_result.author_text,
+            search_result.published_date.year if \
+                    search_result.published_date else None,
         )
 
 
     def get_or_create_book(self, remote_id):
         ''' this COULD be semi-implemented but I think it shouldn't be used '''
-        pass
 
 
     def is_work_data(self, data):

@@ -123,15 +123,15 @@ class Connector(AbstractConnector):
         return data.get('docs')
 
 
-    def format_search_result(self, doc):
+    def format_search_result(self, search_result):
         # build the remote id from the openlibrary key
-        key = self.books_url + doc['key']
-        author = doc.get('author_name') or ['Unknown']
+        key = self.books_url + search_result['key']
+        author = search_result.get('author_name') or ['Unknown']
         return SearchResult(
-            doc.get('title'),
+            search_result.get('title'),
             key,
             ', '.join(author),
-            doc.get('first_publish_year'),
+            search_result.get('first_publish_year'),
         )
 
 

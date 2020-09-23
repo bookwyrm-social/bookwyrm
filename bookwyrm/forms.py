@@ -1,7 +1,6 @@
-''' usin django model forms '''
+''' using django model forms '''
 import datetime
 
-from django.core.exceptions import ValidationError
 from django.forms import ModelForm, PasswordInput, widgets
 from django import forms
 
