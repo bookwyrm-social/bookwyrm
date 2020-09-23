@@ -66,13 +66,13 @@ You will need postgres installed and running on your computer.
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-createdb fedireads
+createdb bookwyrm
 ```
 
-Create the psql user in `psql fedireads`:
+Create the psql user in `psql bookwyrm`:
 ``` psql
-CREATE ROLE fedireads WITH LOGIN PASSWORD 'fedireads';
-GRANT ALL PRIVILEGES ON DATABASE fedireads TO fedireads;
+CREATE ROLE bookwyrm WITH LOGIN PASSWORD 'bookwyrm';
+GRANT ALL PRIVILEGES ON DATABASE bookwyrm TO bookwyrm;
 ```
 
 Initialize the database (or, more specifically, delete the existing database, run migrations, and start fresh):

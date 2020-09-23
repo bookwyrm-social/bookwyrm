@@ -1,6 +1,6 @@
 ''' starter data '''
-from fedireads.models import Connector, User
-from fedireads.settings import DOMAIN
+from bookwyrm.models import Connector, User
+from bookwyrm.settings import DOMAIN
 
 User.objects.create_user('mouse', 'mouse.reeve@gmail.com', 'password123')
 User.objects.create_user(
