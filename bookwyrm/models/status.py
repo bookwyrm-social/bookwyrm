@@ -91,6 +91,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             to write this so it's just a property '''
         return cls.objects.filter(reply_parent=status).select_subclasses()
 
+    @property
+    def status_type(self):
+        ''' expose the type of status for the ui using activity type '''
+        return self.activity_serializer.__name__
+
     def to_replies(self, **kwargs):
         ''' helper function for loading AP serialized replies to a status '''
         return self.to_ordered_collection(

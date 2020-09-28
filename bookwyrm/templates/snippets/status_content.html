@@ -23,16 +23,16 @@
     </div>
 {% endif %}
 
-<div class="row">
+<div class="media">
     {% if not hide_book and status.book %}
-    <div class="cover-container">
+    <div class="media-left">
         {% include 'snippets/book_cover.html' with book=status.book %}
         {% include 'snippets/rate_action.html' with book=status.book user=request.user %}
         {% include 'snippets/shelve_button.html' with book=status.book %}
     </div>
     {% endif %}
 
-    <div>
+    <div class="media-content">
         {% if status.status_type == 'Review' %}
         <h3>
             {% if status.name %}{{ status.name }}<br>{% endif %}

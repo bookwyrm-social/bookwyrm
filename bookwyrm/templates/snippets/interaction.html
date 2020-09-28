@@ -1,5 +1,5 @@
 {% load fr_display %}
-<div class="interaction">
+<div class="nav level">
     {% if request.user.is_authenticated %}
     <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
         {% csrf_token %}

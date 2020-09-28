@@ -1,8 +1,7 @@
 {% load fr_display %}
 
-<div class="post {{ status.status_type | lower }} depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}">
-
-    <h2>
+<div class="post{% if depth %}depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}{% endif %}">
+    <h2 class="level">
     {% if status.boosted_status %}
         {% include 'snippets/status_header.html' with status=status.boosted_status %}
         <small class="subhead">{% include 'snippets/status_header.html' with status=status %}</small>

@@ -2,39 +2,34 @@
 {% load fr_display %}
 {% block content %}
 
-{% include 'snippets/covers_shelf.html' with shelves=shelves user=request.user %}
+<section class="section" id="feed">
+    <div class="container">
+        {% for activity in activities %}
+        <div class="card">
+            {% include 'snippets/status.html' with status=activity %}
+        </div>
+        {% endfor %}
 
+        <div class="content-container pagination row">
+            {% if prev %}
+            <p>
+                <a href="{{ prev }}">
+                    <span class="icon icon-arrow-left"></span>
+                    Previous
+                </a>
+            </p>
+            {% endif %}
 
-<div id="feed">
-    <div class="content-container tabs">
-    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
+            {% if next %}
+            <p class="next">
+                <a href="{{ next }}">
+                    Next
+                    <span class="icon icon-arrow-right"></span>
+                </a>
+            </p>
+            {% endif %}
+        </div>
     </div>
-
-    {% for activity in activities %}
-    <div class="content-container">
-        {% include 'snippets/status.html' with status=activity %}
-    </div>
-    {% endfor %}
-
-    <div class="content-container pagination row">
-        {% if prev %}
-        <p>
-            <a href="{{ prev }}">
-                <span class="icon icon-arrow-left"></span>
-                Previous
-            </a>
-        </p>
-        {% endif %}
-
-        {% if next %}
-        <p class="next">
-            <a href="{{ next }}">
-                Next
-                <span class="icon icon-arrow-right"></span>
-            </a>
-        </p>
-        {% endif %}
-    </div>
-</div>
+</section>
 
 {% endblock %}

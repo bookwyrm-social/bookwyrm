@@ -1,6 +1,6 @@
 {% load fr_display %}
 <span class="hidden-text">Rating</span>
-<div class="stars rate-stars">
+<div class="field is-grouped stars rate-stars">
     <input type="radio" name="rating" value="" checked>
     {% for i in '12345'|make_list %}
         <input id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">

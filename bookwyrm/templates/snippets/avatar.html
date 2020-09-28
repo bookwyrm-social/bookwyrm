@@ -1,2 +1,2 @@
-<img class="user-pic{% if large %} large{% endif %}" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
+<img class="image {% if large %}is-96x96{% else %}is-32x32{% endif %}" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
 

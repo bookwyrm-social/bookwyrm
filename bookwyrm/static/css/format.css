@@ -38,3 +38,18 @@ input.toggle-control {
 input.toggle-control:checked ~ .toggle-content {
     display: block;
 }
+
+/* --- STARS --- */
+.rate-stars button.icon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+.rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.rate-stars form:hover ~ form .icon:before{
+    content: '\e9d7';
+}

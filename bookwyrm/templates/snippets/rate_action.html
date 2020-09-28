@@ -1,6 +1,6 @@
 {% load fr_display %}
 <span class="hidden-text">Leave a rating</span>
-<div class="stars rate-stars">
+<div class="field is-grouped stars rate-stars">
     {% for i in '12345'|make_list %}
     <form name="rate" action="/rate/" method="POST" onsubmit="return rate_stars(event)">
         {% csrf_token %}
