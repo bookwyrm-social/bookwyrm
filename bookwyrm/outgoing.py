@@ -101,7 +101,8 @@ def handle_reject(user, to_follow, relationship):
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database
-    shelve = models.ShelfBook(book=book, shelf=shelf, added_by=user).save()
+    shelve = models.ShelfBook(book=book, shelf=shelf, added_by=user)
+    shelve.save()
 
     broadcast(user, shelve.to_add_activity(user))
 
