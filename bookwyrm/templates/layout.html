@@ -4,8 +4,9 @@
 <head>
     <title>BookWyrm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" rel="stylesheet" href="/static/format.css">
-    <link type="text/css" rel="stylesheet" href="/static/icons.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/bulma.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/format.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/icons.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
 
@@ -16,61 +17,89 @@
     <meta name="og:description" content="Federated Social Reading">
     <meta name="twitter:creator" content="@tripofmice">
     <meta name="twitter:site" content="@tripofmice">
-
 </head>
-
 <body>
 
-<div id="top-bar">
-    <header class="row">
-        <div id="branding">
-            <a href="/">
-                <img id="logo" src="/static/images/logo-small.png" alt="BookWyrm"></img>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/static/images/logo-small.png" alt="BookWyrm" width="112" height="28">
+        </a>
+	<form class="navbar-item" action="/search/">
+	    <div class="field is-grouped">
+		<input class="input" type="text" name="q" placeholder="Search for a book or user">
+		<button class="button" type="submit">
+		    <span class="icon icon-search">
+			<span class="hidden-text">search</span>
+		    </span>
+		</button>
+	    </div>
+	</form>
+
+        <label for="main-nav" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </label>
+    </div>
+
+    <input class="toggle-control" type="checkbox" id="main-nav">
+    <div id="mainNav" class="navbar-menu toggle-content">
+        <div class="navbar-start">
+            <a href="/#feed" class="navbar-item">
+                Feed
+            </a>
+            <a href="/user/{{request.user.localname}}/shelves" class="navbar-item">
+                Your Books
             </a>
         </div>
 
-        <ul id="menu">
-            {% if request.user.is_authenticated %}
-            <li><a href="/user/{{request.user.localname}}/shelves">Your shelves</a></li>
-            {% endif %}
-            <li><a href="/#feed">Updates</a></li>
-            <li><a href="/books">Discover Books</a></li>
-        </ul>
-
-        <div id="actions">
-            <div id="search">
-                <form action="/search/">
-                    <input type="text" name="q" placeholder="Search for a book or user">
-                    <button type="submit">
-                        <span class="icon icon-search">
-                            <span class="hidden-text">search</span>
-                        </span>
-                    </button>
-                </form>
+        <div class="navbar-end">
+	    {% if request.user.is_authenticated %}
+            <div class="navbar-item has-dropdown is-hoverable">
+                <div class="navbar-link">
+                    {% include 'snippets/avatar.html' with user=user %}
+                    {% include 'snippets/username.html' with user=request.user %}
+                </div>
+                <div class="navbar-dropdown">
+                    <a href="/user/{{request.user.localname}}" class="navbar-item">
+                        Profile
+                    </a>
+                    <a class="navbar-item">
+                        Import books
+                    </a>
+                    <hr class="navbar-divider">
+                    <a href="/logout" class="navbar-item">
+                        Log out
+                    </a>
+                </div>
             </div>
-            {% if request.user.is_authenticated %}
-            <div id="notifications">
-                <a href="/notifications">
-                    <span class="icon icon-bell">
-                        <span class="hidden-text">Notitications</span>
-                    </span>
-                    {% if request.user|notification_count %}<span class="count">{{ request.user | notification_count }}</span>{% endif %}
-                </a>
+            <div class="navbar-item">
+                <div class="buttons">
+		    <a href="/notifications">
+			<span class="icon icon-bell">
+			    <span class="hidden-text">Notitications</span>
+			</span>
+			{% if request.user|notification_count %}<span class="count">{{ request.user | notification_count }}</span>{% endif %}
+		    </a>
+                </div>
             </div>
-            <div class="pulldown-container">
-                {% include 'snippets/avatar.html' with user=request.user %}
-                <ul class="pulldown">
-                    <li><a href="/user/{{ request.user }}">Your profile</a></li>
-                    <li><a href="/user-edit/">Settings</a></li>
-                    <li><a href="/import">Import Books</a></li>
-                    <li><a href="/manage_invites/">Invites</a></li>
-                    <li><a href="/logout/">Log out</a></li>
-                </ul>
-            </p>
-            {% endif %}
+	    {% else %}
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a href="/register" class="button is-primary">
+                        <strong>Sign up</strong>
+                    </a>
+                    <a href="/login" class="button is-light">
+                        Log in
+                    </a>
+                </div>
+            </div>
+	    {% endif %}
         </div>
-    </header>
-</div>
+    </div>
+</nav>
+
 
 <div id="main">
     {% block content %}

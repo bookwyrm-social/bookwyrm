@@ -1,0 +1,40 @@
+/* --- ICONS --- */
+.icon {
+    color: black;
+    text-decoration: none;
+    font-size: 1.1rem;
+    vertical-align: sub;
+}
+.hidden-text {
+    height: 0;
+    width: 0;
+    position: absolute;
+    overflow: hidden;
+}
+.icon .bubble {
+    background-color: #FF1654;
+    color: white;
+    font-size: 0.85rem;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: -0.65rem;
+    right: -0.5rem;
+    height: 1rem;
+    width: 1rem;
+}
+
+
+/* --- TOGGLES --- */
+input.toggle-control {
+    display: none;
+}
+
+.toggle-content.hidden {
+    display: none;
+}
+
+input.toggle-control:checked ~ .toggle-content {
+    display: block;
+}
