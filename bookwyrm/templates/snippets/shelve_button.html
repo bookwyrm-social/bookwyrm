@@ -1,21 +1,22 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
 
+<div class="field is-grouped">
+<form name="shelve" action="/shelve/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}">
+    <button class="button" type="submit" style="">{% shelve_button_text book %}</button>
+</form>
 <div class="dropdown is-hoverable">
-    <form name="shelve" action="/shelve/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}">
-        <button class="button" type="submit" style="">{% shelve_button_text book %}</button>
-    </form>
+    {% if not hide_pulldown %}
     <div class="button dropdown-trigger" >
         <span class="icon icon-arrow-down"><span class="hidden-text">More shelves</span></span>
     </div>
 
-    {% if not hide_pulldown %}
     <div class="dropdown-menu">
         <ul class="dropdown-content">
-            <form name="shelve" action="/shelve/" method="post">
+            <form class="dropdown-item" name="shelve" action="/shelve/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
                 {% for shelf in request.user.shelf_set.all %}
@@ -29,4 +30,5 @@
     {% endif %}
 </div>
 
+</div>
 {% endif %}
