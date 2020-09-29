@@ -5,8 +5,8 @@
 <section class="section" id="feed">
     <div class="container">
         {% for activity in activities %}
-        <div class="card">
-            {% include 'snippets/status.html' with status=activity %}
+        <div class="block">
+        {% include 'snippets/status.html' with status=activity %}
         </div>
         {% endfor %}
 

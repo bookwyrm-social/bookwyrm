@@ -1,8 +1,8 @@
-<span class="title">
+<span>
     <a href="/book/{{ book.id }}">{{ book.title }}</a>
 </span>
 {% if book.authors %}
-<span class="author">
+<span>
     by {% include 'snippets/authors.html' with book=book %}
 </span>
 {% endif %}

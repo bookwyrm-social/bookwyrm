@@ -1,12 +1,14 @@
 {% load humanize %}
 {% load fr_display %}
-<div class="level-left">
-    <div>
+<div class="level-left card-header-title">
+    <p>
         {% include 'snippets/avatar.html' with user=status.user %}
 
         {% include 'snippets/username.html' with user=status.user %}
-        {% if status.status_type == 'Update' %}
-            {{ status.content | safe }}
+        {% if status.status_type == 'GeneratedNote' %}
+            {{ status.content | safe }} {% include 'snippets/book_titleby.html' with book=status.mention_books.first %}
+        {% elif status.status_type == 'Boost' %}
+            boosted {% include 'snippets/avatar.html' with user=status.boosted_status.user %}{% include 'snippets/username.html' with user=status.boosted_status.user possessive=True %} status
         {% elif status.status_type == 'Review' and not status.name and not status.content%}
             rated <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
         {% elif status.status_type == 'Review' %}
@@ -15,17 +17,15 @@
             commented on <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
         {% elif status.status_type == 'Quotation' %}
             quoted <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
-        {% elif status.status_type == 'Boost' %}
-            boosted
         {% elif status.reply_parent %}
             {% with parent_status=status|parent %}
-            replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{{ parent_status.status_type | lower }}</a>
+            replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{% if parent_status.status_type == 'GeneratedNote' %}update{% else %}{{ parent_status.status_type | lower }}{% endif %}</a>
             {% endwith %}
         {% endif %}
-    </div>
+    </p>
 </div>
-<div class="level-right">
-    <div>
+<div class="level-right card-header-title">
+    <p>
         <a href="{{ status.remote_id }}">{{ status.published_date | naturaltime }}</a>
-    </div>
+    </p>
 </div>

@@ -214,7 +214,7 @@ class Boost(Status):
         ActivityMapping('object', 'boosted_status'),
     ]
 
-    activity_serializer = activitypub.Like
+    activity_serializer = activitypub.Boost
 
     # This constraint can't work as it would cross tables.
     # class Meta:
