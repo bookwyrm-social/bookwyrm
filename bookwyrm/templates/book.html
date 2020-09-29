@@ -20,7 +20,7 @@
     </div>
 
     <div class="columns">
-        <div class="column is-narrow">
+        <div class="column">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button.html' %}
@@ -43,7 +43,7 @@
             </dl>
         </div>
 
-        <div class="column">
+        <div class="column is-three-quarters">
             <div class="block">
                 <h3>{% include 'snippets/stars.html' with rating=rating %}</h3>
 
