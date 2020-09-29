@@ -1,46 +1,52 @@
 {% extends 'layout.html' %}
 {% load humanize %}l
 {% block content %}
-<div class="content-container">
-    <h2>Notifications</h2>
+<div class="block">
+    <h2 class="title">Notifications</h2>
 
     <form name="clear" action="/clear-notifications" method="POST">
         {% csrf_token %}
-        <button type="submit" class="secondary">Delete notifications</button>
+        <button class="button is-danger" type="submit" class="secondary">Delete notifications</button>
     </form>
 </div>
 
-<div class="content-container">
+<div class="block">
     {% for notification in notifications %}
-    <div class="notification{% if notification.id in unread %} unread{% endif %}">
-        <small class="time-ago">{{ notification.created_date | naturaltime }}</small>
-        {% if notification.related_user %}
-        {% include 'snippets/username.html' with user=notification.related_user %}
-        {% if notification.notification_type == 'FAVORITE' %}
-            favorited your
-            <a href="{{ notification.related_status.remote_id}}">status</a>
+    <div class="notification level{% if notification.id in unread %} is-primary{% endif %}">
+        <div class="level-left">
+            <p>
+                {% if notification.related_user %}
+                {% include 'snippets/avatar.html' with user=notification.related_user %}
+                {% include 'snippets/username.html' with user=notification.related_user %}
+                {% if notification.notification_type == 'FAVORITE' %}
+                    favorited your
+                    <a href="{{ notification.related_status.remote_id}}">status</a>
 
-        {% elif notification.notification_type == 'REPLY' %}
-            <a href="{{ notification.related_status.remote_id}}">replied</a>
-            to your
-            <a href="{{ notification.related_status.reply_parent.remote_id}}">status</a>
+                {% elif notification.notification_type == 'REPLY' %}
+                    <a href="{{ notification.related_status.remote_id}}">replied</a>
+                    to your
+                    <a href="{{ notification.related_status.reply_parent.remote_id}}">status</a>
 
-        {% elif notification.notification_type == 'FOLLOW' %}
-            followed you
+                {% elif notification.notification_type == 'FOLLOW' %}
+                    followed you
 
-        {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-            sent you a follow request
-            <div class="row shrink">
-                {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
-            </div>
+                {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
+                    sent you a follow request
+                    <div class="row shrink">
+                        {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
+                    </div>
 
-        {% elif notification.notification_type == 'BOOST' %}
-            boosted your <a href="{{ notification.related_status.remote_id}}">status</a>
-        {% endif %}
-        {% else %}
-            your <a href="/import_status/{{ notification.related_import.id }}">import</a> completed.
+                {% elif notification.notification_type == 'BOOST' %}
+                    boosted your <a href="{{ notification.related_status.remote_id}}">status</a>
+                {% endif %}
+                {% else %}
+                    your <a href="/import_status/{{ notification.related_import.id }}">import</a> completed.
 
-        {% endif %}
+                {% endif %}
+            </p>
+        </div>
+
+        <p class="level-right">{{ notification.created_date | naturaltime }}</p>
     </div>
     {% endfor %}
     {% if not notifications %}

@@ -9,9 +9,9 @@
     </div>
     {% endfor %}
 
-    <div>
+    <nav class="pagination" role="navigation" aria-label="pagination">
         {% if prev %}
-        <p>
+        <p class="pagination-previous">
             <a href="{{ prev }}">
                 <span class="icon icon-arrow-left"></span>
                 Previous
@@ -20,13 +20,13 @@
         {% endif %}
 
         {% if next %}
-        <p class="next">
+        <p class="pagination-next">
             <a href="{{ next }}">
                 Next
                 <span class="icon icon-arrow-right"></span>
             </a>
         </p>
         {% endif %}
-    </div>
+    </nav>
 </div>
 {% endblock %}

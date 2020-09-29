@@ -1,9 +1,8 @@
 /* --- ICONS --- */
 .icon {
     color: black;
-    text-decoration: none;
     font-size: 1.1rem;
-    vertical-align: sub;
+    vertical-align: super;
 }
 .hidden-text {
     height: 0;
@@ -11,16 +10,16 @@
     position: absolute;
     overflow: hidden;
 }
-.icon .bubble {
+.icon ~ .bubble {
     background-color: #FF1654;
     color: white;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     border-radius: 50%;
     display: block;
     position: absolute;
     text-align: center;
-    top: -0.65rem;
-    right: -0.5rem;
+    top: 0.8rem;
+    right: 0.3rem;
     height: 1rem;
     width: 1rem;
 }
@@ -110,4 +109,24 @@ input.toggle-control:checked ~ .toggle-content {
 .avatar {
     vertical-align: middle;
     display: inline;
+}
+
+
+/* --- QUOTES --- */
+.quote blockquote {
+    position: relative;
+    padding-left: 2em;
+}
+.quote blockquote:before, .quote blockquote:after {
+    font-family: 'icomoon';
+    position: absolute;
+}
+.quote blockquote:before {
+    content: "\e904";
+    top: 0;
+    left: 0;
+}
+.quote blockquote:after {
+    content: "\e903";
+    right: 0;
 }

@@ -82,7 +82,9 @@
 			<span class="icon icon-bell">
 			    <span class="hidden-text">Notitications</span>
 			</span>
-			{% if request.user|notification_count %}<span class="count">{{ request.user | notification_count }}</span>{% endif %}
+			{% if request.user|notification_count %}
+                        <span class="bubble">{{ request.user | notification_count }}</span>
+                        {% endif %}
 		    </a>
                 </div>
             </div>
