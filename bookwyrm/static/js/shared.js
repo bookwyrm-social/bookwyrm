@@ -32,17 +32,8 @@ function rate_stars(e) {
 }
 
 function tabChange(e) {
-    e.preventDefault();
-    var target = e.target.parentElement;
+    var target = e.target.parentElement.parentElement;
     var identifier = target.getAttribute('data-id');
-
-    var options_class = target.getAttribute('data-category');
-    var options = document.getElementsByClassName(options_class);
-    for (var i = 0; i < options.length; i++) {
-        if (!options[i].className.includes('hidden')) {
-            options[i].className += ' hidden';
-        }
-    }
 
     var tabs = target.parentElement.children;
     for (i = 0; i < tabs.length; i++) {
@@ -54,7 +45,6 @@ function tabChange(e) {
     }
 
     var el = document.getElementById(identifier);
-    el.className = el.className.replace('hidden', '');
 }
 
 function ajaxPost(form) {

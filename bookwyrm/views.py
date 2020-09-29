@@ -467,6 +467,8 @@ def book_page(request, book_id, tab='friends'):
         'tags': tags,
         'user_tags': user_tags,
         'review_form': forms.ReviewForm(),
+        'quotation_form': forms.QuotationForm(),
+        'comment_form': forms.CommentForm(),
         'tag_form': forms.TagForm(),
         'feed_tabs': [
             {'id': 'friends', 'display': 'Friends'},

@@ -4,13 +4,13 @@
 <div class="tabs is-boxed">
     <ul>
         <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <a href="/book/{{ book.id }}/review" onclick="tabChange(event)">Review</a>
+            <label for="review-{{ book.id }}" onclick="tabChange(event)"><a>Review</a></label>
         </li>
         <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <a href="/book/{{ book.id }}/comment" onclick="tabChange(event)">Comment</a>
+            <label for="comment-{{ book.id}}" onclick="tabChange(event)"><a>Comment</a></label>
         </li>
         <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <a href="/book/{{ book.id }}/quotation" onclick="tabChange(event)">Quote</a>
+            <label for="quote-{{ book.id }}" onclick="tabChange(event)"><a>Quote</a></label>
         </li>
     </ul>
 </div>
@@ -22,32 +22,53 @@
     </div>
     {% endif %}
 
-    <form class="tab-option-{{ book.id }} column" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-	<div class="control">
-            <label class="label" for="id_name">Title:</label>
-            {{ review_form.name }}
+    <div class="column">
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs" id="review-{{ book.id }}" checked>
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_name">Title:</label>
+                    {{ review_form.name }}
+                </div>
+                <div class="control">
+                    <label class="label" for="id_content">Review:</label>
+                    {% include 'snippets/rate_form.html' with book=book %}
+                    {{ review_form.content }}
+                </div>
+                <button class="button is-primary" type="submit">post review</button>
+            </form>
         </div>
-	<div class="control">
-            <label class="label" for="id_content">Review:</label>
-            {% include 'snippets/rate_form.html' with book=book %}
-            {{ review_form.content }}
+
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs" id="comment-{{ book.id }}">
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_content">Comment:</label>
+                    {{ comment_form.content }}
+                </div>
+                <button class="button is-primary" type="submit">post comment</button>
+            </form>
         </div>
-        <button class="button is-primary" type="submit">post review</button>
-    </form>
 
-    <form class="hidden tab-option-{{ book.id }} column" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {{ comment_form.as_p }}
-        <button class="button is-primary" type="submit">post comment</button>
-    </form>
-
-    <form class="hidden tab-option-{{ book.id }} column" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {{ quotation_form.as_p }}
-        <button class="button is-primary" type="submit">post quote</button>
-    </form>
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs" id="quote-{{ book.id }}">
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_quote">Quote:</label>
+                    {{ quotation_form.quote }}
+                </div>
+                <div class="control">
+                    <label class="label" for="id_content">Comment:</label>
+                    {{ quotation_form.content }}
+                </div>
+                <button class="button is-primary" type="submit">post quote</button>
+            </form>
+        </div>
+    </div>
 </div>
