@@ -1,49 +1,23 @@
 {% load fr_display %}
 
-<div class="all-shelves content-container">
-    {% for shelf in shelves %}
-    {% if shelf.books %}
-    <div>
-        <h2>{{ shelf.name }}
-            {% if shelf.size > shelf.books|length %}
-            <small>(<a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>)</small>
-            {% endif %}
-        </h2>
-        <div class="covers-shelf {{ shelf.identifier }} ">
-            {% for book in shelf.books %}
-            <div class="cover-container">
-                <label for="book-{{ book.id }}-radio">
-                    {% include 'snippets/book_cover.html' with book=book %}
-                </label>
-            {% include 'snippets/shelve_button.html' with book=book hide_pulldown=True %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-    {% endfor %}
-</div>
-
 {% for shelf in shelves %}
-    {% for book in shelf.books %}
-<div class="compose-popout toggle-content hidden">
-    <input class="toggle-control" name="book-popout" type="radio" id="book-{{ book.id }}-radio">
-    <div class="compose compose-suggestion" id="compose-book-{{ book.id }}">
-        <label class="close icon icon-close" for="book-{{ book.id }}-radio-close" onclick="hide_element(this)">
-            <span class="hidden-text">Close</span>
-        </label>
-        <input name="book-popout" type="radio" id="book-{{ book.id }}-radio-close">
-        <div class="content-container">
-            <h2>
-                {% include 'snippets/avatar.html' with user=user %}
-                Your thoughts on
-            a   <a href="/book/{{ book.id }}">{{ book.title }}</a>
-                by {% include 'snippets/authors.html' with book=book %}
-            </h2>
-
-            {% include 'snippets/create_status.html' with book=book user=request.user %}
+{% if shelf.books %}
+<div class="container">
+    <h2>{{ shelf.name }}
+        {% if shelf.size > shelf.books|length %}
+        <small>(<a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>)</small>
+        {% endif %}
+    </h2>
+    <div>
+        {% for book in shelf.books %}
+        <div>
+            <label for="book-{{ book.id }}-radio">
+                {% include 'snippets/book_cover.html' with book=book %}
+            </label>
+        {% include 'snippets/shelve_button.html' with book=book hide_pulldown=True %}
         </div>
+        {% endfor %}
     </div>
 </div>
-{% endfor %}
+{% endif %}
 {% endfor %}

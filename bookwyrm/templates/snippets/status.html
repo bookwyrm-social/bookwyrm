@@ -1,8 +1,8 @@
+{% load humanize %}
 {% load fr_display %}
 
-
 <div class="card{% if depth %}depth-{{ depth }} {% if main %}main{% else %}reply{% endif %}{% endif %}">
-    <header class="card-header level">
+    <header class="card-header">
     {% include 'snippets/status_header.html' with status=status %}
     </header>
 
@@ -20,5 +20,12 @@
         {% else %}
         {% include 'snippets/interaction.html' with activity=status %}
         {% endif %}
+
+        <div class="card-footer-item">
+            <span class="icon icon-public">
+                <span class="hidden-text">Public post</span>
+            </span>
+            <a href="{{ status.remote_id }}">{{ status.published_date | naturaltime }}</a>
+        </div>
     </footer>
 </div>

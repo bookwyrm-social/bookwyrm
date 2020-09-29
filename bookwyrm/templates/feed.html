@@ -2,8 +2,8 @@
 {% load fr_display %}
 {% block content %}
 
-<section class="section" id="feed">
-    <div class="container">
+<section class="section">
+    <div>
         {% for activity in activities %}
         <div class="block">
         {% include 'snippets/status.html' with status=activity %}

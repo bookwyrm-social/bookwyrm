@@ -53,3 +53,32 @@ input.toggle-control:checked ~ .toggle-content {
 .rate-stars form:hover ~ form .icon:before{
     content: '\e9d7';
 }
+
+
+/* --- BOOK COVERS --- */
+.book-cover {
+    width: 10em;
+    height: auto;
+}
+.no-cover {
+    position: relative;
+}
+.no-cover div {
+    position: absolute;
+    padding: 1em;
+    color: white;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+.no-cover .title {
+    text-transform: uppercase;
+    margin-bottom: 1em;
+}
+
+
+/* --- AVATAR --- */
+.avatar {
+    vertical-align: middle;
+    display: inline;
+}

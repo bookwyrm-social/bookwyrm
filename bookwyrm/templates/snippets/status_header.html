@@ -1,6 +1,5 @@
-{% load humanize %}
 {% load fr_display %}
-<div class="level-left card-header-title">
+<div class="card-header-title">
     <p>
         {% include 'snippets/avatar.html' with user=status.user %}
 
@@ -22,10 +21,5 @@
             replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{% if parent_status.status_type == 'GeneratedNote' %}update{% else %}{{ parent_status.status_type | lower }}{% endif %}</a>
             {% endwith %}
         {% endif %}
-    </p>
-</div>
-<div class="level-right card-header-title">
-    <p>
-        <a href="{{ status.remote_id }}">{{ status.published_date | naturaltime }}</a>
     </p>
 </div>

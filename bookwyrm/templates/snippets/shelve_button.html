@@ -6,11 +6,11 @@
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}">
-    <button class="button" type="submit" style="">{% shelve_button_text book %}</button>
+    <button class="button is-small" type="submit" style="">{% shelve_button_text book %}</button>
 </form>
 <div class="dropdown is-hoverable">
     {% if not hide_pulldown %}
-    <div class="button dropdown-trigger" >
+    <div class="button dropdown-trigger is-small" >
         <span class="icon icon-arrow-down"><span class="hidden-text">More shelves</span></span>
     </div>
 
@@ -21,7 +21,7 @@
                 <input type="hidden" name="book" value="{{ book.id }}">
                 {% for shelf in request.user.shelf_set.all %}
                 <li>
-                <button name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+                <button class="is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
                 </li>
                 {% endfor %}
             </form>
