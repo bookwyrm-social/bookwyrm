@@ -1,13 +1,16 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+<div class="block">
 {% include 'user_header.html' with user=user %}
-{% include 'snippets/covers_shelf.html' with shelves=shelves user=user %}
+</div>
 
 <div>
-    <div class="content-container"><h2>User Activity</h2></div>
+    <div class="block">
+        <h2 class="title">User Activity</h2>
+    </div>
     {% for activity in activities %}
-    <div class="content-container">
+    <div class="block">
         {% include 'snippets/status.html' with status=activity %}
     </div>
     {% endfor %}
