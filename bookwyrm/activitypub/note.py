@@ -31,7 +31,7 @@ class Article(Note):
 @dataclass(init=False)
 class GeneratedNote(Note):
     ''' just a re-typed note '''
-    type: str = 'NoteUpdate'
+    type: str = 'GeneratedNote'
 
 
 @dataclass(init=False)
