@@ -1,22 +1,26 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div class="content-container">
-    <h2>
-        {% include 'snippets/book_titleby.html' with book=book %}
 
-        {% if request.user.is_authenticated %}
-        <a href="{{ book.id }}/edit" class="edit-link">edit
-            <span class="icon icon-pencil">
-                <span class="hidden-text">Edit Book</span>
-            </span>
-        </a>
-        {% endif %}
-    </h2>
+<div class="block">
+    <div class="level">
+        <h2 class="title level-left">
+            <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
+        </h2>
 
-    <div class="row">
+    {% if request.user.is_authenticated %}
+    <div class="level-right">
+    <a href="{{ book.id }}/edit">edit
+        <span class="icon icon-pencil">
+            <span class="hidden-text">Edit Book</span>
+        </span>
+    </a>
+    </div>
+    {% endif %}
+    </div>
 
-        <div class="cover-container">
+    <div class="columns">
+        <div class="column is-narrow">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button.html' %}
@@ -25,69 +29,66 @@
             <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ cover_form.as_p }}
-                <button type="submit">Add cover</button>
+                <button class="button" type="submit">Add cover</button>
             </form>
             {% endif %}
 
-            <dl>
-                {% for field in info_fields %}
+            <dl class="content">
+            {% for field in info_fields %}
                 {% if field.value %}
                 <dt>{{ field.name }}:</dt>
                 <dd>{{ field.value }}</dd>
                 {% endif %}
-                {% endfor %}
+            {% endfor %}
             </dl>
         </div>
 
         <div class="column">
-            <h3>{{ active_tab }} rating: {% include 'snippets/stars.html' with rating=rating %}</h3>
+            <div class="block">
+                <h3>{% include 'snippets/stars.html' with rating=rating %}</h3>
 
-            {% include 'snippets/book_description.html' %}
+                {% include 'snippets/book_description.html' %}
 
-            {% if book.parent_work.edition_set.count > 1 %}
-            <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} editions</a></p>
-            {% endif %}
+                {% if book.parent_work.edition_set.count > 1 %}
+                <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} editions</a></p>
+                {% endif %}
+            </div>
 
             {% if request.user.is_authenticated %}
-            <div class="compose">
+            <div class="block">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </div>
 
-            <div>
+            <div class="block">
                 <h3>Tags</h3>
                 <form name="tag" action="/tag/" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
-                    <input type="text" name="name">
-                    <button type="submit">Add tag</button>
+                    <input class="input" type="text" name="name">
+                    <button class="button" type="submit">Add tag</button>
                 </form>
             </div>
-            <div class="tag-cloud">
+            {% endif %}
+
+            <div class="block">
                 {% for tag in tags %}
                     {% include 'snippets/tag.html' with book=book tag=tag user_tags=user_tags %}
                 {% endfor %}
             </div>
 
-            {% endif %}
         </div>
     </div>
 </div>
 
 
-{% if request.user.is_authenticated %}
-<div class="content-container tabs">
-    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab path=path %}
-</div>
-{% endif %}
-
 {% if not reviews %}
-<div class="content-container">
+<div class="block">
     <p>No reviews yet!</p>
 </div>
 {% endif %}
 
 {% for review in reviews %}
-<div class="content-container">
+<div class="block">
     {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
 </div>
 {% endfor %}

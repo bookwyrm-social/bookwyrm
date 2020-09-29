@@ -47,9 +47,9 @@ function tabChange(e) {
     var tabs = target.parentElement.children;
     for (i = 0; i < tabs.length; i++) {
         if (tabs[i].getAttribute('data-id') == identifier) {
-            tabs[i].className += ' active';
+            tabs[i].className += ' is-active';
         } else {
-            tabs[i].className = tabs[i].className.replace('active', '');
+            tabs[i].className = tabs[i].className.replace('is-active', '');
         }
     }
 

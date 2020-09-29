@@ -54,6 +54,29 @@ input.toggle-control:checked ~ .toggle-content {
     content: '\e9d7';
 }
 
+/* stars in a review form */
+.form-rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input + .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input:checked + .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input:checked + * ~ .icon:before {
+    content: '\e9d7';
+}
+.form-rate-stars:hover label.icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars label.icon:hover:before {
+     content: '\e9d9';
+ }
+.form-rate-stars label.icon:hover ~ label.icon:before{
+    content: '\e9d7';
+}
+
 
 /* --- BOOK COVERS --- */
 .book-cover {

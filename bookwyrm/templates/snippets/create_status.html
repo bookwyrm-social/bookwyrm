@@ -1,43 +1,53 @@
 {% load humanize %}
 {% load fr_display %}
 
-<div class="tabs secondary">
-    <div class="tab active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/review" onclick="tabChange(event)">Review</a>
-    </div>
-    <div class="tab" data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/comment" onclick="tabChange(event)">Comment</a>
-    </div>
-    <div class="tab" data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/quotation" onclick="tabChange(event)">Quote</a>
-    </div>
+<div class="tabs is-boxed">
+    <ul>
+        <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <a href="/book/{{ book.id }}/review" onclick="tabChange(event)">Review</a>
+        </li>
+        <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <a href="/book/{{ book.id }}/comment" onclick="tabChange(event)">Comment</a>
+        </li>
+        <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <a href="/book/{{ book.id }}/quotation" onclick="tabChange(event)">Quote</a>
+        </li>
+    </ul>
 </div>
 
-<div class="book-preview row">
+<div class="columns">
     {% if not hide_cover %}
-    <div class="cover-container">
+    <div class="column is-narrow">
         {% include 'snippets/book_cover.html' with book=book %}
     </div>
     {% endif %}
-    <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
+
+    <form class="tab-option-{{ book.id }} column" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
-        {% include 'snippets/rate_form.html' with book=book %}
-        {{ review_form.as_p }}
-        <button type="submit">post review</button>
+	<div class="control">
+            <label class="label" for="id_name">Title:</label>
+            {{ review_form.name }}
+        </div>
+	<div class="control">
+            <label class="label" for="id_content">Review:</label>
+            {% include 'snippets/rate_form.html' with book=book %}
+            {{ review_form.content }}
+        </div>
+        <button class="button is-primary" type="submit">post review</button>
     </form>
 
-    <form class="hidden tab-option-{{ book.id }} review-form" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
+    <form class="hidden tab-option-{{ book.id }} column" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         {{ comment_form.as_p }}
-        <button type="submit">post comment</button>
+        <button class="button is-primary" type="submit">post comment</button>
     </form>
 
-    <form class="hidden tab-option-{{ book.id }} review-form quote-form" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
+    <form class="hidden tab-option-{{ book.id }} column" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         {{ quotation_form.as_p }}
-        <button typr="submit">post quote</button>
+        <button class="button is-primary" type="submit">post quote</button>
     </form>
 </div>
