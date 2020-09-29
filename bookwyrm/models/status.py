@@ -78,7 +78,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     # for serializing to standard activitypub without extended types
     pure_activity_mappings = shared_mappings + [
-        ActivityMapping('name', 'pure_ap_name'),
+        ActivityMapping('name', 'ap_pure_name'),
         ActivityMapping('content', 'ap_pure_content'),
     ]
 
@@ -145,6 +145,7 @@ class Quotation(Status):
         )
 
     activity_serializer = activitypub.Quotation
+    pure_activity_serializer = activitypub.Note
 
 
 class Review(Status):
@@ -174,6 +175,7 @@ class Review(Status):
                 (self.book.local_id, self.book.title)
 
     activity_serializer = activitypub.Review
+    pure_activity_serializer = activitypub.Article
 
 
 class Favorite(ActivitypubMixin, BookWyrmModel):
