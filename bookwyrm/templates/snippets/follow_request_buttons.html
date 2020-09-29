@@ -3,11 +3,11 @@
 <form action="/accept_follow_request/" method="POST">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}">
-    <button type="submit">Accept</button>
+    <button class="button is-small" type="submit">Accept</button>
 </form>
 <form action="/delete_follow_request/" method="POST">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}">
-    <button type="submit" class="warning">Delete</button>
+    <button class="button is-small" type="submit" class="warning">Delete</button>
 </form>
 {% endif %}

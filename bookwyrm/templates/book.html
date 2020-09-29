@@ -10,11 +10,11 @@
 
     {% if request.user.is_authenticated %}
     <div class="level-right">
-    <a href="{{ book.id }}/edit">edit
-        <span class="icon icon-pencil">
-            <span class="hidden-text">Edit Book</span>
-        </span>
-    </a>
+        <a href="{{ book.id }}/edit">edit
+            <span class="icon icon-pencil">
+                <span class="hidden-text">Edit Book</span>
+            </span>
+        </a>
     </div>
     {% endif %}
     </div>
