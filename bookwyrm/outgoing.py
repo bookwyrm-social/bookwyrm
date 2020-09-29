@@ -12,6 +12,7 @@ from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_review, create_status
 from bookwyrm.status import create_quotation, create_comment
 from bookwyrm.status import create_tag, create_notification, create_rating
+from bookwyrm.status import create_generated_note
 from bookwyrm.remote_user import get_or_create_remote_user
 
 
@@ -107,14 +108,12 @@ def handle_shelve(user, book, shelf):
     broadcast(user, shelve.to_add_activity(user))
 
     # tell the world about this cool thing that happened
-    verb = {
+    message = {
         'to-read': 'wants to read',
         'reading': 'started reading',
         'read': 'finished reading'
     }[shelf.identifier]
-    message = '%s "%s"' % (verb, book.title)
-    status = create_status(user, message, mention_books=[book])
-    status.status_type = 'Update'
+    status = create_generated_note(user, message, mention_books=[book])
     status.save()
 
     if shelf.identifier == 'reading':
@@ -187,8 +186,7 @@ def handle_import_books(user, items):
 
     if new_books:
         message = 'imported {} books'.format(len(new_books))
-        status = create_status(user, message, mention_books=new_books)
-        status.status_type = 'Update'
+        status = create_generated_note(user, message, mention_books=new_books)
         status.save()
 
         broadcast(user, status.to_create_activity(user))
