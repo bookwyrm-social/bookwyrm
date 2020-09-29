@@ -71,9 +71,11 @@
             {% endif %}
 
             <div class="block">
+                <div class="field is-grouped is-grouped-multiline">
                 {% for tag in tags %}
                     {% include 'snippets/tag.html' with book=book tag=tag user_tags=user_tags %}
                 {% endfor %}
+                </div>
             </div>
 
         </div>

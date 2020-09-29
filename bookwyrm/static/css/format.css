@@ -82,8 +82,11 @@ input.toggle-control:checked ~ .toggle-content {
 .cover-container {
     height: 250px;
 }
+.cover-container.is-small {
+    height: 100px;
+}
 .book-cover {
-    height: 100%
+    height: 100%;
     object-fit: scale-down;
 }
 .no-cover {
@@ -97,9 +100,9 @@ input.toggle-control:checked ~ .toggle-content {
     left: 0;
     text-align: center;
 }
-.no-cover .title {
-    text-transform: uppercase;
-    margin-bottom: 1em;
+.is-small .no-cover div {
+    font-size: 0.7em;
+    padding: 0.1em;
 }
 
 

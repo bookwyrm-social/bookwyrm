@@ -59,10 +59,10 @@
         <div class="navbar-end">
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
-                <div class="navbar-link">
+                <div class="navbar-link"><p>
                     {% include 'snippets/avatar.html' with user=user %}
                     {% include 'snippets/username.html' with user=request.user %}
-                </div>
+                </p></div>
                 <div class="navbar-dropdown">
                     <a href="/user/{{request.user.localname}}" class="navbar-item">
                         Profile
