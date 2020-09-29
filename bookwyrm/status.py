@@ -101,8 +101,26 @@ def get_status(remote_id):
     ).first()
 
 
-def create_status(user, content, reply_parent=None, mention_books=None,
-                  remote_id=None):
+def create_generated_note(user, content, mention_books=None):
+    ''' a note created by the app about user activity '''
+    # sanitize input html
+    parser = InputHtmlParser()
+    parser.feed(content)
+    content = parser.get_output()
+
+    status = models.GeneratedStatus.objects.create(
+        user=user,
+        content=content,
+    )
+
+    if mention_books:
+        for book in mention_books:
+            status.mention_books.add(book)
+
+    return status
+
+
+def create_status(user, content, reply_parent=None, mention_books=None):
     ''' a status update '''
     # TODO: handle @'ing users
 
@@ -115,7 +133,6 @@ def create_status(user, content, reply_parent=None, mention_books=None,
         user=user,
         content=content,
         reply_parent=reply_parent,
-        remote_id=remote_id,
     )
 
     if mention_books:

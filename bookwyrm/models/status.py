@@ -99,6 +99,21 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
+class GeneratedStatus(Status):
+    ''' these are app-generated messages about user activity '''
+    @property
+    def ap_pure_content(self):
+        ''' indicate the book in question for mastodon (or w/e) users '''
+        message = self.content
+        books = ', '.join(
+            '<a href="%s">"%s"</a>' % (self.book.local_id, self.book.title) \
+            for book in self.mention_books
+        )
+        return '%s %s' % (message, books)
+
+    activity_serializer = activitypub.GeneratedNote
+    pure_activity_serializer = activitypub.Note
+
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''

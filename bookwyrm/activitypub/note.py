@@ -29,6 +29,12 @@ class Article(Note):
 
 
 @dataclass(init=False)
+class GeneratedNote(Note):
+    ''' just a re-typed note '''
+    type: str = 'NoteUpdate'
+
+
+@dataclass(init=False)
 class Comment(Note):
     ''' like a note but with a book '''
     inReplyToBook: str
