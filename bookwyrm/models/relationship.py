@@ -39,6 +39,22 @@ class UserRelationship(BookWyrmModel):
         base_path = self.user_subject.remote_id
         return '%s#%s/%d' % (base_path, self.status, self.id)
 
+    def to_accept_activity(self):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Accept(
+            id='%s#accepts/follows/' % self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        ).serialize()
+
+    def to_reject_activity(self):
+        ''' generate an Accept for this follow request '''
+        return activitypub.Reject(
+            id='%s#rejects/follows/' % self.remote_id,
+            actor=self.user_subject.remote_id,
+            object=self.user_object.remote_id,
+        ).serialize()
+
 
 class UserFollows(UserRelationship):
     ''' Following a user '''
@@ -62,22 +78,6 @@ class UserFollowRequest(UserRelationship):
         ''' request activity '''
         return activitypub.Follow(
             id=self.remote_id,
-            actor=self.user_subject.remote_id,
-            object=self.user_object.remote_id,
-        ).serialize()
-
-    def to_accept_activity(self):
-        ''' generate an Accept for this follow request '''
-        return activitypub.Accept(
-            id='%s#accepts/follows/' % self.remote_id,
-            actor=self.user_subject.remote_id,
-            object=self.user_object.remote_id,
-        ).serialize()
-
-    def to_reject_activity(self):
-        ''' generate an Accept for this follow request '''
-        return activitypub.Reject(
-            id='%s#rejects/follows/' % self.remote_id,
             actor=self.user_subject.remote_id,
             object=self.user_object.remote_id,
         ).serialize()
