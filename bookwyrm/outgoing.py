@@ -319,4 +319,4 @@ def handle_update_book(user, book):
 
 def handle_update_user(user):
     ''' broadcast editing a user's profile '''
-    broadcast(user, user.to_update_activity())
+    broadcast(user, user.to_update_activity(user))
