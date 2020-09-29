@@ -1,4 +1,6 @@
 {% load fr_display %}
+<div class="block">
+
 {% with depth=depth|add:1 %}
     {% if depth <= max_depth and status.reply_parent and direction <= 0 %}
         {% with direction=-1 %}
@@ -16,3 +18,5 @@
     {% endfor %}
 {% endif %}
 {% endwith %}
+
+</div>

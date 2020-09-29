@@ -1,10 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div id="content">
-    <div class="comment-thread">
-        {% include 'snippets/thread.html' with status=status depth=0 max_depth=6 is_root=True direction=0 %}
-    </div>
+<div class="block">
+    {% include 'snippets/thread.html' with status=status depth=0 max_depth=6 is_root=True direction=0 %}
 </div>
 
 {% endblock %}
