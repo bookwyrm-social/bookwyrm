@@ -79,9 +79,12 @@ input.toggle-control:checked ~ .toggle-content {
 
 
 /* --- BOOK COVERS --- */
+.cover-container {
+    height: 250px;
+}
 .book-cover {
-    width: 10em;
-    height: auto;
+    height: 100%
+    object-fit: scale-down;
 }
 .no-cover {
     position: relative;

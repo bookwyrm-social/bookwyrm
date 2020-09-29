@@ -1,18 +1,29 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div class="content-container">
-    <h2>Editions of <a href="/book/{{ work.id }}">"{{ work.title }}"</a></h2>
-    <ol class="book-grid row wrap">
+<div class="block">
+    <h2 class="title">Editions of <a href="/book/{{ work.id }}">"{{ work.title }}"</a></h2>
+
+
+<div class="tile is-ancestor">
+    <div class="tile is-vertical">
+        <div class="tile">
         {% for book in editions %}
-        <li class="book-preview">
-            <a href="/book/{{ book.id }}">
-                {% include 'snippets/book_cover.html' with book=book %}
-            </a>
-            {% include 'snippets/shelve_button.html' with book=book %}
-        </li>
+        {% if forloop.counter0|divisibleby:"5" %}
+        </div>
+        <div class="tile">
+        {% endif %}
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child box">
+                    <a href="/book/{{ book.id }}">
+                        {% include 'snippets/book_cover.html' with book=book %}
+                    </a>
+                    {% include 'snippets/shelve_button.html' with book=book %}
+                </article>
+            </div>
         {% endfor %}
-    </ol>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
