@@ -216,6 +216,16 @@ def login_page(request):
     return TemplateResponse(request, 'login.html', data)
 
 
+def register_page(request):
+    ''' authentication '''
+    # send user to the login page
+    data = {
+        'site_settings': models.SiteSettings.get(),
+        'register_form': forms.RegisterForm(),
+    }
+    return TemplateResponse(request, 'register.html', data)
+
+
 def about_page(request):
     ''' more information about the instance '''
     data = {

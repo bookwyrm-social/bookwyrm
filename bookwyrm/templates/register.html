@@ -13,30 +13,31 @@
     </p>
 
     <p class="block">
-        <a href="/register" class="button is-link">Create an Account</a>
+        <a href="/login" class="button is-link">Log In</a>
     </p>
 </div>
 
 <div class="column">
-    <h2 class="title">Log in</h2>
+    <h2 class="title">Create an Account</h2>
 
     <div class="block">
-        <form name="login" method="post" action="/user-login">
+        <form name="register" method="post" action="/user-register">
             {% csrf_token %}
             <div class="field">
                 <label class="label" for="id_username">Username:</label>
-                <div class="control">{{ login_form.username }}</div>
+                <div class="control">{{ register_form.username }}</div>
+            </div>
+            <div class="field">
+                <label class="label" for="id_email">Email address:</label>
+                <div class="control">{{ register_form.email }}</div>
             </div>
             <div class="field">
                 <label class="label" for="id_password">Password:</label>
-                <div class="control">{{ login_form.password }}</div>
+                <div class="control">{{ register_form.password }}</div>
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button class="button is-primary" type="submit">Log in</button>
-                </div>
-                <div class="control">
-                    <small><a href="/reset-password">Forgot your password?</a></small>
+                    <button class="button is-primary" type="submit">Sign Up</button>
                 </div>
             </div>
         </form>
@@ -45,3 +46,4 @@
 
 </div>
 {% endblock %}
+
