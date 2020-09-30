@@ -9,14 +9,14 @@
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
                 <input type="hidden" name="name" value="{{ tag.name }}">
-                <button type="submit">x<span class="hidden-text"> remove tag</span></button>
+                <button type="submit">x<span class="is-sr-only"> remove tag</span></button>
             </form>
             {% else %}
             <form name="tag" action="/tag/" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
                 <input type="hidden" name="name" value="{{ tag.name }}">
-                <button type="submit">+<span class="hidden-text"> add tag</span></button>
+                <button type="submit">+<span class="is-sr-only"> add tag</span></button>
             </form>
             {% endif %}
         </div>

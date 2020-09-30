@@ -30,7 +30,7 @@
 		<input class="input" type="text" name="q" placeholder="Search for a book or user">
 		<button class="button" type="submit">
 		    <span class="icon icon-search">
-			<span class="hidden-text">search</span>
+			<span class="is-sr-only">search</span>
 		    </span>
 		</button>
 	    </div>
@@ -87,7 +87,7 @@
                     <div class="tags has-addons">
                         <span class="tag is-medium">
                             <span class="icon icon-bell">
-                                <span class="hidden-text">Notitications</span>
+                                <span class="is-sr-only">Notitications</span>
                             </span>
                         </span>
                         {% if request.user|notification_count %}

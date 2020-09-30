@@ -8,7 +8,7 @@
         <textarea name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}" required="true"></textarea>
         <button class="button" type="submit">
             <span class="icon icon-comment">
-                <span class="hidden-text">Comment</span>
+                <span class="is-sr-only">Comment</span>
             </span>
         </button>
         </div>
@@ -18,7 +18,7 @@
         {% csrf_token %}
         <button class="button" type="submit">
             <span class="icon icon-boost">
-                <span class="hidden-text">Boost status</span>
+                <span class="is-sr-only">Boost status</span>
             </span>
         </button>
     </form>
@@ -26,7 +26,7 @@
         {% csrf_token %}
         <button class="button is-success" type="submit">
             <span class="icon icon-boost">
-                <span class="hidden-text">Un-boost status</span>
+                <span class="is-sr-only">Un-boost status</span>
             </span>
         </button>
     </form>
@@ -35,7 +35,7 @@
         {% csrf_token %}
         <button class="button" type="submit">
             <span class="icon icon-heart">
-                <span class="hidden-text">Like status</span>
+                <span class="is-sr-only">Like status</span>
             </span>
         </button>
     </form>
@@ -43,22 +43,22 @@
         {% csrf_token %}
         <button class="button is-success" type="submit">
             <span class="icon icon-heart">
-                <span class="hidden-text">Un-like status</span>
+                <span class="is-sr-only">Un-like status</span>
             </span>
         </button>
     </form>
     {% else %}
     <a href="/login">
     <span class="icon icon-comment">
-        <span class="hidden-text">Comment</span>
+        <span class="is-sr-only">Comment</span>
     </span>
 
     <span class="icon icon-boost">
-        <span class="hidden-text">Boost status</span>
+        <span class="is-sr-only">Boost status</span>
     </span>
 
     <span class="icon icon-heart">
-        <span class="hidden-text">Like status</span>
+        <span class="is-sr-only">Like status</span>
     </span>
     </a>
     {% endif %}
