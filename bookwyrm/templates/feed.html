@@ -4,7 +4,6 @@
 
 <div class="columns">
     <div class="column">
-        <h2 class="title is-3">Recent Books</h2>
         <div class="tabs is-small is-toggle">
             <ul>
                 {% for book in user_books|slice:3 %}
@@ -18,6 +17,7 @@
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if forloop.first %}checked{% endif %}>
             <div class="toggle-content hidden">
+                <div class="block">{% include 'snippets/book_titleby.html' with book=book %}</div>
                 {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
@@ -25,7 +25,6 @@
     </div>
 
     <div class="column is-two-thirds" id="feed">
-        <h2 class="title is-3">Updates</h2>
         {% for activity in activities %}
         <div class="block">
         {% include 'snippets/status.html' with status=activity %}

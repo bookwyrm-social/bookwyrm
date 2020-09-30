@@ -5,11 +5,10 @@
     <div class="media-left">
         {% for book in status.mention_books.all|slice:"0:4" %}
         <div>
-            {% include 'snippets/book_cover.html' with book=book %}
+            <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
             {% if status.mention_books.count > 1 %}
             <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
             {% endif %}
-            {% include 'snippets/rate_action.html' with book=book user=request.user %}
             {% include 'snippets/shelve_button.html' with book=book %}
         </div>
         {% endfor %}
@@ -19,7 +18,7 @@
     {% if not hide_book and status.book %}
     <div class="media-left">
         <div>
-        {% include 'snippets/book_cover.html' with book=status.book %}
+        <a href="/book/{{ status.book.id }}">{% include 'snippets/book_cover.html' with book=status.book %}</a>
         {% include 'snippets/rate_action.html' with book=status.book user=request.user %}
         {% include 'snippets/shelve_button.html' with book=status.book %}
         </div>
