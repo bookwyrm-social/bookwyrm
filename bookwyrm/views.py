@@ -259,8 +259,6 @@ def user_page(request, username, subpage=None):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
-    # TODO: change display with privacy and authentication considerations
-
     data = {
         'user': user,
         'is_self': request.user.id == user.id,
@@ -275,10 +273,22 @@ def user_page(request, username, subpage=None):
         data['shelves'] = user.shelf_set.all()
         return TemplateResponse(request, 'user_shelves.html', data)
 
-    shelves = get_user_shelf_preview(user)
+    data['shelf_count'] = user.shelf_set.count()
+    shelves = []
+    for shelf in user.shelf_set.all():
+        if not shelf.books.count():
+            continue
+        shelves.append({
+            'name': shelf.name,
+            'remote_id': shelf.remote_id,
+            'books': shelf.books.all()[:3],
+            'size': shelf.books.count(),
+        })
+        if len(shelves) > 2:
+            break
+
     data['shelves'] = shelves
-    activities = get_activity_feed(user, 'self')[:15]
-    data['activities'] = activities
+    data['activities'] = get_activity_feed(user, 'self')[:15]
     return TemplateResponse(request, 'user.html', data)
 
 
@@ -540,42 +550,3 @@ def shelf_page(request, username, shelf_identifier):
         'user': user,
     }
     return TemplateResponse(request, 'shelf.html', data)
-
-
-def get_user_shelf_preview(user, shelf_proportions=None):
-    ''' data for the covers shelf (user page and feed page) '''
-    shelves = []
-    shelf_max = 6
-    if not shelf_proportions:
-        shelf_proportions = [('reading', 3), ('read', 2), ('to-read', -1)]
-    for (identifier, count) in shelf_proportions:
-        if shelf_max <= 0:
-            break
-        if count > shelf_max or count < 0:
-            count = shelf_max
-
-        try:
-            shelf = models.Shelf.objects.get(
-                user=user,
-                identifier=identifier,
-            )
-        except models.Shelf.DoesNotExist:
-            continue
-
-        if not shelf.books.count():
-            continue
-        books = models.ShelfBook.objects.filter(
-            shelf=shelf,
-        ).order_by(
-            '-updated_date'
-        )[:count]
-
-        shelf_max -= len(books)
-
-        shelves.append({
-            'name': shelf.name,
-            'identifier': shelf.identifier,
-            'books': [b.book for b in books],
-            'size': shelf.books.count(),
-        })
-    return shelves
