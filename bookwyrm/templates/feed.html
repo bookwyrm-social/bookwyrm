@@ -13,11 +13,14 @@
                 {% endfor %}
             </ul>
         </div>
-        {% for book in user_books|slice:3 %}
+        {% for book in user_books|slice:5 %}
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if forloop.first %}checked{% endif %}>
             <div class="toggle-content hidden">
-                <div class="block">{% include 'snippets/book_titleby.html' with book=book %}</div>
+                <div class="block">
+                    {% include 'snippets/book_titleby.html' with book=book %}
+                    {% include 'snippets/shelve_button.html' with book=book %}
+                </div>
                 {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
