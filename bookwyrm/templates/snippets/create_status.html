@@ -19,7 +19,6 @@
 
         <div>
             <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="review-{{ book.id }}" checked>
-            {{ book.id }}
             <form class="toggle-content hidden tab-option-{{ book.id }}" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
