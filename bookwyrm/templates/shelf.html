@@ -2,8 +2,18 @@
 {% block content %}
 
 <div class="block">
+    <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/user/{{ user.username }}">{% include 'snippets/username.html' with user=user %}</a></li>
+            <li><a href="/user/{{ user.username }}/shelves">Shelves</a></li>
+            <li class="is-active"><a href="#" aria-current="page">{{ shelf.name }}</a></li>
+        </ul>
+    </nav>
+</div>
+
+<div class="block">
     <div>
-        <h2 class="title">{% include 'snippets/username.html' with user=user %} > {{ shelf.name }}</h2>
+        <h2 class="title">{{ shelf.name }}</h2>
         {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
     </div>
 </div>
