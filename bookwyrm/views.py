@@ -64,8 +64,8 @@ def home_tab(request, tab):
     activity_count = activities.count()
     activities = activities[(page - 1) * page_size:page * page_size]
 
-    next_page = '/?page=%d' % (page + 1)
-    prev_page = '/?page=%d' % (page - 1)
+    next_page = '/?page=%d#feed' % (page + 1)
+    prev_page = '/?page=%d#feed' % (page - 1)
     data = {
         'user': request.user,
         'user_books': user_books,
