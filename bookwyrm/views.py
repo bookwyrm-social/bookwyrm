@@ -2,7 +2,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Q
+from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -56,8 +56,34 @@ def home_tab(request, tab):
     except ValueError:
         page = 1
 
-    # allows us to check if a user has shelved a book
-    user_books = models.Edition.objects.filter(shelves__user=request.user).all()
+    count = 5
+    querysets = [
+        # recemt currently reading
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='reading'
+        ),
+        # read
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='read'
+        )[:2],
+        # to-read
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='to-read'
+        ),
+        # popular books
+        models.Edition.objects.annotate(
+            shelf_count=Count('shelves')
+        ).order_by('-shelf_count')
+    ]
+    suggested_books = []
+    for queryset in querysets:
+        length = count - len(suggested_books)
+        suggested_books += list(queryset[:length])
+        if len(suggested_books) >= count:
+            break
 
     activities = get_activity_feed(request.user, tab)
 
@@ -68,7 +94,7 @@ def home_tab(request, tab):
     prev_page = '/?page=%d#feed' % (page - 1)
     data = {
         'user': request.user,
-        'user_books': user_books,
+        'suggested_books': suggested_books,
         'activities': activities,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),

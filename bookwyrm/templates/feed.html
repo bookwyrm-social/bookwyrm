@@ -3,17 +3,18 @@
 {% block content %}
 
 <div class="columns">
-    <div class="column">
+    <div class="column is-one-third">
+        <h2 class="title is-4">Suggested books</h2>
         <div class="tabs is-small is-toggle">
             <ul>
-                {% for book in user_books|slice:3 %}
+                {% for book in suggested_books %}
                 <li class="{% if forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
                     <label for="book-{{ book.id }}" onclick="tabChange(event)"><a>{% include 'snippets/book_cover.html' with book=book size="medium" %}</a></label>
                 </li>
                 {% endfor %}
             </ul>
         </div>
-        {% for book in user_books|slice:5 %}
+        {% for book in suggested_books %}
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if forloop.first %}checked{% endif %}>
             <div class="toggle-content hidden">

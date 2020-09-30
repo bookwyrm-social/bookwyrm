@@ -143,18 +143,6 @@ def shelve_button_text(context, book):
     return 'Want to read'
 
 
-@register.simple_tag(takes_context=True)
-def current_shelf(context, book):
-    ''' check what shelf a user has a book on, if any '''
-    try:
-        shelf = models.ShelfBook.objects.get(
-            shelf__user=context['user'],
-            book=book
-        )
-    except models.ShelfBook.DoesNotExist:
-        return None
-    return shelf.name
-
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     ''' the most recent read activity '''
