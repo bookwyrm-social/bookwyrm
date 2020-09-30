@@ -6,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import books_manager
+from bookwyrm.connectors import ConnectorException
 from bookwyrm.models import ReadThrough, User, Book
 from bookwyrm.utils.fields import JSONField
 
@@ -65,7 +66,11 @@ class ImportItem(models.Model):
         ''' search by isbn '''
         search_result = books_manager.first_search_result(self.isbn)
         if search_result:
-            return books_manager.get_or_create_book(search_result.key)
+            try:
+                # don't crash the import when the connector fails
+                return books_manager.get_or_create_book(search_result.key)
+            except ConnectorException:
+                pass
 
     def get_book_from_title_author(self):
         ''' search by title and author '''

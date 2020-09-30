@@ -5,7 +5,7 @@ import requests
 from django.core.files.base import ContentFile
 
 from bookwyrm import models
-from .abstract_connector import AbstractConnector, SearchResult, Mapping
+from .abstract_connector import AbstractConnector, ConnectorException, SearchResult, Mapping
 from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date, get_data
 from .openlibrary_languages import languages
@@ -80,7 +80,7 @@ class Connector(AbstractConnector):
         try:
             key = data['key']
         except KeyError:
-            return False
+            raise ConnectorException('Invalid book data')
         url = '%s/%s/editions' % (self.books_url, key)
         data = get_data(url)
         return pick_default_edition(data['entries'])
@@ -90,7 +90,7 @@ class Connector(AbstractConnector):
         try:
             key = data['works'][0]['key']
         except (IndexError, KeyError):
-            return False
+            raise ConnectorException('No work found foredition')
         url = '%s/%s' % (self.books_url, key)
         return get_data(url)
 

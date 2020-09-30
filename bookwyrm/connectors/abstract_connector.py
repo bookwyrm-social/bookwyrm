@@ -9,6 +9,10 @@ from django.db import transaction
 from bookwyrm import models
 
 
+class ConnectorException(Exception):
+    ''' when the connector can't do what was asked '''
+
+
 class AbstractConnector(ABC):
     ''' generic book data connector '''
 
