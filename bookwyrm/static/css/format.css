@@ -81,8 +81,19 @@ input.toggle-control:checked ~ .toggle-content {
 .cover-container {
     height: 250px;
 }
+.cover-container.is-medium {
+    height: 150px;
+}
+.cover-container.is-medium .no-cover div {
+    font-size: 0.9em;
+    padding: 0.3em;
+}
 .cover-container.is-small {
     height: 100px;
+}
+.cover-container.is-small .no-cover div {
+    font-size: 0.7em;
+    padding: 0.1em;
 }
 .book-cover {
     height: 100%;
@@ -90,6 +101,7 @@ input.toggle-control:checked ~ .toggle-content {
 }
 .no-cover {
     position: relative;
+    white-space: normal;
 }
 .no-cover div {
     position: absolute;
@@ -98,10 +110,6 @@ input.toggle-control:checked ~ .toggle-content {
     top: 0;
     left: 0;
     text-align: center;
-}
-.is-small .no-cover div {
-    font-size: 0.7em;
-    padding: 0.1em;
 }
 
 

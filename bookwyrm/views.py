@@ -56,26 +56,6 @@ def home_tab(request, tab):
     except ValueError:
         page = 1
 
-    shelves = []
-    shelves = get_user_shelf_preview(
-        request.user,
-        [('reading', 3), ('read', 1), ('to-read', 3)]
-    )
-    size = sum(len(s['books']) for s in shelves)
-    # books new to the instance, for discovery
-    if size < 6:
-        recent_books = models.Work.objects.order_by(
-            '-created_date'
-        )[:6 - size]
-        recent_books = [b.default_edition for b in recent_books]
-        shelves.append({
-            'name': 'Recently added',
-            'identifier': None,
-            'books': recent_books,
-            'count': 6 - size,
-        })
-
-
     # allows us to check if a user has shelved a book
     user_books = models.Edition.objects.filter(shelves__user=request.user).all()
 
@@ -88,15 +68,8 @@ def home_tab(request, tab):
     prev_page = '/?page=%d' % (page - 1)
     data = {
         'user': request.user,
-        'shelves': shelves,
         'user_books': user_books,
         'activities': activities,
-        'feed_tabs': [
-            {'id': 'home', 'display': 'Home'},
-            {'id': 'local', 'display': 'Local'},
-            {'id': 'federated', 'display': 'Federated'}
-        ],
-        'active_tab': tab,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),

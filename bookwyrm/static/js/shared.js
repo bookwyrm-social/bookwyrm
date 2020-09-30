@@ -32,7 +32,7 @@ function rate_stars(e) {
 }
 
 function tabChange(e) {
-    var target = e.target.parentElement.parentElement;
+    var target = e.target.closest('li')
     var identifier = target.getAttribute('data-id');
 
     var tabs = target.parentElement.children;

@@ -1,14 +1,15 @@
 {% load fr_display %}
 
+<div class="level is-mobile">
 {% for shelf in shelves %}
 {% if shelf.books %}
-<div class="container">
+<div>
     <h2>{{ shelf.name }}
         {% if shelf.size > shelf.books|length %}
         <small>(<a href="/shelf/{{ user | username }}/{{ shelf.identifier }}">See all {{ shelf.size }}</a>)</small>
         {% endif %}
     </h2>
-    <div>
+    <div class="level is-mobile">
         {% for book in shelf.books %}
         <div>
             <label for="book-{{ book.id }}-radio">
@@ -21,3 +22,4 @@
 </div>
 {% endif %}
 {% endfor %}
+</div>

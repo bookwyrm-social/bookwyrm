@@ -2,31 +2,55 @@
 {% load fr_display %}
 {% block content %}
 
-<div>
-    {% for activity in activities %}
-    <div class="block">
-    {% include 'snippets/status.html' with status=activity %}
+<div class="columns">
+    <div class="column">
+        <h2 class="title is-3">Recent Books</h2>
+        <div class="tabs is-small is-toggle">
+            <ul>
+                {% for book in user_books|slice:3 %}
+                <li class="{% if forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
+                    <label for="book-{{ book.id }}" onclick="tabChange(event)"><a>{% include 'snippets/book_cover.html' with book=book size="medium" %}</a></label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% for book in user_books|slice:3 %}
+        <div>
+            <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if forloop.first %}checked{% endif %}>
+            <div class="toggle-content hidden">
+                {% include 'snippets/create_status.html' with book=book %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
-    <nav class="pagination" role="navigation" aria-label="pagination">
-        {% if prev %}
-        <p class="pagination-previous">
-            <a href="{{ prev }}">
-                <span class="icon icon-arrow-left"></span>
-                Previous
-            </a>
-        </p>
-        {% endif %}
+    <div class="column is-two-thirds">
+        <h2 class="title is-3">Updates</h2>
+        {% for activity in activities %}
+        <div class="block">
+        {% include 'snippets/status.html' with status=activity %}
+        </div>
+        {% endfor %}
 
-        {% if next %}
-        <p class="pagination-next">
-            <a href="{{ next }}">
-                Next
-                <span class="icon icon-arrow-right"></span>
-            </a>
-        </p>
-        {% endif %}
-    </nav>
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            {% if prev %}
+            <p class="pagination-previous">
+                <a href="{{ prev }}">
+                    <span class="icon icon-arrow-left"></span>
+                    Previous
+                </a>
+            </p>
+            {% endif %}
+
+            {% if next %}
+            <p class="pagination-next">
+                <a href="{{ next }}">
+                    Next
+                    <span class="icon icon-arrow-right"></span>
+                </a>
+            </p>
+            {% endif %}
+        </nav>
+    </div>
 </div>
 {% endblock %}
