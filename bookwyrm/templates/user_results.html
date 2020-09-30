@@ -1,12 +1,14 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="content-container">
+<div class="block">
+    <h2 class="title">User search results</h2>
     {% if not results %}
     <p>No results found for "{{ query }}"</p>
     {% endif %}
     {% for result in results %}
-    <div>
-        <h2>{{ result.username }}</h2>
+    <div class="block">
+        {% include 'snippets/avatar.html' with user=result %}</h2>
+        {% include 'snippets/username.html' with user=result show_full=True %}</h2>
         {% include 'snippets/follow_button.html' with user=result %}
     </div>
     {% endfor %}

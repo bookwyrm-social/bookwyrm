@@ -48,7 +48,7 @@ def handle_account_search(query):
         except requests.exceptions.ConnectionError:
             return None
         if not response.ok:
-            response.raise_for_status()
+            return None
         data = response.json()
         for link in data['links']:
             if link['rel'] == 'self':
