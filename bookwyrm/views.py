@@ -162,23 +162,6 @@ def search(request):
     return TemplateResponse(request, 'book_results.html', {'results': results})
 
 
-def books_page(request):
-    ''' discover books '''
-    recent_books = models.Work.objects
-    recent_books = recent_books.order_by('-created_date')[:50]
-    recent_books = [b.default_edition for b in recent_books]
-    if request.user.is_authenticated:
-        recent_books = models.Edition.objects.filter(
-            ~Q(shelfbook__shelf__user=request.user),
-            id__in=[b.id for b in recent_books if b],
-        )
-
-    data = {
-        'books': recent_books,
-    }
-    return TemplateResponse(request, 'books.html', data)
-
-
 @login_required
 def import_page(request):
     ''' import history from goodreads '''
