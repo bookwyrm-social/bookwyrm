@@ -5,7 +5,7 @@
         <div class="field is-grouped">
         {% csrf_token %}
         <input type="hidden" name="parent" value="{{ activity.id }}">
-        <textarea name="content" placeholder="Leave a comment..." id="id_content" required="true"></textarea>
+        <textarea name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}" required="true"></textarea>
         <button class="button" type="submit">
             <span class="icon icon-comment">
                 <span class="hidden-text">Comment</span>

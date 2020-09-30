@@ -23,13 +23,13 @@
                 {% csrf_token %}
                 <input type="hidden" name="book-{{ book.id }}" value="{{ book.id }}">
                 <div class="control">
-                    <label class="label" for="id_name">Title:</label>
-                    <input type="text" name="name" maxlength="255" class="input" required="" id="id_name" placeholder="My review of '{{ book.title }}'">
+                    <label class="label" for="id_name_{{ book.id }}_review">Title:</label>
+                    <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_review" placeholder="My review of '{{ book.title }}'">
                 </div>
                 <div class="control">
-                    <label class="label" for="id_content">Review:</label>
+                    <label class="label" for="id_content_{{ book.id }}_review">Review:</label>
                     {% include 'snippets/rate_form.html' with book=book %}
-                    <textarea name="content" class="textarea" id="id_content"></textarea>
+                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_review"></textarea>
                 </div>
                 <button class="button is-primary" type="submit">post review</button>
             </form>
@@ -41,8 +41,8 @@
                 {% csrf_token %}
                 <input type="hidden" name="book-{{ book.id }}" value="{{ book.id }}">
                 <div class="control">
-                    <label class="label" for="id_content">Comment:</label>
-                    <textarea name="content" class="textarea" id="id_content" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
+                    <label class="label" for="id_content_{{ book.id }}_comment">Comment:</label>
+                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_comment" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
                 </div>
                 <button class="button is-primary" type="submit">post comment</button>
             </form>
@@ -54,12 +54,12 @@
                 {% csrf_token %}
                 <input type="hidden" name="book-{{ book.id }}" value="{{ book.id }}">
                 <div class="control">
-                    <label class="label" for="id_quote">Quote:</label>
-                    <textarea name="quote" class="textarea" required="" id="id_quote" placeholder="An except from '{{ book.title }}'"></textarea>
+                    <label class="label" for="id_quote_{{ book.id }}_quote">Quote:</label>
+                    <textarea name="quote" class="textarea" required="" id="id_quote_{{ book.id }}_quote" placeholder="An except from '{{ book.title }}'"></textarea>
                 </div>
                 <div class="control">
-                    <label class="label" for="id_content">Comment:</label>
-                    <textarea name="content" class="textarea is-small" id="id_content"></textarea>
+                    <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
+                    <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
                 </div>
                 <button class="button is-primary" type="submit">post quote</button>
             </form>
