@@ -44,8 +44,7 @@ def make_signature(sender, destination, date, digest):
 
 def make_digest(data):
     ''' creates a message digest for signing '''
-    return 'SHA-256=' + b64encode(hashlib.sha256(data.encode('utf-8'))\
-            .digest()).decode('utf-8')
+    return 'SHA-256=' + b64encode(hashlib.sha256(data).digest()).decode('utf-8')
 
 
 def verify_digest(request):
