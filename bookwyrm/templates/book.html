@@ -45,7 +45,7 @@
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} reviews)</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
 
                 {% include 'snippets/book_description.html' %}
 

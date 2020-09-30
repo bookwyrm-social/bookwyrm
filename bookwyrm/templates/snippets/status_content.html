@@ -19,7 +19,6 @@
     <div class="media-left">
         <div>
         <a href="/book/{{ status.book.id }}">{% include 'snippets/book_cover.html' with book=status.book %}</a>
-        {% include 'snippets/rate_action.html' with book=status.book user=request.user %}
         {% include 'snippets/shelve_button.html' with book=status.book %}
         </div>
     </div>
