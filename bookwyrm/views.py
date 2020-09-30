@@ -120,9 +120,9 @@ def search(request):
     query = request.GET.get('q')
     if re.match(r'\w+@\w+.\w+', query):
         # if something looks like a username, search with webfinger
-        results = [outgoing.handle_account_search(query)]
+        results = outgoing.handle_account_search(query)
         return TemplateResponse(
-            request, 'user_results.html', {'results': results}
+            request, 'user_results.html', {'results': results, 'query': query}
         )
 
     # or just send the question over to book search

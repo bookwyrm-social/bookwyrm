@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="content-container">
+    {% if not results %}
+    <p>No results found for "{{ query }}"</p>
+    {% endif %}
     {% for result in results %}
     <div>
         <h2>{{ result.username }}</h2>

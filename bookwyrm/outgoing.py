@@ -43,7 +43,10 @@ def handle_account_search(query):
     except models.User.DoesNotExist:
         url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
             (domain, query)
-        response = requests.get(url)
+        try:
+            response = requests.get(url)
+        except requests.exceptions.ConnectionError:
+            return None
         if not response.ok:
             response.raise_for_status()
         data = response.json()
@@ -52,8 +55,8 @@ def handle_account_search(query):
                 try:
                     user = get_or_create_remote_user(link['href'])
                 except KeyError:
-                    return HttpResponseNotFound()
-    return user
+                    return None
+    return [user]
 
 
 def handle_follow(user, to_follow):
