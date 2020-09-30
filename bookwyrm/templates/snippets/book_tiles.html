@@ -1,22 +1,18 @@
-<div class="tile is-ancestor">
-    <div class="tile is-vertical">
-        <div class="tile">
-        {% for book in books %}
-        {% if forloop.counter0|divisibleby:"5" %}
-        </div>
-        <div class="tile">
+<div class="columns">
+    {% for book in books %}
+    {% if forloop.counter0|divisibleby:"4" %}
+</div>
+<div class="columns">
         {% endif %}
-            <div class="tile is-parent is-vertical">
-                <article class="tile is-child box">
-                    <a href="/book/{{ book.id }}">
-                        {% include 'snippets/book_cover.html' with book=book %}
-                    </a>
-                    {% include 'snippets/rate_action.html' with user=request.user book=book %}
-                    {% include 'snippets/shelve_button.html' with book=book %}
-                </article>
-            </div>
-        {% endfor %}
+    <div class="column is-narrow">
+        <div class="box">
+            <a href="/book/{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book %}
+            </a>
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            {% include 'snippets/shelve_button.html' with book=book %}
         </div>
     </div>
+    {% endfor %}
 </div>
 
