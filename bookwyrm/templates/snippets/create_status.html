@@ -28,7 +28,18 @@
                 </div>
                 <div class="control">
                     <label class="label" for="id_content_{{ book.id }}_review">Review:</label>
-                    {% include 'snippets/rate_form.html' with book=book %}
+
+                    <span class="hidden-text">Rating</span>
+                    <div class="field is-grouped stars form-rate-stars">
+                        <input class="hidden" type="radio" name="rating" value="" checked>
+                        {% for i in '12345'|make_list %}
+                            <input class="hidden" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
+                            <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+                                <span class="hidden-text">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
                     <textarea name="content" class="textarea" id="id_content_{{ book.id }}_review"></textarea>
                 </div>
                 <button class="button is-primary" type="submit">post review</button>
