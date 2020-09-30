@@ -417,7 +417,7 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-def book_page(request, book_id, tab='friends'):
+def book_page(request, book_id):
     ''' info about a book '''
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
@@ -432,23 +432,15 @@ def book_page(request, book_id, tab='friends'):
     if not work:
         return HttpResponseNotFound()
 
-    book_reviews = models.Review.objects.filter(book__in=work.edition_set.all())
+    reviews = models.Review.objects.filter(
+        book__in=work.edition_set.all(),
+    ).order_by('-published_date')
 
+    user_tags = []
     if request.user.is_authenticated:
-        user_reviews = book_reviews.filter(
-            user=request.user,
-        ).all()
-
-        reviews = get_activity_feed(request.user, tab, model=book_reviews)
-
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
         ).values_list('identifier', flat=True)
-    else:
-        tab = 'public'
-        reviews = book_reviews.filter(privacy='public')
-        user_reviews = []
-        user_tags = []
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -459,8 +451,8 @@ def book_page(request, book_id, tab='friends'):
 
     data = {
         'book': book,
-        'user_reviews': user_reviews,
-        'reviews': reviews.distinct(),
+        'reviews': reviews.filter(content__isnull=False),
+        'ratings': reviews.filter(content__isnull=True),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,

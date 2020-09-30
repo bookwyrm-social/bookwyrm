@@ -67,8 +67,6 @@ urlpatterns = [
 
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
-    re_path(r'%s/(?P<tab>friends|local|federated)?$' % \
-            book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
 

@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
+{% load humanize %}
 {% block content %}
 
 <div class="block">
@@ -89,12 +90,36 @@
 </div>
 {% endif %}
 
-<div>
+<div class="block">
     {% for review in reviews %}
     <div class="block">
         {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
     </div>
     {% endfor %}
+
+    <div class="block columns">
+    {% for rating in ratings %}
+    <div class="column">
+        <div class="media">
+            <div class="media-left">{% include 'snippets/avatar.html' %}</div>
+            <div class="media-content">
+                <div>
+                    {% include 'snippets/username.html' %}
+                </div>
+                <div class="field is-grouped mb-0">
+                    <div>rated it</div>
+                    {% include 'snippets/stars.html' with rating=rating.rating %}
+                </div>
+                <div>
+                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
 </div>
+
+
 {% endblock %}
 
