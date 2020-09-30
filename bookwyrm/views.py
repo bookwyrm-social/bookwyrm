@@ -441,22 +441,12 @@ def book_page(request, book_id, tab='friends'):
 
         reviews = get_activity_feed(request.user, tab, model=book_reviews)
 
-        try:
-            # TODO: books can be on multiple shelves
-            shelf = models.Shelf.objects.filter(
-                user=request.user,
-                edition=book
-            ).first()
-        except models.Shelf.DoesNotExist:
-            shelf = None
-
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
         ).values_list('identifier', flat=True)
     else:
         tab = 'public'
         reviews = book_reviews.filter(privacy='public')
-        shelf = None
         user_reviews = []
         user_tags = []
 
@@ -469,7 +459,6 @@ def book_page(request, book_id, tab='friends'):
 
     data = {
         'book': book,
-        'shelf': shelf,
         'user_reviews': user_reviews,
         'reviews': reviews.distinct(),
         'rating': rating['rating__avg'],
@@ -479,11 +468,6 @@ def book_page(request, book_id, tab='friends'):
         'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),
         'tag_form': forms.TagForm(),
-        'feed_tabs': [
-            {'id': 'friends', 'display': 'Friends'},
-            {'id': 'local', 'display': 'Local'},
-            {'id': 'federated', 'display': 'Federated'}
-        ],
         'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
