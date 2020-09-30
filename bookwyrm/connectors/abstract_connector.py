@@ -147,7 +147,7 @@ class AbstractConnector(ABC):
 
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-        book.author_text = ', '.join(a.name for a in book.authors.all())
+        book.author_text = ', '.join(a.display_name for a in book.authors.all())
         book.save()
 
         if not update_cover:
