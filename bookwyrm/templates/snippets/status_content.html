@@ -3,15 +3,17 @@
 <div class="media">
     {% if not hide_book and status.mention_books.count %}
     <div class="media-left">
+        <div class="columns">
         {% for book in status.mention_books.all|slice:"0:4" %}
-        <div>
-            <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
-            {% if status.mention_books.count > 1 %}
-            <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-            {% endif %}
-            {% include 'snippets/shelve_button.html' with book=book %}
-        </div>
+            <div class="column">
+                <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
+                {% if status.mention_books.count > 1 %}
+                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
+                {% endif %}
+                {% include 'snippets/shelve_button.html' with book=book %}
+            </div>
         {% endfor %}
+        </div>
     </div>
     {% endif %}
 
