@@ -83,16 +83,18 @@
                 </div>
             </div>
             <div class="navbar-item">
-                <div class="buttons">
-		    <a href="/notifications">
-			<span class="icon icon-bell">
-			    <span class="hidden-text">Notitications</span>
-			</span>
-			{% if request.user|notification_count %}
-                        <span class="bubble">{{ request.user | notification_count }}</span>
+                <a href="/notifications">
+                    <div class="tags has-addons">
+                        <span class="tag">
+                            <span class="icon icon-bell">
+                                <span class="hidden-text">Notitications</span>
+                            </span>
+                        </span>
+                        {% if request.user|notification_count %}
+                        <span class="tag is-danger">{{ request.user | notification_count }}</span>
                         {% endif %}
-		    </a>
-                </div>
+                    </div>
+                </a>
             </div>
 	    {% else %}
             <div class="navbar-item">
