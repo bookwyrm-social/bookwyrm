@@ -1,7 +1,6 @@
-{% load fr_display %}
 {% if book.description %}
-<blockquote class="content">{{ book.description | description }}</blockquote>
+<blockquote class="content">{{ book.description }}</blockquote>
 {% elif book.parent_work.description %}
-<blockquote>{{ book.parent_work.description | description }}</blockquote>
+<blockquote>{{ book.parent_work.description }}</blockquote>
 {% endif %}
 
