@@ -444,4 +444,4 @@ def create_invite(request):
     invite.user = request.user
     invite.save()
 
-    return redirect('/manage_invites')
+    return redirect('/invite')

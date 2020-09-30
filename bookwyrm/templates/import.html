@@ -1,17 +1,22 @@
 {% extends 'layout.html' %}
 {% load humanize %}
 {% block content %}
-<div class="content-container">
-    <h2>Import Books from GoodReads</h2>
+<div class="block">
+    <h2 class="title">Import Books from GoodReads</h2>
     <form name="import" action="/import_data/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ import_form.as_p }}
-        <button type="submit">Import</button>
+        <button class="button" type="submit">Import</button>
     </form>
     <p>
     Imports are limited in size, and only the first {{ limit }} items will be imported.
+</div>
 
-    <h2>Recent Imports</h2>
+<div class="content block">
+    <h2 class="title">Recent Imports</h2>
+    {% if not jobs %}
+    <p>No recent imports</p>
+    {% endif %}
     <ul>
         {% for job in jobs %}
             <li><a href="/import_status/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>

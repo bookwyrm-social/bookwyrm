@@ -1,16 +1,18 @@
 {% extends 'layout.html' %}
 {% load humanize %}
 {% block content %}
-<div class="content-container">
-    <div class="manage-invites">
-        <h2>Invites</h2>
-        <table>
-            <tr>
-                <th>Link</th>
-                <th>Expires</th>
-                <th>Max uses</th>
-                <th>Times used</th>
-            </tr>
+<div class="block">
+    <h2 class="title">Invites</h2>
+    <table class="table is-striped">
+        <tr>
+            <th>Link</th>
+            <th>Expires</th>
+            <th>Max uses</th>
+            <th>Times used</th>
+        </tr>
+        {% if not invites %}
+        <tr><td colspan="4">No active invites</td></tr>
+        {% endif %}
         {% for invite in invites %}
         <tr>
             <td><a href="{{ invite.link }}">{{ invite.link }}</td>
@@ -19,14 +21,33 @@
             <td>{{ invite.times_used }}</td>
         </tr>
         {% endfor %}
-        </table>
-        <h2>Generate New Invite</h2>
+    </table>
+</div>
 
-        <form name="avatar" action="/create_invite/" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Create Invite</button>
-        </form>
-    </div>
+<div class="block">
+    <h2 class="title is-4">Generate New Invite</h2>
+
+    <form name="invite" action="/create_invite/" method="post">
+        {% csrf_token %}
+        <div class="field">
+            <div class="control">
+                <label class="label" for="id_expiry">Expiry:</label>
+            </div>
+            <div class="select">
+                {{ form.expiry }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                <label class="label" for="id_use_limit">Use limit:</label>
+            </div>
+            <div class="select">
+                {{ form.use_limit }}
+            </div>
+        </div>
+
+        <button class="button is-primary" type="submit">Create Invite</button>
+    </form>
 </div>
 {% endblock %}

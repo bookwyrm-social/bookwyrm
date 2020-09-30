@@ -14,7 +14,11 @@
                 {% if shelf.size > 3 %}<small>(<a href="{{ shelf.remote_id }}">See all {{ shelf.size }}</a>)</small>{% endif %}</h3>
             <div class="is-mobile field is-grouped">
             {% for book in shelf.books %}
-            {% include 'snippets/book_cover.html' with book=book size="medium" %}
+            <div class="control">
+                <a href="/book/{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                </a>
+            </div>
             {% endfor %}
             </div>
         </div>
