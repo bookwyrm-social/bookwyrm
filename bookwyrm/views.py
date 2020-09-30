@@ -458,7 +458,6 @@ def book_page(request, book_id, tab='friends'):
             {'id': 'local', 'display': 'Local'},
             {'id': 'federated', 'display': 'Federated'}
         ],
-        'active_tab': tab,
         'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [

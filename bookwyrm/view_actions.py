@@ -144,7 +144,7 @@ def resolve_book(request):
 def edit_book(request, book_id):
     ''' edit a book cool '''
     if not request.method == 'POST':
-        return redirect('/book/%s' % request.user.localname)
+        return redirect('/book/%s' % book_id)
 
     try:
         book = models.Edition.objects.get(id=book_id)

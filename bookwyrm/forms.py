@@ -16,6 +16,7 @@ class CustomForm(ModelForm):
         css_classes['text'] = 'input'
         css_classes['password'] = 'input'
         css_classes['email'] = 'input'
+        css_classes['number'] = 'input'
         css_classes['checkbox'] = 'checkbox'
         css_classes['textarea'] = 'textarea'
         super(CustomForm, self).__init__(*args, **kwargs)
@@ -118,6 +119,7 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         exclude = [
+            'remote_id',
             'created_date',
             'updated_date',
             'last_sync_date',

@@ -8,19 +8,19 @@
             <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
         </h2>
 
-    {% if request.user.is_authenticated %}
-    <div class="level-right">
-        <a href="{{ book.id }}/edit">edit
-            <span class="icon icon-pencil">
-                <span class="hidden-text">Edit Book</span>
-            </span>
-        </a>
-    </div>
-    {% endif %}
+        {% if request.user.is_authenticated %}
+        <div class="level-right">
+            <a href="{{ book.id }}/edit">edit
+                <span class="icon icon-pencil">
+                    <span class="hidden-text">Edit Book</span>
+                </span>
+            </a>
+        </div>
+        {% endif %}
     </div>
 
     <div class="columns">
-        <div class="column">
+        <div class="column is-narrow">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button.html' %}
@@ -43,9 +43,9 @@
             </dl>
         </div>
 
-        <div class="column is-three-quarters">
+        <div class="column">
             <div class="block">
-                <h3>{% include 'snippets/stars.html' with rating=rating %}</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} reviews)</h3>
 
                 {% include 'snippets/book_description.html' %}
 

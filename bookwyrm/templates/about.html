@@ -1,21 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div class="content-container">
-    <h2>About {{ site_settings.name }}</h2>
-    <p>
-    {{ site_settings.instance_description }}
-    </p>
 
-    <p>
-    <small>
-    <a href="/login/">Login or Create an Account</a>
-    </small>
-    </p>
+<div class="columns">
+    <div class="column block">
+        <h2 class="title">About {{ site_settings.name }}</h2>
+        <p>
+            {{ site_settings.instance_description }}
+        </p>
+    </div>
 
-    <h2>Code of Conduct</h2>
-    <p>
-    {{ site_settings.code_of_conduct }}
-    </p>
+    <div class="column block">
+        <h2 class="title">Code of Conduct</h2>
+        <p>
+        {{ site_settings.code_of_conduct }}
+        </p>
 
+    </div>
 </div>
 {% endblock %}
