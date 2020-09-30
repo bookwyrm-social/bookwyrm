@@ -91,7 +91,7 @@
                             </span>
                         </span>
                         {% if request.user|notification_count %}
-                        <span class="tag is-danger">{{ request.user | notification_count }}</span>
+                        <span class="tag is-danger is-medium">{{ request.user | notification_count }}</span>
                         {% endif %}
                     </div>
                 </a>
