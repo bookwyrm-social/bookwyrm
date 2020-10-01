@@ -38,7 +38,6 @@ urlpatterns = [
 
     # ui views
     re_path(r'^login/?$', views.login_page),
-    re_path(r'^register/?$', views.register_page),
     re_path(r'^about/?$', views.about_page),
     re_path(r'^invite/?$', views.manage_invites),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
