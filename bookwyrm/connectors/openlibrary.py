@@ -5,7 +5,8 @@ import requests
 from django.core.files.base import ContentFile
 
 from bookwyrm import models
-from .abstract_connector import AbstractConnector, ConnectorException, SearchResult, Mapping
+from .abstract_connector import AbstractConnector, SearchResult, Mapping
+from .abstract_connector import ConnectorException
 from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date, get_data
 from .openlibrary_languages import languages
@@ -90,7 +91,7 @@ class Connector(AbstractConnector):
         try:
             key = data['works'][0]['key']
         except (IndexError, KeyError):
-            raise ConnectorException('No work found foredition')
+            raise ConnectorException('No work found for edition')
         url = '%s/%s' % (self.books_url, key)
         return get_data(url)
 
