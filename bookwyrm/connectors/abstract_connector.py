@@ -249,7 +249,10 @@ def update_from_mappings(obj, data, mappings):
             continue
 
         # extract the value in the right format
-        value = mapping.formatter(value)
+        try:
+            value = mapping.formatter(value)
+        except:
+            continue
 
         # assign the formatted value to the model
         obj.__setattr__(mapping.local_field, value)
