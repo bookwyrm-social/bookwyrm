@@ -132,6 +132,9 @@ class AbstractConnector(ABC):
             edition.author_text = work.author_text
             edition.save()
 
+        if not edition:
+            raise ConnectorException('Unable to create book: %s' % remote_id)
+
         return edition
 
 
