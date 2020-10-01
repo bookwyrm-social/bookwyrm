@@ -1,0 +1,115 @@
+/* --- ICONS --- */
+/* --- TOGGLES --- */
+input.toggle-control {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+input.toggle-control:checked ~ .toggle-content {
+    display: block;
+}
+
+/* --- STARS --- */
+.rate-stars button.icon {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+.rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.rate-stars form:hover ~ form .icon:before{
+    content: '\e9d7';
+}
+
+/* stars in a review form */
+.form-rate-stars:hover .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input + .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input:checked + .icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars input:checked + * ~ .icon:before {
+    content: '\e9d7';
+}
+.form-rate-stars:hover label.icon:before {
+    content: '\e9d9';
+}
+.form-rate-stars label.icon:hover:before {
+     content: '\e9d9';
+ }
+.form-rate-stars label.icon:hover ~ label.icon:before{
+    content: '\e9d7';
+}
+
+
+/* --- BOOK COVERS --- */
+.cover-container {
+    height: 250px;
+    width: max-content;
+}
+.cover-container.is-medium {
+    height: 150px;
+}
+.cover-container.is-medium .no-cover div {
+    font-size: 0.9em;
+    padding: 0.3em;
+}
+.cover-container.is-small {
+    height: 100px;
+}
+.cover-container.is-small .no-cover div {
+    font-size: 0.7em;
+    padding: 0.1em;
+}
+.book-cover {
+    height: 100%;
+    object-fit: scale-down;
+}
+.no-cover {
+    position: relative;
+    white-space: normal;
+}
+.no-cover div {
+    position: absolute;
+    padding: 1em;
+    color: white;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+
+
+/* --- AVATAR --- */
+.avatar {
+    vertical-align: middle;
+    display: inline;
+}
+
+
+/* --- QUOTES --- */
+.quote blockquote {
+    position: relative;
+    padding-left: 2em;
+}
+.quote blockquote:before, .quote blockquote:after {
+    font-family: 'icomoon';
+    position: absolute;
+}
+.quote blockquote:before {
+    content: "\e904";
+    top: 0;
+    left: 0;
+}
+.quote blockquote:after {
+    content: "\e903";
+    right: 0;
+}

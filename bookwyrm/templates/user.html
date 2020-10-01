@@ -1,18 +1,43 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% include 'user_header.html' with user=user %}
-{% include 'snippets/covers_shelf.html' with shelves=shelves user=user %}
+<div class="block">
+    {% include 'user_header.html' with user=user %}
+</div>
+
+<div class="block">
+    <h2 class="title">Shelves</h2>
+    <div class="columns">
+        {% for shelf in shelves %}
+        <div class="column is-narrow">
+            <h3>{{ shelf.name }}
+                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.remote_id }}">See all {{ shelf.size }}</a>)</small>{% endif %}</h3>
+            <div class="is-mobile field is-grouped">
+            {% for book in shelf.books %}
+            <div class="control">
+                <a href="/book/{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                </a>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <small><a href="/user/{{ user.localname }}/shelves">See all {{ shelf_count }} shelves</a></small>
+</div>
 
 <div>
-    <div class="content-container"><h2>User Activity</h2></div>
+    <div class="block">
+        <h2 class="title">User Activity</h2>
+    </div>
     {% for activity in activities %}
-    <div class="content-container">
+    <div class="block">
         {% include 'snippets/status.html' with status=activity %}
     </div>
     {% endfor %}
     {% if not activities %}
-    <div class="content-container">
+    <div class="block">
         <p>No activities yet!</a>
     </div>
     {% endif %}

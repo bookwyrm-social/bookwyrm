@@ -2,39 +2,58 @@
 {% load fr_display %}
 {% block content %}
 
-{% include 'snippets/covers_shelf.html' with shelves=shelves user=request.user %}
-
-
-<div id="feed">
-    <div class="content-container tabs">
-    {% include 'snippets/tabs.html' with tabs=feed_tabs active_tab=active_tab %}
+<div class="columns">
+    <div class="column is-one-third">
+        <h2 class="title is-4">Suggested books</h2>
+        <div class="tabs is-small is-toggle">
+            <ul>
+                {% for book in suggested_books %}
+                <li class="{% if forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
+                    <label for="book-{{ book.id }}" onclick="tabChange(event)"><a>{% include 'snippets/book_cover.html' with book=book size="medium" %}</a></label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% for book in suggested_books %}
+        <div>
+            <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if forloop.first %}checked{% endif %}>
+            <div class="toggle-content hidden">
+                <div class="block">
+                    {% include 'snippets/book_titleby.html' with book=book %}
+                    {% include 'snippets/shelve_button.html' with book=book %}
+                </div>
+                {% include 'snippets/create_status.html' with book=book %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
-    {% for activity in activities %}
-    <div class="content-container">
+    <div class="column is-two-thirds" id="feed">
+        {% for activity in activities %}
+        <div class="block">
         {% include 'snippets/status.html' with status=activity %}
-    </div>
-    {% endfor %}
+        </div>
+        {% endfor %}
 
-    <div class="content-container pagination row">
-        {% if prev %}
-        <p>
-            <a href="{{ prev }}">
-                <span class="icon icon-arrow-left"></span>
-                Previous
-            </a>
-        </p>
-        {% endif %}
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            {% if prev %}
+            <p class="pagination-previous">
+                <a href="{{ prev }}">
+                    <span class="icon icon-arrow-left"></span>
+                    Previous
+                </a>
+            </p>
+            {% endif %}
 
-        {% if next %}
-        <p class="next">
-            <a href="{{ next }}">
-                Next
-                <span class="icon icon-arrow-right"></span>
-            </a>
-        </p>
-        {% endif %}
+            {% if next %}
+            <p class="pagination-next">
+                <a href="{{ next }}">
+                    Next
+                    <span class="icon icon-arrow-right"></span>
+                </a>
+            </p>
+            {% endif %}
+        </nav>
     </div>
 </div>
-
 {% endblock %}

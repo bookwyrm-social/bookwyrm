@@ -1,13 +1,33 @@
 ''' using django model forms '''
 import datetime
+from collections import defaultdict
 
-from django.forms import ModelForm, PasswordInput, widgets
 from django import forms
+from django.forms import ModelForm, PasswordInput, widgets
+from django.forms.widgets import Textarea
 
 from bookwyrm import models
 
 
-class LoginForm(ModelForm):
+class CustomForm(ModelForm):
+    ''' add css classes to the forms '''
+    def __init__(self, *args, **kwargs):
+        css_classes = defaultdict(lambda: '')
+        css_classes['text'] = 'input'
+        css_classes['password'] = 'input'
+        css_classes['email'] = 'input'
+        css_classes['number'] = 'input'
+        css_classes['checkbox'] = 'checkbox'
+        css_classes['textarea'] = 'textarea'
+        super(CustomForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            if hasattr(visible.field.widget, 'input_type'):
+                input_type = visible.field.widget.input_type
+            if isinstance(visible.field.widget, Textarea):
+                input_type = 'textarea'
+            visible.field.widget.attrs['class'] = css_classes[input_type]
+
+class LoginForm(CustomForm):
     class Meta:
         model = models.User
         fields = ['username', 'password']
@@ -17,7 +37,7 @@ class LoginForm(ModelForm):
         }
 
 
-class RegisterForm(ModelForm):
+class RegisterForm(CustomForm):
     class Meta:
         model = models.User
         fields = ['username', 'email', 'password']
@@ -27,13 +47,13 @@ class RegisterForm(ModelForm):
         }
 
 
-class RatingForm(ModelForm):
+class RatingForm(CustomForm):
     class Meta:
         model = models.Review
         fields = ['rating']
 
 
-class ReviewForm(ModelForm):
+class ReviewForm(CustomForm):
     class Meta:
         model = models.Review
         fields = ['name', 'content']
@@ -44,7 +64,7 @@ class ReviewForm(ModelForm):
         }
 
 
-class CommentForm(ModelForm):
+class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
         fields = ['content']
@@ -54,7 +74,7 @@ class CommentForm(ModelForm):
         }
 
 
-class QuotationForm(ModelForm):
+class QuotationForm(CustomForm):
     class Meta:
         model = models.Quotation
         fields = ['quote', 'content']
@@ -65,7 +85,7 @@ class QuotationForm(ModelForm):
         }
 
 
-class ReplyForm(ModelForm):
+class ReplyForm(CustomForm):
     class Meta:
         model = models.Status
         fields = ['content']
@@ -73,14 +93,14 @@ class ReplyForm(ModelForm):
         labels = {'content': 'Comment'}
 
 
-class EditUserForm(ModelForm):
+class EditUserForm(CustomForm):
     class Meta:
         model = models.User
         fields = ['avatar', 'name', 'summary', 'manually_approves_followers']
         help_texts = {f: None for f in fields}
 
 
-class TagForm(ModelForm):
+class TagForm(CustomForm):
     class Meta:
         model = models.Tag
         fields = ['name']
@@ -88,17 +108,18 @@ class TagForm(ModelForm):
         labels = {'name': 'Add a tag'}
 
 
-class CoverForm(ModelForm):
+class CoverForm(CustomForm):
     class Meta:
         model = models.Book
         fields = ['cover']
         help_texts = {f: None for f in fields}
 
 
-class EditionForm(ModelForm):
+class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         exclude = [
+            'remote_id',
             'created_date',
             'updated_date',
             'last_sync_date',
@@ -135,7 +156,7 @@ class ExpiryWidget(widgets.Select):
 
         return datetime.datetime.now() + interval
 
-class CreateInviteForm(ModelForm):
+class CreateInviteForm(CustomForm):
     class Meta:
         model = models.SiteInvite
         exclude = ['code', 'user', 'times_used']

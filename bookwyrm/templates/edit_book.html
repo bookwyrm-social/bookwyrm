@@ -1,71 +1,83 @@
 {% extends 'layout.html' %}
 {% load humanize %}
 {% block content %}
-<div class="content-container">
-    <h2>
-        Edit "{{ book.title }}"
-        <a href="/book/{{ book.id }}">
-            <span class="edit-link icon icon-close">
-                <span class="hidden-text">Close</span>
-            </span>
-        </a>
-    </h2>
-    <div class="book-preview row">
-        <div class="cover-container">
+<div class="block">
+    <div class="level">
+        <h2 class="title level-left">
+            Edit "{{ book.title }}"
+        </h2>
+        <div class="level-right">
+            <a href="/book/{{ book.id }}">
+                <span class="edit-link icon icon-close">
+                    <span class="is-sr-only">Close</span>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="columns">
+        <div class="column is-narrow">
             {% include 'snippets/book_cover.html' with book=book size="small" %}
         </div>
-        <div>
+        <div class="column is-narrow">
             <p>Added: {{ book.created_date | naturaltime }}</p>
             <p>Updated: {{ book.updated_date | naturaltime }}</p>
         </div>
     </div>
 </div>
 
-<form class="book-form content-container" name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
+<form class="block" name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <h3>Data sync
-    <small>If sync is enabled, any changes will be over-written</small>
-    </h3>
-    <div>
-        <div class="row">
-        <p><label for="id_sync">Sync:</label> <input type="checkbox" name="sync" id="id_sync"></p>
-        <p><label for="id_sync_cover">Sync cover:</label> <input type="checkbox" name="sync_cover" id="id_sync_cover"></p>
+    <div class="block">
+        <h3 class="title is-4">Data sync</h3>
+        <h4 class="subtitle is-5">If sync is enabled, any changes will be over-written</h4>
+        </h3>
+        <div class="columns">
+            <div class="column is-narrow">
+                <label class="checkbox" for="id_sync"><input class="checkbox" type="checkbox" name="sync" id="id_sync"> Sync</label>
+            </div>
+            <div class="column is-narrow">
+                <label class="checkbox" for="id_sync_cover"><input class="checkbox" type="checkbox" name="sync_cover" id="id_sync_cover"> Sync cover</label>
+            </div>
         </div>
     </div>
 
-    <h3>Cover</h3>
-    <div class="image-form">
-        <p>{{ form.cover }} </p>
+    <div class="columns">
+        <div class="block column">
+            <h3 class="title is-4">Book Identifiers</h3>
+            <p class="fields is-grouped"><label class="label"for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
+            <p class="fields is-grouped"><label class="label"for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
+            <p class="fields is-grouped"><label class="label"for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
+            <p class="fields is-grouped"><label class="label"for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
+            <p class="fields is-grouped"><label class="label"for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+        </div>
+
+        <div class="column">
+            <div class="block">
+                <h3 class="title is-4">Cover</h3>
+                <p>{{ form.cover }} </p>
+            </div>
+
+            <div class="block">
+                <h3 class="title is-4">Physical Properties</h3>
+                <p class="fields is-grouped"><label class="label"for="id_physical_format">Format:</label> {{ form.physical_format }} </p>
+                <p class="fields is-grouped"><label class="label"for="id_pages">Pages:</label> {{ form.pages }} </p>
+            </div>
+        </div>
     </div>
 
-    <h3>Book Identifiers</h2>
-    <div>
-        <p><label for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
-        <p><label for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
-        <p><label for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
-        <p><label for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
-        <p><label for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+    <div class="block">
+        <h3 class="title is-4">Metadata</h3>
+        <p class="fields is-grouped"><label class="label"for="id_title">Title:</label> {{ form.title }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_description">Description:</label> {{ form.description }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_series">Series:</label> {{ form.series }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_series_number">Series number:</label> {{ form.series_number }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
+        <p class="fields is-grouped"><label class="label"for="id_published_date">Published date:</label> {{ form.published_date }} </p>
     </div>
-
-    <h3>Physical Properties</h3>
-    <div>
-        <p><label for="id_physical_format">Format:</label> {{ form.physical_format }} </p>
-        <p><label for="id_pages">Pages:</label> {{ form.pages }} </p>
-    </div>
-
-    <h3>Metadata</h3>
-    <div>
-        <p><label for="id_title">Title:</label> {{ form.title }} </p>
-        <p><label for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
-        <p><label for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
-        <p><label for="id_description">Description:</label> {{ form.description }} </p>
-        <p><label for="id_series">Series:</label> {{ form.series }} </p>
-        <p><label for="id_series_number">Series number:</label> {{ form.series_number }} </p>
-        <p><label for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
-        <p><label for="id_published_date">Published date:</label> {{ form.published_date }} </p>
-    </div>
-    <div>
-        <button type="submit">Save</button>
+    <div class="block">
+        <button class="button is-primary" type="submit">Save</button>
     </div>
 </form>
 

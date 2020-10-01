@@ -25,27 +25,6 @@ def get_rating(book, user):
     return 0
 
 
-@register.filter(name='description')
-def description_format(description):
-    ''' handle the various OL description formats '''
-    if not description:
-        return ''
-
-    if '----------' in description:
-        description = description.split('----------')[0]
-
-    return description.strip()
-
-
-@register.filter(name='author_bio')
-def bio_format(bio):
-    ''' clean up OL author bios '''
-    if isinstance(bio, dict) and 'value' in bio:
-        bio = bio['value']
-    bio = bio.split('\n')
-    return bio[0].strip()
-
-
 @register.filter(name='username')
 def get_user_identifier(user):
     ''' use localname for local users, username for remote '''
@@ -65,12 +44,6 @@ def get_replies(status):
     return models.Status.objects.filter(
         reply_parent=status
     ).select_subclasses().all()[:10]
-
-
-@register.filter(name='reply_count')
-def get_reply_count(status):
-    ''' how many replies does a status have? '''
-    return models.Status.objects.filter(reply_parent=status).count()
 
 
 @register.filter(name='parent')
@@ -169,18 +142,6 @@ def shelve_button_text(context, book):
         return 'I\'m done!'
     return 'Want to read'
 
-
-@register.simple_tag(takes_context=True)
-def current_shelf(context, book):
-    ''' check what shelf a user has a book on, if any '''
-    try:
-        shelf = models.ShelfBook.objects.get(
-            shelf__user=context['user'],
-            book=book
-        )
-    except models.ShelfBook.DoesNotExist:
-        return None
-    return shelf.name
 
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):

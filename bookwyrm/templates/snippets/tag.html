@@ -1,20 +1,24 @@
-<div class="tag">
-    <a href="/tag/{{ tag.identifier|urlencode }}">{{ tag.name }}</a>
-    {% if tag.identifier in user_tags %}
-    <form class="tag-form" name="tag" action="/untag/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        <input type="hidden" name="name" value="{{ tag.name }}">
-        <button type="submit">x</button>
-    </form>
-    {% else %}
-    <form class="tag-form" name="tag" action="/tag/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        <input type="hidden" name="name" value="{{ tag.name }}">
-        <button type="submit">+</button>
-    </form>
-    {% endif %}
+<div class="control">
+    <div class="tags has-addons">
+        <a class="tag is-link" href="/tag/{{ tag.identifier|urlencode }}">
+            {{ tag.name }}
+        </a>
+        <div class="tag">
+            {% if tag.identifier in user_tags %}
+            <form name="tag" action="/untag/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="name" value="{{ tag.name }}">
+                <button type="submit">x<span class="is-sr-only"> remove tag</span></button>
+            </form>
+            {% else %}
+            <form name="tag" action="/tag/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="name" value="{{ tag.name }}">
+                <button type="submit">+<span class="is-sr-only"> add tag</span></button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
 </div>
-
-

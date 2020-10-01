@@ -3,18 +3,20 @@
 {% block content %}
 {% include 'user_header.html' with user=user %}
 
-<div class="content-container">
-    <h2>Followers</h2>
+<div class="block">
+    <h2 class="title">Followers</h2>
     {% for followers in followers %}
-    <div class="row shrink">
-        <div>
-            {% include 'snippets/avatar.html' with user=followers %}
-        </div>
-        <div>
-            {% include 'snippets/username.html' with user=followers show_full=True  %}
-        </div>
-        <div>
-            {% include 'snippets/follow_button.html' with user=followers %}
+    <div class="block">
+        <div class="field is-grouped">
+            <div class="control">
+                {% include 'snippets/avatar.html' with user=followers %}
+            </div>
+            <div class="control">
+                {% include 'snippets/username.html' with user=followers show_full=True  %}
+            </div>
+            <div class="control">
+                {% include 'snippets/follow_button.html' with user=followers %}
+            </div>
         </div>
     </div>
     {% endfor %}

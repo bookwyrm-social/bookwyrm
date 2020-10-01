@@ -1,43 +1,79 @@
 {% load humanize %}
 {% load fr_display %}
 
-<div class="tabs secondary">
-    <div class="tab active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/review" onclick="tabChange(event)">Review</a>
-    </div>
-    <div class="tab" data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/comment" onclick="tabChange(event)">Comment</a>
-    </div>
-    <div class="tab" data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-        <a href="/book/{{ book.id }}/quotation" onclick="tabChange(event)">Quote</a>
-    </div>
-</div>
+<div class="columns">
+    <div class="column">
+        <div class="tabs is-boxed">
+            <ul>
+                <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+                    <label for="review-{{ book.id }}" onclick="tabChange(event)"><a>Review</a></label>
+                </li>
+                <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+                    <label for="comment-{{ book.id}}" onclick="tabChange(event)"><a>Comment</a></label>
+                </li>
+                <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+                    <label for="quote-{{ book.id }}" onclick="tabChange(event)"><a>Quote</a></label>
+                </li>
+            </ul>
+        </div>
 
-<div class="book-preview row">
-    {% if not hide_cover %}
-    <div class="cover-container">
-        {% include 'snippets/book_cover.html' with book=book %}
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="review-{{ book.id }}" checked>
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_name_{{ book.id }}_review">Title:</label>
+                    <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_review" placeholder="My review of '{{ book.title }}'">
+                </div>
+                <div class="control">
+                    <label class="label" for="id_content_{{ book.id }}_review">Review:</label>
+
+                    <span class="is-sr-only">Rating</span>
+                    <div class="field is-grouped stars form-rate-stars">
+                        <input class="hidden" type="radio" name="rating" value="" checked>
+                        {% for i in '12345'|make_list %}
+                            <input class="hidden" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
+                            <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+                                <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_review"></textarea>
+                </div>
+                <button class="button is-primary" type="submit">post review</button>
+            </form>
+        </div>
+
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="comment-{{ book.id }}">
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_content_{{ book.id }}_comment">Comment:</label>
+                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_comment" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
+                </div>
+                <button class="button is-primary" type="submit">post comment</button>
+            </form>
+        </div>
+
+        <div>
+            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="quote-{{ book.id }}">
+            <form class="toggle-content hidden tab-option-{{ book.id }}" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
+                {% csrf_token %}
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <div class="control">
+                    <label class="label" for="id_quote_{{ book.id }}_quote">Quote:</label>
+                    <textarea name="quote" class="textarea" required="" id="id_quote_{{ book.id }}_quote" placeholder="An except from '{{ book.title }}'"></textarea>
+                </div>
+                <div class="control">
+                    <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
+                    <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
+                </div>
+                <button class="button is-primary" type="submit">post quote</button>
+            </form>
+        </div>
     </div>
-    {% endif %}
-    <form class="tab-option-{{ book.id }} review-form" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {% include 'snippets/rate_form.html' with book=book %}
-        {{ review_form.as_p }}
-        <button type="submit">post review</button>
-    </form>
-
-    <form class="hidden tab-option-{{ book.id }} review-form" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {{ comment_form.as_p }}
-        <button type="submit">post comment</button>
-    </form>
-
-    <form class="hidden tab-option-{{ book.id }} review-form quote-form" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
-        {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
-        {{ quotation_form.as_p }}
-        <button typr="submit">post quote</button>
-    </form>
 </div>

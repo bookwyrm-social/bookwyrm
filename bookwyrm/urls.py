@@ -38,14 +38,13 @@ urlpatterns = [
 
     # ui views
     re_path(r'^login/?$', views.login_page),
+    re_path(r'^register/?$', views.register_page),
     re_path(r'^about/?$', views.about_page),
+    re_path(r'^invite/?$', views.manage_invites),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
-    re_path(r'^manage_invites/?$', views.manage_invites),
 
     path('', views.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
-    re_path(r'books/?$', views.books_page),
     re_path(r'import/?$', views.import_page),
     re_path(r'import_status/(\d+)/?$', views.import_status),
     re_path(r'user-edit/?$', views.edit_profile_page),
@@ -66,8 +65,6 @@ urlpatterns = [
 
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
-    re_path(r'%s/(?P<tab>friends|local|federated)?$' % \
-            book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
     re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
 
@@ -84,7 +81,7 @@ urlpatterns = [
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
     re_path(r'^user-login/?$', actions.user_login),
-    re_path(r'^register/?$', actions.register),
+    re_path(r'^user-register/?$', actions.register),
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
     re_path(r'^import_data/?', actions.import_data),

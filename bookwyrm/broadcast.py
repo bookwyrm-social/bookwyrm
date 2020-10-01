@@ -57,7 +57,7 @@ def broadcast_task(sender_id, activity, recipients):
         except requests.exceptions.HTTPError as e:
             # TODO: maybe keep track of users who cause errors
             errors.append({
-                'error': e,
+                'error': str(e),
                 'recipient': recipient,
                 'activity': activity,
             })

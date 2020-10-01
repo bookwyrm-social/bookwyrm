@@ -1,0 +1,18 @@
+<div class="columns">
+    {% for book in books %}
+    {% if forloop.counter0|divisibleby:"4" %}
+</div>
+<div class="columns">
+        {% endif %}
+    <div class="column is-narrow">
+        <div class="box">
+            <a href="/book/{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book %}
+            </a>
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            {% include 'snippets/shelve_button.html' with book=book %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+

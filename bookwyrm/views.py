@@ -2,7 +2,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Q
+from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -43,60 +43,54 @@ def not_found_page(request, _):
 
 @login_required
 def home(request):
-    ''' this is the same as the feed on the home tab '''
-    return home_tab(request, 'home')
-
-
-@login_required
-def home_tab(request, tab):
     ''' user's homepage with activity feed '''
+    # TODO: why on earth would this be where the pagination is set
     page_size = 15
     try:
         page = int(request.GET.get('page', 1))
     except ValueError:
         page = 1
 
-    shelves = []
-    shelves = get_user_shelf_preview(
-        request.user,
-        [('reading', 3), ('read', 1), ('to-read', 3)]
-    )
-    size = sum(len(s['books']) for s in shelves)
-    # books new to the instance, for discovery
-    if size < 6:
-        recent_books = models.Work.objects.order_by(
-            '-created_date'
-        )[:6 - size]
-        recent_books = [b.default_edition for b in recent_books]
-        shelves.append({
-            'name': 'Recently added',
-            'identifier': None,
-            'books': recent_books,
-            'count': 6 - size,
-        })
+    count = 5
+    querysets = [
+        # recemt currently reading
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='reading'
+        ),
+        # read
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='read'
+        )[:2],
+        # to-read
+        models.Edition.objects.filter(
+            shelves__user=request.user,
+            shelves__identifier='to-read'
+        ),
+        # popular books
+        models.Edition.objects.annotate(
+            shelf_count=Count('shelves')
+        ).order_by('-shelf_count')
+    ]
+    suggested_books = []
+    for queryset in querysets:
+        length = count - len(suggested_books)
+        suggested_books += list(queryset[:length])
+        if len(suggested_books) >= count:
+            break
 
-
-    # allows us to check if a user has shelved a book
-    user_books = models.Edition.objects.filter(shelves__user=request.user).all()
-
-    activities = get_activity_feed(request.user, tab)
+    activities = get_activity_feed(request.user, 'home')
 
     activity_count = activities.count()
     activities = activities[(page - 1) * page_size:page * page_size]
 
-    next_page = '/?page=%d' % (page + 1)
-    prev_page = '/?page=%d' % (page - 1)
+    next_page = '/?page=%d#feed' % (page + 1)
+    prev_page = '/?page=%d#feed' % (page - 1)
     data = {
         'user': request.user,
-        'shelves': shelves,
-        'user_books': user_books,
+        'suggested_books': suggested_books,
         'activities': activities,
-        'feed_tabs': [
-            {'id': 'home', 'display': 'Home'},
-            {'id': 'local', 'display': 'Local'},
-            {'id': 'federated', 'display': 'Federated'}
-        ],
-        'active_tab': tab,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),
@@ -147,9 +141,9 @@ def search(request):
     query = request.GET.get('q')
     if re.match(r'\w+@\w+.\w+', query):
         # if something looks like a username, search with webfinger
-        results = [outgoing.handle_account_search(query)]
+        results = outgoing.handle_account_search(query)
         return TemplateResponse(
-            request, 'user_results.html', {'results': results}
+            request, 'user_results.html', {'results': results, 'query': query}
         )
 
     # or just send the question over to book search
@@ -161,23 +155,6 @@ def search(request):
 
     results = books_manager.search(query)
     return TemplateResponse(request, 'book_results.html', {'results': results})
-
-
-def books_page(request):
-    ''' discover books '''
-    recent_books = models.Work.objects
-    recent_books = recent_books.order_by('-created_date')[:50]
-    recent_books = [b.default_edition for b in recent_books]
-    if request.user.is_authenticated:
-        recent_books = models.Edition.objects.filter(
-            ~Q(shelfbook__shelf__user=request.user),
-            id__in=[b.id for b in recent_books if b],
-        )
-
-    data = {
-        'books': recent_books,
-    }
-    return TemplateResponse(request, 'books.html', data)
 
 
 @login_required
@@ -214,6 +191,16 @@ def login_page(request):
         'register_form': forms.RegisterForm(),
     }
     return TemplateResponse(request, 'login.html', data)
+
+
+def register_page(request):
+    ''' authentication '''
+    # send user to the login page
+    data = {
+        'site_settings': models.SiteSettings.get(),
+        'register_form': forms.RegisterForm(),
+    }
+    return TemplateResponse(request, 'register.html', data)
 
 
 def about_page(request):
@@ -276,8 +263,6 @@ def user_page(request, username, subpage=None):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
-    # TODO: change display with privacy and authentication considerations
-
     data = {
         'user': user,
         'is_self': request.user.id == user.id,
@@ -292,10 +277,22 @@ def user_page(request, username, subpage=None):
         data['shelves'] = user.shelf_set.all()
         return TemplateResponse(request, 'user_shelves.html', data)
 
-    shelves = get_user_shelf_preview(user)
+    data['shelf_count'] = user.shelf_set.count()
+    shelves = []
+    for shelf in user.shelf_set.all():
+        if not shelf.books.count():
+            continue
+        shelves.append({
+            'name': shelf.name,
+            'remote_id': shelf.remote_id,
+            'books': shelf.books.all()[:3],
+            'size': shelf.books.count(),
+        })
+        if len(shelves) > 2:
+            break
+
     data['shelves'] = shelves
-    activities = get_activity_feed(user, 'self')[:15]
-    data['activities'] = activities
+    data['activities'] = get_activity_feed(user, 'self')[:15]
     return TemplateResponse(request, 'user.html', data)
 
 
@@ -398,7 +395,7 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
-def book_page(request, book_id, tab='friends'):
+def book_page(request, book_id):
     ''' info about a book '''
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
@@ -413,33 +410,15 @@ def book_page(request, book_id, tab='friends'):
     if not work:
         return HttpResponseNotFound()
 
-    book_reviews = models.Review.objects.filter(book__in=work.edition_set.all())
+    reviews = models.Review.objects.filter(
+        book__in=work.edition_set.all(),
+    ).order_by('-published_date')
 
+    user_tags = []
     if request.user.is_authenticated:
-        user_reviews = book_reviews.filter(
-            user=request.user,
-        ).all()
-
-        reviews = get_activity_feed(request.user, tab, model=book_reviews)
-
-        try:
-            # TODO: books can be on multiple shelves
-            shelf = models.Shelf.objects.filter(
-                user=request.user,
-                edition=book
-            ).first()
-        except models.Shelf.DoesNotExist:
-            shelf = None
-
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
         ).values_list('identifier', flat=True)
-    else:
-        tab = 'public'
-        reviews = book_reviews.filter(privacy='public')
-        shelf = None
-        user_reviews = []
-        user_tags = []
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -450,20 +429,15 @@ def book_page(request, book_id, tab='friends'):
 
     data = {
         'book': book,
-        'shelf': shelf,
-        'user_reviews': user_reviews,
-        'reviews': reviews.distinct(),
+        'reviews': reviews.filter(content__isnull=False),
+        'ratings': reviews.filter(content__isnull=True),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
         'review_form': forms.ReviewForm(),
+        'quotation_form': forms.QuotationForm(),
+        'comment_form': forms.CommentForm(),
         'tag_form': forms.TagForm(),
-        'feed_tabs': [
-            {'id': 'friends', 'display': 'Friends'},
-            {'id': 'local', 'display': 'Local'},
-            {'id': 'federated', 'display': 'Federated'}
-        ],
-        'active_tab': tab,
         'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
@@ -555,42 +529,3 @@ def shelf_page(request, username, shelf_identifier):
         'user': user,
     }
     return TemplateResponse(request, 'shelf.html', data)
-
-
-def get_user_shelf_preview(user, shelf_proportions=None):
-    ''' data for the covers shelf (user page and feed page) '''
-    shelves = []
-    shelf_max = 6
-    if not shelf_proportions:
-        shelf_proportions = [('reading', 3), ('read', 2), ('to-read', -1)]
-    for (identifier, count) in shelf_proportions:
-        if shelf_max <= 0:
-            break
-        if count > shelf_max or count < 0:
-            count = shelf_max
-
-        try:
-            shelf = models.Shelf.objects.get(
-                user=user,
-                identifier=identifier,
-            )
-        except models.Shelf.DoesNotExist:
-            continue
-
-        if not shelf.books.count():
-            continue
-        books = models.ShelfBook.objects.filter(
-            shelf=shelf,
-        ).order_by(
-            '-updated_date'
-        )[:count]
-
-        shelf_max -= len(books)
-
-        shelves.append({
-            'name': shelf.name,
-            'identifier': shelf.identifier,
-            'books': [b.book for b in books],
-            'size': shelf.books.count(),
-        })
-    return shelves

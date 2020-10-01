@@ -1,28 +1,19 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-<div class="content-container">
-    <h2>{{ author.display_name }}</h2>
+<div class="block">
+    <h2 class="title">{{ author.display_name }}</h2>
 
     {% if author.bio %}
     <p>
-        {{ author.bio | author_bio }}
+        {{ author.bio }}
     </p>
     {% endif %}
 </div>
 
-<div class="content-container">
-    <h2>Books by {{ author.display_name }}</h2>
-    <div class="book-grid row shrink wrap">
-        {% for book in books %}
-        <div class="book-preview">
-            <a href="/book/{{ book.id }}">
-            {% include 'snippets/book_cover.html' with book=book %}
-            </a>
-            {% include 'snippets/shelve_button.html' with book=book %}
-        </div>
-        {% endfor %}
-    </div>
+<div class="block">
+    <h3 class="title is-4">Books by {{ author.display_name }}</h3>
+    {% include 'snippets/book_tiles.html' with books=books %}
 </div>
 {% endblock %}
 

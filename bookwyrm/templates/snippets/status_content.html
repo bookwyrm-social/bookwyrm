@@ -1,38 +1,32 @@
 {% load fr_display %}
 
-{% if not hide_book and status.mention_books.count %}
-    <div class="row">
-    {% for book in status.mention_books.all|slice:"0:4" %}
-        <div class="row">
-            <div class="cover-container">
-                {% include 'snippets/book_cover.html' with book=book %}
+<div class="media">
+    {% if not hide_book and status.mention_books.count %}
+    <div class="media-left">
+        <div class="columns">
+        {% for book in status.mention_books.all|slice:"0:4" %}
+            <div class="column">
+                <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
                 {% if status.mention_books.count > 1 %}
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
                 {% endif %}
-                {% include 'snippets/rate_action.html' with book=book user=request.user %}
                 {% include 'snippets/shelve_button.html' with book=book %}
             </div>
-            {% if status.mention_books.count == 1 %}
-            <div>
-                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-                {% include 'snippets/book_description.html' with book=book %}
-            </div>
-            {% endif %}
+        {% endfor %}
         </div>
-    {% endfor %}
-    </div>
-{% endif %}
-
-<div class="row">
-    {% if not hide_book and status.book %}
-    <div class="cover-container">
-        {% include 'snippets/book_cover.html' with book=status.book %}
-        {% include 'snippets/rate_action.html' with book=status.book user=request.user %}
-        {% include 'snippets/shelve_button.html' with book=status.book %}
     </div>
     {% endif %}
 
-    <div>
+    {% if not hide_book and status.book %}
+    <div class="media-left">
+        <div>
+        <a href="/book/{{ status.book.id }}">{% include 'snippets/book_cover.html' with book=status.book %}</a>
+        {% include 'snippets/shelve_button.html' with book=status.book %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="media-content">
         {% if status.status_type == 'Review' %}
         <h3>
             {% if status.name %}{{ status.name }}<br>{% endif %}
@@ -41,15 +35,19 @@
         {% endif %}
 
         {% if status.quote %}
-        <div class="quote">
+        <div class="quote block">
             <blockquote>{{ status.quote }}</blockquote>
 
             <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
         </div>
         {% endif %}
 
-        {% if status.content and  status.status_type != 'Update' and status.status_type != 'Boost' %}
+        {% if status.content and  status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
             <blockquote>{{ status.content | safe }}</blockquote>
+        {% endif %}
+
+        {% if status.mention_books.count == 1 and not status.book %}
+            {% include 'snippets/book_description.html' with book=status.mention_books.first %}
         {% endif %}
 
         {% if not status.content and status.book and not hide_book and status.status_type != 'Boost' %}
