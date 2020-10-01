@@ -6,32 +6,8 @@
         <div class="block">
             {% if site_settings.allow_registration %}
             <h2 class="title">Create an Account</h2>
-
             <form name="register" method="post" action="/user-register">
-                {% csrf_token %}
-                <div class="field">
-                    <label class="label" for="id_username_register">Username:</label>
-                    <div class="control">
-                        <input type="text" name="username" maxlength="150" class="input" required="" id="id_username_register">
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label" for="id_email_register">Email address:</label>
-                    <div class="control">
-                        <input type="email" name="email" maxlength="254" class="input" id="id_email_register">
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label" for="id_password_register">Password:</label>
-                    <div class="control">
-                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_register">
-                    </div>
-                </div>
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button class="button is-primary" type="submit">Sign Up</button>
-                    </div>
-                </div>
+                {% include 'snippets/register_form.html' %}
             </form>
             {% else %}
             <h2 class="title">This instance is closed</h2>
@@ -68,18 +44,7 @@
             </form>
         </div>
         <div class="block">
-            <h2 class="title">About {{ site_settings.name }}</h2>
-            <p class="block">
-                {{ site_settings.instance_description }}
-            </p>
-
-            <p class="block">
-                <a href="/about/">More about this site</a>
-            </p>
-
-            <p class="block">
-                <a href="/register" class="button is-link">Create an Account</a>
-            </p>
+            {% include 'snippets/about.html' with site_settings=site_settings %}
         </div>
     </div>
 

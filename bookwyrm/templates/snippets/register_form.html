@@ -1,0 +1,24 @@
+{% csrf_token %}
+<div class="field">
+    <label class="label" for="id_username_register">Username:</label>
+    <div class="control">
+        <input type="text" name="username" maxlength="150" class="input" required="" id="id_username_register">
+    </div>
+</div>
+<div class="field">
+    <label class="label" for="id_email_register">Email address:</label>
+    <div class="control">
+        <input type="email" name="email" maxlength="254" class="input" id="id_email_register">
+    </div>
+</div>
+<div class="field">
+    <label class="label" for="id_password_register">Password:</label>
+    <div class="control">
+        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_register">
+    </div>
+</div>
+<div class="field is-grouped">
+    <div class="control">
+        <button class="button is-primary" type="submit">Sign Up</button>
+    </div>
+</div>
