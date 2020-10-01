@@ -44,7 +44,6 @@ urlpatterns = [
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
 
     path('', views.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
     re_path(r'import/?$', views.import_page),
     re_path(r'import_status/(\d+)/?$', views.import_status),

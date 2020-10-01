@@ -43,13 +43,8 @@ def not_found_page(request, _):
 
 @login_required
 def home(request):
-    ''' this is the same as the feed on the home tab '''
-    return home_tab(request, 'home')
-
-
-@login_required
-def home_tab(request, tab):
     ''' user's homepage with activity feed '''
+    # TODO: why on earth would this be where the pagination is set
     page_size = 15
     try:
         page = int(request.GET.get('page', 1))
@@ -85,7 +80,7 @@ def home_tab(request, tab):
         if len(suggested_books) >= count:
             break
 
-    activities = get_activity_feed(request.user, tab)
+    activities = get_activity_feed(request.user, 'home')
 
     activity_count = activities.count()
     activities = activities[(page - 1) * page_size:page * page_size]
