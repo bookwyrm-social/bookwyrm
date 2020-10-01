@@ -1,7 +1,7 @@
 ''' views for pages you can go to in the application '''
 import re
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -228,6 +228,7 @@ def invite_page(request, code):
     return TemplateResponse(request, 'invite.html', data)
 
 @login_required
+@permission_required('bookwyrm.create_invites', raise_exception=True)
 def manage_invites(request):
     ''' invite management page '''
     data = {
@@ -453,6 +454,7 @@ def book_page(request, book_id):
 
 
 @login_required
+@permission_required('bookwyrm.edit_book', raise_exception=True)
 def edit_book_page(request, book_id):
     ''' info about a book '''
     book = books_manager.get_edition(book_id)
