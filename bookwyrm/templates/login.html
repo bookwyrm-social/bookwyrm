@@ -2,46 +2,86 @@
 {% block content %}
 
 <div class="columns">
-<div class="column">
-    <h2 class="title">About {{ site_settings.name }}</h2>
-    <p class="block">
-        {{ site_settings.instance_description }}
-    </p>
+    <div class="column">
+        <div class="block">
+            {% if site_settings.allow_registration %}
+            <h2 class="title">Create an Account</h2>
 
-    <p class="block">
-        <a href="/about/">More about this site</a>
-    </p>
-
-    <p class="block">
-        <a href="/register" class="button is-link">Create an Account</a>
-    </p>
-</div>
-
-<div class="column">
-    <h2 class="title">Log in</h2>
-
-    <div class="block">
-        <form name="login" method="post" action="/user-login">
-            {% csrf_token %}
-            <div class="field">
-                <label class="label" for="id_username">Username:</label>
-                <div class="control">{{ login_form.username }}</div>
-            </div>
-            <div class="field">
-                <label class="label" for="id_password">Password:</label>
-                <div class="control">{{ login_form.password }}</div>
-            </div>
-            <div class="field is-grouped">
-                <div class="control">
-                    <button class="button is-primary" type="submit">Log in</button>
+            <form name="register" method="post" action="/user-register">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_username_register">Username:</label>
+                    <div class="control">
+                        <input type="text" name="username" maxlength="150" class="input" required="" id="id_username_register">
+                    </div>
                 </div>
-                <div class="control">
-                    <small><a href="/reset-password">Forgot your password?</a></small>
+                <div class="field">
+                    <label class="label" for="id_email_register">Email address:</label>
+                    <div class="control">
+                        <input type="email" name="email" maxlength="254" class="input" id="id_email_register">
+                    </div>
                 </div>
-            </div>
-        </form>
+                <div class="field">
+                    <label class="label" for="id_password_register">Password:</label>
+                    <div class="control">
+                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_register">
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Sign Up</button>
+                    </div>
+                </div>
+            </form>
+            {% else %}
+            <h2 class="title">This instance is closed</h2>
+            <p>Contact an administrator to get an invite</p>
+            {% endif %}
+        </div>
     </div>
-</div>
+
+    <div class="column">
+        <div class="block">
+            <h2 class="title">Log in</h2>
+            <form name="login" method="post" action="/user-login">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_username">Username:</label>
+                    <div class="control">
+                        {{ login_form.username }}
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="id_password">Password:</label>
+                    <div class="control">
+                        {{ login_form.password }}
+                    </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Log in</button>
+                    </div>
+                    <div class="control">
+                        <small><a href="/reset-password">Forgot your password?</a></small>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="block">
+            <h2 class="title">About {{ site_settings.name }}</h2>
+            <p class="block">
+                {{ site_settings.instance_description }}
+            </p>
+
+            <p class="block">
+                <a href="/about/">More about this site</a>
+            </p>
+
+            <p class="block">
+                <a href="/register" class="button is-link">Create an Account</a>
+            </p>
+        </div>
+    </div>
 
 </div>
 {% endblock %}
