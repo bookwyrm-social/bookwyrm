@@ -9,6 +9,10 @@ from django.db import transaction
 from bookwyrm import models
 
 
+class ConnectorException(Exception):
+    ''' when the connector can't do what was asked '''
+
+
 class AbstractConnector(ABC):
     ''' generic book data connector '''
 
@@ -127,6 +131,9 @@ class AbstractConnector(ABC):
             edition.authors.set(work.authors.all())
             edition.author_text = work.author_text
             edition.save()
+
+        if not edition:
+            raise ConnectorException('Unable to create book: %s' % remote_id)
 
         return edition
 

@@ -26,8 +26,10 @@ def get_or_create_book(remote_id):
 
     connector = get_or_create_connector(remote_id)
 
+    # raises ConnectorException
     book = connector.get_or_create_book(remote_id)
-    load_more_data.delay(book.id)
+    if book:
+        load_more_data.delay(book.id)
     return book
 
 

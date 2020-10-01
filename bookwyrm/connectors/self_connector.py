@@ -50,10 +50,6 @@ class Connector(AbstractConnector):
         )
 
 
-    def get_or_create_book(self, remote_id):
-        ''' this COULD be semi-implemented but I think it shouldn't be used '''
-
-
     def is_work_data(self, data):
         pass
 
