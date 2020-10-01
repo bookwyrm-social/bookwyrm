@@ -143,17 +143,24 @@ class Connector(AbstractConnector):
 
     def expand_book_data(self, book):
         work = book
+        # go from the edition to the work, if necessary
         if isinstance(book, models.Edition):
             work = book.parent_work
 
+        # we can mass download edition data from OL to avoid repeatedly querying
         edition_options = self.load_edition_data(work.openlibrary_key)
         for edition_data in edition_options.get('entries'):
             olkey = edition_data.get('key').split('/')[-1]
+            # make sure the edition isn't already in the database
             if models.Edition.objects.filter(openlibrary_key=olkey).count():
                 continue
+
+            # creates and populates the book from the data
             edition = self.create_book(olkey, edition_data, models.Edition)
+            # ensures that the edition is associated with the work
             edition.parent_work = work
             edition.save()
+            # get author data from the work if it's missing from the edition
             if not edition.authors and work.authors:
                 edition.authors.set(work.authors.all())
 
