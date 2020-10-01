@@ -49,6 +49,8 @@ services:
         command: celery -A celerywyrm worker -l info
         volumes:
             - .:/app
+            - static_volume:/app/static
+            - media_volume:/app/images
         depends_on:
             - db
             - redis
