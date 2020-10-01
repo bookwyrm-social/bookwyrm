@@ -3,10 +3,7 @@
 
 <div class="columns">
     <div class="column block">
-        <h2 class="title">About {{ site_settings.name }}</h2>
-        <p>
-            {{ site_settings.instance_description }}
-        </p>
+        {% include 'snippets/about.html' with site_settings=site_settings %}
     </div>
 
     <div class="column block">
@@ -14,7 +11,6 @@
         <p>
         {{ site_settings.code_of_conduct }}
         </p>
-
     </div>
 </div>
 {% endblock %}
