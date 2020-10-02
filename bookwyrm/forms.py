@@ -25,6 +25,8 @@ class CustomForm(ModelForm):
                 input_type = visible.field.widget.input_type
             if isinstance(visible.field.widget, Textarea):
                 input_type = 'textarea'
+                visible.field.widget.attrs['cols'] = None
+                visible.field.widget.attrs['rows'] = None
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
 class LoginForm(CustomForm):
@@ -96,7 +98,9 @@ class ReplyForm(CustomForm):
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ['avatar', 'name', 'summary', 'manually_approves_followers']
+        fields = [
+            'avatar', 'name', 'email', 'summary', 'manually_approves_followers'
+        ]
         help_texts = {f: None for f in fields}
 
 
