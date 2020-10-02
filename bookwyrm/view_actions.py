@@ -13,6 +13,7 @@ from django.core.exceptions import PermissionDenied
 from bookwyrm import books_manager
 from bookwyrm import forms, models, outgoing
 from bookwyrm import goodreads_import
+from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
 from bookwyrm.views import get_user_from_username
 
@@ -84,6 +85,51 @@ def register(request):
 def user_logout(request):
     ''' done with this place! outa here! '''
     logout(request)
+    return redirect('/')
+
+
+def password_reset_request(request):
+    ''' create a password reset token '''
+    email = request.POST.get('email')
+    try:
+        user = models.User.objects.get(email=email)
+    except models.User.DoesNotExist:
+        return redirect('/password-reset')
+
+    # remove any existing password reset cods for this user
+    models.PasswordReset.objects.filter(user=user).all().delete()
+
+    # create a new reset code
+    code = models.PasswordReset.objects.create(user=user)
+    password_reset_email(code)
+    data = {'message': 'Password reset link sent to %s' % email}
+    return TemplateResponse(request, 'password_reset_request.html', data)
+
+
+
+def password_reset(request):
+    ''' allow a user to change their password '''
+    try:
+        reset_code = models.PasswordReset.objects.get(
+            code=request.POST.get('reset-code')
+        )
+    except models.PasswordReset.DoesNotExist:
+        data = {'errors': ['Invalid password reset link']}
+        return TemplateResponse(request, 'password_reset.html', data)
+
+    user = reset_code.user
+
+    new_password = request.POST.get('password')
+    confirm_password = request.POST.get('confirm-password')
+
+    if new_password != confirm_password:
+        data = {'errors': ['Passwords do not match']}
+        return TemplateResponse(request, 'password_reset.html', data)
+
+    user.set_password(new_password)
+    user.save()
+    login(request, user)
+    reset_code.delete()
     return redirect('/')
 
 

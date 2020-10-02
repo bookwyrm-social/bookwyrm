@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='SiteInvite',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(default=bookwyrm.models.site.new_invite_code, max_length=32)),
+                ('code', models.CharField(default=bookwyrm.models.site.new_access_code, max_length=32)),
                 ('expiry', models.DateTimeField(blank=True, null=True)),
                 ('use_limit', models.IntegerField(blank=True, null=True)),
                 ('times_used', models.IntegerField(default=0)),

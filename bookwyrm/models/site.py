@@ -1,5 +1,6 @@
 ''' the particulars for this instance of BookWyrm '''
 import base64
+import datetime
 
 from Crypto import Random
 from django.db import models
@@ -27,13 +28,13 @@ class SiteSettings(models.Model):
             default_settings.save()
             return default_settings
 
-def new_invite_code():
+def new_access_code():
     ''' the identifier for a user invite '''
     return base64.b32encode(Random.get_random_bytes(5)).decode('ascii')
 
 class SiteInvite(models.Model):
     ''' gives someone access to create an account on the instance '''
-    code = models.CharField(max_length=32, default=new_invite_code)
+    code = models.CharField(max_length=32, default=new_access_code)
     expiry = models.DateTimeField(blank=True, null=True)
     use_limit = models.IntegerField(blank=True, null=True)
     times_used = models.IntegerField(default=0)
@@ -49,3 +50,25 @@ class SiteInvite(models.Model):
     def link(self):
         ''' formats the invite link '''
         return "https://{}/invite/{}".format(DOMAIN, self.code)
+
+
+def get_passowrd_reset_expiry():
+    ''' give people a limited time to use the link '''
+    now = datetime.datetime.now()
+    return now + datetime.timedelta(days=1)
+
+
+class PasswordReset(models.Model):
+    ''' gives someone access to create an account on the instance '''
+    code = models.CharField(max_length=32, default=new_access_code)
+    expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def valid(self):
+        ''' make sure it hasn't expired or been used '''
+        return self.expiry > timezone.now()
+
+    @property
+    def link(self):
+        ''' formats the invite link '''
+        return "https://{}/password-reset/{}".format(DOMAIN, self.code)

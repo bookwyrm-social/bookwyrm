@@ -39,6 +39,8 @@ urlpatterns = [
     # ui views
     re_path(r'^login/?$', views.login_page),
     re_path(r'^about/?$', views.about_page),
+    re_path(r'^password-reset/?$', views.password_reset_request),
+    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', views.password_reset),
     re_path(r'^invite/?$', views.manage_invites),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
 
@@ -81,6 +83,9 @@ urlpatterns = [
     re_path(r'^logout/?$', actions.user_logout),
     re_path(r'^user-login/?$', actions.user_login),
     re_path(r'^user-register/?$', actions.register),
+    re_path(r'^reset-password-request/?$', actions.password_reset_request),
+    re_path(r'^reset-password/?$', actions.password_reset),
+
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
     re_path(r'^import_data/?', actions.import_data),

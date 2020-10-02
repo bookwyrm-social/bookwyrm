@@ -13,7 +13,7 @@ from .user import User
 from .federated_server import FederatedServer
 
 from .import_job import ImportJob, ImportItem
-from .site import SiteSettings, SiteInvite
+from .site import SiteSettings, SiteInvite, PasswordReset
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[0]: c[1].activity_serializer for c in cls_members \

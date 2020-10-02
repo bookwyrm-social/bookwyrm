@@ -204,6 +204,29 @@ def about_page(request):
     return TemplateResponse(request, 'about.html', data)
 
 
+def password_reset_request(request):
+    ''' invite management page '''
+    return TemplateResponse(request, 'password_reset_request.html')
+
+
+def password_reset(request, code):
+    ''' endpoint for sending invites '''
+    if request.user.is_authenticated:
+        return redirect('/')
+    try:
+        reset_code = models.PasswordReset.objects.get(code=code)
+        if not reset_code.valid():
+            raise PermissionDenied
+    except models.PasswordReset.DoesNotExist:
+        raise PermissionDenied
+
+    return TemplateResponse(
+        request,
+        'password_reset.html',
+        {'code': reset_code.code}
+    )
+
+
 def invite_page(request, code):
     ''' endpoint for sending invites '''
     if request.user.is_authenticated:
