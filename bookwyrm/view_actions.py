@@ -102,9 +102,8 @@ def password_reset_request(request):
     return TemplateResponse(request, 'password_reset_request.html', data)
 
 
-
 def password_reset(request):
-    ''' allow a user to change their password '''
+    ''' allow a user to change their password through an emailed token '''
     try:
         reset_code = models.PasswordReset.objects.get(
             code=request.POST.get('reset-code')
@@ -127,6 +126,21 @@ def password_reset(request):
     login(request, user)
     reset_code.delete()
     return redirect('/')
+
+
+@login_required
+def password_change(request):
+    ''' allow a user to change their password '''
+    new_password = request.POST.get('password')
+    confirm_password = request.POST.get('confirm-password')
+
+    if new_password != confirm_password:
+        return redirect('/user-edit')
+
+    request.user.set_password(new_password)
+    request.user.save()
+    login(request, request.user)
+    return redirect('/user-edit')
 
 
 @login_required

@@ -85,6 +85,7 @@ urlpatterns = [
     re_path(r'^user-register/?$', actions.register),
     re_path(r'^reset-password-request/?$', actions.password_reset_request),
     re_path(r'^reset-password/?$', actions.password_reset),
+    re_path(r'^change-password/?$', actions.password_change),
 
     re_path(r'^edit_profile/?$', actions.edit_profile),
 
