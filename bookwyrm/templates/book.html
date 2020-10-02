@@ -9,7 +9,7 @@
             <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
         </h2>
 
-        {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="level-right">
             <a href="{{ book.id }}/edit">edit
                 <span class="icon icon-pencil">

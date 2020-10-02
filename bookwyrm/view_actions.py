@@ -3,7 +3,7 @@ from io import BytesIO, TextIOWrapper
 from PIL import Image
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
@@ -187,6 +187,7 @@ def resolve_book(request):
 
 
 @login_required
+@permission_required('bookwyrm.edit_book', raise_exception=True)
 def edit_book(request, book_id):
     ''' edit a book cool '''
     if not request.method == 'POST':
@@ -479,7 +480,9 @@ def import_data(request):
         return redirect('/import_status/%d' % (job.id,))
     return HttpResponseBadRequest()
 
+
 @login_required
+@permission_required('bookwyrm.create_invites', raise_exception=True)
 def create_invite(request):
     ''' creates a user invite database entry '''
     form = forms.CreateInviteForm(request.POST)

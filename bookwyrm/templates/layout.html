@@ -70,12 +70,14 @@
                     <a href="/user-edit" class="navbar-item">
                         Settings
                     </a>
-                    <a href="/invite" class="navbar-item">
-                        Invites
-                    </a>
                     <a href="/import" class="navbar-item">
                         Import books
                     </a>
+                    {% if perms.bookwyrm.create_invites %}
+                    <a href="/invite" class="navbar-item">
+                        Invites
+                    </a>
+                    {% endif %}
                     <hr class="navbar-divider">
                     <a href="/logout" class="navbar-item">
                         Log out
