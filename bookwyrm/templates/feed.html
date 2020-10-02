@@ -5,6 +5,9 @@
 <div class="columns">
     <div class="column is-one-third">
         <h2 class="title is-4">Suggested books</h2>
+        {% if not suggested_books %}
+        <p>There are no books here right now! Try searching for a book to get started</p>
+        {% else %}
         <div class="tabs is-small is-toggle">
             <ul>
                 {% for book in suggested_books %}
@@ -26,9 +29,13 @@
             </div>
         </div>
         {% endfor %}
+        {% endif %}
     </div>
 
     <div class="column is-two-thirds" id="feed">
+        {% if not activities %}
+        <p>There aren't any activities right now! Try following a user to get started</p>
+        {% endif %}
         {% for activity in activities %}
         <div class="block">
         {% include 'snippets/status.html' with status=activity %}
