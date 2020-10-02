@@ -39,11 +39,7 @@ def user_login(request):
     if user is not None:
         login(request, user)
         return redirect(request.GET.get('next', '/'))
-    return TemplateResponse(
-        request,
-        'login.html',
-        {'login_form': login_form, 'register_form': register_form}
-    )
+    return redirect('/login')
 
 
 def register(request):
