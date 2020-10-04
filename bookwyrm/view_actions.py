@@ -173,7 +173,11 @@ def edit_profile(request):
 
     form = forms.EditUserForm(request.POST, request.FILES)
     if not form.is_valid():
-        return redirect('/')
+        data = {
+            'form': form,
+            'user': request.user,
+        }
+        return TemplateResponse(request, 'edit_user.html', data)
 
     request.user.name = form.data['name']
     if 'avatar' in form.files:

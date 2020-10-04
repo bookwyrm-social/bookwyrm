@@ -2,24 +2,32 @@
 {% block content %}
 <div class="block columns">
     <div class="column is-half">
+        <h2 class="title">Profile</h2>
+        {% if form.non_field_errors %}
+        <p class="notification is-danger">{{ form.non_field_errors }}</p>
+        {% endif %}
         <form name="edit-profile" action="/edit_profile/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <h2 class="title">Profile</h2>
             <p class="block">
                 <label class="label" for="id_avatar">Avatar:</label>
                 {{ form.avatar }}
+                {% for error in form.avatar.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
             </p>
             <p class="block">
                 <label class="label" for="id_name">Display name:</label>
                 {{ form.name }}
+                {% for error in form.name.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
             </p>
             <p class="block">
                 <label class="label" for="id_summary">Summary:</label>
                 {{ form.summary }}
-            </p>
-            <p class="block">
-                <label class="label" for="id_email">Email address:</label>
-                {{ form.email }}
+                {% for error in form.summary.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
             </p>
             <p class="block">
                 <label class="checkbox label" for="id_manually_approve_followers">
