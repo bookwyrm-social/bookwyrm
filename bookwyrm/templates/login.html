@@ -3,21 +3,7 @@
 
 <div class="columns">
     <div class="column">
-        <div class="block">
-            {% if site_settings.allow_registration %}
-            <h2 class="title">Create an Account</h2>
-            <form name="register" method="post" action="/user-register">
-                {% include 'snippets/register_form.html' %}
-            </form>
-            {% else %}
-            <h2 class="title">This instance is closed</h2>
-            <p>Contact an administrator to get an invite</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="block">
+        <div class="box">
             <h2 class="title">Log in</h2>
             <form name="login" method="post" action="/user-login">
                 {% csrf_token %}
@@ -43,6 +29,20 @@
                 </div>
             </form>
         </div>
+        <div class="box has-background-primary-light">
+            {% if site_settings.allow_registration %}
+            <h2 class="title">Create an Account</h2>
+            <form name="register" method="post" action="/user-register">
+                {% include 'snippets/register_form.html' %}
+            </form>
+            {% else %}
+            <h2 class="title">This instance is closed</h2>
+            <p>Contact an administrator to get an invite</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="column">
         <div class="block">
             {% include 'snippets/about.html' with site_settings=site_settings %}
         </div>
