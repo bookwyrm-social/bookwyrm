@@ -40,7 +40,8 @@ CELERY_RESULT_BACKEND = 'redis'
 SECRET_KEY = '0a^0gpwjc1ap+lb$dinin=efc@e&_0%102$o3(&gt9e7lndiaw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', True)
+
 
 ALLOWED_HOSTS = []
 
