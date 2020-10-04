@@ -3,7 +3,42 @@
 
 <div class="columns">
     <div class="column">
-        <div class="block">
+        <div class="box">
+            <h2 class="title">Log in</h2>
+            {% if login_form.non_field_errors %}
+            <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+            {% endif %}
+            <form name="login" method="post" action="/user-login">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label" for="id_username">Username:</label>
+                    <div class="control">
+                        {{ login_form.username }}
+                    </div>
+                    {% for error in login_form.username.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+                <div class="field">
+                    <label class="label" for="id_password">Password:</label>
+                    <div class="control">
+                        {{ login_form.password }}
+                    </div>
+                    {% for error in login_form.password.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Log in</button>
+                    </div>
+                    <div class="control">
+                        <small><a href="/reset-password">Forgot your password?</a></small>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="box has-background-primary-light">
             {% if site_settings.allow_registration %}
             <h2 class="title">Create an Account</h2>
             <form name="register" method="post" action="/user-register">
@@ -17,32 +52,6 @@
     </div>
 
     <div class="column">
-        <div class="block">
-            <h2 class="title">Log in</h2>
-            <form name="login" method="post" action="/user-login">
-                {% csrf_token %}
-                <div class="field">
-                    <label class="label" for="id_username">Username:</label>
-                    <div class="control">
-                        {{ login_form.username }}
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label" for="id_password">Password:</label>
-                    <div class="control">
-                        {{ login_form.password }}
-                    </div>
-                </div>
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button class="button is-primary" type="submit">Log in</button>
-                    </div>
-                    <div class="control">
-                        <small><a href="/reset-password">Forgot your password?</a></small>
-                    </div>
-                </div>
-            </form>
-        </div>
         <div class="block">
             {% include 'snippets/about.html' with site_settings=site_settings %}
         </div>

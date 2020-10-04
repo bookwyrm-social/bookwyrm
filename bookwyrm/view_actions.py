@@ -23,14 +23,15 @@ def user_login(request):
     if request.method == 'GET':
         return redirect('/login')
 
-    register_form = forms.RegisterForm()
     login_form = forms.LoginForm(request.POST)
+    register_form = forms.RegisterForm()
     if not login_form.is_valid():
-        return TemplateResponse(
-            request,
-            'login.html',
-            {'login_form': login_form, 'register_form': register_form}
-        )
+        data = {
+            'site_settings': models.SiteSettings.get(),
+            'login_form': login_form,
+            'register_form': register_form
+        }
+        return TemplateResponse(request, 'login.html', data)
 
     username = login_form.data['username']
     username = '%s@%s' % (username, DOMAIN)
@@ -39,7 +40,14 @@ def user_login(request):
     if user is not None:
         login(request, user)
         return redirect(request.GET.get('next', '/'))
-    return redirect('/login')
+
+    login_form.non_field_errors = 'Username or password are incorrect'
+    data = {
+        'site_settings': models.SiteSettings.get(),
+        'login_form': login_form,
+        'register_form': register_form
+    }
+    return TemplateResponse(request, 'login.html', data)
 
 
 def register(request):
@@ -61,12 +69,26 @@ def register(request):
         invite = None
 
     form = forms.RegisterForm(request.POST)
+    errors = False
     if not form.is_valid():
-        return redirect('/register/')
+        errors = True
 
     username = form.data['username']
     email = form.data['email']
     password = form.data['password']
+
+    # check username and email uniqueness
+    if models.User.objects.filter(localname=username).first():
+        form.add_error('username', 'User with this username already exists')
+        errors = True
+
+    if errors:
+        data = {
+            'site_settings': models.SiteSettings.get(),
+            'login_form': forms.LoginForm(),
+            'register_form': form
+        }
+        return TemplateResponse(request, 'login.html', data)
 
     user = models.User.objects.create_user(username, email, password)
     if invite:
