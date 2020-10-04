@@ -5,6 +5,9 @@
     <div class="column">
         <div class="box">
             <h2 class="title">Log in</h2>
+            {% if login_form.non_field_errors %}
+            <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+            {% endif %}
             <form name="login" method="post" action="/user-login">
                 {% csrf_token %}
                 <div class="field">
@@ -12,12 +15,18 @@
                     <div class="control">
                         {{ login_form.username }}
                     </div>
+                    {% for error in login_form.username.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
                 </div>
                 <div class="field">
                     <label class="label" for="id_password">Password:</label>
                     <div class="control">
                         {{ login_form.password }}
                     </div>
+                    {% for error in login_form.password.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
                 </div>
                 <div class="field is-grouped">
                     <div class="control">
