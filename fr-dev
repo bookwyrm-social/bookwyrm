@@ -45,7 +45,7 @@ case "$1" in
         docker-compose exec web coverage report
         ;;
     collectstatic)
-        docker-compose exec web python manage.py collectstatic
+        docker-compose exec web python manage.py collectstatic --no-input
         ;;
     *)
         echo "Unrecognised command. Try: up, initdb, resetdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
