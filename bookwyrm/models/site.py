@@ -17,6 +17,18 @@ class SiteSettings(models.Model):
     code_of_conduct = models.TextField(
         default="Add a code of conduct here.")
     allow_registration = models.BooleanField(default=True)
+    logo = models.ImageField(
+        upload_to='static/images/',
+        default='/static/images/logo.png'
+    )
+    logo_small = models.ImageField(
+        upload_to='static/images/',
+        default='/static/images/logo-small.png'
+    )
+    favicon = models.ImageField(
+        upload_to='static/images/',
+        default='/static/images/favicon.ico'
+    )
 
     @classmethod
     def get(cls):
