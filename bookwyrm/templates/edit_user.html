@@ -30,6 +30,13 @@
                 {% endfor %}
             </p>
             <p class="block">
+                <label class="label" for="id_email">Email address:</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </p>
+            <p class="block">
                 <label class="checkbox label" for="id_manually_approve_followers">
                     Manually approve followers:
                     {{ form.manually_approves_followers }}

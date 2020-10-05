@@ -18,7 +18,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     private_key = models.TextField(blank=True, null=True)
     public_key = models.TextField(blank=True, null=True)
-    email = models.EmailField(unique=True)
     inbox = models.CharField(max_length=255, unique=True)
     shared_inbox = models.CharField(max_length=255, blank=True, null=True)
     federated_server = models.ForeignKey(
