@@ -33,6 +33,20 @@
     </div>
 
     <div class="column is-two-thirds" id="feed">
+        <div class="tabs">
+            <ul>
+                <li class="{% if tab == 'home' %}is-active{% endif %}">
+                    <a href="/#feed">Home</a>
+                </li>
+                <li class="{% if tab == 'local' %}is-active{% endif %}">
+                    <a href="/local#feed">Local</a>
+                </li>
+                <li class="{% if tab == 'federated' %}is-active{% endif %}">
+                    <a href="/federated#feed">Federated</a>
+                </li>
+            </ul>
+        </div>
+
         {% if not activities %}
         <p>There aren't any activities right now! Try following a user to get started</p>
         {% endif %}
