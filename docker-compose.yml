@@ -2,7 +2,7 @@ version: '3'
 
 services:
     nginx:
-        build: ./nginx
+        image: nginx:latest
         ports:
             - 1333:80
         depends_on:
@@ -10,6 +10,7 @@ services:
         networks:
             - main
         volumes:
+            - ./nginx:/etc/nginx/conf.d
             - static_volume:/app/static
             - media_volume:/app/images
     db:
