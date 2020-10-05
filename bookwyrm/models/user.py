@@ -85,7 +85,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             # TODO not the right way to get the media type
             media_type = 'image/%s' % url.split('.')[-1]
         else:
-            url = '%s/static/images/default_avi.jpg' % DOMAIN
+            url = 'https://%s/static/images/default_avi.jpg' % DOMAIN
             media_type = 'image/jpeg'
         return activitypub.Image(media_type, url, 'Image')
 
