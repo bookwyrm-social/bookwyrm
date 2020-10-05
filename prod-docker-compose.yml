@@ -18,7 +18,7 @@ services:
             - media_volume:/app/images
     certbot:
         image: certbot/certbot:latest
-        command: certonly --webroot --webroot-path=/var/www/certbot --email mouse.reeve@gmail.com --agree-tos --no-eff-email -d bookwyrm.social -d www.bookwyrm.social
+        command: certonly --webroot --webroot-path=/var/www/certbot --email your-email@domain.com --agree-tos --no-eff-email -d your-domain.com -d www.your-domain.com
         volumes:
             - ./certbot/conf:/etc/letsencrypt
             - ./certbot/logs:/var/log/letsencrypt
