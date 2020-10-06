@@ -11,7 +11,7 @@ from .user import User
 
 class SiteSettings(models.Model):
     ''' customized settings for this instance '''
-    name = models.CharField(default=DOMAIN, max_length=100)
+    name = models.CharField(default='BookWyrm', max_length=100)
     instance_description = models.TextField(
         default="This instance has no description.")
     code_of_conduct = models.TextField(
