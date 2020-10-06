@@ -4,15 +4,25 @@ services:
     nginx:
         image: nginx:latest
         ports:
-            - 1333:80
+            - 80:80
+            - 443:443
         depends_on:
             - web
         networks:
             - main
         volumes:
             - ./nginx:/etc/nginx/conf.d
+            - ./certbot/conf:/etc/nginx/ssl
+            - ./certbot/data:/var/www/certbot
             - static_volume:/app/static
             - media_volume:/app/images
+    certbot:
+        image: certbot/certbot:latest
+        command: certonly --webroot --webroot-path=/var/www/certbot --email your-email@domain.com --agree-tos --no-eff-email -d your-domain.com -d www.your-domain.com
+        volumes:
+            - ./certbot/conf:/etc/letsencrypt
+            - ./certbot/logs:/var/log/letsencrypt
+            - ./certbot/data:/var/www/certbot
     db:
         image: postgres
         env_file: .env
