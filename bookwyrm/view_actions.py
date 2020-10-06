@@ -180,6 +180,7 @@ def edit_profile(request):
         return TemplateResponse(request, 'edit_user.html', data)
 
     request.user.name = form.data['name']
+    request.user.email = form.data['email']
     if 'avatar' in form.files:
         # crop and resize avatar upload
         image = Image.open(form.files['avatar'])
