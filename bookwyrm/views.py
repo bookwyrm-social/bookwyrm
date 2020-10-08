@@ -117,7 +117,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
 
     activities = model
     if hasattr(model, 'objects'):
-        activities = model.objects
+        activities = model.objects.filter(deleted=False)
 
     activities = activities.order_by(
         '-created_date'
