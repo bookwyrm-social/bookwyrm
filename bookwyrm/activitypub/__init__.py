@@ -4,6 +4,7 @@ import sys
 
 from .base_activity import ActivityEncoder, Image, PublicKey, Signature
 from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
+from .note import Tombstone
 from .interaction import Boost, Like
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .person import Person

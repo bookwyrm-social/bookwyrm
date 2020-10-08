@@ -5,6 +5,14 @@ from typing import Dict, List
 from .base_activity import ActivityObject, Image
 
 @dataclass(init=False)
+class Tombstone(ActivityObject):
+    url: str
+    published: str
+    deleted: str
+    type: str = 'Tombstone'
+
+
+@dataclass(init=False)
 class Note(ActivityObject):
     ''' Note activity '''
     url: str

@@ -6,6 +6,11 @@ from bookwyrm.books_manager import get_or_create_book
 from bookwyrm.sanitize_html import InputHtmlParser
 
 
+def delete_status(status):
+    ''' replace the status with a tombstone '''
+    status.deleted = True
+    status.save()
+
 def create_rating(user, book, rating):
     ''' a review that's just a rating '''
     if not rating or rating < 1 or rating > 5:

@@ -13,6 +13,7 @@ from bookwyrm.status import create_review, create_status
 from bookwyrm.status import create_quotation, create_comment
 from bookwyrm.status import create_tag, create_notification, create_rating
 from bookwyrm.status import create_generated_note
+from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
 
 
@@ -195,6 +196,12 @@ def handle_import_books(user, items):
         broadcast(user, status.to_create_activity(user))
         return status
     return None
+
+
+def handle_delete_status(user, status):
+    ''' delete a status and broadcast deletion to other servers '''
+    delete_status(status)
+    broadcast(user, status.to_activity())
 
 
 def handle_rate(user, book, rating):
