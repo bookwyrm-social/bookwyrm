@@ -1,6 +1,7 @@
 {% load humanize %}
 {% load fr_display %}
 
+{% if not status.deleted %}
 <div class="card">
     <header class="card-header">
     {% include 'snippets/status_header.html' with status=status %}
@@ -40,3 +41,14 @@
         </div>
     </footer>
 </div>
+{% else %}
+<div class="card">
+    <header class="card-header">
+        <p>
+        {% include 'snippets/avatar.html' with user=status.user %}
+        {% include 'snippets/username.html' with user=status.user %}
+        deleted this status
+        </p>
+    </header>
+</div>
+{% endif %}
