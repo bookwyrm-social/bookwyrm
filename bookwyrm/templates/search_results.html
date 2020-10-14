@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="block columns">
+    <div class="column">
+        <h2 class="title">Matching Books</h2>
+        {% for result_set in book_results %}
+        {% if result_set.results %}
+        <section>
+            {% if not result_set.connector.local %}
+            <h3>
+                Results from <a href="{{ result_set.connector.base_url }}" target="_blank">{% if result_set.connector.name %}{{ result_set.connector.name }}{% else %}{{ result_set.connector.identifier }}{% endif %}</a>
+            </h3>
+            {% endif %}
+
+            {% for result in result_set.results %}
+            <div>
+                <form action="/resolve_book" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="remote_id" value="{{ result.key }}">
+                    <button type="submit">{{ result.title }} by {{ result.author }} ({{ result.year }})</button>
+                </form>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+        {% endfor %}
+        {% if not results %}
+        <p>No books found for "{{ query }}"</p>
+        {% endif %}
+    </div>
+    <div class="column">
+        <h2 class="title">Matching Users</h2>
+        {% if not user_results %}
+        <p>No users found for "{{ query }}"</p>
+        {% endif %}
+        {% for result in user_results %}
+        <div class="block">
+            {% include 'snippets/avatar.html' with user=result %}</h2>
+            {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+            {% include 'snippets/follow_button.html' with user=result %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

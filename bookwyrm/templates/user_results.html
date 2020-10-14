@@ -6,6 +6,7 @@
     <p>No results found for "{{ query }}"</p>
     {% endif %}
     {% for result in results %}
+    {{ result }}
     <div class="block">
         {% include 'snippets/avatar.html' with user=result %}</h2>
         {% include 'snippets/username.html' with user=result show_full=True %}</h2>
