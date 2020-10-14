@@ -2,6 +2,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -147,22 +148,30 @@ def get_activity_feed(user, filter_level, model=models.Status):
 def search(request):
     ''' that search bar up top '''
     query = request.GET.get('q')
-    if re.match(r'\w+@\w+.\w+', query):
-        # if something looks like a username, search with webfinger
-        results = outgoing.handle_account_search(query)
-        return TemplateResponse(
-            request, 'user_results.html', {'results': results, 'query': query}
-        )
-
-    # or just send the question over to book search
 
     if is_api_request(request):
-        # only return local results via json so we don't cause a cascade
-        results = books_manager.local_search(query)
-        return JsonResponse([r.__dict__ for r in results], safe=False)
+        # only return local book results via json so we don't cause a cascade
+        book_results = books_manager.local_search(query)
+        return JsonResponse([r.__dict__ for r in book_results], safe=False)
 
-    results = books_manager.search(query)
-    return TemplateResponse(request, 'book_results.html', {'results': results})
+    # use webfinger  looks like a mastodon style account@domain.com username
+    if re.match(r'\w+@\w+.\w+', query):
+        outgoing.handle_remote_webfinger(query)
+
+    # do a local user search
+    user_results = models.User.objects.annotate(
+        similarity=TrigramSimilarity('username', query),
+    ).filter(
+        similarity__gt=0.1,
+    ).order_by('-similarity')[:10]
+
+    book_results = books_manager.search(query)
+    data = {
+        'book_results': book_results,
+        'user_results': user_results,
+        'query': query,
+    }
+    return TemplateResponse(request, 'search_results.html', data)
 
 
 @login_required

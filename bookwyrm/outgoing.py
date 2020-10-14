@@ -34,7 +34,7 @@ def outbox(request, username):
     )
 
 
-def handle_account_search(query):
+def handle_remote_webfinger(query):
     ''' webfingerin' other servers '''
     user = None
     domain = query.split('@')[1]
@@ -61,14 +61,10 @@ def handle_account_search(query):
 
 def handle_follow(user, to_follow):
     ''' someone local wants to follow someone '''
-    try:
-        relationship, _ = models.UserFollowRequest.objects.get_or_create(
-            user_subject=user,
-            user_object=to_follow,
-        )
-    except IntegrityError as err:
-        if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
-            raise
+    relationship, _ = models.UserFollowRequest.objects.get_or_create(
+        user_subject=user,
+        user_object=to_follow,
+    )
     activity = relationship.to_activity()
     broadcast(user, activity, direct_recipients=[to_follow])
 
