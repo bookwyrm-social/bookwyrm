@@ -38,9 +38,9 @@ def shared_inbox(request):
 
     try:
         resp = request.body
-        if isinstance(resp, bytes):
-            resp = json.loads(resp)
         activity = json.loads(resp)
+        if isinstance(resp, str):
+            resp = json.loads(resp)
         activity_object = activity['object']
     except (json.decoder.JSONDecodeError, KeyError):
         return HttpResponseBadRequest()
