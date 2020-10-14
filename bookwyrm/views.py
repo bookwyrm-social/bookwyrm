@@ -2,6 +2,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.postgres.search import SearchRank, SearchVector
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -153,11 +154,20 @@ def search(request):
         book_results = books_manager.local_search(query)
         return JsonResponse([r.__dict__ for r in book_results], safe=False)
 
-    user_results = []
     # use webfinger  looks like a mastodon style account@domain.com username
     if re.match(r'\w+@\w+.\w+', query):
-        # if something looks like a username, search with webfinger
-        user_results = outgoing.handle_remote_webfinger(query)
+        outgoing.handle_remote_webfinger(query)
+
+    # do a local user search
+    vector = SearchVector('localname', weight='A') + \
+             SearchVector('username', wieght='A')
+    user_results = models.User.objects.annotate(
+        search=vector
+    ).annotate(
+        rank=SearchRank(vector, query)
+    ).filter(
+        rank__gt=0
+    ).order_by('-rank')[:10]
 
     book_results = books_manager.search(query)
     data = {
