@@ -25,8 +25,8 @@
                     <p>{{ user.username }}</p>
                     <p>Joined {{ user.created_date | naturaltime }}</p>
                     <p>
-                    <a href="{{ user.remote_id }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-                        <a href="{{ user.remote_id }}/following">{{ user.following.count }} following</a></p>
+                    <a href="/user/{{ user | username }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
+                        <a href="/user/{{ user | username }}/following">{{ user.following.count }} following</a></p>
                 </div>
             </div>
         </div>
