@@ -2,7 +2,7 @@
 import re
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.postgres.search import SearchRank, SearchVector
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -159,15 +159,11 @@ def search(request):
         outgoing.handle_remote_webfinger(query)
 
     # do a local user search
-    vector = SearchVector('localname', weight='A') + \
-             SearchVector('username', wieght='A')
     user_results = models.User.objects.annotate(
-        search=vector
-    ).annotate(
-        rank=SearchRank(vector, query)
+        similarity=TrigramSimilarity('username', query),
     ).filter(
-        rank__gt=0
-    ).order_by('-rank')[:10]
+        similarity__gt=0.1,
+    ).order_by('-similarity')[:10]
 
     book_results = books_manager.search(query)
     data = {
