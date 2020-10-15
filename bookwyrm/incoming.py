@@ -112,9 +112,16 @@ def has_valid_signature(request, activity):
 def handle_follow(activity):
     ''' someone wants to follow a local user '''
     # figure out who they want to follow -- not using get_or_create because
-    # we only allow you to follow local users
-    to_follow = models.User.objects.get(remote_id=activity['object'])
-    # raises models.User.DoesNotExist id the remote id is not found
+    # we only care if you want to follow local users
+    try:
+        to_follow = models.User.objects.get(remote_id=activity['object'])
+    except models.User.DoesNotExist:
+        # some rando, who cares
+        return
+    if not to_follow.local:
+        # just ignore follow alerts about other servers. maybe they should be
+        # handled. maybe they shouldn't be sent at all.
+        return
 
     # figure out who the actor is
     user = get_or_create_remote_user(activity['actor'])
