@@ -124,10 +124,10 @@ def handle_follow(activity):
         return
 
     # figure out who the actor is
-    user = get_or_create_remote_user(activity['actor'])
+    actor = get_or_create_remote_user(activity['actor'])
     try:
         relationship = models.UserFollowRequest.objects.create(
-            user_subject=user,
+            user_subject=actor,
             user_object=to_follow,
             relationship_id=activity['id']
         )
@@ -143,14 +143,15 @@ def handle_follow(activity):
         status_builder.create_notification(
             to_follow,
             'FOLLOW',
-            related_user=user
+            related_user=actor
         )
-        outgoing.handle_accept(user, to_follow, relationship)
+        outgoing.handle_accept(actor, to_follow, relationship)
     else:
+        # Accept will be triggered manually
         status_builder.create_notification(
             to_follow,
             'FOLLOW_REQUEST',
-            related_user=user
+            related_user=actor
         )
 
 
