@@ -66,7 +66,7 @@ def handle_follow(user, to_follow):
         user_object=to_follow,
     )
     activity = relationship.to_activity()
-    broadcast(user, activity, direct_recipients=[to_follow])
+    broadcast(user, activity, privacy='direct', direct_recipients=[to_follow])
 
 
 def handle_unfollow(user, to_unfollow):
@@ -76,7 +76,7 @@ def handle_unfollow(user, to_unfollow):
         user_object=to_unfollow
     )
     activity = relationship.to_undo_activity(user)
-    broadcast(user, activity, direct_recipients=[to_unfollow])
+    broadcast(user, activity, privacy='direct', direct_recipients=[to_unfollow])
     to_unfollow.followers.remove(user)
 
 

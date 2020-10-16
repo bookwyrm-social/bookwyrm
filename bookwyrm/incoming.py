@@ -134,10 +134,8 @@ def handle_follow(activity):
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
             raise
-        # Duplicate follow request. Not sure what the correct behaviour is, but
-        # just dropping it works for now. We should perhaps generate the
-        # Accept, but then do we need to match the activity id?
-        return
+        relationship = models.UserFollowRequest.objects.get(remote_id=activity['id'])
+        # send the accept normally for a duplicate request
 
     if not to_follow.manually_approves_followers:
         status_builder.create_notification(
