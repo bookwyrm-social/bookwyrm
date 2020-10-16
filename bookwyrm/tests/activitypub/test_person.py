@@ -21,12 +21,3 @@ class Person(TestCase):
         self.assertEqual(activity.id, 'https://example.com/user/mouse')
         self.assertEqual(activity.preferredUsername, 'mouse')
         self.assertEqual(activity.type, 'Person')
-
-
-    def test_serialize_model(self):
-        activity = self.user.to_activity()
-        self.assertEqual(activity['id'], self.user.remote_id)
-        self.assertEqual(
-            activity['endpoints'],
-            {'sharedInbox': self.user.shared_inbox}
-        )
