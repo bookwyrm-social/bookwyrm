@@ -111,11 +111,16 @@ def handle_shelve(user, book, shelf):
     broadcast(user, shelve.to_add_activity(user))
 
     # tell the world about this cool thing that happened
-    message = {
-        'to-read': 'wants to read',
-        'reading': 'started reading',
-        'read': 'finished reading'
-    }[shelf.identifier]
+    try:
+        message = {
+            'to-read': 'wants to read',
+            'reading': 'started reading',
+            'read': 'finished reading'
+        }[shelf.identifier]
+    except KeyError:
+        # it's a non-standard shelf, don't worry about it
+        return
+
     status = create_generated_note(user, message, mention_books=[book])
     status.save()
 

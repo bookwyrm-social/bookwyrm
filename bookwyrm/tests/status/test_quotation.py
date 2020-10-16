@@ -1,8 +1,6 @@
 from django.test import TestCase
-import json
-import pathlib
 
-from bookwyrm import activitypub, models
+from bookwyrm import models
 from bookwyrm import status as status_builder
 
 
