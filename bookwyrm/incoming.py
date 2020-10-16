@@ -129,7 +129,7 @@ def handle_follow(activity):
         relationship = models.UserFollowRequest.objects.create(
             user_subject=actor,
             user_object=to_follow,
-            relationship_id=activity['id']
+            remote_id=activity['id']
         )
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
