@@ -15,6 +15,7 @@ services:
             - media_volume:/app/images
     db:
         image: postgres
+        env_file: .env
         volumes:
           - pgdata:/var/lib/postgresql/data
         networks:
@@ -35,12 +36,14 @@ services:
             - 8000:8000
     redis:
         image: redis
+        env_file: .env
         ports:
           - 6379:6379
         networks:
             - main
         restart: on-failure
     celery_worker:
+        env_file: .env
         build: .
         networks:
             - main
