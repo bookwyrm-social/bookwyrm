@@ -473,7 +473,7 @@ def accept_follow_request(request):
         # Request already dealt with.
         pass
     else:
-        outgoing.handle_accept(requester, request.user, follow_request)
+        outgoing.handle_accept(follow_request)
 
     return redirect('/user/%s' % request.user.localname)
 
@@ -495,7 +495,7 @@ def delete_follow_request(request):
     except models.UserFollowRequest.DoesNotExist:
         return HttpResponseBadRequest()
 
-    outgoing.handle_reject(requester, request.user, follow_request)
+    outgoing.handle_reject(follow_request)
     return redirect('/user/%s' % request.user.localname)
 
 

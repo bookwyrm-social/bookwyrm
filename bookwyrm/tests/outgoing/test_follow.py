@@ -3,7 +3,7 @@ from django.test import TestCase
 from bookwyrm import models, outgoing
 
 
-class OutgoingFollow(TestCase):
+class Following(TestCase):
     def setUp(self):
         self.remote_user = models.User.objects.create_user(
             'rat', 'rat@rat.com', 'ratword',
@@ -29,9 +29,44 @@ class OutgoingFollow(TestCase):
         self.assertEqual(rel.user_object, self.remote_user)
         self.assertEqual(rel.status, 'follow_request')
 
+
     def test_handle_unfollow(self):
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
         outgoing.handle_unfollow(self.local_user, self.remote_user)
 
         self.assertEqual(self.remote_user.followers.count(), 0)
+
+
+    def test_handle_accept(self):
+        rel = models.UserFollowRequest.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user
+        )
+        rel_id = rel.id
+
+        outgoing.handle_accept(rel)
+        # request should be deleted
+        self.assertEqual(
+            models.UserFollowRequest.objects.filter(id=rel_id).count(), 0
+        )
+        # follow relationship should exist
+        self.assertEqual(self.remote_user.followers.first(), self.local_user)
+
+
+    def test_handle_reject(self):
+        rel = models.UserFollowRequest.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user
+        )
+        rel_id = rel.id
+
+        outgoing.handle_reject(rel)
+        # request should be deleted
+        self.assertEqual(
+            models.UserFollowRequest.objects.filter(id=rel_id).count(), 0
+        )
+        # follow relationship should not exist
+        self.assertEqual(
+            models.UserFollows.objects.filter(id=rel_id).count(), 0
+        )
