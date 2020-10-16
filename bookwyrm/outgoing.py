@@ -80,8 +80,10 @@ def handle_unfollow(user, to_unfollow):
     to_unfollow.followers.remove(user)
 
 
-def handle_accept(user, to_follow, follow_request):
+def handle_accept(follow_request):
     ''' send an acceptance message to a follow request '''
+    user = follow_request.user_subject
+    to_follow = follow_request.user_object
     with transaction.atomic():
         relationship = models.UserFollows.from_request(follow_request)
         follow_request.delete()

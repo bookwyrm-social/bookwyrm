@@ -143,7 +143,7 @@ def handle_follow(activity):
             'FOLLOW',
             related_user=actor
         )
-        outgoing.handle_accept(actor, to_follow, relationship)
+        outgoing.handle_accept(relationship)
     else:
         # Accept will be triggered manually
         status_builder.create_notification(

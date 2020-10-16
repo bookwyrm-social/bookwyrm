@@ -473,7 +473,7 @@ def accept_follow_request(request):
         # Request already dealt with.
         pass
     else:
-        outgoing.handle_accept(requester, request.user, follow_request)
+        outgoing.handle_accept(follow_request)
 
     return redirect('/user/%s' % request.user.localname)
 
