@@ -1,11 +1,9 @@
-import json
 from django.test import TestCase
 
 from bookwyrm import models, incoming
 
 
 class IncomingFollowAccept(TestCase):
-    ''' not too much going on in the books model but here we are '''
     def setUp(self):
         self.remote_user = models.User.objects.create_user(
             'rat', 'rat@rat.com', 'ratword',
