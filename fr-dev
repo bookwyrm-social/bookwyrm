@@ -39,7 +39,7 @@ case "$1" in
         ;;
     test)
         shift 1
-        docker-compose exec web coverage run --source='.' manage.py test "$@"
+        docker-compose exec web coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     test_report)
         docker-compose exec web coverage report
