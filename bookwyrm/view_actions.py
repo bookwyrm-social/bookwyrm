@@ -495,7 +495,7 @@ def delete_follow_request(request):
     except models.UserFollowRequest.DoesNotExist:
         return HttpResponseBadRequest()
 
-    outgoing.handle_reject(requester, request.user, follow_request)
+    outgoing.handle_reject(follow_request)
     return redirect('/user/%s' % request.user.localname)
 
 

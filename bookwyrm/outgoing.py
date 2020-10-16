@@ -93,10 +93,12 @@ def handle_accept(follow_request):
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
-def handle_reject(user, to_follow, relationship):
+def handle_reject(follow_request):
     ''' a local user who managed follows rejects a follow request '''
-    activity = relationship.to_reject_activity(user)
-    relationship.delete()
+    user = follow_request.user_subject
+    to_follow = follow_request.user_object
+    activity = follow_request.to_reject_activity()
+    follow_request.delete()
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
