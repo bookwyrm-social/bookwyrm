@@ -4,11 +4,12 @@ import sys
 
 from .base_activity import ActivityEncoder, Image, PublicKey, Signature
 from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
+from .note import Tombstone
 from .interaction import Boost, Like
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .person import Person
 from .book import Edition, Work, Author
-from .verbs import Create, Undo, Update
+from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject
 from .verbs import Add, Remove
 

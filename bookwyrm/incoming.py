@@ -57,6 +57,7 @@ def shared_inbox(request):
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
         'Create': handle_create,
+        'Delete': handle_delete_status,
         'Like': handle_favorite,
         'Announce': handle_boost,
         'Add': {
@@ -134,7 +135,9 @@ def handle_follow(activity):
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
             raise
-        relationship = models.UserFollowRequest.objects.get(remote_id=activity['id'])
+        relationship = models.UserFollowRequest.objects.get(
+            remote_id=activity['id']
+        )
         # send the accept normally for a duplicate request
 
     if not to_follow.manually_approves_followers:
@@ -143,7 +146,7 @@ def handle_follow(activity):
             'FOLLOW',
             related_user=actor
         )
-        outgoing.handle_accept(actor, to_follow, relationship)
+        outgoing.handle_accept(relationship)
     else:
         # Accept will be triggered manually
         status_builder.create_notification(
@@ -194,7 +197,7 @@ def handle_follow_reject(activity):
         user_object=rejecter
     )
     request.delete()
-    #raises models.UserFollowRequest.DoesNotExist:
+    #raises models.UserFollowRequest.DoesNotExist
 
 
 @app.task
@@ -233,6 +236,20 @@ def handle_create(activity):
             related_user=status.user,
             related_status=status,
         )
+
+
+@app.task
+def handle_delete_status(activity):
+    ''' remove a status '''
+    status_id = activity['object']['id']
+    try:
+        status = models.Status.objects.select_subclasses().get(
+            remote_id=status_id
+        )
+    except models.Status.DoesNotExist:
+        return
+    status_builder.delete_status(status)
+
 
 
 @app.task

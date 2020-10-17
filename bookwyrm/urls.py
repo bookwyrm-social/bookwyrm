@@ -11,7 +11,7 @@ localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 
-status_types = ['status', 'review', 'comment', 'quotation', 'boost']
+status_types = ['status', 'review', 'comment', 'quotation', 'boost', 'generatedstatus']
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
         (local_user_path, '|'.join(status_types))
 
@@ -106,6 +106,8 @@ urlpatterns = [
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
+
+    re_path(r'^delete-status/?$', actions.delete_status),
 
     re_path(r'^shelve/?$', actions.shelve),
 

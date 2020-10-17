@@ -22,6 +22,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     sensitive = models.BooleanField(default=False)
     # the created date can't be this, because of receiving federated posts
     published_date = models.DateTimeField(default=timezone.now)
+    deleted = models.BooleanField(default=False)
+    deleted_date = models.DateTimeField()
     favorites = models.ManyToManyField(
         'User',
         symmetrical=False,
@@ -104,6 +106,18 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
+    def to_activity(self, **kwargs):
+        ''' return tombstone if the status is deleted '''
+        if self.deleted:
+            return activitypub.Tombstone(
+                id=self.remote_id,
+                url=self.remote_id,
+                deleted=http_date(self.deleted_date.timestamp()),
+                published=http_date(self.deleted_date.timestamp()),
+            ).serialize()
+        return ActivitypubMixin.to_activity(self, **kwargs)
+
+
 class GeneratedStatus(Status):
     ''' these are app-generated messages about user activity '''
     @property
@@ -112,7 +126,7 @@ class GeneratedStatus(Status):
         message = self.content
         books = ', '.join(
             '<a href="%s">"%s"</a>' % (self.book.local_id, self.book.title) \
-            for book in self.mention_books
+            for book in self.mention_books.all()
         )
         return '%s %s' % (message, books)
 

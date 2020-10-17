@@ -13,6 +13,7 @@ from bookwyrm.status import create_review, create_status
 from bookwyrm.status import create_quotation, create_comment
 from bookwyrm.status import create_tag, create_notification, create_rating
 from bookwyrm.status import create_generated_note
+from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
 
 
@@ -80,8 +81,10 @@ def handle_unfollow(user, to_unfollow):
     to_unfollow.followers.remove(user)
 
 
-def handle_accept(user, to_follow, follow_request):
+def handle_accept(follow_request):
     ''' send an acceptance message to a follow request '''
+    user = follow_request.user_subject
+    to_follow = follow_request.user_object
     with transaction.atomic():
         relationship = models.UserFollows.from_request(follow_request)
         follow_request.delete()
@@ -91,10 +94,12 @@ def handle_accept(user, to_follow, follow_request):
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
-def handle_reject(user, to_follow, relationship):
+def handle_reject(follow_request):
     ''' a local user who managed follows rejects a follow request '''
-    activity = relationship.to_reject_activity(user)
-    relationship.delete()
+    user = follow_request.user_subject
+    to_follow = follow_request.user_object
+    activity = follow_request.to_reject_activity()
+    follow_request.delete()
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
@@ -107,11 +112,16 @@ def handle_shelve(user, book, shelf):
     broadcast(user, shelve.to_add_activity(user))
 
     # tell the world about this cool thing that happened
-    message = {
-        'to-read': 'wants to read',
-        'reading': 'started reading',
-        'read': 'finished reading'
-    }[shelf.identifier]
+    try:
+        message = {
+            'to-read': 'wants to read',
+            'reading': 'started reading',
+            'read': 'finished reading'
+        }[shelf.identifier]
+    except KeyError:
+        # it's a non-standard shelf, don't worry about it
+        return
+
     status = create_generated_note(user, message, mention_books=[book])
     status.save()
 
@@ -191,6 +201,12 @@ def handle_import_books(user, items):
         broadcast(user, status.to_create_activity(user))
         return status
     return None
+
+
+def handle_delete_status(user, status):
+    ''' delete a status and broadcast deletion to other servers '''
+    delete_status(status)
+    broadcast(user, status.to_activity())
 
 
 def handle_rate(user, book, rating):
