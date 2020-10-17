@@ -1,10 +1,17 @@
 ''' Handle user activity '''
+from datetime import datetime
 from django.db import IntegrityError
 
 from bookwyrm import models
 from bookwyrm.books_manager import get_or_create_book
 from bookwyrm.sanitize_html import InputHtmlParser
 
+
+def delete_status(status):
+    ''' replace the status with a tombstone '''
+    status.deleted = True
+    status.deleted_date = datetime.now()
+    status.save()
 
 def create_rating(user, book, rating):
     ''' a review that's just a rating '''

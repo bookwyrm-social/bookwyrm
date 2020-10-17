@@ -418,6 +418,27 @@ def boost(request, status_id):
     outgoing.handle_boost(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
+
+@login_required
+def delete_status(request):
+    ''' delete and tombstone a status '''
+    status_id = request.POST.get('status')
+    if not status_id:
+        return HttpResponseBadRequest()
+    try:
+        status = models.Status.objects.get(id=status_id)
+    except models.Status.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    # don't let people delete other people's statuses
+    if status.user != request.user:
+        return HttpResponseBadRequest()
+
+    # perform deletion
+    outgoing.handle_delete_status(request.user, status)
+    return redirect(request.headers.get('Referer', '/'))
+
+
 @login_required
 def follow(request):
     ''' follow another user, here or abroad '''

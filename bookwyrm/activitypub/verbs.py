@@ -22,6 +22,15 @@ class Create(Verb):
 
 
 @dataclass(init=False)
+class Delete(Verb):
+    ''' Create activity '''
+    to: List
+    cc: List
+    signature: Signature
+    type: str = 'Delete'
+
+
+@dataclass(init=False)
 class Update(Verb):
     ''' Update activity '''
     to: List
