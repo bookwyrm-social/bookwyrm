@@ -6,7 +6,6 @@ from bookwyrm.tasks import app
 
 def password_reset_email(reset_code):
     ''' generate a password reset email '''
-    # TODO; this should be tempalted
     site = models.SiteSettings.get()
     send_email.delay(
         reset_code.user.email,

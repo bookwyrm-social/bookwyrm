@@ -11,7 +11,14 @@ localname_regex = r'(?P<username>[\w\-_]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 
-status_types = ['status', 'review', 'comment', 'quotation', 'boost', 'generatedstatus']
+status_types = [
+    'status',
+    'review',
+    'comment',
+    'quotation',
+    'boost',
+    'generatedstatus'
+]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
         (local_user_path, '|'.join(status_types))
 
