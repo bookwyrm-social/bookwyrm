@@ -57,6 +57,7 @@ def shared_inbox(request):
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
         'Create': handle_create,
+        'Delete': handle_delete_status,
         'Like': handle_favorite,
         'Announce': handle_boost,
         'Add': {
@@ -227,6 +228,20 @@ def handle_create(activity):
             related_user=status.user,
             related_status=status,
         )
+
+
+@app.task
+def handle_delete_status(activity):
+    ''' remove a status '''
+    status_id = activity['object']['id']
+    try:
+        status = models.Status.objects.select_subclasses().get(
+            remote_id=status_id
+        )
+    except models.Status.DoesNotExist:
+        return
+    status_builder.delete_status(status)
+
 
 
 @app.task

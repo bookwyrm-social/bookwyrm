@@ -23,7 +23,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     # the created date can't be this, because of receiving federated posts
     published_date = models.DateTimeField(default=timezone.now)
     deleted = models.BooleanField(default=False)
-    deleted_date = models.DateTimeField(default=timezone.now)
+    deleted_date = models.DateTimeField()
     favorites = models.ManyToManyField(
         'User',
         symmetrical=False,
