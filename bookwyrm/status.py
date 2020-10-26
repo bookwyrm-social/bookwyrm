@@ -13,6 +13,7 @@ def delete_status(status):
     status.deleted_date = datetime.now()
     status.save()
 
+
 def create_rating(user, book, rating):
     ''' a review that's just a rating '''
     if not rating or rating < 1 or rating > 5:

@@ -9,9 +9,8 @@ import requests
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.broadcast import broadcast
-from bookwyrm.status import create_review, create_status
-from bookwyrm.status import create_quotation, create_comment
-from bookwyrm.status import create_tag, create_notification, create_rating
+from bookwyrm.status import create_status
+from bookwyrm.status import create_tag, create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
@@ -178,16 +177,18 @@ def handle_import_books(user, items):
                 broadcast(user, activity)
 
                 if item.rating or item.review:
-                    review_title = "Review of {!r} on Goodreads".format(
-                        item.book.title,
-                    ) if item.review else ""
-                    handle_review(
-                        user,
-                        item.book,
-                        review_title,
-                        item.review,
-                        item.rating,
-                    )
+                    pass
+                    #review_title = "Review of {!r} on Goodreads".format(
+                    #    item.book.title,
+                    #) if item.review else ""
+                    # TODO
+                    #handle_review(
+                    #    user,
+                    #    item.book,
+                    #    review_title,
+                    #    item.review,
+                    #    item.rating,
+                    #)
                 for read in item.reads:
                     read.book = item.book
                     read.user = user
@@ -209,37 +210,9 @@ def handle_delete_status(user, status):
     broadcast(user, status.to_activity())
 
 
-def handle_rate(user, book, rating):
-    ''' a review that's just a rating '''
-    builder = create_rating
-    handle_status(user, book, builder, rating)
-
-
-def handle_review(user, book, name, content, rating):
-    ''' post a review '''
-    # validated and saves the review in the database so it has an id
-    builder = create_review
-    handle_status(user, book, builder, name, content, rating)
-
-
-def handle_quotation(user, book, content, quote):
-    ''' post a review '''
-    # validated and saves the review in the database so it has an id
-    builder = create_quotation
-    handle_status(user, book, builder, content, quote)
-
-
-def handle_comment(user, book, content):
-    ''' post a comment '''
-    # validated and saves the review in the database so it has an id
-    builder = create_comment
-    handle_status(user, book, builder, content)
-
-
-def handle_status(user, book_id, builder, *args):
+def handle_status(user, form):
     ''' generic handler for statuses '''
-    book = models.Edition.objects.get(id=book_id)
-    status = builder(user, book, *args)
+    status = form.save()
 
     broadcast(user, status.to_create_activity(user), software='bookwyrm')
 
