@@ -15,9 +15,6 @@
                     <div class="control">
                         {{ login_form.username }}
                     </div>
-                    {% for error in login_form.username.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
                 </div>
                 <div class="field">
                     <label class="label" for="id_password">Password:</label>

@@ -24,14 +24,6 @@ def user_login(request):
         return redirect('/login')
 
     login_form = forms.LoginForm(request.POST)
-    register_form = forms.RegisterForm()
-    if not login_form.is_valid():
-        data = {
-            'site_settings': models.SiteSettings.get(),
-            'login_form': login_form,
-            'register_form': register_form
-        }
-        return TemplateResponse(request, 'login.html', data)
 
     username = login_form.data['username']
     username = '%s@%s' % (username, DOMAIN)
@@ -42,6 +34,7 @@ def user_login(request):
         return redirect(request.GET.get('next', '/'))
 
     login_form.non_field_errors = 'Username or password are incorrect'
+    register_form = forms.RegisterForm()
     data = {
         'site_settings': models.SiteSettings.get(),
         'login_form': login_form,
