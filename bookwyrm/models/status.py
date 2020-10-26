@@ -192,9 +192,14 @@ class Review(Status):
     @property
     def ap_pure_name(self):
         ''' clarify review names for mastodon serialization '''
-        return 'Review of "%s" (%d stars): %s' % (
+        if self.rating:
+            return 'Review of "%s" (%d stars): %s' % (
+                self.book.title,
+                self.rating,
+                self.name
+            )
+        return 'Review of "%s": %s' % (
             self.book.title,
-            self.rating,
             self.name
         )
 
