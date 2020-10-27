@@ -52,47 +52,31 @@ class RegisterForm(CustomForm):
 class RatingForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['rating']
+        fields = ['user', 'book', 'content', 'rating', 'privacy']
 
 
 class ReviewForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['name', 'content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'name': 'Title',
-            'content': 'Review',
-        }
+        fields = ['user', 'book', 'name', 'content', 'rating', 'privacy']
 
 
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ['content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'content': 'Comment',
-        }
+        fields = ['user', 'book', 'content', 'privacy']
 
 
 class QuotationForm(CustomForm):
     class Meta:
         model = models.Quotation
-        fields = ['quote', 'content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'quote': 'Quote',
-            'content': 'Comment',
-        }
+        fields = ['user', 'book', 'quote', 'content', 'privacy']
 
 
 class ReplyForm(CustomForm):
     class Meta:
         model = models.Status
-        fields = ['content']
-        help_texts = {f: None for f in fields}
-        labels = {'content': 'Comment'}
+        fields = ['user', 'content', 'reply_parent', 'privacy']
 
 
 class EditUserForm(CustomForm):

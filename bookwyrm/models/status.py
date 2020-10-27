@@ -10,6 +10,13 @@ from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, BookWyrmModel
 
 
+PrivacyLevels = models.TextChoices('Privacy', [
+    'public',
+    'unlisted',
+    'followers',
+    'direct'
+])
+
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -18,7 +25,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     mention_books = models.ManyToManyField(
         'Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
-    privacy = models.CharField(max_length=255, default='public')
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
     sensitive = models.BooleanField(default=False)
     # the created date can't be this, because of receiving federated posts
     published_date = models.DateTimeField(default=timezone.now)
@@ -181,9 +192,14 @@ class Review(Status):
     @property
     def ap_pure_name(self):
         ''' clarify review names for mastodon serialization '''
-        return 'Review of "%s" (%d stars): %s' % (
+        if self.rating:
+            return 'Review of "%s" (%d stars): %s' % (
+                self.book.title,
+                self.rating,
+                self.name
+            )
+        return 'Review of "%s": %s' % (
             self.book.title,
-            self.rating,
             self.name
         )
 

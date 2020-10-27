@@ -9,9 +9,7 @@ import requests
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.broadcast import broadcast
-from bookwyrm.status import create_review, create_status
-from bookwyrm.status import create_quotation, create_comment
-from bookwyrm.status import create_tag, create_notification, create_rating
+from bookwyrm.status import create_tag, create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
@@ -178,15 +176,16 @@ def handle_import_books(user, items):
                 broadcast(user, activity)
 
                 if item.rating or item.review:
-                    review_title = "Review of {!r} on Goodreads".format(
+                    review_title = 'Review of {!r} on Goodreads'.format(
                         item.book.title,
-                    ) if item.review else ""
-                    handle_review(
-                        user,
-                        item.book,
-                        review_title,
-                        item.review,
-                        item.rating,
+                    ) if item.review else ''
+
+                    models.Review.objects.create(
+                        user=user,
+                        book=item.book,
+                        name=review_title,
+                        content=item.review,
+                        rating=item.rating,
                     )
                 for read in item.reads:
                     read.book = item.book
@@ -209,44 +208,25 @@ def handle_delete_status(user, status):
     broadcast(user, status.to_activity())
 
 
-def handle_rate(user, book, rating):
-    ''' a review that's just a rating '''
-    builder = create_rating
-    handle_status(user, book, builder, rating)
-
-
-def handle_review(user, book, name, content, rating):
-    ''' post a review '''
-    # validated and saves the review in the database so it has an id
-    builder = create_review
-    handle_status(user, book, builder, name, content, rating)
-
-
-def handle_quotation(user, book, content, quote):
-    ''' post a review '''
-    # validated and saves the review in the database so it has an id
-    builder = create_quotation
-    handle_status(user, book, builder, content, quote)
-
-
-def handle_comment(user, book, content):
-    ''' post a comment '''
-    # validated and saves the review in the database so it has an id
-    builder = create_comment
-    handle_status(user, book, builder, content)
-
-
-def handle_status(user, book_id, builder, *args):
+def handle_status(user, form):
     ''' generic handler for statuses '''
-    book = models.Edition.objects.get(id=book_id)
-    status = builder(user, book, *args)
+    status = form.save()
+
+    # notify reply parent or (TODO) tagged users
+    if status.reply_parent and status.reply_parent.user.local:
+        create_notification(
+            status.reply_parent.user,
+            'REPLY',
+            related_user=user,
+            related_status=status
+        )
 
     broadcast(user, status.to_create_activity(user), software='bookwyrm')
 
     # re-format the activity for non-bookwyrm servers
-    remote_activity = status.to_create_activity(user, pure=True)
-
-    broadcast(user, remote_activity, software='other')
+    if hasattr(status, 'pure_activity_serializer'):
+        remote_activity = status.to_create_activity(user, pure=True)
+        broadcast(user, remote_activity, software='other')
 
 
 def handle_tag(user, book, name):
@@ -263,21 +243,6 @@ def handle_untag(user, book, name):
     tag.delete()
 
     broadcast(user, tag_activity)
-
-
-def handle_reply(user, review, content):
-    ''' respond to a review or status '''
-    # validated and saves the comment in the database so it has an id
-    reply = create_status(user, content, reply_parent=review)
-    if reply.reply_parent:
-        create_notification(
-            reply.reply_parent.user,
-            'REPLY',
-            related_user=user,
-            related_status=reply,
-        )
-
-    broadcast(user, reply.to_create_activity(user))
 
 
 def handle_favorite(user, status):
