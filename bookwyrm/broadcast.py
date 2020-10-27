@@ -13,7 +13,6 @@ def get_public_recipients(user, software=None):
     ''' everybody and their public inboxes '''
     followers = user.followers.filter(local=False)
     if software:
-        # TODO: eventually we may want to handle particular software differently
         followers = followers.filter(bookwyrm_user=(software == 'bookwyrm'))
 
     # we want shared inboxes when available
@@ -36,7 +35,6 @@ def broadcast(sender, activity, software=None, \
     # start with parsing the direct recipients
     recipients = [u.inbox for u in direct_recipients or []]
     # and then add any other recipients
-    # TODO: other kinds of privacy
     if privacy == 'public':
         recipients += get_public_recipients(sender, software=software)
     broadcast_task.delay(
@@ -55,7 +53,6 @@ def broadcast_task(sender_id, activity, recipients):
         try:
             sign_and_send(sender, activity, recipient)
         except requests.exceptions.HTTPError as e:
-            # TODO: maybe keep track of users who cause errors
             errors.append({
                 'error': str(e),
                 'recipient': recipient,

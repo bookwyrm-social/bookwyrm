@@ -68,7 +68,7 @@ def shared_inbox(request):
             'Like': handle_unfavorite,
         },
         'Update': {
-            'Person': None,# TODO: handle_update_user
+            'Person': handle_update_user,
             'Document': handle_update_book,
         },
     }
@@ -306,6 +306,20 @@ def handle_tag(activity):
     if not user.local:
         book = activity['target']['id']
         status_builder.create_tag(user, book, activity['object']['name'])
+
+
+@app.task
+def handle_update_user(activity):
+    ''' receive an updated user Person activity object '''
+    try:
+        user = models.User.objects.get(remote_id=activity['object']['id'])
+    except models.User.DoesNotExist:
+        # who is this person? who cares
+        return
+    activitypub.Person(
+        **activity['object']
+    ).to_model(models.User, instance=user)
+    # model save() happens in the to_model function
 
 
 @app.task

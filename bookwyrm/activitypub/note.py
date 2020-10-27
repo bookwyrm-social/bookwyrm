@@ -6,6 +6,7 @@ from .base_activity import ActivityObject, Image
 
 @dataclass(init=False)
 class Tombstone(ActivityObject):
+    ''' the placeholder for a deleted status '''
     url: str
     published: str
     deleted: str
@@ -23,7 +24,6 @@ class Note(ActivityObject):
     cc: List[str]
     content: str
     replies: Dict
-    # TODO: this is wrong???
     attachment: List[Image] = field(default=lambda: [])
     sensitive: bool = False
     type: str = 'Note'

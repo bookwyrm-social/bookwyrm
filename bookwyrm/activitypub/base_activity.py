@@ -44,10 +44,9 @@ class ActivityObject:
     type: str
 
     def __init__(self, **kwargs):
-        ''' this lets you pass in an object with fields
-        that aren't in the dataclass, which it ignores.
-        Any field in the dataclass is required or has a
-        default value '''
+        ''' this lets you pass in an object with fields that aren't in the
+        dataclass, which it ignores. Any field in the dataclass is required or
+        has a default value '''
         for field in fields(self):
             try:
                 value = kwargs[field.name]
@@ -59,7 +58,7 @@ class ActivityObject:
 
 
     def to_model(self, model, instance=None):
-        ''' convert from an activity to a model '''
+        ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
             raise TypeError('Wrong activity type for model')
 

@@ -52,7 +52,6 @@ class Work(Book):
     type: str = 'Work'
 
 
-
 @dataclass(init=False)
 class Author(ActivityObject):
     ''' author of a book '''
