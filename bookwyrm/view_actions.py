@@ -320,14 +320,21 @@ def comment(request):
     return handle_status(request, form)
 
 
+@login_required
+def reply(request):
+    ''' respond to a book review '''
+    form = forms.ReplyForm(request.POST)
+    return handle_status(request, form)
+
+
 def handle_status(request, form):
-    ''' all the review/comment/quote etc functions are the same '''
+    ''' all the "create a status" functions are the same '''
     book_id = request.POST.get('book')
     if not form.is_valid():
-        return redirect('/book/%s' % book_id)
+        return redirect(request.headers.get('Referer', '/'))
 
     outgoing.handle_status(request.user, form)
-    return redirect('/book/%s' % book_id)
+    return redirect(request.headers.get('Referer', '/'))
 
 
 @login_required
@@ -351,19 +358,6 @@ def untag(request):
 
     outgoing.handle_untag(request.user, book_id, name)
     return redirect('/book/%s' % book_id)
-
-
-@login_required
-def reply(request):
-    ''' respond to a book review '''
-    form = forms.ReplyForm(request.POST)
-    # this is a bit of a formality, the form is just one text field
-    if not form.is_valid():
-        return redirect('/')
-    parent_id = request.POST['parent']
-    parent = models.Status.objects.get(id=parent_id)
-    outgoing.handle_reply(request.user, parent, form.data['content'])
-    return redirect('/')
 
 
 @login_required

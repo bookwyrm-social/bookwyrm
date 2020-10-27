@@ -22,6 +22,8 @@
             <form class="toggle-content hidden tab-option-{{ book.id }}" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="user" value="{{ request.user.id }}">
+                <input type="hidden" name="privacy" value="public">
                 <div class="control">
                     <label class="label" for="id_name_{{ book.id }}_review">Title:</label>
                     <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_review" placeholder="My review of '{{ book.title }}'">
@@ -51,6 +53,9 @@
             <form class="toggle-content hidden tab-option-{{ book.id }}" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="user" value="{{ request.user.id }}">
+                <input type="hidden" name="privacy" value="public">
                 <div class="control">
                     <label class="label" for="id_content_{{ book.id }}_comment">Comment:</label>
                     <textarea name="content" class="textarea" id="id_content_{{ book.id }}_comment" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
@@ -64,6 +69,9 @@
             <form class="toggle-content hidden tab-option-{{ book.id }}" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="book" value="{{ book.id }}">
+                <input type="hidden" name="user" value="{{ request.user.id }}">
+                <input type="hidden" name="privacy" value="public">
                 <div class="control">
                     <label class="label" for="id_quote_{{ book.id }}_quote">Quote:</label>
                     <textarea name="quote" class="textarea" required="" id="id_quote_{{ book.id }}_quote" placeholder="An except from '{{ book.title }}'"></textarea>
