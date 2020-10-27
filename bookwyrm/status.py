@@ -14,13 +14,6 @@ def delete_status(status):
     status.save()
 
 
-def get_status(remote_id):
-    ''' find a status in the database '''
-    return models.Status.objects.select_subclasses().filter(
-        remote_id=remote_id
-    ).first()
-
-
 def create_generated_note(user, content, mention_books=None):
     ''' a note created by the app about user activity '''
     # sanitize input html
