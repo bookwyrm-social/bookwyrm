@@ -176,18 +176,17 @@ def handle_import_books(user, items):
                 broadcast(user, activity)
 
                 if item.rating or item.review:
-                    pass
-                    #review_title = "Review of {!r} on Goodreads".format(
-                    #    item.book.title,
-                    #) if item.review else ""
-                    # TODO
-                    #handle_review(
-                    #    user,
-                    #    item.book,
-                    #    review_title,
-                    #    item.review,
-                    #    item.rating,
-                    #)
+                    review_title = 'Review of {!r} on Goodreads'.format(
+                        item.book.title,
+                    ) if item.review else ''
+
+                    models.Review.objects.create(
+                        user=user,
+                        book=item.book,
+                        name=review_title,
+                        content=item.review,
+                        rating=item.rating,
+                    )
                 for read in item.reads:
                     read.book = item.book
                     read.user = user
