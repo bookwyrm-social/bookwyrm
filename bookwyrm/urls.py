@@ -117,6 +117,7 @@ urlpatterns = [
     re_path(r'^delete-status/?$', actions.delete_status),
 
     re_path(r'^shelve/?$', actions.shelve),
+    re_path(r'^unshelve/?$', actions.unshelve),
 
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),

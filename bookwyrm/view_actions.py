@@ -286,6 +286,16 @@ def shelve(request):
 
 
 @login_required
+def unshelve(request):
+    ''' put a  on a user's shelf '''
+    book = models.Edition.objects.get(id=request.POST['book'])
+    current_shelf = models.Shelf.objects.get(id=request.POST['shelf'])
+
+    outgoing.handle_unshelve(request.user, book, current_shelf)
+    return redirect(request.headers.get('Referer', '/'))
+
+
+@login_required
 def rate(request):
     ''' just a star rating for a book '''
     form = forms.RatingForm(request.POST)
@@ -322,7 +332,6 @@ def reply(request):
 
 def handle_status(request, form):
     ''' all the "create a status" functions are the same '''
-    book_id = request.POST.get('book')
     if not form.is_valid():
         return redirect(request.headers.get('Referer', '/'))
 
