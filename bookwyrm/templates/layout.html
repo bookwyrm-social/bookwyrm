@@ -47,11 +47,11 @@
     <div id="mainNav" class="navbar-menu toggle-content">
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
-            <a href="" class="navbar-item">
-                Lists
+            <a href="/user/{{ request.user.localname }}/shelves" class="navbar-item">
+                Your shelves
             </a>
-            <a href="" class="navbar-item">
-                Groups
+            <a href="/#feed" class="navbar-item">
+                Feed
             </a>
             {% endif %}
         </div>
