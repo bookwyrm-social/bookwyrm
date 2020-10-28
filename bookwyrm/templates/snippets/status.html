@@ -24,11 +24,11 @@
 
         <div class="card-footer-item">
             {% if status.privacy == 'public' %}
-            <span class="icon icon-public">
+            <span class="icon icon-globe">
                 <span class="is-sr-only">Public post</span>
             </span>
             {% elif status.privacy == 'unlisted' %}
-            <span class="icon icon-unlisted">
+            <span class="icon icon-unlock">
                 <span class="is-sr-only">Unlisted post</span>
             </span>
             {% elif status.privacy == 'followers' %}
@@ -36,7 +36,7 @@
                 <span class="is-sr-only">Followers-only post</span>
             </span>
             {% else %}
-            <span class="icon icon-lock">
+            <span class="icon icon-envelope">
                 <span class="is-sr-only">Private post</span>
             </span>
             {% endif %}
@@ -45,7 +45,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="status" value="{{ status.id }}">
                 <button type="submit">
-                    <span class="icon icon-cancel">
+                    <span class="icon icon-x">
                         <span class="is-sr-only">Delete post</span>
                     </span>
                 </button>
