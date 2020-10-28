@@ -47,6 +47,8 @@ services:
     redis:
         image: redis
         command: redis-server --requirepass ${REDIS_PASSWORD}
+        volumes:
+          - ./redis.conf:/usr/local/etc/redis/redis.conf
         env_file: .env
         ports:
           - 6379:6379
