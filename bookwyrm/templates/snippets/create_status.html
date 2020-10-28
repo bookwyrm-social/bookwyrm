@@ -23,7 +23,6 @@
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}">
                 <input type="hidden" name="user" value="{{ request.user.id }}">
-                <input type="hidden" name="privacy" value="public">
                 <div class="control">
                     <label class="label" for="id_name_{{ book.id }}_review">Title:</label>
                     <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_review" placeholder="My review of '{{ book.title }}'">
@@ -44,7 +43,17 @@
 
                     <textarea name="content" class="textarea" id="id_content_{{ book.id }}_review"></textarea>
                 </div>
-                <button class="button is-primary" type="submit">post review</button>
+                <div class="control is-grouped">
+                    <div class="select">
+                        <select name="privacy">
+                            <option value="public" selected>Public</option>
+                            <option value="unlisted">Unlisted</option>
+                            <option value="followers">Followers only</option>
+                            <option value="direct">Private</option>
+                        </select>
+                    </div>
+                    <button class="button is-primary" type="submit">post review</button>
+                </div>
             </form>
         </div>
 
@@ -60,7 +69,17 @@
                     <label class="label" for="id_content_{{ book.id }}_comment">Comment:</label>
                     <textarea name="content" class="textarea" id="id_content_{{ book.id }}_comment" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
                 </div>
-                <button class="button is-primary" type="submit">post comment</button>
+                <div class="control is-grouped">
+                    <div class="select">
+                        <select name="privacy">
+                            <option value="public" selected>Public</option>
+                            <option value="unlisted">Unlisted</option>
+                            <option value="followers">Followers only</option>
+                            <option value="direct">Private</option>
+                        </select>
+                    </div>
+                    <button class="button is-primary" type="submit">post comment</button>
+                </div>
             </form>
         </div>
 
@@ -80,7 +99,17 @@
                     <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
                     <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
                 </div>
-                <button class="button is-primary" type="submit">post quote</button>
+                <div class="control is-grouped">
+                    <div class="select">
+                        <select name="privacy">
+                            <option value="public" selected>Public</option>
+                            <option value="unlisted">Unlisted</option>
+                            <option value="followers">Followers only</option>
+                            <option value="direct">Private</option>
+                        </select>
+                    </div>
+                    <button class="button is-primary" type="submit">post quote</button>
+                </div>
             </form>
         </div>
     </div>
