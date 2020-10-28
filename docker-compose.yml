@@ -24,10 +24,11 @@ services:
             - ./certbot/logs:/var/log/letsencrypt
             - ./certbot/data:/var/www/certbot
     db:
-        image: postgres
+        build: postgres-docker
         env_file: .env
         volumes:
           - pgdata:/var/lib/postgresql/data
+          - backups:/backups
         networks:
             - main
     web:
@@ -71,6 +72,7 @@ services:
         restart: on-failure
 volumes:
     pgdata:
+    backups:
     static_volume:
     media_volume:
 networks:
