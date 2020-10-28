@@ -14,10 +14,11 @@ services:
             - static_volume:/app/static
             - media_volume:/app/images
     db:
-        image: postgres
+        build: postgres-docker
         env_file: .env
         volumes:
           - pgdata:/var/lib/postgresql/data
+          - backups:/backups
         networks:
             - main
     web:
@@ -58,6 +59,7 @@ services:
         restart: on-failure
 volumes:
     pgdata:
+    backups:
     static_volume:
     media_volume:
 networks:
