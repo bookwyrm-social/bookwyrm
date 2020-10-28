@@ -4,7 +4,9 @@
     <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
         <div class="field is-grouped">
         {% csrf_token %}
-        <input type="hidden" name="parent" value="{{ activity.id }}">
+        <input type="hidden" name="reply_parent" value="{{ activity.id }}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        <input type="hidden" name="privacy" value="{{ activity.privacy }}">
         <textarea name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}" required="true"></textarea>
         <button class="button" type="submit">
             <span class="icon icon-comment">

@@ -23,15 +23,29 @@
         {% endif %}
 
         <div class="card-footer-item">
-            <span class="icon icon-public">
+            {% if status.privacy == 'public' %}
+            <span class="icon icon-globe">
                 <span class="is-sr-only">Public post</span>
             </span>
+            {% elif status.privacy == 'unlisted' %}
+            <span class="icon icon-unlock">
+                <span class="is-sr-only">Unlisted post</span>
+            </span>
+            {% elif status.privacy == 'followers' %}
+            <span class="icon icon-lock">
+                <span class="is-sr-only">Followers-only post</span>
+            </span>
+            {% else %}
+            <span class="icon icon-envelope">
+                <span class="is-sr-only">Private post</span>
+            </span>
+            {% endif %}
             {% if status.user == request.user %}
             <form name="delete-{{status.id}}" action="/delete-status" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="status" value="{{ status.id }}">
                 <button type="submit">
-                    <span class="icon icon-cancel">
+                    <span class="icon icon-x">
                         <span class="is-sr-only">Delete post</span>
                     </span>
                 </button>

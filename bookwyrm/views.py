@@ -130,17 +130,22 @@ def get_activity_feed(user, filter_level, model=models.Status):
     if filter_level in ['friends', 'home']:
         # people you follow and direct mentions
         activities = activities.filter(
-            Q(user__in=following, privacy='public') | \
-                Q(mention_users=user)
+            Q(user__in=following, privacy__in=['public', 'unlisted', 'followers']) | \
+                Q(mention_users=user) | Q(user=user)
         )
     elif filter_level == 'self':
         activities = activities.filter(user=user, privacy='public')
     elif filter_level == 'local':
-        # everyone on this instance
-        activities = activities.filter(user__local=True, privacy='public')
+        # everyone on this instance except unlisted
+        activities = activities.filter(
+            Q(user__in=following, privacy='followers') | Q(privacy='public'),
+            user__local=True
+        )
     else:
         # all activities from everyone you federate with
-        activities = activities.filter(privacy='public')
+        activities = activities.filter(
+            Q(user__in=following, privacy='followers') | Q(privacy='public')
+        )
 
     return activities
 
@@ -386,7 +391,12 @@ def status_page(request, username, status_id):
     except ValueError:
         return HttpResponseNotFound()
 
+    # the url should have the poster's username in it
     if user != status.user:
+        return HttpResponseNotFound()
+
+    # make sure the user is authorized to see the status
+    if not status_visible_to_user(request.user, status):
         return HttpResponseNotFound()
 
     if is_api_request(request):
@@ -396,6 +406,19 @@ def status_page(request, username, status_id):
         'status': status,
     }
     return TemplateResponse(request, 'status.html', data)
+
+def status_visible_to_user(viewer, status):
+    ''' is a user authorized to view a status? '''
+    if viewer == status.user or status.privacy in ['public', 'unlisted']:
+        return True
+    if status.privacy == 'followers' and \
+            status.user.followers.filter(id=viewer.id).first():
+        return True
+    if status.privacy == 'direct' and \
+            status.mention_users.filter(id=viewer.id).first():
+        return True
+    return False
+
 
 
 @csrf_exempt

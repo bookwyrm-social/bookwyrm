@@ -289,68 +289,45 @@ def shelve(request):
 def rate(request):
     ''' just a star rating for a book '''
     form = forms.RatingForm(request.POST)
-    book_id = request.POST.get('book')
-    # TODO: better failure behavior
-    if not form.is_valid():
-        return redirect('/book/%s' % book_id)
-
-    rating = form.cleaned_data.get('rating')
-    # throws a value error if the book is not found
-
-    outgoing.handle_rate(request.user, book_id, rating)
-    return redirect('/book/%s' % book_id)
+    return handle_status(request, form)
 
 
 @login_required
 def review(request):
     ''' create a book review '''
     form = forms.ReviewForm(request.POST)
-    book_id = request.POST.get('book')
-    if not form.is_valid():
-        return redirect('/book/%s' % book_id)
-
-    # TODO: validation, htmlification
-    name = form.cleaned_data.get('name')
-    content = form.cleaned_data.get('content')
-    rating = form.data.get('rating', None)
-    try:
-        rating = int(rating)
-    except ValueError:
-        rating = None
-
-    outgoing.handle_review(request.user, book_id, name, content, rating)
-    return redirect('/book/%s' % book_id)
+    return handle_status(request, form)
 
 
 @login_required
 def quotate(request):
     ''' create a book quotation '''
     form = forms.QuotationForm(request.POST)
-    book_id = request.POST.get('book')
-    if not form.is_valid():
-        return redirect('/book/%s' % book_id)
-
-    quote = form.cleaned_data.get('quote')
-    content = form.cleaned_data.get('content')
-
-    outgoing.handle_quotation(request.user, book_id, content, quote)
-    return redirect('/book/%s' % book_id)
+    return handle_status(request, form)
 
 
 @login_required
 def comment(request):
     ''' create a book comment '''
     form = forms.CommentForm(request.POST)
+    return handle_status(request, form)
+
+
+@login_required
+def reply(request):
+    ''' respond to a book review '''
+    form = forms.ReplyForm(request.POST)
+    return handle_status(request, form)
+
+
+def handle_status(request, form):
+    ''' all the "create a status" functions are the same '''
     book_id = request.POST.get('book')
-    # TODO: better failure behavior
     if not form.is_valid():
-        return redirect('/book/%s' % book_id)
+        return redirect(request.headers.get('Referer', '/'))
 
-    # TODO: validation, htmlification
-    content = form.data.get('content')
-
-    outgoing.handle_comment(request.user, book_id, content)
-    return redirect('/book/%s' % book_id)
+    outgoing.handle_status(request.user, form)
+    return redirect(request.headers.get('Referer', '/'))
 
 
 @login_required
@@ -374,19 +351,6 @@ def untag(request):
 
     outgoing.handle_untag(request.user, book_id, name)
     return redirect('/book/%s' % book_id)
-
-
-@login_required
-def reply(request):
-    ''' respond to a book review '''
-    form = forms.ReplyForm(request.POST)
-    # this is a bit of a formality, the form is just one text field
-    if not form.is_valid():
-        return redirect('/')
-    parent_id = request.POST['parent']
-    parent = models.Status.objects.get(id=parent_id)
-    outgoing.handle_reply(request.user, parent, form.data['content'])
-    return redirect('/')
 
 
 @login_required
