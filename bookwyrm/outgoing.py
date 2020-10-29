@@ -155,51 +155,49 @@ def handle_unshelve(user, book, shelf):
     broadcast(user, activity)
 
 
-def handle_import_books(user, items):
+def handle_imported_book(user, item):
     ''' process a goodreads csv and then post about it '''
-    new_books = []
-    for item in items:
-        if item.shelf:
-            desired_shelf = models.Shelf.objects.get(
-                identifier=item.shelf,
-                user=user
-            )
-            if isinstance(item.book, models.Work):
-                item.book = item.book.default_edition
-            if not item.book:
-                continue
-            shelf_book, created = models.ShelfBook.objects.get_or_create(
-                book=item.book, shelf=desired_shelf, added_by=user)
-            if created:
-                new_books.append(item.book)
-                activity = shelf_book.to_add_activity(user)
-                broadcast(user, activity)
+    if isinstance(item.book, models.Work):
+        item.book = item.book.default_edition
+    if not item.book:
+        return
 
-                if item.rating or item.review:
-                    review_title = 'Review of {!r} on Goodreads'.format(
-                        item.book.title,
-                    ) if item.review else ''
+    if item.shelf:
+        desired_shelf = models.Shelf.objects.get(
+            identifier=item.shelf,
+            user=user
+        )
+        # shelve the book if it hasn't been shelved already
+        shelf_book, created = models.ShelfBook.objects.get_or_create(
+            book=item.book, shelf=desired_shelf, added_by=user)
+        if created:
+            broadcast(user, shelf_book.to_add_activity(user))
 
-                    models.Review.objects.create(
-                        user=user,
-                        book=item.book,
-                        name=review_title,
-                        content=item.review,
-                        rating=item.rating,
-                    )
-                for read in item.reads:
-                    read.book = item.book
-                    read.user = user
-                    read.save()
+            # only add new read-throughs if the item isn't already shelved
+            for read in item.reads:
+                read.book = item.book
+                read.user = user
+                read.save()
 
-    if new_books:
-        message = 'imported {} books'.format(len(new_books))
-        status = create_generated_note(user, message, mention_books=new_books)
-        status.save()
+    if item.rating or item.review:
+        review_title = 'Review of {!r} on Goodreads'.format(
+            item.book.title,
+        ) if item.review else ''
 
-        broadcast(user, status.to_create_activity(user))
-        return status
-    return None
+        # we don't know the publication date of the review,
+        # but "now" is a bad guess
+        published_date_guess = item.date_read or item.date_added
+        review = models.Review.objects.create(
+            user=user,
+            book=item.book,
+            name=review_title,
+            content=item.review,
+            rating=item.rating,
+            published_date=published_date_guess,
+        )
+        # we don't need to send out pure activities because non-bookwyrm
+        # instances don't need this data
+        broadcast(user, review.to_create_activity(user))
 
 
 def handle_delete_status(user, status):
