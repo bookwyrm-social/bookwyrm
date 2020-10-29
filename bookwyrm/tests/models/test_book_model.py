@@ -2,6 +2,7 @@
 from django.test import TestCase
 
 from bookwyrm import models, settings
+from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
 
 
 class Book(TestCase):
@@ -47,6 +48,16 @@ class Book(TestCase):
         self.second_edition.save()
 
         self.assertEqual(self.work.default_edition, self.second_edition)
+
+    def test_isbn_10_to_13(self):
+        isbn_10 = '178816167X'
+        isbn_13 = isbn_10_to_13(isbn_10)
+        self.assertEqual(isbn_13, '9781788161671')
+
+    def test_isbn_13_to_10(self):
+        isbn_13 = '9781788161671'
+        isbn_10 = isbn_13_to_10(isbn_13)
+        self.assertEqual(isbn_10, '178816167X')
 
 
 class Shelf(TestCase):

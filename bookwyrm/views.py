@@ -112,26 +112,34 @@ def home_tab(request, tab):
 def get_activity_feed(user, filter_level, model=models.Status):
     ''' get a filtered queryset of statuses '''
     # status updates for your follow network
-    following = models.User.objects.filter(
-        Q(followers=user) | Q(id=user.id)
-    )
+    if user.is_anonymous:
+        user = None
+    if user:
+        following = models.User.objects.filter(
+            Q(followers=user) | Q(id=user.id)
+        )
+    else:
+        following = []
 
     activities = model
     if hasattr(model, 'objects'):
-        activities = model.objects.filter(deleted=False)
+        activities = model.objects
 
-    activities = activities.order_by(
-        '-created_date'
+    activities = activities.filter(
+        deleted=False
+    ).order_by(
+        '-published_date'
     )
+
     if hasattr(activities, 'select_subclasses'):
         activities = activities.select_subclasses()
 
-    # TODO: privacy relationshup between request.user and user
     if filter_level in ['friends', 'home']:
         # people you follow and direct mentions
         activities = activities.filter(
-            Q(user__in=following, privacy__in=['public', 'unlisted', 'followers']) | \
-                Q(mention_users=user) | Q(user=user)
+            Q(user__in=following, privacy__in=[
+                'public', 'unlisted', 'followers'
+            ]) | Q(mention_users=user) | Q(user=user)
         )
     elif filter_level == 'self':
         activities = activities.filter(user=user, privacy='public')
@@ -470,13 +478,20 @@ def book_page(request, book_id):
 
     reviews = models.Review.objects.filter(
         book__in=work.edition_set.all(),
-    ).order_by('-published_date')
+    )
+    reviews = get_activity_feed(request.user, 'federated', model=reviews)
 
     user_tags = []
+    readthroughs = []
     if request.user.is_authenticated:
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
         ).values_list('identifier', flat=True)
+
+        readthroughs = models.ReadThrough.objects.filter(
+            user=request.user
+        ).order_by('start_date')
+
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -492,6 +507,7 @@ def book_page(request, book_id):
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
+        'readthroughs': readthroughs,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),

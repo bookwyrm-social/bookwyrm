@@ -135,7 +135,7 @@ class Work(Book):
     @property
     def editions_path(self):
         ''' it'd be nice to serialize the edition instead but, recursion '''
-        return self.remote_id + '/editions'
+        return [e.remote_id for e in self.edition_set.all()]
 
 
     @property
@@ -173,6 +173,49 @@ class Edition(Book):
     parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
 
     activity_serializer = activitypub.Edition
+
+    def save(self, *args, **kwargs):
+        ''' calculate isbn 10/13 '''
+        if self.isbn_13 and self.isbn_13[:3] == '978' and not self.isbn_10:
+            self.isbn_10 = isbn_13_to_10(self.isbn_13)
+        if self.isbn_10 and not self.isbn_13:
+            self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        super().save(*args, **kwargs)
+
+
+def isbn_10_to_13(isbn_10):
+    ''' convert an isbn 10 into an isbn 13 '''
+    # drop the last character of the isbn 10 number (the original checkdigit)
+    converted = isbn_10[:9]
+    # add "978" to the front
+    converted = '978' + converted
+    # add a check digit to the end
+    # multiply the odd digits by 1 and the even digits by 3 and sum them
+    checksum = sum(int(i) for i in converted[::2]) + \
+               sum(int(i) * 3 for i in converted[1::2])
+    # add the checksum mod 10 to the end
+    checkdigit = checksum % 10
+    if checkdigit != 0:
+        checkdigit = 10 - checkdigit
+    return converted + str(checkdigit)
+
+
+def isbn_13_to_10(isbn_13):
+    ''' convert isbn 13 to 10, if possible '''
+    if isbn_13[:3] != '978':
+        return None
+
+    # remove '978' and old checkdigit
+    converted = isbn_13[3:-1]
+    # calculate checkdigit
+    # multiple each digit by 10,9,8.. successively and sum them
+    checksum = sum(int(d) * (10 - idx)  for (idx, d) in enumerate(converted))
+    checkdigit = checksum % 11
+    checkdigit = 11 - checkdigit
+    if checkdigit == 10:
+        checkdigit = 'X'
+    return converted + str(checkdigit)
 
 
 class Author(ActivitypubMixin, BookWyrmModel):

@@ -34,16 +34,6 @@ class BookWyrmConnector(TestCase):
         self.assertEqual(self.connector.is_work_data(self.edition_data), False)
 
 
-    def test_get_edition_from_work_data(self):
-        edition = self.connector.get_edition_from_work_data(self.work_data)
-        self.assertEqual(edition['url'], 'https://example.com/book/122')
-
-
-    def test_get_work_from_edition_data(self):
-        work = self.connector.get_work_from_edition_date(self.edition_data)
-        self.assertEqual(work['url'], 'https://example.com/book/121')
-
-
     def test_format_search_result(self):
         datafile = pathlib.Path(__file__).parent.joinpath('../data/fr_search.json')
         search_data = json.loads(datafile.read_bytes())

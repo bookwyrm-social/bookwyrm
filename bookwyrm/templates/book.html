@@ -55,6 +55,14 @@
                 {% endif %}
             </div>
 
+            {% for readthrough in readthroughs %}
+            <div class="block">
+                {{ readthrough.start_date }}
+                {{ readthrough.finish_date }}
+                {{ readthrough.pages_read }}
+            </div>
+            {% endfor %}
+
             {% if request.user.is_authenticated %}
             <div class="block">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}

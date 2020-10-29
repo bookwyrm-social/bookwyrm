@@ -80,7 +80,10 @@ class ImportItem(models.Model):
         )
         search_result = books_manager.first_search_result(search_term)
         if search_result:
-            return books_manager.get_or_create_book(search_result.key)
+            try:
+                return books_manager.get_or_create_book(search_result.key)
+            except ConnectorException:
+                pass
 
     @property
     def isbn(self):
