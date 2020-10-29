@@ -14,6 +14,7 @@
 
             {% for result in result_set.results %}
             <div>
+                {{ result.confidence }}
                 <form action="/resolve_book" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="remote_id" value="{{ result.key }}">

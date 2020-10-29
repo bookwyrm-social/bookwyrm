@@ -64,14 +64,14 @@ def load_more_data(book_id):
     connector.expand_book_data(book)
 
 
-def search(query):
+def search(query, min_confidence=0.1):
     ''' find books based on arbitary keywords '''
     results = []
     dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
     result_index = set()
     for connector in get_connectors():
         try:
-            result_set = connector.search(query)
+            result_set = connector.search(query, min_confidence=min_confidence)
         except HTTPError:
             continue
 
@@ -87,16 +87,16 @@ def search(query):
     return results
 
 
-def local_search(query):
+def local_search(query, min_confidence=0.1):
     ''' only look at local search results '''
     connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(query)
+    return connector.search(query, min_confidence=min_confidence)
 
 
-def first_search_result(query):
+def first_search_result(query, min_confidence=0.1):
     ''' search until you find a result that fits '''
     for connector in get_connectors():
-        result = connector.search(query)
+        result = connector.search(query, min_confidence=min_confidence)
         if result:
             return result[0]
     return None

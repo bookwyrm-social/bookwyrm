@@ -129,10 +129,10 @@ class Connector(AbstractConnector):
         key = self.books_url + search_result['key']
         author = search_result.get('author_name') or ['Unknown']
         return SearchResult(
-            search_result.get('title'),
-            key,
-            ', '.join(author),
-            search_result.get('first_publish_year'),
+            title=search_result.get('title'),
+            key=key,
+            author=', '.join(author),
+            year=search_result.get('first_publish_year'),
         )
 
 

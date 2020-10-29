@@ -63,7 +63,9 @@ class ImportItem(models.Model):
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_result = books_manager.first_search_result(self.isbn)
+        search_result = books_manager.first_search_result(
+            self.isbn, min_confidence=0.5
+        )
         if search_result:
             try:
                 # don't crash the import when the connector fails
@@ -79,7 +81,9 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_result = books_manager.first_search_result(search_term)
+        search_result = books_manager.first_search_result(
+            search_term, min_confidence=0.5
+        )
         if search_result:
             try:
                 return books_manager.get_or_create_book(search_result.key)

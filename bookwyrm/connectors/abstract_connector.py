@@ -1,8 +1,8 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from dateutil import parser
 import pytz
-from urllib3.exceptions import ProtocolError
 import requests
 from requests import HTTPError
 
@@ -52,7 +52,7 @@ class AbstractConnector(ABC):
         return True
 
 
-    def search(self, query):
+    def search(self, query, min_confidence=None):
         ''' free text search '''
         resp = requests.get(
             '%s%s' % (self.search_url, query),
@@ -160,7 +160,7 @@ class AbstractConnector(ABC):
         author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-            author_text += author.display_name
+            author_text.append(author.display_name)
         book.author_text = ', '.join(author_text)
         book.save()
 
@@ -298,7 +298,7 @@ def get_data(url):
                 'Accept': 'application/json; charset=utf-8',
             },
         )
-    except ProtocolError:
+    except ConnectionError:
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
@@ -306,13 +306,14 @@ def get_data(url):
     return data
 
 
+@dataclass
 class SearchResult:
     ''' standardized search result object '''
-    def __init__(self, title, key, author, year):
-        self.title = title
-        self.key = key
-        self.author = author
-        self.year = year
+    title: str
+    key: str
+    author: str
+    year: str
+    confidence: int = 1
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
