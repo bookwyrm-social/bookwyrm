@@ -112,6 +112,9 @@ class AbstractConnector(ABC):
                 # remember this hack: re-use the work data as the edition data
                 work_data = data
 
+        if not work_data or not edition_data:
+            raise ConnectorException('Unable to load book data: %s' % remote_id)
+
         # at this point, we need to figure out the work, edition, or both
         # atomic so that we don't save a work with no edition for vice versa
         with transaction.atomic():
