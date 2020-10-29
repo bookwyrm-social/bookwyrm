@@ -42,13 +42,10 @@ def import_data(job_id):
             if item.book:
                 item.save()
                 results.append(item)
+                # shelves book and handles reviews
+                outgoing.handle_imported_book(job.user, item)
             else:
-                item.fail_reason = "Could not match book on OpenLibrary"
+                item.fail_reason = "Could not find a match for book"
                 item.save()
-
-        status = outgoing.handle_import_books(job.user, results)
-        if status:
-            job.import_status = status
-            job.save()
     finally:
         create_notification(job.user, 'IMPORT', related_import=job)

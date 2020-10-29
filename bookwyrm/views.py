@@ -489,7 +489,8 @@ def book_page(request, book_id):
         ).values_list('identifier', flat=True)
 
         readthroughs = models.ReadThrough.objects.filter(
-            user=request.user
+            user=request.user,
+            book=book,
         ).order_by('start_date')
 
 

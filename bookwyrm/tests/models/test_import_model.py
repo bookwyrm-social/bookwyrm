@@ -24,7 +24,7 @@ class ImportJob(TestCase):
             'Number of Pages': 416,
             'Year Published': 2019,
             'Original Publication Year': 2019,
-            'Date Read': '2019/04/09',
+            'Date Read': '2019/04/12',
             'Date Added': '2019/04/09',
             'Bookshelves': '',
             'Bookshelves with positions': '',
@@ -97,11 +97,9 @@ class ImportJob(TestCase):
         self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
     def test_read_reads(self):
-        expected = [models.ReadThrough(
-            finish_date=datetime.datetime(2019, 4, 9, 0, 0))]
         actual = models.ImportItem.objects.get(index=2)
-        self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
-        self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
+        self.assertEqual(actual.reads[0].start_date, datetime.datetime(2019, 4, 9, 0, 0))
+        self.assertEqual(actual.reads[0].finish_date, datetime.datetime(2019, 4, 12, 0, 0))
 
     def test_unread_reads(self):
         expected = []
