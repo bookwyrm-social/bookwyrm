@@ -5,8 +5,24 @@
     <h2 class="title">Import Books from GoodReads</h2>
     <form name="import" action="/import_data/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ import_form.as_p }}
-        <button class="button" type="submit">Import</button>
+        <div class="field">
+            {{ import_form.as_p }}
+        </div>
+        <div class="field">
+            <label class="label" for="include_reviews"><input type="checkbox" name="include_reviews" checked> Include reviews</label>
+        </div>
+        <div class="field">
+            <label class="label" for="privacy">Privacy setting for imported reviews</label>
+            <div class="select">
+                <select name="privacy">
+                    <option value="public" selected>Public</option>
+                    <option value="unlisted">Unlisted</option>
+                    <option value="followers">Followers only</option>
+                    <option value="direct">Private</option>
+                </select>
+            </div>
+        </div>
+        <button class="button is-primary" type="submit">Import</button>
     </form>
     <p>
     Imports are limited in size, and only the first {{ limit }} items will be imported.

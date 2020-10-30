@@ -7,15 +7,8 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import ActivityMapping, BookWyrmModel, PrivacyLevels
 
-
-PrivacyLevels = models.TextChoices('Privacy', [
-    'public',
-    'unlisted',
-    'followers',
-    'direct'
-])
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''

@@ -1,15 +1,17 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from dateutil import parser
 import pytz
 import requests
+from requests import HTTPError
 
 from django.db import transaction
 
 from bookwyrm import models
 
 
-class ConnectorException(Exception):
+class ConnectorException(HTTPError):
     ''' when the connector can't do what was asked '''
 
 
@@ -50,7 +52,7 @@ class AbstractConnector(ABC):
         return True
 
 
-    def search(self, query):
+    def search(self, query, min_confidence=None):
         ''' free text search '''
         resp = requests.get(
             '%s%s' % (self.search_url, query),
@@ -155,9 +157,11 @@ class AbstractConnector(ABC):
         ''' for creating a new book or syncing with data '''
         book = update_from_mappings(book, data, self.book_mappings)
 
+        author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-        book.author_text = ', '.join(a.display_name for a in book.authors.all())
+            author_text.append(author.display_name)
+        book.author_text = ', '.join(author_text)
         book.save()
 
         if not update_cover:
@@ -287,25 +291,29 @@ def get_date(date_string):
 
 def get_data(url):
     ''' wrapper for request.get '''
-    resp = requests.get(
-        url,
-        headers={
-            'Accept': 'application/json; charset=utf-8',
-        },
-    )
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+            },
+        )
+    except ConnectionError:
+        raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
     data = resp.json()
     return data
 
 
+@dataclass
 class SearchResult:
     ''' standardized search result object '''
-    def __init__(self, title, key, author, year):
-        self.title = title
-        self.key = key
-        self.author = author
-        self.year = year
+    title: str
+    key: str
+    author: str
+    year: str
+    confidence: int = 1
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(

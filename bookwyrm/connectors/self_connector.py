@@ -7,7 +7,7 @@ from .abstract_connector import AbstractConnector, SearchResult
 
 class Connector(AbstractConnector):
     ''' instantiate a connector  '''
-    def search(self, query):
+    def search(self, query, min_confidence=0.1):
         ''' right now you can't search bookwyrm sorry, but when
         that gets implemented it will totally rule '''
         vector = SearchVector('title', weight='A') +\
@@ -28,7 +28,7 @@ class Connector(AbstractConnector):
         ).annotate(
             rank=SearchRank(vector, query)
         ).filter(
-            rank__gt=0
+            rank__gt=min_confidence
         ).order_by('-rank')
         results = results.filter(default=True) or results
 
@@ -42,11 +42,12 @@ class Connector(AbstractConnector):
 
     def format_search_result(self, search_result):
         return SearchResult(
-            search_result.title,
-            search_result.local_id,
-            search_result.author_text,
-            search_result.published_date.year if \
+            title=search_result.title,
+            key=search_result.local_id,
+            author=search_result.author_text,
+            year=search_result.published_date.year if \
                     search_result.published_date else None,
+            confidence=search_result.rank,
         )
 
 

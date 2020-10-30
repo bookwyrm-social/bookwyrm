@@ -52,11 +52,13 @@ class Connector(AbstractConnector):
 
 
     def get_edition_from_work_data(self, data):
-        return data['editions'][0]
+        ''' we're served a list of edition urls '''
+        path = data['editions'][0]
+        return get_data(path)
 
 
     def get_work_from_edition_date(self, data):
-        return data['work']
+        return get_data(data['work'])
 
 
     def get_authors_from_data(self, data):
