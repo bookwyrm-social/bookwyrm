@@ -84,7 +84,7 @@ class ImportJob(TestCase):
 
     def test_date_read(self):
         ''' converts to the local shelf typology '''
-        expected = datetime.datetime(2019, 4, 9, 0, 0)
+        expected = datetime.datetime(2019, 4, 12, 0, 0)
         item = models.ImportItem.objects.get(index=2)
         self.assertEqual(item.date_read, expected)
 
