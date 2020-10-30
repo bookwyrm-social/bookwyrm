@@ -5,6 +5,7 @@ from dateutil import parser
 import pytz
 import requests
 from requests import HTTPError
+from urllib3.exceptions import RequestError
 
 from django.db import transaction
 
@@ -298,7 +299,7 @@ def get_data(url):
                 'Accept': 'application/json; charset=utf-8',
             },
         )
-    except ConnectionError:
+    except RequestError:
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
