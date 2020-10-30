@@ -159,9 +159,3 @@ class CreateInviteForm(CustomForm):
                 choices=[(i, "%d uses" % (i,)) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, 'Unlimited')])
         }
-
-
-class ReadThroughForm(CustomForm):
-    class Meta:
-        model = models.ReadThrough
-        fields = ['user', 'book', 'start_date', 'finish_date']
