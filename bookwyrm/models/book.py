@@ -186,6 +186,7 @@ class Edition(Book):
 
 def isbn_10_to_13(isbn_10):
     ''' convert an isbn 10 into an isbn 13 '''
+    isbn_10 = isbn_10.replace('-', '')
     # drop the last character of the isbn 10 number (the original checkdigit)
     converted = isbn_10[:9]
     # add "978" to the front
@@ -205,6 +206,8 @@ def isbn_13_to_10(isbn_13):
     ''' convert isbn 13 to 10, if possible '''
     if isbn_13[:3] != '978':
         return None
+
+    isbn_13 = isbn_13.replace('-', '')
 
     # remove '978' and old checkdigit
     converted = isbn_13[3:-1]
