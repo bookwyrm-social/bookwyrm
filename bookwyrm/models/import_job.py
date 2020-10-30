@@ -64,7 +64,7 @@ class ImportItem(models.Model):
     def get_book_from_isbn(self):
         ''' search by isbn '''
         search_result = books_manager.first_search_result(
-            self.isbn, min_confidence=0.5
+            self.isbn, min_confidence=0.992
         )
         if search_result:
             try:
@@ -82,7 +82,7 @@ class ImportItem(models.Model):
             self.data['Author']
         )
         search_result = books_manager.first_search_result(
-            search_term, min_confidence=0.5
+            search_term, min_confidence=0.992
         )
         if search_result:
             try:
