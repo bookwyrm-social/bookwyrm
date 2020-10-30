@@ -493,7 +493,6 @@ def book_page(request, book_id):
             book=book,
         ).order_by('start_date')
 
-
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
         book=book
@@ -508,10 +507,10 @@ def book_page(request, book_id):
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
-        'readthroughs': readthroughs,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),
         'comment_form': forms.CommentForm(),
+        'readthroughs': readthroughs,
         'tag_form': forms.TagForm(),
         'path': '/book/%s' % book_id,
         'cover_form': forms.CoverForm(instance=book),
