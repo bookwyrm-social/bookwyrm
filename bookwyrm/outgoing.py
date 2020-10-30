@@ -155,7 +155,7 @@ def handle_unshelve(user, book, shelf):
     broadcast(user, activity)
 
 
-def handle_imported_book(user, item, privacy):
+def handle_imported_book(user, item, include_reviews, privacy):
     ''' process a goodreads csv and then post about it '''
     if isinstance(item.book, models.Work):
         item.book = item.book.default_edition
@@ -179,7 +179,7 @@ def handle_imported_book(user, item, privacy):
                 read.user = user
                 read.save()
 
-    if item.rating or item.review:
+    if include_reviews and (item.rating or item.review):
         review_title = 'Review of {!r} on Goodreads'.format(
             item.book.title,
         ) if item.review else ''
