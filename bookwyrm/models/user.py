@@ -24,6 +24,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         'FederatedServer',
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
     )
     outbox = models.CharField(max_length=255, unique=True)
     summary = models.TextField(blank=True, null=True)
