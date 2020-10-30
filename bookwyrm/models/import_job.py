@@ -9,6 +9,8 @@ from bookwyrm import books_manager
 from bookwyrm.connectors import ConnectorException
 from bookwyrm.models import ReadThrough, User, Book
 from bookwyrm.utils.fields import JSONField
+from .base_model import PrivacyLevels
+
 
 # Mapping goodreads -> bookwyrm shelf titles.
 GOODREADS_SHELVES = {
@@ -40,6 +42,12 @@ class ImportJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
+    include_reviews = models.BooleanField(default=True)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
 
 
 class ImportItem(models.Model):
