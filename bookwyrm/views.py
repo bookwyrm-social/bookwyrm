@@ -299,7 +299,7 @@ def notifications_page(request):
     return TemplateResponse(request, 'notifications.html', data)
 
 @csrf_exempt
-def user_page(request, username, subpage=None):
+def user_page(request, username, subpage=None, shelf=None):
     ''' profile page for a user '''
     try:
         user = get_user_from_username(username)
@@ -323,18 +323,22 @@ def user_page(request, username, subpage=None):
         return TemplateResponse(request, 'following.html', data)
     if subpage == 'shelves':
         data['shelves'] = user.shelf_set.all()
-        return TemplateResponse(request, 'user_shelves.html', data)
+        if shelf:
+            data['shelf'] = user.shelf_set.get(identifier=shelf)
+        else:
+            data['shelf'] = user.shelf_set.first()
+        return TemplateResponse(request, 'shelf.html', data)
 
     data['shelf_count'] = user.shelf_set.count()
     shelves = []
-    for shelf in user.shelf_set.all():
-        if not shelf.books.count():
+    for user_shelf in user.shelf_set.all():
+        if not user_shelf.books.count():
             continue
         shelves.append({
-            'name': shelf.name,
-            'remote_id': shelf.remote_id,
-            'books': shelf.books.all()[:3],
-            'size': shelf.books.count(),
+            'name': user_shelf.name,
+            'remote_id': user_shelf.remote_id,
+            'books': user_shelf.books.all()[:3],
+            'size': user_shelf.books.count(),
         })
         if len(shelves) > 2:
             break
@@ -599,8 +603,5 @@ def shelf_page(request, username, shelf_identifier):
     if is_api_request(request):
         return JsonResponse(shelf.to_activity(**request.GET))
 
-    data = {
-        'shelf': shelf,
-        'user': user,
-    }
-    return TemplateResponse(request, 'shelf.html', data)
+    return user_page(
+        request, username, subpage='shelves', shelf=shelf_identifier)

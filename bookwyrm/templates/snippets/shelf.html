@@ -1,6 +1,6 @@
 {% load humanize %}
 {% load fr_display %}
-{% if shelf.books %}
+{% if shelf.books.all|length > 0 %}
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">

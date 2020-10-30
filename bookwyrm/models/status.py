@@ -1,6 +1,5 @@
 ''' models for storing different kinds of Activities '''
 from django.utils import timezone
-from django.utils.http import http_date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
@@ -62,11 +61,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping('id', 'remote_id'),
         ActivityMapping('url', 'remote_id'),
         ActivityMapping('inReplyTo', 'reply_parent'),
-        ActivityMapping(
-            'published',
-            'published_date',
-            activity_formatter=lambda d: http_date(d.timestamp())
-        ),
+        ActivityMapping('published', 'published_date'),
         ActivityMapping('attributedTo', 'user'),
         ActivityMapping('to', 'ap_to'),
         ActivityMapping('cc', 'ap_cc'),
@@ -116,13 +111,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             return activitypub.Tombstone(
                 id=self.remote_id,
                 url=self.remote_id,
-                deleted=http_date(self.deleted_date.timestamp()),
-                published=http_date(self.deleted_date.timestamp()),
+                deleted=self.deleted_date.isoformat(),
+                published=self.deleted_date.isoformat()
             ).serialize()
         return ActivitypubMixin.to_activity(self, **kwargs)
 
 
-class GeneratedStatus(Status):
+class GeneratedNote(Status):
     ''' these are app-generated messages about user activity '''
     @property
     def ap_pure_content(self):

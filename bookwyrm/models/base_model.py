@@ -1,4 +1,5 @@
 ''' base model with default fields '''
+from datetime import datetime
 from base64 import b64encode
 from dataclasses import dataclass
 from typing import Callable
@@ -69,6 +70,8 @@ class ActivitypubMixin:
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
                 value = value.remote_id
+            if isinstance(value, datetime):
+                value = value.isoformat()
             fields[mapping.activity_key] = mapping.activity_formatter(value)
 
         if pure:
