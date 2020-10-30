@@ -1,19 +1,22 @@
 {% extends 'layout.html' %}
+{% load fr_display %}
 {% block content %}
+{% include 'user_header.html' with user=user %}
 
 <div class="block">
-    <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
+    <div class="tabs">
         <ul>
-            <li><a href="/user/{{ user.username }}">{% include 'snippets/username.html' with user=user %}</a></li>
-            <li><a href="/user/{{ user.username }}/shelves">Shelves</a></li>
-            <li class="is-active"><a href="#" aria-current="page">{{ shelf.name }}</a></li>
+        {% for shelf_tab in shelves %}
+        <li class="{% if shelf_tab.identifier == shelf.identifier  %}is-active{% endif %}">
+            <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}">{{ shelf_tab.name }}</a>
+        </li>
+        {% endfor %}
         </ul>
-    </nav>
+    </div>
 </div>
 
 <div class="block">
     <div>
-        <h2 class="title">{{ shelf.name }}</h2>
         {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
     </div>
 </div>
