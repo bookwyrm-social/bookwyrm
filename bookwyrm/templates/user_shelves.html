@@ -3,9 +3,20 @@
 {% block content %}
 {% include 'user_header.html' with user=user %}
 
+<div class="block">
+    <div class="tabs">
+        <ul>
+        {% for shelf in shelves %}
+        <li class="{% if true %}is-active{% endif %}">
+            <a href="/user/{{ user | username }}/shelves/{{ shelf.identifier }}">{{ shelf.name }}</a>
+        </li>
+        {% endfor %}
+        </ul>
+    <h2 class="title">{{ shelf.name }}</h2>
+</div>
+
 {% for shelf in shelves %}
 <div class="block">
-    <h2 class="title">{{ shelf.name }}</h2>
     {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
 </div>
 {% endfor %}
