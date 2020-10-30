@@ -47,9 +47,9 @@ def import_data(job_id):
                 item.save()
                 results.append(item)
 
-                if job.include_reviews:
-                    # shelves book and handles reviews
-                    outgoing.handle_imported_book(job.user, item, job.privacy)
+                # shelves book and handles reviews
+                outgoing.handle_imported_book(
+                    job.user, item, job.include_reviews, job.privacy)
             else:
                 item.fail_reason = "Could not find a match for book"
                 item.save()
