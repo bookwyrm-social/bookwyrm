@@ -1,4 +1,6 @@
 ''' database schema for books and shelves '''
+import re
+
 from django.db import models
 from django.utils import timezone
 from django.utils.http import http_date
@@ -186,14 +188,18 @@ class Edition(Book):
 
 def isbn_10_to_13(isbn_10):
     ''' convert an isbn 10 into an isbn 13 '''
+    isbn_10 = re.sub(r'[^0-9X]', '', isbn_10)
     # drop the last character of the isbn 10 number (the original checkdigit)
     converted = isbn_10[:9]
     # add "978" to the front
     converted = '978' + converted
     # add a check digit to the end
     # multiply the odd digits by 1 and the even digits by 3 and sum them
-    checksum = sum(int(i) for i in converted[::2]) + \
+    try:
+        checksum = sum(int(i) for i in converted[::2]) + \
                sum(int(i) * 3 for i in converted[1::2])
+    except ValueError:
+        return None
     # add the checksum mod 10 to the end
     checkdigit = checksum % 10
     if checkdigit != 0:
@@ -206,11 +212,16 @@ def isbn_13_to_10(isbn_13):
     if isbn_13[:3] != '978':
         return None
 
+    isbn_13 = re.sub(r'[^0-9X]', '', isbn_13)
+
     # remove '978' and old checkdigit
     converted = isbn_13[3:-1]
     # calculate checkdigit
     # multiple each digit by 10,9,8.. successively and sum them
-    checksum = sum(int(d) * (10 - idx)  for (idx, d) in enumerate(converted))
+    try:
+        checksum = sum(int(d) * (10 - idx) for (idx, d) in enumerate(converted))
+    except ValueError:
+        return None
     checkdigit = checksum % 11
     checkdigit = 11 - checkdigit
     if checkdigit == 10:

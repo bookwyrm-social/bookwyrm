@@ -54,8 +54,18 @@ class Book(TestCase):
         isbn_13 = isbn_10_to_13(isbn_10)
         self.assertEqual(isbn_13, '9781788161671')
 
+        isbn_10 = '1-788-16167-X'
+        isbn_13 = isbn_10_to_13(isbn_10)
+        self.assertEqual(isbn_13, '9781788161671')
+
+
+
     def test_isbn_13_to_10(self):
         isbn_13 = '9781788161671'
+        isbn_10 = isbn_13_to_10(isbn_13)
+        self.assertEqual(isbn_10, '178816167X')
+
+        isbn_13 = '978-1788-16167-1'
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, '178816167X')
 
