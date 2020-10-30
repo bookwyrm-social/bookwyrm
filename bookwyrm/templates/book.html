@@ -56,10 +56,58 @@
             </div>
 
             {% for readthrough in readthroughs %}
-            <div class="block">
-                {{ readthrough.start_date }}
-                {{ readthrough.finish_date }}
-                {{ readthrough.pages_read }}
+            <div class="content block">
+                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="show-readthrough-{{ readthrough.id }}" checked>
+                <div class="toggle-content hidden">
+                    <dl>
+                        <dt>Started reading:</dt>
+                        <dd>{{ readthrough.start_date | naturalday }}</dd>
+                        <dt>Finished reading:</dt>
+                        <dd>{{ readthrough.finish_date | naturalday }}</dd>
+                    </dl>
+                    <div class="field is-grouped">
+                        <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}">
+                            <span class="icon icon-pencil">
+                                <span class="is-sr-only">Edit readthrough dates</span>
+                            </span>
+                        </label>
+                        <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ readthrough.id }}">
+                            <button class="button is-small" type="submit">
+                                <span class="icon icon-x">
+                                    <span class="is-sr-only">Delete this readthrough</span>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content block">
+                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="edit-readthrough-{{ readthrough.id }}">
+                <div class="toggle-content hidden">
+                    <form name="edit-readthrough" action="/edit-readthrough" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ readthrough.id }}">
+                        <div class="field">
+                            <label class="label" for="start_date">
+                                Started reading
+                                <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="finish_date">
+                                Finished reading
+                                <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
+                            </label>
+                        </div>
+                        <div class="field is-grouped">
+                            <button class="button is-small" type="submit">Save</button>
+                            <label class="button is-small" for="show-readthrough-{{ readthrough.id }}">Cancel</label>
+                        </div>
+                    </form>
+                </div>
             </div>
             {% endfor %}
 

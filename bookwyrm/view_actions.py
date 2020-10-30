@@ -2,6 +2,8 @@
 from io import BytesIO, TextIOWrapper
 from PIL import Image
 
+import dateutil.parser
+from dateutil.parser import ParserError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
@@ -259,6 +261,51 @@ def upload_cover(request, book_id):
 
     outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.id)
+
+
+@login_required
+def edit_readthrough(request):
+    ''' can't use the form because the dates are too finnicky '''
+    try:
+        readthrough = models.ReadThrough.objects.get(id=request.POST.get('id'))
+    except models.ReadThrough.DoesNotExist:
+        return HttpResponseNotFound()
+
+    # don't let people edit other people's data
+    if request.user != readthrough.user:
+        return HttpResponseBadRequest()
+
+    # convert dates into a legible format
+    start_date = request.POST.get('start_date')
+    try:
+        start_date = dateutil.parser.parse(start_date)
+    except ParserError:
+        start_date = None
+    readthrough.start_date = start_date
+    finish_date = request.POST.get('finish_date')
+    try:
+        finish_date = dateutil.parser.parse(finish_date)
+    except ParserError:
+        finish_date = None
+    readthrough.finish_date = finish_date
+    readthrough.save()
+    return redirect(request.headers.get('Referer', '/'))
+
+
+@login_required
+def delete_readthrough(request):
+    ''' remove a readthrough '''
+    try:
+        readthrough = models.ReadThrough.objects.get(id=request.POST.get('id'))
+    except models.ReadThrough.DoesNotExist:
+        return HttpResponseNotFound()
+
+    # don't let people edit other people's data
+    if request.user != readthrough.user:
+        return HttpResponseBadRequest()
+
+    readthrough.delete()
+    return redirect(request.headers.get('Referer', '/'))
 
 
 @login_required

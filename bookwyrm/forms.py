@@ -29,6 +29,7 @@ class CustomForm(ModelForm):
                 visible.field.widget.attrs['rows'] = None
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
+
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
