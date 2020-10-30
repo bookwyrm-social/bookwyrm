@@ -14,6 +14,14 @@ from django.dispatch import receiver
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 
+
+PrivacyLevels = models.TextChoices('Privacy', [
+    'public',
+    'unlisted',
+    'followers',
+    'direct'
+])
+
 class BookWyrmModel(models.Model):
     ''' shared fields '''
     created_date = models.DateTimeField(auto_now_add=True)

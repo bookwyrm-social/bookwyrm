@@ -155,7 +155,7 @@ def handle_unshelve(user, book, shelf):
     broadcast(user, activity)
 
 
-def handle_imported_book(user, item):
+def handle_imported_book(user, item, privacy):
     ''' process a goodreads csv and then post about it '''
     if isinstance(item.book, models.Work):
         item.book = item.book.default_edition
@@ -171,7 +171,7 @@ def handle_imported_book(user, item):
         shelf_book, created = models.ShelfBook.objects.get_or_create(
             book=item.book, shelf=desired_shelf, added_by=user)
         if created:
-            broadcast(user, shelf_book.to_add_activity(user))
+            broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
             # only add new read-throughs if the item isn't already shelved
             for read in item.reads:
@@ -194,10 +194,11 @@ def handle_imported_book(user, item):
             content=item.review,
             rating=item.rating,
             published_date=published_date_guess,
+            privacy=privacy,
         )
         # we don't need to send out pure activities because non-bookwyrm
         # instances don't need this data
-        broadcast(user, review.to_create_activity(user))
+        broadcast(user, review.to_create_activity(user), privacy=privacy)
 
 
 def handle_delete_status(user, status):

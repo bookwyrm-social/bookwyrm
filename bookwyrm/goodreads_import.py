@@ -11,9 +11,13 @@ from bookwyrm.status import create_notification
 MAX_ENTRIES = 500
 
 
-def create_job(user, csv_file):
+def create_job(user, csv_file, include_reviews, privacy):
     ''' check over a csv and creates a database entry for the job'''
-    job = ImportJob.objects.create(user=user)
+    job = ImportJob.objects.create(
+        user=user,
+        include_reviews=include_reviews,
+        privacy=privacy
+    )
     for index, entry in enumerate(list(csv.DictReader(csv_file))[:MAX_ENTRIES]):
         if not all(x in entry for x in ('ISBN13', 'Title', 'Author')):
             raise ValueError("Author, title, and isbn must be in data.")
@@ -42,8 +46,10 @@ def import_data(job_id):
             if item.book:
                 item.save()
                 results.append(item)
-                # shelves book and handles reviews
-                outgoing.handle_imported_book(job.user, item)
+
+                if job.include_reviews:
+                    # shelves book and handles reviews
+                    outgoing.handle_imported_book(job.user, item, job.privacy)
             else:
                 item.fail_reason = "Could not find a match for book"
                 item.save()
