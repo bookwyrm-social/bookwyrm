@@ -102,6 +102,9 @@ urlpatterns = [
     re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
     re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
 
+    re_path(r'^edit-readthrough/?', actions.edit_readthrough),
+    re_path(r'^delete-readthrough/?', actions.delete_readthrough),
+
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),
     re_path(r'^quotate/?$', actions.quotate),
