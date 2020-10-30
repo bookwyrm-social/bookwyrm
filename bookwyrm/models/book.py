@@ -3,7 +3,6 @@ import re
 
 from django.db import models
 from django.utils import timezone
-from django.utils.http import http_date
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -63,16 +62,8 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('id', 'remote_id'),
 
         ActivityMapping('authors', 'ap_authors'),
-        ActivityMapping(
-            'first_published_date',
-            'first_published_date',
-            activity_formatter=lambda d: http_date(d.timestamp()) if d else None
-        ),
-        ActivityMapping(
-            'published_date',
-            'published_date',
-            activity_formatter=lambda d: http_date(d.timestamp()) if d else None
-        ),
+        ActivityMapping('first_published_date', 'first_published_date'),
+        ActivityMapping('published_date', 'published_date'),
 
         ActivityMapping('title', 'title'),
         ActivityMapping('sort_title', 'sort_title'),

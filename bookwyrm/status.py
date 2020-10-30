@@ -21,7 +21,7 @@ def create_generated_note(user, content, mention_books=None):
     parser.feed(content)
     content = parser.get_output()
 
-    status = models.GeneratedStatus.objects.create(
+    status = models.GeneratedNote.objects.create(
         user=user,
         content=content,
     )

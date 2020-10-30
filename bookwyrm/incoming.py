@@ -204,7 +204,7 @@ def handle_follow_reject(activity):
 def handle_create(activity):
     ''' someone did something, good on them '''
     if activity['object'].get('type') not in \
-            ['Note', 'Comment', 'Quotation', 'Review']:
+            ['Note', 'Comment', 'Quotation', 'Review', 'GeneratedNote']:
         # if it's an article or unknown type, ignore it
         return
 
