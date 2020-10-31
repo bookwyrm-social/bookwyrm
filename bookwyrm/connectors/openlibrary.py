@@ -73,6 +73,14 @@ class Connector(AbstractConnector):
 
 
 
+    def get_remote_id_from_data(self, data):
+        try:
+            key = data['key']
+        except KeyError:
+            raise ConnectorException('Invalid book data')
+        return '%s/%s' % (self.books_url, key)
+
+
     def is_work_data(self, data):
         return bool(re.match(r'^[\/\w]+OL\d+W$', data['key']))
 

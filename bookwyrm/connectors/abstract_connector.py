@@ -122,11 +122,11 @@ class AbstractConnector(ABC):
         # atomic so that we don't save a work with no edition for vice versa
         with transaction.atomic():
             if not work:
-                work_key = work_data.get('url')
+                work_key = self.get_remote_id_from_data(work_data)
                 work = self.create_book(work_key, work_data, models.Work)
 
             if not edition:
-                ed_key = edition_data.get('url')
+                ed_key = self.get_remote_id_from_data(edition_data)
                 edition = self.create_book(ed_key, edition_data, models.Edition)
                 edition.default = True
                 edition.parent_work = work
@@ -146,11 +146,13 @@ class AbstractConnector(ABC):
 
     def create_book(self, remote_id, data, model):
         ''' create a work or edition from data '''
+        print(remote_id)
         book = model.objects.create(
             remote_id=remote_id,
             title=data['title'],
             connector=self.connector,
         )
+        print(book.remote_id)
         return self.update_book_from_data(book, data)
 
 
@@ -161,7 +163,8 @@ class AbstractConnector(ABC):
         author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-            author_text.append(author.display_name)
+            if author.display_name:
+                author_text.append(author.display_name)
         book.author_text = ', '.join(author_text)
         book.save()
 
@@ -213,6 +216,11 @@ class AbstractConnector(ABC):
             if match:
                 return match
         return None
+
+
+    @abstractmethod
+    def get_remote_id_from_data(self, data):
+        ''' otherwise we won't properly set the remote_id in the db '''
 
 
     @abstractmethod

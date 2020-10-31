@@ -57,6 +57,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ''' structured replies block '''
         return self.to_replies()
 
+    @property
+    def ap_tag(self):
+        tags = []
+        for book in self.mention_books.all():
+            tags.append(activitypub.Link(
+                href=book.local_id,
+                name=book.title,
+                type='Book'
+            ))
+        return tags
+
     shared_mappings = [
         ActivityMapping('id', 'remote_id'),
         ActivityMapping('url', 'remote_id'),
@@ -66,6 +77,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping('to', 'ap_to'),
         ActivityMapping('cc', 'ap_cc'),
         ActivityMapping('replies', 'ap_replies'),
+        ActivityMapping('tag', 'ap_tag'),
     ]
 
     # serializing to bookwyrm expanded activitypub

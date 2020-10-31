@@ -36,9 +36,17 @@ class Article(Note):
     type: str = 'Article'
 
 
+@dataclass
+class Link():
+    ''' for tagging a book in a status '''
+    href: str
+    name: str
+    type: str = 'Link'
+
 @dataclass(init=False)
 class GeneratedNote(Note):
     ''' just a re-typed note '''
+    tag: List[Link]
     type: str = 'GeneratedNote'
 
 

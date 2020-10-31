@@ -47,8 +47,12 @@ class Connector(AbstractConnector):
         ]
 
 
+    def get_remote_id_from_data(self, data):
+        return data.get('id')
+
+
     def is_work_data(self, data):
-        return data['book_type'] == 'Work'
+        return data['type'] == 'Work'
 
 
     def get_edition_from_work_data(self, data):
