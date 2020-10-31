@@ -230,7 +230,7 @@ def handle_create(activity):
     if hasattr(activity, 'inReplyToBook'):
         book_urls.append(activity.inReplyToBook)
     if hasattr(activity, 'tag'):
-        book_urls += [t.href for t in activity.tag if t.type == 'Book']
+        book_urls += [t['href'] for t in activity.tag if t['type'] == 'Book']
     for remote_id in book_urls:
         books_manager.get_or_create_book(remote_id)
 

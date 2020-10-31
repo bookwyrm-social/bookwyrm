@@ -1,2 +1,20 @@
-<blockquote class="content">{% if book.description %}{{ book.description }}{% elif book.parent_work.description %}{{ book.parent_work.description }}{% endif %}</blockquote>
-
+{% load fr_display %}
+{% with book|book_description as full %}
+    {% with full|text_overflow as trimmed %}
+    {% if trimmed != full %}
+    <div>
+        <input type="radio" name="show-hide-{{ book.id }}" id="show-{{ book.id }}" class="toggle-control" checked>
+        <blockquote class="content toggle-content hidden">{{ trimmed }}
+        <label class="button is-small" for="hide-{{ book.id }}">show more</label></blockquote>
+    </div>
+    <div>
+        <input type="radio" name="show-hide-{{ book.id }}" id="hide-{{ book.id }}" class="toggle-control">
+        <blockquote class="content toggle-content hidden">{{ full }}
+        <label class="button is-small" for="show-{{ book.id }}">show less</label></blockquote>
+    </div>
+    {% else %}
+    <blockquote class="content">{{ full }}
+    </blockquote>
+    {% endif %}
+    {% endwith %}
+{% endwith %}
