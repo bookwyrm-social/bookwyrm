@@ -106,6 +106,25 @@ def get_edition_info(book):
     return ', '.join(i for i in items if i)
 
 
+@register.filter(name='book_description')
+def get_book_description(book):
+    ''' use the work's text if the book doesn't have it '''
+    return book.description or book.parent_work.description
+
+
+@register.filter(name='text_overflow')
+def text_overflow(text):
+    ''' dont' let book descriptions run for ages '''
+    char_max = 500
+    if len(text) < char_max:
+        return text
+
+    trimmed = text[:char_max]
+    # go back to the last space
+    trimmed = ' '.join(trimmed.split(' ')[:-1])
+    return trimmed + '...'
+
+
 @register.simple_tag(takes_context=True)
 def shelve_button_identifier(context, book):
     ''' check what shelf a user has a book on, if any '''
