@@ -26,7 +26,6 @@ class Delete(Verb):
     ''' Create activity '''
     to: List
     cc: List
-    signature: Signature
     type: str = 'Delete'
 
 
