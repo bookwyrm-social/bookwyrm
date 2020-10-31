@@ -15,7 +15,6 @@ class ActivityEncoder(JSONEncoder):
 @dataclass
 class Image:
     ''' image block '''
-    mediaType: str
     url: str
     type: str = 'Image'
 

@@ -146,13 +146,11 @@ class AbstractConnector(ABC):
 
     def create_book(self, remote_id, data, model):
         ''' create a work or edition from data '''
-        print(remote_id)
         book = model.objects.create(
             remote_id=remote_id,
             title=data['title'],
             connector=self.connector,
         )
-        print(book.remote_id)
         return self.update_book_from_data(book, data)
 
 

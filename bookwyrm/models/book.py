@@ -58,6 +58,14 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' the activitypub serialization should be a list of author ids '''
         return [a.remote_id for a in self.authors.all()]
 
+    @property
+    def ap_cover(self):
+        ''' an image attachment '''
+        return [activitypub.Image(
+            url='https://%s%s' % (DOMAIN, self.cover.url),
+        )]
+
+
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
 
@@ -90,6 +98,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions_path'),
+        ActivityMapping('attachment', 'ap_cover'),
     ]
 
     def save(self, *args, **kwargs):

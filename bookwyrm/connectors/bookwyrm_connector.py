@@ -41,9 +41,13 @@ class Connector(AbstractConnector):
         ]
 
         self.author_mappings = [
-            Mapping('born', remote_field='birth_date', formatter=get_date),
-            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('name'),
             Mapping('bio'),
+            Mapping('openlibrary_key'),
+            Mapping('wikipedia_link'),
+            Mapping('aliases'),
+            Mapping('born', formatter=get_date),
+            Mapping('died', formatter=get_date),
         ]
 
 
