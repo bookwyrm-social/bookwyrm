@@ -225,6 +225,15 @@ def handle_create(activity):
         if not reply:
             return
 
+    # look up books
+    book_urls = []
+    if hasattr(activity, 'inReplyToBook'):
+        book_urls.append(activity.inReplyToBook)
+    if hasattr(activity, 'tag'):
+        book_urls += [t.href for t in activity.tag if t.type == 'Book']
+    for remote_id in book_urls:
+        books_manager.get_or_create_book(remote_id)
+
     model = models.activity_models[activity.type]
     status = activity.to_model(model)
 

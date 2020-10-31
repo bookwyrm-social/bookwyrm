@@ -51,6 +51,9 @@ class Connector(AbstractConnector):
         )
 
 
+    def get_remote_id_from_data(self, data):
+        pass
+
     def is_work_data(self, data):
         pass
 

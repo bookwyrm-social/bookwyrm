@@ -41,14 +41,22 @@ class Connector(AbstractConnector):
         ]
 
         self.author_mappings = [
-            Mapping('born', remote_field='birth_date', formatter=get_date),
-            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('name'),
             Mapping('bio'),
+            Mapping('openlibrary_key'),
+            Mapping('wikipedia_link'),
+            Mapping('aliases'),
+            Mapping('born', formatter=get_date),
+            Mapping('died', formatter=get_date),
         ]
 
 
+    def get_remote_id_from_data(self, data):
+        return data.get('id')
+
+
     def is_work_data(self, data):
-        return data['book_type'] == 'Work'
+        return data['type'] == 'Work'
 
 
     def get_edition_from_work_data(self, data):
