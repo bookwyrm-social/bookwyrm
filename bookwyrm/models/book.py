@@ -61,6 +61,8 @@ class Book(ActivitypubMixin, BookWyrmModel):
     @property
     def ap_cover(self):
         ''' an image attachment '''
+        if not self.cover or not hasattr(self.cover, 'url'):
+            return []
         return [activitypub.Image(
             url='https://%s%s' % (DOMAIN, self.cover.url),
         )]
