@@ -232,7 +232,7 @@ def handle_create(activity):
     if hasattr(activity, 'tag'):
         book_urls += [t.href for t in activity.tag if t.type == 'Book']
     for remote_id in book_urls:
-        book = books_manager.get_or_create_book(remote_id)
+        books_manager.get_or_create_book(remote_id)
 
     model = models.activity_models[activity.type]
     status = activity.to_model(model)
