@@ -82,12 +82,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ''' send default icon if one isn't set '''
         if self.avatar:
             url = self.avatar.url
-            # TODO not the right way to get the media type
-            media_type = 'image/%s' % url.split('.')[-1]
         else:
             url = 'https://%s/static/images/default_avi.jpg' % DOMAIN
-            media_type = 'image/jpeg'
-        return activitypub.Image(media_type, url, 'Image')
+        return activitypub.Image(url=url)
 
     @property
     def ap_public_key(self):
@@ -106,6 +103,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             activity_formatter=lambda x: x.split('@')[0]
         ),
         ActivityMapping('name', 'name'),
+        ActivityMapping('bookwyrmUser', 'bookwyrm_user'),
         ActivityMapping('inbox', 'inbox'),
         ActivityMapping('outbox', 'outbox'),
         ActivityMapping('followers', 'ap_followers'),

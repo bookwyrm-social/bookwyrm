@@ -3,14 +3,16 @@
 
 <div class="columns">
     <div class="column block">
-        {% include 'snippets/about.html' with site_settings=site_settings %}
+        <blockquote>
+            {% include 'snippets/about.html' with site_settings=site_settings %}
+        </blockquote>
     </div>
 
     <div class="column block">
         <h2 class="title">Code of Conduct</h2>
-        <p>
-        {{ site_settings.code_of_conduct }}
-        </p>
+        <blockquote>
+            {{ site_settings.code_of_conduct }}
+        </blockquote>
     </div>
 </div>
 {% endblock %}
