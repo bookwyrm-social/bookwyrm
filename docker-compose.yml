@@ -70,6 +70,19 @@ services:
             - db
             - redis
         restart: on-failure
+    flower:
+        image: mher/flower
+        env_file: .env
+        environment:
+            - CELERY_BROKER_URL=${CELERY_BROKER}
+        networks:
+            - main
+        depends_on:
+            - db
+            - redis
+        restart: on-failure
+        ports:
+             - 8888:8888
 volumes:
     pgdata:
     backups:
