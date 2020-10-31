@@ -108,6 +108,20 @@ class ActivitypubMixin:
         ).serialize()
 
 
+    def to_delete_activity(self, user):
+        ''' notice of deletion '''
+        # this should be a tombstone
+        activity_object = self.to_activity()
+
+        return activitypub.Delete(
+            id=self.remote_id + '/activity',
+            actor=user.remote_id,
+            to=['%s/followers' % user.remote_id],
+            cc=['https://www.w3.org/ns/activitystreams#Public'],
+            object=activity_object,
+        ).serialize()
+
+
     def to_update_activity(self, user):
         ''' wrapper for Updates to an activity '''
         activity_id = '%s#update/%s' % (user.remote_id, uuid4())

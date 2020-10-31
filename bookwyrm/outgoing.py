@@ -204,7 +204,7 @@ def handle_imported_book(user, item, include_reviews, privacy):
 def handle_delete_status(user, status):
     ''' delete a status and broadcast deletion to other servers '''
     delete_status(status)
-    broadcast(user, status.to_activity())
+    broadcast(user, status.to_delete_activity(user))
 
 
 def handle_status(user, form):
