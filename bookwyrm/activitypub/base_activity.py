@@ -2,6 +2,8 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 
+from bookwyrm import books_manager, models
+
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor
 
@@ -102,6 +104,9 @@ class ActivityObject:
 
 def resolve_foreign_key(model, remote_id):
     ''' look up the remote_id on an activity json field '''
+    if model in [models.Edition, models.Work]:
+        return books_manager.get_or_create_book(remote_id)
+
     result = model.objects
     if hasattr(model.objects, 'select_subclasses'):
         result = result.select_subclasses()
