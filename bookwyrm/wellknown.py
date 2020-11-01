@@ -1,8 +1,9 @@
 ''' responds to various requests to /.well-know '''
+
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.http import JsonResponse
 
 from bookwyrm import models
@@ -16,13 +17,16 @@ def webfinger(request):
 
     resource = request.GET.get('resource')
     if not resource and not resource.startswith('acct:'):
-        return HttpResponseBadRequest()
-    ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(username=ap_id).first()
-    if not user:
+        return HttpResponseNotFound()
+
+    username = resource.replace('acct:@', '')
+    try:
+        user = models.User.objects.get(username=username)
+    except models.User.DoesNotExist:
         return HttpResponseNotFound('No account found')
+
     return JsonResponse({
-        'subject': 'acct:%s' % (user.username),
+        'subject': 'acct:@%s' % (user.username),
         'links': [
             {
                 'rel': 'self',

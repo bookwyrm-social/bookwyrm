@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from .base_activity import ActivityObject, Image
+from .base_activity import ActivityObject, Image, Link
 
 @dataclass(init=False)
 class Tombstone(ActivityObject):
@@ -20,6 +20,7 @@ class Note(ActivityObject):
     inReplyTo: str
     published: str
     attributedTo: str
+    tag: List[Link]
     to: List[str]
     cc: List[str]
     content: str
@@ -36,17 +37,9 @@ class Article(Note):
     type: str = 'Article'
 
 
-@dataclass
-class Link():
-    ''' for tagging a book in a status '''
-    href: str
-    name: str
-    type: str = 'Link'
-
 @dataclass(init=False)
 class GeneratedNote(Note):
     ''' just a re-typed note '''
-    tag: List[Link]
     type: str = 'GeneratedNote'
 
 

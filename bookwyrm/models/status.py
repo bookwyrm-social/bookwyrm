@@ -59,13 +59,19 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def ap_tag(self):
-        ''' books or (eventually) users tagged in a post '''
+        ''' references to books and/or users '''
+
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
                 href=book.local_id,
                 name=book.title,
                 type='Book'
+            ))
+        for user in self.mention_users.all():
+            tags.append(activitypub.Mention(
+                href=user.remote_id,
+                name=user.username,
             ))
         return tags
 
@@ -286,7 +292,7 @@ class ReadThrough(BookWyrmModel):
 
 NotificationType = models.TextChoices(
     'NotificationType',
-    'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
+    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
 
 class Notification(BookWyrmModel):
     ''' you've been tagged, liked, followed, etc '''
