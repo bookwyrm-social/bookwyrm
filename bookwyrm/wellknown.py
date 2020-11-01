@@ -1,5 +1,9 @@
 ''' responds to various requests to /.well-know '''
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
+from django.http import HttpResponseNotFound
 from django.http import JsonResponse
 
 from bookwyrm import models
@@ -13,13 +17,16 @@ def webfinger(request):
 
     resource = request.GET.get('resource')
     if not resource and not resource.startswith('acct:'):
-        return HttpResponseBadRequest()
-    ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(username=ap_id).first()
-    if not user:
+        return HttpResponseNotFound()
+
+    username = resource.replace('acct:@', '')
+    try:
+        user = models.User.objects.get(username=username)
+    except models.User.DoesNotExist:
         return HttpResponseNotFound('No account found')
+
     return JsonResponse({
-        'subject': 'acct:%s' % (user.username),
+        'subject': 'acct:@%s' % (user.username),
         'links': [
             {
                 'rel': 'self',
@@ -52,6 +59,16 @@ def nodeinfo(request):
 
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.count()
+
+    month_ago = datetime.now() - relativedelta(months=1)
+    last_month_count = models.User.objects.filter(
+        last_active_date__gt=month_ago
+    ).count()
+
+    six_months_ago = datetime.now() - relativedelta(months=6)
+    six_month_count = models.User.objects.filter(
+        last_active_date__gt=six_months_ago
+    ).count()
     return JsonResponse({
         'version': '2.0',
         'software': {
@@ -64,8 +81,8 @@ def nodeinfo(request):
         'usage': {
             'users': {
                 'total': user_count,
-                'activeMonth': user_count, # TODO
-                'activeHalfyear': user_count, # TODO
+                'activeMonth': last_month_count,
+                'activeHalfyear': six_month_count,
             },
             'localPosts': status_count,
         },

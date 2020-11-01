@@ -17,7 +17,7 @@ status_types = [
     'comment',
     'quotation',
     'boost',
-    'generatedstatus'
+    'generatednote'
 ]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
         (local_user_path, '|'.join(status_types))

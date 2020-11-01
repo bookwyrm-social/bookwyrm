@@ -59,12 +59,19 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def ap_tag(self):
+        ''' references to books and/or users '''
+
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
                 href=book.local_id,
                 name=book.title,
                 type='Book'
+            ))
+        for user in self.mention_users.all():
+            tags.append(activitypub.Mention(
+                href=user.remote_id,
+                name=user.username,
             ))
         return tags
 
@@ -117,7 +124,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, **kwargs):
+    def to_activity(self, pure=False):
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -126,7 +133,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 deleted=self.deleted_date.isoformat(),
                 published=self.deleted_date.isoformat()
             ).serialize()
-        return ActivitypubMixin.to_activity(self, **kwargs)
+        return ActivitypubMixin.to_activity(self, pure=pure)
+
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
 
 
 class GeneratedNote(Status):
@@ -227,6 +239,11 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Like
 
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
     class Meta:
         ''' can't fav things twice '''
@@ -267,10 +284,15 @@ class ReadThrough(BookWyrmModel):
         blank=True,
         null=True)
 
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
 NotificationType = models.TextChoices(
     'NotificationType',
-    'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
+    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
 
 class Notification(BookWyrmModel):
     ''' you've been tagged, liked, followed, etc '''

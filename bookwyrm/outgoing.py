@@ -1,5 +1,6 @@
 ''' handles all the activity coming out of the server '''
 from datetime import datetime
+import re
 
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
@@ -13,6 +14,8 @@ from bookwyrm.status import create_tag, create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
+from bookwyrm.settings import DOMAIN
+from bookwyrm.utils import regex
 
 
 @csrf_exempt
@@ -34,13 +37,17 @@ def outbox(request, username):
 
 
 def handle_remote_webfinger(query):
-    ''' webfingerin' other servers '''
+    ''' webfingerin' other servers, username query should be user@domain '''
     user = None
-    domain = query.split('@')[1]
+    try:
+        domain = query.split('@')[2]
+    except IndexError:
+        return None
+
     try:
         user = models.User.objects.get(username=query)
     except models.User.DoesNotExist:
-        url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
+        url = 'https://%s/.well-known/webfinger?resource=acct:@%s' % \
             (domain, query)
         try:
             response = requests.get(url)
@@ -55,7 +62,7 @@ def handle_remote_webfinger(query):
                     user = get_or_create_remote_user(link['href'])
                 except KeyError:
                     return None
-    return [user]
+    return user
 
 
 def handle_follow(user, to_follow):
@@ -211,7 +218,36 @@ def handle_status(user, form):
     ''' generic handler for statuses '''
     status = form.save()
 
-    # notify reply parent or (TODO) tagged users
+    # inspect the text for user tags
+    text = status.content
+    matches = re.finditer(
+        regex.username,
+        text
+    )
+    for match in matches:
+        username = match.group().strip().split('@')[1:]
+        if len(username) == 1:
+            # this looks like a local user (@user), fill in the domain
+            username.append(DOMAIN)
+        username = '@'.join(username)
+
+        mention_user = handle_remote_webfinger(username)
+        if not mention_user:
+            # we can ignore users we don't know about
+            continue
+        # add them to status mentions fk
+        status.mention_users.add(mention_user)
+        # create notification if the mentioned user is local
+        if mention_user.local:
+            create_notification(
+                mention_user,
+                'MENTION',
+                related_user=user,
+                related_status=status
+            )
+    status.save()
+
+    # notify reply parent or tagged users
     if status.reply_parent and status.reply_parent.user.local:
         create_notification(
             status.reply_parent.user,
