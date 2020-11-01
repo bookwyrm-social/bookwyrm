@@ -37,10 +37,15 @@ def outbox(request, username):
 
 
 def handle_remote_webfinger(query):
-    ''' webfingerin' other servers, username query should be user@domain '''
+    ''' webfingerin' other servers '''
     user = None
+
+    # usernames could be @user@domain or user@domain
+    if query[0] == '@':
+        query = query[1:]
+
     try:
-        domain = query.split('@')[2]
+        domain = query.split('@')[1]
     except IndexError:
         return None
 

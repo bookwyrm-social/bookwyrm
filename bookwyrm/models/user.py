@@ -172,13 +172,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ''' populate fields for new local users '''
         # this user already exists, no need to populate fields
         if self.id:
-            return
+            return super().save(*args, **kwargs)
 
         if not self.local:
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = '%s@%s' % (self.username, actor_parts.netloc)
-            return
+            return super().save(*args, **kwargs)
 
         # populate fields for local users
         self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.username)
@@ -191,7 +191,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if not self.private_key:
             self.private_key, self.public_key = create_key_pair()
 
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 @receiver(models.signals.post_save, sender=User)
