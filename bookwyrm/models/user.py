@@ -69,6 +69,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     remote_id = models.CharField(max_length=255, null=True, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = models.BooleanField(default=False)
 
     # ---- activitypub serialization settings for this model ----- #
@@ -167,28 +168,30 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return activity_object
 
 
-@receiver(models.signals.pre_save, sender=User)
-def execute_before_save(sender, instance, *args, **kwargs):
-    ''' populate fields for new local users '''
-    # this user already exists, no need to poplate fields
-    if instance.id:
-        return
-    if not instance.local:
-        # we need to generate a username that uses the domain (webfinger format)
-        actor_parts = urlparse(instance.remote_id)
-        instance.username = '%s@%s' % (instance.username, actor_parts.netloc)
-        return
+    def save(self, *args, **kwargs):
+        ''' populate fields for new local users '''
+        # this user already exists, no need to populate fields
+        if self.id:
+            return
 
-    # populate fields for local users
-    instance.remote_id = 'https://%s/user/%s' % (DOMAIN, instance.username)
-    instance.localname = instance.username
-    instance.username = '%s@%s' % (instance.username, DOMAIN)
-    instance.actor = instance.remote_id
-    instance.inbox = '%s/inbox' % instance.remote_id
-    instance.shared_inbox = 'https://%s/inbox' % DOMAIN
-    instance.outbox = '%s/outbox' % instance.remote_id
-    if not instance.private_key:
-        instance.private_key, instance.public_key = create_key_pair()
+        if not self.local:
+            # generate a username that uses the domain (webfinger format)
+            actor_parts = urlparse(self.remote_id)
+            self.username = '%s@%s' % (self.username, actor_parts.netloc)
+            return
+
+        # populate fields for local users
+        self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.username)
+        self.localname = self.username
+        self.username = '%s@%s' % (self.username, DOMAIN)
+        self.actor = self.remote_id
+        self.inbox = '%s/inbox' % self.remote_id
+        self.shared_inbox = 'https://%s/inbox' % DOMAIN
+        self.outbox = '%s/outbox' % self.remote_id
+        if not self.private_key:
+            self.private_key, self.public_key = create_key_pair()
+
+        super().save(*args, **kwargs)
 
 
 @receiver(models.signals.post_save, sender=User)

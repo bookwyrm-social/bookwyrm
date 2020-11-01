@@ -1,4 +1,8 @@
 ''' responds to various requests to /.well-know '''
+
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
 
@@ -55,6 +59,16 @@ def nodeinfo(request):
 
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.count()
+
+    month_ago = datetime.now() - relativedelta(months=1)
+    last_month_count = models.User.objects.filter(
+        last_active_date__gt=month_ago
+    ).count()
+
+    six_months_ago = datetime.now() - relativedelta(months=6)
+    six_month_count = models.User.objects.filter(
+        last_active_date__gt=six_months_ago
+    ).count()
     return JsonResponse({
         'version': '2.0',
         'software': {
@@ -67,8 +81,8 @@ def nodeinfo(request):
         'usage': {
             'users': {
                 'total': user_count,
-                'activeMonth': user_count, # TODO
-                'activeHalfyear': user_count, # TODO
+                'activeMonth': last_month_count,
+                'activeHalfyear': six_month_count,
             },
             'localPosts': status_count,
         },

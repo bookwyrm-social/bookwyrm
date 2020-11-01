@@ -4,13 +4,15 @@ from PIL import Image
 
 import dateutil.parser
 from dateutil.parser import ParserError
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 
 from bookwyrm import books_manager
 from bookwyrm import forms, models, outgoing
@@ -32,7 +34,9 @@ def user_login(request):
     password = login_form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
+        # successful login
         login(request, user)
+        user.last_active_date = timezone.now()
         return redirect(request.GET.get('next', '/'))
 
     login_form.non_field_errors = 'Username or password are incorrect'
