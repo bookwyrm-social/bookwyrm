@@ -22,6 +22,19 @@ class Image:
 
 
 @dataclass
+class Link():
+    ''' for tagging a book in a status '''
+    href: str
+    name: str
+    type: str = 'Link'
+
+@dataclass
+class Mention(Link):
+    ''' a subtype of Link for mentioning an actor '''
+    type: str = 'Mention'
+
+
+@dataclass
 class PublicKey:
     ''' public key block '''
     id: str
