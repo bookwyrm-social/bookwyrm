@@ -69,6 +69,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     remote_id = models.CharField(max_length=255, null=True, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = models.BooleanField(default=False)
 
     # ---- activitypub serialization settings for this model ----- #
@@ -172,6 +173,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this user already exists, no need to populate fields
         if self.id:
             return
+
         if not self.local:
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)

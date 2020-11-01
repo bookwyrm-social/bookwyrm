@@ -129,6 +129,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             ).serialize()
         return ActivitypubMixin.to_activity(self, pure=pure)
 
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
 class GeneratedNote(Status):
     ''' these are app-generated messages about user activity '''
@@ -228,6 +233,11 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Like
 
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
     class Meta:
         ''' can't fav things twice '''
@@ -267,6 +277,11 @@ class ReadThrough(BookWyrmModel):
     finish_date = models.DateTimeField(
         blank=True,
         null=True)
+
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
 
 
 NotificationType = models.TextChoices(
