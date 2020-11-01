@@ -116,7 +116,7 @@ def get_book_description(book):
 def text_overflow(text):
     ''' dont' let book descriptions run for ages '''
     if not text:
-        return
+        return ''
     char_max = 500
     if text and len(text) < char_max:
         return text

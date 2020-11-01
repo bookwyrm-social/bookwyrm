@@ -1,5 +1,6 @@
 {% load fr_display %}
 {% with book|book_description as full %}
+{% if full %}
     {% with full|text_overflow as trimmed %}
     {% if trimmed != full %}
     <div>
@@ -17,4 +18,5 @@
     </blockquote>
     {% endif %}
     {% endwith %}
+{% endif %}
 {% endwith %}
