@@ -115,8 +115,10 @@ def get_book_description(book):
 @register.filter(name='text_overflow')
 def text_overflow(text):
     ''' dont' let book descriptions run for ages '''
+    if not text:
+        return
     char_max = 500
-    if len(text) < char_max:
+    if text and len(text) < char_max:
         return text
 
     trimmed = text[:char_max]
