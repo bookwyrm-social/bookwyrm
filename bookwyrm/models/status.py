@@ -59,6 +59,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def ap_tag(self):
+        ''' books or (eventually) users tagged in a post '''
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
@@ -117,7 +118,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, **kwargs):
+    def to_activity(self, pure=False):
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -126,7 +127,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 deleted=self.deleted_date.isoformat(),
                 published=self.deleted_date.isoformat()
             ).serialize()
-        return ActivitypubMixin.to_activity(self, **kwargs)
+        return ActivitypubMixin.to_activity(self, pure=pure)
 
 
 class GeneratedNote(Status):
