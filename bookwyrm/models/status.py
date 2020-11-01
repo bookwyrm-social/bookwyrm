@@ -59,6 +59,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def ap_tag(self):
+        ''' books or (eventually) users tagged in a post '''
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
@@ -117,7 +118,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, **kwargs):
+    def to_activity(self, pure=False):
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -126,7 +127,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 deleted=self.deleted_date.isoformat(),
                 published=self.deleted_date.isoformat()
             ).serialize()
-        return ActivitypubMixin.to_activity(self, **kwargs)
+        return ActivitypubMixin.to_activity(self, pure=pure)
+
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
 
 
 class GeneratedNote(Status):
@@ -227,6 +233,11 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Like
 
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
     class Meta:
         ''' can't fav things twice '''
@@ -266,6 +277,11 @@ class ReadThrough(BookWyrmModel):
     finish_date = models.DateTimeField(
         blank=True,
         null=True)
+
+    def save(self, *args, **kwargs):
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
 
 
 NotificationType = models.TextChoices(
