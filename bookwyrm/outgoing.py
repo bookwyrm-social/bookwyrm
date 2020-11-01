@@ -15,6 +15,7 @@ from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
 from bookwyrm.settings import DOMAIN
+from bookwyrm.utils import regex
 
 
 @csrf_exempt
@@ -36,13 +37,17 @@ def outbox(request, username):
 
 
 def handle_remote_webfinger(query):
-    ''' webfingerin' other servers '''
+    ''' webfingerin' other servers, username query should be user@domain '''
     user = None
-    domain = query.split('@')[1]
+    try:
+        domain = query.split('@')[2]
+    except IndexError:
+        return None
+
     try:
         user = models.User.objects.get(username=query)
     except models.User.DoesNotExist:
-        url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
+        url = 'https://%s/.well-known/webfinger?resource=acct:@%s' % \
             (domain, query)
         try:
             response = requests.get(url)
@@ -57,7 +62,7 @@ def handle_remote_webfinger(query):
                     user = get_or_create_remote_user(link['href'])
                 except KeyError:
                     return None
-    return [user]
+    return user
 
 
 def handle_follow(user, to_follow):
@@ -216,7 +221,7 @@ def handle_status(user, form):
     # inspect the text for user tags
     text = status.content
     matches = re.finditer(
-        r'\W@[a-zA-Z_\-\.0-9]+(@[a-z-A-Z0-9_\-]+.[a-z]+)?',
+        regex.username,
         text
     )
     for match in matches:
@@ -226,9 +231,8 @@ def handle_status(user, form):
             username.append(DOMAIN)
         username = '@'.join(username)
 
-        try:
-            mention_user = models.User.objects.get(username=username)
-        except models.User.DoesNotExist:
+        mention_user = handle_remote_webfinger(username)
+        if not mention_user:
             # we can ignore users we don't know about
             continue
         # add them to status mentions fk

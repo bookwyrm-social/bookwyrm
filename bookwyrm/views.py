@@ -16,6 +16,7 @@ from bookwyrm.activitypub import ActivityEncoder
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
 from bookwyrm.tasks import app
+from bookwyrm.utils import regex
 
 
 def get_user_from_username(username):
@@ -168,7 +169,7 @@ def search(request):
         return JsonResponse([r.__dict__ for r in book_results], safe=False)
 
     # use webfinger  looks like a mastodon style account@domain.com username
-    if re.match(r'\w+@\w+.\w+', query):
+    if re.match(regex.full_username, query):
         outgoing.handle_remote_webfinger(query)
 
     # do a local user search
