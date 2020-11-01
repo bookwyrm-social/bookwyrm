@@ -22,7 +22,7 @@ def webfinger(request):
         return HttpResponseNotFound('No account found')
 
     return JsonResponse({
-        'subject': 'acct:%s' % (user.username),
+        'subject': 'acct:@%s' % (user.username),
         'links': [
             {
                 'rel': 'self',
