@@ -84,7 +84,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         if self.avatar:
             url = self.avatar.url
         else:
-            url = 'https://%s/static/images/default_avi.jpg' % DOMAIN
+            url = '/static/images/default_avi.jpg'
+        url = 'https://%s%s' % (DOMAIN, url)
         return activitypub.Image(url=url)
 
     @property

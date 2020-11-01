@@ -1,5 +1,6 @@
 ''' views for actions you can take in the application '''
 from io import BytesIO, TextIOWrapper
+from uuid import uuid4
 from PIL import Image
 
 import dateutil.parser
@@ -201,8 +202,12 @@ def edit_profile(request):
         output = BytesIO()
         cropped.save(output, format=image.format)
         ContentFile(output.getvalue())
+
+        # set the name to a hash
+        extension = form.files['avatar'].name.split('.')[-1]
+        filename = '%s.%s' % (uuid4(), extension)
         request.user.avatar.save(
-            form.files['avatar'].name,
+            filename,
             ContentFile(output.getvalue())
         )
 
