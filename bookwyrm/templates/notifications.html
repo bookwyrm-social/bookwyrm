@@ -22,6 +22,10 @@
                     favorited your
                     <a href="{{ notification.related_status.remote_id}}">status</a>
 
+                {% elif notification.notification_type == 'MENTION' %}
+                    mentioned you in a
+                    <a href="{{ notification.related_status.remote_id}}">status</a>
+
                 {% elif notification.notification_type == 'REPLY' %}
                     <a href="{{ notification.related_status.remote_id}}">replied</a>
                     to your
