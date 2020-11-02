@@ -76,4 +76,5 @@ Connector.objects.create(
     books_url='https://openlibrary.org',
     covers_url='https://covers.openlibrary.org',
     search_url='https://openlibrary.org/search?q=',
+    priority=3,
 )
