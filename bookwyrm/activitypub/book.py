@@ -55,7 +55,6 @@ class Work(Book):
 @dataclass(init=False)
 class Author(ActivityObject):
     ''' author of a book '''
-    url: str
     name: str
     born: str
     died: str
