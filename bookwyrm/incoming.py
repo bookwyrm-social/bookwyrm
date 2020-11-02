@@ -62,6 +62,8 @@ def shared_inbox(request):
         'Announce': handle_boost,
         'Add': {
             'Tag': handle_tag,
+            'Edition': handle_shelve,
+            'Work': handle_shelve,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -316,6 +318,22 @@ def handle_tag(activity):
     if not user.local:
         book = activity['target']['id']
         status_builder.create_tag(user, book, activity['object']['name'])
+
+
+@app.task
+def handle_shelve(activity):
+    ''' putting a book on a shelf '''
+    user = get_or_create_remote_user(activity['actor'])
+    book = books_manager.get_or_create_book(activity['object'])
+    try:
+        shelf = models.Shelf.objects.get(remote_id=activity['target'])
+    except models.Shelf.DoesNotExist:
+        return
+    if shelf.user != user:
+        # this doesn't add up.
+        return
+    shelf.books.add(book)
+    shelf.save()
 
 
 @app.task

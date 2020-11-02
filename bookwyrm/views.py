@@ -36,12 +36,12 @@ def is_api_request(request):
 
 def server_error_page(request):
     ''' 500 errors '''
-    return TemplateResponse(request, 'error.html')
+    return TemplateResponse(request, 'error.html', {'title': 'Oops!'})
 
 
 def not_found_page(request, _):
     ''' 404s '''
-    return TemplateResponse(request, 'notfound.html')
+    return TemplateResponse(request, 'notfound.html', {'title': 'Not found'})
 
 
 @login_required
@@ -97,6 +97,7 @@ def home_tab(request, tab):
     next_page = '/?page=%d#feed' % (page + 1)
     prev_page = '/?page=%d#feed' % (page - 1)
     data = {
+        'title': 'Updates Feed',
         'user': request.user,
         'suggested_books': set(suggested_books),
         'activities': activities,
@@ -181,6 +182,7 @@ def search(request):
 
     book_results = books_manager.search(query)
     data = {
+        'title': 'Search Results',
         'book_results': book_results,
         'user_results': user_results,
         'query': query,
@@ -192,6 +194,7 @@ def search(request):
 def import_page(request):
     ''' import history from goodreads '''
     return TemplateResponse(request, 'import.html', {
+        'title': 'Import Books',
         'import_form': forms.ImportForm(),
         'jobs': models.ImportJob.
                 objects.filter(user=request.user).order_by('-created_date'),
@@ -207,6 +210,7 @@ def import_status(request, job_id):
         raise PermissionDenied
     task = app.AsyncResult(job.task_id)
     return TemplateResponse(request, 'import_status.html', {
+        'title': 'Import Status',
         'job': job,
         'items': job.items.order_by('index').all(),
         'task': task
@@ -219,6 +223,7 @@ def login_page(request):
         return redirect('/')
     # send user to the login page
     data = {
+        'title': 'Login',
         'site_settings': models.SiteSettings.get(),
         'login_form': forms.LoginForm(),
         'register_form': forms.RegisterForm(),
@@ -229,6 +234,7 @@ def login_page(request):
 def about_page(request):
     ''' more information about the instance '''
     data = {
+        'title': 'About',
         'site_settings': models.SiteSettings.get(),
     }
     return TemplateResponse(request, 'about.html', data)
@@ -236,7 +242,7 @@ def about_page(request):
 
 def password_reset_request(request):
     ''' invite management page '''
-    return TemplateResponse(request, 'password_reset_request.html')
+    return TemplateResponse(request, 'password_reset_request.html', {'title': 'Reset Password'})
 
 
 def password_reset(request, code):
@@ -253,7 +259,7 @@ def password_reset(request, code):
     return TemplateResponse(
         request,
         'password_reset.html',
-        {'code': reset_code.code}
+        {'title': 'Reset Password', 'code': reset_code.code}
     )
 
 
@@ -269,6 +275,7 @@ def invite_page(request, code):
         raise PermissionDenied
 
     data = {
+        'title': 'Join',
         'site_settings': models.SiteSettings.get(),
         'register_form': forms.RegisterForm(),
         'invite': invite,
@@ -280,6 +287,7 @@ def invite_page(request, code):
 def manage_invites(request):
     ''' invite management page '''
     data = {
+        'title': 'Invitations',
         'invites': models.SiteInvite.objects.filter(user=request.user),
         'form': forms.CreateInviteForm(),
     }
@@ -293,6 +301,7 @@ def notifications_page(request):
             .order_by('-created_date')
     unread = [n.id for n in notifications.filter(read=False)]
     data = {
+        'title': 'Notifications',
         'notifications': notifications,
         'unread': unread,
     }
@@ -313,6 +322,7 @@ def user_page(request, username, subpage=None, shelf=None):
     # otherwise we're at a UI view
 
     data = {
+        'title': user.name,
         'user': user,
         'is_self': request.user.id == user.id,
     }
@@ -416,6 +426,7 @@ def status_page(request, username, status_id):
         return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
 
     data = {
+        'title': status.type,
         'status': status,
     }
     return TemplateResponse(request, 'status.html', data)
@@ -460,6 +471,7 @@ def edit_profile_page(request):
 
     form = forms.EditUserForm(instance=request.user)
     data = {
+        'title': 'Edit profile',
         'form': form,
         'user': user,
     }
@@ -506,6 +518,7 @@ def book_page(request, book_id):
     ).distinct().all()
 
     data = {
+        'title': book.title,
         'book': book,
         'reviews': reviews.filter(content__isnull=False),
         'ratings': reviews.filter(content__isnull=True),
@@ -539,6 +552,7 @@ def edit_book_page(request, book_id):
     if not book.description:
         book.description = book.parent_work.description
     data = {
+        'title': 'Edit Book',
         'book': book,
         'form': forms.EditionForm(instance=book)
     }
@@ -550,6 +564,7 @@ def editions_page(request, work_id):
     work = models.Work.objects.get(id=work_id)
     editions = models.Edition.objects.filter(parent_work=work).all()
     data = {
+        'title': 'Editions of %s' % work.title,
         'editions': editions,
         'work': work,
     }
@@ -568,6 +583,7 @@ def author_page(request, author_id):
 
     books = models.Work.objects.filter(authors=author)
     data = {
+        'title': author.name,
         'author': author,
         'books': [b.default_edition for b in books],
     }
@@ -586,6 +602,7 @@ def tag_page(request, tag_id):
 
     books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
     data = {
+        'title': tag_obj.name,
         'books': books,
         'tag': tag_obj,
     }
