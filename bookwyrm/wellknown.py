@@ -19,14 +19,14 @@ def webfinger(request):
     if not resource and not resource.startswith('acct:'):
         return HttpResponseNotFound()
 
-    username = resource.replace('acct:@', '')
+    username = resource.replace('acct:', '')
     try:
         user = models.User.objects.get(username=username)
     except models.User.DoesNotExist:
         return HttpResponseNotFound('No account found')
 
     return JsonResponse({
-        'subject': 'acct:@%s' % (user.username),
+        'subject': 'acct:%s' % (user.username),
         'links': [
             {
                 'rel': 'self',

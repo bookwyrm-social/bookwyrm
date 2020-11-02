@@ -50,7 +50,7 @@ def get_or_create_connector(remote_id):
             books_url='https://%s/book' % identifier,
             covers_url='https://%s/images/covers' % identifier,
             search_url='https://%s/search?q=' % identifier,
-            priority=3
+            priority=2
         )
 
     return load_connector(connector_info)

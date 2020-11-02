@@ -52,7 +52,7 @@ def handle_remote_webfinger(query):
     try:
         user = models.User.objects.get(username=query)
     except models.User.DoesNotExist:
-        url = 'https://%s/.well-known/webfinger?resource=acct:@%s' % \
+        url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
             (domain, query)
         try:
             response = requests.get(url)
