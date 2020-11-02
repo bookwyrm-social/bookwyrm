@@ -49,8 +49,8 @@ class ShelfBook(BookWyrmModel):
         return activitypub.Add(
             id='%s#add' % self.remote_id,
             actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.shelf.to_activity()
+            object=self.book.local_id,
+            target=self.shelf.remote_id,
         ).serialize()
 
     def to_remove_activity(self, user):

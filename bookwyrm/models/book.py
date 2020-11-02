@@ -56,7 +56,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
     @property
     def ap_authors(self):
         ''' the activitypub serialization should be a list of author ids '''
-        return [a.remote_id for a in self.authors.all()]
+        return [a.local_id for a in self.authors.all()]
 
     @property
     def ap_cover(self):
@@ -73,7 +73,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
         return self.parent_work.local_id
 
     activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('id', 'local_id'),
 
         ActivityMapping('authors', 'ap_authors'),
         ActivityMapping('first_published_date', 'first_published_date'),
@@ -258,7 +258,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
         an instance, so it needs a local url for federation. but it still needs
         the remote_id for easier deduplication and, if appropriate, to sync with
         the remote canonical copy (ditto here for author)'''
-        return 'https://%s/book/%d' % (DOMAIN, self.id)
+        return 'https://%s/author/%d' % (DOMAIN, self.id)
 
     @property
     def display_name(self):
@@ -271,8 +271,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
         return self.last_name or self.first_name
 
     activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('url', 'remote_id'),
+        ActivityMapping('id', 'local_id'),
         ActivityMapping('name', 'display_name'),
         ActivityMapping('born', 'born'),
         ActivityMapping('died', 'died'),
