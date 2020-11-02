@@ -1,0 +1,12 @@
+<div class="media">
+    <div class="media-left">
+        <div>
+        <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
+        {% include 'snippets/shelve_button.html' with book=book %}
+        </div>
+    </div>
+    <div class="media-content">
+        <h3 class="title is-6">{% include 'snippets/book_titleby.html' with book=book %}</h3>
+        {% include 'snippets/book_description.html' with book=book %}
+    </div>
+</div>
