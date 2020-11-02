@@ -1,13 +1,13 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from dateutil import parser
 import pytz
-import requests
-from requests import HTTPError
 from urllib3.exceptions import RequestError
 
 from django.db import transaction
+from dateutil import parser
+import requests
+from requests import HTTPError
 
 from bookwyrm import models
 

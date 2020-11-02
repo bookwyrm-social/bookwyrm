@@ -4,12 +4,25 @@
 {% if not status.deleted %}
 <div class="card">
     <header class="card-header">
-    {% include 'snippets/status_header.html' with status=status %}
+        <div class="card-header-title">
+            <p>
+                {% if status.status_type == 'Boost' %}
+                {% include 'snippets/avatar.html' with user=status.user %}
+                {% include 'snippets/username.html' with user=status.user %}
+                boosted
+            </p>
+            <p>
+                {% include 'snippets/status_header.html' with status=status|boosted_status %}
+                {% else %}
+                {% include 'snippets/status_header.html' with status=status %}
+                {% endif %}
+            </p>
+</div>
     </header>
 
     <div class="card-content">
         {% if status.status_type == 'Boost' %}
-        {% include 'snippets/status_content.html' with status=status.boosted_status %}
+        {% include 'snippets/status_content.html' with status=status|boosted_status %}
         {% else %}
         {% include 'snippets/status_content.html' with status=status %}
         {% endif %}
@@ -17,7 +30,7 @@
 
     <footer class="card-footer">
         {% if status.status_type == 'Boost' %}
-        {% include 'snippets/interaction.html' with activity=status.boosted_status %}
+        {% include 'snippets/interaction.html' with activity=status|boosted_status %}
         {% else %}
         {% include 'snippets/interaction.html' with activity=status %}
         {% endif %}

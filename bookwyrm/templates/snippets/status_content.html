@@ -1,64 +1,31 @@
 {% load fr_display %}
+<div class="block">
+    {% if status.status_type == 'Review' %}
+    <h3>
+        {% if status.name %}{{ status.name }}<br>{% endif %}
+        {% include 'snippets/stars.html' with rating=status.rating %}
+    </h3>
+    {% endif %}
 
-<div class="media">
-    {% if not hide_book and status.mention_books.count %}
-    <div class="media-left">
-        <div class="columns">
-        {% for book in status.mention_books.all|slice:"0:4" %}
-            <div class="column">
-                <a href="/book/{{ book.id }}">{% include 'snippets/book_cover.html' with book=book %}</a>
-                {% if status.mention_books.count > 1 %}
-                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-                {% endif %}
-                {% include 'snippets/shelve_button.html' with book=book %}
-            </div>
-        {% endfor %}
-        </div>
+    {% if status.quote %}
+    <div class="quote block">
+        <blockquote>{{ status.quote }}</blockquote>
+
+        <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
     </div>
     {% endif %}
 
-    {% if not hide_book and status.book %}
-    <div class="media-left">
-        <div>
-        <a href="/book/{{ status.book.id }}">{% include 'snippets/book_cover.html' with book=status.book %}</a>
-        {% include 'snippets/shelve_button.html' with book=status.book %}
-        </div>
-    </div>
+    {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
+        <blockquote>{{ status.content | safe }}</blockquote>
     {% endif %}
-
-    <div class="media-content">
-        {% if status.status_type == 'Review' %}
-        <h3>
-            {% if status.name %}{{ status.name }}<br>{% endif %}
-            {% include 'snippets/stars.html' with rating=status.rating %}
-        </h3>
-        {% endif %}
-
-        {% if status.quote %}
-        <div class="quote block">
-            <blockquote>{{ status.quote }}</blockquote>
-
-            <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
-        </div>
-        {% endif %}
-
-        {% if status.content and  status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
-            <blockquote>{{ status.content | safe }}</blockquote>
-        {% endif %}
-
-        {% if status.mention_books.count == 1 and not status.book %}
-            {% include 'snippets/book_description.html' with book=status.mention_books.first %}
-        {% endif %}
-
-        {% if not status.content and status.book and not hide_book and status.status_type != 'Boost' %}
-            {% include 'snippets/book_description.html' with book=status.book %}
-        {% endif %}
-
-        {% if status.status_type == 'Boost' %}
-            {% include 'snippets/status_content.html' with status=status|boosted_status %}
-        {% endif %}
-
-        {% if not max_depth and status.reply_parent or status|replies %}<p><a href="{{ status.remote_id }}">Thread</a>{% endif %}
-    </div>
 </div>
 
+{% if status.book  or status.mention_books.count %}
+<div class="{% if status.status_type != 'GeneratedNote' %}box{% endif %}">
+    {% if status.book %}
+    {% include 'snippets/book_preview.html' with book=status.book %}
+    {% elif status.mention_books.count %}
+    {% include 'snippets/book_preview.html' with book=status.mention_books.first %}
+    {% endif %}
+</div>
+{% endif %}

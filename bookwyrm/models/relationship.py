@@ -82,6 +82,17 @@ class UserFollowRequest(UserRelationship):
     ''' following a user requires manual or automatic confirmation '''
     status = 'follow_request'
 
+    def save(self, *args, **kwargs):
+        ''' make sure the follow relationship doesn't already exist '''
+        try:
+            UserFollows.objects.get(
+                user_subject=self.user_subject,
+                user_object=self.user_object
+            )
+            return None
+        except UserFollows.DoesNotExist:
+            return super().save(*args, **kwargs)
+
 
 class UserBlocks(UserRelationship):
     ''' prevent another user from following you and seeing your posts '''
