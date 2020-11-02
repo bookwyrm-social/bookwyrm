@@ -69,7 +69,8 @@ def shared_inbox(request):
         },
         'Update': {
             'Person': handle_update_user,
-            'Document': handle_update_book,
+            'Edition': handle_update_book,
+            'Work': handle_update_book,
         },
     }
     activity_type = activity['type']
@@ -337,7 +338,7 @@ def handle_update_book(activity):
     document = activity['object']
     # check if we have their copy and care about their updates
     book = models.Book.objects.select_subclasses().filter(
-        remote_id=document['url'],
+        remote_id=document['id'],
         sync=True,
     ).first()
     if not book:
