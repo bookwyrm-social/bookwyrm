@@ -1,20 +1,24 @@
 {% extends 'layout.html' %}
 {% block content %}
+{% with book_results|first as local_results %}
 <div class="block columns">
     <div class="column">
         <h2 class="title">Matching Books</h2>
         <section class="block">
+            {% if not local_results.results %}
+            <p>No books found for "{{ query }}"</p>
+            {% else %}
             <ul>
-            {% with book_results|first as result_set %}
-            {% for result in result_set.results %}
+            {% for result in local_results.results %}
                 <li class="pd-4">
                     <a href="{{ result.key }}">{% include 'snippets/search_result_text.html' with result=result link=True %}</a>
                 </li>
             {% endfor %}
-            {% endwith %}
             </ul>
+            {% endif %}
         </section>
 
+        {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
             <p>
                 Didn't find what you were looking for?
@@ -25,8 +29,9 @@
                 <label class="button is-small" for="more-results">Show results from other catalogues</label>
             </div>
         </div>
+        {% endif %}
 
-        <input class="toggle-control" type="radio" name="more-results" id="more-results" {% if booo_results|first|length == 0 %}checked{% endif %}>
+        <input class="toggle-control" type="radio" name="more-results" id="more-results" {% if not local_results.results %}checked{% endif %}>
         <div class="toggle-content hidden">
             {% for result_set in book_results|slice:"1:" %}
             {% if result_set.results %}
@@ -52,10 +57,9 @@
             </section>
             {% endif %}
             {% endfor %}
-            {% if not book_results %}
-            <p>No books found for "{{ query }}"</p>
-            {% endif %}
+            {% if local_results.results %}
             <label class="button is-small" for="fewer-results">Hide results from other catalogues</label>
+            {% endif %}
         </div>
     </div>
     <div class="column">
@@ -72,4 +76,5 @@
         {% endfor %}
     </div>
 </div>
+{% endwith %}
 {% endblock %}
