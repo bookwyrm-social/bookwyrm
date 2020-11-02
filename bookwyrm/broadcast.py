@@ -61,7 +61,7 @@ def broadcast_task(sender_id, activity, recipients):
     return errors
 
 
-def sign_and_send(sender, activity, destination):
+def sign_and_send(sender, data, destination):
     ''' crpyto whatever and http junk '''
     now = http_date()
 
@@ -69,7 +69,6 @@ def sign_and_send(sender, activity, destination):
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError('No private key found for sender')
 
-    data = json.dumps(activity).encode('utf-8')
     digest = make_digest(data)
 
     response = requests.post(
