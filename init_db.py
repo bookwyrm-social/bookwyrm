@@ -69,6 +69,17 @@ Connector.objects.create(
 )
 
 Connector.objects.create(
+    identifier='bookwyrm.social',
+    name='BookWyrm dot Social',
+    connector_file='bookwyrm_connector',
+    base_url='https://bookwyrm.social' ,
+    books_url='https://bookwyrm.social/book',
+    covers_url='https://bookwyrm.social/images/covers',
+    search_url='https://bookwyrm.social/search?q=',
+    priority=2,
+)
+
+Connector.objects.create(
     identifier='openlibrary.org',
     name='OpenLibrary',
     connector_file='openlibrary',
