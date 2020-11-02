@@ -20,7 +20,8 @@
     {% endif %}
 </div>
 
-{% if status.book  or status.mention_books.count %}
+{% if not hide_book %}
+{% if status.book or status.mention_books.count %}
 <div class="{% if status.status_type != 'GeneratedNote' %}box{% endif %}">
     {% if status.book %}
     {% include 'snippets/book_preview.html' with book=status.book %}
@@ -28,4 +29,5 @@
     {% include 'snippets/book_preview.html' with book=status.mention_books.first %}
     {% endif %}
 </div>
+{% endif %}
 {% endif %}
