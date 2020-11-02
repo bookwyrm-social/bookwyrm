@@ -67,6 +67,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
             url='https://%s%s' % (DOMAIN, self.cover.url),
         )]
 
+    @property
+    def ap_parent_work(self):
+        ''' reference the work via local id not remote '''
+        return self.parent_work.local_id
 
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
@@ -89,7 +93,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('librarything_key', 'librarything_key'),
         ActivityMapping('goodreads_key', 'goodreads_key'),
 
-        ActivityMapping('work', 'parent_work'),
+        ActivityMapping('work', 'ap_parent_work'),
         ActivityMapping('isbn_10', 'isbn_10'),
         ActivityMapping('isbn_13', 'isbn_13'),
         ActivityMapping('oclc_number', 'oclc_number'),
