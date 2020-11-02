@@ -1,4 +1,5 @@
 ''' template filters '''
+from uuid import uuid4
 from django import template
 
 from bookwyrm import models
@@ -111,7 +112,6 @@ def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
     return book.description or book.parent_work.description
 
-
 @register.filter(name='text_overflow')
 def text_overflow(text):
     ''' dont' let book descriptions run for ages '''
@@ -125,6 +125,11 @@ def text_overflow(text):
     # go back to the last space
     trimmed = ' '.join(trimmed.split(' ')[:-1])
     return trimmed + '...'
+
+
+@register.filter(name='uuid')
+def get_uuid(identifier):
+    return '%s%s' % (identifier, uuid4())
 
 
 @register.simple_tag(takes_context=True)

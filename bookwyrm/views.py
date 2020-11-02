@@ -98,7 +98,7 @@ def home_tab(request, tab):
     prev_page = '/?page=%d#feed' % (page - 1)
     data = {
         'user': request.user,
-        'suggested_books': suggested_books,
+        'suggested_books': set(suggested_books),
         'activities': activities,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),

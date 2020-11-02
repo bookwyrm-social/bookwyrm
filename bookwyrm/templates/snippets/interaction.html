@@ -1,4 +1,5 @@
 {% load fr_display %}
+{% with activity.id|uuid as uuid %}
 <div class="card-footer-item">
     {% if request.user.is_authenticated %}
     <form name="reply" action="/reply" method="post" onsubmit="return reply(event)">
@@ -7,7 +8,7 @@
         <input type="hidden" name="reply_parent" value="{{ activity.id }}">
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="privacy" value="{{ activity.privacy }}">
-        <textarea name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}" required="true"></textarea>
+        <textarea name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}-{{ uuid }}" required="true"></textarea>
         <button class="button" type="submit">
             <span class="icon icon-comment">
                 <span class="is-sr-only">Comment</span>
@@ -16,7 +17,7 @@
         </div>
     </form>
 
-    <form name="boost" action="/boost/{{ activity.id }}" method="post" onsubmit="return interact(event)" class="boost-{{ status.id }} {% if request.user|boosted:status  %}hidden{% endif %}" data-id="boost-{{ status.id }}">
+    <form name="boost" action="/boost/{{ activity.id }}" method="post" onsubmit="return interact(event)" class="boost-{{ status.id }} {% if request.user|boosted:status  %}hidden{% endif %}" data-id="boost-{{ status.id }}-{{ uuid }}">
         {% csrf_token %}
         <button class="button" type="submit">
             <span class="icon icon-boost">
@@ -24,7 +25,7 @@
             </span>
         </button>
     </form>
-    <form name="unboost" action="/unboost/{{ activity.id }}" method="post" onsubmit="return interact(event)" class="boost-{{ status.id }} active {% if not request.user|boosted:status %}hidden{% endif %}" data-id="boost-{{ status.id }}">
+    <form name="unboost" action="/unboost/{{ activity.id }}" method="post" onsubmit="return interact(event)" class="boost-{{ status.id }} active {% if not request.user|boosted:status %}hidden{% endif %}" data-id="boost-{{ status.id }}-{{ uuid }}">
         {% csrf_token %}
         <button class="button is-success" type="submit">
             <span class="icon icon-boost">
@@ -33,7 +34,7 @@
         </button>
     </form>
 
-    <form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}">
+    <form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
         {% csrf_token %}
         <button class="button" type="submit">
             <span class="icon icon-heart">
@@ -41,7 +42,7 @@
             </span>
         </button>
     </form>
-    <form name="unfavorite" action="/unfavorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}">
+    <form name="unfavorite" action="/unfavorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
         {% csrf_token %}
         <button class="button is-success" type="submit">
             <span class="icon icon-heart">
@@ -65,3 +66,4 @@
     </a>
     {% endif %}
 </div>
+{% endwith %}
