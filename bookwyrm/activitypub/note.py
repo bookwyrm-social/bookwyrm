@@ -20,11 +20,11 @@ class Note(ActivityObject):
     inReplyTo: str
     published: str
     attributedTo: str
-    tag: List[Link]
     to: List[str]
     cc: List[str]
     content: str
     replies: Dict
+    tag: List[Link] = field(default=lambda: [])
     attachment: List[Image] = field(default=lambda: [])
     sensitive: bool = False
     type: str = 'Note'
