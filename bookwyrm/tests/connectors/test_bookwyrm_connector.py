@@ -50,5 +50,5 @@ class BookWyrmConnector(TestCase):
 
     def test_get_date(self):
         date = get_date(self.edition_data['published_date'])
-        expected = parser.parse("2017-05-10T00:00:00+00:00")
+        expected = parser.parse("2020-09-15T00:00:00+00:00")
         self.assertEqual(date, expected)

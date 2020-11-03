@@ -68,7 +68,6 @@ class ActivitypubMixin:
             if not hasattr(self, mapping.model_key) or not mapping.activity_key:
                 continue
             value = getattr(self, mapping.model_key)
-            print(value)
             if hasattr(value, 'local_id'):
                 value = value.local_id
             elif hasattr(value, 'remote_id'):
