@@ -9,8 +9,8 @@ from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils.fields import ArrayField
 
-from .base_model import ActivityMapping, ActivitypubMixin, BookWyrmModel
-
+from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
@@ -135,16 +135,31 @@ class Book(ActivitypubMixin, BookWyrmModel):
         )
 
 
-class Work(Book):
+class Work(OrderedCollectionPageMixin, Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
     lccn = models.CharField(max_length=255, blank=True, null=True)
-    default_edition = models.ForeignKey('Edition', on_delete=models.PROTECT, null=True)
+    # this has to be nullable but should never be null
+    default_edition = models.ForeignKey(
+        'Edition',
+        on_delete=models.PROTECT,
+        null=True
+    )
 
     @property
     def editions_path(self):
         ''' it'd be nice to serialize the edition instead but, recursion '''
         return [e.remote_id for e in self.edition_set.all()]
+
+    def to_edition_list(self, **kwargs):
+        ''' activitypub serialization for this work's editions '''
+        remote_id = self.local_id + '/editions'
+        return self.to_ordered_collection(
+            self.edition_set,
+            remote_id=remote_id,
+            **kwargs
+        )
+
 
     activity_serializer = activitypub.Work
 
