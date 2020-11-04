@@ -2,6 +2,7 @@
 import re
 
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
@@ -149,7 +150,12 @@ class Work(OrderedCollectionPageMixin, Book):
     @property
     def editions_path(self):
         ''' it'd be nice to serialize the edition instead but, recursion '''
-        return [e.remote_id for e in self.edition_set.all()]
+        default = self.default_edition
+        ed_list = [
+            e.local_id for e in self.edition_set.filter(~Q(id=default.id)).all()
+        ]
+        return [default.local_id] + ed_list
+
 
     def to_edition_list(self, **kwargs):
         ''' activitypub serialization for this work's editions '''
