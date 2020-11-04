@@ -179,7 +179,7 @@ class Quotation(Status):
     @property
     def ap_pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
+        return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
             self.quote,
             self.book.local_id,
             self.book.title,
