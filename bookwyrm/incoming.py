@@ -217,6 +217,10 @@ def handle_create(activity):
         return
 
     # render the json into an activity object
+    status_id = activity['object']['id']
+    if models.Status.objects.filter(remote_id=status_id).count():
+        return
+
     serializer = activitypub.activity_objects[activity['object']['type']]
     activity = serializer(**activity['object'])
 

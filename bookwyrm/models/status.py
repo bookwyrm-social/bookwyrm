@@ -76,8 +76,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return tags
 
     shared_mappings = [
-        ActivityMapping('id', 'remote_id'),
         ActivityMapping('url', 'remote_id'),
+        ActivityMapping('id', 'remote_id'),
         ActivityMapping('inReplyTo', 'reply_parent'),
         ActivityMapping('published', 'published_date'),
         ActivityMapping('attributedTo', 'user'),
