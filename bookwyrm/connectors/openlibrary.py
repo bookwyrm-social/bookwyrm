@@ -72,7 +72,6 @@ class Connector(AbstractConnector):
         ]
 
 
-
     def get_remote_id_from_data(self, data):
         try:
             key = data['key']

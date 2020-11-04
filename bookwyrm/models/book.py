@@ -139,29 +139,18 @@ class Work(Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
     lccn = models.CharField(max_length=255, blank=True, null=True)
+    default_edition = models.ForeignKey('Edition', on_delete=models.PROTECT, null=True)
 
     @property
     def editions_path(self):
         ''' it'd be nice to serialize the edition instead but, recursion '''
         return [e.remote_id for e in self.edition_set.all()]
 
-
-    @property
-    def default_edition(self):
-        ''' best-guess attempt at picking the default edition for this work '''
-        ed = Edition.objects.filter(parent_work=self, default=True).first()
-        if not ed:
-            ed = Edition.objects.filter(parent_work=self).first()
-        return ed
-
     activity_serializer = activitypub.Work
 
 
 class Edition(Book):
     ''' an edition of a book '''
-    # default -> this is what gets displayed for a work
-    default = models.BooleanField(default=False)
-
     # these identifiers only apply to editions, not works
     isbn_10 = models.CharField(max_length=255, blank=True, null=True)
     isbn_13 = models.CharField(max_length=255, blank=True, null=True)

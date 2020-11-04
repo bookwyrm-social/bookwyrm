@@ -128,9 +128,10 @@ class AbstractConnector(ABC):
             if not edition:
                 ed_key = self.get_remote_id_from_data(edition_data)
                 edition = self.create_book(ed_key, edition_data, models.Edition)
-                edition.default = True
                 edition.parent_work = work
                 edition.save()
+            work.default_edition = edition
+            work.save()
 
         # now's our change to fill in author gaps
         if not edition.authors and work.authors:
