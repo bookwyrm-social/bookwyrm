@@ -559,9 +559,19 @@ def edit_book_page(request, book_id):
     return TemplateResponse(request, 'edit_book.html', data)
 
 
-def editions_page(request, work_id):
+def editions_page(request, book_id):
     ''' list of editions of a book '''
-    work = models.Work.objects.get(id=work_id)
+    try:
+        work = models.Work.objects.get(id=book_id)
+    except models.Work.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if is_api_request(request):
+        return JsonResponse(
+            work.to_edition_list(**request.GET),
+            encoder=ActivityEncoder
+        )
+
     editions = models.Edition.objects.filter(parent_work=work).all()
     data = {
         'title': 'Editions of %s' % work.title,

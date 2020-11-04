@@ -51,7 +51,7 @@
                 {% include 'snippets/book_description.html' %}
 
                 {% if book.parent_work.edition_set.count > 1 %}
-                <p><a href="/editions/{{ book.parent_work.id }}">{{ book.parent_work.edition_set.count }} editions</a></p>
+                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
                 {% endif %}
             </div>
 
