@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
+from django.db import transaction
 import requests
 
 from bookwyrm import models
@@ -114,5 +115,22 @@ class Connector(AbstractConnector):
 
 
     def expand_book_data(self, book):
-        # TODO
-        pass
+        work = book
+        # go from the edition to the work, if necessary
+        if isinstance(book, models.Edition):
+            work = book.parent_work
+
+        # it may be that we actually want to request this url
+        editions_url = '%s/editions' % work.remote_id
+        edition_options = get_data(editions_url)
+        for edition_data in edition_options:
+            with transaction.atomic():
+                edition = self.create_book(
+                    edition_data['id'],
+                    edition_data,
+                    models.Edition
+                )
+                edition.parent_work = work
+                edition.save()
+            if not edition.authors.exists() and work.authors.exists():
+                edition.authors.set(work.authors.all())
