@@ -134,7 +134,7 @@ class AbstractConnector(ABC):
             work.save()
 
         # now's our change to fill in author gaps
-        if not edition.authors and work.authors:
+        if not edition.authors.exists() and work.authors.exists():
             edition.authors.set(work.authors.all())
             edition.author_text = work.author_text
             edition.save()
