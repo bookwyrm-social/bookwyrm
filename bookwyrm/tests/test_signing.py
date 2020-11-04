@@ -61,7 +61,7 @@ class Signature(TestCase):
             digest=None,
             date=None):
         now = date or http_date()
-        data = json.dumps(get_follow_data(sender, self.rat)).encode('utf-8')
+        data = json.dumps(get_follow_data(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)

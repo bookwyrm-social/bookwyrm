@@ -10,9 +10,13 @@ class Shelving(TestCase):
             local=True,
             remote_id='http://local.com/users/mouse',
         )
+        work = models.Work.objects.create(
+            title='Example work',
+        )
         self.book = models.Edition.objects.create(
             title='Example Edition',
             remote_id='https://example.com/book/1',
+            parent_work=work,
         )
         self.shelf = models.Shelf.objects.create(
             name='Test Shelf',
@@ -35,7 +39,7 @@ class Shelving(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
         # it should have posted a status about this
-        status = models.GeneratedStatus.objects.get()
+        status = models.GeneratedNote.objects.get()
         self.assertEqual(status.content, 'wants to read')
         self.assertEqual(status.user, self.user)
         self.assertEqual(status.mention_books.count(), 1)
@@ -53,7 +57,7 @@ class Shelving(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
         # it should have posted a status about this
-        status = models.GeneratedStatus.objects.order_by('-published_date').first()
+        status = models.GeneratedNote.objects.order_by('-published_date').first()
         self.assertEqual(status.content, 'started reading')
         self.assertEqual(status.user, self.user)
         self.assertEqual(status.mention_books.count(), 1)
@@ -75,7 +79,7 @@ class Shelving(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
         # it should have posted a status about this
-        status = models.GeneratedStatus.objects.order_by('-published_date').first()
+        status = models.GeneratedNote.objects.order_by('-published_date').first()
         self.assertEqual(status.content, 'finished reading')
         self.assertEqual(status.user, self.user)
         self.assertEqual(status.mention_books.count(), 1)
