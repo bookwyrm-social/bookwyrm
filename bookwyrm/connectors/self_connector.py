@@ -1,5 +1,6 @@
 ''' using a bookwyrm instance as a source of book data '''
 from django.contrib.postgres.search import SearchRank, SearchVector
+from django.db.models import F
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -30,7 +31,10 @@ class Connector(AbstractConnector):
         ).filter(
             rank__gt=min_confidence
         ).order_by('-rank')
-        results = results.filter(default=True) or results
+
+        # remove non-default editions, if possible
+        results = results.filter(parent_work__default_edition__id=F('id')) \
+                    or results
 
         search_results = []
         for book in results[:10]:
