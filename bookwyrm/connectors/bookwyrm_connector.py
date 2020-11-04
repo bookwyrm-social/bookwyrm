@@ -121,9 +121,9 @@ class Connector(AbstractConnector):
             work = book.parent_work
 
         # it may be that we actually want to request this url
-        editions_url = '%s/editions' % work.remote_id
+        editions_url = '%s/editions?page=true' % work.remote_id
         edition_options = get_data(editions_url)
-        for edition_data in edition_options:
+        for edition_data in edition_options['orderedItems']:
             with transaction.atomic():
                 edition = self.create_book(
                     edition_data['id'],
