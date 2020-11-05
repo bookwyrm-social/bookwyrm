@@ -76,6 +76,12 @@ class ActivityObject:
         if not isinstance(self, model.activity_serializer):
             raise TypeError('Wrong activity type for model')
 
+        # check for an existing instance
+        try:
+            return model.objects.get(remote_id=self.id)
+        except model.DoesNotExist:
+            pass
+
         model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
 

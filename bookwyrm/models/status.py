@@ -76,8 +76,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return tags
 
     shared_mappings = [
+        ActivityMapping('url', 'remote_id', lambda x: None),
         ActivityMapping('id', 'remote_id'),
-        ActivityMapping('url', 'remote_id'),
         ActivityMapping('inReplyTo', 'reply_parent'),
         ActivityMapping('published', 'published_date'),
         ActivityMapping('attributedTo', 'user'),
@@ -136,6 +136,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return ActivitypubMixin.to_activity(self, pure=pure)
 
     def save(self, *args, **kwargs):
+        ''' update user active time '''
         self.user.last_active_date = timezone.now()
         self.user.save()
         super().save(*args, **kwargs)
@@ -240,6 +241,7 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
     activity_serializer = activitypub.Like
 
     def save(self, *args, **kwargs):
+        ''' update user active time '''
         self.user.last_active_date = timezone.now()
         self.user.save()
         super().save(*args, **kwargs)
@@ -285,6 +287,7 @@ class ReadThrough(BookWyrmModel):
         null=True)
 
     def save(self, *args, **kwargs):
+        ''' update user active time '''
         self.user.last_active_date = timezone.now()
         self.user.save()
         super().save(*args, **kwargs)
