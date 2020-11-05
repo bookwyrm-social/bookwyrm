@@ -39,7 +39,13 @@ case "$1" in
     collectstatic)
         docker-compose exec web python manage.py collectstatic --no-input
         ;;
+    update)
+        git pull
+        docker-compose exec web python manage.py migrate
+        docker-compose exec web python manage.py collectstatic --no-input
+        docker-compose restart
+        ;;
     *)
-        echo "Unrecognised command. Try: up, initdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
+        echo "Unrecognised command. Try: up, initdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report, update"
         ;;
 esac
