@@ -68,6 +68,7 @@ def shared_inbox(request):
         'Undo': {
             'Follow': handle_unfollow,
             'Like': handle_unfavorite,
+            'Announce': handle_unboost,
         },
         'Update': {
             'Person': handle_update_user,
@@ -217,10 +218,6 @@ def handle_create(activity):
         return
 
     # render the json into an activity object
-    status_id = activity['object']['id']
-    if models.Status.objects.filter(remote_id=status_id).count():
-        return
-
     serializer = activitypub.activity_objects[activity['object']['type']]
     activity = serializer(**activity['object'])
 
@@ -271,48 +268,50 @@ def handle_delete_status(activity):
 @app.task
 def handle_favorite(activity):
     ''' approval of your good good post '''
-    fav = activitypub.Like(**activity['object'])
-    # raises ValueError in to_model if a foreign key could not be resolved in
+    fav = activitypub.Like(**activity)
 
     liker = get_or_create_remote_user(activity['actor'])
     if liker.local:
         return
 
-    status = fav.to_model(models.Favorite)
+    fav = fav.to_model(models.Favorite)
 
     status_builder.create_notification(
-        status.user,
+        fav.status.user,
         'FAVORITE',
         related_user=liker,
-        related_status=status,
+        related_status=fav.status,
     )
 
 
 @app.task
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
-    like = activitypub.Like(**activity['object'])
-    fav = models.Favorite.objects.filter(remote_id=like.id).first()
-
-    fav.delete()
+    like = activitypub.Like(**activity['object']).to_model(models.Favorite)
+    like.delete()
 
 
 @app.task
 def handle_boost(activity):
     ''' someone gave us a boost! '''
-    status_id = activity['object'].split('/')[-1]
-    status = models.Status.objects.get(id=status_id)
-    booster = get_or_create_remote_user(activity['actor'])
+    boost = activitypub.Boost(**activity).to_model(models.Boost)
 
-    if not booster.local:
-        status_builder.create_boost_from_activity(booster, activity)
+    if not boost.user.local:
+        status_builder.create_notification(
+            boost.boosted_status.user,
+            'BOOST',
+            related_user=boost.user,
+            related_status=boost.boosted_status,
+        )
 
-    status_builder.create_notification(
-        status.user,
-        'BOOST',
-        related_user=booster,
-        related_status=status,
-    )
+
+@app.task
+def handle_unboost(activity):
+    ''' someone gave us a boost! '''
+    boost = models.Boost.objects.filter(remote_id=activity['object']['id']).first()
+    if not boost:
+        return
+    status_builder.delete_status(boost)
 
 
 @app.task
