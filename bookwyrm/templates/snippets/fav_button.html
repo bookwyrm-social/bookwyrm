@@ -1,0 +1,19 @@
+{% load fr_display %}
+{% with activity.id|uuid as uuid %}
+<form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
+    {% csrf_token %}
+    <button class="button is-small" type="submit">
+        <span class="icon icon-heart">
+            <span class="is-sr-only">Like status</span>
+        </span>
+    </button>
+</form>
+<form name="unfavorite" action="/unfavorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
+    {% csrf_token %}
+    <button class="button is-success is-small" type="submit">
+        <span class="icon icon-heart">
+            <span class="is-sr-only">Un-like status</span>
+        </span>
+    </button>
+</form>
+{% endwith %}

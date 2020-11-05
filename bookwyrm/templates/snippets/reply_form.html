@@ -1,0 +1,33 @@
+{% load fr_display %}
+{% with activity.id|uuid as uuid %}
+<form class="is-flex-grow-1" name="reply" action="/reply" method="post" onsubmit="return reply(event)">
+    <div class="columns">
+        {% csrf_token %}
+        <input type="hidden" name="reply_parent" value="{{ activity.id }}">
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        <div class="column">
+            <div class="field">
+                <textarea class="textarea" name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}-{{ uuid }}" required="true"></textarea>
+            </div>
+        </div>
+
+        <div class="column is-narrow">
+            <div class="field">
+                <div class="select">
+                    <select name="privacy">
+                        <option value="public" selected>Public</option>
+                        <option value="unlisted">Unlisted</option>
+                        <option value="followers">Followers only</option>
+                        <option value="direct">Private</option>
+                    </select>
+                </div>
+            </div>
+            <div class="field">
+                <button class="button is-primary" type="submit">
+                    post reply
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endwith %}
