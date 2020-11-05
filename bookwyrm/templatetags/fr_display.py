@@ -117,7 +117,7 @@ def text_overflow(text):
     ''' dont' let book descriptions run for ages '''
     if not text:
         return ''
-    char_max = 500
+    char_max = 400
     if text and len(text) < char_max:
         return text
 
@@ -129,6 +129,7 @@ def text_overflow(text):
 
 @register.filter(name='uuid')
 def get_uuid(identifier):
+    ''' for avoiding clashing ids when there are many forms '''
     return '%s%s' % (identifier, uuid4())
 
 
