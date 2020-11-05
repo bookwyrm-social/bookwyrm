@@ -8,7 +8,7 @@ from .base_activity import ActivityObject
 class Like(ActivityObject):
     ''' a user faving an object '''
     actor: str
-    object: ActivityObject
+    object: str
     type: str = 'Like'
 
 
@@ -16,5 +16,5 @@ class Like(ActivityObject):
 class Boost(ActivityObject):
     ''' boosting a status '''
     actor: str
-    object: ActivityObject
+    object: str
     type: str = 'Announce'
