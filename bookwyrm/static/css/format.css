@@ -62,12 +62,25 @@ input.toggle-control:checked ~ .toggle-content {
 .cover-container.is-medium {
     height: 150px;
 }
+.cover-container.is-small {
+    height: 100px;
+}
+@media only screen and (max-width: 768px) {
+    .cover-container {
+        height: 200px;
+        width: max-content;
+    }
+    .cover-container.is-medium {
+        height: 100px;
+    }
+    .cover-container.is-small {
+        height: 70px;
+    }
+}
+
 .cover-container.is-medium .no-cover div {
     font-size: 0.9em;
     padding: 0.3em;
-}
-.cover-container.is-small {
-    height: 100px;
 }
 .cover-container.is-small .no-cover div {
     font-size: 0.7em;
