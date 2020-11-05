@@ -1,6 +1,10 @@
 ''' template filters '''
 from uuid import uuid4
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from django import template
+from django.utils import timezone
 
 from bookwyrm import models
 
@@ -131,6 +135,26 @@ def text_overflow(text):
 def get_uuid(identifier):
     ''' for avoiding clashing ids when there are many forms '''
     return '%s%s' % (identifier, uuid4())
+
+
+@register.filter(name="post_date")
+def time_since(date):
+    ''' concise time ago function '''
+    if not isinstance(date, datetime):
+        return ''
+    now = timezone.now()
+    delta = now - date
+
+    if date < (now - relativedelta(weeks=1)):
+        return date.strftime('%b %-d')
+    delta = relativedelta(now, date)
+    if delta.days:
+        return '%dd' % delta.days
+    if delta.hours:
+        return '%dh' % delta.hours
+    if delta.minutes:
+        return '%dm' % delta.minutes
+    return '%ds' % delta.seconds
 
 
 @register.simple_tag(takes_context=True)

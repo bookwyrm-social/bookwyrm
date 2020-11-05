@@ -47,10 +47,8 @@
             <div class="card-footer-item">
                 {% if request.user.is_authenticated %}
 
-                <label class="button" for="show-comment-{{ status.id }}">
-                    <span class="ic-n icon-comment">
-                        <span class="is-sr-only">Comment</span>
-                    </span>
+                <label class="button is-small" for="show-comment-{{ status.id }}">
+                    <span class="icon icon-comment"><span class="is-sr-only">Comment</span></span>
                 </label>
                 {% if status.status_type == 'Boost' %}
                 {% include 'snippets/boost_button.html' with status=status|boosted_status %}
@@ -95,34 +93,37 @@
                     <span class="is-sr-only">Private post</span>
                 </span>
                 {% endif %}
+            </div>
 
-                <a href="{{ status.remote_id }}">{{ status.published_date | naturaltime }}</a>
-
-                {% if status.user == request.user %}
+            <div class="card-footer-item">
+                <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
+            </div>
+            {% if status.user == request.user %}
+            <div class="card-footer-item">
                 <label class="button" for="more-info-{{ status.id }}">
                     <div class="icon icon-dots-three">
                         <span class="is-sr-only">More options</span>
                     </div>
                 </label>
-                {% endif %}
-            </div>
-        </div>
-
-        <input class="toggle-control" type="checkbox" name="more-info-{{ status.id }}" id="more-info-{{ status.id }}">
-        <div class="toggle-content hidden card-footer">
-            {% if status.user == request.user %}
-            <div class="card-footer-item">
-                <form name="delete-{{status.id}}" action="/delete-status" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="{{ status.id }}">
-                    <button type="submit" class="button">
-                        <span class="icon icon-x">
-                            <span class="is-sr-only">Delete post</span>
-                        </span>
-                    </button>
-                </form>
             </div>
             {% endif %}
+        </div>
+
+        <div>
+            <input class="toggle-control" type="checkbox" name="more-info-{{ status.id }}" id="more-info-{{ status.id }}">
+            <div class="toggle-content hidden card-footer">
+                {% if status.user == request.user %}
+                <div class="card-footer-item">
+                    <form name="delete-{{status.id}}" action="/delete-status" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="{{ status.id }}">
+                        <button type="submit" class="button">
+                            Delete post
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </footer>
 </div>
