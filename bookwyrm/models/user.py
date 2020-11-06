@@ -136,6 +136,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ''' an ordered collection of statuses '''
         queryset = Status.objects.filter(
             user=self,
+            deleted=False,
         ).select_subclasses()
         return self.to_ordered_collection(queryset, \
                 remote_id=self.outbox, **kwargs)
