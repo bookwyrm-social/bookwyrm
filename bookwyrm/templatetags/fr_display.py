@@ -158,22 +158,14 @@ def time_since(date):
 
 
 @register.simple_tag(takes_context=True)
-def shelve_button_identifier(context, book):
+def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
     #TODO: books can be on multiple shelves, handle that better
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
         book=book
     ).first()
-    if not shelf:
-        return 'to-read'
-
-    identifier = shelf.shelf.identifier
-    if identifier == 'to-read':
-        return 'reading'
-    if identifier == 'reading':
-        return 'read'
-    return 'to-read'
+    return shelf.shelf if shelf else None
 
 
 @register.simple_tag(takes_context=True)
@@ -192,7 +184,7 @@ def shelve_button_text(context, book):
         return 'Start reading'
     if identifier == 'reading':
         return 'I\'m done!'
-    return 'Want to read'
+    return 'Read'
 
 
 @register.simple_tag(takes_context=False)
@@ -200,4 +192,15 @@ def latest_read_through(book, user):
     ''' the most recent read activity '''
     return models.ReadThrough.objects.filter(
         user=user,
-        book=book).order_by('-created_date').first()
+        book=book
+    ).order_by('-start_date').first()
+
+
+@register.simple_tag(takes_context=False)
+def active_read_through(book, user):
+    ''' the most recent read activity '''
+    return models.ReadThrough.objects.filter(
+        user=user,
+        book=book,
+        finish_date__isnull=True
+    ).order_by('-start_date').first()
