@@ -30,15 +30,23 @@
 
         <div class="dropdown-menu">
             <ul class="dropdown-content">
-                <form class="dropdown-item" name="shelve" action="/shelve/" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    {% for shelf in request.user.shelf_set.all %}
-                    <li>
-                    <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
-                    </li>
-                    {% endfor %}
-                </form>
+                {% for shelf in request.user.shelf_set.all %}
+                <li>
+                    {% if shelf.identifier == 'reading' and active_shelf.identifier != 'reading' %}
+                    <div class="dropdown-item">
+                        <label class="button is-small" for="start-reading-{{ uuid }}">
+                            {{ shelf.name }}
+                        </label>
+                    </div>
+                    {% else %}
+                    <form class="dropdown-item" name="shelve" action="/shelve/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book" value="{{ book.id }}">
+                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+                    </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -55,14 +63,14 @@
             </header>
             <form name="start-reading" action="/start-reading" method="post">
                 <section class="modal-card-body">
-                        {% csrf_token %}
-                        <div class="field">
-                            <label class="label" for="start_date">
-                                Started reading
-                                <input type="date" name="start_date" class="input" id="id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
-                            </label>
-                        </div>
-                    </form>
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <div class="field">
+                        <label class="label" for="start_date">
+                            Started reading
+                            <input type="date" name="start_date" class="input" id="id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+                        </label>
+                    </div>
                 </section>
                 <footer class="modal-card-foot">
                     <div class="columns">
@@ -74,7 +82,7 @@
                             </label>
                         </div>
                         <div class="column">
-                            <button class="button is-success">Save</button>
+                            <button type="submit" class="button is-success">Save</button>
                             <button class="button">Cancel</button>
                         </div>
                     </div>
@@ -97,21 +105,21 @@
             {% active_read_through book user as readthrough %}
             <form name="finish-reading" action="/finish-reading" method="post">
                 <section class="modal-card-body">
-                        {% csrf_token %}
-                        <input type="hidden" name="id" value="{{ readthrough.id }}">
-                        <div class="field">
-                            <label class="label" for="start_date">
-                                Started reading
-                                <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="finish_date">
-                                Finished reading
-                                <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{% now "Y-m-d" %}">
-                            </label>
-                        </div>
-                    </form>
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="id" value="{{ readthrough.id }}">
+                    <div class="field">
+                        <label class="label" for="start_date">
+                            Started reading
+                            <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+                        </label>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="finish_date">
+                            Finished reading
+                            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{% now "Y-m-d" %}">
+                        </label>
+                    </div>
                 </section>
                 <footer class="modal-card-foot">
                     <div class="columns">
@@ -123,7 +131,7 @@
                             </label>
                         </div>
                         <div class="column">
-                            <button class="button is-success">Save</button>
+                            <button type="submit" class="button is-success">Save</button>
                             <button class="button">Cancel</button>
                         </div>
                     </div>

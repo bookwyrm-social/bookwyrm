@@ -14,7 +14,7 @@ def delete_status(status):
     status.save()
 
 
-def create_generated_note(user, content, mention_books=None):
+def create_generated_note(user, content, mention_books=None, privacy='public'):
     ''' a note created by the app about user activity '''
     # sanitize input html
     parser = InputHtmlParser()
@@ -24,6 +24,7 @@ def create_generated_note(user, content, mention_books=None):
     status = models.GeneratedNote.objects.create(
         user=user,
         content=content,
+        privacy=privacy
     )
 
     if mention_books:
