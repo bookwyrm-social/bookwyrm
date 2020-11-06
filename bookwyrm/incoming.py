@@ -217,29 +217,7 @@ def handle_create(activity):
         # we really oughtn't even be sending in this case
         return
 
-    # render the json into an activity object
-    serializer = activitypub.activity_objects[activity['object']['type']]
-    activity = serializer(**activity['object'])
-
-    # ignore notes that aren't replies to known statuses
-    if activity.type == 'Note':
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-        if not reply:
-            return
-
-    # look up books
-    book_urls = []
-    if hasattr(activity, 'inReplyToBook'):
-        book_urls.append(activity.inReplyToBook)
-    if hasattr(activity, 'tag'):
-        book_urls += [t['href'] for t in activity.tag if t['type'] == 'Book']
-    for remote_id in book_urls:
-        books_manager.get_or_create_book(remote_id)
-
-    model = models.activity_models[activity.type]
-    status = activity.to_model(model)
+    status = status_builder.create_status(activity['object'])
 
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
