@@ -5,7 +5,9 @@
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
     {% if active_shelf.identifier == 'read' %}
-    <button class="button is-small" disabled>Read ✓</button>
+    <button class="button is-small" disabled>
+        <span>Read</span> <span class="icon icon-check"></span>
+    </button>
     {% elif active_shelf.identifier == 'reading' %}
     <label class="button is-small" for="finish-reading-{{ uuid }}">
         I'm done!
@@ -42,7 +44,10 @@
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book" value="{{ book.id }}">
-                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
+                            <span>{{ shelf.name }}</span>
+                            {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}
+                        </button>
                     </form>
                     {% endif %}
                 </li>
@@ -58,7 +63,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Started "{{ book.title }}"</p>
+                <p class="modal-card-title">Start "{{ book.title }}"</p>
                 <label class="delete" for="start-reading-{{ uuid }}" aria-label="close"></label>
             </header>
             <form name="start-reading" action="/start-reading" method="post">
@@ -82,14 +87,14 @@
                             {% include 'snippets/privacy_select.html' %}
                         </div>
                         <div class="column">
-                            <button type="submit" class="button is-success">Save</button>
+                            <button class="button is-success" type="submit">Save</button>
                             <label for="start-reading-{{ uuid }}" class="button">Cancel</button>
                         </div>
                     </div>
                 </footer>
             </form>
         </div>
-        <label class="modal-close is-large" for="finish-reading-{{ uuid }}" aria-label="close"></label>
+        <label class="modal-close is-large" for="start-reading-{{ uuid }}" aria-label="close"></label>
     </div>
 </div>
 
@@ -99,7 +104,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Finished "{{ book.title }}"</p>
+                <p class="modal-card-title">Finish "{{ book.title }}"</p>
                 <label class="delete" for="finish-reading-{{ uuid }}" aria-label="close"></label>
             </header>
             {% active_read_through book user as readthrough %}

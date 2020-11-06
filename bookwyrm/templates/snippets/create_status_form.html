@@ -1,0 +1,40 @@
+<form class="toggle-content hidden tab-option-{{ book.id }}" name="{{ type }}" action="/{{ type }}" method="post" id="tab-{{ type }}-{{ book.id }}">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    {% if type == 'review' %}
+    <div class="control">
+        <label class="label" for="id_name_{{ book.id }}_{{ type }}">Title:</label>
+        <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'">
+    </div>
+    {% endif %}
+    <div class="control">
+        <label class="label" for="id_content_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+
+        {% if type == 'review' %}
+        <span class="is-sr-only">Rating</span>
+        <div class="field is-grouped stars form-rate-stars">
+            <input class="hidden" type="radio" name="rating" value="" checked>
+            {% for i in '12345'|make_list %}
+                <input class="hidden" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
+                <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+                    <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+                </label>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <textarea name="{% if type == 'quote' %}quote{% else %}content{% endif %}" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+
+    </div>
+    {% if type == 'quote' %}
+    <div class="control">
+        <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
+        <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
+    </div>
+    {% endif %}
+    <div class="control is-grouped">
+        {% include 'snippets/privacy_select.html' %}
+        <button class="button is-primary" type="submit">post {{ type }}</button>
+    </div>
+</form>
+

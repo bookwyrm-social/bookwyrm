@@ -49,7 +49,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="remote_id" value="{{ result.key }}">
                             <div>{% include 'snippets/search_result_text.html' with result=result link=False %}</div>
-                            <button type="submit" class="button is-small is-link is-light">Import book</button>
+                            <button type="submit" class="button is-small is-link">Import book</button>
                         </form>
                     </li>
                 {% endfor %}
