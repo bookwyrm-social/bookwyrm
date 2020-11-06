@@ -5,7 +5,9 @@
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
     {% if active_shelf.identifier == 'read' %}
-    <button class="button is-small" disabled>Read ✓</button>
+    <button class="button is-small" disabled>
+        <span>Read</span> <span class="icon icon-check"></span>
+    </button>
     {% elif active_shelf.identifier == 'reading' %}
     <label class="button is-small" for="finish-reading-{{ uuid }}">
         I'm done!
@@ -42,7 +44,10 @@
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book" value="{{ book.id }}">
-                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
+                            <span>{{ shelf.name }}</span>
+                            {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}
+                        </button>
                     </form>
                     {% endif %}
                 </li>
