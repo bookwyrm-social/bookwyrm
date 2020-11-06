@@ -13,14 +13,7 @@
 
         <div class="column is-narrow">
             <div class="field">
-                <div class="select">
-                    <select name="privacy">
-                        <option value="public" selected>Public</option>
-                        <option value="unlisted">Unlisted</option>
-                        <option value="followers">Followers only</option>
-                        <option value="direct">Private</option>
-                    </select>
-                </div>
+                {% include 'snippets/privacy_select.html' %}
             </div>
             <div class="field">
                 <button class="button is-primary" type="submit">

@@ -71,7 +71,7 @@ def home_tab(request, tab):
         models.Edition.objects.filter(
             shelves__user=request.user,
             shelves__identifier='read'
-        )[:2],
+        ).order_by('-updated_date')[:2],
         # to-read
         models.Edition.objects.filter(
             shelves__user=request.user,
@@ -242,7 +242,11 @@ def about_page(request):
 
 def password_reset_request(request):
     ''' invite management page '''
-    return TemplateResponse(request, 'password_reset_request.html', {'title': 'Reset Password'})
+    return TemplateResponse(
+        request,
+        'password_reset_request.html',
+        {'title': 'Reset Password'}
+    )
 
 
 def password_reset(request, code):

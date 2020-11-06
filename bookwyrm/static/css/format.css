@@ -15,6 +15,10 @@ input.toggle-control:checked ~ .toggle-content {
     display: block;
 }
 
+input.toggle-control:checked ~ .modal.toggle-content {
+    display: flex;
+}
+
 /* --- STARS --- */
 .rate-stars button.icon {
     background: none;
