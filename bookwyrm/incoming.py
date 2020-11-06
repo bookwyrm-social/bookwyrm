@@ -1,6 +1,6 @@
 ''' handles all of the activity coming in to the server '''
 import json
-from urllib.parse import urldefrag
+from urllib.parse import urldefrag, unquote_plus
 
 import django.db.utils
 from django.http import HttpResponse
@@ -217,29 +217,7 @@ def handle_create(activity):
         # we really oughtn't even be sending in this case
         return
 
-    # render the json into an activity object
-    serializer = activitypub.activity_objects[activity['object']['type']]
-    activity = serializer(**activity['object'])
-
-    # ignore notes that aren't replies to known statuses
-    if activity.type == 'Note':
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-        if not reply:
-            return
-
-    # look up books
-    book_urls = []
-    if hasattr(activity, 'inReplyToBook'):
-        book_urls.append(activity.inReplyToBook)
-    if hasattr(activity, 'tag'):
-        book_urls += [t['href'] for t in activity.tag if t['type'] == 'Book']
-    for remote_id in book_urls:
-        books_manager.get_or_create_book(remote_id)
-
-    model = models.activity_models[activity.type]
-    status = activity.to_model(model)
+    status = status_builder.create_status(activity['object'])
 
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
@@ -308,10 +286,11 @@ def handle_boost(activity):
 @app.task
 def handle_unboost(activity):
     ''' someone gave us a boost! '''
-    boost = models.Boost.objects.filter(remote_id=activity['object']['id']).first()
-    if not boost:
-        return
-    status_builder.delete_status(boost)
+    boost = models.Boost.objects.filter(
+        remote_id=activity['object']['id']
+    ).first()
+    if boost:
+        status_builder.delete_status(boost)
 
 
 @app.task
@@ -319,8 +298,15 @@ def handle_tag(activity):
     ''' someone is tagging a book '''
     user = get_or_create_remote_user(activity['actor'])
     if not user.local:
-        book = activity['target']['id']
-        status_builder.create_tag(user, book, activity['object']['name'])
+        # ordered collection weirndess so we can't just to_model
+        book = books_manager.get_or_create_book(activity['object']['id'])
+        name = activity['object']['target'].split('/')[-1]
+        name = unquote_plus(name)
+        models.Tag.objects.get_or_create(
+            user=user,
+            book=book,
+            name=name
+        )
 
 
 @app.task

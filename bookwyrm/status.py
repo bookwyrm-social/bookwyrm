@@ -1,8 +1,7 @@
 ''' Handle user activity '''
 from datetime import datetime
-from django.db import IntegrityError
 
-from bookwyrm import models
+from bookwyrm import activitypub, books_manager, models
 from bookwyrm.books_manager import get_or_create_book
 from bookwyrm.sanitize_html import InputHtmlParser
 
@@ -12,6 +11,37 @@ def delete_status(status):
     status.deleted = True
     status.deleted_date = datetime.now()
     status.save()
+
+
+def create_status(activity):
+    ''' unfortunately, it's not QUITE as simple as deserialiing it '''
+    # render the json into an activity object
+    serializer = activitypub.activity_objects[activity['type']]
+    activity = serializer(**activity)
+    try:
+        model = models.activity_models[activity.type]
+    except KeyError:
+        # not a type of status we are prepared to deserialize
+        return None
+
+    # ignore notes that aren't replies to known statuses
+    if activity.type == 'Note':
+        reply = models.Status.objects.filter(
+            remote_id=activity.inReplyTo
+        ).first()
+        if not reply:
+            return None
+
+    # look up books
+    book_urls = []
+    if hasattr(activity, 'inReplyToBook'):
+        book_urls.append(activity.inReplyToBook)
+    if hasattr(activity, 'tag'):
+        book_urls += [t['href'] for t in activity.tag if t['type'] == 'Book']
+    for remote_id in book_urls:
+        books_manager.get_or_create_book(remote_id)
+
+    return activity.to_model(model)
 
 
 def create_generated_note(user, content, mention_books=None, privacy='public'):
@@ -32,17 +62,6 @@ def create_generated_note(user, content, mention_books=None, privacy='public'):
             status.mention_books.add(book)
 
     return status
-
-
-def create_tag(user, possible_book, name):
-    ''' add a tag to a book '''
-    book = get_or_create_book(possible_book)
-
-    try:
-        tag = models.Tag.objects.create(name=name, book=book, user=user)
-    except IntegrityError:
-        return models.Tag.objects.get(name=name, book=book, user=user)
-    return tag
 
 
 def create_notification(user, notification_type, related_user=None, \

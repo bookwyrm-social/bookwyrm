@@ -9,7 +9,7 @@ import requests
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.broadcast import broadcast
-from bookwyrm.status import create_tag, create_notification
+from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
 from bookwyrm.remote_user import get_or_create_remote_user
@@ -257,9 +257,8 @@ def handle_status(user, form):
         broadcast(user, remote_activity, software='other')
 
 
-def handle_tag(user, book, name):
+def handle_tag(user, tag):
     ''' tag a book '''
-    tag = create_tag(user, book, name)
     broadcast(user, tag.to_add_activity(user))
 
 

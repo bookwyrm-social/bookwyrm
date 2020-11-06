@@ -29,21 +29,18 @@
 
     <form name="invite" action="/create_invite/" method="post">
         {% csrf_token %}
-        <div class="field">
+        <div class="field is-grouped">
             <div class="control">
                 <label class="label" for="id_expiry">Expiry:</label>
+                <div class="select">
+                    {{ form.expiry }}
+                </div>
             </div>
-            <div class="select">
-                {{ form.expiry }}
-            </div>
-        </div>
-
-        <div class="field">
             <div class="control">
                 <label class="label" for="id_use_limit">Use limit:</label>
-            </div>
-            <div class="select">
-                {{ form.use_limit }}
+                <div class="select">
+                    {{ form.use_limit }}
+                </div>
             </div>
         </div>
 

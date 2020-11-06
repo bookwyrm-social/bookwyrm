@@ -1,9 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="block">
-    {% include 'user_header.html' with user=user %}
-</div>
+{% include 'snippets/user_header.html' with user=user %}
 
 <div class="block">
     <h2 class="title">Shelves</h2>
