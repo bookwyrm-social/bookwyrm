@@ -67,10 +67,14 @@
                 <input class="toggle-control" type="radio" name="show-edit-readthrough" id="show-readthrough-{{ readthrough.id }}" checked>
                 <div class="toggle-content hidden">
                     <dl>
+                        {% if readthrough.start_date %}
                         <dt>Started reading:</dt>
                         <dd>{{ readthrough.start_date | naturalday }}</dd>
+                        {% endif %}
+                        {% if readthrough.finish_date %}
                         <dt>Finished reading:</dt>
                         <dd>{{ readthrough.finish_date | naturalday }}</dd>
+                        {% endif %}
                     </dl>
                     <div class="field is-grouped">
                         <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}">
