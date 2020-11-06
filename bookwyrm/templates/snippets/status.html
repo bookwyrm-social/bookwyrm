@@ -5,18 +5,20 @@
 <div class="card">
     <header class="card-header">
         <div class="card-header-title">
-            <p>
-                {% if status.status_type == 'Boost' %}
-                {% include 'snippets/avatar.html' with user=status.user %}
-                {% include 'snippets/username.html' with user=status.user %}
-                boosted
-            </p>
-            <p>
-                {% include 'snippets/status_header.html' with status=status|boosted_status %}
-                {% else %}
-                {% include 'snippets/status_header.html' with status=status %}
-                {% endif %}
-            </p>
+            <div class="columns">
+                <div class="column is-narrow">
+                    {% if status.status_type == 'Boost' %}
+                    {% include 'snippets/avatar.html' with user=status.user %}
+                    {% include 'snippets/username.html' with user=status.user %}
+                    boosted
+                </div>
+                <div class="column">
+                    {% include 'snippets/status_header.html' with status=status|boosted_status %}
+                    {% else %}
+                    {% include 'snippets/status_header.html' with status=status %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </header>
 
