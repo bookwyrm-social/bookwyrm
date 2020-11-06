@@ -27,11 +27,18 @@
             {% include 'snippets/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
-            <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ cover_form.as_p }}
-                <button class="button" type="submit">Add cover</button>
-            </form>
+            <div class="box p-2">
+                <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label class="label" for="id_cover">Cover:</label>
+                        <input type="file" name="cover" accept="image/*" class="" id="id_cover">
+                    </div>
+                    <div class="field">
+                        <button class="button is-small" type="submit">Add cover</button>
+                    </div>
+                </form>
+            </div>
             {% endif %}
 
             <dl class="content">
