@@ -63,7 +63,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Started "{{ book.title }}"</p>
+                <p class="modal-card-title">Start "{{ book.title }}"</p>
                 <label class="delete" for="start-reading-{{ uuid }}" aria-label="close"></label>
             </header>
             <form name="start-reading" action="/start-reading" method="post">
@@ -104,7 +104,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Finished "{{ book.title }}"</p>
+                <p class="modal-card-title">Finish "{{ book.title }}"</p>
                 <label class="delete" for="finish-reading-{{ uuid }}" aria-label="close"></label>
             </header>
             {% active_read_through book user as readthrough %}
