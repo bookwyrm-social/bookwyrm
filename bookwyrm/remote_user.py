@@ -7,6 +7,8 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 
 from bookwyrm import activitypub, models
+from bookwyrm import status as status_builder
+from bookwyrm.tasks import app
 
 
 def get_or_create_remote_user(actor):
@@ -29,7 +31,7 @@ def get_or_create_remote_user(actor):
         user.avatar.save(*avatar)
 
     if user.bookwyrm_user:
-        get_remote_reviews(user)
+        get_remote_reviews.delay(user.id)
     return user
 
 
@@ -78,8 +80,10 @@ def get_avatar(data):
     return [image_name, image_content]
 
 
-def get_remote_reviews(user):
+@app.task
+def get_remote_reviews(user_id):
     ''' ingest reviews by a new remote bookwyrm user '''
+    user = models.User.objects.get(id=user_id)
     outbox_page = user.outbox + '?page=true'
     response = requests.get(
         outbox_page,
@@ -87,9 +91,8 @@ def get_remote_reviews(user):
     )
     data = response.json()
     # TODO: pagination?
-    for status in data['orderedItems']:
-        if status.get('bookwyrmType') == 'Review':
-            activitypub.Review(**status).to_model(models.Review)
+    for activity in data['orderedItems']:
+        status_builder.create_status(activity)
 
 
 def get_or_create_remote_server(domain):
