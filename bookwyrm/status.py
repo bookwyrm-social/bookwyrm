@@ -1,9 +1,7 @@
 ''' Handle user activity '''
 from datetime import datetime
-from django.db import IntegrityError
 
 from bookwyrm import models
-from bookwyrm.books_manager import get_or_create_book
 from bookwyrm.sanitize_html import InputHtmlParser
 
 
@@ -32,17 +30,6 @@ def create_generated_note(user, content, mention_books=None, privacy='public'):
             status.mention_books.add(book)
 
     return status
-
-
-def create_tag(user, possible_book, name):
-    ''' add a tag to a book '''
-    book = get_or_create_book(possible_book)
-
-    try:
-        tag = models.Tag.objects.create(name=name, book=book, user=user)
-    except IntegrityError:
-        return models.Tag.objects.get(name=name, book=book, user=user)
-    return tag
 
 
 def create_notification(user, notification_type, related_user=None, \

@@ -1,6 +1,6 @@
 ''' handles all of the activity coming in to the server '''
 import json
-from urllib.parse import urldefrag
+from urllib.parse import urldefrag, unquote_plus
 
 import django.db.utils
 from django.http import HttpResponse
@@ -308,10 +308,11 @@ def handle_boost(activity):
 @app.task
 def handle_unboost(activity):
     ''' someone gave us a boost! '''
-    boost = models.Boost.objects.filter(remote_id=activity['object']['id']).first()
-    if not boost:
-        return
-    status_builder.delete_status(boost)
+    boost = models.Boost.objects.filter(
+        remote_id=activity['object']['id']
+    ).first()
+    if boost:
+        status_builder.delete_status(boost)
 
 
 @app.task
@@ -319,8 +320,15 @@ def handle_tag(activity):
     ''' someone is tagging a book '''
     user = get_or_create_remote_user(activity['actor'])
     if not user.local:
-        book = activity['target']['id']
-        status_builder.create_tag(user, book, activity['object']['name'])
+        # ordered collection weirndess so we can't just to_model
+        book = books_manager.get_or_create_book(activity['object']['id'])
+        name = activity['object']['target'].split('/')[-1]
+        name = unquote_plus(name)
+        models.Tag.objects.get_or_create(
+            user=user,
+            book=book,
+            name=name
+        )
 
 
 @app.task
