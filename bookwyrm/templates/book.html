@@ -112,7 +112,7 @@
             {% endfor %}
 
             {% if request.user.is_authenticated %}
-            <div class="block">
+            <div class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </div>
 
