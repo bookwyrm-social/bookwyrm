@@ -82,20 +82,16 @@
                                 <span class="is-sr-only">Edit readthrough dates</span>
                             </span>
                         </label>
-                        <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ readthrough.id }}">
-                            <button class="button is-small" type="submit">
-                                <span class="icon icon-x">
-                                    <span class="is-sr-only">Delete this readthrough</span>
-                                </span>
-                            </button>
-                        </form>
+                        <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}">
+                            <span class="icon icon-x">
+                                <span class="is-sr-only">Delete this readthrough</span>
+                            </span>
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <div class="content block">
+            <div>
                 <input class="toggle-control" type="radio" name="show-edit-readthrough" id="edit-readthrough-{{ readthrough.id }}">
                 <div class="toggle-content hidden">
                     <form name="edit-readthrough" action="/edit-readthrough" method="post">
@@ -118,6 +114,30 @@
                             <label class="button is-small" for="show-readthrough-{{ readthrough.id }}">Cancel</label>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <div>
+                <input class="toggle-control" type="checkbox" name="delete-readthrough-{{ readthrough.id }}" id="delete-readthrough-{{ readthrough.id }}">
+                <div class="modal toggle-content hidden">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Delete this read-though?</p>
+                            <label class="delete" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
+                        </header>
+                        <footer class="modal-card-foot">
+			    <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="id" value="{{ readthrough.id }}">
+				<button class="button is-danger" type="submit">
+				    Delete
+				</button>
+				<label for="delete-readthrough-{{ readthrough.id }}" class="button">Cancel</button>
+			    </form>
+                        </footer>
+                    </div>
+                    <label class="modal-close is-large" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
                 </div>
             </div>
             {% endfor %}
