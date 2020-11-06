@@ -27,11 +27,18 @@
             {% include 'snippets/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
-            <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ cover_form.as_p }}
-                <button class="button" type="submit">Add cover</button>
-            </form>
+            <div class="box p-2">
+                <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label class="label" for="id_cover">Cover:</label>
+                        <input type="file" name="cover" accept="image/*" class="" id="id_cover">
+                    </div>
+                    <div class="field">
+                        <button class="button is-small" type="submit">Add cover</button>
+                    </div>
+                </form>
+            </div>
             {% endif %}
 
             <dl class="content">
@@ -60,59 +67,85 @@
                 <input class="toggle-control" type="radio" name="show-edit-readthrough" id="show-readthrough-{{ readthrough.id }}" checked>
                 <div class="toggle-content hidden">
                     <dl>
+                        {% if readthrough.start_date %}
                         <dt>Started reading:</dt>
                         <dd>{{ readthrough.start_date | naturalday }}</dd>
+                        {% endif %}
+                        {% if readthrough.finish_date %}
                         <dt>Finished reading:</dt>
                         <dd>{{ readthrough.finish_date | naturalday }}</dd>
+                        {% endif %}
                     </dl>
                     <div class="field is-grouped">
                         <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}">
                             <span class="icon icon-pencil">
-                                <span class="is-sr-only">Edit readthrough dates</span>
+                                <span class="is-sr-only">Edit read-through dates</span>
                             </span>
                         </label>
-                        <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ readthrough.id }}">
-                            <button class="button is-small" type="submit">
-                                <span class="icon icon-x">
-                                    <span class="is-sr-only">Delete this readthrough</span>
-                                </span>
-                            </button>
+                        <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}">
+                            <span class="icon icon-x">
+                                <span class="is-sr-only">Delete this read-through</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="edit-readthrough-{{ readthrough.id }}">
+                <div class="toggle-content hidden">
+                    <div class="box">
+                        <form name="edit-readthrough" action="/edit-readthrough" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ readthrough.id }}">
+                            <div class="field">
+                                <label class="label" for="start_date">
+                                    Started reading
+                                    <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+                                </label>
+                            </div>
+                            <div class="field">
+                                <label class="label" for="finish_date">
+                                    Finished reading
+                                    <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
+                                </label>
+                            </div>
+                            <div class="field is-grouped">
+                                <button class="button is-primary" type="submit">Save</button>
+                                <label class="button" for="show-readthrough-{{ readthrough.id }}">Cancel</label>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <div class="content block">
-                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="edit-readthrough-{{ readthrough.id }}">
-                <div class="toggle-content hidden">
-                    <form name="edit-readthrough" action="/edit-readthrough" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="id" value="{{ readthrough.id }}">
-                        <div class="field">
-                            <label class="label" for="start_date">
-                                Started reading
-                                <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="finish_date">
-                                Finished reading
-                                <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
-                            </label>
-                        </div>
-                        <div class="field is-grouped">
-                            <button class="button is-small" type="submit">Save</button>
-                            <label class="button is-small" for="show-readthrough-{{ readthrough.id }}">Cancel</label>
-                        </div>
-                    </form>
+            <div>
+                <input class="toggle-control" type="checkbox" name="delete-readthrough-{{ readthrough.id }}" id="delete-readthrough-{{ readthrough.id }}">
+                <div class="modal toggle-content hidden">
+                    <div class="modal-background"></div>
+                    <div class="modal-card">
+                        <header class="modal-card-head">
+                            <p class="modal-card-title">Delete this read-though?</p>
+                            <label class="delete" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
+                        </header>
+                        <footer class="modal-card-foot">
+			    <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="id" value="{{ readthrough.id }}">
+				<button class="button is-danger" type="submit">
+				    Delete
+				</button>
+				<label for="delete-readthrough-{{ readthrough.id }}" class="button">Cancel</button>
+			    </form>
+                        </footer>
+                    </div>
+                    <label class="modal-close is-large" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
                 </div>
             </div>
             {% endfor %}
 
             {% if request.user.is_authenticated %}
-            <div class="block">
+            <div class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </div>
 

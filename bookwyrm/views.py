@@ -430,7 +430,7 @@ def status_page(request, username, status_id):
         return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
 
     data = {
-        'title': status.type,
+        'title': 'Status by %s' % user.username,
         'status': status,
     }
     return TemplateResponse(request, 'status.html', data)

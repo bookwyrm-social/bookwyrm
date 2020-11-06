@@ -18,15 +18,18 @@
         <div class="column is-narrow">
             <div class="media">
                 <div class="media-left">
+                    <a href="/user/{{ user|username }}">
                     {% include 'snippets/avatar.html' with user=user large=True %}
+                    </a>
                 </div>
                 <div class="media-content">
                     <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
-                    <p>{{ user.username }}</p>
+                    <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
                     <p>Joined {{ user.created_date | naturaltime }}</p>
                     <p>
-                    <a href="/user/{{ user | username }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-                        <a href="/user/{{ user | username }}/following">{{ user.following.count }} following</a></p>
+                        <a href="/user/{{ user | username }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
+                        <a href="/user/{{ user | username }}/following">{{ user.following.count }} following</a>
+                    </p>
                 </div>
             </div>
         </div>

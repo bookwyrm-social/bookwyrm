@@ -468,9 +468,18 @@ def tag(request):
     # field which doesn't validate
     name = request.POST.get('name')
     book_id = request.POST.get('book')
-    remote_id = 'https://%s/book/%s' % (DOMAIN, book_id)
+    try:
+        book = models.Edition.objects.get(id=book_id)
+    except models.Edition.DoesNotExist:
+        return HttpResponseNotFound()
+    tag_obj, created = models.Tag.objects.get_or_create(
+        name=name,
+        book=book,
+        user=request.user
+    )
 
-    outgoing.handle_tag(request.user, remote_id, name)
+    if created:
+        outgoing.handle_tag(request.user, tag_obj)
     return redirect('/book/%s' % book_id)
 
 
