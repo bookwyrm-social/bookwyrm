@@ -58,7 +58,7 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Reading "{{ book.title }}"</p>
+                <p class="modal-card-title">Started "{{ book.title }}"</p>
                 <label class="delete" for="start-reading-{{ uuid }}" aria-label="close"></label>
             </header>
             <form name="start-reading" action="/start-reading" method="post">
@@ -74,12 +74,12 @@
                 </section>
                 <footer class="modal-card-foot">
                     <div class="columns">
-                        <div class="column field is-grouped">
-                            {% include 'snippets/privacy_select.html' %}
+                        <div class="column field">
                             <label for="post-status">
                                 <input type="checkbox" name="post-status" class="checkbox" checked>
                                 Post to feed
                             </label>
+                            {% include 'snippets/privacy_select.html' %}
                         </div>
                         <div class="column">
                             <button type="submit" class="button is-success">Save</button>
@@ -123,12 +123,12 @@
                 </section>
                 <footer class="modal-card-foot">
                     <div class="columns">
-                        <div class="column field is-grouped">
-                            {% include 'snippets/privacy_select.html' %}
+                        <div class="column field">
                             <label for="post-status">
                                 <input type="checkbox" name="post-status" class="checkbox" checked>
                                 Post to feed
                             </label>
+                            {% include 'snippets/privacy_select.html' %}
                         </div>
                         <div class="column">
                             <button type="submit" class="button is-success">Save</button>

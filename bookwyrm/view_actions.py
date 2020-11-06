@@ -293,6 +293,16 @@ def shelve(request):
             # this just means it isn't currently on the user's shelves
             pass
     outgoing.handle_shelve(request.user, book, desired_shelf)
+
+    # post about "want to read" shelves
+    if desired_shelf.identifier == 'to-read':
+        outgoing.handle_reading_status(
+            request.user,
+            desired_shelf,
+            book,
+            privacy='public'
+        )
+
     return redirect('/')
 
 
@@ -324,7 +334,7 @@ def start_reading(request):
     if request.POST.get('reshelve', True):
         try:
             current_shelf = models.Shelf.objects.get(
-                    user=request.user,
+                user=request.user,
                 edition=book
             )
             outgoing.handle_unshelve(request.user, book, current_shelf)
