@@ -1,5 +1,4 @@
 ''' handles all the activity coming out of the server '''
-from datetime import datetime
 import re
 
 from django.db import IntegrityError, transaction
@@ -121,6 +120,19 @@ def handle_shelve(user, book, shelf):
 
     broadcast(user, shelve.to_add_activity(user))
 
+
+def handle_unshelve(user, book, shelf):
+    ''' a local user is getting a book put on their shelf '''
+    # update the database
+    row = models.ShelfBook.objects.get(book=book, shelf=shelf)
+    activity = row.to_remove_activity(user)
+    row.delete()
+
+    broadcast(user, activity)
+
+
+def handle_reading_status(user, shelf, book, privacy):
+    ''' post about a user reading a book '''
     # tell the world about this cool thing that happened
     try:
         message = {
@@ -132,39 +144,15 @@ def handle_shelve(user, book, shelf):
         # it's a non-standard shelf, don't worry about it
         return
 
-    status = create_generated_note(user, message, mention_books=[book])
+    status = create_generated_note(
+        user,
+        message,
+        mention_books=[book],
+        privacy=privacy
+    )
     status.save()
 
-    if shelf.identifier == 'reading':
-        read = models.ReadThrough(
-            user=user,
-            book=book,
-            start_date=datetime.now())
-        read.save()
-    elif shelf.identifier == 'read':
-        read = models.ReadThrough.objects.filter(
-            user=user,
-            book=book,
-            finish_date=None).order_by('-created_date').first()
-        if not read:
-            read = models.ReadThrough(
-                user=user,
-                book=book,
-                start_date=datetime.now())
-        read.finish_date = datetime.now()
-        read.save()
-
     broadcast(user, status.to_create_activity(user))
-
-
-def handle_unshelve(user, book, shelf):
-    ''' a local user is getting a book put on their shelf '''
-    # update the database
-    row = models.ShelfBook.objects.get(book=book, shelf=shelf)
-    activity = row.to_remove_activity(user)
-    row.delete()
-
-    broadcast(user, activity)
 
 
 def handle_imported_book(user, item, include_reviews, privacy):

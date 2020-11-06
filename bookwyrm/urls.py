@@ -121,6 +121,8 @@ urlpatterns = [
 
     re_path(r'^shelve/?$', actions.shelve),
     re_path(r'^unshelve/?$', actions.unshelve),
+    re_path(r'^start-reading/?$', actions.start_reading),
+    re_path(r'^finish-reading/?$', actions.finish_reading),
 
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),
