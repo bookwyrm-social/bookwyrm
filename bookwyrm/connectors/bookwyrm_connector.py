@@ -84,7 +84,7 @@ class Connector(AbstractConnector):
         if not response.ok:
             response.raise_for_status()
 
-        image_name = str(uuid4()) + cover_url.split('.')[-1]
+        image_name = str(uuid4()) + '.' + cover_url.split('.')[-1]
         image_content = ContentFile(response.content)
         return [image_name, image_content]
 

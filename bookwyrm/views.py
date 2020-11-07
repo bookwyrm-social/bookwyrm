@@ -60,23 +60,7 @@ def home_tab(request, tab):
     except ValueError:
         page = 1
 
-    max_books = 5
-    book_count = 0
-    preset_shelves = ['reading', 'read', 'to-read']
-    suggested_books = []
-    for preset in preset_shelves:
-        limit = max_books - book_count
-        shelf = request.user.shelf_set.get(identifier=preset)
-
-        shelf_books = shelf.shelfbook_set.order_by(
-            '-updated_date'
-        ).all()[:limit]
-        shelf_preview = {
-            'name': shelf.name,
-            'books': [s.book for s in shelf_books]
-        }
-        suggested_books.append(shelf_preview)
-        book_count += len(shelf_preview['books'])
+    suggested_books = get_suggested_books(request.user)
 
     activities = get_activity_feed(request.user, tab)
 
@@ -98,6 +82,29 @@ def home_tab(request, tab):
         'prev': prev_page if page > 1 else None,
     }
     return TemplateResponse(request, 'feed.html', data)
+
+
+def get_suggested_books(user, max_books=5):
+    ''' helper to get a user's recent books '''
+    book_count = 0
+    preset_shelves = ['reading', 'read', 'to-read']
+    suggested_books = []
+    for preset in preset_shelves:
+        limit = max_books - book_count
+        shelf = user.shelf_set.get(identifier=preset)
+
+        shelf_books = shelf.shelfbook_set.order_by(
+            '-updated_date'
+        ).all()[:limit]
+        if not shelf_books:
+            continue
+        shelf_preview = {
+            'name': shelf.name,
+            'books': [s.book for s in shelf_books]
+        }
+        suggested_books.append(shelf_preview)
+        book_count += len(shelf_preview['books'])
+    return suggested_books
 
 
 def get_activity_feed(user, filter_level, model=models.Status):
