@@ -3,7 +3,7 @@ import re
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -67,9 +67,13 @@ def home_tab(request, tab):
     for preset in preset_shelves:
         limit = max_books - book_count
         shelf = request.user.shelf_set.get(identifier=preset)
+
+        shelf_books = shelf.shelfbook_set.order_by(
+            '-updated_date'
+        ).all()[:limit]
         shelf_preview = {
             'name': shelf.name,
-            'books': shelf.books.all()[:limit]
+            'books': [s.book for s in shelf_books]
         }
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview['books'])
