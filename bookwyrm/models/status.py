@@ -75,6 +75,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             ))
         return tags
 
+    @property
+    def ap_status_image(self):
+        ''' attach a book cover, if relevent '''
+        if hasattr(self, 'book'):
+            return self.book.ap_cover
+        if self.mention_books.first():
+            return self.mention_books.first().ap_cover
+        return None
+
+
     shared_mappings = [
         ActivityMapping('url', 'remote_id', lambda x: None),
         ActivityMapping('id', 'remote_id'),
@@ -100,6 +110,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     pure_activity_mappings = shared_mappings + [
         ActivityMapping('name', 'ap_pure_name'),
         ActivityMapping('content', 'ap_pure_content'),
+        ActivityMapping('attachment', 'ap_status_image'),
     ]
 
     activity_serializer = activitypub.Note

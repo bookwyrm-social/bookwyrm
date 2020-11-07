@@ -32,7 +32,6 @@ def inbox(request, username):
 @csrf_exempt
 def shared_inbox(request):
     ''' incoming activitypub events '''
-    # TODO: should this be functionally different from the non-shared inbox??
     if request.method == 'GET':
         return HttpResponseNotFound()
 
@@ -215,6 +214,11 @@ def handle_create(activity):
     user = get_or_create_remote_user(activity['actor'])
     if user.local:
         # we really oughtn't even be sending in this case
+        return
+
+    # deduplicate incoming activities
+    status_id = activity['object']['id']
+    if models.Status.objects.filter(remote_id=status_id).count():
         return
 
     status = status_builder.create_status(activity['object'])
