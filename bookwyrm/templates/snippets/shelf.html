@@ -67,16 +67,7 @@
     </td>
     {% endif %}
     <td>
-        <form name="unshelve" action="/unshelve/" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="book" value="{{ book.id }}">
-            <input type="hidden" name="shelf" value="{{ shelf.id }}">
-            <button class="button is-danger is-small" type="submit" style="">
-                <span class="icon icon-x">
-                    <span class="is-sr-only">Remove from shelf</span>
-                </span>
-            </button>
-        </form>
+        {% include 'snippets/shelf_selector.html' with current=shelf %}
     </td>
 </tr>
 {% endfor %}
