@@ -2,7 +2,6 @@
 from datetime import datetime
 
 from bookwyrm import activitypub, books_manager, models
-from bookwyrm.books_manager import get_or_create_book
 from bookwyrm.sanitize_html import InputHtmlParser
 
 
