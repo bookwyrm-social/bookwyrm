@@ -34,13 +34,15 @@ function rate_stars(e) {
 function tabChange(e) {
     var target = e.target.closest('li')
     var identifier = target.getAttribute('data-id');
+    var parent_element = target.parentElement.closest('li').parentElement;
 
-    var tabs = target.parentElement.children;
+    var tabs = parent_element.getElementsByTagName('label');
     for (i = 0; i < tabs.length; i++) {
-        if (tabs[i].getAttribute('data-id') == identifier) {
-            tabs[i].className += ' is-active';
+        var tab = tabs[i].parentElement;
+        if (tab.getAttribute('data-id') == identifier) {
+            tab.className += ' is-active';
         } else {
-            tabs[i].className = tabs[i].className.replace('is-active', '');
+            tab.className = tab.className.replace('is-active', '');
         }
     }
 

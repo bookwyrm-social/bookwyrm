@@ -60,34 +60,19 @@ def home_tab(request, tab):
     except ValueError:
         page = 1
 
-    count = 5
-    querysets = [
-        # recemt currently reading
-        models.Edition.objects.filter(
-            shelves__user=request.user,
-            shelves__identifier='reading'
-        ),
-        # read
-        models.Edition.objects.filter(
-            shelves__user=request.user,
-            shelves__identifier='read'
-        ).order_by('-updated_date')[:2],
-        # to-read
-        models.Edition.objects.filter(
-            shelves__user=request.user,
-            shelves__identifier='to-read'
-        ),
-        # popular books
-        models.Edition.objects.annotate(
-            shelf_count=Count('shelves')
-        ).order_by('-shelf_count')
-    ]
+    max_books = 5
+    book_count = 0
+    preset_shelves = ['reading', 'read', 'to-read']
     suggested_books = []
-    for queryset in querysets:
-        length = count - len(suggested_books)
-        suggested_books += list(queryset[:length])
-        if len(suggested_books) >= count:
-            break
+    for preset in preset_shelves:
+        limit = max_books - book_count
+        shelf = request.user.shelf_set.get(identifier=preset)
+        shelf_preview = {
+            'name': shelf.name,
+            'books': shelf.books.all()[:limit]
+        }
+        suggested_books.append(shelf_preview)
+        book_count += len(shelf_preview['books'])
 
     activities = get_activity_feed(request.user, tab)
 
@@ -99,7 +84,7 @@ def home_tab(request, tab):
     data = {
         'title': 'Updates Feed',
         'user': request.user,
-        'suggested_books': set(suggested_books),
+        'suggested_books': suggested_books,
         'activities': activities,
         'review_form': forms.ReviewForm(),
         'quotation_form': forms.QuotationForm(),
