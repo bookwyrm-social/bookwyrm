@@ -73,7 +73,7 @@
                     <div class="field">
                         <label class="label" for="start_date">
                             Started reading
-                            <input type="date" name="start_date" class="input" id="id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+                            <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
                         </label>
                     </div>
                 </section>
@@ -116,13 +116,13 @@
                     <div class="field">
                         <label class="label" for="start_date">
                             Started reading
-                            <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+                            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
                         </label>
                     </div>
                     <div class="field">
                         <label class="label" for="finish_date">
                             Finished reading
-                            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{% now "Y-m-d" %}">
+                            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
                         </label>
                     </div>
                 </section>
