@@ -11,7 +11,7 @@
         <div class="tabs is-small">
             <ul>
             {% for shelf in suggested_books %}
-            {% if shelf.books.count %}
+            {% if shelf.books %}
             {% with shelf_counter=forloop.counter %}
                 <li>
                     <p>{{ shelf.name }}</p>
