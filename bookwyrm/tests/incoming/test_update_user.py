@@ -1,3 +1,4 @@
+''' when a remote user changes their profile '''
 import json
 import pathlib
 from django.test import TestCase

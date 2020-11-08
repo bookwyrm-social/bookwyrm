@@ -299,7 +299,8 @@ def handle_unfavorite(user, status):
         # can't find that status, idk
         return
 
-    fav_activity = activitypub.Undo(actor=user, object=favorite)
+    fav_activity = favorite.to_undo_activity(user)
+    favorite.delete()
     broadcast(user, fav_activity, direct_recipients=[status.user])
 
 
@@ -317,6 +318,17 @@ def handle_boost(user, status):
 
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
+
+
+def handle_unboost(user, status):
+    ''' a user regrets boosting a status '''
+    boost = models.Boost.objects.filter(
+        boosted_status=status, user=user
+    ).first()
+    activity = boost.to_undo_activity(user)
+
+    boost.delete()
+    broadcast(user, activity)
 
 
 def handle_update_book(user, book):
