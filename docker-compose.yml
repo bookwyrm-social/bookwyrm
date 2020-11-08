@@ -57,7 +57,8 @@ services:
             - redis
         restart: on-failure
     flower:
-        image: mher/flower
+        build: .
+        command: flower --port=8888
         env_file: .env
         environment:
             - CELERY_BROKER_URL=${CELERY_BROKER}
