@@ -71,7 +71,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <div class="field">
-                        <label class="label" for="start_date">
+                        <label class="label">
                             Started reading
                             <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
                         </label>
@@ -114,13 +114,13 @@
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <input type="hidden" name="id" value="{{ readthrough.id }}">
                     <div class="field">
-                        <label class="label" for="start_date">
+                        <label class="label">
                             Started reading
                             <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
                         </label>
                     </div>
                     <div class="field">
-                        <label class="label" for="finish_date">
+                        <label class="label">
                             Finished reading
                             <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
                         </label>
