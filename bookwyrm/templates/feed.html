@@ -14,7 +14,9 @@
             {% if shelf.books %}
             {% with shelf_counter=forloop.counter %}
                 <li>
-                    <p>{{ shelf.name }}</p>
+                    <p>
+                        {{ shelf.name }}
+                    </p>
                     <div class="tabs is-small is-toggle">
                         <ul>
                             {% for book in shelf.books %}

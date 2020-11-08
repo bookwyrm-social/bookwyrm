@@ -58,15 +58,17 @@ def nodeinfo(request):
         return HttpResponseNotFound()
 
     status_count = models.Status.objects.filter(user__local=True).count()
-    user_count = models.User.objects.count()
+    user_count = models.User.objects.filter(local=True).count()
 
     month_ago = datetime.now() - relativedelta(months=1)
     last_month_count = models.User.objects.filter(
+        local=True,
         last_active_date__gt=month_ago
     ).count()
 
     six_months_ago = datetime.now() - relativedelta(months=6)
     six_month_count = models.User.objects.filter(
+        local=True,
         last_active_date__gt=six_months_ago
     ).count()
     return JsonResponse({
