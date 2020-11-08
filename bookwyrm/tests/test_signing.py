@@ -39,6 +39,7 @@ class Signature(TestCase):
         )
 
     def send(self, signature, now, data, digest):
+        ''' test request '''
         c = Client()
         return c.post(
             urlsplit(self.rat.inbox).path,
@@ -73,13 +74,13 @@ class Signature(TestCase):
 
     def test_wrong_signature(self):
         ''' Messages must be signed by the right actor.
-            (cat cannot sign messages on behalf of mouse)
-        '''
+            (cat cannot sign messages on behalf of mouse) '''
         response = self.send_test_request(sender=self.mouse, signer=self.cat)
         self.assertEqual(response.status_code, 401)
 
     @responses.activate
     def test_remote_signer(self):
+        ''' signtures for remote users '''
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
@@ -137,7 +138,6 @@ class Signature(TestCase):
             self.fake_remote.remote_id,
             json=data,
             status=200)
-
 
         # Key correct:
         response = self.send_test_request(sender=self.fake_remote)

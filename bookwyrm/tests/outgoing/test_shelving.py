@@ -38,16 +38,6 @@ class Shelving(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-        # it should have posted a status about this
-        status = models.GeneratedNote.objects.get()
-        self.assertEqual(status.content, 'wants to read')
-        self.assertEqual(status.user, self.user)
-        self.assertEqual(status.mention_books.count(), 1)
-        self.assertEqual(status.mention_books.first(), self.book)
-
-        # and it should not create a read-through
-        self.assertEqual(models.ReadThrough.objects.count(), 0)
-
 
     def test_handle_shelve_reading(self):
         shelf = models.Shelf.objects.get(identifier='reading')
@@ -56,20 +46,6 @@ class Shelving(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-        # it should have posted a status about this
-        status = models.GeneratedNote.objects.order_by('-published_date').first()
-        self.assertEqual(status.content, 'started reading')
-        self.assertEqual(status.user, self.user)
-        self.assertEqual(status.mention_books.count(), 1)
-        self.assertEqual(status.mention_books.first(), self.book)
-
-        # and it should create a read-through
-        readthrough = models.ReadThrough.objects.get()
-        self.assertEqual(readthrough.user, self.user)
-        self.assertEqual(readthrough.book.id, self.book.id)
-        self.assertIsNotNone(readthrough.start_date)
-        self.assertIsNone(readthrough.finish_date)
-
 
     def test_handle_shelve_read(self):
         shelf = models.Shelf.objects.get(identifier='read')
@@ -77,20 +53,6 @@ class Shelving(TestCase):
         outgoing.handle_shelve(self.user, self.book, shelf)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
-
-        # it should have posted a status about this
-        status = models.GeneratedNote.objects.order_by('-published_date').first()
-        self.assertEqual(status.content, 'finished reading')
-        self.assertEqual(status.user, self.user)
-        self.assertEqual(status.mention_books.count(), 1)
-        self.assertEqual(status.mention_books.first(), self.book)
-
-        # and it should update the existing read-through
-        readthrough = models.ReadThrough.objects.get()
-        self.assertEqual(readthrough.user, self.user)
-        self.assertEqual(readthrough.book.id, self.book.id)
-        self.assertIsNotNone(readthrough.start_date)
-        self.assertIsNotNone(readthrough.finish_date)
 
 
     def test_handle_unshelve(self):

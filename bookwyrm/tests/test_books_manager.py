@@ -15,6 +15,8 @@ class Book(TestCase):
             title='Example Edition',
             parent_work=self.work
         )
+        self.work.default_edition = self.edition
+        self.work.save()
 
         self.connector = models.Connector.objects.create(
             identifier='test_connector',
