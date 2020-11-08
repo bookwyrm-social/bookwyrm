@@ -66,9 +66,11 @@
         {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
     </td>
     {% endif %}
+    {% if shelf.user == request.user %}
     <td>
         {% include 'snippets/shelf_selector.html' with current=shelf %}
     </td>
+    {% endif %}
 </tr>
 {% endfor %}
 </table>
