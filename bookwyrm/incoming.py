@@ -222,6 +222,8 @@ def handle_create(activity):
         return
 
     status = status_builder.create_status(activity['object'])
+    if not status:
+        return
 
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
