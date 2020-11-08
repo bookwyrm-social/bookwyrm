@@ -9,13 +9,15 @@
         <span>Read</span> <span class="icon icon-check"></span>
     </button>
     {% elif active_shelf.identifier == 'reading' %}
-    <label class="button is-small" for="finish-reading-{{ uuid }}">
+    <label class="button is-small" for="finish-reading-{{ uuid }}" role="button">
         I'm done!
     </label>
+    {% include 'snippets/finish_reading_modal.html' %}
     {% elif active_shelf.identifier == 'to-read' %}
-    <label class="button is-small" for="start-reading-{{ uuid }}">
+    <label class="button is-small" for="start-reading-{{ uuid }}" role="button">
         Start reading
     </label>
+    {% include 'snippets/start_reading_modal.html' %}
     {% else %}
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
@@ -26,19 +28,22 @@
     {% endif %}
 
     <div class="dropdown is-hoverable">
-        <div class="button dropdown-trigger is-small">
-            <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
+        <div class="dropdown-trigger">
+            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-{{ uuid }}">
+                <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
+            </button>
         </div>
 
-        <div class="dropdown-menu">
+        <div class="dropdown-menu" id="dropdown-menu-{{ uuid }}" role="menu">
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li>
                     {% if shelf.identifier == 'reading' and active_shelf.identifier != 'reading' %}
                     <div class="dropdown-item pt-0 pb-0">
-                        <label class="button is-small" for="start-reading-{{ uuid }}">
+                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button">
                             {{ shelf.name }}
                         </label>
+                        {% include 'snippets/start_reading_modal.html' %}
                     </div>
                     {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
@@ -57,94 +62,5 @@
     </div>
 </div>
 
-<div>
-    <input class="toggle-control" type="checkbox" name="start-reading-{{ uuid }}" id="start-reading-{{ uuid }}">
-    <div class="modal toggle-content hidden">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Start "{{ book.title }}"</p>
-                <label class="delete" for="start-reading-{{ uuid }}" aria-label="close"></label>
-            </header>
-            <form name="start-reading" action="/start-reading" method="post">
-                <section class="modal-card-body">
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    <div class="field">
-                        <label class="label">
-                            Started reading
-                            <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
-                        </label>
-                    </div>
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="columns">
-                        <div class="column field">
-                            <label for="post-status">
-                                <input type="checkbox" name="post-status" class="checkbox" checked>
-                                Post to feed
-                            </label>
-                            {% include 'snippets/privacy_select.html' %}
-                        </div>
-                        <div class="column">
-                            <button class="button is-success" type="submit">Save</button>
-                            <label for="start-reading-{{ uuid }}" class="button">Cancel</button>
-                        </div>
-                    </div>
-                </footer>
-            </form>
-        </div>
-        <label class="modal-close is-large" for="start-reading-{{ uuid }}" aria-label="close"></label>
-    </div>
-</div>
-
-<div>
-    <input class="toggle-control" type="checkbox" name="finish-reading-{{ uuid }}" id="finish-reading-{{ uuid }}">
-    <div class="modal toggle-content hidden">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Finish "{{ book.title }}"</p>
-                <label class="delete" for="finish-reading-{{ uuid }}" aria-label="close"></label>
-            </header>
-            {% active_read_through book user as readthrough %}
-            <form name="finish-reading" action="/finish-reading" method="post">
-                <section class="modal-card-body">
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    <input type="hidden" name="id" value="{{ readthrough.id }}">
-                    <div class="field">
-                        <label class="label">
-                            Started reading
-                            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-                        </label>
-                    </div>
-                    <div class="field">
-                        <label class="label">
-                            Finished reading
-                            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
-                        </label>
-                    </div>
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="columns">
-                        <div class="column field">
-                            <label for="post-status">
-                                <input type="checkbox" name="post-status" class="checkbox" checked>
-                                Post to feed
-                            </label>
-                            {% include 'snippets/privacy_select.html' %}
-                        </div>
-                        <div class="column">
-                            <button type="submit" class="button is-success">Save</button>
-                            <label for="finish-reading-{{ uuid }}" class="button">Cancel</button>
-                        </div>
-                    </div>
-                </footer>
-            </form>
-        </div>
-        <label class="modal-close is-large" for="finish-reading-{{ uuid }}" aria-label="close"></label>
-    </div>
-</div>
 {% endwith %}
 {% endif %}
