@@ -299,7 +299,7 @@ def handle_unboost(activity):
         remote_id=activity['object']['id']
     ).first()
     if boost:
-        status_builder.delete_status(boost)
+        boost.delete()
 
 
 @app.task

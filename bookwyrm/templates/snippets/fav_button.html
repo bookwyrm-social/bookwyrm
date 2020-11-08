@@ -1,6 +1,6 @@
 {% load fr_display %}
-{% with activity.id|uuid as uuid %}
-<form name="favorite" action="/favorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
+{% with status.id|uuid as uuid %}
+<form name="favorite" action="/favorite/{{ status.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-small" type="submit">
         <span class="icon icon-heart">
@@ -8,7 +8,7 @@
         </span>
     </button>
 </form>
-<form name="unfavorite" action="/unfavorite/{{ activity.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
+<form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-success is-small" type="submit">
         <span class="icon icon-heart">

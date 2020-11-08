@@ -323,10 +323,11 @@ def handle_boost(user, status):
 def handle_unboost(user, status):
     ''' a user regrets boosting a status '''
     boost = models.Boost.objects.filter(
-            boosted_status=status, user=user).first()
+        boosted_status=status, user=user
+    ).first()
     activity = boost.to_undo_activity(user)
 
-    status_builder.delete_status(boost)
+    boost.delete()
     broadcast(user, activity)
 
 
