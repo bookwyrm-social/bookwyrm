@@ -3,6 +3,19 @@
 set -e
 set -x
 
+function clean {
+    docker-compose stop
+    docker-compose rm -f
+}
+
+function rundb {
+    docker-compose run --rm db $@
+}
+
+function runweb {
+    docker-compose run --rm web $@
+}
+
 case "$1" in
     up)
         docker-compose up --build
@@ -11,41 +24,40 @@ case "$1" in
         docker-compose run --service-ports web
         ;;
     initdb)
-        docker-compose exec web python manage.py migrate
-        docker-compose exec web python manage.py initdb
+        runweb python manage.py migrate
+        runweb python manage.py initdb
         ;;
     resetdb)
-        docker-compose stop web
-        docker-compose exec db dropdb -U fedireads fedireads
-        docker-compose exec db createdb -U fedireads fedireads
-        docker-compose start web
-        docker-compose exec web python manage.py migrate
-        docker-compose exec web python manage.py initdb
+        clean
+        rundb dropdb -U fedireads fedireads
+        rundb createdb -U fedireads fedireads
+        runweb python manage.py migrate
+        runweb python manage.py initdb
         ;;
     makemigrations)
-        docker-compose exec web python manage.py makemigrations
+        runweb python manage.py makemigrations
         ;;
     migrate)
-        docker-compose exec web python manage.py migrate
+        runweb python manage.py migrate
         ;;
     shell)
-        docker-compose exec web python manage.py shell
+        runweb python manage.py shell
         ;;
     dbshell)
-        docker-compose exec db psql -U fedireads fedireads
+        rundb psql -U fedireads fedireads
         ;;
     restart_celery)
         docker-compose restart celery_worker
         ;;
     test)
         shift 1
-        docker-compose exec web coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     test_report)
-        docker-compose exec web coverage report
+        runweb coverage report
         ;;
     collectstatic)
-        docker-compose exec web python manage.py collectstatic --no-input
+        runweb python manage.py collectstatic --no-input
         ;;
     build)
         docker-compose build
