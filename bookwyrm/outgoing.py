@@ -320,6 +320,16 @@ def handle_boost(user, status):
     broadcast(user, boost_activity)
 
 
+def handle_unboost(user, status):
+    ''' a user regrets boosting a status '''
+    boost = models.Boost.objects.filter(
+            boosted_status=status, user=user).first()
+    activity = boost.to_undo_activity(user)
+
+    status_builder.delete_status(boost)
+    broadcast(user, activity)
+
+
 def handle_update_book(user, book):
     ''' broadcast the news about our book '''
     broadcast(user, book.to_update_activity(user))

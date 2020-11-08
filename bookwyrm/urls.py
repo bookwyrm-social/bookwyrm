@@ -116,6 +116,7 @@ urlpatterns = [
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
+    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.boost),
 
     re_path(r'^delete-status/?$', actions.delete_status),
 
