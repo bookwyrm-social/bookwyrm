@@ -46,6 +46,9 @@ case "$1" in
     migrate)
         runweb python manage.py migrate
         ;;
+    bash)
+        runweb bash
+        ;;
     shell)
         runweb python manage.py shell
         ;;
@@ -58,6 +61,10 @@ case "$1" in
     test)
         shift 1
         runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        ;;
+    pytest)
+        shift 1
+        runweb pytest "$@"
         ;;
     test_report)
         runweb coverage report
@@ -72,6 +79,6 @@ case "$1" in
         clean
         ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report"
         ;;
 esac
