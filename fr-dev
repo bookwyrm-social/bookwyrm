@@ -14,6 +14,7 @@ function rundb {
 
 function runweb {
     docker-compose run --rm web $@
+    clean
 }
 
 function initdb {
