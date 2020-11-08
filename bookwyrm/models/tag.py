@@ -35,7 +35,7 @@ class Tag(OrderedCollectionMixin, BookWyrmModel):
         return activitypub.Add(
             id='%s#add' % self.remote_id,
             actor=user.remote_id,
-            object=self.book.local_id,
+            object=self.book.to_activity(),
             target=self.remote_id,
         ).serialize()
 
