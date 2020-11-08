@@ -39,17 +39,8 @@ class Book(TestCase):
             title='Invalid Book'
         )
 
-    def test_default_edition(self):
-        ''' a work should always be able to produce a deafult edition '''
-        self.assertIsInstance(self.work.default_edition, models.Edition)
-        self.assertEqual(self.work.default_edition, self.first_edition)
-
-        self.second_edition.default = True
-        self.second_edition.save()
-
-        self.assertEqual(self.work.default_edition, self.second_edition)
-
     def test_isbn_10_to_13(self):
+        ''' checksums and so on '''
         isbn_10 = '178816167X'
         isbn_13 = isbn_10_to_13(isbn_10)
         self.assertEqual(isbn_13, '9781788161671')
@@ -59,8 +50,8 @@ class Book(TestCase):
         self.assertEqual(isbn_13, '9781788161671')
 
 
-
     def test_isbn_13_to_10(self):
+        ''' checksums and so on '''
         isbn_13 = '9781788161671'
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, '178816167X')

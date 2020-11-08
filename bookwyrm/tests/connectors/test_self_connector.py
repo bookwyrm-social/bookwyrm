@@ -64,8 +64,10 @@ class SelfConnector(TestCase):
 
 
     def test_search_default_filter(self):
-        self.edition.default = True
-        self.edition.save()
+        ''' it should get rid of duplicate editions for the same work '''
+        self.work.default_edition = self.edition
+        self.work.save()
+
         results = self.connector.search('Anonymous')
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].title, 'Edition of Example Work')
