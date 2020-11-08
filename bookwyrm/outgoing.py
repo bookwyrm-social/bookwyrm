@@ -286,6 +286,12 @@ def handle_favorite(user, status):
     fav_activity = favorite.to_activity()
     broadcast(
         user, fav_activity, privacy='direct', direct_recipients=[status.user])
+    create_notification(
+        status.user,
+        'FAVORITE',
+        related_user=user,
+        related_status=status
+    )
 
 
 def handle_unfavorite(user, status):
@@ -318,6 +324,13 @@ def handle_boost(user, status):
 
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
+
+    create_notification(
+        status.user,
+        'BOOST',
+        related_user=user,
+        related_status=status
+    )
 
 
 def handle_unboost(user, status):
