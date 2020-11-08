@@ -34,7 +34,7 @@ Since the project is still in its early stages, not everything here is fully imp
     - Differentiate local and federated reviews and rating
  - Track reading activity
     - Shelve books on default "to-read," "currently reading," and "read" shelves
-    - Create custom shleves
+    - Create custom shelves
     - Store started reading/finished reading dates
     - Update followers about reading activity (optionally, and with granular privacy controls)
  - Federation with ActivityPub
