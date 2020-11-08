@@ -9,11 +9,16 @@ function clean {
 }
 
 function rundb {
-    docker-compose run --rm db $@
+    docker-compose exec db $@
 }
 
 function runweb {
     docker-compose run --rm web $@
+}
+
+function initdb {
+    runweb python manage.py migrate
+    runweb python manage.py initdb
 }
 
 case "$1" in
@@ -21,18 +26,18 @@ case "$1" in
         docker-compose up --build
         ;;
     run)
-        docker-compose run --service-ports web
+        docker-compose run --rm --service-ports web
         ;;
     initdb)
-        runweb python manage.py migrate
-        runweb python manage.py initdb
+        initdb
         ;;
     resetdb)
         clean
+        docker-compose up --build -d
         rundb dropdb -U fedireads fedireads
         rundb createdb -U fedireads fedireads
-        runweb python manage.py migrate
-        runweb python manage.py initdb
+        initdb
+        clean
         ;;
     makemigrations)
         runweb python manage.py makemigrations
