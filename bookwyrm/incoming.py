@@ -269,7 +269,12 @@ def handle_favorite(activity):
 @app.task
 def handle_unfavorite(activity):
     ''' approval of your good good post '''
-    like = activitypub.Like(**activity['object']).to_model(models.Favorite)
+    try:
+        like = models.Favorite.objects.filter(
+            remote_id=activity['object']['id']
+        ).first()
+    except models.Favorite.DoesNotExist:
+        return
     like.delete()
 
 

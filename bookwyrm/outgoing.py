@@ -299,7 +299,8 @@ def handle_unfavorite(user, status):
         # can't find that status, idk
         return
 
-    fav_activity = activitypub.Undo(actor=user, object=favorite)
+    fav_activity = favorite.to_undo_activity(user)
+    favorite.delete()
     broadcast(user, fav_activity, direct_recipients=[status.user])
 
 
