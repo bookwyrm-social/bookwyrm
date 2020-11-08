@@ -63,8 +63,7 @@ case "$1" in
         docker-compose build
         ;;
     clean)
-        docker-compose stop
-        docker-compose rm -f
+        clean
         ;;
     *)
         echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
