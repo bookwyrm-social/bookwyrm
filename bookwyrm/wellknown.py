@@ -71,6 +71,8 @@ def nodeinfo(request):
         local=True,
         last_active_date__gt=six_months_ago
     ).count()
+
+    site = models.SiteSettings.get()
     return JsonResponse({
         'version': '2.0',
         'software': {
@@ -88,33 +90,34 @@ def nodeinfo(request):
             },
             'localPosts': status_count,
         },
-        'openRegistrations': True,
+        'openRegistrations': site.allow_registration,
     })
 
 
 def instance_info(request):
-    ''' what this place is TODO: should be settable/editable '''
+    ''' let's talk about your cool unique instance '''
     if request.method != 'GET':
         return HttpResponseNotFound()
 
-    user_count = models.User.objects.count()
-    status_count = models.Status.objects.count()
+    user_count = models.User.objects.filter(local=True).count()
+    status_count = models.Status.objects.filter(user__local=True).count()
+
+    site = models.SiteSettings.get()
     return JsonResponse({
         'uri': DOMAIN,
-        'title': 'BookWyrm',
-        'short_description': 'Social reading, decentralized',
-        'description': '',
-        'email': 'mousereeve@riseup.net',
+        'title': site.name,
+        'short_description': '',
+        'description': site.instance_description,
         'version': '0.0.1',
         'stats': {
             'user_count': user_count,
             'status_count': status_count,
         },
-        'thumbnail': '', # TODO: logo thumbnail
+        'thumbnail': 'https://%s/static/images/logo.png' % DOMAIN,
         'languages': [
             'en'
         ],
-        'registrations': True,
+        'registrations': site.allow_registration,
         'approval_required': False,
     })
 
