@@ -150,11 +150,11 @@
             </div>
 
             <div class="block">
-                <h3>Tags</h3>
                 <form name="tag" action="/tag/" method="post">
+                    <label for="tags" class="is-3">Tags</label>
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
-                    <input class="input" type="text" name="name">
+                    <input id="tags" class="input" type="text" name="name">
                     <button class="button" type="submit">Add tag</button>
                 </form>
             </div>
