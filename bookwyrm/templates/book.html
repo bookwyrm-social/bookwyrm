@@ -5,9 +5,9 @@
 
 <div class="block">
     <div class="level">
-        <h2 class="title level-left">
+        <h1 class="title level-left">
             <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-        </h2>
+        </h1>
 
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="level-right">

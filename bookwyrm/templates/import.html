@@ -2,7 +2,7 @@
 {% load humanize %}
 {% block content %}
 <div class="block">
-    <h2 class="title">Import Books from GoodReads</h2>
+    <h1 class="title">Import Books from GoodReads</h1>
     <form name="import" action="/import_data/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="field">
