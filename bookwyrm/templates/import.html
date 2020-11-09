@@ -9,18 +9,14 @@
             {{ import_form.as_p }}
         </div>
         <div class="field">
-            <label class="label" for="include_reviews"><input type="checkbox" name="include_reviews" checked> Include reviews</label>
+            <label class="label">
+                <input type="checkbox" name="include_reviews" checked> Include reviews
+            </label>
         </div>
         <div class="field">
-            <label class="label" for="privacy">Privacy setting for imported reviews</label>
-            <div class="select">
-                <select name="privacy">
-                    <option value="public" selected>Public</option>
-                    <option value="unlisted">Unlisted</option>
-                    <option value="followers">Followers only</option>
-                    <option value="direct">Private</option>
-                </select>
-            </div>
+            <label class="label">Privacy setting for imported reviews
+                {% include 'snippets/privacy_select.html' with no_label=True %}
+            </label>
         </div>
         <button class="button is-primary" type="submit">Import</button>
     </form>

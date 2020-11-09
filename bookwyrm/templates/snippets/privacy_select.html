@@ -1,7 +1,9 @@
 {% load fr_display %}
 <div class="select">
     {% with 0|uuid as uuid %}
+    {% if not no_label %}
     <label class="is-sr-only" for="privacy-{{ uuid }}">Post privacy</label>
+    {% endif %}
     <select name="privacy" id="privacy-{{ uuid }}">
         <option value="public" selected>Public</option>
         <option value="unlisted">Unlisted</option>
