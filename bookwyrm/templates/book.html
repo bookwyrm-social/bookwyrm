@@ -132,7 +132,7 @@
 			    <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="id" value="{{ readthrough.id }}">
-				<button class="button is-danger" type="submit">
+				<button class="button is-danger is-light" type="submit">
 				    Delete
 				</button>
 				<label for="delete-readthrough-{{ readthrough.id }}" class="button">Cancel</button>

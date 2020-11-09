@@ -97,7 +97,7 @@
                     <form name="delete-{{status.id}}" action="/delete-status" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="status" value="{{ status.id }}">
-                        <button class="button is-danger" type="submit">
+                        <button class="button is-danger is-light" type="submit">
                             Delete post
                         </button>
                     </form>
