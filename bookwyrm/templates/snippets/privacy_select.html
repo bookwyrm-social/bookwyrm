@@ -1,9 +1,13 @@
+{% load fr_display %}
 <div class="select">
-    <select name="privacy">
+    {% with 0|uuid as uuid %}
+    <label class="is-sr-only" for="privacy-{{ uuid }}">Post privacy</label>
+    <select name="privacy" id="privacy-{{ uuid }}">
         <option value="public" selected>Public</option>
         <option value="unlisted">Unlisted</option>
         <option value="followers">Followers only</option>
         <option value="direct">Private</option>
     </select>
+    {% endwith %}
 </div>
 
