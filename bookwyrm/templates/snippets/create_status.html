@@ -2,15 +2,27 @@
 {% load fr_display %}
 
 <div class="tabs is-boxed">
-    <ul>
+    <ul role="tablist">
         <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="review-{{ book.id }}" onclick="tabChange(event)"><a>Review</a></label>
+            <label for="review-{{ book.id }}">
+                <div onclick="tabChange(event)" role="tab" aria-selected="true" tabindex="0">
+                    <a>Review</a>
+                </div>
+            </label>
         </li>
         <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="comment-{{ book.id}}" onclick="tabChange(event)"><a>Comment</a></label>
+            <label for="comment-{{ book.id}}">
+                <div onclick="tabChange(event)" role="tab" tabindex="0">
+                    <a>Comment</a>
+                </div>
+            </label>
         </li>
         <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="quote-{{ book.id }}" onclick="tabChange(event)"><a>Quote</a></label>
+            <label for="quote-{{ book.id }}">
+                <div onclick="tabChange(event)" role="tab" tabindex="0">
+                    <a>Quote</a>
+                </div>
+            </label>
         </li>
     </ul>
 </div>
@@ -22,7 +34,7 @@
 
 <div>
     <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="comment-{{ book.id }}">
-    {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thougts on '"|add:book.title|add:"'" %}
+    {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
 </div>
 
 <div>

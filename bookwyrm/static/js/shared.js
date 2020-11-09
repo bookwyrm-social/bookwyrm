@@ -34,6 +34,22 @@ function rate_stars(e) {
 function tabChange(e) {
     var target = e.target.closest('li')
     var identifier = target.getAttribute('data-id');
+
+    var parent_element = target.parentElement
+    var tabs = parent_element.getElementsByTagName('label');
+    for (i = 0; i < tabs.length; i++) {
+        var tab = tabs[i].parentElement;
+        if (tab.getAttribute('data-id') == identifier) {
+            tab.className += ' is-active';
+        } else {
+            tab.className = tab.className.replace('is-active', '');
+        }
+    }
+}
+
+function nestedTabChange(e) {
+    var target = e.target.closest('li')
+    var identifier = target.getAttribute('data-id');
     var parent_element = target.parentElement.closest('li').parentElement;
 
     var tabs = parent_element.getElementsByTagName('label');
@@ -45,8 +61,6 @@ function tabChange(e) {
             tab.className = tab.className.replace('is-active', '');
         }
     }
-
-    var el = document.getElementById(identifier);
 }
 
 function ajaxPost(form) {
