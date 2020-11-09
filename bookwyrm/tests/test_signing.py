@@ -6,6 +6,8 @@ import pathlib
 import json
 import responses
 
+import pytest
+
 from django.test import TestCase, Client
 from django.utils.http import http_date
 
@@ -167,6 +169,7 @@ class Signature(TestCase):
         response = self.send_test_request(sender=self.fake_remote)
         self.assertEqual(response.status_code, 401)
 
+    @pytest.mark.integration
     def test_changed_data(self):
         '''Message data must match the digest header.'''
         response = self.send_test_request(
@@ -174,12 +177,14 @@ class Signature(TestCase):
             send_data=get_follow_data(self.mouse, self.cat))
         self.assertEqual(response.status_code, 401)
 
+    @pytest.mark.integration
     def test_invalid_digest(self):
         response = self.send_test_request(
             self.mouse,
             digest='SHA-256=AAAAAAAAAAAAAAAAAA')
         self.assertEqual(response.status_code, 401)
 
+    @pytest.mark.integration
     def test_old_message(self):
         '''Old messages should be rejected to prevent replay attacks.'''
         response = self.send_test_request(

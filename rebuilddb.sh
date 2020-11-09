@@ -21,5 +21,5 @@ fi
 python manage.py makemigrations fedireads
 python manage.py migrate
 
-python manage.py shell < init_db.py
+python manage.py initdb
 python manage.py runserver

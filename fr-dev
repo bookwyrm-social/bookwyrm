@@ -3,51 +3,86 @@
 set -e
 set -x
 
+function clean {
+    docker-compose stop
+    docker-compose rm -f
+}
+
+function runweb {
+    docker-compose run --rm web "$@"
+    clean
+}
+
+function execdb {
+    docker-compose exec db $@
+}
+
+function execweb {
+    docker-compose exec web "$@"
+}
+
+function initdb {
+    execweb python manage.py migrate
+    execweb python manage.py initdb
+}
+
 case "$1" in
     up)
         docker-compose up --build
         ;;
     run)
-        docker-compose run --service-ports web
+        docker-compose run --rm --service-ports web
         ;;
     initdb)
-        docker-compose exec web python manage.py migrate
-        docker-compose exec web python manage.py shell -c 'import init_db'
+        initdb
         ;;
     resetdb)
-        docker-compose stop web
-        docker-compose exec db dropdb -U fedireads fedireads
-        docker-compose exec db createdb -U fedireads fedireads
-        docker-compose start web
-        docker-compose exec web python manage.py migrate
-        docker-compose exec web python manage.py shell -c 'import init_db'
+        clean
+        docker-compose up --build -d
+        execdb dropdb -U fedireads fedireads
+        execdb createdb -U fedireads fedireads
+        initdb
+        clean
         ;;
     makemigrations)
-        docker-compose exec web python manage.py makemigrations
+        execweb python manage.py makemigrations
         ;;
     migrate)
-        docker-compose exec web python manage.py migrate
+        execweb python manage.py migrate
+        ;;
+    bash)
+        execweb bash
         ;;
     shell)
-        docker-compose exec web python manage.py shell
+        execweb python manage.py shell
         ;;
     dbshell)
-        docker-compose exec db psql -U fedireads fedireads
+        execdb psql -U fedireads fedireads
         ;;
     restart_celery)
         docker-compose restart celery_worker
         ;;
     test)
         shift 1
-        docker-compose exec web coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        ;;
+    pytest)
+        shift 1
+        execweb pytest "$@"
         ;;
     test_report)
-        docker-compose exec web coverage report
+        execweb coverage report
         ;;
     collectstatic)
-        docker-compose exec web python manage.py collectstatic --no-input
+        execweb python manage.py collectstatic --no-input
+        ;;
+    build)
+        docker-compose build
+        ;;
+    clean)
+        clean
         ;;
     *)
-        echo "Unrecognised command. Try: up, initdb, resetdb, makemigrations, migrate, shell, dbshell, restart_celery, test, test_report"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report"
         ;;
 esac
