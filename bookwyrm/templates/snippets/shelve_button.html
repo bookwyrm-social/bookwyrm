@@ -38,14 +38,6 @@
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li>
-                    {% if shelf.identifier == 'reading' and active_shelf.identifier != 'reading' %}
-                    <div class="dropdown-item pt-0 pb-0">
-                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
-                            {{ shelf.name }}
-                        </label>
-                        {% include 'snippets/start_reading_modal.html' %}
-                    </div>
-                    {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book" value="{{ book.id }}">
@@ -54,7 +46,6 @@
                             {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}
                         </button>
                     </form>
-                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>
