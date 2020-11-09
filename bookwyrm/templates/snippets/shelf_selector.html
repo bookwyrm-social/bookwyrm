@@ -23,7 +23,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
                     <input type="hidden" name="shelf" value="{{ current.id }}">
-                    <button class="button is-small is-danger" type="submit">Unshelve</button>
+                    <button class="button is-small is-danger is-light" type="submit">Unshelve</button>
                 </form>
             </li>
         </ul>

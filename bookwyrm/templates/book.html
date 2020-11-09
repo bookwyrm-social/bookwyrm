@@ -5,9 +5,9 @@
 
 <div class="block">
     <div class="level">
-        <h2 class="title level-left">
+        <h1 class="title level-left">
             <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-        </h2>
+        </h1>
 
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="level-right">
@@ -132,7 +132,7 @@
 			    <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="id" value="{{ readthrough.id }}">
-				<button class="button is-danger" type="submit">
+				<button class="button is-danger is-light" type="submit">
 				    Delete
 				</button>
 				<label for="delete-readthrough-{{ readthrough.id }}" class="button">Cancel</button>
