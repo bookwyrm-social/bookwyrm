@@ -9,12 +9,12 @@
         <span>Read</span> <span class="icon icon-check"></span>
     </button>
     {% elif active_shelf.identifier == 'reading' %}
-    <label class="button is-small" for="finish-reading-{{ uuid }}" role="button">
+    <label class="button is-small" for="finish-reading-{{ uuid }}" role="button" tabindex="0">
         I'm done!
     </label>
     {% include 'snippets/finish_reading_modal.html' %}
     {% elif active_shelf.identifier == 'to-read' %}
-    <label class="button is-small" for="start-reading-{{ uuid }}" role="button">
+    <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
         Start reading
     </label>
     {% include 'snippets/start_reading_modal.html' %}
@@ -40,7 +40,7 @@
                 <li>
                     {% if shelf.identifier == 'reading' and active_shelf.identifier != 'reading' %}
                     <div class="dropdown-item pt-0 pb-0">
-                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button">
+                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
                             {{ shelf.name }}
                         </label>
                         {% include 'snippets/start_reading_modal.html' %}

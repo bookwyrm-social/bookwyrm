@@ -5,7 +5,7 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title">Start "{{ book.title }}"</p>
-                <label class="delete" for="start-reading-{{ uuid }}" aria-label="close" role="button"></label>
+                <label class="delete" for="start-reading-{{ uuid }}" aria-label="close" role="button" tabindex="0"></label>
             </header>
             <form name="start-reading" action="/start-reading" method="post">
                 <section class="modal-card-body">
@@ -29,7 +29,7 @@
                         </div>
                         <div class="column">
                             <button class="button is-success" type="submit">Save</button>
-                            <label for="start-reading-{{ uuid }}" class="button" role="button">Cancel</button>
+                            <label for="start-reading-{{ uuid }}" class="button" role="button" tabindex="0">Cancel</button>
                         </div>
                     </div>
                 </footer>
