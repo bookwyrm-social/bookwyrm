@@ -16,7 +16,7 @@
         <div class="field is-grouped stars form-rate-stars">
             <input class="hidden" type="radio" name="rating" value="" checked>
             {% for i in '12345'|make_list %}
-                <input class="hidden" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
+                <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
                 <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
                     <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
                 </label>
