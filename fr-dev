@@ -8,18 +8,22 @@ function clean {
     docker-compose rm -f
 }
 
-function rundb {
-    docker-compose exec db $@
-}
-
 function runweb {
     docker-compose run --rm web "$@"
     clean
 }
 
+function execdb {
+    docker-compose exec db $@
+}
+
+function execweb {
+    docker-compose exec web "$@"
+}
+
 function initdb {
-    runweb python manage.py migrate
-    runweb python manage.py initdb
+    execweb python manage.py migrate
+    execweb python manage.py initdb
 }
 
 case "$1" in
@@ -35,42 +39,42 @@ case "$1" in
     resetdb)
         clean
         docker-compose up --build -d
-        rundb dropdb -U fedireads fedireads
-        rundb createdb -U fedireads fedireads
+        execdb dropdb -U fedireads fedireads
+        execdb createdb -U fedireads fedireads
         initdb
         clean
         ;;
     makemigrations)
-        runweb python manage.py makemigrations
+        execweb python manage.py makemigrations
         ;;
     migrate)
-        runweb python manage.py migrate
+        execweb python manage.py migrate
         ;;
     bash)
-        runweb bash
+        execweb bash
         ;;
     shell)
-        runweb python manage.py shell
+        execweb python manage.py shell
         ;;
     dbshell)
-        rundb psql -U fedireads fedireads
+        execdb psql -U fedireads fedireads
         ;;
     restart_celery)
         docker-compose restart celery_worker
         ;;
     test)
         shift 1
-        runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
         shift 1
-        runweb pytest "$@"
+        execweb pytest "$@"
         ;;
     test_report)
-        runweb coverage report
+        execweb coverage report
         ;;
     collectstatic)
-        runweb python manage.py collectstatic --no-input
+        execweb python manage.py collectstatic --no-input
         ;;
     build)
         docker-compose build
