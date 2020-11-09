@@ -50,6 +50,10 @@ function tabChange(e, nested) {
     target.className = 'is-active';
 }
 
+function toggleMenu(el) {
+    el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
+}
+
 function ajaxPost(form) {
     fetch(form.action, {
         method : "POST",

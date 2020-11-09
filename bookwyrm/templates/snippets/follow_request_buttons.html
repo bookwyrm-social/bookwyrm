@@ -8,6 +8,6 @@
 <form action="/delete_follow_request/" method="POST">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}">
-    <button class="button is-danger is-small" type="submit" class="warning">Delete</button>
+    <button class="button is-danger is-light is-small" type="submit" class="warning">Delete</button>
 </form>
 {% endif %}

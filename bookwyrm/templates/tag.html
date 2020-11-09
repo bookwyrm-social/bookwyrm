@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="block">
-    <h2 class="title">Books tagged "{{ tag.name }}"</h2>
+    <h1 class="title">Books tagged "{{ tag.name }}"</h1>
     {% include 'snippets/book_tiles.html' with books=books.all %}
 </div>
 
