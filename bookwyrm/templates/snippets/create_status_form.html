@@ -9,11 +9,11 @@
     </div>
     {% endif %}
     <div class="control">
-        <label class="label" for="id_content_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        <label class="label" for="id_{% if type == 'quote' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
 
         {% if type == 'review' %}
-        <span class="is-sr-only">Rating</span>
         <fieldset>
+            <legend class="is-sr-only">Rating</legend>
             <div class="field is-grouped stars form-rate-stars">
                 <label class="is-sr-only">No rating
                     <input class="is-sr-only" type="radio" name="rating" value="" checked>
@@ -27,7 +27,11 @@
             </div>
         </fieldset>
         {% endif %}
-        <textarea name="{% if type == 'quote' %}quote{% else %}content{% endif %}" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% if type == 'quote' %}
+        <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% else %}
+        <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% endif %}
 
     </div>
     {% if type == 'quote' %}
