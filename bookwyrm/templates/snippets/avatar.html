@@ -1,2 +1,3 @@
-<img class="avatar image {% if large %}is-96x96{% else %}is-32x32{% endif %}" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}">
+{% load fr_display %}
+<img class="avatar image {% if large %}is-96x96{% else %}is-32x32{% endif %}" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}" alt="avatar for {{ user|username }}">
 

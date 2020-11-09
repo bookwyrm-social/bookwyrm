@@ -23,18 +23,18 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img class="image logo" src="/static/images/logo-small.png" alt="BookWyrm">
+            <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
         </a>
-	<form class="navbar-item" action="/search/">
-	    <div class="field is-grouped">
-                <input class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
-		<button class="button" type="submit">
-		    <span class="icon icon-search">
-			<span class="is-sr-only">search</span>
-		    </span>
-		</button>
-	    </div>
-	</form>
+        <form class="navbar-item" action="/search/">
+            <div class="field is-grouped">
+                <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
+                <button class="button" type="submit">
+                    <span class="icon icon-search">
+                    <span class="is-sr-only">search</span>
+                    </span>
+                </button>
+            </div>
+        </form>
 
         <label for="main-nav" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
             <span aria-hidden="true"></span>
@@ -89,7 +89,7 @@
                     <div class="tags has-addons">
                         <span class="tag is-medium">
                             <span class="icon icon-bell">
-                                <span class="is-sr-only">Notitications</span>
+                                <span class="is-sr-only">Notifications</span>
                             </span>
                         </span>
                         {% if request.user|notification_count %}
