@@ -32,26 +32,25 @@ function rate_stars(e) {
 }
 
 function tabChange(e) {
-    var target = e.target.closest('li')
-    var identifier = target.getAttribute('data-id');
+    var target = e.target.closest('li');
 
-    var parent_element = target.parentElement
+    var parent_element = target.parentElement;
     var tabs = parent_element.getElementsByTagName('label');
-    for (i = 0; i < tabs.length; i++) {
-        var tab = tabs[i].parentElement;
-        if (tab.getAttribute('data-id') == identifier) {
-            tab.className += ' is-active';
-        } else {
-            tab.className = tab.className.replace('is-active', '');
-        }
-    }
+
+    parent_element.querySelectorAll('[aria-selected="true"]')
+        .forEach(t => t.setAttribute("aria-selected", false));
+    e.target.parentElement.setAttribute("aria-selected", true);
+
+    parent_element.querySelectorAll('li')
+        .forEach(t => t.className='');
+    target.className += ' is-active';
 }
 
 function nestedTabChange(e) {
     var target = e.target.closest('li')
     var identifier = target.getAttribute('data-id');
-    var parent_element = target.parentElement.closest('li').parentElement;
 
+    var parent_element = target.parentElement.closest('li').parentElement;
     var tabs = parent_element.getElementsByTagName('label');
     for (i = 0; i < tabs.length; i++) {
         var tab = tabs[i].parentElement;
