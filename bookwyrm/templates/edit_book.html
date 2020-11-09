@@ -14,23 +14,18 @@
             </a>
         </div>
     </div>
-    <div class="columns">
-        <div class="column is-narrow">
-            {% include 'snippets/book_cover.html' with book=book size="small" %}
-        </div>
-        <div class="column is-narrow">
-            <p>Added: {{ book.created_date | naturaltime }}</p>
-            <p>Updated: {{ book.updated_date | naturaltime }}</p>
-        </div>
+    <div>
+        <p>Added: {{ book.created_date | naturaltime }}</p>
+        <p>Updated: {{ book.updated_date | naturaltime }}</p>
     </div>
 </div>
 
 <form class="block" name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
-        <h3 class="title is-4">Data sync</h3>
-        <h4 class="subtitle is-5">If sync is enabled, any changes will be over-written</h4>
-        </h3>
+        <h2 class="title is-4">Data sync
+            <p class="subtitle is-6">If sync is enabled, any changes will be over-written</p>
+        </h2>
         <div class="columns">
             <div class="column is-narrow">
                 <label class="checkbox" for="id_sync"><input class="checkbox" type="checkbox" name="sync" id="id_sync"> Sync</label>
@@ -43,7 +38,7 @@
 
     <div class="columns">
         <div class="block column">
-            <h3 class="title is-4">Book Identifiers</h3>
+            <h2 class="title is-4">Book Identifiers</h2>
             <p class="fields is-grouped"><label class="label"for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
             <p class="fields is-grouped"><label class="label"for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
             <p class="fields is-grouped"><label class="label"for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
@@ -52,13 +47,20 @@
         </div>
 
         <div class="column">
-            <div class="block">
-                <h3 class="title is-4">Cover</h3>
-                <p>{{ form.cover }} </p>
+            <div class="columns">
+                <div class="column is-narrow">
+                    {% include 'snippets/book_cover.html' with book=book size="small" %}
+                </div>
+                <div class="column is-narrow">
+                    <div class="block">
+                        <h2 class="title is-4">Cover</h2>
+                        <p>{{ form.cover }} </p>
+                    </div>
+                </div>
             </div>
 
             <div class="block">
-                <h3 class="title is-4">Physical Properties</h3>
+                <h2 class="title is-4">Physical Properties</h2>
                 <p class="fields is-grouped"><label class="label"for="id_physical_format">Format:</label> {{ form.physical_format }} </p>
                 <p class="fields is-grouped"><label class="label"for="id_pages">Pages:</label> {{ form.pages }} </p>
             </div>
@@ -66,7 +68,7 @@
     </div>
 
     <div class="block">
-        <h3 class="title is-4">Metadata</h3>
+        <h2 class="title is-4">Metadata</h2>
         <p class="fields is-grouped"><label class="label"for="id_title">Title:</label> {{ form.title }} </p>
         <p class="fields is-grouped"><label class="label"for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
         <p class="fields is-grouped"><label class="label"for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
