@@ -1,9 +1,9 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
-{% with book.id|uuid as uuid %}
 
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
+    {% with book.id|uuid as uuid %}
     {% if active_shelf.identifier == 'read' %}
     <button class="button is-small" disabled>
         <span>Read</span> <span class="icon icon-check"></span>
@@ -26,6 +26,7 @@
         <button class="button is-small" type="submit">Want to read</button>
     </form>
     {% endif %}
+    {% endwith %}
 
     <div class="dropdown is-hoverable">
         <div class="dropdown-trigger">
@@ -34,10 +35,19 @@
             </button>
         </div>
 
+        {% with book.id|uuid as uuid %}
         <div class="dropdown-menu" id="dropdown-menu-{{ uuid }}" role="menu">
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li>
+                    {% if shelf.identifier == 'to-read' %}
+                    <div class="dropdown-item pt-0 pb-0">
+                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
+                            Start reading
+                        </label>
+                        {% include 'snippets/start_reading_modal.html' %}
+                    </div>
+                    {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="book" value="{{ book.id }}">
@@ -46,12 +56,13 @@
                             {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}
                         </button>
                     </form>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>
         </div>
+        {% endwith %}
     </div>
 </div>
 
-{% endwith %}
 {% endif %}
