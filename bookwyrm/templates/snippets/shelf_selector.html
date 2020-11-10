@@ -1,9 +1,14 @@
-<div class="dropdown is-hoverable">
-    <div class="dropdown-trigger button">
-        <p>Change shelf</p>
-        <span class="icon icon-arrow-down"></span>
+<div class="dropdown">
+    <div class="dropdown-trigger">
+        <label for="shelf-select-dropdown-{{ book.id }}-toggle" role="button" aria-expanded="false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ book.id }}">
+            <div class="button">
+                <span>Change shelf</span>
+                <span class="icon icon-arrow-down" aria-hidden="true"></span>
+            </div>
+        </label>
     </div>
-    <div class="dropdown-menu">
+    <input type="checkbox" class="toggle-control" id="shelf-select-dropdown-{{ book.id }}-toggle">
+    <div class="dropdown-menu toggle-content hidden" id="shelf-select-{{ book.id }}" role="menu">
         <ul class="dropdown-content">
             {% for shelf in request.user.shelf_set.all %}
             {% if shelf.identifier != current.identifier %}
