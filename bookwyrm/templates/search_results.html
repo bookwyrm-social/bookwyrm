@@ -26,7 +26,9 @@
 
             <input class="toggle-control" type="radio" name="more-results" id="fewer-results" checked>
             <div class="toggle-content hidden">
-                <label class="button is-small" for="more-results">Show results from other catalogues</label>
+                <label class="button is-small" for="more-results">
+                    <div role="button" tabindex="0">Show results from other catalogues</div>
+                </label>
             </div>
         </div>
         {% endif %}
@@ -58,7 +60,9 @@
             {% endif %}
             {% endfor %}
             {% if local_results.results %}
-            <label class="button is-small" for="fewer-results">Hide results from other catalogues</label>
+            <label class="button is-small" for="fewer-results">
+                <div role="button" tabindex="0">Hide results from other catalogues</div>
+            </label>
             {% endif %}
         </div>
     </div>
