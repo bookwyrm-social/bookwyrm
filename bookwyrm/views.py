@@ -311,8 +311,9 @@ def notifications_page(request):
     notifications.update(read=True)
     return TemplateResponse(request, 'notifications.html', data)
 
+
 @csrf_exempt
-def user_page(request, username, subpage=None, shelf=None):
+def user_page(request, username):
     ''' profile page for a user '''
     try:
         user = get_user_from_username(username)
@@ -329,19 +330,6 @@ def user_page(request, username, subpage=None, shelf=None):
         'user': user,
         'is_self': request.user.id == user.id,
     }
-    if subpage == 'followers':
-        data['followers'] = user.followers.all()
-        return TemplateResponse(request, 'followers.html', data)
-    if subpage == 'following':
-        data['following'] = user.following.all()
-        return TemplateResponse(request, 'following.html', data)
-    if subpage == 'shelves':
-        data['shelves'] = user.shelf_set.all()
-        if shelf:
-            data['shelf'] = user.shelf_set.get(identifier=shelf)
-        else:
-            data['shelf'] = user.shelf_set.first()
-        return TemplateResponse(request, 'shelf.html', data)
 
     data['shelf_count'] = user.shelf_set.count()
     shelves = []
@@ -376,7 +364,13 @@ def followers_page(request, username):
     if is_api_request(request):
         return JsonResponse(user.to_followers_activity(**request.GET))
 
-    return user_page(request, username, subpage='followers')
+    data = {
+        'title': '%s: followers' % user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+        'followers': user.followers.all(),
+    }
+    return TemplateResponse(request, 'followers.html', data)
 
 
 @csrf_exempt
@@ -393,16 +387,19 @@ def following_page(request, username):
     if is_api_request(request):
         return JsonResponse(user.to_following_activity(**request.GET))
 
-    return user_page(request, username, subpage='following')
+    data = {
+        'title': '%s: following' % user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+        'following': user.following.all(),
+    }
+    return TemplateResponse(request, 'following.html', data)
 
 
 @csrf_exempt
 def user_shelves_page(request, username):
     ''' list of followers '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    return user_page(request, username, subpage='shelves')
+    return shelf_page(request, username, None)
 
 
 @csrf_exempt
@@ -629,10 +626,19 @@ def shelf_page(request, username, shelf_identifier):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
-    shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
-
     if is_api_request(request):
+        shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
         return JsonResponse(shelf.to_activity(**request.GET))
 
-    return user_page(
-        request, username, subpage='shelves', shelf=shelf_identifier)
+    data = {
+        'title': user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+    }
+
+    data['shelves'] = user.shelf_set.all()
+    if shelf:
+        data['shelf'] = user.shelf_set.get(identifier=shelf)
+    else:
+        data['shelf'] = user.shelf_set.first()
+    return TemplateResponse(request, 'shelf.html', data)
