@@ -626,19 +626,22 @@ def shelf_page(request, username, shelf_identifier):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
+    if shelf_identifier:
+        shelf = user.shelf_set.get(identifier=shelf_identifier)
+    else:
+        shelf = user.shelf_set.first()
+
     if is_api_request(request):
-        shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
         return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
         'title': user.name,
         'user': user,
         'is_self': request.user.id == user.id,
+        'shelves': user.shelf_set.all(),
+        'shelf': shelf,
+        'create_form': forms.ShelfForm(),
+        'edit_form': forms.ShelfForm(shelf),
     }
 
-    data['shelves'] = user.shelf_set.all()
-    if shelf:
-        data['shelf'] = user.shelf_set.get(identifier=shelf)
-    else:
-        data['shelf'] = user.shelf_set.first()
     return TemplateResponse(request, 'shelf.html', data)

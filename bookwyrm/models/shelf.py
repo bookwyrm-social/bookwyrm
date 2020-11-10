@@ -1,4 +1,5 @@
 ''' puttin' books on shelves '''
+import re
 from django.db import models
 
 from bookwyrm import activitypub
@@ -22,6 +23,15 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         through='ShelfBook',
         through_fields=('shelf', 'book')
     )
+
+    def save(self, *args, **kwargs):
+        ''' set the identifier '''
+        saved = super().save(*args, **kwargs)
+        if not self.identifier:
+            slug = re.sub(r'[^\w]', '', self.name)
+            self.identifier = '%s-%d' % (slug, self.id)
+            return super().save(*args, **kwargs)
+        return saved
 
     @property
     def collection_queryset(self):

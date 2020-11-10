@@ -159,3 +159,8 @@ class CreateInviteForm(CustomForm):
                 choices=[(i, "%d uses" % (i,)) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, 'Unlimited')])
         }
+
+class ShelfForm(CustomForm):
+    class Meta:
+        model = models.Shelf
+        fields = ['user', 'name', 'privacy']

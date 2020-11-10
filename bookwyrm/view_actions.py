@@ -273,6 +273,17 @@ def upload_cover(request, book_id):
 
 
 @login_required
+def create_shelf(request):
+    ''' user generated shelves '''
+    form = forms.ShelfForm(request.POST)
+    if not form.is_valid():
+        return redirect(request.headers.get('Referer', '/'))
+    shelf = form.save()
+    return redirect('/user/%s/shelves/%s' % \
+            (request.user.localname, shelf.identifier))
+
+
+@login_required
 def shelve(request):
     ''' put a  on a user's shelf '''
     book = books_manager.get_edition(request.POST['book'])
