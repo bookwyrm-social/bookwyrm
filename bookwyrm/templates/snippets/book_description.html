@@ -7,12 +7,14 @@
     <div>
         <input type="radio" name="show-hide-{{ book.id }}-{{ uuid }}" id="show-{{ book.id }}-{{ uuid }}" class="toggle-control" checked>
         <blockquote class="content toggle-content hidden">{{ trimmed }}
-            <label class="button is-small" for="hide-{{ book.id }}-{{ uuid }}">show more</label></blockquote>
+            <label class="button is-small" for="hide-{{ book.id }}-{{ uuid }}"><div role="button" tabindex="0">show more</div></label>
+        </blockquote>
     </div>
     <div>
         <input type="radio" name="show-hide-{{ book.id }}-{{ uuid }}" id="hide-{{ book.id }}-{{ uuid }}" class="toggle-control">
         <blockquote class="content toggle-content hidden">{{ full }}
-        <label class="button is-small" for="show-{{ book.id }}-{{ uuid }}">show less</label></blockquote>
+            <label class="button is-small" for="show-{{ book.id }}-{{ uuid }}"><div role="button" tabindex="0">show less</div></label>
+        </blockquote>
     </div>
     {% else %}
     <blockquote class="content">{{ full }}
