@@ -2,7 +2,7 @@
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import BookWyrmModel, OrderedCollectionMixin
+from .base_model import BookWyrmModel, OrderedCollectionMixin, PrivacyLevels
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
@@ -11,6 +11,11 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     identifier = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     editable = models.BooleanField(default=True)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
     books = models.ManyToManyField(
         'Edition',
         symmetrical=False,
