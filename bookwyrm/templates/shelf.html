@@ -1,18 +1,55 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
+
+<div class="columns">
+    <div class="column">
+        <h1 class="title">
+            {% if is_self %}Your
+            {% else %}
+            {% include 'snippets/username.html' with user=user possessive=True %}
+            {% endif %}
+            shelves
+        </h1>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        <a href="/create-shelf/">
+            <span class="icon icon-plus">
+                <span class="is-sr-only">Create new shelf</span>
+            </span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+
 {% include 'snippets/user_header.html' with user=user %}
 
 <div class="block">
-    <div class="tabs">
+    <div class="tabs" aria-role="tablist">
         <ul>
         {% for shelf_tab in shelves %}
-        <li class="{% if shelf_tab.identifier == shelf.identifier  %}is-active{% endif %}">
-            <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}">{{ shelf_tab.name }}</a>
-        </li>
+        <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}" role="tab" aria-selected="{% if shelf_tab.identifier == shelf.identifier %}true{% else %}false{% endif %}">{{ shelf_tab.name }}</a>
+            </li>
         {% endfor %}
         </ul>
     </div>
+</div>
+
+<div class="columns">
+    <div class="column">
+        <h2 class="title is-3">{{ shelf.name }}</h2>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        <a href="/edit-shelf/{{ shelf.identifier }}">
+            <span class="icon icon-pencil">
+                <span class="is-sr-only">Edit shelf</span>
+            </span>
+        </a>
+    </div>
+    {% endif %}
 </div>
 
 <div class="block">
