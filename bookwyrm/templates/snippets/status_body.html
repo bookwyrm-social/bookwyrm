@@ -33,7 +33,11 @@
                 {% if request.user.is_authenticated %}
 
                 <label class="button is-small" for="show-comment-{{ status.id }}">
-                    <span class="icon icon-comment"><span class="is-sr-only">Comment</span></span>
+                    <div role="button" tabindex="0">
+                        <span class="icon icon-comment">
+                            <span class="is-sr-only">Comment</span>
+                        </span>
+                    </div>
                 </label>
                 {% include 'snippets/boost_button.html' with status=status %}
                 {% include 'snippets/fav_button.html' with status=status %}
