@@ -30,14 +30,18 @@
                 <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
                 <button class="button" type="submit">
                     <span class="icon icon-search">
-                    <span class="is-sr-only">search</span>
+                        <span class="is-sr-only">search</span>
                     </span>
                 </button>
             </div>
         </form>
 
-        <label for="main-nav" role="button" class="navbar-item" aria-label="menu" aria-expanded="false" data-target="mainNav" onclick="toggleMenu(this)">
-            <div class="icon icon-dots-three-vertical"><span class="is-sr-only">Main navigation menu</div>
+        <label for="main-nav" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav" onclick="toggleMenu(this)" tabindex="0">
+            <div class="navbar-item mt-3">
+                <div class="icon icon-dots-three-vertical">
+                    <span class="is-sr-only">Main navigation menu</span>
+                </div>
+            </div>
         </label>
     </div>
 

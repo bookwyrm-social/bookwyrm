@@ -17,12 +17,12 @@
                     <p>
                         {{ shelf.name }}
                     </p>
-                    <div class="tabs is-small is-toggle">
+                    <div class="tabs is-small is-toggle" role="tablist">
                         <ul>
                             {% for book in shelf.books %}
                             <li class="{% if shelf_counter == 1 and forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
                                 <label for="book-{{ book.id }}" onclick="tabChange(event, nested=true)">
-                                    <div role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}">
+                                    <div role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}-panel">
                                         <a>
                                             {% include 'snippets/book_cover.html' with book=book size="medium" %}
                                         </a>
@@ -43,7 +43,7 @@
         {% for book in shelf.books %}
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if shelf_counter == 1 and forloop.first %}checked{% endif %}>
-            <div class="toggle-content hidden">
+            <div class="toggle-content hidden" role="tabpanel" id="book-{{ book.id }}-panel">
                 <div class="block">
                     {% include 'snippets/book_titleby.html' with book=book %}
                     {% include 'snippets/shelve_button.html' with book=book %}
