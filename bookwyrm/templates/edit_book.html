@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<form class="block" name="edit-book" action="/edit_book/{{ book.id }}" method="post" enctype="multipart/form-data">
+<form class="block" name="edit-book" action="/edit-book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
         <h2 class="title is-4">Data sync

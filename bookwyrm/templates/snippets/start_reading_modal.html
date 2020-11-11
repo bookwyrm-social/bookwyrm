@@ -7,10 +7,9 @@
                 <p class="modal-card-title">Start "{{ book.title }}"</p>
                 <label class="delete" for="start-reading-{{ uuid }}" aria-label="close" role="button" tabindex="0"></label>
             </header>
-            <form name="start-reading" action="/start-reading" method="post">
+            <form name="start-reading" action="/start-reading/{{ book.id }}" method="post">
                 <section class="modal-card-body">
                     {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
                     <div class="field">
                         <label class="label">
                             Started reading

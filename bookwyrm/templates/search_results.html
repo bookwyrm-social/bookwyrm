@@ -47,7 +47,7 @@
                 <ul>
                 {% for result in result_set.results %}
                     <li class="pb-4">
-                        <form action="/resolve_book" method="POST">
+                        <form action="/resolve-book" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="remote_id" value="{{ result.key }}">
                             <div>{% include 'snippets/search_result_text.html' with result=result link=False %}</div>

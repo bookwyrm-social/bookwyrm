@@ -7,7 +7,7 @@ from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -74,10 +74,7 @@ def home_tab(request, tab):
         'user': request.user,
         'suggested_books': suggested_books,
         'activities': activities,
-        'review_form': forms.ReviewForm(),
-        'quotation_form': forms.QuotationForm(),
         'tab': tab,
-        'comment_form': forms.CommentForm(),
         'next': next_page if activity_count > (page_size * page) else None,
         'prev': prev_page if page > 1 else None,
     }
@@ -168,7 +165,7 @@ def search(request):
         book_results = books_manager.local_search(query)
         return JsonResponse([r.__dict__ for r in book_results], safe=False)
 
-    # use webfinger  looks like a mastodon style account@domain.com username
+    # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
         outgoing.handle_remote_webfinger(query)
 
@@ -176,7 +173,7 @@ def search(request):
     user_results = models.User.objects.annotate(
         similarity=TrigramSimilarity('username', query),
     ).filter(
-        similarity__gt=0.1,
+        similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
     book_results = books_manager.search(query)
@@ -285,6 +282,7 @@ def invite_page(request, code):
     }
     return TemplateResponse(request, 'invite.html', data)
 
+
 @login_required
 @permission_required('bookwyrm.create_invites', raise_exception=True)
 def manage_invites(request):
@@ -325,13 +323,6 @@ def user_page(request, username):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
-    data = {
-        'title': user.name,
-        'user': user,
-        'is_self': request.user.id == user.id,
-    }
-
-    data['shelf_count'] = user.shelf_set.count()
     shelves = []
     for user_shelf in user.shelf_set.all():
         if not user_shelf.books.count():
@@ -345,8 +336,15 @@ def user_page(request, username):
         if len(shelves) > 2:
             break
 
-    data['shelves'] = shelves
-    data['activities'] = get_activity_feed(user, 'self')[:15]
+    data = {
+        'title': user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+        'shelves': shelves,
+        'shelf_count': user.shelf_set.count(),
+        'activities': get_activity_feed(user, 'self')[:15],
+    }
+
     return TemplateResponse(request, 'user.html', data)
 
 
@@ -431,6 +429,7 @@ def status_page(request, username, status_id):
     }
     return TemplateResponse(request, 'status.html', data)
 
+
 def status_visible_to_user(viewer, status):
     ''' is a user authorized to view a status? '''
     if viewer == status.user or status.privacy in ['public', 'unlisted']:
@@ -442,7 +441,6 @@ def status_visible_to_user(viewer, status):
             status.mention_users.filter(id=viewer.id).first():
         return True
     return False
-
 
 
 @csrf_exempt
@@ -525,13 +523,8 @@ def book_page(request, book_id):
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
-        'review_form': forms.ReviewForm(),
-        'quotation_form': forms.QuotationForm(),
-        'comment_form': forms.CommentForm(),
         'readthroughs': readthroughs,
-        'tag_form': forms.TagForm(),
         'path': '/book/%s' % book_id,
-        'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
             {'name': 'ISBN', 'value': book.isbn_13},
             {'name': 'OCLC number', 'value': book.oclc_number},
@@ -561,10 +554,7 @@ def edit_book_page(request, book_id):
 
 def editions_page(request, book_id):
     ''' list of editions of a book '''
-    try:
-        work = models.Work.objects.get(id=book_id)
-    except models.Work.DoesNotExist:
-        return HttpResponseNotFound()
+    work = get_object_or_404(models.Work, id=book_id)
 
     if is_api_request(request):
         return JsonResponse(
@@ -583,10 +573,7 @@ def editions_page(request, book_id):
 
 def author_page(request, author_id):
     ''' landing page for an author '''
-    try:
-        author = models.Author.objects.get(id=author_id)
-    except ValueError:
-        return HttpResponseNotFound()
+    author = get_object_or_404(models.Author, id=author_id)
 
     if is_api_request(request):
         return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
@@ -658,8 +645,6 @@ def shelf_page(request, username, shelf_identifier):
         'is_self': is_self,
         'shelves': shelves.all(),
         'shelf': shelf,
-        'create_form': forms.ShelfForm(),
-        'edit_form': forms.ShelfForm(shelf),
     }
 
     return TemplateResponse(request, 'shelf.html', data)
