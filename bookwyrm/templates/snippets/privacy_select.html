@@ -5,10 +5,18 @@
     <label class="is-sr-only" for="privacy-{{ uuid }}">Post privacy</label>
     {% endif %}
     <select name="privacy" id="privacy-{{ uuid }}">
-        <option value="public" selected>Public</option>
-        <option value="unlisted">Unlisted</option>
-        <option value="followers">Followers only</option>
-        <option value="direct">Private</option>
+        <option value="public" {% if not current or current == 'public' %}selected{% endif %}>
+            Public
+        </option>
+        <option value="unlisted" {% if current == 'unlisted' %}selected{% endif %}>
+            Unlisted
+        </option>
+        <option value="followers" {% if current == 'followers' %}selected{% endif %}>
+            Followers only
+        </option>
+        <option value="direct" {% if current == 'direct' %}selected{% endif %}>
+            Private
+        </option>
     </select>
     {% endwith %}
 </div>

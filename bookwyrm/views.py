@@ -3,11 +3,12 @@ import re
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -15,6 +16,7 @@ from bookwyrm import outgoing
 from bookwyrm.activitypub import ActivityEncoder
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
+from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
@@ -53,8 +55,6 @@ def home(request):
 @login_required
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
-    # TODO: why on earth would this be where the pagination is set
-    page_size = 15
     try:
         page = int(request.GET.get('page', 1))
     except ValueError:
@@ -63,23 +63,24 @@ def home_tab(request, tab):
     suggested_books = get_suggested_books(request.user)
 
     activities = get_activity_feed(request.user, tab)
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
 
-    activity_count = activities.count()
-    activities = activities[(page - 1) * page_size:page * page_size]
-
-    next_page = '/?page=%d#feed' % (page + 1)
-    prev_page = '/?page=%d#feed' % (page - 1)
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.previous_page_number())
     data = {
         'title': 'Updates Feed',
         'user': request.user,
         'suggested_books': suggested_books,
-        'activities': activities,
-        'review_form': forms.ReviewForm(),
-        'quotation_form': forms.QuotationForm(),
+        'activities': activity_page.object_list,
         'tab': tab,
-        'comment_form': forms.CommentForm(),
-        'next': next_page if activity_count > (page_size * page) else None,
-        'prev': prev_page if page > 1 else None,
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -168,7 +169,7 @@ def search(request):
         book_results = books_manager.local_search(query)
         return JsonResponse([r.__dict__ for r in book_results], safe=False)
 
-    # use webfinger  looks like a mastodon style account@domain.com username
+    # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
         outgoing.handle_remote_webfinger(query)
 
@@ -176,7 +177,7 @@ def search(request):
     user_results = models.User.objects.annotate(
         similarity=TrigramSimilarity('username', query),
     ).filter(
-        similarity__gt=0.1,
+        similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
     book_results = books_manager.search(query)
@@ -285,6 +286,7 @@ def invite_page(request, code):
     }
     return TemplateResponse(request, 'invite.html', data)
 
+
 @login_required
 @permission_required('bookwyrm.create_invites', raise_exception=True)
 def manage_invites(request):
@@ -311,8 +313,9 @@ def notifications_page(request):
     notifications.update(read=True)
     return TemplateResponse(request, 'notifications.html', data)
 
+
 @csrf_exempt
-def user_page(request, username, subpage=None, shelf=None):
+def user_page(request, username):
     ''' profile page for a user '''
     try:
         user = get_user_from_username(username)
@@ -324,41 +327,58 @@ def user_page(request, username, subpage=None, shelf=None):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
-    data = {
-        'title': user.name,
-        'user': user,
-        'is_self': request.user.id == user.id,
-    }
-    if subpage == 'followers':
-        data['followers'] = user.followers.all()
-        return TemplateResponse(request, 'followers.html', data)
-    if subpage == 'following':
-        data['following'] = user.following.all()
-        return TemplateResponse(request, 'following.html', data)
-    if subpage == 'shelves':
-        data['shelves'] = user.shelf_set.all()
-        if shelf:
-            data['shelf'] = user.shelf_set.get(identifier=shelf)
-        else:
-            data['shelf'] = user.shelf_set.first()
-        return TemplateResponse(request, 'shelf.html', data)
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
 
-    data['shelf_count'] = user.shelf_set.count()
-    shelves = []
-    for user_shelf in user.shelf_set.all():
+    shelf_preview = []
+
+    # only show other shelves that should be visible
+    shelves = user.shelf_set
+    is_self = request.user.id == user.id
+    if not is_self:
+        follower = user.followers.filter(id=request.user.id).exists()
+        if follower:
+            shelves = shelves.filter(privacy__in=['public', 'followers'])
+        else:
+            shelves = shelves.filter(privacy='public')
+
+    for user_shelf in shelves.all():
         if not user_shelf.books.count():
             continue
-        shelves.append({
+        shelf_preview.append({
             'name': user_shelf.name,
             'remote_id': user_shelf.remote_id,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
-        if len(shelves) > 2:
+        if len(shelf_preview) > 2:
             break
 
-    data['shelves'] = shelves
-    data['activities'] = get_activity_feed(user, 'self')[:15]
+    # user's posts
+    activities = get_activity_feed(user, 'self')
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/user/%s/?page=%d' % \
+                (username, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/user/%s/?page=%d' % \
+                (username, activity_page.previous_page_number())
+    data = {
+        'title': user.name,
+        'user': user,
+        'is_self': is_self,
+        'shelves': shelf_preview,
+        'shelf_count': shelves.count(),
+        'activities': activity_page.object_list,
+        'next': next_page,
+        'prev': prev_page,
+    }
+
     return TemplateResponse(request, 'user.html', data)
 
 
@@ -376,7 +396,13 @@ def followers_page(request, username):
     if is_api_request(request):
         return JsonResponse(user.to_followers_activity(**request.GET))
 
-    return user_page(request, username, subpage='followers')
+    data = {
+        'title': '%s: followers' % user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+        'followers': user.followers.all(),
+    }
+    return TemplateResponse(request, 'followers.html', data)
 
 
 @csrf_exempt
@@ -393,16 +419,13 @@ def following_page(request, username):
     if is_api_request(request):
         return JsonResponse(user.to_following_activity(**request.GET))
 
-    return user_page(request, username, subpage='following')
-
-
-@csrf_exempt
-def user_shelves_page(request, username):
-    ''' list of followers '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
-    return user_page(request, username, subpage='shelves')
+    data = {
+        'title': '%s: following' % user.name,
+        'user': user,
+        'is_self': request.user.id == user.id,
+        'following': user.following.all(),
+    }
+    return TemplateResponse(request, 'following.html', data)
 
 
 @csrf_exempt
@@ -434,6 +457,7 @@ def status_page(request, username, status_id):
     }
     return TemplateResponse(request, 'status.html', data)
 
+
 def status_visible_to_user(viewer, status):
     ''' is a user authorized to view a status? '''
     if viewer == status.user or status.privacy in ['public', 'unlisted']:
@@ -445,7 +469,6 @@ def status_visible_to_user(viewer, status):
             status.mention_users.filter(id=viewer.id).first():
         return True
     return False
-
 
 
 @csrf_exempt
@@ -483,6 +506,11 @@ def edit_profile_page(request):
 
 def book_page(request, book_id):
     ''' info about a book '''
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
@@ -499,7 +527,20 @@ def book_page(request, book_id):
     reviews = models.Review.objects.filter(
         book__in=work.edition_set.all(),
     )
+    # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
+
+    # the reviews to show
+    paginated = Paginator(reviews.filter(content__isnull=False), PAGE_LENGTH)
+    reviews_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if reviews_page.has_next():
+        next_page = '/book/%d/?page=%d' % \
+                (book_id, reviews_page.next_page_number())
+    if reviews_page.has_previous():
+        prev_page = '/book/%s/?page=%d' % \
+                (book_id, reviews_page.previous_page_number())
 
     user_tags = []
     readthroughs = []
@@ -523,18 +564,13 @@ def book_page(request, book_id):
     data = {
         'title': book.title,
         'book': book,
-        'reviews': reviews.filter(content__isnull=False),
+        'reviews': reviews_page,
         'ratings': reviews.filter(content__isnull=True),
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
-        'review_form': forms.ReviewForm(),
-        'quotation_form': forms.QuotationForm(),
-        'comment_form': forms.CommentForm(),
         'readthroughs': readthroughs,
-        'tag_form': forms.TagForm(),
         'path': '/book/%s' % book_id,
-        'cover_form': forms.CoverForm(instance=book),
         'info_fields': [
             {'name': 'ISBN', 'value': book.isbn_13},
             {'name': 'OCLC number', 'value': book.oclc_number},
@@ -543,6 +579,8 @@ def book_page(request, book_id):
             {'name': 'Format', 'value': book.physical_format},
             {'name': 'Pages', 'value': book.pages},
         ],
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'book.html', data)
 
@@ -564,10 +602,7 @@ def edit_book_page(request, book_id):
 
 def editions_page(request, book_id):
     ''' list of editions of a book '''
-    try:
-        work = models.Work.objects.get(id=book_id)
-    except models.Work.DoesNotExist:
-        return HttpResponseNotFound()
+    work = get_object_or_404(models.Work, id=book_id)
 
     if is_api_request(request):
         return JsonResponse(
@@ -586,10 +621,7 @@ def editions_page(request, book_id):
 
 def author_page(request, author_id):
     ''' landing page for an author '''
-    try:
-        author = models.Author.objects.get(id=author_id)
-    except ValueError:
-        return HttpResponseNotFound()
+    author = get_object_or_404(models.Author, id=author_id)
 
     if is_api_request(request):
         return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
@@ -622,6 +654,12 @@ def tag_page(request, tag_id):
     return TemplateResponse(request, 'tag.html', data)
 
 
+@csrf_exempt
+def user_shelves_page(request, username):
+    ''' list of followers '''
+    return shelf_page(request, username, None)
+
+
 def shelf_page(request, username, shelf_identifier):
     ''' display a shelf '''
     try:
@@ -629,10 +667,37 @@ def shelf_page(request, username, shelf_identifier):
     except models.User.DoesNotExist:
         return HttpResponseNotFound()
 
-    shelf = models.Shelf.objects.get(user=user, identifier=shelf_identifier)
+    if shelf_identifier:
+        shelf = user.shelf_set.get(identifier=shelf_identifier)
+    else:
+        shelf = user.shelf_set.first()
+
+    is_self = request.user == user
+
+    shelves = user.shelf_set
+    if not is_self:
+        follower = user.followers.filter(id=request.user.id).exists()
+        # make sure the user has permission to view the shelf
+        if shelf.privacy == 'direct' or \
+                (shelf.privacy == 'followers' and not follower):
+            return HttpResponseNotFound()
+
+        # only show other shelves that should be visible
+        if follower:
+            shelves = shelves.filter(privacy__in=['public', 'followers'])
+        else:
+            shelves = shelves.filter(privacy='public')
+
 
     if is_api_request(request):
         return JsonResponse(shelf.to_activity(**request.GET))
 
-    return user_page(
-        request, username, subpage='shelves', shelf=shelf_identifier)
+    data = {
+        'title': user.name,
+        'user': user,
+        'is_self': is_self,
+        'shelves': shelves.all(),
+        'shelf': shelf,
+    }
+
+    return TemplateResponse(request, 'shelf.html', data)

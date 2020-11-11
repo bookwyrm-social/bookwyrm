@@ -1,6 +1,16 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
+<div class="block">
+    <h1 class="title">
+        Users following
+        {% if is_self %}you
+        {% else %}
+        {% include 'snippets/username.html' with user=user %}
+        {% endif %}
+    </h1>
+</div>
+
 {% include 'snippets/user_header.html' with user=user %}
 
 <div class="block">
