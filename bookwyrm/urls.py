@@ -55,7 +55,7 @@ urlpatterns = [
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
     re_path(r'import/?$', views.import_page),
-    re_path(r'import_status/(\d+)/?$', views.import_status),
+    re_path(r'import-status/(\d+)/?$', views.import_status),
     re_path(r'user-edit/?$', views.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested
@@ -95,12 +95,12 @@ urlpatterns = [
     re_path(r'^reset-password/?$', actions.password_reset),
     re_path(r'^change-password/?$', actions.password_change),
 
-    re_path(r'^edit_profile/?$', actions.edit_profile),
+    re_path(r'^edit-profile/?$', actions.edit_profile),
 
-    re_path(r'^import_data/?', actions.import_data),
-    re_path(r'^resolve_book/?', actions.resolve_book),
-    re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
-    re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
+    re_path(r'^import-data/?', actions.import_data),
+    re_path(r'^resolve-book/?', actions.resolve_book),
+    re_path(r'^edit-book/(?P<book_id>\d+)/?', actions.edit_book),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?', actions.upload_cover),
 
     re_path(r'^edit-readthrough/?', actions.edit_readthrough),
     re_path(r'^delete-readthrough/?', actions.delete_readthrough),
@@ -130,11 +130,11 @@ urlpatterns = [
 
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),
-    re_path(r'^accept_follow_request/?$', actions.accept_follow_request),
-    re_path(r'^delete_follow_request/?$', actions.delete_follow_request),
+    re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
+    re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
 
     re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
-    re_path(r'^create_invite/?$', actions.create_invite),
+    re_path(r'^create-invite/?$', actions.create_invite),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

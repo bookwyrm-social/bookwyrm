@@ -665,7 +665,7 @@ def import_data(request):
         except (UnicodeDecodeError, ValueError):
             return HttpResponseBadRequest('Not a valid csv file')
         goodreads_import.start_import(job)
-        return redirect('/import_status/%d' % (job.id,))
+        return redirect('/import-status/%d' % (job.id,))
     return HttpResponseBadRequest()
 
 

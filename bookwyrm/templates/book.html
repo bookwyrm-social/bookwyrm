@@ -28,7 +28,7 @@
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="box p-2">
-                <form name="add-cover" method="POST" action="/upload_cover/{{ book.id }}" enctype="multipart/form-data">
+                <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="field">
                         <label class="label" for="id_cover">Cover:</label>
