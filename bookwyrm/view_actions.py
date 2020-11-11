@@ -61,10 +61,7 @@ def register(request):
         if not invite_code:
             raise PermissionDenied
 
-        try:
-            invite = models.SiteInvite.objects.get(code=invite_code)
-        except models.SiteInvite.DoesNotExist:
-            raise PermissionDenied
+        invite = get_object_or_404(models.SiteInvite, code=invite_code)
     else:
         invite = None
 
@@ -234,10 +231,7 @@ def edit_book(request, book_id):
     if not request.method == 'POST':
         return redirect('/book/%s' % book_id)
 
-    try:
-        book = models.Edition.objects.get(id=book_id)
-    except models.Edition.DoesNotExist:
-        return HttpResponseNotFound()
+    book = get_object_or_404(models.Edition, id=book_id)
 
     form = forms.EditionForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
@@ -251,14 +245,10 @@ def edit_book(request, book_id):
 @login_required
 def upload_cover(request, book_id):
     ''' upload a new cover '''
-    # TODO: alternate covers?
     if not request.method == 'POST':
         return redirect('/book/%s' % request.user.localname)
 
-    try:
-        book = models.Edition.objects.get(id=book_id)
-    except models.Edition.DoesNotExist:
-        return HttpResponseNotFound()
+    book = get_object_or_404(models.Edition, id=book_id)
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
@@ -442,10 +432,8 @@ def edit_readthrough(request):
 @login_required
 def delete_readthrough(request):
     ''' remove a readthrough '''
-    try:
-        readthrough = models.ReadThrough.objects.get(id=request.POST.get('id'))
-    except models.ReadThrough.DoesNotExist:
-        return HttpResponseNotFound()
+    readthrough = get_object_or_404(
+        models.ReadThrough, id=request.POST.get('id'))
 
     # don't let people edit other people's data
     if request.user != readthrough.user:
@@ -506,10 +494,7 @@ def tag(request):
     # field which doesn't validate
     name = request.POST.get('name')
     book_id = request.POST.get('book')
-    try:
-        book = models.Edition.objects.get(id=book_id)
-    except models.Edition.DoesNotExist:
-        return HttpResponseNotFound()
+    book = get_object_or_404(models.Edition, id=book_id)
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
         book=book,
@@ -569,10 +554,7 @@ def delete_status(request):
     status_id = request.POST.get('status')
     if not status_id:
         return HttpResponseBadRequest()
-    try:
-        status = models.Status.objects.get(id=status_id)
-    except models.Status.DoesNotExist:
-        return HttpResponseBadRequest()
+    status = get_object_or_404(models.Status, id=status_id)
 
     # don't let people delete other people's statuses
     if status.user != request.user:
