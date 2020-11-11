@@ -658,8 +658,6 @@ def shelf_page(request, username, shelf_identifier):
         'is_self': is_self,
         'shelves': shelves.all(),
         'shelf': shelf,
-        'create_form': forms.ShelfForm(),
-        'edit_form': forms.ShelfForm(shelf),
     }
 
     return TemplateResponse(request, 'shelf.html', data)
