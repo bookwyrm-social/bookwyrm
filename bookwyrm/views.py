@@ -323,25 +323,36 @@ def user_page(request, username):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
-    shelves = []
-    for user_shelf in user.shelf_set.all():
+    shelf_preview = []
+
+    # only show other shelves that should be visible
+    shelves = user.shelf_set
+    is_self = request.user.id == user.id
+    if not is_self:
+        follower = user.followers.filter(id=request.user.id).exists()
+        if follower:
+            shelves = shelves.filter(privacy__in=['public', 'followers'])
+        else:
+            shelves = shelves.filter(privacy='public')
+
+    for user_shelf in shelves.all():
         if not user_shelf.books.count():
             continue
-        shelves.append({
+        shelf_preview.append({
             'name': user_shelf.name,
             'remote_id': user_shelf.remote_id,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
-        if len(shelves) > 2:
+        if len(shelf_preview) > 2:
             break
 
     data = {
         'title': user.name,
         'user': user,
-        'is_self': request.user.id == user.id,
-        'shelves': shelves,
-        'shelf_count': user.shelf_set.count(),
+        'is_self': is_self,
+        'shelves': shelf_preview,
+        'shelf_count': shelves.count(),
         'activities': get_activity_feed(user, 'self')[:15],
     }
 
@@ -392,12 +403,6 @@ def following_page(request, username):
         'following': user.following.all(),
     }
     return TemplateResponse(request, 'following.html', data)
-
-
-@csrf_exempt
-def user_shelves_page(request, username):
-    ''' list of followers '''
-    return shelf_page(request, username, None)
 
 
 @csrf_exempt
@@ -606,6 +611,12 @@ def tag_page(request, tag_id):
     return TemplateResponse(request, 'tag.html', data)
 
 
+@csrf_exempt
+def user_shelves_page(request, username):
+    ''' list of followers '''
+    return shelf_page(request, username, None)
+
+
 def shelf_page(request, username, shelf_identifier):
     ''' display a shelf '''
     try:
@@ -632,7 +643,6 @@ def shelf_page(request, username, shelf_identifier):
         if follower:
             shelves = shelves.filter(privacy__in=['public', 'followers'])
         else:
-            print('hi')
             shelves = shelves.filter(privacy='public')
 
 
