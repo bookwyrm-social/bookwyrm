@@ -3,6 +3,7 @@ import re
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -15,6 +16,7 @@ from bookwyrm import outgoing
 from bookwyrm.activitypub import ActivityEncoder
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
+from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
@@ -53,8 +55,6 @@ def home(request):
 @login_required
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
-    # TODO: why on earth would this be where the pagination is set
-    page_size = 15
     try:
         page = int(request.GET.get('page', 1))
     except ValueError:
@@ -63,20 +63,24 @@ def home_tab(request, tab):
     suggested_books = get_suggested_books(request.user)
 
     activities = get_activity_feed(request.user, tab)
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
 
-    activity_count = activities.count()
-    activities = activities[(page - 1) * page_size:page * page_size]
-
-    next_page = '/?page=%d#feed' % (page + 1)
-    prev_page = '/?page=%d#feed' % (page - 1)
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.previous_page_number())
     data = {
         'title': 'Updates Feed',
         'user': request.user,
         'suggested_books': suggested_books,
-        'activities': activities,
+        'activities': activity_page.object_list,
         'tab': tab,
-        'next': next_page if activity_count > (page_size * page) else None,
-        'prev': prev_page if page > 1 else None,
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'feed.html', data)
 
@@ -323,6 +327,11 @@ def user_page(request, username):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     shelf_preview = []
 
     # only show other shelves that should be visible
@@ -347,13 +356,27 @@ def user_page(request, username):
         if len(shelf_preview) > 2:
             break
 
+    # user's posts
+    activities = get_activity_feed(user, 'self')
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/user/%s/?page=%d' % \
+                (username, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/user/%s/?page=%d' % \
+                (username, activity_page.previous_page_number())
     data = {
         'title': user.name,
         'user': user,
         'is_self': is_self,
         'shelves': shelf_preview,
         'shelf_count': shelves.count(),
-        'activities': get_activity_feed(user, 'self')[:15],
+        'activities': activity_page.object_list,
+        'next': next_page,
+        'prev': prev_page,
     }
 
     return TemplateResponse(request, 'user.html', data)
@@ -483,6 +506,11 @@ def edit_profile_page(request):
 
 def book_page(request, book_id):
     ''' info about a book '''
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
@@ -499,7 +527,20 @@ def book_page(request, book_id):
     reviews = models.Review.objects.filter(
         book__in=work.edition_set.all(),
     )
+    # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
+
+    # the reviews to show
+    paginated = Paginator(reviews.filter(content__isnull=False), PAGE_LENGTH)
+    reviews_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if reviews_page.has_next():
+        next_page = '/book/%d/?page=%d' % \
+                (book_id, reviews_page.next_page_number())
+    if reviews_page.has_previous():
+        prev_page = '/book/%s/?page=%d' % \
+                (book_id, reviews_page.previous_page_number())
 
     user_tags = []
     readthroughs = []
@@ -523,7 +564,7 @@ def book_page(request, book_id):
     data = {
         'title': book.title,
         'book': book,
-        'reviews': reviews.filter(content__isnull=False),
+        'reviews': reviews_page,
         'ratings': reviews.filter(content__isnull=True),
         'rating': rating['rating__avg'],
         'tags': tags,
@@ -538,6 +579,8 @@ def book_page(request, book_id):
             {'name': 'Format', 'value': book.physical_format},
             {'name': 'Pages', 'value': book.pages},
         ],
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'book.html', data)
 
