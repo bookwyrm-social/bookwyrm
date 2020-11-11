@@ -77,6 +77,7 @@
             {% endif %}
         </div>
 
+        {% if status.user == request.user %}
         <div>
             <input class="toggle-control" type="checkbox" name="more-info-{{ status.id }}" id="more-info-{{ status.id }}">
             <div class="toggle-content hidden card-footer">
@@ -92,6 +93,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
     </footer>
 </div>
 {% else %}
