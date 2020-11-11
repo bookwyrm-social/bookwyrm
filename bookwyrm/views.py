@@ -631,14 +631,32 @@ def shelf_page(request, username, shelf_identifier):
     else:
         shelf = user.shelf_set.first()
 
+    is_self = request.user == user
+
+    shelves = user.shelf_set
+    if not is_self:
+        follower = user.followers.filter(id=request.user.id).exists()
+        # make sure the user has permission to view the shelf
+        if shelf.privacy == 'direct' or \
+                (shelf.privacy == 'followers' and not follower):
+            return HttpResponseNotFound()
+
+        # only show other shelves that should be visible
+        if follower:
+            shelves = shelves.filter(privacy__in=['public', 'followers'])
+        else:
+            print('hi')
+            shelves = shelves.filter(privacy='public')
+
+
     if is_api_request(request):
         return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
         'title': user.name,
         'user': user,
-        'is_self': request.user.id == user.id,
-        'shelves': user.shelf_set.all(),
+        'is_self': is_self,
+        'shelves': shelves.all(),
         'shelf': shelf,
         'create_form': forms.ShelfForm(),
         'edit_form': forms.ShelfForm(shelf),

@@ -279,7 +279,7 @@ def create_shelf(request):
     if not form.is_valid():
         return redirect(request.headers.get('Referer', '/'))
     shelf = form.save()
-    return redirect('/user/%s/shelves/%s' % \
+    return redirect('/user/%s/shelf/%s' % \
             (request.user.localname, shelf.identifier))
 
 
