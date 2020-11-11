@@ -6,6 +6,8 @@ from environs import Env
 env = Env()
 DOMAIN = env('DOMAIN')
 
+PAGE_LENGTH = env('PAGE_LENGTH', 15)
+
 # celery
 CELERY_BROKER = env('CELERY_BROKER')
 CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')

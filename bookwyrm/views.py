@@ -3,6 +3,7 @@ import re
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
         JsonResponse
@@ -15,6 +16,7 @@ from bookwyrm import outgoing
 from bookwyrm.activitypub import ActivityEncoder
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
+from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
@@ -53,8 +55,6 @@ def home(request):
 @login_required
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
-    # TODO: why on earth would this be where the pagination is set
-    page_size = 15
     try:
         page = int(request.GET.get('page', 1))
     except ValueError:
@@ -63,20 +63,24 @@ def home_tab(request, tab):
     suggested_books = get_suggested_books(request.user)
 
     activities = get_activity_feed(request.user, tab)
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
 
-    activity_count = activities.count()
-    activities = activities[(page - 1) * page_size:page * page_size]
-
-    next_page = '/?page=%d#feed' % (page + 1)
-    prev_page = '/?page=%d#feed' % (page - 1)
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/%s/?page=%d#feed' % \
+                (tab, activity_page.previous_page_number())
     data = {
         'title': 'Updates Feed',
         'user': request.user,
         'suggested_books': suggested_books,
-        'activities': activities,
+        'activities': activity_page.object_list,
         'tab': tab,
-        'next': next_page if activity_count > (page_size * page) else None,
-        'prev': prev_page if page > 1 else None,
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'feed.html', data)
 
