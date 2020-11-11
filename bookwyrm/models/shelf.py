@@ -1,8 +1,9 @@
 ''' puttin' books on shelves '''
+import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import BookWyrmModel, OrderedCollectionMixin
+from .base_model import BookWyrmModel, OrderedCollectionMixin, PrivacyLevels
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
@@ -11,12 +12,26 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     identifier = models.CharField(max_length=100)
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     editable = models.BooleanField(default=True)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
     books = models.ManyToManyField(
         'Edition',
         symmetrical=False,
         through='ShelfBook',
         through_fields=('shelf', 'book')
     )
+
+    def save(self, *args, **kwargs):
+        ''' set the identifier '''
+        saved = super().save(*args, **kwargs)
+        if not self.identifier:
+            slug = re.sub(r'[^\w]', '', self.name).lower()
+            self.identifier = '%s-%d' % (slug, self.id)
+            return super().save(*args, **kwargs)
+        return saved
 
     @property
     def collection_queryset(self):
