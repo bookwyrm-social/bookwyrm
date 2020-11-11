@@ -327,6 +327,11 @@ def user_page(request, username):
         return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
     # otherwise we're at a UI view
 
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     shelf_preview = []
 
     # only show other shelves that should be visible
@@ -351,13 +356,27 @@ def user_page(request, username):
         if len(shelf_preview) > 2:
             break
 
+    # user's posts
+    activities = get_activity_feed(user, 'self')
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/user/%s/?page=%d' % \
+                (username, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '/user/%s/?page=%d' % \
+                (username, activity_page.previous_page_number())
     data = {
         'title': user.name,
         'user': user,
         'is_self': is_self,
         'shelves': shelf_preview,
         'shelf_count': shelves.count(),
-        'activities': get_activity_feed(user, 'self')[:15],
+        'activities': activity_page.object_list,
+        'next': next_page,
+        'prev': prev_page,
     }
 
     return TemplateResponse(request, 'user.html', data)
