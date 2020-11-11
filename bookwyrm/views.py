@@ -506,6 +506,11 @@ def edit_profile_page(request):
 
 def book_page(request, book_id):
     ''' info about a book '''
+    try:
+        page = int(request.GET.get('page', 1))
+    except ValueError:
+        page = 1
+
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if is_api_request(request):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
@@ -522,7 +527,20 @@ def book_page(request, book_id):
     reviews = models.Review.objects.filter(
         book__in=work.edition_set.all(),
     )
+    # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
+
+    # the reviews to show
+    paginated = Paginator(reviews.filter(content__isnull=False), PAGE_LENGTH)
+    reviews_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if reviews_page.has_next():
+        next_page = '/book/%d/?page=%d' % \
+                (book_id, reviews_page.next_page_number())
+    if reviews_page.has_previous():
+        prev_page = '/book/%s/?page=%d' % \
+                (book_id, reviews_page.previous_page_number())
 
     user_tags = []
     readthroughs = []
@@ -546,7 +564,7 @@ def book_page(request, book_id):
     data = {
         'title': book.title,
         'book': book,
-        'reviews': reviews.filter(content__isnull=False),
+        'reviews': reviews_page,
         'ratings': reviews.filter(content__isnull=True),
         'rating': rating['rating__avg'],
         'tags': tags,
@@ -561,6 +579,8 @@ def book_page(request, book_id):
             {'name': 'Format', 'value': book.physical_format},
             {'name': 'Pages', 'value': book.pages},
         ],
+        'next': next_page,
+        'prev': prev_page,
     }
     return TemplateResponse(request, 'book.html', data)
 
