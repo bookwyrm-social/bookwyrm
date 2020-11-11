@@ -118,15 +118,15 @@ urlpatterns = [
     re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
     re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
 
-    re_path(r'^delete-status/?$', actions.delete_status),
+    re_path(r'^delete-status/(?P<status_id>\d+)/?$', actions.delete_status),
 
     re_path(r'^create-shelf/?$', actions.create_shelf),
     re_path(r'^edit-shelf/(?P<shelf_id>\d+)?$', actions.edit_shelf),
     re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', actions.delete_shelf),
     re_path(r'^shelve/?$', actions.shelve),
     re_path(r'^unshelve/?$', actions.unshelve),
-    re_path(r'^start-reading/?$', actions.start_reading),
-    re_path(r'^finish-reading/?$', actions.finish_reading),
+    re_path(r'^start-reading/(?P<book_id>\d+)/?$', actions.start_reading),
+    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', actions.finish_reading),
 
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),

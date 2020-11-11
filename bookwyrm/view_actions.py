@@ -345,9 +345,9 @@ def unshelve(request):
 
 
 @login_required
-def start_reading(request):
+def start_reading(request, book_id):
     ''' begin reading a book '''
-    book = books_manager.get_edition(request.POST['book'])
+    book = books_manager.get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='reading',
         user=request.user
@@ -380,9 +380,9 @@ def start_reading(request):
 
 
 @login_required
-def finish_reading(request):
+def finish_reading(request, book_id):
     ''' a user completed a book, yay '''
-    book = books_manager.get_edition(request.POST['book'])
+    book = books_manager.get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='read',
         user=request.user
@@ -551,8 +551,6 @@ def unboost(request, status_id):
 @login_required
 def delete_status(request, status_id):
     ''' delete and tombstone a status '''
-    if not status_id:
-        return HttpResponseBadRequest()
     status = get_object_or_404(models.Status, id=status_id)
 
     # don't let people delete other people's statuses

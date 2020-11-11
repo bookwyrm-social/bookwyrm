@@ -9,10 +9,9 @@
                 <label class="delete" for="finish-reading-{{ uuid }}" aria-label="close" role="button"></label>
             </header>
             {% active_read_through book user as readthrough %}
-            <form name="finish-reading" action="/finish-reading" method="post">
+            <form name="finish-reading" action="/finish-reading/{{ book.id }}" method="post">
                 <section class="modal-card-body">
                     {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
                     <input type="hidden" name="id" value="{{ readthrough.id }}">
                     <div class="field">
                         <label class="label">
