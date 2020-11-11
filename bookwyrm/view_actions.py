@@ -288,6 +288,8 @@ def create_shelf(request):
 def edit_shelf(request, shelf_id):
     ''' user generated shelves '''
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
+    if request.user != shelf.user:
+        return HttpResponseBadRequest()
 
     form = forms.ShelfForm(request.POST, instance=shelf)
     if not form.is_valid():
@@ -295,6 +297,17 @@ def edit_shelf(request, shelf_id):
     shelf = form.save()
     return redirect('/user/%s/shelf/%s' % \
             (request.user.localname, shelf.identifier))
+
+
+@login_required
+def delete_shelf(request, shelf_id):
+    ''' user generated shelves '''
+    shelf = get_object_or_404(models.Shelf, id=shelf_id)
+    if request.user != shelf.user or not shelf.editable:
+        return HttpResponseBadRequest()
+
+    shelf.delete()
+    return redirect('/user/%s/shelves' % request.user.localname)
 
 
 @login_required

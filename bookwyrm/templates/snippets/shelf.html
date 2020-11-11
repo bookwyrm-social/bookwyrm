@@ -76,5 +76,15 @@
 </table>
 {% else %}
 <p>This shelf is empty.</p>
+{% if shelf.editable %}
+<form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <button class="button is-danger is-light" type="submit">
+        Delete shelf
+    </button>
+</form>
+{% endif %}
+
 {% endif %}
 
