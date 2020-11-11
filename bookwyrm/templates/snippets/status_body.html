@@ -82,9 +82,8 @@
             <div class="toggle-content hidden card-footer">
                 {% if status.user == request.user %}
                 <div class="card-footer-item">
-                    <form name="delete-{{status.id}}" action="/delete-status" method="post">
+                    <form name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="status" value="{{ status.id }}">
                         <button class="button is-danger is-light" type="submit">
                             Delete post
                         </button>

@@ -549,9 +549,8 @@ def unboost(request, status_id):
 
 
 @login_required
-def delete_status(request):
+def delete_status(request, status_id):
     ''' delete and tombstone a status '''
-    status_id = request.POST.get('status')
     if not status_id:
         return HttpResponseBadRequest()
     status = get_object_or_404(models.Status, id=status_id)
