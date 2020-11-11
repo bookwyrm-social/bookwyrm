@@ -68,7 +68,12 @@
 
 <div class="block columns">
     <div class="column">
-        <h2 class="title is-3">{{ shelf.name }}</h2>
+        <h2 class="title is-3">
+            {{ shelf.name }}
+            <span class="subtitle">
+                {% include 'snippets/privacy-icons.html' with item=shelf %}
+            </span>
+        </h2>
     </div>
     {% if is_self %}
     <div class="column is-narrow">
