@@ -78,7 +78,7 @@ urlpatterns = [
     re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
-    # TODO: tag needs a .json path
+    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.tag_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
             user_path, views.shelf_page),
