@@ -31,18 +31,21 @@
 
     {% if is_self %}
     <div class="column is-narrow">
-        <label for="create-shelf-form">
-            <div role="button" tabindex="0">
-                <span class="icon icon-plus">
-                    <span class="is-sr-only">Create new shelf</span>
-                </span>
-            </div>
-        </a>
+        <input type="radio" id="create-shelf-form-hide" name="create-shelf-form" class="toggle-control" checked>
+        <div class="toggle-content hidden">
+            <label for="create-shelf-form-show">
+                <div role="button" tabindex="0">
+                    <span class="icon icon-plus">
+                        <span class="is-sr-only">Create new shelf</span>
+                    </span>
+                </div>
+            </label>
+        </div>
     </div>
     {% endif %}
 </div>
 
-<input type="checkbox" id="create-shelf-form" class="toggle-control">
+<input type="radio" id="create-shelf-form-show" name="create-shelf-form" class="toggle-control">
 <div class="toggle-content hidden">
     <div class="box mb-5">
         <h2 class="title is-4">Create new shelf</h2>
@@ -51,16 +54,16 @@
             <input type="hidden" name="user" value="{{ request.user.id }}">
             <div class="field">
                 <label class="label" for="id_name">Name:</label>
-                <input type="text" name="name" maxlength="100" class="input" required="" id="id_name">
+                <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name">
             </div>
 
             <label class="label">
                 <p>Shelf privacy:</p>
-                {% include 'snippets/privacy_select.html' with no_label=True%}
+                {% include 'snippets/privacy_select.html' with no_label=True %}
             </label>
             <div class="field is-grouped">
                 <button class="button is-primary" type="submit">Create shelf</button>
-                <label role="button" class="button" for="create-shelf-form" tabindex="0">Cancel<label>
+                <label role="button" class="button" for="create-shelf-form-hide" tabindex="0">Cancel<label>
             </div>
         </form>
     </div>
@@ -77,13 +80,44 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        <a href="/edit-shelf/{{ shelf.identifier }}">
-            <span class="icon icon-pencil">
-                <span class="is-sr-only">Edit shelf</span>
-            </span>
-        </a>
+        <input type="radio" id="edit-shelf-form-hide" name="edit-shelf-form" class="toggle-control" checked>
+        <div class="toggle-content hidden">
+            <label for="edit-shelf-form-show">
+                <div role="button" tabindex="0">
+                    <span class="icon icon-pencil">
+                        <span class="is-sr-only">Edit shelf</span>
+                    </span>
+                </div>
+            </label>
+        </div>
     </div>
     {% endif %}
+</div>
+
+<input type="radio" id="edit-shelf-form-show" name="edit-shelf-form" class="toggle-control">
+<div class="toggle-content hidden">
+    <div class="box mb-5">
+        <h2 class="title is-4">Edit shelf</h2>
+        <form name="create-shelf" action="/edit-shelf/{{ shelf.id }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            {% if shelf.editable %}
+            <div class="field">
+                <label class="label" for="id_name">Name:</label>
+                <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
+            </div>
+            {% endif %}
+
+            <label class="label">
+                <p>Shelf privacy:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True current=shelf.privacy %}
+            </label>
+            <div class="field is-grouped">
+                <button class="button is-primary" type="submit">Update shelf</button>
+                <label role="button" class="button" for="edit-shelf-form-hide" tabindex="0">Cancel<label>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="block">

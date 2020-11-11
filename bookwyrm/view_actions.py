@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
@@ -276,6 +276,20 @@ def upload_cover(request, book_id):
 def create_shelf(request):
     ''' user generated shelves '''
     form = forms.ShelfForm(request.POST)
+    if not form.is_valid():
+        return redirect(request.headers.get('Referer', '/'))
+
+    shelf = form.save()
+    return redirect('/user/%s/shelf/%s' % \
+            (request.user.localname, shelf.identifier))
+
+
+@login_required
+def edit_shelf(request, shelf_id):
+    ''' user generated shelves '''
+    shelf = get_object_or_404(models.Shelf, id=shelf_id)
+
+    form = forms.ShelfForm(request.POST, instance=shelf)
     if not form.is_valid():
         return redirect(request.headers.get('Referer', '/'))
     shelf = form.save()
