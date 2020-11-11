@@ -53,8 +53,8 @@
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
             <div class="field">
-                <label class="label" for="id_name">Name:</label>
-                <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name">
+                <label class="label" for="id_name_create">Name:</label>
+                <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
             </div>
 
             <label class="label">
