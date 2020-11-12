@@ -20,7 +20,7 @@ def create_job(user, csv_file, include_reviews, privacy):
     )
     for index, entry in enumerate(list(csv.DictReader(csv_file))[:MAX_ENTRIES]):
         if not all(x in entry for x in ('ISBN13', 'Title', 'Author')):
-            raise ValueError("Author, title, and isbn must be in data.")
+            raise ValueError('Author, title, and isbn must be in data.')
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
@@ -41,8 +41,9 @@ def import_data(job_id):
         for item in job.items.all():
             try:
                 item.resolve()
-            except HTTPError:
-                pass
+            except:
+                item.fail_reason = 'Error loading book'
+                item.save()
             if item.book:
                 item.save()
                 results.append(item)
@@ -51,7 +52,7 @@ def import_data(job_id):
                 outgoing.handle_imported_book(
                     job.user, item, job.include_reviews, job.privacy)
             else:
-                item.fail_reason = "Could not find a match for book"
+                item.fail_reason = 'Could not find a match for book'
                 item.save()
     finally:
         create_notification(job.user, 'IMPORT', related_import=job)
