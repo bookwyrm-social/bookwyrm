@@ -18,24 +18,13 @@
     </div>
 
     <footer>
-        {% if request.user.is_authenticated %}
-        <input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}">
-        <div class="toggle-content hidden">
-            <div class="card-footer">
-                <div class="card-footer-item">
-                    {% include 'snippets/reply_form.html' with status=status %}
-                </div>
-            </div>
-        </div>
-        {% endif %}
         <div class="card-footer">
             <div class="card-footer-item">
                 {% if request.user.is_authenticated %}
-
                 <label class="button is-small" for="show-comment-{{ status.id }}">
                     <div role="button" tabindex="0">
                         <span class="icon icon-comment">
-                            <span class="is-sr-only">Comment</span>
+                            <span class="is-sr-only">Reply</span>
                         </span>
                     </div>
                 </label>
@@ -44,17 +33,17 @@
 
                 {% else %}
                 <a href="/login">
-                <span class="icon icon-comment">
-                    <span class="is-sr-only">Comment</span>
-                </span>
+                    <span class="icon icon-comment">
+                        <span class="is-sr-only">Reply</span>
+                    </span>
 
-                <span class="icon icon-boost">
-                    <span class="is-sr-only">Boost status</span>
-                </span>
+                    <span class="icon icon-boost">
+                        <span class="is-sr-only">Boost status</span>
+                    </span>
 
-                <span class="icon icon-heart">
-                    <span class="is-sr-only">Like status</span>
-                </span>
+                    <span class="icon icon-heart">
+                        <span class="is-sr-only">Like status</span>
+                    </span>
                 </a>
                 {% endif %}
             </div>
@@ -76,6 +65,17 @@
             </div>
             {% endif %}
         </div>
+
+        {% if request.user.is_authenticated %}
+        <input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}">
+        <div class="toggle-content hidden">
+            <div class="card-footer">
+                <div class="card-footer-item">
+                    {% include 'snippets/reply_form.html' with status=status %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         {% if status.user == request.user %}
         <div>
