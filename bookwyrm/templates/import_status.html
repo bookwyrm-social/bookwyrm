@@ -18,7 +18,7 @@
 </div>
 
 <div class="block">
-    {% if task.status == 'PENDING' %}
+    {% if not task.ready %}
     Import still in progress.
     <p>
         (Hit reload to update!)
