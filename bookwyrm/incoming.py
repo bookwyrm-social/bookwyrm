@@ -238,7 +238,12 @@ def handle_create(activity):
 @app.task
 def handle_delete_status(activity):
     ''' remove a status '''
-    status_id = activity['object']['id']
+    try:
+        status_id = activity['object']['id']
+    except TypeError:
+        # this isn't a great fix, because you hit this when mastadon
+        # is trying to delete a user.
+        return
     try:
         status = models.Status.objects.select_subclasses().get(
             remote_id=status_id
@@ -282,7 +287,11 @@ def handle_unfavorite(activity):
 @app.task
 def handle_boost(activity):
     ''' someone gave us a boost! '''
-    boost = activitypub.Boost(**activity).to_model(models.Boost)
+    try:
+        boost = activitypub.Boost(**activity).to_model(models.Boost)
+    except activitypub.ActivitySerializerError:
+        # this probably just means we tried to boost an unknown status
+        return
 
     if not boost.user.local:
         status_builder.create_notification(

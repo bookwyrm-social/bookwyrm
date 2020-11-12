@@ -1,3 +1,4 @@
+{% load fr_display %}
 <div class="columns">
     <div class="column is-narrow">
         <div>
@@ -7,6 +8,6 @@
     </div>
     <div class="column">
         <h3 class="title is-6">{% include 'snippets/book_titleby.html' with book=book %}</h3>
-        {% include 'snippets/book_description.html' with book=book %}
+        {% include 'snippets/trimmed_text.html' with full=book|book_description %}
     </div>
 </div>

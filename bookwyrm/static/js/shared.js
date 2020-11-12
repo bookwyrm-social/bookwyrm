@@ -20,6 +20,7 @@ function reply(e) {
     return true;
 }
 
+
 function rate_stars(e) {
     e.preventDefault();
     ajaxPost(e.target);

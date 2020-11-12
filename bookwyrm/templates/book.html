@@ -55,7 +55,7 @@
             <div class="block">
                 <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
 
-                {% include 'snippets/book_description.html' %}
+                {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if book.parent_work.edition_set.count > 1 %}
                 <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
@@ -77,12 +77,12 @@
                         {% endif %}
                     </dl>
                     <div class="field is-grouped">
-                        <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}">
+                        <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
                             <span class="icon icon-pencil">
                                 <span class="is-sr-only">Edit read-through dates</span>
                             </span>
                         </label>
-                        <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}">
+                        <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
                             <span class="icon icon-x">
                                 <span class="is-sr-only">Delete this read-through</span>
                             </span>

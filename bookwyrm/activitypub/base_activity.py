@@ -8,6 +8,10 @@ from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor
 
 
+class ActivitySerializerError(ValueError):
+    ''' routine problems serializing activitypub json '''
+
+
 class ActivityEncoder(JSONEncoder):
     '''  used to convert an Activity object into json '''
     def default(self, o):
@@ -66,7 +70,8 @@ class ActivityObject:
                 value = kwargs[field.name]
             except KeyError:
                 if field.default == MISSING:
-                    raise TypeError('Missing required field: %s' % field.name)
+                    raise ActivitySerializerError(\
+                            'Missing required field: %s' % field.name)
                 value = field.default
             setattr(self, field.name, value)
 
@@ -74,7 +79,7 @@ class ActivityObject:
     def to_model(self, model, instance=None):
         ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
-            raise TypeError('Wrong activity type for model')
+            raise ActivitySerializerError('Wrong activity type for model')
 
         # check for an existing instance, if we're not updating a known obj
         if not instance:
@@ -136,6 +141,7 @@ def resolve_foreign_key(model, remote_id):
     ).first()
 
     if not result:
-        raise ValueError('Could not resolve remote_id in %s model: %s' % \
+        raise ActivitySerializerError(
+            'Could not resolve remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
     return result
