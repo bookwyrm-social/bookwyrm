@@ -44,6 +44,8 @@ def import_data(job_id):
             except:
                 item.fail_reason = 'Error loading book'
                 item.save()
+                continue
+
             if item.book:
                 item.save()
                 results.append(item)
