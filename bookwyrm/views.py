@@ -515,7 +515,11 @@ def book_page(request, book_id):
     except ValueError:
         page = 1
 
-    book = models.Book.objects.select_subclasses().get(id=book_id)
+    try:
+        book = models.Book.objects.select_subclasses().get(id=book_id)
+    except models.Book.DoesNotExist:
+        return HttpResponseNotFound()
+
     if is_api_request(request):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 

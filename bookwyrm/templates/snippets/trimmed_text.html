@@ -1,0 +1,26 @@
+{% load fr_display %}
+{% with 0|uuid as uuid %}
+{% if full %}
+
+{% with full|text_overflow as trimmed %}
+{% if trimmed != full %}
+<div>
+    <input type="radio" name="show-hide-{{ uuid }}" id="show-{{ uuid }}" class="toggle-control" checked>
+    <blockquote class="content toggle-content hidden">{{ trimmed }}
+        <label class="button is-small" for="hide-{{ uuid }}"><div role="button" tabindex="0">show more</div></label>
+    </blockquote>
+</div>
+<div>
+    <input type="radio" name="show-hide-{{ uuid }}" id="hide-{{ uuid }}" class="toggle-control">
+    <blockquote class="content toggle-content hidden">{{ full }}
+        <label class="button is-small" for="show-{{ uuid }}"><div role="button" tabindex="0">show less</div></label>
+    </blockquote>
+</div>
+{% else %}
+<blockquote class="content">{{ full }}</blockquote>
+{% endif %}
+{% endwith %}
+
+{% endif %}
+{% endwith %}
+
