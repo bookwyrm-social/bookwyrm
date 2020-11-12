@@ -209,10 +209,14 @@ def import_status(request, job_id):
     if job.user != request.user:
         raise PermissionDenied
     task = app.AsyncResult(job.task_id)
+    items = job.items.order_by('index').all()
+    failed_items = [i for i in items if i.fail_reason]
+    items = [i for i in items if not i.fail_reason]
     return TemplateResponse(request, 'import_status.html', {
         'title': 'Import Status',
         'job': job,
-        'items': job.items.order_by('index').all(),
+        'items': items,
+        'failed_items': failed_items,
         'task': task
     })
 

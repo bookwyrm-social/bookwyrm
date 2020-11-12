@@ -26,7 +26,24 @@
     {% endif %}
 </div>
 
+{% if failed_items %}
 <div class="block">
+    <h2 class="title is-4">Failed to load</h2>
+    <ul>
+    {% for item in failed_items %}
+        <li>
+            Line {{ item.index }}:
+            <strong>{{ item.data|dict_key:'Title' }}</strong> by
+            {{ item.data|dict_key:'Author' }}
+            ({{ item.fail_reason }})
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="block">
+    <h2 class="title is-4">Successfully imported</h2>
     <table class="table">
         <tr>
             <th>
@@ -57,9 +74,10 @@
                 {{ item.data|dict_key:'Author' }}
             </td>
             <td>
-                {% if item.book %}✓
-                {% elif item.fail_reason %}
-                    {{ item.fail_reason }}
+                {% if item.book %}
+                <span class="icon icon-check">
+                    <span class="is-sr-only">Imported</span>
+                </span>
                 {% endif %}
             </td>
         </tr>
