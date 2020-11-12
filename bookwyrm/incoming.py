@@ -238,7 +238,12 @@ def handle_create(activity):
 @app.task
 def handle_delete_status(activity):
     ''' remove a status '''
-    status_id = activity['object']['id']
+    try:
+        status_id = activity['object']['id']
+    except TypeError:
+        # this isn't a great fix, because you hit this when mastadon
+        # is trying to delete a user.
+        return
     try:
         status = models.Status.objects.select_subclasses().get(
             remote_id=status_id
