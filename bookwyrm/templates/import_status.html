@@ -6,25 +6,24 @@
     <h1 class="title">Import Status</h1>
 
     <p>
-    Import started: {{ job.created_date | naturaltime }}
-    <p>
+        Import started: {{ job.created_date | naturaltime }}
+    </p>
     {% if task.ready %}
-    Import completed: {{ task.date_done | naturaltime }}
-    {% if task.failed %}
-    <h3><span style="background-color: #ffaaaa;">TASK FAILED</span></h3>
     <p>
+        Import completed: {{ task.date_done | naturaltime }}
+    </p>
+    {% elif task.failed %}
+    <div class="notification is-danger">TASK FAILED</div>
     {{ task.info }}
     {% endif %}
 </div>
 
 <div class="block">
-    {% if job.import_status %}
-        {% include 'snippets/status.html' with status=job.import_status %}
-    {% endif %}
-    {% else %}
+    {% if not task.ready and not task.failed %}
     Import still in progress.
     <p>
-    (Hit reload to update!)
+        (Hit reload to update!)
+    </p>
     {% endif %}
 </div>
 
