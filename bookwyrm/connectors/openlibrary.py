@@ -177,10 +177,9 @@ class Connector(AbstractConnector):
         ''' load that author '''
         if not re.match(r'^OL\d+A$', olkey):
             raise ValueError('Invalid OpenLibrary author ID')
-        try:
-            return models.Author.objects.get(openlibrary_key=olkey)
-        except models.Author.DoesNotExist:
-            pass
+        author = models.Author.objects.filter(openlibrary_key=olkey).first()
+        if author:
+            return author
 
         url = '%s/authors/%s.json' % (self.base_url, olkey)
         data = get_data(url)
