@@ -8,18 +8,17 @@
     <p>
         Import started: {{ job.created_date | naturaltime }}
     </p>
-    {% if task.ready %}
+    {% if task.successful %}
     <p>
         Import completed: {{ task.date_done | naturaltime }}
     </p>
     {% elif task.failed %}
     <div class="notification is-danger">TASK FAILED</div>
-    {{ task.info }}
     {% endif %}
 </div>
 
 <div class="block">
-    {% if not task.ready and not task.failed %}
+    {% if task.status == 'PENDING' %}
     Import still in progress.
     <p>
         (Hit reload to update!)
