@@ -16,7 +16,7 @@
     {% endif %}
 
     {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
-        <blockquote>{{ status.content | safe }}</blockquote>
+    {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
     {% endif %}
 </div>
 

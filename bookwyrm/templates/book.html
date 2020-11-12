@@ -55,7 +55,7 @@
             <div class="block">
                 <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
 
-                {% include 'snippets/book_description.html' %}
+                {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if book.parent_work.edition_set.count > 1 %}
                 <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
