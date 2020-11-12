@@ -37,10 +37,14 @@ def get_or_create_remote_user(actor):
 
 def fetch_user_data(actor):
     ''' load the user's info from the actor url '''
-    response = requests.get(
-        actor,
-        headers={'Accept': 'application/activity+json'}
-    )
+    try:
+        response = requests.get(
+            actor,
+            headers={'Accept': 'application/activity+json'}
+        )
+    except ConnectionError:
+        return None
+
     if not response.ok:
         response.raise_for_status()
     data = response.json()
@@ -83,7 +87,10 @@ def get_avatar(data):
 @app.task
 def get_remote_reviews(user_id):
     ''' ingest reviews by a new remote bookwyrm user '''
-    user = models.User.objects.get(id=user_id)
+    try:
+        user = models.User.objects.get(id=user_id)
+    except models.User.DoesNotExist:
+        return
     outbox_page = user.outbox + '?page=true'
     response = requests.get(
         outbox_page,
