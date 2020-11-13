@@ -94,10 +94,8 @@ class ImportItem(models.Model):
             search_term, min_confidence=0.995
         )
         if search_result:
-            try:
-                return books_manager.get_or_create_book(search_result.key)
-            except ConnectorException:
-                pass
+            # raises ConnectorException
+            return books_manager.get_or_create_book(search_result.key)
         return None
 
 

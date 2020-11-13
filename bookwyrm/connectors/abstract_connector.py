@@ -75,7 +75,7 @@ class AbstractConnector(ABC):
         ''' pull up a book record by whatever means possible '''
         # try to load the book
         book = models.Book.objects.select_subclasses().filter(
-            remote_id=remote_id
+            origin_id=remote_id
         ).first()
         if book:
             if isinstance(book, models.Work):
@@ -148,7 +148,7 @@ class AbstractConnector(ABC):
     def create_book(self, remote_id, data, model):
         ''' create a work or edition from data '''
         book = model.objects.create(
-            remote_id=remote_id,
+            origin_id=remote_id,
             title=data['title'],
             connector=self.connector,
         )

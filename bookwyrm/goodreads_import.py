@@ -1,11 +1,13 @@
 ''' handle reading a csv from goodreads '''
 import csv
+import logging
 
 from bookwyrm import outgoing
 from bookwyrm.tasks import app
 from bookwyrm.models import ImportJob, ImportItem
 from bookwyrm.status import create_notification
 
+logger = logging.getLogger(__name__)
 # TODO: remove or increase once we're confident it's not causing problems.
 MAX_ENTRIES = 500
 
@@ -51,7 +53,8 @@ def import_data(job_id):
         for item in job.items.all():
             try:
                 item.resolve()
-            except:
+            except Exception as e:
+                logger.exception(e)
                 item.fail_reason = 'Error loading book'
                 item.save()
                 continue

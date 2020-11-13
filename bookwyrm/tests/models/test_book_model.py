@@ -22,14 +22,9 @@ class Book(TestCase):
         )
 
     def test_remote_id(self):
-        local_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
-        self.assertEqual(self.work.get_remote_id(), local_id)
+        remote_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
+        self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, 'https://example.com/book/1')
-
-    def test_local_id(self):
-        ''' the local_id property for books '''
-        expected_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
-        self.assertEqual(self.work.local_id, expected_id)
 
     def test_create_book(self):
         ''' you shouldn't be able to create Books (only editions and works) '''

@@ -47,7 +47,7 @@ class Connector(AbstractConnector):
     def format_search_result(self, search_result):
         return SearchResult(
             title=search_result.title,
-            key=search_result.local_id,
+            key=search_result.remote_id,
             author=search_result.author_text,
             year=search_result.published_date.year if \
                     search_result.published_date else None,
