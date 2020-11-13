@@ -99,14 +99,14 @@ class Connector(AbstractConnector):
     def get_or_create_author(self, remote_id):
         ''' load that author '''
         try:
-            return models.Author.objects.get(remote_id=remote_id)
+            return models.Author.objects.get(origin_id=remote_id)
         except ObjectDoesNotExist:
             pass
 
         data = get_data(remote_id)
 
         # ingest a new author
-        author = models.Author(remote_id=remote_id)
+        author = models.Author(origin_id=remote_id)
         author = update_from_mappings(author, data, self.author_mappings)
         author.save()
 

@@ -64,7 +64,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
-                href=book.local_id,
+                href=book.remote_id,
                 name=book.title,
                 type='Book'
             ))
@@ -160,7 +160,7 @@ class GeneratedNote(Status):
         ''' indicate the book in question for mastodon (or w/e) users '''
         message = self.content
         books = ', '.join(
-            '<a href="%s">"%s"</a>' % (self.book.local_id, self.book.title) \
+            '<a href="%s">"%s"</a>' % (self.book.remote_id, self.book.title) \
             for book in self.mention_books.all()
         )
         return '%s %s' % (message, books)
@@ -177,7 +177,7 @@ class Comment(Status):
     def ap_pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
         return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-                (self.book.local_id, self.book.title)
+                (self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
     pure_activity_serializer = activitypub.Note
@@ -193,7 +193,7 @@ class Quotation(Status):
         ''' indicate the book in question for mastodon (or w/e) users '''
         return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
             self.quote,
-            self.book.local_id,
+            self.book.remote_id,
             self.book.title,
             self.content,
         )
@@ -231,7 +231,7 @@ class Review(Status):
     def ap_pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
         return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
-                (self.book.local_id, self.book.title)
+                (self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Review
     pure_activity_serializer = activitypub.Article
