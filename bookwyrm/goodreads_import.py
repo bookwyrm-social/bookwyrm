@@ -1,6 +1,5 @@
 ''' handle reading a csv from goodreads '''
 import csv
-from requests import HTTPError
 
 from bookwyrm import outgoing
 from bookwyrm.tasks import app
@@ -24,6 +23,17 @@ def create_job(user, csv_file, include_reviews, privacy):
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
+def create_retry_job(user, original_job, items):
+    ''' retry items that didn't import '''
+    job = ImportJob.objects.create(
+        user=user,
+        include_reviews=original_job.include_reviews,
+        privacy=original_job.privacy,
+        retry=True
+    )
+    for item in items:
+        ImportItem(job=job, index=item.index, data=item.data).save()
+    return job
 
 def start_import(job):
     ''' initalizes a csv import job '''

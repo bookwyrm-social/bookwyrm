@@ -48,6 +48,7 @@ class ImportJob(models.Model):
         default='public',
         choices=PrivacyLevels.choices
     )
+    retry = models.BooleanField(default=False)
 
 
 class ImportItem(models.Model):
@@ -99,6 +100,16 @@ class ImportItem(models.Model):
                 pass
         return None
 
+
+    @property
+    def title(self):
+        ''' get the book title '''
+        return self.data['Title']
+
+    @property
+    def author(self):
+        ''' get the book title '''
+        return self.data['Author']
 
     @property
     def isbn(self):
