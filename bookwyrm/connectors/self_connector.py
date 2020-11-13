@@ -13,16 +13,16 @@ class Connector(AbstractConnector):
         that gets implemented it will totally rule '''
         vector = SearchVector('title', weight='A') +\
             SearchVector('subtitle', weight='B') +\
-            SearchVector('author_text', weight='A') +\
+            SearchVector('author_text', weight='C') +\
             SearchVector('isbn_13', weight='A') +\
             SearchVector('isbn_10', weight='A') +\
-            SearchVector('openlibrary_key', weight='B') +\
-            SearchVector('goodreads_key', weight='B') +\
-            SearchVector('asin', weight='B') +\
-            SearchVector('oclc_number', weight='B') +\
-            SearchVector('remote_id', weight='B') +\
-            SearchVector('description', weight='C') +\
-            SearchVector('series', weight='C')
+            SearchVector('openlibrary_key', weight='C') +\
+            SearchVector('goodreads_key', weight='C') +\
+            SearchVector('asin', weight='C') +\
+            SearchVector('oclc_number', weight='C') +\
+            SearchVector('remote_id', weight='C') +\
+            SearchVector('description', weight='D') +\
+            SearchVector('series', weight='D')
 
         results = models.Edition.objects.annotate(
             search=vector
@@ -47,7 +47,7 @@ class Connector(AbstractConnector):
     def format_search_result(self, search_result):
         return SearchResult(
             title=search_result.title,
-            key=search_result.local_id,
+            key=search_result.remote_id,
             author=search_result.author_text,
             year=search_result.published_date.year if \
                     search_result.published_date else None,

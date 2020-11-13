@@ -662,8 +662,25 @@ def import_data(request):
         except (UnicodeDecodeError, ValueError):
             return HttpResponseBadRequest('Not a valid csv file')
         goodreads_import.start_import(job)
-        return redirect('/import-status/%d' % (job.id,))
+        return redirect('/import-status/%d' % job.id)
     return HttpResponseBadRequest()
+
+
+@login_required
+def retry_import(request):
+    ''' ingest a goodreads csv '''
+    job = get_object_or_404(models.ImportJob, id=request.POST.get('import_job'))
+    items = []
+    for item in request.POST.getlist('import_item'):
+        items.append(get_object_or_404(models.ImportItem, id=item))
+
+    job = goodreads_import.create_retry_job(
+        request.user,
+        job,
+        items,
+    )
+    goodreads_import.start_import(job)
+    return redirect('/import-status/%d' % job.id)
 
 
 @login_required

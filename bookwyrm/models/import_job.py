@@ -48,6 +48,7 @@ class ImportJob(models.Model):
         default='public',
         choices=PrivacyLevels.choices
     )
+    retry = models.BooleanField(default=False)
 
 
 class ImportItem(models.Model):
@@ -72,14 +73,11 @@ class ImportItem(models.Model):
     def get_book_from_isbn(self):
         ''' search by isbn '''
         search_result = books_manager.first_search_result(
-            self.isbn, min_confidence=0.995
+            self.isbn, min_confidence=0.999
         )
         if search_result:
-            try:
-                # don't crash the import when the connector fails
-                return books_manager.get_or_create_book(search_result.key)
-            except ConnectorException:
-                pass
+            # raises ConnectorException
+            return books_manager.get_or_create_book(search_result.key)
         return None
 
 
@@ -90,15 +88,23 @@ class ImportItem(models.Model):
             self.data['Author']
         )
         search_result = books_manager.first_search_result(
-            search_term, min_confidence=0.995
+            search_term, min_confidence=0.999
         )
         if search_result:
-            try:
-                return books_manager.get_or_create_book(search_result.key)
-            except ConnectorException:
-                pass
+            # raises ConnectorException
+            return books_manager.get_or_create_book(search_result.key)
         return None
 
+
+    @property
+    def title(self):
+        ''' get the book title '''
+        return self.data['Title']
+
+    @property
+    def author(self):
+        ''' get the book title '''
+        return self.data['Author']
 
     @property
     def isbn(self):

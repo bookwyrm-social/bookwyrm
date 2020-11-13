@@ -15,6 +15,7 @@ from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
+    origin_id = models.CharField(max_length=255, null=True)
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
@@ -57,7 +58,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
     @property
     def ap_authors(self):
         ''' the activitypub serialization should be a list of author ids '''
-        return [a.local_id for a in self.authors.all()]
+        return [a.remote_id for a in self.authors.all()]
 
     @property
     def ap_cover(self):
@@ -71,10 +72,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
     @property
     def ap_parent_work(self):
         ''' reference the work via local id not remote '''
-        return self.parent_work.local_id
+        return self.parent_work.remote_id
 
     activity_mappings = [
-        ActivityMapping('id', 'local_id'),
+        ActivityMapping('id', 'remote_id'),
 
         ActivityMapping('authors', 'ap_authors'),
         ActivityMapping('first_published_date', 'first_published_date'),
@@ -112,20 +113,13 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
+        if self.id and not self.remote_id:
+            self.remote_id = self.get_remote_id()
 
         super().save(*args, **kwargs)
 
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
-        return 'https://%s/book/%d' % (DOMAIN, self.id)
-
-
-    @property
-    def local_id(self):
-        ''' when a book is ingested from an outside source, it becomes local to
-        an instance, so it needs a local url for federation. but it still needs
-        the remote_id for easier deduplication and, if appropriate, to sync with
-        the remote canonical copy '''
         return 'https://%s/book/%d' % (DOMAIN, self.id)
 
     def __repr__(self):
@@ -152,14 +146,14 @@ class Work(OrderedCollectionPageMixin, Book):
         ''' it'd be nice to serialize the edition instead but, recursion '''
         default = self.default_edition
         ed_list = [
-            e.local_id for e in self.edition_set.filter(~Q(id=default.id)).all()
+            e.remote_id for e in self.edition_set.filter(~Q(id=default.id)).all()
         ]
-        return [default.local_id] + ed_list
+        return [default.remote_id] + ed_list
 
 
     def to_edition_list(self, **kwargs):
         ''' activitypub serialization for this work's editions '''
-        remote_id = self.local_id + '/editions'
+        remote_id = self.remote_id + '/editions'
         return self.to_ordered_collection(
             self.edition_set,
             remote_id=remote_id,
@@ -246,6 +240,7 @@ def isbn_13_to_10(isbn_13):
 
 
 class Author(ActivitypubMixin, BookWyrmModel):
+    origin_id = models.CharField(max_length=255, null=True)
     ''' copy of an author from OL '''
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     sync = models.BooleanField(default=True)
@@ -263,14 +258,6 @@ class Author(ActivitypubMixin, BookWyrmModel):
     bio = models.TextField(null=True, blank=True)
 
     @property
-    def local_id(self):
-        ''' when a book is ingested from an outside source, it becomes local to
-        an instance, so it needs a local url for federation. but it still needs
-        the remote_id for easier deduplication and, if appropriate, to sync with
-        the remote canonical copy (ditto here for author)'''
-        return 'https://%s/author/%d' % (DOMAIN, self.id)
-
-    @property
     def display_name(self):
         ''' Helper to return a displayable name'''
         if self.name:
@@ -281,7 +268,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
         return self.last_name or self.first_name
 
     activity_mappings = [
-        ActivityMapping('id', 'local_id'),
+        ActivityMapping('id', 'remote_id'),
         ActivityMapping('name', 'display_name'),
         ActivityMapping('born', 'born'),
         ActivityMapping('died', 'died'),

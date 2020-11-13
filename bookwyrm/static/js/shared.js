@@ -20,6 +20,10 @@ function reply(e) {
     return true;
 }
 
+function selectAll(el) {
+    el.parentElement.querySelectorAll('[type="checkbox"]')
+        .forEach(t => t.checked=true);
+}
 
 function rate_stars(e) {
     e.preventDefault();

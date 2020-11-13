@@ -1,12 +1,13 @@
 ''' handle reading a csv from goodreads '''
 import csv
-from requests import HTTPError
+import logging
 
 from bookwyrm import outgoing
 from bookwyrm.tasks import app
 from bookwyrm.models import ImportJob, ImportItem
 from bookwyrm.status import create_notification
 
+logger = logging.getLogger(__name__)
 # TODO: remove or increase once we're confident it's not causing problems.
 MAX_ENTRIES = 500
 
@@ -24,6 +25,17 @@ def create_job(user, csv_file, include_reviews, privacy):
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
+def create_retry_job(user, original_job, items):
+    ''' retry items that didn't import '''
+    job = ImportJob.objects.create(
+        user=user,
+        include_reviews=original_job.include_reviews,
+        privacy=original_job.privacy,
+        retry=True
+    )
+    for item in items:
+        ImportItem(job=job, index=item.index, data=item.data).save()
+    return job
 
 def start_import(job):
     ''' initalizes a csv import job '''
@@ -41,7 +53,8 @@ def import_data(job_id):
         for item in job.items.all():
             try:
                 item.resolve()
-            except:
+            except Exception as e:
+                logger.exception(e)
                 item.fail_reason = 'Error loading book'
                 item.save()
                 continue
