@@ -50,6 +50,12 @@
             {% endfor %}
             </fieldset>
         </ul>
+        <div class="block pt-1" onclick="selectAll(this)">
+            <label class="label">
+                <input type="checkbox" class="checkbox">
+                Select all
+            </label>
+        </div>
         <button class="button" type="submit">Retry items</button>
         {% else %}
         <ul>
