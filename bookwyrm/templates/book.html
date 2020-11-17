@@ -76,8 +76,12 @@
                         <dd>{{ readthrough.finish_date | naturalday }}</dd>
                         {% elif readthrough.pages_read %}
                         <dt>On page:</dt>
-                        <dd>{{ readthrough.pages_read}} of {{ book.pages }}</dd>
+                        <dd>{{ readthrough.pages_read }} of {{ book.pages }}</dd>
                         {% endif %}
+                        {% for progress_update in readthrough.progress_updates %}
+                        <dt>On {{ progress_update.date | naturalday }} you were on:</dt>
+                        <dd>{{ progress_update.progress }} of {{ book.pages }}</dd>
+                        {% endfor %}
                     </dl>
                     <div class="field is-grouped">
                         <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
