@@ -12,7 +12,7 @@
         <ul class="dropdown-content">
             {% for shelf in request.user.shelf_set.all %}
             {% if shelf.identifier != current.identifier %}
-            <li>
+            <li role="menuitem">
                 <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
