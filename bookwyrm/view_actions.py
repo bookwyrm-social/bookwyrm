@@ -428,12 +428,10 @@ def edit_readthrough(request):
 
     # record the progress update individually
     # use default now for date field
-    progress_update = models.ProgressUpdate(
+    readthrough.progressupdate_set.create(
         user=request.user,
-        book=readthrough.book,
         progress=readthrough.pages_read,
         mode=models.ProgressMode.PAGE)
-    progress_update.save()
 
     return redirect(request.headers.get('Referer', '/'))
 

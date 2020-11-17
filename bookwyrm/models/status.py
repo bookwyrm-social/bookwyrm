@@ -336,7 +336,7 @@ class ProgressMode(models.TextChoices):
 class ProgressUpdate(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    readthrough = models.ForeignKey('ReadThrough', on_delete=models.PROTECT)
     progress = models.IntegerField()
     mode = models.CharField(max_length=3, choices=ProgressMode.choices, default=ProgressMode.PAGE)
     date = models.DateTimeField(auto_now_add=True)
