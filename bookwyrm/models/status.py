@@ -203,9 +203,6 @@ class Quotation(Status):
 
 #class Progress(Status):
 #    ''' an update of where a user is in a book, using page number or % '''
-#    class ProgressMode(models.TextChoices):
-#        PAGE = 'PG', 'page'
-#        PERCENT = 'PCT', 'percent'
 #
 #    progress = models.IntegerField()
 #    mode = models.TextChoices(max_length=3, choices=ProgessMode.choices, default=ProgressMode.PAGE)
@@ -313,7 +310,7 @@ class Boost(Status):
 
 
 class ReadThrough(BookWyrmModel):
-    ''' Store progress through a book in the database. '''
+    ''' Store a read through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
     pages_read = models.IntegerField(
@@ -325,6 +322,24 @@ class ReadThrough(BookWyrmModel):
     finish_date = models.DateTimeField(
         blank=True,
         null=True)
+
+    def save(self, *args, **kwargs):
+        ''' update user active time '''
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
+class ProgressMode(models.TextChoices):
+    PAGE = 'PG', 'page'
+    PERCENT = 'PCT', 'percent'
+
+class ProgressUpdate(BookWyrmModel):
+    ''' Store progress through a book in the database. '''
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    progress = models.IntegerField()
+    mode = models.CharField(max_length=3, choices=ProgressMode.choices, default=ProgressMode.PAGE)
+    date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         ''' update user active time '''
