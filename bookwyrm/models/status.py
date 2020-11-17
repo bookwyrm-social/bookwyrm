@@ -201,35 +201,35 @@ class Quotation(Status):
     activity_serializer = activitypub.Quotation
     pure_activity_serializer = activitypub.Note
 
-class Progress(Status):
-    ''' an update of where a user is in a book, using page number or % '''
-    class ProgressMode(models.TextChoices):
-        PAGE = 'PG', 'page'
-        PERCENT = 'PCT', 'percent'
-
-    progress = models.IntegerField()
-    mode = models.TextChoices(max_length=3, choices=ProgessMode.choices, default=ProgressMode.PAGE)
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-
-    @property
-    def ap_pure_content(self):
-        ''' indicate the book in question for mastodon (or w/e) users '''
-        if self.mode == ProgressMode.PAGE:
-            return 'on page %d of %d in <a href="%s">"%s"</a>' % (
-                self.progress,
-                self.book.pages,
-                self.book.remote_id,
-                self.book.title,
-            )
-        else:
-            return '%d%% of the way through <a href="%s">"%s"</a>' % (
-                self.progress,
-                self.book.remote_id,
-                self.book.title,
-            )
-
-    activity_serializer = activitypub.Progress
-    pure_activity_serializer = activitypub.Note
+#class Progress(Status):
+#    ''' an update of where a user is in a book, using page number or % '''
+#    class ProgressMode(models.TextChoices):
+#        PAGE = 'PG', 'page'
+#        PERCENT = 'PCT', 'percent'
+#
+#    progress = models.IntegerField()
+#    mode = models.TextChoices(max_length=3, choices=ProgessMode.choices, default=ProgressMode.PAGE)
+#    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
+#
+#    @property
+#    def ap_pure_content(self):
+#        ''' indicate the book in question for mastodon (or w/e) users '''
+#        if self.mode == ProgressMode.PAGE:
+#            return 'on page %d of %d in <a href="%s">"%s"</a>' % (
+#                self.progress,
+#                self.book.pages,
+#                self.book.remote_id,
+#                self.book.title,
+#            )
+#        else:
+#            return '%d%% of the way through <a href="%s">"%s"</a>' % (
+#                self.progress,
+#                self.book.remote_id,
+#                self.book.title,
+#            )
+#
+#    activity_serializer = activitypub.Progress
+#    pure_activity_serializer = activitypub.Note
 
 class Review(Status):
     ''' a book review '''

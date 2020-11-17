@@ -74,6 +74,9 @@
                         {% if readthrough.finish_date %}
                         <dt>Finished reading:</dt>
                         <dd>{{ readthrough.finish_date | naturalday }}</dd>
+                        {% elif readthrough.pages_read %}
+                        <dt>On page:</dt>
+                        <dd>{{ readthrough.pages_read}} of {{ book.pages }}</dd>
                         {% endif %}
                     </dl>
                     <div class="field is-grouped">
@@ -102,6 +105,12 @@
                                 <label class="label">
                                     Started reading
                                     <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+                                </label>
+                            </div>
+                            <div class="field">
+                                <label class="label">
+                                    On page
+                                    <input type="number" name="pages_read" class="input" id="id_pages_read-{{ readthrough.id }}" value="{{ readthrough.pages_read }}">
                                 </label>
                             </div>
                             <div class="field">

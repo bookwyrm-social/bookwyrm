@@ -729,4 +729,12 @@ def update_readthrough(request, book=None, create=True):
         except ParserError:
             pass
 
+    pages_read = request.POST.get('pages_read')
+    if pages_read:
+        try:
+            pages_read = int(pages_read)
+            readthrough.pages_read = pages_read
+        except ValueError:
+            pass
+
     return readthrough
