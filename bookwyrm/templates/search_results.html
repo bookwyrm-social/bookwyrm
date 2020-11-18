@@ -1,6 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
 {% with book_results|first as local_results %}
+<div class="block">
+    <h1 class="title">Search Results for "{{ query }}"</h1>
+</div>
+
 <div class="block columns">
     <div class="column">
         <h2 class="title">Matching Books</h2>
