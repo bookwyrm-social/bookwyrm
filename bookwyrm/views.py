@@ -581,6 +581,7 @@ def book_page(request, book_id):
         'tags': tags,
         'user_tags': user_tags,
         'readthroughs': readthroughs,
+        'show_progress': ('showprogress' in request.GET),
         'path': '/book/%s' % book_id,
         'info_fields': [
             {'name': 'ISBN', 'value': book.isbn_13},

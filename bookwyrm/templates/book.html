@@ -78,10 +78,6 @@
                         <dt>On page:</dt>
                         <dd>{{ readthrough.pages_read }} of {{ book.pages }}</dd>
                         {% endif %}
-                        {% for progress_update in readthrough.progress_updates %}
-                        <dt>On {{ progress_update.date | naturalday }} you were on:</dt>
-                        <dd>{{ progress_update.progress }} of {{ book.pages }}</dd>
-                        {% endfor %}
                     </dl>
                     <div class="field is-grouped">
                         <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
@@ -95,6 +91,17 @@
                             </span>
                         </label>
                     </div>
+                    {% if show_progress %}
+                    Progress Updates:
+                    <dl class="progress-updates">
+                        {% for progress_update in readthrough.progress_updates %}
+                        <dt>{{ progress_update.date | naturalday }}:</dt>
+                        <dd>{{ progress_update.progress }} of {{ book.pages }}</dd>
+                        {% endfor %}
+                    </dl>
+                    {% elif readthrough.progress_updates|length %}
+                    <a href="?showprogress">Show {{ readthrough.progress_updates|length }} Progress Updates</a>
+                    {% endif %}
                 </div>
             </div>
 
