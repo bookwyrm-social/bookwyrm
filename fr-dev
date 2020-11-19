@@ -48,6 +48,7 @@ case "$1" in
         execweb python manage.py makemigrations
         ;;
     migrate)
+        execweb python manage.py rename_app fedireads bookwyrm
         execweb python manage.py migrate
         ;;
     bash)
