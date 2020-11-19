@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# import our ENV variables
+source .env
+
 set -e
 set -x
 
@@ -39,8 +42,8 @@ case "$1" in
     resetdb)
         clean
         docker-compose up --build -d
-        execdb dropdb -U fedireads fedireads
-        execdb createdb -U fedireads fedireads
+        execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
         initdb
         clean
         ;;
@@ -57,7 +60,7 @@ case "$1" in
         execweb python manage.py shell
         ;;
     dbshell)
-        execdb psql -U fedireads fedireads
+        execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
         ;;
     restart_celery)
         docker-compose restart celery_worker
