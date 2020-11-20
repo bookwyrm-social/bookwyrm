@@ -145,3 +145,23 @@ def resolve_foreign_key(model, remote_id):
             'Could not resolve remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
     return result
+
+
+def tag_formatter(tags):
+    ''' helper function to extract foreign keys from tag activity json '''
+    items = []
+    types = {
+        'Book': models.Book,
+        'Mention': models.User,
+    }
+    for tag in tags:
+        tag_type = tag.get('type')
+        if not tag_type in types:
+            continue
+        remote_id = tag.get('href')
+        try:
+            item = resolve_foreign_key(types[tag_type], remote_id)
+        except ActivitySerializerError:
+            continue
+        items.append(item)
+    return items

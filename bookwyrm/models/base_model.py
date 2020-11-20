@@ -249,3 +249,15 @@ class ActivityMapping:
     model_key: str
     activity_formatter: Callable = lambda x: x
     model_formatter: Callable = lambda x: x
+
+
+def tag_formatter(items, name_field, activity_type):
+    ''' helper function to format lists of foreign keys into Tags '''
+    tags = []
+    for item in items.all():
+        tags.append(activitypub.Link(
+            href=item.remote_id,
+            name=getattr(item, name_field),
+            type=activity_type
+        ))
+    return tags
