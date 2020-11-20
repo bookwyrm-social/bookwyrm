@@ -9,6 +9,38 @@ from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, BookWyrmModel, PrivacyLevels
 
 
+# --- Formatters ----- #
+def ap_book_tags(mention_books):
+    ''' convert books into tags field '''
+    tags = []
+    for book in mention_books.all():
+        tags.append(activitypub.Link(
+            href=book.remote_id,
+            name=book.title,
+            type='Book'
+        ))
+    return tags
+
+def ap_user_tags(mention_users):
+    ''' convert users into tag fields '''
+    tags = []
+    for user in mention_users.all():
+        tags.append(activitypub.Mention(
+            href=user.remote_id,
+            name=user.username,
+        ))
+    return tags
+
+
+def model_book_tags(activity_tags):
+    ''' grab the tagged books out of the activity '''
+    pass
+
+def model_user_tags():
+    ''' create user mentions '''
+    pass
+
+
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
@@ -60,7 +92,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     @property
     def ap_tag(self):
         ''' references to books and/or users '''
-
         tags = []
         for book in self.mention_books.all():
             tags.append(activitypub.Link(
@@ -74,6 +105,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 name=user.username,
             ))
         return tags
+
 
     @property
     def ap_status_image(self):
@@ -94,7 +126,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping('to', 'ap_to'),
         ActivityMapping('cc', 'ap_cc'),
         ActivityMapping('replies', 'ap_replies'),
-        ActivityMapping('tag', 'ap_tag'),
+        ActivityMapping('tag', 'mention_books', ap_book_tags, model_book_tags),
+        # since one activitypub field populates two model fields, we do this
+        ActivityMapping('tag', 'mention_users', ap_user_tags, model_user_tags),
     ]
 
     # serializing to bookwyrm expanded activitypub

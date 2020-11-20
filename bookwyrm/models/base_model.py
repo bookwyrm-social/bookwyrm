@@ -72,7 +72,14 @@ class ActivitypubMixin:
                 value = value.remote_id
             if isinstance(value, datetime):
                 value = value.isoformat()
-            fields[mapping.activity_key] = mapping.activity_formatter(value)
+            result = mapping.activity_formatter(value)
+            if mapping.activity_key in fields and \
+                    isinstance(fields[mapping.activity_key], list):
+                # there are two database fields that map to the same AP list
+                # this happens in status, which combines user and book tags
+                fields[mapping.activity_key] += result
+            else:
+                fields[mapping.activity_key] = result
 
         if pure:
             return self.pure_activity_serializer(
