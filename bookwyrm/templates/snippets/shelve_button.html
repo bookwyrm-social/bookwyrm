@@ -63,6 +63,10 @@
         </div>
         {% endwith %}
     </div>
+
+    {% if active_shelf.identifier == 'reading' %}
+    {% include 'snippets/progress_update.html' %}
+    {% endif %}
 </div>
 
 {% endif %}
