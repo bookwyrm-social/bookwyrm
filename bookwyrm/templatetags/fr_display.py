@@ -168,25 +168,6 @@ def active_shelf(context, book):
     return shelf.shelf if shelf else None
 
 
-@register.simple_tag(takes_context=True)
-def shelve_button_text(context, book):
-    ''' check what shelf a user has a book on, if any '''
-    #TODO: books can be on multiple shelves
-    shelf = models.ShelfBook.objects.filter(
-        shelf__user=context['request'].user,
-        book=book
-    ).first()
-    if not shelf:
-        return 'Want to read'
-
-    identifier = shelf.shelf.identifier
-    if identifier == 'to-read':
-        return 'Start reading'
-    if identifier == 'reading':
-        return 'I\'m done!'
-    return 'Read'
-
-
 @register.simple_tag(takes_context=False)
 def latest_read_through(book, user):
     ''' the most recent read activity '''
