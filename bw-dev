@@ -1,9 +1,18 @@
 #!/bin/bash
 
-# import our ENV variables
-source .env
-
+# exit on errors
 set -e
+
+# import our ENV variables
+# catch exits and give a friendly error message
+function showerr {
+    echo "Failed to load configuration! You may need to update your .env and quote values with special characters in them."
+}
+trap showerr EXIT
+source .env
+trap - EXIT
+
+# show commands as they're executed
 set -x
 
 function clean {
