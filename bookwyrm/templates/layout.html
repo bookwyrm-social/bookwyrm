@@ -25,14 +25,18 @@
         <a class="navbar-item" href="/">
             <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
         </a>
-        <form class="navbar-item" action="/search/">
-            <div class="field is-grouped">
-                <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
-                <button class="button" type="submit">
-                    <span class="icon icon-search">
-                        <span class="is-sr-only">search</span>
-                    </span>
-                </button>
+        <form class="navbar-item column is-third-mobile" action="/search/">
+            <div class="field has-addons">
+                <div class="control">
+                    <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
+                </div>
+                <div class="control">
+                    <button class="button" type="submit">
+                        <span class="icon icon-search">
+                            <span class="is-sr-only">search</span>
+                        </span>
+                    </button>
+                </div>
             </div>
         </form>
 
