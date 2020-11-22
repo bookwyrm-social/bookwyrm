@@ -5,7 +5,7 @@ from json import JSONEncoder
 from bookwyrm import books_manager, models
 
 from django.db.models.fields.related_descriptors \
-        import ForwardManyToOneDescriptor
+        import ForwardManyToOneDescriptor, ManyToManyDescriptor
 
 
 class ActivitySerializerError(ValueError):
@@ -90,6 +90,7 @@ class ActivityObject:
 
         model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
+        many_to_many_fields = {}
 
         for mapping in model.activity_mappings:
             if mapping.model_key not in model_fields:
@@ -106,7 +107,11 @@ class ActivityObject:
                 fk_model = model_field.field.related_model
                 value = resolve_foreign_key(fk_model, value)
 
-            mapped_fields[mapping.model_key] = mapping.model_formatter(value)
+            formatted_value = mapping.model_formatter(value)
+            if isinstance(model_field, ManyToManyDescriptor):
+                many_to_many_fields[mapping.model_key] = formatted_value
+            else:
+                mapped_fields[mapping.model_key] = formatted_value
 
 
         # updating an existing model isntance
@@ -114,10 +119,14 @@ class ActivityObject:
             for k, v in mapped_fields.items():
                 setattr(instance, k, v)
             instance.save()
-            return instance
+        else:
+            # creating a new model instance
+            instance = model.objects.create(**mapped_fields)
 
-        # creating a new model instance
-        return model.objects.create(**mapped_fields)
+        for (model_key, values) in many_to_many_fields.items():
+            getattr(instance, model_key).set(values)
+        instance.save()
+        return instance
 
 
     def serialize(self):
@@ -129,7 +138,7 @@ class ActivityObject:
 
 def resolve_foreign_key(model, remote_id):
     ''' look up the remote_id on an activity json field '''
-    if model in [models.Edition, models.Work]:
+    if model in [models.Edition, models.Work, models.Book]:
         return books_manager.get_or_create_book(remote_id)
 
     result = model.objects
@@ -145,3 +154,23 @@ def resolve_foreign_key(model, remote_id):
             'Could not resolve remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
     return result
+
+
+def tag_formatter(tags):
+    ''' helper function to extract foreign keys from tag activity json '''
+    items = []
+    types = {
+        'Book': models.Book,
+        'Mention': models.User,
+    }
+    for tag in tags:
+        tag_type = tag.get('type')
+        if not tag_type in types:
+            continue
+        remote_id = tag.get('href')
+        try:
+            item = resolve_foreign_key(types[tag_type], remote_id)
+        except ActivitySerializerError:
+            continue
+        items.append(item)
+    return items
