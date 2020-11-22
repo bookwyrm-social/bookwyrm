@@ -72,7 +72,14 @@ class ActivitypubMixin:
                 value = value.remote_id
             if isinstance(value, datetime):
                 value = value.isoformat()
-            fields[mapping.activity_key] = mapping.activity_formatter(value)
+            result = mapping.activity_formatter(value)
+            if mapping.activity_key in fields and \
+                    isinstance(fields[mapping.activity_key], list):
+                # there are two database fields that map to the same AP list
+                # this happens in status, which combines user and book tags
+                fields[mapping.activity_key] += result
+            else:
+                fields[mapping.activity_key] = result
 
         if pure:
             return self.pure_activity_serializer(
@@ -242,3 +249,15 @@ class ActivityMapping:
     model_key: str
     activity_formatter: Callable = lambda x: x
     model_formatter: Callable = lambda x: x
+
+
+def tag_formatter(items, name_field, activity_type):
+    ''' helper function to format lists of foreign keys into Tags '''
+    tags = []
+    for item in items.all():
+        tags.append(activitypub.Link(
+            href=item.remote_id,
+            name=getattr(item, name_field),
+            type=activity_type
+        ))
+    return tags

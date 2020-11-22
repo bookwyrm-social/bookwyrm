@@ -2,6 +2,7 @@
 {% if request.user.is_authenticated %}
 
 {% with book.id|uuid as uuid %}
+{% active_shelf book as active_shelf %}
 <div class="field is-grouped">
     {% if active_shelf.identifier == 'read' %}
     <button class="button is-small" disabled>
