@@ -261,3 +261,25 @@ def tag_formatter(items, name_field, activity_type):
             type=activity_type
         ))
     return tags
+
+
+def image_formatter(image, default_path=None):
+    ''' convert images into activitypub json '''
+    if image:
+        url = image.url
+    elif default_path:
+        url = default_path
+    else:
+        return None
+    url = 'https://%s%s' % (DOMAIN, url)
+    return activitypub.Image(url=url)
+
+
+def image_attachments_formatter(images):
+    ''' create a list of image attachemnts '''
+    if not isinstance(images, list):
+        images = [images]
+    attachments = []
+    for image in images:
+        attachments.append(image_formatter(image))
+    return attachments
