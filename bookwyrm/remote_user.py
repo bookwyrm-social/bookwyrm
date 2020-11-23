@@ -1,9 +1,7 @@
 ''' manage remote users '''
 from urllib.parse import urlparse
-from uuid import uuid4
 import requests
 
-from django.core.files.base import ContentFile
 from django.db import transaction
 
 from bookwyrm import activitypub, models
@@ -22,7 +20,7 @@ def get_or_create_remote_user(actor):
 
     actor_parts = urlparse(actor)
     with transaction.atomic():
-        user = create_remote_user(data)
+        user = activitypub.Person(**data).to_model(models.User)
         user.federated_server = get_or_create_remote_server(actor_parts.netloc)
         user.save()
     if user.bookwyrm_user:
@@ -48,12 +46,6 @@ def fetch_user_data(actor):
     if actor != data['id']:
         raise ValueError("Remote actor id must match url.")
     return data
-
-
-def create_remote_user(data):
-    ''' parse the activitypub actor data into a user '''
-    actor = activitypub.Person(**data)
-    return actor.to_model(models.User)
 
 
 def refresh_remote_user(user):
