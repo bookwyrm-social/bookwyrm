@@ -25,11 +25,6 @@ def get_or_create_remote_user(actor):
         user = create_remote_user(data)
         user.federated_server = get_or_create_remote_server(actor_parts.netloc)
         user.save()
-
-    avatar = get_avatar(data)
-    if avatar:
-        user.avatar.save(*avatar)
-
     if user.bookwyrm_user:
         get_remote_reviews.delay(user.id)
     return user
@@ -67,21 +62,6 @@ def refresh_remote_user(user):
 
     activity = activitypub.Person(**data)
     activity.to_model(models.User, instance=user)
-
-
-def get_avatar(data):
-    ''' find the icon attachment and load the image from the remote sever '''
-    icon_blob = data.get('icon')
-    if not icon_blob or not icon_blob.get('url'):
-        return None
-
-    response = requests.get(icon_blob['url'])
-    if not response.ok:
-        return None
-
-    image_name = str(uuid4()) + '.' + icon_blob['url'].split('.')[-1]
-    image_content = ContentFile(response.content)
-    return [image_name, image_content]
 
 
 @app.task

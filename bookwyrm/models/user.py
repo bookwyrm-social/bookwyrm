@@ -114,7 +114,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ),
         ActivityMapping(
             'icon', 'avatar',
-            lambda x: image_formatter(x, '/static/images/default_avi.jpg')
+            lambda x: image_formatter(x, '/static/images/default_avi.jpg'),
+            activitypub.image_formatter
         ),
         ActivityMapping(
             'manuallyApprovesFollowers',

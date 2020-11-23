@@ -1,11 +1,15 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
+from uuid import uuid4
 
-from bookwyrm import books_manager, models
-
+from django.core.files.base import ContentFile
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor, ManyToManyDescriptor
+from django.db.models.fields.files import ImageFileDescriptor
+import requests
+
+from bookwyrm import books_manager, models
 
 
 class ActivitySerializerError(ValueError):
@@ -91,6 +95,7 @@ class ActivityObject:
         model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
         many_to_many_fields = {}
+        image_fields = {}
 
         for mapping in model.activity_mappings:
             if mapping.model_key not in model_fields:
@@ -110,12 +115,13 @@ class ActivityObject:
             formatted_value = mapping.model_formatter(value)
             if isinstance(model_field, ManyToManyDescriptor):
                 many_to_many_fields[mapping.model_key] = formatted_value
+            elif isinstance(model_field, ImageFileDescriptor):
+                image_fields[mapping.model_key] = formatted_value
             else:
                 mapped_fields[mapping.model_key] = formatted_value
 
-
-        # updating an existing model isntance
         if instance:
+            # updating an existing model isntance
             for k, v in mapped_fields.items():
                 setattr(instance, k, v)
             instance.save()
@@ -123,9 +129,14 @@ class ActivityObject:
             # creating a new model instance
             instance = model.objects.create(**mapped_fields)
 
+        # add many-to-many fields
         for (model_key, values) in many_to_many_fields.items():
             getattr(instance, model_key).set(values)
         instance.save()
+
+        # add images
+        for (model_key, value) in image_fields.items():
+            getattr(instance, model_key).save(*value, save=True)
         return instance
 
 
@@ -174,3 +185,21 @@ def tag_formatter(tags):
             continue
         items.append(item)
     return items
+
+
+def image_formatter(image_json):
+    ''' helper function to load images and format them for a model '''
+    url = image_json.get('url')
+    if not url:
+        return None
+
+    try:
+        response = requests.get(url)
+    except ConnectionError:
+        return None
+    if not response.ok:
+        return None
+
+    image_name = str(uuid4()) + '.' + url.split('.')[-1]
+    image_content = ContentFile(response.content)
+    return [image_name, image_content]
