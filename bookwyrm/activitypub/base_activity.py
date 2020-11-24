@@ -227,7 +227,8 @@ def image_attachments_formatter(images_json):
     ''' deserialize a list of images '''
     attachments = []
     for image in images_json:
-        attachment = models.Attachment()
+        caption = image.get('name')
+        attachment = models.Attachment(caption=caption)
         image_field = image_formatter(image)
         attachment.image.save(*image_field, save=False)
         attachments.append(attachment)

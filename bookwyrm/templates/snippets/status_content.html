@@ -21,7 +21,7 @@
     {% if status.attachments %}
     <div>
         {% for attachment in status.attachments.all %}
-        <img src="/images/{{ attachment.image }}">
+        <img src="/images/{{ attachment.image }}" alt="{{ attachment.caption }}">
         {% endfor %}
     </div>
     {% endif %}

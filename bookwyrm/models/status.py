@@ -159,6 +159,7 @@ class Attachment(BookWyrmModel):
         related_name='attachments'
     )
     image = models.ImageField(upload_to='status/', null=True, blank=True)
+    caption = models.TextField(null=True, blank=True)
 
 
 class GeneratedNote(Status):
