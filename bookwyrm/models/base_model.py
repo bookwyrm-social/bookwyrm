@@ -276,10 +276,5 @@ def image_formatter(image, default_path=None):
 
 
 def image_attachments_formatter(images):
-    ''' create a list of image attachemnts '''
-    if not isinstance(images, list):
-        images = [images]
-    attachments = []
-    for image in images:
-        attachments.append(image_formatter(image))
-    return attachments
+    ''' create a list of image attachments '''
+    return [image_formatter(i) for i in images]

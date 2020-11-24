@@ -100,7 +100,9 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('editions', 'editions_path'),
         ActivityMapping(
             'attachment', 'cover',
-            image_attachments_formatter
+            # this expects an iterable and the field is just an image
+            lambda x: image_attachments_formatter([x]),
+            lambda x: activitypub.image_attachments_formatter(x)[0]
         ),
     ]
 
