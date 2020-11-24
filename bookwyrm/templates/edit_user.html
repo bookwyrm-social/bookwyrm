@@ -42,6 +42,13 @@
                     {{ form.manually_approves_followers }}
                 </label>
             </p>
+            <p class="block">
+                <label class="label" for="id_default_post_privacy">
+                    Default post privacy:
+                    {% include 'snippets/privacy_select.html' with no_label=False current=user.default_post_privacy %}
+                </label>
+            </p>
+            <br/>
             <button class="button is-primary" type="submit">Save</button>
         </form>
     </div>

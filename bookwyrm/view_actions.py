@@ -211,6 +211,7 @@ def edit_profile(request):
     request.user.summary = form.data['summary']
     request.user.manually_approves_followers = \
         form.cleaned_data['manually_approves_followers']
+    request.user.default_post_privacy = form.data['privacy']
     request.user.save()
 
     outgoing.handle_update_user(request.user)

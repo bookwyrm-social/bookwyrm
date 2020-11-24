@@ -10,9 +10,7 @@ from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
-from .base_model import OrderedCollectionPageMixin
-from .base_model import ActivityMapping
-
+from .base_model import OrderedCollectionPageMixin, ActivityMapping, PrivacyLevels
 
 class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
@@ -65,6 +63,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through='Favorite',
         through_fields=('user', 'status'),
         related_name='favorite_statuses'
+    )
+    default_post_privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
     )
     remote_id = models.CharField(max_length=255, null=True, unique=True)
     created_date = models.DateTimeField(auto_now_add=True)
