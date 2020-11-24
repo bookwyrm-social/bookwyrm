@@ -20,6 +20,11 @@
     </div>
 </div>
 
+{% if login_form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+</div>
+{% endif %}
 <form class="block" name="edit-book" action="/edit-book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
