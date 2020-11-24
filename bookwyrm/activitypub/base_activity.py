@@ -1,11 +1,16 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
+from uuid import uuid4
+
+from django.core.files.base import ContentFile
+from django.db.models.fields.related_descriptors \
+        import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
+        ReverseManyToOneDescriptor
+from django.db.models.fields.files import ImageFileDescriptor
+import requests
 
 from bookwyrm import books_manager, models
-
-from django.db.models.fields.related_descriptors \
-        import ForwardManyToOneDescriptor, ManyToManyDescriptor
 
 
 class ActivitySerializerError(ValueError):
@@ -91,6 +96,8 @@ class ActivityObject:
         model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
         many_to_many_fields = {}
+        one_to_many_fields = {}
+        image_fields = {}
 
         for mapping in model.activity_mappings:
             if mapping.model_key not in model_fields:
@@ -102,20 +109,26 @@ class ActivityObject:
                 value = getattr(self, mapping.activity_key)
             model_field = getattr(model, mapping.model_key)
 
-            # remote_id -> foreign key resolver
-            if isinstance(model_field, ForwardManyToOneDescriptor) and value:
-                fk_model = model_field.field.related_model
-                value = resolve_foreign_key(fk_model, value)
-
             formatted_value = mapping.model_formatter(value)
-            if isinstance(model_field, ManyToManyDescriptor):
+            if isinstance(model_field, ForwardManyToOneDescriptor) and \
+                    formatted_value:
+                # foreign key remote id reolver
+                fk_model = model_field.field.related_model
+                reference = resolve_foreign_key(fk_model, formatted_value)
+                mapped_fields[mapping.model_key] = reference
+            elif isinstance(model_field, ManyToManyDescriptor):
                 many_to_many_fields[mapping.model_key] = formatted_value
+            elif isinstance(model_field, ReverseManyToOneDescriptor):
+                # attachments on statuses, for example
+                one_to_many_fields[mapping.model_key] = formatted_value
+            elif isinstance(model_field, ImageFileDescriptor):
+                # image fields need custom handling
+                image_fields[mapping.model_key] = formatted_value
             else:
                 mapped_fields[mapping.model_key] = formatted_value
 
-
-        # updating an existing model isntance
         if instance:
+            # updating an existing model isntance
             for k, v in mapped_fields.items():
                 setattr(instance, k, v)
             instance.save()
@@ -123,9 +136,26 @@ class ActivityObject:
             # creating a new model instance
             instance = model.objects.create(**mapped_fields)
 
+        # add many-to-many fields
         for (model_key, values) in many_to_many_fields.items():
             getattr(instance, model_key).set(values)
         instance.save()
+
+        # add images
+        for (model_key, value) in image_fields.items():
+            getattr(instance, model_key).save(*value, save=True)
+
+        # add one to many fields
+        for (model_key, values) in one_to_many_fields.items():
+            items = []
+            for item in values:
+                # the reference id wasn't available at creation time
+                setattr(item, instance.__class__.__name__.lower(), instance)
+                item.save()
+                items.append(item)
+            if items:
+                getattr(instance, model_key).set(items)
+                instance.save()
         return instance
 
 
@@ -156,15 +186,14 @@ def resolve_foreign_key(model, remote_id):
     return result
 
 
-def tag_formatter(tags):
+def tag_formatter(tags, tag_type):
     ''' helper function to extract foreign keys from tag activity json '''
     items = []
     types = {
         'Book': models.Book,
         'Mention': models.User,
     }
-    for tag in tags:
-        tag_type = tag.get('type')
+    for tag in [t for t in tags if t.get('type') == tag_type]:
         if not tag_type in types:
             continue
         remote_id = tag.get('href')
@@ -174,3 +203,33 @@ def tag_formatter(tags):
             continue
         items.append(item)
     return items
+
+
+def image_formatter(image_json):
+    ''' helper function to load images and format them for a model '''
+    url = image_json.get('url')
+    if not url:
+        return None
+
+    try:
+        response = requests.get(url)
+    except ConnectionError:
+        return None
+    if not response.ok:
+        return None
+
+    image_name = str(uuid4()) + '.' + url.split('.')[-1]
+    image_content = ContentFile(response.content)
+    return [image_name, image_content]
+
+
+def image_attachments_formatter(images_json):
+    ''' deserialize a list of images '''
+    attachments = []
+    for image in images_json:
+        caption = image.get('name')
+        attachment = models.Attachment(caption=caption)
+        image_field = image_formatter(image)
+        attachment.image.save(*image_field, save=False)
+        attachments.append(attachment)
+    return attachments

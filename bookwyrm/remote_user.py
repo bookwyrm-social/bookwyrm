@@ -1,9 +1,7 @@
 ''' manage remote users '''
 from urllib.parse import urlparse
-from uuid import uuid4
 import requests
 
-from django.core.files.base import ContentFile
 from django.db import transaction
 
 from bookwyrm import activitypub, models
@@ -22,14 +20,9 @@ def get_or_create_remote_user(actor):
 
     actor_parts = urlparse(actor)
     with transaction.atomic():
-        user = create_remote_user(data)
+        user = activitypub.Person(**data).to_model(models.User)
         user.federated_server = get_or_create_remote_server(actor_parts.netloc)
         user.save()
-
-    avatar = get_avatar(data)
-    if avatar:
-        user.avatar.save(*avatar)
-
     if user.bookwyrm_user:
         get_remote_reviews.delay(user.id)
     return user
@@ -55,33 +48,12 @@ def fetch_user_data(actor):
     return data
 
 
-def create_remote_user(data):
-    ''' parse the activitypub actor data into a user '''
-    actor = activitypub.Person(**data)
-    return actor.to_model(models.User)
-
-
 def refresh_remote_user(user):
     ''' get updated user data from its home instance '''
     data = fetch_user_data(user.remote_id)
 
     activity = activitypub.Person(**data)
     activity.to_model(models.User, instance=user)
-
-
-def get_avatar(data):
-    ''' find the icon attachment and load the image from the remote sever '''
-    icon_blob = data.get('icon')
-    if not icon_blob or not icon_blob.get('url'):
-        return None
-
-    response = requests.get(icon_blob['url'])
-    if not response.ok:
-        return None
-
-    image_name = str(uuid4()) + '.' + icon_blob['url'].split('.')[-1]
-    image_content = ContentFile(response.content)
-    return [image_name, image_content]
 
 
 @app.task
