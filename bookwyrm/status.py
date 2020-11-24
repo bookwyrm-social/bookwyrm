@@ -13,7 +13,7 @@ def delete_status(status):
 
 
 def create_status(activity):
-    ''' unfortunately, it's not QUITE as simple as deserialiing it '''
+    ''' unfortunately, it's not QUITE as simple as deserializing it '''
     # render the json into an activity object
     serializer = activitypub.activity_objects[activity['type']]
     activity = serializer(**activity)

@@ -7,7 +7,7 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, BookWyrmModel, PrivacyLevels
-from .base_model import tag_formatter
+from .base_model import tag_formatter, image_attachments_formatter
 
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
@@ -80,13 +80,18 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping(
             'tag', 'mention_books',
             lambda x: tag_formatter(x, 'title', 'Book'),
-            activitypub.tag_formatter
+            lambda x: activitypub.tag_formatter(x, 'Book')
         ),
         ActivityMapping(
             'tag', 'mention_users',
             lambda x: tag_formatter(x, 'username', 'Mention'),
-            activitypub.tag_formatter
+            lambda x: activitypub.tag_formatter(x, 'Mention')
         ),
+        ActivityMapping(
+            'attachment', 'attachments',
+            lambda x: image_attachments_formatter(x.all()),
+            activitypub.image_attachments_formatter
+        )
     ]
 
     # serializing to bookwyrm expanded activitypub
@@ -140,9 +145,21 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' update user active time '''
-        self.user.last_active_date = timezone.now()
-        self.user.save()
-        super().save(*args, **kwargs)
+        if self.user.local:
+            self.user.last_active_date = timezone.now()
+            self.user.save()
+        return super().save(*args, **kwargs)
+
+
+class Attachment(BookWyrmModel):
+    ''' an image (or, in the future, video etc) associated with a status '''
+    status = models.ForeignKey(
+        'Status',
+        on_delete=models.CASCADE,
+        related_name='attachments'
+    )
+    image = models.ImageField(upload_to='status/', null=True, blank=True)
+    caption = models.TextField(null=True, blank=True)
 
 
 class GeneratedNote(Status):

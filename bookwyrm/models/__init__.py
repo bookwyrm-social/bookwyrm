@@ -7,7 +7,7 @@ from .connector import Connector
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .shelf import Shelf, ShelfBook
 from .status import Status, GeneratedNote, Review, Comment, Quotation
-from .status import Favorite, Boost, Notification, ReadThrough
+from .status import Attachment, Favorite, Boost, Notification, ReadThrough
 from .tag import Tag
 from .user import User
 from .federated_server import FederatedServer
