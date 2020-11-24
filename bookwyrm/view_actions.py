@@ -240,7 +240,6 @@ def edit_book(request, book_id):
             'book': book,
             'form': form
         }
-        print(form.errors)
         return TemplateResponse(request, 'edit_book.html', data)
     form.save()
 
