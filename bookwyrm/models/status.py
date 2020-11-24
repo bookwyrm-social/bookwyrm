@@ -5,7 +5,6 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.utils.fields import ArrayField
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, BookWyrmModel, PrivacyLevels
 from .base_model import tag_formatter
@@ -18,10 +17,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     mention_users = models.ManyToManyField('User', related_name='mention_user')
     mention_books = models.ManyToManyField(
         'Edition', related_name='mention_book')
-    images = ArrayField(
-        models.ImageField(upload_to='status/'),
-        default=list
-    )
     local = models.BooleanField(default=True)
     privacy = models.CharField(
         max_length=255,
@@ -148,6 +143,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         self.user.last_active_date = timezone.now()
         self.user.save()
         super().save(*args, **kwargs)
+
+
+class Attachment(BookWyrmModel):
+    ''' an image (or, in the future, video etc) associated with a status '''
+    status = models.ForeignKey(
+        'Status',
+        on_delete=models.CASCADE,
+        related_name='items'
+    )
+    image = models.ImageField(upload_to='status/', null=True, blank=True)
 
 
 class GeneratedNote(Status):
