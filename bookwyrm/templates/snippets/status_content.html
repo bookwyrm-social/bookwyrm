@@ -18,6 +18,13 @@
     {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
     {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
     {% endif %}
+    {% if status.attachments %}
+    <div>
+        {% for attachment in status.attachments.all %}
+        <img src="/images/{{ attachment.image }}">
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 
 {% if not hide_book %}
