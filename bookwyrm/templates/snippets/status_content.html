@@ -19,10 +19,18 @@
     {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
     {% endif %}
     {% if status.attachments %}
-    <div>
-        {% for attachment in status.attachments.all %}
-        <img src="/images/{{ attachment.image }}" alt="{{ attachment.caption }}">
-        {% endfor %}
+    <div class="block">
+        <div class="columns">
+            {% for attachment in status.attachments.all %}
+            <div class="column is-narrow">
+                <figure class="image is-128x128">
+                    <a href="/images/{{ attachment.image }}" target="_blank" aria-label="open image in new window">
+                        <img src="/images/{{ attachment.image }}" alt="{{ attachment.caption }}">
+                    </a>
+                </figure>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     {% endif %}
 </div>
