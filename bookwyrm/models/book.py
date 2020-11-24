@@ -16,7 +16,7 @@ from .base_model import image_attachments_formatter
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
-    origin_id = models.CharField(max_length=255, null=True)
+    origin_id = models.CharField(max_length=255, null=True, blank=True)
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
