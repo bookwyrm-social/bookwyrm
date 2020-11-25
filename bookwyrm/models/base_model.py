@@ -59,24 +59,31 @@ class ActivitypubMixin:
     def to_activity(self, pure=False):
         ''' convert from a model to an activity '''
         if pure:
+            # works around bookwyrm-specific fields for vanilla AP services
             mappings = self.pure_activity_mappings
         else:
+            # may include custom fields that bookwyrm instances will understand
             mappings = self.activity_mappings
 
         fields = {}
         for mapping in mappings:
             if not hasattr(self, mapping.model_key) or not mapping.activity_key:
+                # this field on the model isn't serialized
                 continue
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
+                # this is probably a foreign key field, which we want to
+                # serialize as just the remote_id url reference
                 value = value.remote_id
-            if isinstance(value, datetime):
+            elif isinstance(value, datetime):
                 value = value.isoformat()
+
+            # run the custom formatter function set in the model
             result = mapping.activity_formatter(value)
             if mapping.activity_key in fields and \
                     isinstance(fields[mapping.activity_key], list):
-                # there are two database fields that map to the same AP list
-                # this happens in status, which combines user and book tags
+                # there can be two database fields that map to the same AP list
+                # this happens in status tags, which combines user and book tags
                 fields[mapping.activity_key] += result
             else:
                 fields[mapping.activity_key] = result
@@ -265,7 +272,7 @@ def tag_formatter(items, name_field, activity_type):
 
 def image_formatter(image, default_path=None):
     ''' convert images into activitypub json '''
-    if image:
+    if image and hasattr(image, 'url'):
         url = image.url
     elif default_path:
         url = default_path

@@ -74,7 +74,8 @@ class ActivityObject:
             try:
                 value = kwargs[field.name]
             except KeyError:
-                if field.default == MISSING:
+                if field.default == MISSING and \
+                        field.default_factory == MISSING:
                     raise ActivitySerializerError(\
                             'Missing required field: %s' % field.name)
                 value = field.default
@@ -143,8 +144,9 @@ class ActivityObject:
 
         # add images
         for (model_key, value) in image_fields.items():
-            if value:
-                getattr(instance, model_key).save(*value, save=True)
+            if not value:
+                continue
+            getattr(instance, model_key).save(*value, save=True)
 
         # add one to many fields
         for (model_key, values) in one_to_many_fields.items():
@@ -189,6 +191,8 @@ def resolve_foreign_key(model, remote_id):
 
 def tag_formatter(tags, tag_type):
     ''' helper function to extract foreign keys from tag activity json '''
+    if not isinstance(tags, list):
+        return []
     items = []
     types = {
         'Book': models.Book,
@@ -213,11 +217,10 @@ def image_formatter(image_json):
             image_json = image_json[0]
         except IndexError:
             return None
-    if not image_json:
+
+    if not image_json or not hasattr(image_json, 'url'):
         return None
     url = image_json.get('url')
-    if not url:
-        return None
 
     try:
         response = requests.get(url)
@@ -238,6 +241,8 @@ def image_attachments_formatter(images_json):
         caption = image.get('name')
         attachment = models.Attachment(caption=caption)
         image_field = image_formatter(image)
+        if not image_field:
+            continue
         attachment.image.save(*image_field, save=False)
         attachments.append(attachment)
     return attachments
