@@ -24,7 +24,7 @@ class Connector(AbstractConnector):
 
 
     def is_work_data(self, data):
-        return data['type'] == 'Work'
+        return data.get('type') == 'Work'
 
 
     def get_edition_from_work_data(self, data):
