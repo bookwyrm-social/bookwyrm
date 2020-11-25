@@ -2,8 +2,7 @@
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.connectors.abstract_connector import Mapping,\
-        update_from_mappings
+from bookwyrm.connectors.abstract_connector import Mapping
 from bookwyrm.connectors.bookwyrm_connector import Connector
 
 
@@ -79,7 +78,7 @@ class AbstractConnector(TestCase):
             Mapping('physical_format', remote_field='format'),
             Mapping('series', formatter=lambda x: x[0]),
         ]
-        book = update_from_mappings(self.book, data, mappings)
+        book = self.connector.update_from_mappings(self.book, data, mappings)
         self.assertEqual(book.title, 'Example Edition')
         self.assertEqual(book.isbn_10, '1234567890')
         self.assertEqual(book.isbn_13, None)
