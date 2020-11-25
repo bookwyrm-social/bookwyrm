@@ -1,55 +1,22 @@
 ''' using another bookwyrm instance as a source of book data '''
-from uuid import uuid4
-
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.base import ContentFile
 from django.db import transaction
-import requests
 
-from bookwyrm import models
-from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import update_from_mappings, get_date, get_data
+from bookwyrm import activitypub, models
+from .abstract_connector import AbstractConnector, SearchResult
+from .abstract_connector import get_data
 
 
 class Connector(AbstractConnector):
     ''' interact with other instances '''
-    def __init__(self, identifier):
-        super().__init__(identifier)
-        self.key_mappings = [
-            Mapping('isbn_13', model=models.Edition),
-            Mapping('isbn_10', model=models.Edition),
-            Mapping('lccn', model=models.Work),
-            Mapping('oclc_number', model=models.Edition),
-            Mapping('openlibrary_key'),
-            Mapping('goodreads_key'),
-            Mapping('asin'),
-        ]
 
-        self.book_mappings = self.key_mappings + [
-            Mapping('sort_title'),
-            Mapping('subtitle'),
-            Mapping('description'),
-            Mapping('languages'),
-            Mapping('series'),
-            Mapping('series_number'),
-            Mapping('subjects'),
-            Mapping('subject_places'),
-            Mapping('first_published_date'),
-            Mapping('published_date'),
-            Mapping('pages'),
-            Mapping('physical_format'),
-            Mapping('publishers'),
-        ]
-
-        self.author_mappings = [
-            Mapping('name'),
-            Mapping('bio'),
-            Mapping('openlibrary_key'),
-            Mapping('wikipedia_link'),
-            Mapping('aliases'),
-            Mapping('born', formatter=get_date),
-            Mapping('died', formatter=get_date),
-        ]
+    def update_from_mappings(self, obj, data, mappings):
+        ''' serialize book data into a model '''
+        if self.is_work_data(data):
+            work_data = activitypub.Work(**data)
+            return work_data.to_model(models.Work, instance=obj)
+        edition_data = activitypub.Edition(**data)
+        return edition_data.to_model(models.Edition, instance=obj)
 
 
     def get_remote_id_from_data(self, data):
@@ -71,46 +38,19 @@ class Connector(AbstractConnector):
 
 
     def get_authors_from_data(self, data):
-        for author_url in data.get('authors', []):
-            yield self.get_or_create_author(author_url)
+        ''' load author data '''
+        for author_id in data.get('authors', []):
+            try:
+                yield models.Author.objects.get(origin_id=author_id)
+            except models.Author.DoesNotExist:
+                continue
+            data = get_data(author_id)
+            author_data = activitypub.Author(**data)
+            yield author_data.to_model(models.Author)
 
 
     def get_cover_from_data(self, data):
-        cover_data = data.get('attachment')
-        if not cover_data:
-            return None
-        try:
-            cover_url = cover_data[0].get('url')
-        except IndexError:
-            return None
-        try:
-            response = requests.get(cover_url)
-        except ConnectionError:
-            return None
-
-        if not response.ok:
-            return None
-
-        image_name = str(uuid4()) + '.' + cover_url.split('.')[-1]
-        image_content = ContentFile(response.content)
-        return [image_name, image_content]
-
-
-    def get_or_create_author(self, remote_id):
-        ''' load that author '''
-        try:
-            return models.Author.objects.get(origin_id=remote_id)
-        except ObjectDoesNotExist:
-            pass
-
-        data = get_data(remote_id)
-
-        # ingest a new author
-        author = models.Author(origin_id=remote_id)
-        author = update_from_mappings(author, data, self.author_mappings)
-        author.save()
-
-        return author
+        pass
 
 
     def parse_search_data(self, data):

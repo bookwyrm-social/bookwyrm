@@ -143,7 +143,8 @@ class ActivityObject:
 
         # add images
         for (model_key, value) in image_fields.items():
-            getattr(instance, model_key).save(*value, save=True)
+            if value:
+                getattr(instance, model_key).save(*value, save=True)
 
         # add one to many fields
         for (model_key, values) in one_to_many_fields.items():
@@ -207,6 +208,13 @@ def tag_formatter(tags, tag_type):
 
 def image_formatter(image_json):
     ''' helper function to load images and format them for a model '''
+    if isinstance(image_json, list):
+        try:
+            image_json = image_json[0]
+        except IndexError:
+            return None
+    if not image_json:
+        return None
     url = image_json.get('url')
     if not url:
         return None

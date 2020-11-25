@@ -102,7 +102,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
             'attachment', 'cover',
             # this expects an iterable and the field is just an image
             lambda x: image_attachments_formatter([x]),
-            lambda x: activitypub.image_attachments_formatter(x)[0]
+            activitypub.image_formatter
         ),
     ]
 
@@ -190,7 +190,7 @@ class Edition(Book):
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 def isbn_10_to_13(isbn_10):
