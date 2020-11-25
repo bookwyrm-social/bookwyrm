@@ -57,10 +57,9 @@ class SelfConnector(TestCase):
 
     def test_search_rank(self):
         results = self.connector.search('Anonymous')
-        self.assertEqual(len(results), 3)
-        self.assertEqual(results[0].title, 'Edition of Example Work')
-        self.assertEqual(results[1].title, 'More Editions')
-        self.assertEqual(results[2].title, 'Another Edition')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0].title, 'More Editions')
+        self.assertEqual(results[1].title, 'Edition of Example Work')
 
 
     def test_search_default_filter(self):

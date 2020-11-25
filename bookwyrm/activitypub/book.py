@@ -25,7 +25,7 @@ class Book(ActivityObject):
     librarything_key: str
     goodreads_key: str
 
-    attachment: List[Image] = field(default=lambda: [])
+    attachment: List[Image] = field(default_factory=lambda: [])
     type: str = 'Book'
 
 
