@@ -230,6 +230,8 @@ def image_attachments_formatter(images_json):
         caption = image.get('name')
         attachment = models.Attachment(caption=caption)
         image_field = image_formatter(image)
+        if not image_field:
+            continue
         attachment.image.save(*image_field, save=False)
         attachments.append(attachment)
     return attachments
