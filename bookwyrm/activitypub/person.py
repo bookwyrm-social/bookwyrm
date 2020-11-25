@@ -15,7 +15,7 @@ class Person(ActivityObject):
     summary: str
     publicKey: PublicKey
     endpoints: Dict
-    icon: Image = field(default=lambda: {})
+    icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
