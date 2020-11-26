@@ -95,7 +95,7 @@
                     Progress Updates:
                     <dl class="progress-updates">
                         {% for progress_update in readthrough.progress_updates %}
-                        <dt>{{ progress_update.date | naturalday }}:</dt>
+                        <dt>{{ progress_update.created_date | naturalday }}:</dt>
                         <dd>{{ progress_update.progress }} of {{ book.pages }}</dd>
                         {% endfor %}
                     </dl>

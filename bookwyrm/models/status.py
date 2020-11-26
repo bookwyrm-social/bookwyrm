@@ -339,7 +339,6 @@ class ProgressUpdate(BookWyrmModel):
     readthrough = models.ForeignKey('ReadThrough', on_delete=models.PROTECT)
     progress = models.IntegerField()
     mode = models.CharField(max_length=3, choices=ProgressMode.choices, default=ProgressMode.PAGE)
-    date = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         ''' update user active time '''

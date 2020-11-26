@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
                 ('remote_id', models.CharField(max_length=255, null=True)),
                 ('progress', models.IntegerField()),
                 ('mode', models.CharField(choices=[('PG', 'page'), ('PCT', 'percent')], default='PG', max_length=3)),
-                ('date', models.DateTimeField(auto_now_add=True)),
                 ('readthrough', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.ReadThrough')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
             ],
