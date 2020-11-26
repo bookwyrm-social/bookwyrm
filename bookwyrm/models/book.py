@@ -74,6 +74,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' reference the work via local id not remote '''
         return self.parent_work.remote_id
 
+    @property
+    def latest_readthrough(self):
+        return self.readthrough_set.order_by('-updated_date').first()
+
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
 

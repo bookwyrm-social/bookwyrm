@@ -1,7 +1,14 @@
-<div class="field is-grouped is-small px-2">
+<form class="field is-grouped is-small pl-2" action="/edit-readthrough" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ readthrough.id }}"/>
     <div class="control">on page</div>
     <div class="control">
-        <input aria-label="Current page" class="input is-small" type="text" size="3">
+        <input aria-label="Current page" class="input is-small" type="text" name="pages_read" size="3" value="{{ readthrough.pages_read }}">
     </div>
-    <div class="control">of 100</div>
-</div> 
+    {% if book.pages %}
+    <div class="control">of {{ book.pages }}</div>
+    {% endif %}
+    <div class="control">
+        <button class="button is-small px-2" type="submit">Go</button>
+    </div>
+</form>
