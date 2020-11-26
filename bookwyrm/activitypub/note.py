@@ -63,9 +63,3 @@ class Quotation(Comment):
     ''' a quote and commentary on a book '''
     quote: str
     type: str = 'Quotation'
-
-@dataclass(init=False)
-class Progress(Comment):
-    ''' a progress update on a book '''
-    quote: str
-    type: str = 'Progress'

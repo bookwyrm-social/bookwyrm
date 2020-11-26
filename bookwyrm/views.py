@@ -563,7 +563,8 @@ def book_page(request, book_id):
         ).order_by('start_date')
 
         for readthrough in readthroughs:
-            readthrough.progress_updates = readthrough.progressupdate_set.all().order_by('date')
+            readthrough.progress_updates = \
+                readthrough.progressupdate_set.all().order_by('date')
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
