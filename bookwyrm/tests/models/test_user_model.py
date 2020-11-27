@@ -27,7 +27,9 @@ class User(TestCase):
         shelves = models.Shelf.objects.filter(user=self.user).all()
         self.assertEqual(len(shelves), 3)
         names = [s.name for s in shelves]
-        self.assertEqual(names, ['To Read', 'Currently Reading', 'Read'])
+        self.assertTrue('To Read' in names)
+        self.assertTrue('Currently Reading' in names)
+        self.assertTrue('Read' in names)
         ids = [s.identifier for s in shelves]
         self.assertEqual(ids, ['to-read', 'reading', 'read'])
 
