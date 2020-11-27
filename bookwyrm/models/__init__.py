@@ -2,7 +2,8 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition, Author
+from .book import Book, Work, Edition
+from .author import Author
 from .connector import Connector
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .shelf import Shelf, ShelfBook

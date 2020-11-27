@@ -1,5 +1,4 @@
 ''' using another bookwyrm instance as a source of book data '''
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from bookwyrm import activitypub, models
@@ -43,10 +42,11 @@ class Connector(AbstractConnector):
             try:
                 yield models.Author.objects.get(origin_id=author_id)
             except models.Author.DoesNotExist:
-                continue
+                pass
             data = get_data(author_id)
             author_data = activitypub.Author(**data)
-            yield author_data.to_model(models.Author)
+            author = author_data.to_model(models.Author)
+            yield author
 
 
     def get_cover_from_data(self, data):
