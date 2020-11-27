@@ -212,6 +212,12 @@ def tag_formatter(tags, tag_type):
 
 def image_formatter(image_json):
     ''' helper function to load images and format them for a model '''
+    if isinstance(image_json, list):
+        try:
+            image_json = image_json[0]
+        except IndexError:
+            return None
+
     if not image_json or not hasattr(image_json, 'url'):
         return None
     url = image_json.get('url')
