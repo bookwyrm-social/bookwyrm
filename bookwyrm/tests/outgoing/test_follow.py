@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, outgoing
@@ -22,7 +23,9 @@ class Following(TestCase):
     def test_handle_follow(self):
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
 
-        outgoing.handle_follow(self.local_user, self.remote_user)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            outgoing.handle_follow(self.local_user, self.remote_user)
+
         rel = models.UserFollowRequest.objects.get()
 
         self.assertEqual(rel.user_subject, self.local_user)
@@ -33,7 +36,8 @@ class Following(TestCase):
     def test_handle_unfollow(self):
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
-        outgoing.handle_unfollow(self.local_user, self.remote_user)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            outgoing.handle_unfollow(self.local_user, self.remote_user)
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 
@@ -45,7 +49,8 @@ class Following(TestCase):
         )
         rel_id = rel.id
 
-        outgoing.handle_accept(rel)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            outgoing.handle_accept(rel)
         # request should be deleted
         self.assertEqual(
             models.UserFollowRequest.objects.filter(id=rel_id).count(), 0
@@ -61,7 +66,8 @@ class Following(TestCase):
         )
         rel_id = rel.id
 
-        outgoing.handle_reject(rel)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            outgoing.handle_reject(rel)
         # request should be deleted
         self.assertEqual(
             models.UserFollowRequest.objects.filter(id=rel_id).count(), 0

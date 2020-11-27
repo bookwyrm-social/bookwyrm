@@ -2,6 +2,7 @@ import time
 from collections import namedtuple
 from urllib.parse import urlsplit
 import pathlib
+from unittest.mock import patch
 
 import json
 import responses
@@ -63,12 +64,14 @@ class Signature(TestCase):
             send_data=None,
             digest=None,
             date=None):
+        ''' sends a follow request to the "rat" user '''
         now = date or http_date()
         data = json.dumps(get_follow_data(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)
-        return self.send(signature, now, send_data or data, digest)
+        with patch('bookwyrm.incoming.handle_follow.delay') as _:
+            return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
         response = self.send_test_request(sender=self.mouse)
@@ -104,8 +107,9 @@ class Signature(TestCase):
             status=200
         )
 
-        response = self.send_test_request(sender=self.fake_remote)
-        self.assertEqual(response.status_code, 200)
+        with patch('bookwyrm.remote_user.get_remote_reviews.delay') as _:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -141,21 +145,22 @@ class Signature(TestCase):
             json=data,
             status=200)
 
-        # Key correct:
-        response = self.send_test_request(sender=self.fake_remote)
-        self.assertEqual(response.status_code, 200)
+        with patch('bookwyrm.remote_user.get_remote_reviews.delay') as _:
+            # Key correct:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
-        # Old key is cached, so still works:
-        response = self.send_test_request(sender=self.fake_remote)
-        self.assertEqual(response.status_code, 200)
+            # Old key is cached, so still works:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
-        # Try with new key:
-        response = self.send_test_request(sender=new_sender)
-        self.assertEqual(response.status_code, 200)
+            # Try with new key:
+            response = self.send_test_request(sender=new_sender)
+            self.assertEqual(response.status_code, 200)
 
-        # Now the old key will fail:
-        response = self.send_test_request(sender=self.fake_remote)
-        self.assertEqual(response.status_code, 401)
+            # Now the old key will fail:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 401)
 
 
     @responses.activate
@@ -172,23 +177,26 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_changed_data(self):
         '''Message data must match the digest header.'''
-        response = self.send_test_request(
-            self.mouse,
-            send_data=get_follow_data(self.mouse, self.cat))
-        self.assertEqual(response.status_code, 401)
+        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+            response = self.send_test_request(
+                self.mouse,
+                send_data=get_follow_data(self.mouse, self.cat))
+            self.assertEqual(response.status_code, 401)
 
     @pytest.mark.integration
     def test_invalid_digest(self):
-        response = self.send_test_request(
-            self.mouse,
-            digest='SHA-256=AAAAAAAAAAAAAAAAAA')
-        self.assertEqual(response.status_code, 401)
+        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+            response = self.send_test_request(
+                self.mouse,
+                digest='SHA-256=AAAAAAAAAAAAAAAAAA')
+            self.assertEqual(response.status_code, 401)
 
     @pytest.mark.integration
     def test_old_message(self):
         '''Old messages should be rejected to prevent replay attacks.'''
-        response = self.send_test_request(
-            self.mouse,
-            date=http_date(time.time() - 301)
-        )
-        self.assertEqual(response.status_code, 401)
+        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+            response = self.send_test_request(
+                self.mouse,
+                date=http_date(time.time() - 301)
+            )
+            self.assertEqual(response.status_code, 401)
