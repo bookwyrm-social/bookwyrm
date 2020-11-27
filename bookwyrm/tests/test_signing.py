@@ -155,12 +155,12 @@ class Signature(TestCase):
             self.assertEqual(response.status_code, 200)
 
             # Try with new key:
-            #response = self.send_test_request(sender=new_sender)
-            #self.assertEqual(response.status_code, 200)
+            response = self.send_test_request(sender=new_sender)
+            self.assertEqual(response.status_code, 200)
 
             # Now the old key will fail:
-            #response = self.send_test_request(sender=self.fake_remote)
-            #self.assertEqual(response.status_code, 401)
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 401)
 
 
     @responses.activate
