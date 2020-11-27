@@ -59,20 +59,34 @@ class ActivitypubMixin:
     def to_activity(self, pure=False):
         ''' convert from a model to an activity '''
         if pure:
+            # works around bookwyrm-specific fields for vanilla AP services
             mappings = self.pure_activity_mappings
         else:
+            # may include custom fields that bookwyrm instances will understand
             mappings = self.activity_mappings
 
         fields = {}
         for mapping in mappings:
             if not hasattr(self, mapping.model_key) or not mapping.activity_key:
+                # this field on the model isn't serialized
                 continue
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
+                # this is probably a foreign key field, which we want to
+                # serialize as just the remote_id url reference
                 value = value.remote_id
-            if isinstance(value, datetime):
+            elif isinstance(value, datetime):
                 value = value.isoformat()
-            fields[mapping.activity_key] = mapping.activity_formatter(value)
+
+            # run the custom formatter function set in the model
+            result = mapping.activity_formatter(value)
+            if mapping.activity_key in fields and \
+                    isinstance(fields[mapping.activity_key], list):
+                # there can be two database fields that map to the same AP list
+                # this happens in status tags, which combines user and book tags
+                fields[mapping.activity_key] += result
+            else:
+                fields[mapping.activity_key] = result
 
         if pure:
             return self.pure_activity_serializer(
@@ -242,3 +256,32 @@ class ActivityMapping:
     model_key: str
     activity_formatter: Callable = lambda x: x
     model_formatter: Callable = lambda x: x
+
+
+def tag_formatter(items, name_field, activity_type):
+    ''' helper function to format lists of foreign keys into Tags '''
+    tags = []
+    for item in items.all():
+        tags.append(activitypub.Link(
+            href=item.remote_id,
+            name=getattr(item, name_field),
+            type=activity_type
+        ))
+    return tags
+
+
+def image_formatter(image, default_path=None):
+    ''' convert images into activitypub json '''
+    if image and hasattr(image, 'url'):
+        url = image.url
+    elif default_path:
+        url = default_path
+    else:
+        return None
+    url = 'https://%s%s' % (DOMAIN, url)
+    return activitypub.Image(url=url)
+
+
+def image_attachments_formatter(images):
+    ''' create a list of image attachments '''
+    return [image_formatter(i) for i in images]

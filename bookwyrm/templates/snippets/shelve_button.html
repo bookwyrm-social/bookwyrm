@@ -1,9 +1,9 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
 
+{% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
-    {% with book.id|uuid as uuid %}
     {% if active_shelf.identifier == 'read' %}
     <button class="button is-small" disabled>
         <span>Read</span> <span class="icon icon-check"></span>
@@ -26,20 +26,20 @@
         <button class="button is-small" type="submit">Want to read</button>
     </form>
     {% endif %}
-    {% endwith %}
 
-    <div class="dropdown is-hoverable">
+    <div class="dropdown">
         <div class="dropdown-trigger">
-            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-{{ uuid }}">
-                <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
-            </button>
+            <label for="shelf-select-dropdown-{{ uuid }}-toggle" role="button" aria-expanded="false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ uuid }}">
+                <div class="button is-small">
+                    <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
+                </div>
+            </label>
         </div>
-
-        {% with book.id|uuid as uuid %}
-        <div class="dropdown-menu" id="dropdown-menu-{{ uuid }}" role="menu">
+        <input type="checkbox" class="toggle-control" id="shelf-select-dropdown-{{ uuid }}-toggle">
+        <div class="dropdown-menu toggle-content hidden" id="shelf-select-{{ uuid }}" role="menu">
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
-                <li>
+                <li role="menuitem">
                     {% if shelf.identifier == 'to-read' %}
                     <div class="dropdown-item pt-0 pb-0">
                         <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
@@ -61,8 +61,7 @@
                 {% endfor %}
             </ul>
         </div>
-        {% endwith %}
     </div>
 </div>
-
+{% endwith %}
 {% endif %}

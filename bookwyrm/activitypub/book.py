@@ -25,7 +25,7 @@ class Book(ActivityObject):
     librarything_key: str
     goodreads_key: str
 
-    attachment: List[Image] = field(default=lambda: [])
+    attachment: List[Image] = field(default_factory=lambda: [])
     type: str = 'Book'
 
 
@@ -56,10 +56,10 @@ class Work(Book):
 class Author(ActivityObject):
     ''' author of a book '''
     name: str
-    born: str
-    died: str
-    aliases: str
-    bio: str
-    openlibrary_key: str
-    wikipedia_link: str
+    born: str = ''
+    died: str = ''
+    aliases: str = ''
+    bio: str = ''
+    openlibraryKey: str = ''
+    wikipediaLink: str = ''
     type: str = 'Person'

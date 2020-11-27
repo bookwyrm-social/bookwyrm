@@ -12,10 +12,11 @@ from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivityMapping, BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from .base_model import image_attachments_formatter
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
-    origin_id = models.CharField(max_length=255, null=True)
+    origin_id = models.CharField(max_length=255, null=True, blank=True)
     # these identifiers apply to both works and editions
     openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
     librarything_key = models.CharField(max_length=255, blank=True, null=True)
@@ -61,15 +62,6 @@ class Book(ActivitypubMixin, BookWyrmModel):
         return [a.remote_id for a in self.authors.all()]
 
     @property
-    def ap_cover(self):
-        ''' an image attachment '''
-        if not self.cover or not hasattr(self.cover, 'url'):
-            return []
-        return [activitypub.Image(
-            url='https://%s%s' % (DOMAIN, self.cover.url),
-        )]
-
-    @property
     def ap_parent_work(self):
         ''' reference the work via local id not remote '''
         return self.parent_work.remote_id
@@ -110,7 +102,12 @@ class Book(ActivitypubMixin, BookWyrmModel):
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions_path'),
-        ActivityMapping('attachment', 'ap_cover'),
+        ActivityMapping(
+            'attachment', 'cover',
+            # this expects an iterable and the field is just an image
+            lambda x: image_attachments_formatter([x]),
+            activitypub.image_formatter
+        ),
     ]
 
     def save(self, *args, **kwargs):
@@ -197,7 +194,7 @@ class Edition(Book):
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 def isbn_10_to_13(isbn_10):
@@ -241,44 +238,3 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = 'X'
     return converted + str(checkdigit)
-
-
-class Author(ActivitypubMixin, BookWyrmModel):
-    origin_id = models.CharField(max_length=255, null=True)
-    ''' copy of an author from OL '''
-    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
-    sync = models.BooleanField(default=True)
-    last_sync_date = models.DateTimeField(default=timezone.now)
-    wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
-    # idk probably other keys would be useful here?
-    born = models.DateTimeField(blank=True, null=True)
-    died = models.DateTimeField(blank=True, null=True)
-    name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    aliases = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
-    )
-    bio = models.TextField(null=True, blank=True)
-
-    @property
-    def display_name(self):
-        ''' Helper to return a displayable name'''
-        if self.name:
-            return self.name
-        # don't want to return a spurious space if all of these are None
-        if self.first_name and self.last_name:
-            return self.first_name + ' ' + self.last_name
-        return self.last_name or self.first_name
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('name', 'display_name'),
-        ActivityMapping('born', 'born'),
-        ActivityMapping('died', 'died'),
-        ActivityMapping('aliases', 'aliases'),
-        ActivityMapping('bio', 'bio'),
-        ActivityMapping('openlibrary_key', 'openlibrary_key'),
-        ActivityMapping('wikipedia_link', 'wikipedia_link'),
-    ]
-    activity_serializer = activitypub.Author

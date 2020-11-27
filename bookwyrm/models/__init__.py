@@ -2,12 +2,13 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition, Author
+from .book import Book, Work, Edition
+from .author import Author
 from .connector import Connector
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .shelf import Shelf, ShelfBook
 from .status import Status, GeneratedNote, Review, Comment, Quotation
-from .status import Favorite, Boost, Notification, ReadThrough, ProgressMode, ProgressUpdate
+from .status import Attachment, Favorite, Boost, Notification, ReadThrough, ProgressMode, ProgressUpdate
 from .tag import Tag
 from .user import User
 from .federated_server import FederatedServer

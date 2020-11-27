@@ -7,6 +7,7 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import ActivityMapping, BookWyrmModel, PrivacyLevels
+from .base_model import tag_formatter, image_attachments_formatter
 
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
@@ -58,24 +59,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return self.to_replies()
 
     @property
-    def ap_tag(self):
-        ''' references to books and/or users '''
-
-        tags = []
-        for book in self.mention_books.all():
-            tags.append(activitypub.Link(
-                href=book.remote_id,
-                name=book.title,
-                type='Book'
-            ))
-        for user in self.mention_users.all():
-            tags.append(activitypub.Mention(
-                href=user.remote_id,
-                name=user.username,
-            ))
-        return tags
-
-    @property
     def ap_status_image(self):
         ''' attach a book cover, if relevent '''
         if hasattr(self, 'book'):
@@ -94,7 +77,21 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping('to', 'ap_to'),
         ActivityMapping('cc', 'ap_cc'),
         ActivityMapping('replies', 'ap_replies'),
-        ActivityMapping('tag', 'ap_tag'),
+        ActivityMapping(
+            'tag', 'mention_books',
+            lambda x: tag_formatter(x, 'title', 'Book'),
+            lambda x: activitypub.tag_formatter(x, 'Book')
+        ),
+        ActivityMapping(
+            'tag', 'mention_users',
+            lambda x: tag_formatter(x, 'username', 'Mention'),
+            lambda x: activitypub.tag_formatter(x, 'Mention')
+        ),
+        ActivityMapping(
+            'attachment', 'attachments',
+            lambda x: image_attachments_formatter(x.all()),
+            activitypub.image_attachments_formatter
+        )
     ]
 
     # serializing to bookwyrm expanded activitypub
@@ -148,9 +145,21 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' update user active time '''
-        self.user.last_active_date = timezone.now()
-        self.user.save()
-        super().save(*args, **kwargs)
+        if self.user.local:
+            self.user.last_active_date = timezone.now()
+            self.user.save()
+        return super().save(*args, **kwargs)
+
+
+class Attachment(BookWyrmModel):
+    ''' an image (or, in the future, video etc) associated with a status '''
+    status = models.ForeignKey(
+        'Status',
+        on_delete=models.CASCADE,
+        related_name='attachments'
+    )
+    image = models.ImageField(upload_to='status/', null=True, blank=True)
+    caption = models.TextField(null=True, blank=True)
 
 
 class GeneratedNote(Status):

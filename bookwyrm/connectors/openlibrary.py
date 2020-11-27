@@ -7,7 +7,6 @@ from django.core.files.base import ContentFile
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import ConnectorException
-from .abstract_connector import update_from_mappings
 from .abstract_connector import get_date, get_data
 from .openlibrary_languages import languages
 
@@ -185,7 +184,7 @@ class Connector(AbstractConnector):
         data = get_data(url)
 
         author = models.Author(openlibrary_key=olkey)
-        author = update_from_mappings(author, data, self.author_mappings)
+        author = self.update_from_mappings(author, data, self.author_mappings)
         name = data.get('name')
         # TODO this is making some BOLD assumption
         if name:

@@ -24,8 +24,8 @@ class Note(ActivityObject):
     cc: List[str]
     content: str
     replies: Dict
-    tag: List[Link] = field(default=lambda: [])
-    attachment: List[Image] = field(default=lambda: [])
+    tag: List[Link] = field(default_factory=lambda: [])
+    attachment: List[Image] = field(default_factory=lambda: [])
     sensitive: bool = False
     type: str = 'Note'
 

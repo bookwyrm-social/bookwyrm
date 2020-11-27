@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# exit on errors
+set -e
+
+# import our ENV variables
+# catch exits and give a friendly error message
+function showerr {
+    echo "Failed to load configuration! You may need to update your .env and quote values with special characters in them."
+}
+trap showerr EXIT
+source .env
+trap - EXIT
+
+# show commands as they're executed
+set -x
+
+function clean {
+    docker-compose stop
+    docker-compose rm -f
+}
+
+function runweb {
+    docker-compose run --rm web "$@"
+    clean
+}
+
+function execdb {
+    docker-compose exec db $@
+}
+
+function execweb {
+    docker-compose exec web "$@"
+}
+
+function initdb {
+    execweb python manage.py migrate
+    execweb python manage.py initdb
+}
+
+case "$1" in
+    up)
+        docker-compose up --build
+        ;;
+    run)
+        docker-compose run --rm --service-ports web
+        ;;
+    initdb)
+        initdb
+        ;;
+    resetdb)
+        clean
+        docker-compose up --build -d
+        execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        initdb
+        clean
+        ;;
+    makemigrations)
+        execweb python manage.py makemigrations
+        ;;
+    migrate)
+        execweb python manage.py rename_app fedireads bookwyrm
+        shift 1
+        execweb python manage.py migrate "$@"
+        ;;
+    bash)
+        execweb bash
+        ;;
+    shell)
+        execweb python manage.py shell
+        ;;
+    dbshell)
+        execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
+        ;;
+    restart_celery)
+        docker-compose restart celery_worker
+        ;;
+    test)
+        shift 1
+        execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        ;;
+    pytest)
+        shift 1
+        execweb pytest "$@"
+        ;;
+    test_report)
+        execweb coverage report
+        ;;
+    collectstatic)
+        execweb python manage.py collectstatic --no-input
+        ;;
+    build)
+        docker-compose build
+        ;;
+    clean)
+        clean
+        ;;
+    *)
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report"
+        ;;
+esac

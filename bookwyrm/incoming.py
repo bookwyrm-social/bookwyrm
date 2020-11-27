@@ -253,7 +253,6 @@ def handle_delete_status(activity):
     status_builder.delete_status(status)
 
 
-
 @app.task
 def handle_favorite(activity):
     ''' approval of your good good post '''
