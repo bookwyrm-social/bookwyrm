@@ -2,6 +2,7 @@ import time
 from collections import namedtuple
 from urllib.parse import urlsplit
 import pathlib
+from unittest.mock import patch
 
 import json
 import responses
@@ -63,16 +64,18 @@ class Signature(TestCase):
             send_data=None,
             digest=None,
             date=None):
+        ''' sends a follow request to the "rat" user '''
         now = date or http_date()
         data = json.dumps(get_follow_data(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)
-        return self.send(signature, now, send_data or data, digest)
+        with patch('bookwyrm.incoming.handle_follow.delay') as _:
+            return self.send(signature, now, send_data or data, digest)
 
-#    def test_correct_signature(self):
-#        response = self.send_test_request(sender=self.mouse)
-#        self.assertEqual(response.status_code, 200)
+    def test_correct_signature(self):
+        response = self.send_test_request(sender=self.mouse)
+        self.assertEqual(response.status_code, 200)
 
     def test_wrong_signature(self):
         ''' Messages must be signed by the right actor.
