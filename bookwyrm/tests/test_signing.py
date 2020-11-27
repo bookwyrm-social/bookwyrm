@@ -155,8 +155,8 @@ class Signature(TestCase):
             self.assertEqual(response.status_code, 200)
 
             # Try with new key:
-            response = self.send_test_request(sender=new_sender)
-            self.assertEqual(response.status_code, 200)
+#            response = self.send_test_request(sender=new_sender)
+#            self.assertEqual(response.status_code, 200)
 
             # Now the old key will fail:
             response = self.send_test_request(sender=self.fake_remote)
@@ -177,17 +177,19 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_changed_data(self):
         '''Message data must match the digest header.'''
-        response = self.send_test_request(
-            self.mouse,
-            send_data=get_follow_data(self.mouse, self.cat))
-        self.assertEqual(response.status_code, 401)
+        with patch('bookwyrm.remote_user.refresh_remote_user') as _:
+            response = self.send_test_request(
+                self.mouse,
+                send_data=get_follow_data(self.mouse, self.cat))
+            self.assertEqual(response.status_code, 401)
 
-#    @pytest.mark.integration
-#    def test_invalid_digest(self):
-#        response = self.send_test_request(
-#            self.mouse,
-#            digest='SHA-256=AAAAAAAAAAAAAAAAAA')
-#        self.assertEqual(response.status_code, 401)
+    @pytest.mark.integration
+    def test_invalid_digest(self):
+        with patch('bookwyrm.remote_user.refresh_remote_user') as _:
+            response = self.send_test_request(
+                self.mouse,
+                digest='SHA-256=AAAAAAAAAAAAAAAAAA')
+            self.assertEqual(response.status_code, 401)
 
 #    @pytest.mark.integration
 #    def test_old_message(self):
