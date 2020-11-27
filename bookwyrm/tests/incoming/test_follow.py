@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, incoming
@@ -27,7 +28,8 @@ class IncomingFollow(TestCase):
             "object": "http://local.com/user/mouse"
         }
 
-        incoming.handle_follow(activity)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            incoming.handle_follow(activity)
 
         # notification created
         notification = models.Notification.objects.get()
@@ -55,7 +57,8 @@ class IncomingFollow(TestCase):
         self.local_user.manually_approves_followers = True
         self.local_user.save()
 
-        incoming.handle_follow(activity)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            incoming.handle_follow(activity)
 
         # notification created
         notification = models.Notification.objects.get()
@@ -81,7 +84,8 @@ class IncomingFollow(TestCase):
             "object": "http://local.com/user/nonexistent-user"
         }
 
-        incoming.handle_follow(activity)
+        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
+            incoming.handle_follow(activity)
 
         # do nothing
         notifications = models.Notification.objects.all()
