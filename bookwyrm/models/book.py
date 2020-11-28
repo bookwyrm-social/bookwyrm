@@ -2,7 +2,6 @@
 import re
 
 from django.db import models
-from django.db.models import Q
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
@@ -94,10 +93,17 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
+
         if self.id and not self.remote_id:
             self.remote_id = self.get_remote_id()
 
-        super().save(*args, **kwargs)
+        if not self.id:
+            # force set the remote id to a local version
+            self.origin_id = self.remote_id
+            saved = super().save(*args, **kwargs)
+            saved.remote_id = self.get_remote_id()
+            return saved.save()
+        return super().save(*args, **kwargs)
 
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
