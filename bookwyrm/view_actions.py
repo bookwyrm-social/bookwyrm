@@ -363,6 +363,13 @@ def start_reading(request, book_id):
     if readthrough.start_date:
         readthrough.save()
 
+    # create a progress update if we have a page
+    if readthrough.pages_read:
+        readthrough.progressupdate_set.create(
+            user=request.user,
+            progress=readthrough.pages_read,
+            mode=models.ProgressMode.PAGE)
+
     # shelve the book
     if request.POST.get('reshelve', True):
         try:
@@ -728,7 +735,8 @@ def update_readthrough(request, book=None, create=True):
     start_date = request.POST.get('start_date')
     if start_date:
         try:
-            start_date = dateutil.parser.parse(start_date)
+            start_date = timezone.make_aware(
+                dateutil.parser.parse(start_date))
             readthrough.start_date = start_date
         except ParserError:
             pass
@@ -736,7 +744,8 @@ def update_readthrough(request, book=None, create=True):
     finish_date = request.POST.get('finish_date')
     if finish_date:
         try:
-            finish_date = dateutil.parser.parse(finish_date)
+            finish_date = timezone.make_aware(
+                dateutil.parser.parse(finish_date))
             readthrough.finish_date = finish_date
         except ParserError:
             pass
