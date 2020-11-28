@@ -531,12 +531,15 @@ def tag(request):
     book = get_object_or_404(models.Edition, id=book_id)
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
+    )
+    user_tag = models.UserTag.objects.get_or_create(
+        user=request.user,
         book=book,
-        user=request.user
+        tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, tag_obj)
+        outgoing.handle_tag(request.user, user_tag)
     return redirect('/book/%s' % book_id)
 
 

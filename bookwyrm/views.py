@@ -560,9 +560,9 @@ def book_page(request, book_id):
     user_tags = []
     readthroughs = []
     if request.user.is_authenticated:
-        user_tags = models.Tag.objects.filter(
+        user_tags = models.UserTag.objects.filter(
             book=book, user=request.user
-        ).values_list('identifier', flat=True)
+        ).values_list('tag__identifier', flat=True)
 
         readthroughs = models.ReadThrough.objects.filter(
             user=request.user,
@@ -570,11 +570,9 @@ def book_page(request, book_id):
         ).order_by('start_date')
 
     rating = reviews.aggregate(Avg('rating'))
-    tags = models.Tag.objects.filter(
-        book=book
-    ).values(
-        'book', 'name', 'identifier'
-    ).distinct().all()
+    tags = models.UserTag.objects.filter(
+        book=book,
+    )
 
     data = {
         'title': book.title,
@@ -664,7 +662,9 @@ def tag_page(request, tag_id):
         return JsonResponse(
             tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
 
-    books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
+    books = models.Edition.objects.filter(
+        usertag__tag__identifier=tag_id
+    ).distinct()
     data = {
         'title': tag_obj.name,
         'books': books,

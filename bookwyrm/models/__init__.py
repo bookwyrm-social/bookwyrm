@@ -12,7 +12,7 @@ from .status import Status, GeneratedNote, Review, Comment, Quotation
 from .status import Favorite, Boost, Notification, ReadThrough
 from .attachment import Image
 
-from .tag import Tag
+from .tag import Tag, UserTag
 
 from .user import User
 from .relationship import UserFollows, UserFollowRequest, UserBlocks

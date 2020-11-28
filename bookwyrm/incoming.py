@@ -1,6 +1,6 @@
 ''' handles all of the activity coming in to the server '''
 import json
-from urllib.parse import urldefrag, unquote_plus
+from urllib.parse import urldefrag
 
 import django.db.utils
 from django.http import HttpResponse
@@ -60,9 +60,8 @@ def shared_inbox(request):
         'Like': handle_favorite,
         'Announce': handle_boost,
         'Add': {
-            'Tag': handle_tag,
-            'Edition': handle_shelve,
-            'Work': handle_shelve,
+            'Edition': handle_add,
+            'Work': handle_add,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -312,25 +311,13 @@ def handle_unboost(activity):
 
 
 @app.task
-def handle_tag(activity):
-    ''' someone is tagging a book '''
-    user = get_or_create_remote_user(activity['actor'])
-    if not user.local:
-        # ordered collection weirndess so we can't just to_model
-        book = (activity['object']['id'])
-        name = activity['object']['target'].split('/')[-1]
-        name = unquote_plus(name)
-        models.Tag.objects.get_or_create(
-            user=user,
-            book=book,
-            name=name
-        )
-
-
-@app.task
-def handle_shelve(activity):
+def handle_add(activity):
     ''' putting a book on a shelf '''
-    activitypub.AddBook(**activity).to_model(models.ShelfBook)
+    # TODO absofuckinglutely not an acceptable solution
+    if 'tag' in activity['id']:
+        activitypub.AddBook(**activity).to_model(models.Tag)
+    else:
+        activitypub.AddBook(**activity).to_model(models.ShelfBook)
 
 
 @app.task

@@ -85,7 +85,12 @@ class ActivityObject:
     def to_model(self, model, instance=None):
         ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
-            raise ActivitySerializerError('Wrong activity type for model')
+            raise ActivitySerializerError(
+                'Wrong activity type "%s" for model "%s" (expects "%s")' % \
+                        (self.__class__,
+                         model.__name__,
+                         model.activity_serializer)
+            )
 
         # check for an existing instance, if we're not updating a known obj
         if not instance:

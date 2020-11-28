@@ -70,7 +70,7 @@ class ShelfBook(BookWyrmModel):
         ActivityMapping('id', 'remote_id'),
         ActivityMapping('actor', 'added_by'),
         ActivityMapping('object', 'book'),
-        ActivityMapping('target', 'shelf')
+        ActivityMapping('target', 'shelf'),
     ]
 
     activity_serializer = activitypub.AddBook
