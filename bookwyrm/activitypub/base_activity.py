@@ -135,9 +135,9 @@ class ActivityObject:
 
             # add images
             for (model_key, value) in image_fields.items():
-                if not value:
-                    continue
                 formatted_value = image_formatter(value)
+                if not formatted_value:
+                    continue
                 getattr(instance, model_key).save(*formatted_value, save=True)
 
             for (model_key, values) in many_to_many_fields.items():
@@ -146,6 +146,8 @@ class ActivityObject:
 
             # add one to many fields
             for (model_key, values) in one_to_many_fields.items():
+                if values == MISSING:
+                    continue
                 model_field = getattr(instance, model_key)
                 model = model_field.model
                 for item in values:
