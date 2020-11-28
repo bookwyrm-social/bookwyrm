@@ -24,7 +24,7 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.views import get_user_from_username
 
 
-@require_GET
+@require_POST
 def user_login(request):
     ''' authenticate user login '''
     login_form = forms.LoginForm(request.POST)
@@ -49,7 +49,7 @@ def user_login(request):
     return TemplateResponse(request, 'login.html', data)
 
 
-@require_GET
+@require_POST
 def register(request):
     ''' join the server '''
     if not models.SiteSettings.get().allow_registration:
