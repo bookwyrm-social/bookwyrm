@@ -292,13 +292,21 @@ class Boost(Status):
     #     unique_together = ('user', 'boosted_status')
 
 
+class ProgressMode(models.TextChoices):
+    PAGE = 'PG', 'page'
+    PERCENT = 'PCT', 'percent'
+
 class ReadThrough(BookWyrmModel):
     ''' Store a read through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Book', on_delete=models.PROTECT)
-    pages_read = models.IntegerField(
+    progress = models.IntegerField(
         null=True,
         blank=True)
+    progress_mode = models.CharField(
+        max_length=3,
+        choices=ProgressMode.choices,
+        default=ProgressMode.PAGE)
     start_date = models.DateTimeField(
         blank=True,
         null=True)
@@ -312,9 +320,13 @@ class ReadThrough(BookWyrmModel):
         self.user.save()
         super().save(*args, **kwargs)
 
-class ProgressMode(models.TextChoices):
-    PAGE = 'PG', 'page'
-    PERCENT = 'PCT', 'percent'
+    def create_update(self):
+        if self.progress:
+            return self.progressupdate_set.create(
+                user=self.user,
+                progress=self.progress,
+                mode=self.progress_mode)
+
 
 class ProgressUpdate(BookWyrmModel):
     ''' Store progress through a book in the database. '''

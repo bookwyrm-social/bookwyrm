@@ -1,13 +1,26 @@
 <form class="field is-grouped is-small pl-2" action="/edit-readthrough" method="POST">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}"/>
-    <div class="control">on page</div>
     <div class="control">
-        <input aria-label="Current page" class="input is-small" type="text" name="pages_read" size="3" value="{{ readthrough.pages_read }}">
+        {% if readthrough.progress_mode == 'PG' %}
+        on page
+        {% else %}
+        currently at
+        {% endif %}
     </div>
-    {% if book.pages %}
-    <div class="control">of {{ book.pages }}</div>
-    {% endif %}
+    <div class="control">
+        <input
+         aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Perent read{% endif%}"
+         class="input is-small" type="text"
+         name="progress" size="3" value="{{ readthrough.progress }}">
+    </div>
+    <div class="control">
+        {% if readthrough.progress_mode == 'PG' and book.pages %}
+        of {{ book.pages }}
+        {% else %}
+        %
+        {% endif %}
+    </div>
     <div class="control">
         <button class="button is-small px-2" type="submit">Go</button>
     </div>

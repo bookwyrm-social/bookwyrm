@@ -74,9 +74,13 @@
                         {% if readthrough.finish_date %}
                         <dt>Finished reading:</dt>
                         <dd>{{ readthrough.finish_date | naturalday }}</dd>
-                        {% elif readthrough.pages_read %}
-                        <dt>On page:</dt>
-                        <dd>{{ readthrough.pages_read }} of {{ book.pages }}</dd>
+                        {% elif readthrough.progress %}
+                        <dt>Progress:</dt>
+                        {% if readthrough.progress_mode == 'PG' %}
+                        <dd>on page {{ readthrough.progress }} of {{ book.pages }}</dd>
+                        {% else %}
+                        <dd>{{ readthrough.progress }}%</dd>
+                        {% endif %}
                         {% endif %}
                     </dl>
                     <div class="field is-grouped">
@@ -93,12 +97,22 @@
                     </div>
                     {% if show_progress %}
                     Progress Updates:
-                    <dl class="progress-updates">
+                    <ul>
+                        {% if readthrough.finish_date %}
+                        <li>{{ readthrough.start_date | naturalday }}: finished</li>
+                        {% endif %}
                         {% for progress_update in readthrough.progress_updates %}
-                        <dt>{{ progress_update.created_date | naturalday }}:</dt>
-                        <dd>{{ progress_update.progress }} of {{ book.pages }}</dd>
+                        <li>
+                            {{ progress_update.created_date | naturalday }}:
+                            {% if progress_update.mode == 'PG' %}
+                            page {{ progress_update.progress }} of {{ book.pages }}
+                            {% else %}
+                            {{ progress_update.progress }}%
+                            {% endif %}
+                        </li>
                         {% endfor %}
-                    </dl>
+                        <li>{{ readthrough.start_date | naturalday }}: started</li>
+                    </ul>
                     {% elif readthrough.progress_updates|length %}
                     <a href="?showprogress">Show {{ readthrough.progress_updates|length }} Progress Updates</a>
                     {% endif %}
@@ -118,11 +132,27 @@
                                     <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
                                 </label>
                             </div>
-                            <div class="field">
-                                <label class="label">
-                                    On page
-                                    <input type="number" name="pages_read" class="input" id="id_pages_read-{{ readthrough.id }}" value="{{ readthrough.pages_read }}">
-                                </label>
+                            <div class="columns">
+                                <div class="column">
+                                    <div class="field">
+                                        <label class="label">
+                                            Progress
+                                            <input type="number" name="progress" class="input" id="id_progress-{{ readthrough.id }}" value="{{ readthrough.progress }}">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="control mt-5">
+                                        <label class="radio">
+                                            <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PG" {% if readthrough.progress_mode == 'PG' %}checked{% endif %}>
+                                            pages
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PCT" {% if readthrough.progress_mode == 'PCT' %}checked{% endif %}>
+                                            percent
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="field">
                                 <label class="label">

@@ -36,7 +36,7 @@ class ReadThrough(TestCase):
         self.assertEqual(readthroughs[0].progressupdate_set.count(), 0)
         self.assertEqual(readthroughs[0].start_date,
             datetime(2020, 11, 27, tzinfo=timezone.utc))
-        self.assertEqual(readthroughs[0].pages_read, None)
+        self.assertEqual(readthroughs[0].progress, None)
         self.assertEqual(readthroughs[0].finish_date, None)
 
     def test_create_progress_readthrough(self):
@@ -44,14 +44,14 @@ class ReadThrough(TestCase):
 
         self.client.post('/start-reading/{}'.format(self.edition.id), {
             'start_date': '2020-11-27',
-            'pages_read': 50,
+            'progress': 50,
         })
 
         readthroughs = self.edition.readthrough_set.all()
         self.assertEqual(len(readthroughs), 1)
         self.assertEqual(readthroughs[0].start_date,
             datetime(2020, 11, 27, tzinfo=timezone.utc))
-        self.assertEqual(readthroughs[0].pages_read, 50)
+        self.assertEqual(readthroughs[0].progress, 50)
         self.assertEqual(readthroughs[0].finish_date, None)
 
         progress_updates = readthroughs[0].progressupdate_set.all()
@@ -62,7 +62,7 @@ class ReadThrough(TestCase):
         # Update progress
         self.client.post('/edit-readthrough', {
             'id': readthroughs[0].id,
-            'pages_read': 100,
+            'progress': 100,
         })
 
         progress_updates = readthroughs[0].progressupdate_set\

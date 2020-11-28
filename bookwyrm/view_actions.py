@@ -364,11 +364,7 @@ def start_reading(request, book_id):
         readthrough.save()
 
     # create a progress update if we have a page
-    if readthrough.pages_read:
-        readthrough.progressupdate_set.create(
-            user=request.user,
-            progress=readthrough.pages_read,
-            mode=models.ProgressMode.PAGE)
+    readthrough.create_update()
 
     # shelve the book
     if request.POST.get('reshelve', True):
@@ -440,10 +436,7 @@ def edit_readthrough(request):
 
     # record the progress update individually
     # use default now for date field
-    readthrough.progressupdate_set.create(
-        user=request.user,
-        progress=readthrough.pages_read,
-        mode=models.ProgressMode.PAGE)
+    readthrough.create_update()
 
     return redirect(request.headers.get('Referer', '/'))
 
@@ -750,11 +743,19 @@ def update_readthrough(request, book=None, create=True):
         except ParserError:
             pass
 
-    pages_read = request.POST.get('pages_read')
-    if pages_read:
+    progress = request.POST.get('progress')
+    if progress:
         try:
-            pages_read = int(pages_read)
-            readthrough.pages_read = pages_read
+            progress = int(progress)
+            readthrough.progress = progress
+        except ValueError:
+            pass
+
+    progress_mode = request.POST.get('progress_mode')
+    if progress_mode:
+        try:
+            progress_mode = models.ProgressMode(progress_mode)
+            readthrough.progress_mode = progress_mode
         except ValueError:
             pass
 
