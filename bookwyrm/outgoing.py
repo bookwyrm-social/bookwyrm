@@ -12,7 +12,6 @@ from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
-from bookwyrm.remote_user import get_or_create_remote_user
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
 
@@ -61,9 +60,11 @@ def handle_remote_webfinger(query):
             return None
         data = response.json()
         for link in data['links']:
-            if link['rel'] == 'self':
+            if link.get('rel') == 'self':
                 try:
-                    user = get_or_create_remote_user(link['href'])
+                    user = activitypub.resolve_remote_id(
+                        models.User, link['href']
+                    )
                 except KeyError:
                     return None
     return user

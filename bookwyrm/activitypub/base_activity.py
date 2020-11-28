@@ -118,11 +118,12 @@ class ActivityObject:
             formatted_value = mapping.model_formatter(value)
             if isinstance(model_field, DeferredAttribute) and \
                     isinstance(model_field.field, DateTimeField):
-                print("DATE")
                 try:
-                    formatted_value = timezone.make_aware(
-                        dateutil.parser.parse(formatted_value)
-                    )
+                    date_value = dateutil.parser.parse(formatted_value)
+                    try:
+                        formatted_value = timezone.make_aware(date_value)
+                    except ValueError:
+                        formatted_value = date_value
                 except ParserError:
                     formatted_value = None
             elif isinstance(model_field, ForwardManyToOneDescriptor) and \

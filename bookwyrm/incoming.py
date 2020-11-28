@@ -10,7 +10,6 @@ import requests
 
 from bookwyrm import activitypub, books_manager, models, outgoing
 from bookwyrm import status as status_builder
-from bookwyrm.remote_user import get_or_create_remote_user, refresh_remote_user
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 
@@ -96,13 +95,15 @@ def has_valid_signature(request, activity):
         if key_actor != activity.get('actor'):
             raise ValueError("Wrong actor created signature.")
 
-        remote_user = get_or_create_remote_user(key_actor)
+        remote_user = activitypub.resolve_remote_id(models.User, key_actor)
 
         try:
             signature.verify(remote_user.public_key, request)
         except ValueError:
             old_key = remote_user.public_key
-            refresh_remote_user(remote_user)
+            activitypub.resolve_remote_id(
+                models.User, remote_user, refresh=True
+            )
             if remote_user.public_key == old_key:
                 raise # Key unchanged.
             signature.verify(remote_user.public_key, request)
@@ -127,7 +128,7 @@ def handle_follow(activity):
         return
 
     # figure out who the actor is
-    actor = get_or_create_remote_user(activity['actor'])
+    actor = activitypub.resolve_remote_id(models.User, activity['actor'])
     try:
         relationship = models.UserFollowRequest.objects.create(
             user_subject=actor,
@@ -162,7 +163,7 @@ def handle_follow(activity):
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    requester = get_or_create_remote_user(obj['actor'])
+    requester = activitypub.resolve_remote_id(models.user, obj['actor'])
     to_unfollow = models.User.objects.get(remote_id=obj['object'])
     # raises models.User.DoesNotExist
 
@@ -175,7 +176,7 @@ def handle_follow_accept(activity):
     # figure out who they want to follow
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
     # figure out who they are
-    accepter = get_or_create_remote_user(activity['actor'])
+    accepter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
     try:
         request = models.UserFollowRequest.objects.get(
@@ -192,7 +193,7 @@ def handle_follow_accept(activity):
 def handle_follow_reject(activity):
     ''' someone is rejecting a follow request '''
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
-    rejecter = get_or_create_remote_user(activity['actor'])
+    rejecter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
     request = models.UserFollowRequest.objects.get(
         user_subject=requester,
@@ -205,25 +206,27 @@ def handle_follow_reject(activity):
 @app.task
 def handle_create(activity):
     ''' someone did something, good on them '''
-    if activity['object'].get('type') not in \
-            ['Note', 'Comment', 'Quotation', 'Review', 'GeneratedNote']:
-        # if it's an article or unknown type, ignore it
-        return
-
-    user = get_or_create_remote_user(activity['actor'])
-    if user.local:
-        # we really oughtn't even be sending in this case
-        return
-
     # deduplicate incoming activities
     status_id = activity['object']['id']
     if models.Status.objects.filter(remote_id=status_id).count():
         return
 
-    status = status_builder.create_status(activity['object'])
-    if not status:
+    serializer = activitypub.activity_objects[activity['type']]
+    status = serializer(**activity)
+    try:
+        model = models.activity_models[activity.type]
+    except KeyError:
+        # not a type of status we are prepared to deserialize
         return
 
+    if activity.type == 'Note':
+        reply = models.Status.objects.filter(
+            remote_id=activity.inReplyTo
+        ).first()
+        if not reply:
+            return
+
+    activity.to_model(model)
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
         status_builder.create_notification(
@@ -257,16 +260,14 @@ def handle_favorite(activity):
     ''' approval of your good good post '''
     fav = activitypub.Like(**activity)
 
-    liker = get_or_create_remote_user(activity['actor'])
-    if liker.local:
-        return
-
     fav = fav.to_model(models.Favorite)
+    if fav.user.local:
+        return
 
     status_builder.create_notification(
         fav.status.user,
         'FAVORITE',
-        related_user=liker,
+        related_user=fav.user,
         related_status=fav.status,
     )
 

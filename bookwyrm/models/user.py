@@ -1,5 +1,6 @@
 ''' database schema for user data '''
 from urllib.parse import urlparse
+import requests
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -7,10 +8,12 @@ from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from bookwyrm.models.shelf import Shelf
-from bookwyrm.models.status import Status
+from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
+from bookwyrm.tasks import app
 from .base_model import ActivityMapping, OrderedCollectionPageMixin
+from .federated_server import FederatedServer
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
@@ -188,7 +191,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 @receiver(models.signals.post_save, sender=User)
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' create shelves for new users '''
-    if not instance.local or not created:
+    if not created:
+        return
+
+    if not instance.local:
+        actor_parts = urlparse(instance.remote_id)
+        instance.federated_server = \
+            get_or_create_remote_server(actor_parts.netloc)
+        instance.save()
+        if instance.bookwyrm_user:
+            get_remote_reviews.delay(instance.outbox)
         return
 
     shelves = [{
@@ -209,3 +221,56 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             user=instance,
             editable=False
         ).save()
+
+
+def get_or_create_remote_server(domain):
+    ''' get info on a remote server '''
+    try:
+        return FederatedServer.objects.get(
+            server_name=domain
+        )
+    except FederatedServer.DoesNotExist:
+        pass
+
+    response = requests.get(
+        'https://%s/.well-known/nodeinfo' % domain,
+        headers={'Accept': 'application/activity+json'}
+    )
+
+    if response.status_code != 200:
+        return None
+
+    data = response.json()
+    try:
+        nodeinfo_url = data.get('links')[0].get('href')
+    except (TypeError, KeyError):
+        return None
+
+    response = requests.get(
+        nodeinfo_url,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+
+    server = FederatedServer.objects.create(
+        server_name=domain,
+        application_type=data['software']['name'],
+        application_version=data['software']['version'],
+    )
+    return server
+
+
+@app.task
+def get_remote_reviews(outbox):
+    ''' ingest reviews by a new remote bookwyrm user '''
+    outbox_page = outbox + '?page=true'
+    response = requests.get(
+        outbox_page,
+        headers={'Accept': 'application/activity+json'}
+    )
+    data = response.json()
+    # TODO: pagination?
+    for activity in data['orderedItems']:
+        if not activity['type'] == 'Review':
+            continue
+        activitypub.Review(**activity).to_model(Review)
