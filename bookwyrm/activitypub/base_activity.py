@@ -4,6 +4,7 @@ from json import JSONEncoder
 from uuid import uuid4
 
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
         ReverseManyToOneDescriptor
@@ -21,13 +22,6 @@ class ActivityEncoder(JSONEncoder):
     '''  used to convert an Activity object into json '''
     def default(self, o):
         return o.__dict__
-
-
-@dataclass
-class Image:
-    ''' image block '''
-    url: str
-    type: str = 'Image'
 
 
 @dataclass
@@ -113,14 +107,15 @@ class ActivityObject:
             formatted_value = mapping.model_formatter(value)
             if isinstance(model_field, ForwardManyToOneDescriptor) and \
                     formatted_value:
-                # foreign key remote id reolver
+                # foreign key remote id reolver (work on Edition, for example)
                 fk_model = model_field.field.related_model
                 reference = resolve_foreign_key(fk_model, formatted_value)
                 mapped_fields[mapping.model_key] = reference
             elif isinstance(model_field, ManyToManyDescriptor):
+                # status mentions book/users
                 many_to_many_fields[mapping.model_key] = formatted_value
             elif isinstance(model_field, ReverseManyToOneDescriptor):
-                # attachments on statuses, for example
+                # attachments on Status, for example
                 one_to_many_fields[mapping.model_key] = formatted_value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
@@ -128,37 +123,41 @@ class ActivityObject:
             else:
                 mapped_fields[mapping.model_key] = formatted_value
 
-        if instance:
-            # updating an existing model isntance
-            for k, v in mapped_fields.items():
-                setattr(instance, k, v)
-            instance.save()
-        else:
-            # creating a new model instance
-            instance = model.objects.create(**mapped_fields)
-
-        # add many-to-many fields
-        for (model_key, values) in many_to_many_fields.items():
-            getattr(instance, model_key).set(values)
-        instance.save()
-
-        # add images
-        for (model_key, value) in image_fields.items():
-            if not value:
-                continue
-            getattr(instance, model_key).save(*value, save=True)
-
-        # add one to many fields
-        for (model_key, values) in one_to_many_fields.items():
-            items = []
-            for item in values:
-                # the reference id wasn't available at creation time
-                setattr(item, instance.__class__.__name__.lower(), instance)
-                item.save()
-                items.append(item)
-            if items:
-                getattr(instance, model_key).set(items)
+        with transaction.atomic():
+            if instance:
+                # updating an existing model isntance
+                for k, v in mapped_fields.items():
+                    setattr(instance, k, v)
                 instance.save()
+            else:
+                # creating a new model instance
+                instance = model.objects.create(**mapped_fields)
+
+            # add images
+            for (model_key, value) in image_fields.items():
+                formatted_value = image_formatter(value)
+                if not formatted_value:
+                    continue
+                getattr(instance, model_key).save(*formatted_value, save=True)
+
+            for (model_key, values) in many_to_many_fields.items():
+                # mention books, mention users
+                getattr(instance, model_key).set(values)
+
+            # add one to many fields
+            for (model_key, values) in one_to_many_fields.items():
+                if values == MISSING:
+                    continue
+                model_field = getattr(instance, model_key)
+                model = model_field.model
+                for item in values:
+                    item = model.activity_serializer(**item)
+                    field_name = instance.__class__.__name__.lower()
+                    with transaction.atomic():
+                        item = item.to_model(model)
+                        setattr(item, field_name, instance)
+                        item.save()
+
         return instance
 
 
@@ -210,18 +209,18 @@ def tag_formatter(tags, tag_type):
     return items
 
 
-def image_formatter(image_json):
+def image_formatter(image_slug):
     ''' helper function to load images and format them for a model '''
-    if isinstance(image_json, list):
-        try:
-            image_json = image_json[0]
-        except IndexError:
-            return None
-
-    if not image_json or not hasattr(image_json, 'url'):
+    # when it's an inline image (User avatar/icon, Book cover), it's a json
+    # blob, but when it's an attached image, it's just a url
+    if isinstance(image_slug, dict):
+        url = image_slug.get('url')
+    elif isinstance(image_slug, str):
+        url = image_slug
+    else:
         return None
-    url = image_json.get('url')
-
+    if not url:
+        return None
     try:
         response = requests.get(url)
     except ConnectionError:
@@ -232,17 +231,3 @@ def image_formatter(image_json):
     image_name = str(uuid4()) + '.' + url.split('.')[-1]
     image_content = ContentFile(response.content)
     return [image_name, image_content]
-
-
-def image_attachments_formatter(images_json):
-    ''' deserialize a list of images '''
-    attachments = []
-    for image in images_json:
-        caption = image.get('name')
-        attachment = models.Attachment(caption=caption)
-        image_field = image_formatter(image)
-        if not image_field:
-            continue
-        attachment.image.save(*image_field, save=False)
-        attachments.append(attachment)
-    return attachments

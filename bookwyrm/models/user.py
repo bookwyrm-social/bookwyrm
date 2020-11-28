@@ -112,11 +112,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             activity_formatter=lambda x: {'sharedInbox': x},
             model_formatter=lambda x: x.get('sharedInbox')
         ),
-        ActivityMapping(
-            'icon', 'avatar',
-            lambda x: image_formatter(x, '/static/images/default_avi.jpg'),
-            activitypub.image_formatter
-        ),
+        ActivityMapping('icon', 'avatar'),
         ActivityMapping(
             'manuallyApprovesFollowers',
             'manually_approves_followers'

@@ -10,6 +10,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.db import models
+from django.db.models.fields.files import ImageFieldFile
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -77,16 +78,18 @@ class ActivitypubMixin:
                 value = value.remote_id
             elif isinstance(value, datetime):
                 value = value.isoformat()
+            elif isinstance(value, ImageFieldFile):
+                value = image_formatter(value)
 
             # run the custom formatter function set in the model
-            result = mapping.activity_formatter(value)
+            formatted_value = mapping.activity_formatter(value)
             if mapping.activity_key in fields and \
                     isinstance(fields[mapping.activity_key], list):
                 # there can be two database fields that map to the same AP list
                 # this happens in status tags, which combines user and book tags
-                fields[mapping.activity_key] += result
+                fields[mapping.activity_key] += formatted_value
             else:
-                fields[mapping.activity_key] = result
+                fields[mapping.activity_key] = formatted_value
 
         if pure:
             return self.pure_activity_serializer(
@@ -270,12 +273,10 @@ def tag_formatter(items, name_field, activity_type):
     return tags
 
 
-def image_formatter(image, default_path=None):
+def image_formatter(image):
     ''' convert images into activitypub json '''
     if image and hasattr(image, 'url'):
         url = image.url
-    elif default_path:
-        url = default_path
     else:
         return None
     url = 'https://%s%s' % (DOMAIN, url)
