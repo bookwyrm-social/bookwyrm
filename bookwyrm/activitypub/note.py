@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from .base_activity import ActivityObject, Image, Link
+from .base_activity import ActivityObject, Link
+from .image import Image
 
 @dataclass(init=False)
 class Tombstone(ActivityObject):

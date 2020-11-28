@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from .base_activity import ActivityObject, Image, PublicKey
+from .base_activity import ActivityObject, PublicKey
+from .image import Image
 
 @dataclass(init=False)
 class Person(ActivityObject):

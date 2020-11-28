@@ -24,13 +24,6 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Image:
-    ''' image block '''
-    url: str
-    type: str = 'Image'
-
-
-@dataclass
 class Link():
     ''' for tagging a book in a status '''
     href: str
@@ -146,6 +139,7 @@ class ActivityObject:
         for (model_key, value) in image_fields.items():
             if not value:
                 continue
+            #formatted_value = image_formatter(value)
             getattr(instance, model_key).save(*value, save=True)
 
         # add one to many fields
@@ -212,16 +206,9 @@ def tag_formatter(tags, tag_type):
 
 def image_formatter(image_json):
     ''' helper function to load images and format them for a model '''
-    if isinstance(image_json, list):
-        try:
-            image_json = image_json[0]
-        except IndexError:
-            return None
-
-    if not image_json or not hasattr(image_json, 'url'):
+    url = image.get('url')
+    if not url:
         return None
-    url = image_json.get('url')
-
     try:
         response = requests.get(url)
     except ConnectionError:

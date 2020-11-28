@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from .base_activity import ActivityObject, Image
+from .base_activity import ActivityObject
+from .image import Image
 
 @dataclass(init=False)
 class Book(ActivityObject):
@@ -25,7 +26,7 @@ class Book(ActivityObject):
     librarythingKey: str = ''
     goodreadsKey: str = ''
 
-    attachment: List[Image] = field(default_factory=lambda: [])
+    cover: Image = field(default_factory=lambda: {})
     type: str = 'Book'
 
 
