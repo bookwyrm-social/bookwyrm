@@ -210,6 +210,7 @@ class Quotation(Status):
     activity_serializer = activitypub.Quotation
     pure_activity_serializer = activitypub.Note
 
+
 class Review(Status):
     ''' a book review '''
     name = models.CharField(max_length=255, null=True)

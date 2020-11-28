@@ -58,3 +58,15 @@ class ReadThrough(TestCase):
         self.assertEqual(len(progress_updates), 1)
         self.assertEqual(progress_updates[0].mode, models.ProgressMode.PAGE)
         self.assertEqual(progress_updates[0].progress, 50)
+
+        # Update progress
+        self.client.post('/edit-readthrough', {
+            'id': readthroughs[0].id,
+            'pages_read': 100,
+        })
+
+        progress_updates = readthroughs[0].progressupdate_set\
+            .order_by('updated_date').all()
+        self.assertEqual(len(progress_updates), 2)
+        self.assertEqual(progress_updates[1].mode, models.ProgressMode.PAGE)
+        self.assertEqual(progress_updates[1].progress, 100)
