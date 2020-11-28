@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
 from bookwyrm.activitypub import ActivityEncoder
@@ -47,12 +48,14 @@ def not_found_page(request, _):
 
 
 @login_required
+@require_GET
 def home(request):
     ''' this is the same as the feed on the home tab '''
     return home_tab(request, 'home')
 
 
 @login_required
+@require_GET
 def home_tab(request, tab):
     ''' user's homepage with activity feed '''
     try:
@@ -160,6 +163,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
     return activities
 
 
+@require_GET
 def search(request):
     ''' that search bar up top '''
     query = request.GET.get('q')
@@ -191,6 +195,7 @@ def search(request):
 
 
 @login_required
+@require_GET
 def import_page(request):
     ''' import history from goodreads '''
     return TemplateResponse(request, 'import.html', {
@@ -203,6 +208,7 @@ def import_page(request):
 
 
 @login_required
+@require_GET
 def import_status(request, job_id):
     ''' status of an import job '''
     job = models.ImportJob.objects.get(id=job_id)
@@ -221,6 +227,7 @@ def import_status(request, job_id):
     })
 
 
+@require_GET
 def login_page(request):
     ''' authentication '''
     if request.user.is_authenticated:
@@ -235,6 +242,7 @@ def login_page(request):
     return TemplateResponse(request, 'login.html', data)
 
 
+@require_GET
 def about_page(request):
     ''' more information about the instance '''
     data = {
@@ -244,6 +252,7 @@ def about_page(request):
     return TemplateResponse(request, 'about.html', data)
 
 
+@require_GET
 def password_reset_request(request):
     ''' invite management page '''
     return TemplateResponse(
@@ -253,6 +262,7 @@ def password_reset_request(request):
     )
 
 
+@require_GET
 def password_reset(request, code):
     ''' endpoint for sending invites '''
     if request.user.is_authenticated:
@@ -271,6 +281,7 @@ def password_reset(request, code):
     )
 
 
+@require_GET
 def invite_page(request, code):
     ''' endpoint for sending invites '''
     if request.user.is_authenticated:
@@ -293,6 +304,7 @@ def invite_page(request, code):
 
 @login_required
 @permission_required('bookwyrm.create_invites', raise_exception=True)
+@require_GET
 def manage_invites(request):
     ''' invite management page '''
     data = {
@@ -304,6 +316,7 @@ def manage_invites(request):
 
 
 @login_required
+@require_GET
 def notifications_page(request):
     ''' list notitications '''
     notifications = request.user.notification_set.all() \
@@ -319,6 +332,7 @@ def notifications_page(request):
 
 
 @csrf_exempt
+@require_GET
 def user_page(request, username):
     ''' profile page for a user '''
     try:
@@ -387,11 +401,9 @@ def user_page(request, username):
 
 
 @csrf_exempt
+@require_GET
 def followers_page(request, username):
     ''' list of followers '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
     try:
         user = get_user_from_username(username)
     except models.User.DoesNotExist:
@@ -410,11 +422,9 @@ def followers_page(request, username):
 
 
 @csrf_exempt
+@require_GET
 def following_page(request, username):
     ''' list of followers '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
     try:
         user = get_user_from_username(username)
     except models.User.DoesNotExist:
@@ -433,11 +443,9 @@ def following_page(request, username):
 
 
 @csrf_exempt
+@require_GET
 def status_page(request, username, status_id):
     ''' display a particular status (and replies, etc) '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
     try:
         user = get_user_from_username(username)
         status = models.Status.objects.select_subclasses().get(id=status_id)
@@ -476,11 +484,9 @@ def status_visible_to_user(viewer, status):
 
 
 @csrf_exempt
+@require_GET
 def replies_page(request, username, status_id):
     ''' ordered collection of replies to a status '''
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
-
     if not is_api_request(request):
         return status_page(request, username, status_id)
 
@@ -495,6 +501,7 @@ def replies_page(request, username, status_id):
 
 
 @login_required
+@require_GET
 def edit_profile_page(request):
     ''' profile page for a user '''
     user = request.user
@@ -508,6 +515,7 @@ def edit_profile_page(request):
     return TemplateResponse(request, 'edit_user.html', data)
 
 
+@require_GET
 def book_page(request, book_id):
     ''' info about a book '''
     try:
@@ -595,6 +603,7 @@ def book_page(request, book_id):
 
 @login_required
 @permission_required('bookwyrm.edit_book', raise_exception=True)
+@require_GET
 def edit_book_page(request, book_id):
     ''' info about a book '''
     book = books_manager.get_edition(book_id)
@@ -608,6 +617,7 @@ def edit_book_page(request, book_id):
     return TemplateResponse(request, 'edit_book.html', data)
 
 
+@require_GET
 def editions_page(request, book_id):
     ''' list of editions of a book '''
     work = get_object_or_404(models.Work, id=book_id)
@@ -627,6 +637,7 @@ def editions_page(request, book_id):
     return TemplateResponse(request, 'editions.html', data)
 
 
+@require_GET
 def author_page(request, author_id):
     ''' landing page for an author '''
     author = get_object_or_404(models.Author, id=author_id)
@@ -643,6 +654,7 @@ def author_page(request, author_id):
     return TemplateResponse(request, 'author.html', data)
 
 
+@require_GET
 def tag_page(request, tag_id):
     ''' books related to a tag '''
     tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
@@ -663,11 +675,13 @@ def tag_page(request, tag_id):
 
 
 @csrf_exempt
+@require_GET
 def user_shelves_page(request, username):
     ''' list of followers '''
     return shelf_page(request, username, None)
 
 
+@require_GET
 def shelf_page(request, username, shelf_identifier):
     ''' display a shelf '''
     try:
