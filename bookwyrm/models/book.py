@@ -55,15 +55,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
     published_date = models.DateTimeField(blank=True, null=True)
     objects = InheritanceManager()
 
-    @property
-    def ap_authors(self):
-        ''' the activitypub serialization should be a list of author ids '''
-        return [a.remote_id for a in self.authors.all()]
-
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
 
-        ActivityMapping('authors', 'ap_authors'),
+        ActivityMapping('authors', 'authors'),
         ActivityMapping('firstPublishedDate', 'firstpublished_date'),
         ActivityMapping('publishedDate', 'published_date'),
 
@@ -91,7 +86,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('publishers', 'publishers'),
 
         ActivityMapping('lccn', 'lccn'),
-        ActivityMapping('editions', 'editions_path'),
+        ActivityMapping('editions', 'editions'),
         ActivityMapping('cover', 'cover'),
     ]
 
@@ -126,16 +121,6 @@ class Work(OrderedCollectionPageMixin, Book):
         on_delete=models.PROTECT,
         null=True
     )
-
-    @property
-    def editions_path(self):
-        ''' it'd be nice to serialize the edition instead but, recursion '''
-        default = self.default_edition
-        ed_list = [
-            e.remote_id for e in \
-                    self.edition_set.filter(~Q(id=default.id)).all()
-        ]
-        return [default.remote_id] + ed_list
 
 
     def to_edition_list(self, **kwargs):

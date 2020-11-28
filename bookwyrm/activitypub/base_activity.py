@@ -124,7 +124,7 @@ class ActivityObject:
                         formatted_value = timezone.make_aware(date_value)
                     except ValueError:
                         formatted_value = date_value
-                except ParserError:
+                except (ParserError, TypeError):
                     formatted_value = None
             elif isinstance(model_field, ForwardManyToOneDescriptor) and \
                     formatted_value:
@@ -182,12 +182,17 @@ class ActivityObject:
                 model = model_field.model
                 items = []
                 for link in values:
-                    # check that the Type matches the model (because Status
-                    # tags contain both user mentions and book tags)
-                    if not model.activity_serializer.type == link.get('type'):
-                        continue
+                    if isinstance(link, dict):
+                        # check that the Type matches the model (Status
+                        # tags contain both user mentions and book tags)
+                        if not model.activity_serializer.type == \
+                                link.get('type'):
+                            continue
+                        remote_id = link.get('href')
+                    else:
+                        remote_id = link
                     items.append(
-                        resolve_remote_id(model, link.get('href'))
+                        resolve_remote_id(model, remote_id)
                     )
                 getattr(instance, model_key).set(items)
 

@@ -10,7 +10,9 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.db import models
-from django.db.models.fields.files import ImageFieldFile
+from django.db.models.fields.files import ImageFileDescriptor
+from django.db.models.fields.related_descriptors \
+        import ManyToManyDescriptor
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -72,13 +74,16 @@ class ActivitypubMixin:
                 # this field on the model isn't serialized
                 continue
             value = getattr(self, mapping.model_key)
+            model_field_type = getattr(self.__class__, mapping.model_key)
             if hasattr(value, 'remote_id'):
                 # this is probably a foreign key field, which we want to
                 # serialize as just the remote_id url reference
                 value = value.remote_id
+            elif isinstance(model_field_type, ManyToManyDescriptor):
+                value = [i.remote_id for i in value.all()]
             elif isinstance(value, datetime):
                 value = value.isoformat()
-            elif isinstance(value, ImageFieldFile):
+            elif isinstance(model_field_type, ImageFileDescriptor):
                 value = image_formatter(value)
 
             # run the custom formatter function set in the model
