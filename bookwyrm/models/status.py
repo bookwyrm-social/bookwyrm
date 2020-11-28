@@ -151,17 +151,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return super().save(*args, **kwargs)
 
 
-class Attachment(BookWyrmModel):
-    ''' an image (or, in the future, video etc) associated with a status '''
-    status = models.ForeignKey(
-        'Status',
-        on_delete=models.CASCADE,
-        related_name='attachments'
-    )
-    image = models.ImageField(upload_to='status/', null=True, blank=True)
-    caption = models.TextField(null=True, blank=True)
-
-
 class GeneratedNote(Status):
     ''' these are app-generated messages about user activity '''
     @property
