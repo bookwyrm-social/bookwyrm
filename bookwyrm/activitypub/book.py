@@ -2,42 +2,43 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from .base_activity import ActivityObject, Image
+from .base_activity import ActivityObject
+from .image import Image
 
 @dataclass(init=False)
 class Book(ActivityObject):
     ''' serializes an edition or work, abstract '''
-    authors: List[str]
-    first_published_date: str
-    published_date: str
-
     title: str
-    sort_title: str
-    subtitle: str
-    description: str
+    sortTitle: str = ''
+    subtitle: str = ''
+    description: str = ''
     languages: List[str]
-    series: str
-    series_number: str
+    series: str = ''
+    seriesNumber: str = ''
     subjects: List[str]
-    subject_places: List[str]
+    subjectPlaces: List[str]
 
-    openlibrary_key: str
-    librarything_key: str
-    goodreads_key: str
+    authors: List[str]
+    firstPublishedDate: str = ''
+    publishedDate: str = ''
 
-    attachment: List[Image] = field(default_factory=lambda: [])
+    openlibraryKey: str = ''
+    librarythingKey: str = ''
+    goodreadsKey: str = ''
+
+    cover: Image = field(default_factory=lambda: {})
     type: str = 'Book'
 
 
 @dataclass(init=False)
 class Edition(Book):
     ''' Edition instance of a book object '''
-    isbn_10: str
-    isbn_13: str
-    oclc_number: str
+    isbn10: str
+    isbn13: str
+    oclcNumber: str
     asin: str
     pages: str
-    physical_format: str
+    physicalFormat: str
     publishers: List[str]
 
     work: str
