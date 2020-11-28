@@ -1,6 +1,7 @@
 ''' testing book data connectors '''
 import datetime
 from django.test import TestCase
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.connectors.self_connector import Connector
@@ -27,7 +28,7 @@ class SelfConnector(TestCase):
         self.edition = models.Edition.objects.create(
             title='Edition of Example Work',
             author_text='Anonymous',
-            published_date=datetime.datetime(1980, 5, 10),
+            published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
             parent_work=self.work,
         )
         models.Edition.objects.create(

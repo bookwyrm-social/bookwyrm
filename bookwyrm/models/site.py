@@ -54,7 +54,7 @@ class SiteInvite(models.Model):
 
 def get_passowrd_reset_expiry():
     ''' give people a limited time to use the link '''
-    now = datetime.datetime.now()
+    now = timezone.now()
     return now + datetime.timedelta(days=1)
 
 
