@@ -24,14 +24,14 @@ class Book(TestCase):
             inbox='http://example.com/u/2/inbox')
         self.user.followers.add(no_inbox_follower)
 
-        non_fr_follower = models.User.objects.create_user(
+        non_bw_follower = models.User.objects.create_user(
             'gerbil', 'gerb@mouse.mouse', 'gerbword',
             remote_id='http://example.com/u/3',
             outbox='http://example2.com/u/3/o',
             inbox='http://example2.com/u/3/inbox',
             shared_inbox='http://example2.com/inbox',
             bookwyrm_user=False, local=False)
-        self.user.followers.add(non_fr_follower)
+        self.user.followers.add(non_bw_follower)
 
         local_follower = models.User.objects.create_user(
             'joe', 'joe@mouse.mouse', 'jeoword')
