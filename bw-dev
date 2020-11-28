@@ -38,7 +38,9 @@ function initdb {
     execweb python manage.py initdb
 }
 
-case "$1" in
+CMD=$1
+shift
+case "$CMD" in
     up)
         docker-compose up --build
         ;;
@@ -57,11 +59,10 @@ case "$1" in
         clean
         ;;
     makemigrations)
-        execweb python manage.py makemigrations
+        execweb python manage.py makemigrations "$@"
         ;;
     migrate)
         execweb python manage.py rename_app fedireads bookwyrm
-        shift 1
         execweb python manage.py migrate "$@"
         ;;
     bash)
@@ -77,11 +78,9 @@ case "$1" in
         docker-compose restart celery_worker
         ;;
     test)
-        shift 1
         execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        shift 1
         execweb pytest "$@"
         ;;
     test_report)
