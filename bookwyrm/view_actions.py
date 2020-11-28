@@ -251,16 +251,33 @@ def edit_book(request, book_id):
 def upload_cover(request, book_id):
     ''' upload a new cover '''
     if not request.method == 'POST':
-        return redirect('/book/%s' % request.user.localname)
+        return redirect('/')
 
     book = get_object_or_404(models.Edition, id=book_id)
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        return redirect('/book/%d' % book.id)
 
     book.cover = form.files['cover']
     book.sync_cover = False
+    book.save()
+
+    outgoing.handle_update_book(request.user, book)
+    return redirect('/book/%s' % book.id)
+
+
+@login_required
+def add_description(request, book_id):
+    ''' upload a new cover '''
+    if not request.method == 'POST':
+        return redirect('/')
+
+    book = get_object_or_404(models.Edition, id=book_id)
+
+    description = request.POST.get('description')
+
+    book.description = description
     book.save()
 
     outgoing.handle_update_book(request.user, book)
