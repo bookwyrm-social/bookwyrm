@@ -5,6 +5,7 @@ from collections import defaultdict
 from django import forms
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
+from django.utils import timezone
 
 from bookwyrm import models
 
@@ -143,7 +144,7 @@ class ExpiryWidget(widgets.Select):
         else:
             return selected_string # "This will raise
 
-        return datetime.datetime.now() + interval
+        return timezone.now() + interval
 
 class CreateInviteForm(CustomForm):
     class Meta:

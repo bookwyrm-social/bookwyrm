@@ -3,7 +3,6 @@
 import bookwyrm.models.connector
 import bookwyrm.models.site
 import bookwyrm.utils.fields
-import datetime
 from django.conf import settings
 import django.contrib.postgres.operations
 import django.core.validators
@@ -37,7 +36,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='status',
             name='published_date',
-            field=models.DateTimeField(default=datetime.datetime.now),
+            field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.CreateModel(
             name='Edition',
@@ -129,7 +128,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='last_sync_date',
-            field=models.DateTimeField(default=datetime.datetime.now),
+            field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
             model_name='book',
