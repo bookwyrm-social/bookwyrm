@@ -1,10 +1,9 @@
 ''' responds to various requests to /.well-know '''
 
-from datetime import datetime
-
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN
@@ -60,13 +59,13 @@ def nodeinfo(request):
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.filter(local=True).count()
 
-    month_ago = datetime.now() - relativedelta(months=1)
+    month_ago = timezone.now() - relativedelta(months=1)
     last_month_count = models.User.objects.filter(
         local=True,
         last_active_date__gt=month_ago
     ).count()
 
-    six_months_ago = datetime.now() - relativedelta(months=6)
+    six_months_ago = timezone.now() - relativedelta(months=6)
     six_month_count = models.User.objects.filter(
         local=True,
         last_active_date__gt=six_months_ago
