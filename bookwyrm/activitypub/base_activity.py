@@ -25,11 +25,12 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Link():
+class Link:
     ''' for tagging a book in a status '''
     href: str
     name: str
     type: str = 'Link'
+
 
 @dataclass
 class Mention(Link):
@@ -125,13 +126,16 @@ class ActivityObject:
 
         with transaction.atomic():
             if instance:
-                # updating an existing model isntance
+                # updating an existing model instance
                 for k, v in mapped_fields.items():
                     setattr(instance, k, v)
                 instance.save()
             else:
                 # creating a new model instance
                 instance = model.objects.create(**mapped_fields)
+
+            # --- these are all fields that can't be saved until after the
+            # instance has an id (after it's been saved). ---------------#
 
             # add images
             for (model_key, value) in image_fields.items():
@@ -140,9 +144,20 @@ class ActivityObject:
                     continue
                 getattr(instance, model_key).save(*formatted_value, save=True)
 
+            # add many to many fields
             for (model_key, values) in many_to_many_fields.items():
                 # mention books, mention users
-                getattr(instance, model_key).set(values)
+                if values == MISSING:
+                    continue
+                model_field = getattr(instance, model_key)
+                model = model_field.model
+                items = []
+                for link in values:
+                    items.append(
+                        resolve_foreign_key(model, link.get('href'))
+                    )
+                getattr(instance, model_key).set(items)
+
 
             # add one to many fields
             for (model_key, values) in one_to_many_fields.items():
@@ -177,36 +192,30 @@ def resolve_foreign_key(model, remote_id):
     if hasattr(model.objects, 'select_subclasses'):
         result = result.select_subclasses()
 
+    # first, check for an existing copy in the database
     result = result.filter(
         remote_id=remote_id
     ).first()
+    if result:
+        return result
 
-    if not result:
+    # failing that, load the data and create the object
+    try:
+        response = requests.get(
+            remote_id,
+            headers={'Accept': 'application/json; charset=utf-8'},
+        )
+    except ConnectionError:
+        raise ActivitySerializerError(
+            'Could not connect to host for remote_id in %s model: %s' % \
+                (model.__name__, remote_id))
+    if not response.ok:
         raise ActivitySerializerError(
             'Could not resolve remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
-    return result
 
-
-def tag_formatter(tags, tag_type):
-    ''' helper function to extract foreign keys from tag activity json '''
-    if not isinstance(tags, list):
-        return []
-    items = []
-    types = {
-        'Book': models.Book,
-        'Mention': models.User,
-    }
-    for tag in [t for t in tags if t.get('type') == tag_type]:
-        if not tag_type in types:
-            continue
-        remote_id = tag.get('href')
-        try:
-            item = resolve_foreign_key(types[tag_type], remote_id)
-        except ActivitySerializerError:
-            continue
-        items.append(item)
-    return items
+    item = model.activity_serializer(**response.json())
+    return item.to_model(model)
 
 
 def image_formatter(image_slug):

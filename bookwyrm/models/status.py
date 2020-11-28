@@ -80,12 +80,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping(
             'tag', 'mention_books',
             lambda x: tag_formatter(x, 'title', 'Book'),
-            lambda x: activitypub.tag_formatter(x, 'Book')
+            lambda x: [i for i in x if x.get('type') == 'Book']
         ),
         ActivityMapping(
             'tag', 'mention_users',
             lambda x: tag_formatter(x, 'username', 'Mention'),
-            lambda x: activitypub.tag_formatter(x, 'Mention')
+            lambda x: [i for i in x if x.get('type') == 'Mention']
         ),
         ActivityMapping(
             'attachment', 'attachments',
