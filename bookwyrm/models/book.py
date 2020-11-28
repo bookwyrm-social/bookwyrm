@@ -1,4 +1,5 @@
 ''' database schema for books and shelves '''
+from uuid import uuid4
 import re
 
 from django.db import models
@@ -100,14 +101,14 @@ class Book(ActivitypubMixin, BookWyrmModel):
         if not self.id:
             # force set the remote id to a local version
             self.origin_id = self.remote_id
-            saved = super().save(*args, **kwargs)
-            saved.remote_id = self.get_remote_id()
-            return saved.save()
+            self.remote_id = self.get_remote_id()
         return super().save(*args, **kwargs)
 
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
-        return 'https://%s/book/%d' % (DOMAIN, self.id)
+        uuid = str(uuid4())[:8]
+        clean_title = re.sub(r'[\W-]', '', self.title.replace(' ', '-')).lower()
+        return 'https://%s/author/%s-%s' % (DOMAIN, clean_title, uuid)
 
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(

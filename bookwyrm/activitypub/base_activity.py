@@ -222,14 +222,18 @@ class ActivityObject:
 
 def resolve_remote_id(model, remote_id, refresh=False):
     ''' look up the remote_id in the database or load it remotely '''
-    result = model.objects
+    objects = model.objects
     if hasattr(model.objects, 'select_subclasses'):
-        result = result.select_subclasses()
+        objects = objects.select_subclasses()
 
     # first, check for an existing copy in the database
-    result = result.filter(
+    result = objects.filter(
         remote_id=remote_id
     ).first()
+    if not result and hasattr(model, 'origin_id'):
+        result = objects.filter(
+            origin_id=remote_id
+        ).first()
     if result and not refresh:
         return result
 

@@ -1,8 +1,12 @@
 ''' database schema for info about authors '''
+from uuid import uuid4
+import re
+
 from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
+from bookwyrm.settings import DOMAIN
 from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivitypubMixin, ActivityMapping, BookWyrmModel
@@ -26,6 +30,25 @@ class Author(ActivitypubMixin, BookWyrmModel):
         models.CharField(max_length=255), blank=True, default=list
     )
     bio = models.TextField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        ''' can't be abstract for query reasons, but you shouldn't USE it '''
+        if self.id and not self.remote_id:
+            self.remote_id = self.get_remote_id()
+
+        if not self.id:
+            # force set the remote id to a local version
+            self.origin_id = self.remote_id
+            self.remote_id = self.get_remote_id()
+        return super().save(*args, **kwargs)
+
+    def get_remote_id(self):
+        ''' editions and works both use "book" instead of model_name '''
+        uuid = str(uuid4())[:8]
+        # in Book, the title is used to make the url more readable, but
+        # since an author's name can change, I didn't want to lock in a
+        # potential deadname (or maiden name) in the urk.
+        return 'https://%s/author/%s' % (DOMAIN, uuid)
 
     @property
     def display_name(self):
