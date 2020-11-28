@@ -11,7 +11,8 @@ class Attachment(ActivitypubMixin, BookWyrmModel):
     status = models.ForeignKey(
         'Status',
         on_delete=models.CASCADE,
-        related_name='attachments'
+        related_name='attachments',
+        null=True
     )
     class Meta:
         ''' one day we'll have other types of attachments besides images '''

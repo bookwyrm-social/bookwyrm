@@ -90,7 +90,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping(
             'attachment', 'attachments',
             lambda x: image_attachments_formatter(x.all()),
-            activitypub.image_attachments_formatter
         )
     ]
 

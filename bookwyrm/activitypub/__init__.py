@@ -6,7 +6,6 @@ from .base_activity import ActivityEncoder, PublicKey, Signature
 from .base_activity import Link, Mention
 from .base_activity import ActivitySerializerError
 from .base_activity import tag_formatter
-from .base_activity import image_formatter, image_attachments_formatter
 from .image import Image
 from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
 from .note import Tombstone
