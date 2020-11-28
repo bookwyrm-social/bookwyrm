@@ -139,7 +139,7 @@ class ActivityObject:
         for (model_key, value) in image_fields.items():
             if not value:
                 continue
-            #formatted_value = image_formatter(value)
+            formatted_value = image_formatter(value)
             getattr(instance, model_key).save(*value, save=True)
 
         # add one to many fields

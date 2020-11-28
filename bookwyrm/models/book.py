@@ -12,7 +12,6 @@ from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivityMapping, BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import image_attachments_formatter
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
@@ -61,11 +60,6 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' the activitypub serialization should be a list of author ids '''
         return [a.remote_id for a in self.authors.all()]
 
-    @property
-    def ap_parent_work(self):
-        ''' reference the work via local id not remote '''
-        return self.parent_work.remote_id
-
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
 
@@ -87,7 +81,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('librarythingKey', 'librarything_key'),
         ActivityMapping('goodreadsKey', 'goodreads_key'),
 
-        ActivityMapping('work', 'ap_parent_work'),
+        ActivityMapping('work', 'parent_work'),
         ActivityMapping('isbn10', 'isbn_10'),
         ActivityMapping('isbn13', 'isbn_13'),
         ActivityMapping('oclcNumber', 'oclc_number'),
@@ -98,12 +92,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions_path'),
-        ActivityMapping(
-            'attachment', 'cover',
-            # this expects an iterable and the field is just an image
-            lambda x: image_attachments_formatter([x]),
-            activitypub.image_formatter
-        ),
+        ActivityMapping('cover', 'cover'),
     ]
 
     def save(self, *args, **kwargs):
