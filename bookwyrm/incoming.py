@@ -115,26 +115,10 @@ def has_valid_signature(request, activity):
 @app.task
 def handle_follow(activity):
     ''' someone wants to follow a local user '''
-    # figure out who they want to follow -- not using get_or_create because
-    # we only care if you want to follow local users
     try:
-        to_follow = models.User.objects.get(remote_id=activity['object'])
-    except models.User.DoesNotExist:
-        # some rando, who cares
-        return
-    if not to_follow.local:
-        # just ignore follow alerts about other servers. maybe they should be
-        # handled. maybe they shouldn't be sent at all.
-        return
-
-    # figure out who the actor is
-    actor = activitypub.resolve_remote_id(models.User, activity['actor'])
-    try:
-        relationship = models.UserFollowRequest.objects.create(
-            user_subject=actor,
-            user_object=to_follow,
-            remote_id=activity['id']
-        )
+        relationship = activitypub.Follow(
+            **activity
+        ).to_model(models.UserFollowRequest)
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
             raise
@@ -143,20 +127,15 @@ def handle_follow(activity):
         )
         # send the accept normally for a duplicate request
 
-    if not to_follow.manually_approves_followers:
-        status_builder.create_notification(
-            to_follow,
-            'FOLLOW',
-            related_user=actor
-        )
+    manually_approves = relationship.user_object.manually_approves_followers
+
+    status_builder.create_notification(
+        relationship.user_object,
+        'FOLLOW_REQUEST' if manually_approves else 'FOLLOW',
+        related_user=relationship.user_subject
+    )
+    if not manually_approves:
         outgoing.handle_accept(relationship)
-    else:
-        # Accept will be triggered manually
-        status_builder.create_notification(
-            to_follow,
-            'FOLLOW_REQUEST',
-            related_user=actor
-        )
 
 
 @app.task
