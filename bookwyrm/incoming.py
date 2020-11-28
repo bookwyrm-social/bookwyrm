@@ -317,7 +317,7 @@ def handle_tag(activity):
     user = get_or_create_remote_user(activity['actor'])
     if not user.local:
         # ordered collection weirndess so we can't just to_model
-        book = books_manager.get_or_create_book(activity['object']['id'])
+        book = (activity['object']['id'])
         name = activity['object']['target'].split('/')[-1]
         name = unquote_plus(name)
         models.Tag.objects.get_or_create(
@@ -330,17 +330,7 @@ def handle_tag(activity):
 @app.task
 def handle_shelve(activity):
     ''' putting a book on a shelf '''
-    user = get_or_create_remote_user(activity['actor'])
-    book = books_manager.get_or_create_book(activity['object'])
-    try:
-        shelf = models.Shelf.objects.get(remote_id=activity['target'])
-    except models.Shelf.DoesNotExist:
-        return
-    if shelf.user != user:
-        # this doesn't add up.
-        return
-    shelf.books.add(book)
-    shelf.save()
+    activitypub.AddBook(**activity).to_model(models.ShelfBook)
 
 
 @app.task

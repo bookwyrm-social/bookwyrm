@@ -227,12 +227,16 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
         name = ''
         if hasattr(self, 'name'):
             name = self.name
+        owner = ''
+        if hasattr(self, 'user'):
+            owner = self.user.remote_id
 
         size = queryset.count()
         return activitypub.OrderedCollection(
             id=remote_id,
             totalItems=size,
             name=name,
+            owner=owner,
             first='%s%s' % (remote_id, self.page()),
             last='%s%s' % (remote_id, self.page(min_id=0))
         ).serialize()

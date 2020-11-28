@@ -3,7 +3,8 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import BookWyrmModel, OrderedCollectionMixin, PrivacyLevels
+from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import OrderedCollectionMixin, PrivacyLevels
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
@@ -47,6 +48,12 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         ''' user/shelf unqiueness '''
         unique_together = ('user', 'identifier')
 
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('owner', 'user'),
+        ActivityMapping('name', 'name'),
+    ]
+
 
 class ShelfBook(BookWyrmModel):
     ''' many to many join table for books and shelves '''
@@ -58,6 +65,15 @@ class ShelfBook(BookWyrmModel):
         null=True,
         on_delete=models.PROTECT
     )
+
+    activity_mappings = [
+        ActivityMapping('id', 'remote_id'),
+        ActivityMapping('actor', 'added_by'),
+        ActivityMapping('object', 'book'),
+        ActivityMapping('target', 'shelf')
+    ]
+
+    activity_serializer = activitypub.AddBook
 
     def to_add_activity(self, user):
         ''' AP for shelving a book'''

@@ -11,7 +11,6 @@ from bookwyrm.models.status import Status
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from .base_model import ActivityMapping, OrderedCollectionPageMixin
-from .base_model import image_formatter
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):

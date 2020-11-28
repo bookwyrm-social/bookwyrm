@@ -3,15 +3,20 @@ from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 from uuid import uuid4
 
+import dateutil.parser
+from dateutil.parser import ParserError
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.db.models.fields.related_descriptors \
         import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
         ReverseManyToOneDescriptor
+from django.db.models.fields import DateTimeField
 from django.db.models.fields.files import ImageFileDescriptor
+from django.db.models.query_utils import DeferredAttribute
+from django.utils import timezone
 import requests
 
-from bookwyrm import books_manager, models
+from bookwyrm import models
 
 
 class ActivitySerializerError(ValueError):
@@ -106,11 +111,27 @@ class ActivityObject:
             model_field = getattr(model, mapping.model_key)
 
             formatted_value = mapping.model_formatter(value)
-            if isinstance(model_field, ForwardManyToOneDescriptor) and \
+            if isinstance(model_field, DeferredAttribute) and \
+                    isinstance(model_field.field, DateTimeField):
+                print("DATE")
+                try:
+                    formatted_value = timezone.make_aware(
+                        dateutil.parser.parse(formatted_value)
+                    )
+                except ParserError:
+                    formatted_value = None
+            elif isinstance(model_field, ForwardManyToOneDescriptor) and \
                     formatted_value:
                 # foreign key remote id reolver (work on Edition, for example)
                 fk_model = model_field.field.related_model
-                reference = resolve_foreign_key(fk_model, formatted_value)
+                if isinstance(formatted_value, dict) and \
+                        formatted_value.get('id'):
+                    # if the AP field is a serialized object (as in Add)
+                    remote_id = formatted_value['id']
+                else:
+                    # if the AP field is just a remote_id (as in every other case)
+                    remote_id = formatted_value
+                reference = resolve_remote_id(fk_model, remote_id)
                 mapped_fields[mapping.model_key] = reference
             elif isinstance(model_field, ManyToManyDescriptor):
                 # status mentions book/users
@@ -122,6 +143,8 @@ class ActivityObject:
                 # image fields need custom handling
                 image_fields[mapping.model_key] = formatted_value
             else:
+                if formatted_value == MISSING:
+                    formatted_value = None
                 mapped_fields[mapping.model_key] = formatted_value
 
         with transaction.atomic():
@@ -153,11 +176,14 @@ class ActivityObject:
                 model = model_field.model
                 items = []
                 for link in values:
+                    # check that the Type matches the model (because Status
+                    # tags contain both user mentions and book tags)
+                    if not model.activity_serializer.type == link.get('type'):
+                        continue
                     items.append(
-                        resolve_foreign_key(model, link.get('href'))
+                        resolve_remote_id(model, link.get('href'))
                     )
                 getattr(instance, model_key).set(items)
-
 
             # add one to many fields
             for (model_key, values) in one_to_many_fields.items():
@@ -183,11 +209,8 @@ class ActivityObject:
         return data
 
 
-def resolve_foreign_key(model, remote_id):
-    ''' look up the remote_id on an activity json field '''
-    if model in [models.Edition, models.Work, models.Book]:
-        return books_manager.get_or_create_book(remote_id)
-
+def resolve_remote_id(model, remote_id, refresh=False):
+    ''' look up the remote_id in the database or load it remotely '''
     result = model.objects
     if hasattr(model.objects, 'select_subclasses'):
         result = result.select_subclasses()
@@ -196,10 +219,10 @@ def resolve_foreign_key(model, remote_id):
     result = result.filter(
         remote_id=remote_id
     ).first()
-    if result:
+    if result and not refresh:
         return result
 
-    # failing that, load the data and create the object
+    # load the data and create the object
     try:
         response = requests.get(
             remote_id,
@@ -215,7 +238,8 @@ def resolve_foreign_key(model, remote_id):
                 (model.__name__, remote_id))
 
     item = model.activity_serializer(**response.json())
-    return item.to_model(model)
+    # if we're refreshing, "result" will be set and we'll update it
+    return item.to_model(model, instance=result)
 
 
 def image_formatter(image_slug):

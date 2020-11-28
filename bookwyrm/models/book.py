@@ -41,10 +41,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
     series = models.CharField(max_length=255, blank=True, null=True)
     series_number = models.CharField(max_length=255, blank=True, null=True)
     subjects = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
+        models.CharField(max_length=255), blank=True, null=True, default=list
     )
     subject_places = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
+        models.CharField(max_length=255), blank=True, null=True, default=list
     )
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = models.ManyToManyField('Author')
@@ -132,7 +132,8 @@ class Work(OrderedCollectionPageMixin, Book):
         ''' it'd be nice to serialize the edition instead but, recursion '''
         default = self.default_edition
         ed_list = [
-            e.remote_id for e in self.edition_set.filter(~Q(id=default.id)).all()
+            e.remote_id for e in \
+                    self.edition_set.filter(~Q(id=default.id)).all()
         ]
         return [default.remote_id] + ed_list
 

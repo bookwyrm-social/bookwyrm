@@ -16,11 +16,9 @@ def get_or_create_remote_user(actor):
     except models.User.DoesNotExist:
         pass
 
-    data = fetch_user_data(actor)
-
     actor_parts = urlparse(actor)
     with transaction.atomic():
-        user = activitypub.Person(**data).to_model(models.User)
+        user = activitypub.resolve_remote_id(models.User, actor)
         user.federated_server = get_or_create_remote_server(actor_parts.netloc)
         user.save()
     if user.bookwyrm_user:
@@ -28,32 +26,9 @@ def get_or_create_remote_user(actor):
     return user
 
 
-def fetch_user_data(actor):
-    ''' load the user's info from the actor url '''
-    try:
-        response = requests.get(
-            actor,
-            headers={'Accept': 'application/activity+json'}
-        )
-    except ConnectionError:
-        return None
-
-    if not response.ok:
-        response.raise_for_status()
-    data = response.json()
-
-    # make sure our actor is who they say they are
-    if actor != data['id']:
-        raise ValueError("Remote actor id must match url.")
-    return data
-
-
 def refresh_remote_user(user):
     ''' get updated user data from its home instance '''
-    data = fetch_user_data(user.remote_id)
-
-    activity = activitypub.Person(**data)
-    activity.to_model(models.User, instance=user)
+    activitypub.resolve_remote_id(user.remote_id, refresh=True)
 
 
 @app.task

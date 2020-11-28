@@ -16,23 +16,6 @@ def get_edition(book_id):
     return book
 
 
-def get_or_create_book(remote_id):
-    ''' pull up a book record by whatever means possible '''
-    book = models.Book.objects.select_subclasses().filter(
-        remote_id=remote_id
-    ).first()
-    if book:
-        return book
-
-    connector = get_or_create_connector(remote_id)
-
-    # raises ConnectorException
-    book = connector.get_or_create_book(remote_id)
-    if book:
-        load_more_data.delay(book.id)
-    return book
-
-
 def get_or_create_connector(remote_id):
     ''' get the connector related to the author's server '''
     url = urlparse(remote_id)
