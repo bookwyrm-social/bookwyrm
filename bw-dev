@@ -12,9 +12,6 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
-# show commands as they're executed
-set -x
-
 function clean {
     docker-compose stop
     docker-compose rm -f
@@ -40,6 +37,10 @@ function initdb {
 
 CMD=$1
 shift
+
+# show commands as they're executed
+set -x
+
 case "$CMD" in
     up)
         docker-compose up --build
