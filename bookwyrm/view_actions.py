@@ -14,6 +14,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.views.decorators.http import require_GET, require_POST
 
 from bookwyrm import books_manager
 from bookwyrm import forms, models, outgoing
@@ -23,11 +24,9 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.views import get_user_from_username
 
 
+@require_POST
 def user_login(request):
     ''' authenticate user login '''
-    if request.method == 'GET':
-        return redirect('/login')
-
     login_form = forms.LoginForm(request.POST)
 
     username = login_form.data['username']
@@ -50,11 +49,9 @@ def user_login(request):
     return TemplateResponse(request, 'login.html', data)
 
 
+@require_POST
 def register(request):
     ''' join the server '''
-    if request.method == 'GET':
-        return redirect('/login')
-
     if not models.SiteSettings.get().allow_registration:
         invite_code = request.POST.get('invite_code')
 
@@ -97,12 +94,14 @@ def register(request):
 
 
 @login_required
+@require_GET
 def user_logout(request):
     ''' done with this place! outa here! '''
     logout(request)
     return redirect('/')
 
 
+@require_POST
 def password_reset_request(request):
     ''' create a password reset token '''
     email = request.POST.get('email')
@@ -121,6 +120,7 @@ def password_reset_request(request):
     return TemplateResponse(request, 'password_reset_request.html', data)
 
 
+@require_POST
 def password_reset(request):
     ''' allow a user to change their password through an emailed token '''
     try:
@@ -148,6 +148,7 @@ def password_reset(request):
 
 
 @login_required
+@require_POST
 def password_change(request):
     ''' allow a user to change their password '''
     new_password = request.POST.get('password')
@@ -163,11 +164,9 @@ def password_change(request):
 
 
 @login_required
+@require_POST
 def edit_profile(request):
     ''' les get fancy with images '''
-    if not request.method == 'POST':
-        return redirect('/user/%s' % request.user.localname)
-
     form = forms.EditUserForm(request.POST, request.FILES)
     if not form.is_valid():
         data = {
@@ -226,11 +225,9 @@ def resolve_book(request):
 
 @login_required
 @permission_required('bookwyrm.edit_book', raise_exception=True)
+@require_POST
 def edit_book(request, book_id):
     ''' edit a book cool '''
-    if not request.method == 'POST':
-        return redirect('/book/%s' % book_id)
-
     book = get_object_or_404(models.Edition, id=book_id)
 
     form = forms.EditionForm(request.POST, request.FILES, instance=book)
@@ -248,16 +245,14 @@ def edit_book(request, book_id):
 
 
 @login_required
+@require_POST
 def upload_cover(request, book_id):
     ''' upload a new cover '''
-    if not request.method == 'POST':
-        return redirect('/book/%s' % request.user.localname)
-
     book = get_object_or_404(models.Edition, id=book_id)
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        return redirect('/book/%d' % book.id)
 
     book.cover = form.files['cover']
     book.sync_cover = False
@@ -268,6 +263,26 @@ def upload_cover(request, book_id):
 
 
 @login_required
+@require_POST
+@permission_required('bookwyrm.edit_book', raise_exception=True)
+def add_description(request, book_id):
+    ''' upload a new cover '''
+    if not request.method == 'POST':
+        return redirect('/')
+
+    book = get_object_or_404(models.Edition, id=book_id)
+
+    description = request.POST.get('description')
+
+    book.description = description
+    book.save()
+
+    outgoing.handle_update_book(request.user, book)
+    return redirect('/book/%s' % book.id)
+
+
+@login_required
+@require_POST
 def create_shelf(request):
     ''' user generated shelves '''
     form = forms.ShelfForm(request.POST)
@@ -280,6 +295,7 @@ def create_shelf(request):
 
 
 @login_required
+@require_POST
 def edit_shelf(request, shelf_id):
     ''' user generated shelves '''
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
@@ -295,6 +311,7 @@ def edit_shelf(request, shelf_id):
 
 
 @login_required
+@require_POST
 def delete_shelf(request, shelf_id):
     ''' user generated shelves '''
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
@@ -306,6 +323,7 @@ def delete_shelf(request, shelf_id):
 
 
 @login_required
+@require_POST
 def shelve(request):
     ''' put a  on a user's shelf '''
     book = books_manager.get_edition(request.POST['book'])
@@ -340,6 +358,7 @@ def shelve(request):
 
 
 @login_required
+@require_POST
 def unshelve(request):
     ''' put a  on a user's shelf '''
     book = models.Edition.objects.get(id=request.POST['book'])
@@ -350,6 +369,7 @@ def unshelve(request):
 
 
 @login_required
+@require_POST
 def start_reading(request, book_id):
     ''' begin reading a book '''
     book = books_manager.get_edition(book_id)
@@ -388,6 +408,7 @@ def start_reading(request, book_id):
 
 
 @login_required
+@require_POST
 def finish_reading(request, book_id):
     ''' a user completed a book, yay '''
     book = books_manager.get_edition(book_id)
@@ -423,6 +444,7 @@ def finish_reading(request, book_id):
 
 
 @login_required
+@require_POST
 def edit_readthrough(request):
     ''' can't use the form because the dates are too finnicky '''
     readthrough = update_readthrough(request, create=False)
@@ -442,6 +464,7 @@ def edit_readthrough(request):
 
 
 @login_required
+@require_POST
 def delete_readthrough(request):
     ''' remove a readthrough '''
     readthrough = get_object_or_404(
@@ -456,6 +479,7 @@ def delete_readthrough(request):
 
 
 @login_required
+@require_POST
 def rate(request):
     ''' just a star rating for a book '''
     form = forms.RatingForm(request.POST)
@@ -463,6 +487,7 @@ def rate(request):
 
 
 @login_required
+@require_POST
 def review(request):
     ''' create a book review '''
     form = forms.ReviewForm(request.POST)
@@ -470,6 +495,7 @@ def review(request):
 
 
 @login_required
+@require_POST
 def quotate(request):
     ''' create a book quotation '''
     form = forms.QuotationForm(request.POST)
@@ -477,6 +503,7 @@ def quotate(request):
 
 
 @login_required
+@require_POST
 def comment(request):
     ''' create a book comment '''
     form = forms.CommentForm(request.POST)
@@ -484,6 +511,7 @@ def comment(request):
 
 
 @login_required
+@require_POST
 def reply(request):
     ''' respond to a book review '''
     form = forms.ReplyForm(request.POST)
@@ -500,6 +528,7 @@ def handle_status(request, form):
 
 
 @login_required
+@require_POST
 def tag(request):
     ''' tag a book '''
     # I'm not using a form here because sometimes "name" is sent as a hidden
@@ -519,6 +548,7 @@ def tag(request):
 
 
 @login_required
+@require_POST
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
@@ -529,6 +559,7 @@ def untag(request):
 
 
 @login_required
+@require_POST
 def favorite(request, status_id):
     ''' like a status '''
     status = models.Status.objects.get(id=status_id)
@@ -537,6 +568,7 @@ def favorite(request, status_id):
 
 
 @login_required
+@require_POST
 def unfavorite(request, status_id):
     ''' like a status '''
     status = models.Status.objects.get(id=status_id)
@@ -545,6 +577,7 @@ def unfavorite(request, status_id):
 
 
 @login_required
+@require_POST
 def boost(request, status_id):
     ''' boost a status '''
     status = models.Status.objects.get(id=status_id)
@@ -553,6 +586,7 @@ def boost(request, status_id):
 
 
 @login_required
+@require_POST
 def unboost(request, status_id):
     ''' boost a status '''
     status = models.Status.objects.get(id=status_id)
@@ -561,6 +595,7 @@ def unboost(request, status_id):
 
 
 @login_required
+@require_POST
 def delete_status(request, status_id):
     ''' delete and tombstone a status '''
     status = get_object_or_404(models.Status, id=status_id)
@@ -575,6 +610,7 @@ def delete_status(request, status_id):
 
 
 @login_required
+@require_POST
 def follow(request):
     ''' follow another user, here or abroad '''
     username = request.POST['user']
@@ -590,6 +626,7 @@ def follow(request):
 
 
 @login_required
+@require_POST
 def unfollow(request):
     ''' unfollow a user '''
     username = request.POST['user']
@@ -612,6 +649,7 @@ def clear_notifications(request):
 
 
 @login_required
+@require_POST
 def accept_follow_request(request):
     ''' a user accepts a follow request '''
     username = request.POST['user']
@@ -635,6 +673,7 @@ def accept_follow_request(request):
 
 
 @login_required
+@require_POST
 def delete_follow_request(request):
     ''' a user rejects a follow request '''
     username = request.POST['user']
@@ -656,6 +695,7 @@ def delete_follow_request(request):
 
 
 @login_required
+@require_POST
 def import_data(request):
     ''' ingest a goodreads csv '''
     form = forms.ImportForm(request.POST, request.FILES)
@@ -679,6 +719,7 @@ def import_data(request):
 
 
 @login_required
+@require_POST
 def retry_import(request):
     ''' ingest a goodreads csv '''
     job = get_object_or_404(models.ImportJob, id=request.POST.get('import_job'))
@@ -696,6 +737,7 @@ def retry_import(request):
 
 
 @login_required
+@require_POST
 @permission_required('bookwyrm.create_invites', raise_exception=True)
 def create_invite(request):
     ''' creates a user invite database entry '''

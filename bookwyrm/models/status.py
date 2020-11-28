@@ -90,7 +90,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ActivityMapping(
             'attachment', 'attachments',
             lambda x: image_attachments_formatter(x.all()),
-            activitypub.image_attachments_formatter
         )
     ]
 
@@ -149,17 +148,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             self.user.last_active_date = timezone.now()
             self.user.save()
         return super().save(*args, **kwargs)
-
-
-class Attachment(BookWyrmModel):
-    ''' an image (or, in the future, video etc) associated with a status '''
-    status = models.ForeignKey(
-        'Status',
-        on_delete=models.CASCADE,
-        related_name='attachments'
-    )
-    image = models.ImageField(upload_to='status/', null=True, blank=True)
-    caption = models.TextField(null=True, blank=True)
 
 
 class GeneratedNote(Status):

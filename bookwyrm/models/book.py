@@ -12,7 +12,6 @@ from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivityMapping, BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import image_attachments_formatter
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
@@ -62,11 +61,6 @@ class Book(ActivitypubMixin, BookWyrmModel):
         return [a.remote_id for a in self.authors.all()]
 
     @property
-    def ap_parent_work(self):
-        ''' reference the work via local id not remote '''
-        return self.parent_work.remote_id
-
-    @property
     def latest_readthrough(self):
         return self.readthrough_set.order_by('-updated_date').first()
 
@@ -74,40 +68,35 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ActivityMapping('id', 'remote_id'),
 
         ActivityMapping('authors', 'ap_authors'),
-        ActivityMapping('first_published_date', 'first_published_date'),
-        ActivityMapping('published_date', 'published_date'),
+        ActivityMapping('firstPublishedDate', 'firstpublished_date'),
+        ActivityMapping('publishedDate', 'published_date'),
 
         ActivityMapping('title', 'title'),
-        ActivityMapping('sort_title', 'sort_title'),
+        ActivityMapping('sortTitle', 'sort_title'),
         ActivityMapping('subtitle', 'subtitle'),
         ActivityMapping('description', 'description'),
         ActivityMapping('languages', 'languages'),
         ActivityMapping('series', 'series'),
-        ActivityMapping('series_number', 'series_number'),
+        ActivityMapping('seriesNumber', 'series_number'),
         ActivityMapping('subjects', 'subjects'),
-        ActivityMapping('subject_places', 'subject_places'),
+        ActivityMapping('subjectPlaces', 'subject_places'),
 
-        ActivityMapping('openlibrary_key', 'openlibrary_key'),
-        ActivityMapping('librarything_key', 'librarything_key'),
-        ActivityMapping('goodreads_key', 'goodreads_key'),
+        ActivityMapping('openlibraryKey', 'openlibrary_key'),
+        ActivityMapping('librarythingKey', 'librarything_key'),
+        ActivityMapping('goodreadsKey', 'goodreads_key'),
 
-        ActivityMapping('work', 'ap_parent_work'),
-        ActivityMapping('isbn_10', 'isbn_10'),
-        ActivityMapping('isbn_13', 'isbn_13'),
-        ActivityMapping('oclc_number', 'oclc_number'),
+        ActivityMapping('work', 'parent_work'),
+        ActivityMapping('isbn10', 'isbn_10'),
+        ActivityMapping('isbn13', 'isbn_13'),
+        ActivityMapping('oclcNumber', 'oclc_number'),
         ActivityMapping('asin', 'asin'),
         ActivityMapping('pages', 'pages'),
-        ActivityMapping('physical_format', 'physical_format'),
+        ActivityMapping('physicalFormat', 'physical_format'),
         ActivityMapping('publishers', 'publishers'),
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions_path'),
-        ActivityMapping(
-            'attachment', 'cover',
-            # this expects an iterable and the field is just an image
-            lambda x: image_attachments_formatter([x]),
-            activitypub.image_formatter
-        ),
+        ActivityMapping('cover', 'cover'),
     ]
 
     def save(self, *args, **kwargs):

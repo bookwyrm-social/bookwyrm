@@ -57,6 +57,35 @@
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
+                {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
+                <div>
+                    <input class="toggle-control" type="radio" name="add-description" id="hide-description" checked>
+                    <div class="toggle-content hidden">
+                        <label class="button" for="add-description" tabindex="0" role="button">Add description</label>
+                    </div>
+                </div>
+
+                <div>
+                    <input class="toggle-control" type="radio" name="add-description" id="add-description">
+                    <div class="toggle-content hidden">
+                        <div class="box">
+                            <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
+                                {% csrf_token %}
+                                <p class="fields is-grouped">
+                                    <label class="label"for="id_description">Description:</label>
+                                    <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
+                                </p>
+                                <div class="field">
+                                    <button class="button is-primary" type="submit">Save</button>
+                                    <label class="button" for="hide-description" tabindex="0" role="button">Cancel</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+
                 {% if book.parent_work.edition_set.count > 1 %}
                 <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
                 {% endif %}
@@ -162,7 +191,7 @@
                             </div>
                             <div class="field is-grouped">
                                 <button class="button is-primary" type="submit">Save</button>
-                                <label class="button" for="show-readthrough-{{ readthrough.id }}">Cancel</label>
+                                <label class="button" for="show-readthrough-{{ readthrough.id }}" role="button" tabindex="0">Cancel</label>
                             </div>
                         </form>
                     </div>
@@ -185,7 +214,7 @@
 				<button class="button is-danger is-light" type="submit">
 				    Delete
 				</button>
-				<label for="delete-readthrough-{{ readthrough.id }}" class="button">Cancel</button>
+				<label for="delete-readthrough-{{ readthrough.id }}" class="button" role="button" tabindex="0">Cancel</button>
 			    </form>
                         </footer>
                     </div>
