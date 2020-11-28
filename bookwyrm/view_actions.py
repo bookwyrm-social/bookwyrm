@@ -268,6 +268,7 @@ def upload_cover(request, book_id):
 
 
 @login_required
+@permission_required('bookwyrm.edit_book', raise_exception=True)
 def add_description(request, book_id):
     ''' upload a new cover '''
     if not request.method == 'POST':

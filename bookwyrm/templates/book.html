@@ -57,7 +57,7 @@
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
-                {% if request.user.is_authenticated and not book|book_description %}
+                {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
                 <div>
                     <input class="toggle-control" type="radio" name="add-description" id="hide-description" checked>
                     <div class="toggle-content hidden">
