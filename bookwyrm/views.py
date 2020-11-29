@@ -531,7 +531,7 @@ def book_page(request, book_id):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 
     if isinstance(book, models.Work):
-        book = book.default_edition
+        book = book.get_default_edition()
     if not book:
         return HttpResponseNotFound()
 
@@ -646,7 +646,7 @@ def author_page(request, author_id):
     data = {
         'title': author.name,
         'author': author,
-        'books': [b.default_edition for b in books],
+        'books': [b.get_default_edition() for b in books],
     }
     return TemplateResponse(request, 'author.html', data)
 

@@ -86,6 +86,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions'),
+        ActivityMapping('defaultEdition', 'default_edition'),
         ActivityMapping('cover', 'cover'),
     ]
 
@@ -124,6 +125,10 @@ class Work(OrderedCollectionPageMixin, Book):
         on_delete=models.PROTECT,
         null=True
     )
+
+    def get_default_edition(self):
+        ''' in case the default edition is not set '''
+        return self.default_edition or self.editions.first()
 
     activity_serializer = activitypub.Work
 
