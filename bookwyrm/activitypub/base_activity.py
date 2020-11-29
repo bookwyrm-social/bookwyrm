@@ -6,17 +6,14 @@ from uuid import uuid4
 import dateutil.parser
 from dateutil.parser import ParserError
 from django.core.files.base import ContentFile
-from django.db import transaction
 from django.db.models.fields.related_descriptors \
-        import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
+    import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
         ReverseManyToOneDescriptor
 from django.db.models.fields import DateTimeField
 from django.db.models.fields.files import ImageFileDescriptor
 from django.db.models.query_utils import DeferredAttribute
 from django.utils import timezone
 import requests
-
-from bookwyrm import models
 
 
 class ActivitySerializerError(ValueError):
@@ -135,7 +132,7 @@ class ActivityObject:
                     # if the AP field is a serialized object (as in Add)
                     remote_id = formatted_value['id']
                 else:
-                    # if the AP field is just a remote_id (as in every other case)
+                    # if the field is just a remote_id (as in every other case)
                     remote_id = formatted_value
                 reference = resolve_remote_id(fk_model, remote_id)
                 mapped_fields[mapping.model_key] = reference
@@ -153,62 +150,67 @@ class ActivityObject:
                     formatted_value = None
                 mapped_fields[mapping.model_key] = formatted_value
 
-        with transaction.atomic():
-            if instance:
-                # updating an existing model instance
-                for k, v in mapped_fields.items():
-                    setattr(instance, k, v)
-                instance.save()
-            else:
-                # creating a new model instance
-                instance = model.objects.create(**mapped_fields)
+        if instance:
+            # updating an existing model instance
+            for k, v in mapped_fields.items():
+                setattr(instance, k, v)
+            instance.save()
+        else:
+            # creating a new model instance
+            instance = model.objects.create(**mapped_fields)
+            print('CREATING')
+            print(instance)
+            print(instance.id)
 
-            # --- these are all fields that can't be saved until after the
-            # instance has an id (after it's been saved). ---------------#
+        # --- these are all fields that can't be saved until after the
+        # instance has an id (after it's been saved). ---------------#
 
-            # add images
-            for (model_key, value) in image_fields.items():
-                formatted_value = image_formatter(value)
-                if not formatted_value:
-                    continue
-                getattr(instance, model_key).save(*formatted_value, save=True)
+        # add images
+        for (model_key, value) in image_fields.items():
+            formatted_value = image_formatter(value)
+            if not formatted_value:
+                continue
+            getattr(instance, model_key).save(*formatted_value, save=True)
 
-            # add many to many fields
-            for (model_key, values) in many_to_many_fields.items():
-                # mention books, mention users
-                if values == MISSING:
-                    continue
-                model_field = getattr(instance, model_key)
-                model = model_field.model
-                items = []
-                for link in values:
-                    if isinstance(link, dict):
-                        # check that the Type matches the model (Status
-                        # tags contain both user mentions and book tags)
-                        if not model.activity_serializer.type == \
-                                link.get('type'):
-                            continue
-                        remote_id = link.get('href')
-                    else:
-                        remote_id = link
-                    items.append(
-                        resolve_remote_id(model, remote_id)
-                    )
-                getattr(instance, model_key).set(items)
+        # add many to many fields
+        for (model_key, values) in many_to_many_fields.items():
+            # mention books, mention users
+            if values == MISSING:
+                continue
+            model_field = getattr(instance, model_key)
+            model = model_field.model
+            items = []
+            for link in values:
+                if isinstance(link, dict):
+                    # check that the Type matches the model (Status
+                    # tags contain both user mentions and book tags)
+                    if not model.activity_serializer.type == \
+                            link.get('type'):
+                        continue
+                    remote_id = link.get('href')
+                else:
+                    remote_id = link
+                items.append(
+                    resolve_remote_id(model, remote_id)
+                )
+            getattr(instance, model_key).set(items)
 
-            # add one to many fields
-            for (model_key, values) in one_to_many_fields.items():
-                if values == MISSING:
-                    continue
-                model_field = getattr(instance, model_key)
-                model = model_field.model
-                for item in values:
+        # add one to many fields
+        for (model_key, values) in one_to_many_fields.items():
+            if values == MISSING:
+                continue
+            model_field = getattr(instance, model_key)
+            model = model_field.model
+            for item in values:
+                if isinstance(item, str):
+                    print(model)
+                    item = resolve_remote_id(model, item)
+                else:
                     item = model.activity_serializer(**item)
-                    field_name = instance.__class__.__name__.lower()
-                    with transaction.atomic():
-                        item = item.to_model(model)
-                        setattr(item, field_name, instance)
-                        item.save()
+                    item = item.to_model(model)
+                field_name = instance.__class__.__name__.lower()
+                setattr(item, field_name, instance)
+                item.save()
 
         return instance
 

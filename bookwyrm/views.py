@@ -540,7 +540,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     reviews = models.Review.objects.filter(
-        book__in=work.edition_set.all(),
+        book__in=work.editions.all(),
     )
     # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)

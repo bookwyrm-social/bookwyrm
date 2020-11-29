@@ -1,5 +1,4 @@
 ''' database schema for books and shelves '''
-from uuid import uuid4
 import re
 
 from django.db import models
@@ -99,16 +98,13 @@ class Book(ActivitypubMixin, BookWyrmModel):
             self.remote_id = self.get_remote_id()
 
         if not self.id:
-            # force set the remote id to a local version
             self.origin_id = self.remote_id
-            self.remote_id = self.get_remote_id()
+            self.remote_id = None
         return super().save(*args, **kwargs)
 
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
-        uuid = str(uuid4())[:8]
-        clean_title = re.sub(r'[\W-]', '', self.title.replace(' ', '-')).lower()
-        return 'https://%s/author/%s-%s' % (DOMAIN, clean_title, uuid)
+        return 'https://%s/book/%d' % (DOMAIN, self.id)
 
     def __repr__(self):
         return "<{} key={!r} title={!r}>".format(
@@ -128,17 +124,6 @@ class Work(OrderedCollectionPageMixin, Book):
         on_delete=models.PROTECT,
         null=True
     )
-
-
-    def to_edition_list(self, **kwargs):
-        ''' activitypub serialization for this work's editions '''
-        remote_id = self.remote_id + '/editions'
-        return self.to_ordered_collection(
-            self.edition_set,
-            remote_id=remote_id,
-            **kwargs
-        )
-
 
     activity_serializer = activitypub.Work
 
@@ -161,7 +146,8 @@ class Edition(Book):
         through='ShelfBook',
         through_fields=('book', 'shelf')
     )
-    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
+    parent_work = models.ForeignKey(
+        'Work', on_delete=models.PROTECT, null=True, related_name='editions')
 
     activity_serializer = activitypub.Edition
 
@@ -173,6 +159,7 @@ class Edition(Book):
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
         return super().save(*args, **kwargs)
+
 
 
 def isbn_10_to_13(isbn_10):
