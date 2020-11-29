@@ -8,7 +8,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from bookwyrm import activitypub, books_manager, models, outgoing
+from bookwyrm import activitypub, models, outgoing
 from bookwyrm import status as status_builder
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
@@ -317,13 +317,4 @@ def handle_update_user(activity):
 @app.task
 def handle_update_book(activity):
     ''' a remote instance changed a book (Document) '''
-    document = activity['object']
-    # check if we have their copy and care about their updates
-    book = models.Book.objects.select_subclasses().filter(
-        remote_id=document['id'],
-        sync=True,
-    ).first()
-    if not book:
-        return
-
-    books_manager.update_book(book, data=document)
+    activitypub.Edition(**activity['object']).to_model(models.Edition)

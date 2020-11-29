@@ -85,12 +85,6 @@ def first_search_result(query, min_confidence=0.1):
     return None
 
 
-def update_book(book, data=None):
-    ''' re-sync with the original data source '''
-    connector = load_connector(book.connector)
-    connector.update_book(book, data=data)
-
-
 def get_connectors():
     ''' load all connectors '''
     for info in models.Connector.objects.order_by('priority').all():
