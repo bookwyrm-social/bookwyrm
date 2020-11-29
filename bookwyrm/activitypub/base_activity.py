@@ -91,10 +91,7 @@ class ActivityObject:
 
         # check for an existing instance, if we're not updating a known obj
         if not instance:
-            try:
-                return model.objects.get(remote_id=self.id)
-            except model.DoesNotExist:
-                pass
+            instance = find_existing_by_remote_id(model, self.id)
 
         model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
@@ -123,8 +120,9 @@ class ActivityObject:
                         formatted_value = date_value
                 except (ParserError, TypeError):
                     formatted_value = None
-            elif isinstance(model_field, ForwardManyToOneDescriptor) and \
-                    formatted_value:
+            elif isinstance(model_field, ForwardManyToOneDescriptor):
+                if not formatted_value:
+                    continue
                 # foreign key remote id reolver (work on Edition, for example)
                 fk_model = model_field.field.related_model
                 if isinstance(formatted_value, dict) and \
@@ -158,9 +156,6 @@ class ActivityObject:
         else:
             # creating a new model instance
             instance = model.objects.create(**mapped_fields)
-            print('CREATING')
-            print(instance)
-            print(instance.id)
 
         # --- these are all fields that can't be saved until after the
         # instance has an id (after it's been saved). ---------------#
@@ -203,7 +198,6 @@ class ActivityObject:
             model = model_field.model
             for item in values:
                 if isinstance(item, str):
-                    print(model)
                     item = resolve_remote_id(model, item)
                 else:
                     item = model.activity_serializer(**item)
@@ -222,8 +216,8 @@ class ActivityObject:
         return data
 
 
-def resolve_remote_id(model, remote_id, refresh=False):
-    ''' look up the remote_id in the database or load it remotely '''
+def find_existing_by_remote_id(model, remote_id):
+    ''' check for an existing instance of this id in the db '''
     objects = model.objects
     if hasattr(model.objects, 'select_subclasses'):
         objects = objects.select_subclasses()
@@ -232,10 +226,17 @@ def resolve_remote_id(model, remote_id, refresh=False):
     result = objects.filter(
         remote_id=remote_id
     ).first()
+
     if not result and hasattr(model, 'origin_id'):
         result = objects.filter(
             origin_id=remote_id
         ).first()
+    return result
+
+
+def resolve_remote_id(model, remote_id, refresh=False):
+    ''' look up the remote_id in the database or load it remotely '''
+    result = find_existing_by_remote_id(model, remote_id)
     if result and not refresh:
         return result
 
