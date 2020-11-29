@@ -75,13 +75,12 @@ class ActivitypubMixin:
                 continue
             value = getattr(self, mapping.model_key)
             model_field = getattr(self.__class__, mapping.model_key)
-            print(mapping.model_key, type(model_field))
             if hasattr(value, 'remote_id'):
                 # this is probably a foreign key field, which we want to
                 # serialize as just the remote_id url reference
                 value = value.remote_id
-            elif isinstance(model_field, ManyToManyDescriptor) or \
-                     isinstance(model_field, ReverseManyToOneDescriptor):
+            elif isinstance(model_field, \
+                    (ManyToManyDescriptor, ReverseManyToOneDescriptor)):
                 value = [i.remote_id for i in value.all()]
             elif isinstance(value, datetime):
                 value = value.isoformat()
