@@ -38,7 +38,7 @@ class Book(TestCase):
             'joe', 'joe@mouse.mouse', 'jeoword')
         self.user.followers.add(local_follower)
 
-        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
             models.User.objects.create_user(
                 'nutria', 'nutria@mouse.mouse', 'nuword',
                 remote_id='http://example.com/u/4',

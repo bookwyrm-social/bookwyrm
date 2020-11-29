@@ -7,6 +7,7 @@ from django.db import models
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
+from bookwyrm.connectors import get_data
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
@@ -195,13 +196,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         return
 
     if not instance.local:
-        actor_parts = urlparse(instance.remote_id)
-        instance.federated_server = \
-            get_or_create_remote_server(actor_parts.netloc)
-        instance.save()
-        if instance.bookwyrm_user:
-            get_remote_reviews.delay(instance.outbox)
-        return
+        set_remote_server.delay(instance.id)
 
     shelves = [{
         'name': 'To Read',
@@ -222,6 +217,18 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             editable=False
         ).save()
 
+@app.task
+def set_remote_server(user_id):
+    ''' figure out the user's remote server in the background '''
+    user = User.objects.get(id=user_id)
+    actor_parts = urlparse(user.remote_id)
+    user.federated_server = \
+        get_or_create_remote_server(actor_parts.netloc)
+    user.save()
+    if user.bookwyrm_user:
+        get_remote_reviews.delay(user.outbox)
+    return
+
 
 def get_or_create_remote_server(domain):
     ''' get info on a remote server '''
@@ -232,25 +239,14 @@ def get_or_create_remote_server(domain):
     except FederatedServer.DoesNotExist:
         pass
 
-    response = requests.get(
-        'https://%s/.well-known/nodeinfo' % domain,
-        headers={'Accept': 'application/activity+json'}
-    )
+    data = get_data('https://%s/.well-known/nodeinfo' % domain)
 
-    if response.status_code != 200:
-        return None
-
-    data = response.json()
     try:
         nodeinfo_url = data.get('links')[0].get('href')
     except (TypeError, KeyError):
         return None
 
-    response = requests.get(
-        nodeinfo_url,
-        headers={'Accept': 'application/activity+json'}
-    )
-    data = response.json()
+    data = get_data(nodeinfo_url)
 
     server = FederatedServer.objects.create(
         server_name=domain,
@@ -264,11 +260,8 @@ def get_or_create_remote_server(domain):
 def get_remote_reviews(outbox):
     ''' ingest reviews by a new remote bookwyrm user '''
     outbox_page = outbox + '?page=true'
-    response = requests.get(
-        outbox_page,
-        headers={'Accept': 'application/activity+json'}
-    )
-    data = response.json()
+    data = get_data(outbox_page)
+
     # TODO: pagination?
     for activity in data['orderedItems']:
         if not activity['type'] == 'Review':
