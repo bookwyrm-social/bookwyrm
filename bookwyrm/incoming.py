@@ -293,11 +293,11 @@ def handle_unboost(activity):
 @app.task
 def handle_add(activity):
     ''' putting a book on a shelf '''
-    # TODO absofuckinglutely not an acceptable solution
-    if 'tag' in activity['id']:
-        activitypub.AddBook(**activity).to_model(models.Tag)
-    else:
+    #this is janky as heck but I haven't thought of a better solution
+    try:
         activitypub.AddBook(**activity).to_model(models.ShelfBook)
+    except activitypub.ActivitySerializerError:
+        activitypub.AddBook(**activity).to_model(models.Tag)
 
 
 @app.task
