@@ -6,39 +6,40 @@ from bookwyrm import models, broadcast
 
 class Book(TestCase):
     def setUp(self):
-        self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
+            self.user = models.User.objects.create_user(
+                'mouse', 'mouse@mouse.mouse', 'mouseword')
 
-        follower = models.User.objects.create_user(
-            'rat', 'rat@mouse.mouse', 'ratword', local=False,
-            remote_id='http://example.com/u/1',
-            outbox='http://example.com/u/1/o',
-            shared_inbox='http://example.com/inbox',
-            inbox='http://example.com/u/1/inbox')
-        self.user.followers.add(follower)
-
-        no_inbox_follower = models.User.objects.create_user(
-            'hamster', 'hamster@mouse.mouse', 'hamword',
-            shared_inbox=None, local=False,
-            remote_id='http://example.com/u/2',
-            outbox='http://example.com/u/2/o',
-            inbox='http://example.com/u/2/inbox')
-        self.user.followers.add(no_inbox_follower)
-
-        non_fr_follower = models.User.objects.create_user(
-            'gerbil', 'gerb@mouse.mouse', 'gerbword',
-            remote_id='http://example.com/u/3',
-            outbox='http://example2.com/u/3/o',
-            inbox='http://example2.com/u/3/inbox',
-            shared_inbox='http://example2.com/inbox',
-            bookwyrm_user=False, local=False)
-        self.user.followers.add(non_fr_follower)
-
-        local_follower = models.User.objects.create_user(
-            'joe', 'joe@mouse.mouse', 'jeoword')
-        self.user.followers.add(local_follower)
+            local_follower = models.User.objects.create_user(
+                'joe', 'joe@mouse.mouse', 'jeoword')
+            self.user.followers.add(local_follower)
 
         with patch('bookwyrm.models.user.set_remote_server.delay'):
+            follower = models.User.objects.create_user(
+                'rat', 'rat@mouse.mouse', 'ratword', local=False,
+                remote_id='http://example.com/u/1',
+                outbox='http://example.com/u/1/o',
+                shared_inbox='http://example.com/inbox',
+                inbox='http://example.com/u/1/inbox')
+            self.user.followers.add(follower)
+
+            no_inbox_follower = models.User.objects.create_user(
+                'hamster', 'hamster@mouse.mouse', 'hamword',
+                shared_inbox=None, local=False,
+                remote_id='http://example.com/u/2',
+                outbox='http://example.com/u/2/o',
+                inbox='http://example.com/u/2/inbox')
+            self.user.followers.add(no_inbox_follower)
+
+            non_fr_follower = models.User.objects.create_user(
+                'gerbil', 'gerb@mouse.mouse', 'gerbword',
+                remote_id='http://example.com/u/3',
+                outbox='http://example2.com/u/3/o',
+                inbox='http://example2.com/u/3/inbox',
+                shared_inbox='http://example2.com/inbox',
+                bookwyrm_user=False, local=False)
+            self.user.followers.add(non_fr_follower)
+
             models.User.objects.create_user(
                 'nutria', 'nutria@mouse.mouse', 'nuword',
                 remote_id='http://example.com/u/4',
