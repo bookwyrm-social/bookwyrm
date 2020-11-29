@@ -15,6 +15,7 @@ from django.db.models.query_utils import DeferredAttribute
 from django.utils import timezone
 import requests
 
+from bookwyrm.connectors import ConnectorException, get_data, get_image
 
 class ActivitySerializerError(ValueError):
     ''' routine problems serializing activitypub json '''
@@ -242,20 +243,13 @@ def resolve_remote_id(model, remote_id, refresh=False):
 
     # load the data and create the object
     try:
-        response = requests.get(
-            remote_id,
-            headers={'Accept': 'application/json; charset=utf-8'},
-        )
-    except ConnectionError:
+        data = get_data(remote_id)
+    except (ConnectorException, ConnectionError):
         raise ActivitySerializerError(
             'Could not connect to host for remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
-    if not response.ok:
-        raise ActivitySerializerError(
-            'Could not resolve remote_id in %s model: %s' % \
-                (model.__name__, remote_id))
 
-    item = model.activity_serializer(**response.json())
+    item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model, instance=result)
 
@@ -272,11 +266,9 @@ def image_formatter(image_slug):
         return None
     if not url:
         return None
-    try:
-        response = requests.get(url)
-    except ConnectionError:
-        return None
-    if not response.ok:
+
+    response = get_image(url)
+    if not response:
         return None
 
     image_name = str(uuid4()) + '.' + url.split('.')[-1]

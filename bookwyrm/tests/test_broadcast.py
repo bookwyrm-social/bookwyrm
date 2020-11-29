@@ -1,3 +1,4 @@
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, broadcast
@@ -37,13 +38,14 @@ class Book(TestCase):
             'joe', 'joe@mouse.mouse', 'jeoword')
         self.user.followers.add(local_follower)
 
-        models.User.objects.create_user(
-            'nutria', 'nutria@mouse.mouse', 'nuword',
-            remote_id='http://example.com/u/4',
-            outbox='http://example.com/u/4/o',
-            shared_inbox='http://example.com/inbox',
-            inbox='http://example.com/u/4/inbox',
-            local=False)
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
+            models.User.objects.create_user(
+                'nutria', 'nutria@mouse.mouse', 'nuword',
+                remote_id='http://example.com/u/4',
+                outbox='http://example.com/u/4/o',
+                shared_inbox='http://example.com/inbox',
+                inbox='http://example.com/u/4/inbox',
+                local=False)
 
 
     def test_get_public_recipients(self):

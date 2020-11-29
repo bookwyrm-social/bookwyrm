@@ -318,6 +318,17 @@ def get_data(url):
     return data
 
 
+def get_image(url):
+    ''' wrapper for requesting an image '''
+    try:
+        resp = requests.get(url)
+    except RequestError:
+        return None
+    if not resp.ok:
+        return None
+    return resp
+
+
 @dataclass
 class SearchResult:
     ''' standardized search result object '''
