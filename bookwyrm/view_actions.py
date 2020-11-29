@@ -219,7 +219,9 @@ def edit_profile(request):
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    book = books_manager.get_or_create_book(remote_id)
+    connector = books_manager.get_or_create_connector(remote_id)
+    book = connector.get_or_create_book(remote_id)
+
     return redirect('/book/%d' % book.id)
 
 
