@@ -88,8 +88,14 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
 
+    @property
+    def display_name(self):
+        ''' show the cleanest version of the user's name possible '''
+        if self.name != '':
+            return self.name
+        return self.localname or self.username
+
     activity_serializer = activitypub.Person
-    serialize_related = []
 
     def to_outbox(self, **kwargs):
         ''' an ordered collection of statuses '''
@@ -112,7 +118,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.to_ordered_collection(self.followers, \
                 remote_id=remote_id, id_only=True, **kwargs)
 
-    def to_activity(self, pure=False):
+    def to_activity(self):
         ''' override default AP serializer to add context object
             idk if this is the best way to go about this '''
         activity_object = super().to_activity()

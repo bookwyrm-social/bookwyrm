@@ -71,6 +71,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         )
 
     def deconstruct(self):
+        ''' implementation of models.Field deconstruct '''
         name, path, args, kwargs = super().deconstruct()
         del kwargs['verbose_name']
         del kwargs['max_length']
@@ -86,6 +87,8 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
 class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
     ''' activitypub-aware foreign key field '''
     def to_activity(self, value):
+        if not value:
+            return None
         return value.remote_id
     def from_activity(self, activity_data):
         pass# TODO
@@ -94,6 +97,10 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
     def to_activity(self, value):
+        print('HIIIII')
+        print(value)
+        if not value:
+            return None
         return value.to_activity()
 
     def from_activity(self, activity_data):
@@ -113,20 +120,45 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def from_activity(self, activity_data):
         if self.link_only:
-            return
-        values = super().from_activity(self, activity_data)
+            return None
+        values = super().from_activity(activity_data)
         return values# TODO
+
+class TagField(ManyToManyField):
+    ''' special case of many to many that uses Tags '''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.activitypub_field = 'tag'
+
+    def to_activity(self, value):
+        tags = []
+        for item in value.all():
+            activity_type = item.__class__.__name__
+            if activity_type == 'User':
+                activity_type = 'Mention'
+            tags.append(activitypub.Link(
+                href=item.remote_id,
+                name=getattr(item, item.name_field),
+                type=activity_type
+            ))
+        return tags
+
+
+def image_serializer(value):
+    ''' helper for serializing images '''
+    print(value)
+    if value and hasattr(value, 'url'):
+        url = value.url
+    else:
+        return None
+    url = 'https://%s%s' % (DOMAIN, url)
+    return activitypub.Image(url=url)
 
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     ''' activitypub-aware image field '''
     def to_activity(self, value):
-        if value and hasattr(value, 'url'):
-            url = value.url
-        else:
-            return None
-        url = 'https://%s%s' % (DOMAIN, url)
-        return activitypub.Image(url=url)
+        return image_serializer(value)
 
     def from_activity(self, activity_data):
         image_slug = super().from_activity(activity_data)
@@ -150,6 +182,12 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         return [image_name, image_content]
 
 
+class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
+    ''' activitypub-aware datetime field '''
+    def to_activity(self, value):
+        return value.isoformat()
+
+
 class CharField(ActivitypubFieldMixin, models.CharField):
     ''' activitypub-aware char field '''
 
@@ -157,4 +195,7 @@ class TextField(ActivitypubFieldMixin, models.TextField):
     ''' activitypub-aware text field '''
 
 class BooleanField(ActivitypubFieldMixin, models.BooleanField):
+    ''' activitypub-aware boolean field '''
+
+class IntegerField(ActivitypubFieldMixin, models.IntegerField):
     ''' activitypub-aware boolean field '''

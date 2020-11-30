@@ -155,6 +155,7 @@ class Edition(Book):
         'Work', on_delete=models.PROTECT, null=True, related_name='editions')
 
     activity_serializer = activitypub.Edition
+    name_field = 'title'
 
     def save(self, *args, **kwargs):
         ''' calculate isbn 10/13 '''

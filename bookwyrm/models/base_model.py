@@ -61,9 +61,19 @@ def get_field_name(field):
     return components[0] + ''.join(x.title() for x in components[1:])
 
 
+def unfurl_related_field(related_field):
+    ''' load reverse lookups (like public key owner or Status attachment '''
+    if hasattr(related_field, 'all'):
+        return [unfurl_related_field(i) for i in related_field.all()]
+    if related_field.reverse_unfurl:
+        return related_field.to_activity()
+    return related_field.remote_id
+
+
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
+    reverse_unfurl = False
 
     def to_activity(self):
         ''' convert from a model to an activity '''
@@ -73,18 +83,24 @@ class ActivitypubMixin:
                 continue
             key = get_field_name(field)
             value = field.to_activity(getattr(self, field.name))
-            if value is not None:
+            if value is None:
+                continue
+
+            if key in activity and isinstance(activity[key], list):
+                activity[key] += value
+            else:
                 activity[key] = value
         if hasattr(self, 'serialize_reverse_fields'):
             for field_name in self.serialize_reverse_fields:
-                activity[field_name] = getattr(self, field_name).remote_id
+                related_field = getattr(self, field_name)
+                activity[field_name] = unfurl_related_field(related_field)
 
         return self.activity_serializer(**activity).serialize()
 
 
-    def to_create_activity(self, user, pure=False):
+    def to_create_activity(self, user):
         ''' returns the object wrapped in a Create activity '''
-        activity_object = self.to_activity(pure=pure)
+        activity_object = self.to_activity()
 
         signer = pkcs1_15.new(RSA.import_key(user.private_key))
         content = activity_object['content']
@@ -100,8 +116,8 @@ class ActivitypubMixin:
         return activitypub.Create(
             id=create_id,
             actor=user.remote_id,
-            to=['%s/followers' % user.remote_id],
-            cc=['https://www.w3.org/ns/activitystreams#Public'],
+            to=activity_object['to'],
+            cc=activity_object['cc'],
             object=activity_object,
             signature=signature,
         ).serialize()
@@ -245,30 +261,3 @@ class ActivityMapping:
     model_key: str
     activity_formatter: Callable = lambda x: x
     model_formatter: Callable = lambda x: x
-
-
-def tag_formatter(items, name_field, activity_type):
-    ''' helper function to format lists of foreign keys into Tags '''
-    tags = []
-    for item in items.all():
-        tags.append(activitypub.Link(
-            href=item.remote_id,
-            name=getattr(item, name_field),
-            type=activity_type
-        ))
-    return tags
-
-
-def image_formatter(image):
-    ''' convert images into activitypub json '''
-    if image and hasattr(image, 'url'):
-        url = image.url
-    else:
-        return None
-    url = 'https://%s%s' % (DOMAIN, url)
-    return activitypub.Image(url=url)
-
-
-def image_attachments_formatter(images):
-    ''' create a list of image attachments '''
-    return [image_formatter(i) for i in images]
