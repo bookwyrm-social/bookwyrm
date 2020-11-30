@@ -17,6 +17,7 @@ from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
+from .fields import RemoteIdField
 
 
 PrivacyLevels = models.TextChoices('Privacy', [
@@ -30,7 +31,7 @@ class BookWyrmModel(models.Model):
     ''' shared fields '''
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    remote_id = models.CharField(max_length=255, null=True)
+    remote_id = RemoteIdField(null=True, activitypub_field='id')
 
     def get_remote_id(self):
         ''' generate a url that resolves to the local object '''
@@ -61,49 +62,18 @@ class ActivitypubMixin:
 
     def to_activity(self, pure=False):
         ''' convert from a model to an activity '''
-        if pure:
-            # works around bookwyrm-specific fields for vanilla AP services
-            mappings = self.pure_activity_mappings
-        else:
-            # may include custom fields that bookwyrm instances will understand
-            mappings = self.activity_mappings
+        activity = {}
+        for field in self.__class__._meta.fields:
+            key, value = field.to_activity(getattr(self, field.name))
+            activity[key] = value
+        for related_object in self.__class__.meta.related_objects:
+            # TODO: check if it's serializable
+            related_model = related_object.related_model
+            key = related_object.name
+            related_values = getattr(self, key)
+            activity[key] = [i.remote_id for i in related_values]
 
-        fields = {}
-        for mapping in mappings:
-            if not hasattr(self, mapping.model_key) or not mapping.activity_key:
-                # this field on the model isn't serialized
-                continue
-            value = getattr(self, mapping.model_key)
-            model_field = getattr(self.__class__, mapping.model_key)
-            if hasattr(value, 'remote_id'):
-                # this is probably a foreign key field, which we want to
-                # serialize as just the remote_id url reference
-                value = value.remote_id
-            elif isinstance(model_field, \
-                    (ManyToManyDescriptor, ReverseManyToOneDescriptor)):
-                value = [i.remote_id for i in value.all()]
-            elif isinstance(value, datetime):
-                value = value.isoformat()
-            elif isinstance(model_field, ImageFileDescriptor):
-                value = image_formatter(value)
-
-            # run the custom formatter function set in the model
-            formatted_value = mapping.activity_formatter(value)
-            if mapping.activity_key in fields and \
-                    isinstance(fields[mapping.activity_key], list):
-                # there can be two database fields that map to the same AP list
-                # this happens in status tags, which combines user and book tags
-                fields[mapping.activity_key] += formatted_value
-            else:
-                fields[mapping.activity_key] = formatted_value
-
-        if pure:
-            return self.pure_activity_serializer(
-                **fields
-            ).serialize()
-        return self.activity_serializer(
-            **fields
-        ).serialize()
+        return self.activity_serializer(**activity_json).serialize()
 
 
     def to_create_activity(self, user, pure=False):

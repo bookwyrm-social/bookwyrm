@@ -84,7 +84,8 @@ def register(request):
         }
         return TemplateResponse(request, 'login.html', data)
 
-    user = models.User.objects.create_user(username, email, password)
+    user = models.User.objects.create_user(
+        username, email, password, local=True)
     if invite:
         invite.times_used += 1
         invite.save()

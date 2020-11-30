@@ -13,7 +13,6 @@ from django.db.models.fields import DateTimeField
 from django.db.models.fields.files import ImageFileDescriptor
 from django.db.models.query_utils import DeferredAttribute
 from django.utils import timezone
-import requests
 
 from bookwyrm.connectors import ConnectorException, get_data, get_image
 
@@ -39,14 +38,6 @@ class Link:
 class Mention(Link):
     ''' a subtype of Link for mentioning an actor '''
     type: str = 'Mention'
-
-
-@dataclass
-class PublicKey:
-    ''' public key block '''
-    id: str
-    owner: str
-    publicKeyPem: str
 
 
 @dataclass
