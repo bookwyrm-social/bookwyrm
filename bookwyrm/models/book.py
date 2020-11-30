@@ -7,18 +7,18 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from bookwyrm.utils.fields import ArrayField
 
-from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from . import fields
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     # these identifiers apply to both works and editions
-    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
-    librarything_key = models.CharField(max_length=255, blank=True, null=True)
-    goodreads_key = models.CharField(max_length=255, blank=True, null=True)
+    openlibrary_key = fields.CharField(max_length=255, blank=True, null=True)
+    librarything_key = fields.CharField(max_length=255, blank=True, null=True)
+    goodreads_key = fields.CharField(max_length=255, blank=True, null=True)
 
     # info about where the data comes from and where/if to sync
     sync = models.BooleanField(default=True)
@@ -30,65 +30,30 @@ class Book(ActivitypubMixin, BookWyrmModel):
     # TODO: edit history
 
     # book/work metadata
-    title = models.CharField(max_length=255)
-    sort_title = models.CharField(max_length=255, blank=True, null=True)
-    subtitle = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    languages = ArrayField(
+    title = fields.CharField(max_length=255)
+    sort_title = fields.CharField(max_length=255, blank=True, null=True)
+    subtitle = fields.CharField(max_length=255, blank=True, null=True)
+    description = fields.TextField(blank=True, null=True)
+    languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    series = models.CharField(max_length=255, blank=True, null=True)
-    series_number = models.CharField(max_length=255, blank=True, null=True)
-    subjects = ArrayField(
+    series = fields.CharField(max_length=255, blank=True, null=True)
+    series_number = fields.CharField(max_length=255, blank=True, null=True)
+    subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    subject_places = ArrayField(
+    subject_places = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
     # TODO: include an annotation about the type of authorship (ie, translator)
-    authors = models.ManyToManyField('Author')
+    authors = fields.ManyToManyField('Author')
     # preformatted authorship string for search and easier display
     author_text = models.CharField(max_length=255, blank=True, null=True)
-    cover = models.ImageField(upload_to='covers/', blank=True, null=True)
-    first_published_date = models.DateTimeField(blank=True, null=True)
-    published_date = models.DateTimeField(blank=True, null=True)
+    cover = fields.ImageField(upload_to='covers/', blank=True, null=True)
+    first_published_date = fields.DateTimeField(blank=True, null=True)
+    published_date = fields.DateTimeField(blank=True, null=True)
+
     objects = InheritanceManager()
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-
-        ActivityMapping('authors', 'authors'),
-        ActivityMapping('firstPublishedDate', 'firstpublished_date'),
-        ActivityMapping('publishedDate', 'published_date'),
-
-        ActivityMapping('title', 'title'),
-        ActivityMapping('sortTitle', 'sort_title'),
-        ActivityMapping('subtitle', 'subtitle'),
-        ActivityMapping('description', 'description'),
-        ActivityMapping('languages', 'languages'),
-        ActivityMapping('series', 'series'),
-        ActivityMapping('seriesNumber', 'series_number'),
-        ActivityMapping('subjects', 'subjects'),
-        ActivityMapping('subjectPlaces', 'subject_places'),
-
-        ActivityMapping('openlibraryKey', 'openlibrary_key'),
-        ActivityMapping('librarythingKey', 'librarything_key'),
-        ActivityMapping('goodreadsKey', 'goodreads_key'),
-
-        ActivityMapping('work', 'parent_work'),
-        ActivityMapping('isbn10', 'isbn_10'),
-        ActivityMapping('isbn13', 'isbn_13'),
-        ActivityMapping('oclcNumber', 'oclc_number'),
-        ActivityMapping('asin', 'asin'),
-        ActivityMapping('pages', 'pages'),
-        ActivityMapping('physicalFormat', 'physical_format'),
-        ActivityMapping('publishers', 'publishers'),
-
-        ActivityMapping('lccn', 'lccn'),
-        ActivityMapping('editions', 'editions'),
-        ActivityMapping('defaultEdition', 'default_edition'),
-        ActivityMapping('cover', 'cover'),
-    ]
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
@@ -118,9 +83,9 @@ class Book(ActivitypubMixin, BookWyrmModel):
 class Work(OrderedCollectionPageMixin, Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
-    lccn = models.CharField(max_length=255, blank=True, null=True)
+    lccn = fields.CharField(max_length=255, blank=True, null=True)
     # this has to be nullable but should never be null
-    default_edition = models.ForeignKey(
+    default_edition = fields.ForeignKey(
         'Edition',
         on_delete=models.PROTECT,
         null=True
@@ -131,18 +96,19 @@ class Work(OrderedCollectionPageMixin, Book):
         return self.default_edition or self.editions.first()
 
     activity_serializer = activitypub.Work
+    serialize_reverse_fields = ['editions']
 
 
 class Edition(Book):
     ''' an edition of a book '''
     # these identifiers only apply to editions, not works
-    isbn_10 = models.CharField(max_length=255, blank=True, null=True)
-    isbn_13 = models.CharField(max_length=255, blank=True, null=True)
-    oclc_number = models.CharField(max_length=255, blank=True, null=True)
-    asin = models.CharField(max_length=255, blank=True, null=True)
-    pages = models.IntegerField(blank=True, null=True)
-    physical_format = models.CharField(max_length=255, blank=True, null=True)
-    publishers = ArrayField(
+    isbn_10 = fields.CharField(max_length=255, blank=True, null=True)
+    isbn_13 = fields.CharField(max_length=255, blank=True, null=True)
+    oclc_number = fields.CharField(max_length=255, blank=True, null=True)
+    asin = fields.CharField(max_length=255, blank=True, null=True)
+    pages = fields.IntegerField(blank=True, null=True)
+    physical_format = fields.CharField(max_length=255, blank=True, null=True)
+    publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
     shelves = models.ManyToManyField(
@@ -151,8 +117,9 @@ class Edition(Book):
         through='ShelfBook',
         through_fields=('book', 'shelf')
     )
-    parent_work = models.ForeignKey(
-        'Work', on_delete=models.PROTECT, null=True, related_name='editions')
+    parent_work = fields.ForeignKey(
+        'Work', on_delete=models.PROTECT, null=True,
+        related_name='editions', activitypub_field='work')
 
     activity_serializer = activitypub.Edition
     name_field = 'title'
@@ -165,7 +132,6 @@ class Edition(Book):
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
         return super().save(*args, **kwargs)
-
 
 
 def isbn_10_to_13(isbn_10):

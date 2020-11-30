@@ -3,6 +3,7 @@ import re
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
@@ -97,8 +98,6 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
     def to_activity(self, value):
-        print('HIIIII')
-        print(value)
         if not value:
             return None
         return value.to_activity()
@@ -116,7 +115,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
     def to_activity(self, value):
         if self.link_only:
             return '%s/followers' % value.instance.remote_id
-        return [i.remote_id for i in value]
+        return [i.remote_id for i in value.all()]
 
     def from_activity(self, activity_data):
         if self.link_only:
@@ -185,8 +184,14 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
     ''' activitypub-aware datetime field '''
     def to_activity(self, value):
+        if not value:
+            return None
         return value.isoformat()
 
+class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
+    ''' activitypub-aware array field '''
+    def to_activity(self, value):
+        return [str(i) for i in value]
 
 class CharField(ActivitypubFieldMixin, models.CharField):
     ''' activitypub-aware char field '''
