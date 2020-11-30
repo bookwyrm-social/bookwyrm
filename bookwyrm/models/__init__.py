@@ -14,7 +14,7 @@ from .attachment import Image
 
 from .tag import Tag, UserTag
 
-from .user import User
+from .user import User, KeyPair
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .federated_server import FederatedServer
 

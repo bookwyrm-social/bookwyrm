@@ -13,6 +13,7 @@ def copy_rsa_keys(app_registry, schema_editor):
     for user in users.objects.using(db_alias):
         if user.public_key or user.private_key:
             user.key_pair = keypair.objects.create(
+                remote_id='%s/#main-key' % user.remote_id,
                 private_key=user.private_key,
                 public_key=user.public_key
             )

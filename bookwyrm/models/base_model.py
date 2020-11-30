@@ -1,5 +1,4 @@
 ''' base model with default fields '''
-from datetime import datetime
 from base64 import b64encode
 from dataclasses import dataclass
 from typing import Callable
@@ -10,9 +9,6 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.db import models
-from django.db.models.fields.files import ImageFileDescriptor
-from django.db.models.fields.related_descriptors \
-        import ManyToManyDescriptor, ReverseManyToOneDescriptor
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -56,24 +52,34 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         instance.save()
 
 
+def get_field_name(field):
+    ''' model_field_name to activitypubFieldName '''
+    if field.activitypub_field:
+        return field.activitypub_field
+    name = field.name.split('.')[-1]
+    components = name.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
 
-    def to_activity(self, pure=False):
+    def to_activity(self):
         ''' convert from a model to an activity '''
         activity = {}
-        for field in self.__class__._meta.fields:
-            key, value = field.to_activity(getattr(self, field.name))
-            activity[key] = value
-        for related_object in self.__class__.meta.related_objects:
-            # TODO: check if it's serializable
-            related_model = related_object.related_model
-            key = related_object.name
-            related_values = getattr(self, key)
-            activity[key] = [i.remote_id for i in related_values]
+        for field in self.__class__._meta.get_fields():
+            if not hasattr(field, 'to_activity'):
+                continue
+            key = get_field_name(field)
+            value = field.to_activity(getattr(self, field.name))
+            if value is not None:
+                activity[key] = value
+        if hasattr(self, 'serialize_reverse_fields'):
+            for field_name in self.serialize_reverse_fields:
+                activity[field_name] = getattr(self, field_name).remote_id
 
-        return self.activity_serializer(**activity_json).serialize()
+        return self.activity_serializer(**activity).serialize()
 
 
     def to_create_activity(self, user, pure=False):

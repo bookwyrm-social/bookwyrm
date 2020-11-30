@@ -26,10 +26,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         'KeyPair',
         on_delete=models.CASCADE,
         blank=True, null=True,
+        activitypub_field='publicKey',
         related_name='owner'
     )
     inbox = fields.RemoteIdField(unique=True)
     shared_inbox = fields.RemoteIdField(
+        activitypub_field='sharedInbox',
         activitypub_wrapper='endpoints', null=True)
     federated_server = models.ForeignKey(
         'FederatedServer',
@@ -38,7 +40,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         blank=True,
     )
     outbox = fields.RemoteIdField(unique=True)
-    summary = fields.TextField(blank=True, null=True)
+    summary = fields.TextField(default='')
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
     localname = models.CharField(
@@ -47,7 +49,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         unique=True
     )
     # name is your display name, which you can change at will
-    name = fields.CharField(max_length=100, blank=True, null=True)
+    name = fields.CharField(max_length=100, default='')
     avatar = fields.ImageField(
         upload_to='avatars/', blank=True, null=True, activitypub_field='icon')
     followers = fields.ManyToManyField(
@@ -87,6 +89,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
 
     activity_serializer = activitypub.Person
+    serialize_related = []
 
     def to_outbox(self, **kwargs):
         ''' an ordered collection of statuses '''
@@ -159,6 +162,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         blank=True, null=True, activitypub_field='publicKeyPem')
 
     activity_serializer = activitypub.PublicKey
+    serialize_reverse_fields = ['owner']
 
     def get_remote_id(self):
         # self.owner is set by the OneToOneField on User
@@ -168,6 +172,14 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         ''' create a key pair '''
         self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
+
+    def to_activity(self):
+        ''' override default AP serializer to add context object
+            idk if this is the best way to go about this '''
+        activity_object = super().to_activity()
+        del activity_object['@context']
+        del activity_object['type']
+        return activity_object
 
 
 @receiver(models.signals.post_save, sender=User)

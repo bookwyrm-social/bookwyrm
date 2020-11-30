@@ -21,25 +21,22 @@ def validate_remote_id(value):
         )
 
 
-def to_camel_case(snake_string):
-    ''' model_field_name to activitypubFieldName '''
-    components = snake_string.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
-
-
 class ActivitypubFieldMixin:
     ''' make a database field serializable '''
     def __init__(self, *args, \
             activitypub_field=None, activitypub_wrapper=None, **kwargs):
-        self.activitypub_wrapper = activitypub_wrapper
-        self.activitypub_field = activitypub_field
+        if activitypub_wrapper:
+            self.activitypub_wrapper = activitypub_field
+            self.activitypub_field = activitypub_wrapper
+        else:
+            self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
 
     def to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
-        if self.activitypub_wrapper:
+        if hasattr(self, 'activitypub_wrapper'):
             value = {self.activitypub_wrapper: value}
-        return (self.activitypub_field, value)
+        return value
 
     def from_activity(self, activity_data):
         ''' formatter to convert activitypub into a model value '''
@@ -96,11 +93,9 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
 
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
-    def __init__(self, *args, **kwargs):
-        super(ActivitypubFieldMixin, self).__init__(*args, **kwargs)
-
     def to_activity(self, value):
-        return value.remote_id
+        return value.to_activity()
+
     def from_activity(self, activity_data):
         pass# TODO
 
@@ -113,7 +108,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def to_activity(self, value):
         if self.link_only:
-            return '%s/followers' % self.instance.remote_id
+            return '%s/followers' % value.instance.remote_id
         return [i.remote_id for i in value]
 
     def from_activity(self, activity_data):
