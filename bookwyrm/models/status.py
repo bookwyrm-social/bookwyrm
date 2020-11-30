@@ -89,7 +89,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         mentions = [u.remote_id for u in self.mention_users.all()]
         # this is a link to the followers list:
         followers = self.user.__class__._meta.get_field('followers')\
-                .to_activity(self.user.followers)
+                .field_to_activity(self.user.followers)
         if self.privacy == 'public':
             activity['to'] = [public]
             activity['cc'] = [followers] + mentions

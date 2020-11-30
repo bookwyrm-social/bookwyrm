@@ -66,7 +66,7 @@ def unfurl_related_field(related_field):
     if hasattr(related_field, 'all'):
         return [unfurl_related_field(i) for i in related_field.all()]
     if related_field.reverse_unfurl:
-        return related_field.to_activity()
+        return related_field.field_to_activity()
     return related_field.remote_id
 
 
@@ -79,10 +79,10 @@ class ActivitypubMixin:
         ''' convert from a model to an activity '''
         activity = {}
         for field in self.__class__._meta.get_fields():
-            if not hasattr(field, 'to_activity'):
+            if not hasattr(field, 'field_to_activity'):
                 continue
             key = get_field_name(field)
-            value = field.to_activity(getattr(self, field.name))
+            value = field.field_to_activity(getattr(self, field.name))
             if value is None:
                 continue
 

@@ -33,7 +33,7 @@ class ActivitypubFieldMixin:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
 
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
         if hasattr(self, 'activitypub_wrapper'):
             value = {self.activitypub_wrapper: value}
@@ -81,13 +81,13 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         del kwargs['error_messages']
         return name, path, args, kwargs
 
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         return value.split('@')[0]
 
 
 class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
     ''' activitypub-aware foreign key field '''
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         if not value:
             return None
         return value.remote_id
@@ -97,7 +97,7 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
 
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         if not value:
             return None
         return value.to_activity()
@@ -112,7 +112,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         if self.link_only:
             return '%s/followers' % value.instance.remote_id
         return [i.remote_id for i in value.all()]
@@ -129,7 +129,7 @@ class TagField(ManyToManyField):
         super().__init__(*args, **kwargs)
         self.activitypub_field = 'tag'
 
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         tags = []
         for item in value.all():
             activity_type = item.__class__.__name__
@@ -156,7 +156,7 @@ def image_serializer(value):
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     ''' activitypub-aware image field '''
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         return image_serializer(value)
 
     def from_activity(self, activity_data):
@@ -183,14 +183,14 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
     ''' activitypub-aware datetime field '''
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         if not value:
             return None
         return value.isoformat()
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
     ''' activitypub-aware array field '''
-    def to_activity(self, value):
+    def field_to_activity(self, value):
         return [str(i) for i in value]
 
 class CharField(ActivitypubFieldMixin, models.CharField):

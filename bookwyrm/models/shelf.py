@@ -3,17 +3,19 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import BookWyrmModel
 from .base_model import OrderedCollectionMixin, PrivacyLevels
+from . import fields
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
     ''' a list of books owned by a user '''
-    name = models.CharField(max_length=100)
+    name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='owner')
     editable = models.BooleanField(default=True)
-    privacy = models.CharField(
+    privacy = fields.CharField(
         max_length=255,
         default='public',
         choices=PrivacyLevels.choices
@@ -48,30 +50,20 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         ''' user/shelf unqiueness '''
         unique_together = ('user', 'identifier')
 
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('owner', 'user'),
-        ActivityMapping('name', 'name'),
-    ]
-
 
 class ShelfBook(BookWyrmModel):
     ''' many to many join table for books and shelves '''
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-    shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
-    added_by = models.ForeignKey(
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='object')
+    shelf = fields.ForeignKey(
+        'Shelf', on_delete=models.PROTECT, activitypub_field='target')
+    added_by = fields.ForeignKey(
         'User',
         blank=True,
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        activitypub_field='actor'
     )
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('actor', 'added_by'),
-        ActivityMapping('object', 'book'),
-        ActivityMapping('target', 'shelf'),
-    ]
 
     activity_serializer = activitypub.AddBook
 
