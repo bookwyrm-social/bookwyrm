@@ -96,6 +96,8 @@ def has_valid_signature(request, activity):
             raise ValueError("Wrong actor created signature.")
 
         remote_user = activitypub.resolve_remote_id(models.User, key_actor)
+        if not remote_user:
+            return False
 
         try:
             signature.verify(remote_user.key_pair.public_key, request)

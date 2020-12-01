@@ -25,20 +25,23 @@ def get_follow_data(follower, followee):
     ).serialize()
     return json.dumps(follow_activity)
 
-Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
+KeyPair = namedtuple('KeyPair', ('private_key', 'public_key'))
+Sender = namedtuple('Sender', ('remote_id', 'key_pair'))
 
 class Signature(TestCase):
     def setUp(self):
-        self.mouse = User.objects.create_user('mouse', 'mouse@example.com', '')
-        self.rat = User.objects.create_user('rat', 'rat@example.com', '')
-        self.cat = User.objects.create_user('cat', 'cat@example.com', '')
+        self.mouse = User.objects.create_user(
+            'mouse', 'mouse@example.com', '', local=True)
+        self.rat = User.objects.create_user(
+            'rat', 'rat@example.com', '', local=True)
+        self.cat = User.objects.create_user(
+            'cat', 'cat@example.com', '', local=True)
 
         private_key, public_key = create_key_pair()
 
         self.fake_remote = Sender(
             'http://localhost/user/remote',
-            private_key,
-            public_key,
+            KeyPair(private_key, public_key)
         )
 
     def send(self, signature, now, data, digest):
@@ -89,7 +92,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
-        data['publicKey']['publicKeyPem'] = self.fake_remote.public_key
+        data['publicKey']['publicKeyPem'] = self.fake_remote.key_pair.public_key
         del data['icon'] # Avoid having to return an avatar.
         responses.add(
             responses.GET,
@@ -116,7 +119,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
-        data['publicKey']['publicKeyPem'] = self.fake_remote.public_key
+        data['publicKey']['publicKeyPem'] = self.fake_remote.key_pair.public_key
         del data['icon'] # Avoid having to return an avatar.
         responses.add(
             responses.GET,
