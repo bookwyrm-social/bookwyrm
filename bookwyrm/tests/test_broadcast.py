@@ -6,13 +6,12 @@ from bookwyrm import models, broadcast
 
 class Book(TestCase):
     def setUp(self):
-        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
-            self.user = models.User.objects.create_user(
-                'mouse', 'mouse@mouse.mouse', 'mouseword')
+        self.user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
 
-            local_follower = models.User.objects.create_user(
-                'joe', 'joe@mouse.mouse', 'jeoword')
-            self.user.followers.add(local_follower)
+        local_follower = models.User.objects.create_user(
+            'joe', 'joe@mouse.mouse', 'jeoword', local=True)
+        self.user.followers.add(local_follower)
 
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             follower = models.User.objects.create_user(

@@ -98,15 +98,15 @@ def has_valid_signature(request, activity):
         remote_user = activitypub.resolve_remote_id(models.User, key_actor)
 
         try:
-            signature.verify(remote_user.public_key, request)
+            signature.verify(remote_user.key_pair.public_key, request)
         except ValueError:
-            old_key = remote_user.public_key
+            old_key = remote_user.key_pair.public_key
             activitypub.resolve_remote_id(
                 models.User, remote_user, refresh=True
             )
-            if remote_user.public_key == old_key:
+            if remote_user.key_pair.public_key == old_key:
                 raise # Key unchanged.
-            signature.verify(remote_user.public_key, request)
+            signature.verify(remote_user.key_pair.public_key, request)
     except (ValueError, requests.exceptions.HTTPError):
         return False
     return True

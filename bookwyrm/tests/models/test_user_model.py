@@ -19,8 +19,8 @@ class User(TestCase):
         self.assertEqual(self.user.shared_inbox, 'https://%s/inbox' % DOMAIN)
         self.assertEqual(self.user.inbox, '%s/inbox' % expected_id)
         self.assertEqual(self.user.outbox, '%s/outbox' % expected_id)
-        self.assertIsNotNone(self.user.private_key)
-        self.assertIsNotNone(self.user.public_key)
+        self.assertIsNotNone(self.user.key_pair.private_key)
+        self.assertIsNotNone(self.user.key_pair.public_key)
 
 
     def test_user_shelves(self):

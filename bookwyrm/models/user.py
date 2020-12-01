@@ -155,8 +155,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.inbox = '%s/inbox' % self.remote_id
         self.shared_inbox = 'https://%s/inbox' % DOMAIN
         self.outbox = '%s/outbox' % self.remote_id
-        if not self.key_pair:
-            self.key_pair = KeyPair.objects.create()
 
         return super().save(*args, **kwargs)
 
@@ -196,6 +194,9 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
     if not instance.local:
         set_remote_server.delay(instance.id)
+
+    instance.key_pair = KeyPair.objects.create(
+        remote_id='%s/#main-key' % instance.remote_id)
 
     shelves = [{
         'name': 'To Read',
