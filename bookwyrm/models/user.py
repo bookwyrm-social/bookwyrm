@@ -109,13 +109,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_following_activity(self, **kwargs):
         ''' activitypub following list '''
         remote_id = '%s/following' % self.remote_id
-        return self.to_ordered_collection(self.following, \
+        return self.to_ordered_collection(self.following.all(), \
                 remote_id=remote_id, id_only=True, **kwargs)
 
     def to_followers_activity(self, **kwargs):
         ''' activitypub followers list '''
         remote_id = '%s/followers' % self.remote_id
-        return self.to_ordered_collection(self.followers, \
+        return self.to_ordered_collection(self.followers.all(), \
                 remote_id=remote_id, id_only=True, **kwargs)
 
     def to_activity(self):

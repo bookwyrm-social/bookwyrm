@@ -36,7 +36,7 @@ class ActivitypubFieldMixin:
     def field_to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
         if hasattr(self, 'activitypub_wrapper'):
-            value = {self.activitypub_wrapper: value}
+            return {self.activitypub_wrapper: value}
         return value
 
     def from_activity(self, activity_data):
@@ -45,6 +45,14 @@ class ActivitypubFieldMixin:
         if self.activitypub_wrapper:
             value = value.get(self.activitypub_wrapper)
         return value
+
+    def get_activitypub_field(self):
+        ''' model_field_name to activitypubFieldName '''
+        if self.activitypub_field:
+            return self.activitypub_field
+        name = self.name.split('.')[-1]
+        components = name.split('_')
+        return components[0] + ''.join(x.title() for x in components[1:])
 
 
 class RemoteIdField(ActivitypubFieldMixin, models.CharField):
@@ -91,8 +99,6 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
         if not value:
             return None
         return value.remote_id
-    def from_activity(self, activity_data):
-        pass# TODO
 
 
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
@@ -101,9 +107,6 @@ class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
         if not value:
             return None
         return value.to_activity()
-
-    def from_activity(self, activity_data):
-        pass# TODO
 
 
 class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
@@ -122,6 +125,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             return None
         values = super().from_activity(activity_data)
         return values# TODO
+
 
 class TagField(ManyToManyField):
     ''' special case of many to many that uses Tags '''
@@ -145,7 +149,6 @@ class TagField(ManyToManyField):
 
 def image_serializer(value):
     ''' helper for serializing images '''
-    print(value)
     if value and hasattr(value, 'url'):
         url = value.url
     else:

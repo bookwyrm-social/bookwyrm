@@ -5,18 +5,14 @@ from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .base_model import OrderedCollectionMixin, BookWyrmModel, ActivityMapping
+from .base_model import OrderedCollectionMixin, BookWyrmModel
+from . import fields
 
 
 class Tag(OrderedCollectionMixin, BookWyrmModel):
     ''' freeform tags for books '''
-    name = models.CharField(max_length=100, unique=True)
+    name = fields.CharField(max_length=100, unique=True)
     identifier = models.CharField(max_length=100)
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('name', 'name'),
-    ]
 
     @classmethod
     def book_queryset(cls, identifier):
@@ -44,16 +40,12 @@ class Tag(OrderedCollectionMixin, BookWyrmModel):
 
 class UserTag(BookWyrmModel):
     ''' an instance of a tag on a book by a user '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-    tag = models.ForeignKey('Tag', on_delete=models.PROTECT)
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('actor', 'user'),
-        ActivityMapping('object', 'book'),
-        ActivityMapping('target', 'tag'),
-    ]
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='actor')
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='object')
+    tag = fields.ForeignKey(
+        'Tag', on_delete=models.PROTECT, activitypub_field='target')
 
     activity_serializer = activitypub.AddBook
 
