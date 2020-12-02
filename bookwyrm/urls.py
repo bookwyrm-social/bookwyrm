@@ -7,7 +7,7 @@ from bookwyrm import incoming, outgoing, views, settings, wellknown
 from bookwyrm import view_actions as actions
 
 username_regex = r'(?P<username>[\w\-_\.]+@[\w\-\_\.]+)'
-localname_regex = r'(?P<username>[\w\-_]+)'
+localname_regex = r'(?P<username>[\w\-_\.]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 
@@ -61,8 +61,8 @@ urlpatterns = [
     # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
-    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
+    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
     re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
