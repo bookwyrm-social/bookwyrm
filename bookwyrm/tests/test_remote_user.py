@@ -21,50 +21,7 @@ class RemoteUser(TestCase):
         self.user_data = json.loads(datafile.read_bytes())
 
 
-
     def test_get_remote_user(self):
         actor = 'https://example.com/users/rat'
         user = remote_user.get_or_create_remote_user(actor)
         self.assertEqual(user, self.remote_user)
-
-
-    def test_create_remote_user(self):
-        user = remote_user.create_remote_user(self.user_data)
-        self.assertFalse(user.local)
-        self.assertEqual(user.remote_id, 'https://example.com/user/mouse')
-        self.assertEqual(user.username, 'mouse@example.com')
-        self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
-        self.assertEqual(user.inbox, 'https://example.com/user/mouse/inbox')
-        self.assertEqual(user.outbox, 'https://example.com/user/mouse/outbox')
-        self.assertEqual(user.shared_inbox, 'https://example.com/inbox')
-        self.assertEqual(
-            user.public_key,
-            self.user_data['publicKey']['publicKeyPem']
-        )
-        self.assertEqual(user.local, False)
-        self.assertEqual(user.bookwyrm_user, True)
-        self.assertEqual(user.manually_approves_followers, False)
-
-
-    def test_create_remote_user_missing_inbox(self):
-        del self.user_data['inbox']
-        self.assertRaises(
-            TypeError,
-            remote_user.create_remote_user,
-            self.user_data
-        )
-
-
-    def test_create_remote_user_missing_outbox(self):
-        del self.user_data['outbox']
-        self.assertRaises(
-            TypeError,
-            remote_user.create_remote_user,
-            self.user_data
-        )
-
-
-    def test_create_remote_user_default_fields(self):
-        del self.user_data['manuallyApprovesFollowers']
-        user = remote_user.create_remote_user(self.user_data)
-        self.assertEqual(user.manually_approves_followers, False)

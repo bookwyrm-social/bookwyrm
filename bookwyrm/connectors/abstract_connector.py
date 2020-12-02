@@ -157,7 +157,7 @@ class AbstractConnector(ABC):
 
     def update_book_from_data(self, book, data, update_cover=True):
         ''' for creating a new book or syncing with data '''
-        book = update_from_mappings(book, data, self.book_mappings)
+        book = self.update_from_mappings(book, data, self.book_mappings)
 
         author_text = []
         for author in self.get_authors_from_data(data):
@@ -262,23 +262,23 @@ class AbstractConnector(ABC):
         ''' get more info on a book '''
 
 
-def update_from_mappings(obj, data, mappings):
-    ''' assign data to model with mappings '''
-    for mapping in mappings:
-        # check if this field is present in the data
-        value = data.get(mapping.remote_field)
-        if not value:
-            continue
+    def update_from_mappings(self, obj, data, mappings):
+        ''' assign data to model with mappings '''
+        for mapping in mappings:
+            # check if this field is present in the data
+            value = data.get(mapping.remote_field)
+            if not value:
+                continue
 
-        # extract the value in the right format
-        try:
-            value = mapping.formatter(value)
-        except:
-            continue
+            # extract the value in the right format
+            try:
+                value = mapping.formatter(value)
+            except:
+                continue
 
-        # assign the formatted value to the model
-        obj.__setattr__(mapping.local_field, value)
-    return obj
+            # assign the formatted value to the model
+            obj.__setattr__(mapping.local_field, value)
+        return obj
 
 
 def get_date(date_string):

@@ -12,7 +12,6 @@ from bookwyrm.utils.fields import ArrayField
 
 from .base_model import ActivityMapping, BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import image_attachments_formatter
 
 class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
@@ -61,49 +60,39 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' the activitypub serialization should be a list of author ids '''
         return [a.remote_id for a in self.authors.all()]
 
-    @property
-    def ap_parent_work(self):
-        ''' reference the work via local id not remote '''
-        return self.parent_work.remote_id
-
     activity_mappings = [
         ActivityMapping('id', 'remote_id'),
 
         ActivityMapping('authors', 'ap_authors'),
-        ActivityMapping('first_published_date', 'first_published_date'),
-        ActivityMapping('published_date', 'published_date'),
+        ActivityMapping('firstPublishedDate', 'firstpublished_date'),
+        ActivityMapping('publishedDate', 'published_date'),
 
         ActivityMapping('title', 'title'),
-        ActivityMapping('sort_title', 'sort_title'),
+        ActivityMapping('sortTitle', 'sort_title'),
         ActivityMapping('subtitle', 'subtitle'),
         ActivityMapping('description', 'description'),
         ActivityMapping('languages', 'languages'),
         ActivityMapping('series', 'series'),
-        ActivityMapping('series_number', 'series_number'),
+        ActivityMapping('seriesNumber', 'series_number'),
         ActivityMapping('subjects', 'subjects'),
-        ActivityMapping('subject_places', 'subject_places'),
+        ActivityMapping('subjectPlaces', 'subject_places'),
 
-        ActivityMapping('openlibrary_key', 'openlibrary_key'),
-        ActivityMapping('librarything_key', 'librarything_key'),
-        ActivityMapping('goodreads_key', 'goodreads_key'),
+        ActivityMapping('openlibraryKey', 'openlibrary_key'),
+        ActivityMapping('librarythingKey', 'librarything_key'),
+        ActivityMapping('goodreadsKey', 'goodreads_key'),
 
-        ActivityMapping('work', 'ap_parent_work'),
-        ActivityMapping('isbn_10', 'isbn_10'),
-        ActivityMapping('isbn_13', 'isbn_13'),
-        ActivityMapping('oclc_number', 'oclc_number'),
+        ActivityMapping('work', 'parent_work'),
+        ActivityMapping('isbn10', 'isbn_10'),
+        ActivityMapping('isbn13', 'isbn_13'),
+        ActivityMapping('oclcNumber', 'oclc_number'),
         ActivityMapping('asin', 'asin'),
         ActivityMapping('pages', 'pages'),
-        ActivityMapping('physical_format', 'physical_format'),
+        ActivityMapping('physicalFormat', 'physical_format'),
         ActivityMapping('publishers', 'publishers'),
 
         ActivityMapping('lccn', 'lccn'),
         ActivityMapping('editions', 'editions_path'),
-        ActivityMapping(
-            'attachment', 'cover',
-            # this expects an iterable and the field is just an image
-            lambda x: image_attachments_formatter([x]),
-            lambda x: activitypub.image_attachments_formatter(x)[0]
-        ),
+        ActivityMapping('cover', 'cover'),
     ]
 
     def save(self, *args, **kwargs):
@@ -190,7 +179,7 @@ class Edition(Book):
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 def isbn_10_to_13(isbn_10):
@@ -234,44 +223,3 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = 'X'
     return converted + str(checkdigit)
-
-
-class Author(ActivitypubMixin, BookWyrmModel):
-    origin_id = models.CharField(max_length=255, null=True)
-    ''' copy of an author from OL '''
-    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
-    sync = models.BooleanField(default=True)
-    last_sync_date = models.DateTimeField(default=timezone.now)
-    wikipedia_link = models.CharField(max_length=255, blank=True, null=True)
-    # idk probably other keys would be useful here?
-    born = models.DateTimeField(blank=True, null=True)
-    died = models.DateTimeField(blank=True, null=True)
-    name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
-    aliases = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
-    )
-    bio = models.TextField(null=True, blank=True)
-
-    @property
-    def display_name(self):
-        ''' Helper to return a displayable name'''
-        if self.name:
-            return self.name
-        # don't want to return a spurious space if all of these are None
-        if self.first_name and self.last_name:
-            return self.first_name + ' ' + self.last_name
-        return self.last_name or self.first_name
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('name', 'display_name'),
-        ActivityMapping('born', 'born'),
-        ActivityMapping('died', 'died'),
-        ActivityMapping('aliases', 'aliases'),
-        ActivityMapping('bio', 'bio'),
-        ActivityMapping('openlibrary_key', 'openlibrary_key'),
-        ActivityMapping('wikipedia_link', 'wikipedia_link'),
-    ]
-    activity_serializer = activitypub.Author

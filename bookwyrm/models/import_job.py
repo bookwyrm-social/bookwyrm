@@ -132,14 +132,16 @@ class ImportItem(models.Model):
     def date_added(self):
         ''' when the book was added to this dataset '''
         if self.data['Date Added']:
-            return dateutil.parser.parse(self.data['Date Added'])
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data['Date Added']))
         return None
 
     @property
     def date_read(self):
         ''' the date a book was completed '''
         if self.data['Date Read']:
-            return dateutil.parser.parse(self.data['Date Read'])
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data['Date Read']))
         return None
 
     @property

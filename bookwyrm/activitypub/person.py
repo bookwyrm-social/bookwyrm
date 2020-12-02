@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from .base_activity import ActivityObject, Image, PublicKey
+from .base_activity import ActivityObject, PublicKey
+from .image import Image
 
 @dataclass(init=False)
 class Person(ActivityObject):
@@ -15,7 +16,7 @@ class Person(ActivityObject):
     summary: str
     publicKey: PublicKey
     endpoints: Dict
-    icon: Image = field(default=lambda: {})
+    icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True

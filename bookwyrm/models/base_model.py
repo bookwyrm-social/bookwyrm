@@ -10,6 +10,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.db import models
+from django.db.models.fields.files import ImageFieldFile
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -59,27 +60,36 @@ class ActivitypubMixin:
     def to_activity(self, pure=False):
         ''' convert from a model to an activity '''
         if pure:
+            # works around bookwyrm-specific fields for vanilla AP services
             mappings = self.pure_activity_mappings
         else:
+            # may include custom fields that bookwyrm instances will understand
             mappings = self.activity_mappings
 
         fields = {}
         for mapping in mappings:
             if not hasattr(self, mapping.model_key) or not mapping.activity_key:
+                # this field on the model isn't serialized
                 continue
             value = getattr(self, mapping.model_key)
             if hasattr(value, 'remote_id'):
+                # this is probably a foreign key field, which we want to
+                # serialize as just the remote_id url reference
                 value = value.remote_id
-            if isinstance(value, datetime):
+            elif isinstance(value, datetime):
                 value = value.isoformat()
-            result = mapping.activity_formatter(value)
+            elif isinstance(value, ImageFieldFile):
+                value = image_formatter(value)
+
+            # run the custom formatter function set in the model
+            formatted_value = mapping.activity_formatter(value)
             if mapping.activity_key in fields and \
                     isinstance(fields[mapping.activity_key], list):
-                # there are two database fields that map to the same AP list
-                # this happens in status, which combines user and book tags
-                fields[mapping.activity_key] += result
+                # there can be two database fields that map to the same AP list
+                # this happens in status tags, which combines user and book tags
+                fields[mapping.activity_key] += formatted_value
             else:
-                fields[mapping.activity_key] = result
+                fields[mapping.activity_key] = formatted_value
 
         if pure:
             return self.pure_activity_serializer(
@@ -263,12 +273,10 @@ def tag_formatter(items, name_field, activity_type):
     return tags
 
 
-def image_formatter(image, default_path=None):
+def image_formatter(image):
     ''' convert images into activitypub json '''
-    if image:
+    if image and hasattr(image, 'url'):
         url = image.url
-    elif default_path:
-        url = default_path
     else:
         return None
     url = 'https://%s%s' % (DOMAIN, url)

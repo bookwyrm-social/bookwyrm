@@ -2,7 +2,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, List
 
-from .base_activity import ActivityObject, Image, Link
+from .base_activity import ActivityObject, Link
+from .image import Image
 
 @dataclass(init=False)
 class Tombstone(ActivityObject):
@@ -24,8 +25,8 @@ class Note(ActivityObject):
     cc: List[str]
     content: str
     replies: Dict
-    tag: List[Link] = field(default=lambda: [])
-    attachment: List[Image] = field(default=lambda: [])
+    tag: List[Link] = field(default_factory=lambda: [])
+    attachment: List[Image] = field(default_factory=lambda: [])
     sensitive: bool = False
     type: str = 'Note'
 

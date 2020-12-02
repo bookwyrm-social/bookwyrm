@@ -1,5 +1,5 @@
 ''' Handle user activity '''
-from datetime import datetime
+from django.utils import timezone
 
 from bookwyrm import activitypub, books_manager, models
 from bookwyrm.sanitize_html import InputHtmlParser
@@ -8,7 +8,7 @@ from bookwyrm.sanitize_html import InputHtmlParser
 def delete_status(status):
     ''' replace the status with a tombstone '''
     status.deleted = True
-    status.deleted_date = datetime.now()
+    status.deleted_date = timezone.now()
     status.save()
 
 
