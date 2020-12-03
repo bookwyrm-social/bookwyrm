@@ -25,3 +25,8 @@ from .site import SiteSettings, SiteInvite, PasswordReset
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[1].activity_serializer.__name__: c[1] \
     for c in cls_members if hasattr(c[1], 'activity_serializer')}
+
+def to_activity(activity_json):
+    ''' link up models and activities '''
+    activity_type = activity_json.get('type')
+    return activity_models[activity_type].to_activity(activity_json)

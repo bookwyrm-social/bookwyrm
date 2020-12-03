@@ -2,11 +2,14 @@
 import re
 from uuid import uuid4
 
+import dateutil.parser
+from dateutil.parser import ParserError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
@@ -39,10 +42,9 @@ class ActivitypubFieldMixin:
             return {self.activitypub_wrapper: value}
         return value
 
-    def from_activity(self, activity_data):
+    def field_from_activity(self, value):
         ''' formatter to convert activitypub into a model value '''
-        value = activity_data.get(self.activitypub_field)
-        if self.activitypub_wrapper:
+        if hasattr(self, 'activitypub_wrapper'):
             value = value.get(self.activitypub_wrapper)
         return value
 
@@ -100,6 +102,16 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
             return None
         return value.remote_id
 
+    def field_from_activity(self, value):
+        if isinstance(value, dict) and value.get('id'):
+            # if the AP field is a serialized object (as in Add)
+            remote_id = value['id']
+        else:
+            # if the field is just a remote_id (as in every other case)
+            remote_id = value
+
+        return resolve_remote_id(remote_id)
+
 
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
@@ -120,10 +132,10 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             return '%s/followers' % value.instance.remote_id
         return [i.remote_id for i in value.all()]
 
-    def from_activity(self, activity_data):
+    def field_from_activity(self, valueactivity_data):
         if self.link_only:
             return None
-        values = super().from_activity(activity_data)
+        values = super().field_from_activity(values)
         return values# TODO
 
 
@@ -162,8 +174,8 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
     def field_to_activity(self, value):
         return image_serializer(value)
 
-    def from_activity(self, activity_data):
-        image_slug = super().from_activity(activity_data)
+    def field_from_activity(self, value):
+        image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
         if isinstance(image_slug, dict):
@@ -190,6 +202,16 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
         if not value:
             return None
         return value.isoformat()
+
+    def field_from_activity(self, value):
+        try:
+            date_value = dateutil.parser.parse(value)
+            try:
+                return timezone.make_aware(date_value)
+            except ValueError:
+                return date_value
+        except (ParserError, TypeError):
+            return None
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
     ''' activitypub-aware array field '''

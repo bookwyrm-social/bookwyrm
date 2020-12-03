@@ -3,6 +3,17 @@
 import bookwyrm.models.fields
 from django.db import migrations
 
+def update_notnull(app_registry, schema_editor):
+    db_alias = schema_editor.connection.alias
+    users = app_registry.get_model('bookwyrm', 'User')
+    for user in users.objects.using(db_alias):
+        if user.name and user.summary:
+            continue
+        if not user.summary:
+            user.summary = ''
+        if not user.name:
+            user.name = ''
+        user.save()
 
 class Migration(migrations.Migration):
 
@@ -11,6 +22,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(update_notnull),
         migrations.AlterField(
             model_name='user',
             name='name',

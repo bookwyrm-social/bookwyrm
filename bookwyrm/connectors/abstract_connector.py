@@ -8,6 +8,7 @@ from django.db import transaction
 from dateutil import parser
 import requests
 from requests import HTTPError
+from requests.exceptions import SSLError
 
 from bookwyrm import models
 
@@ -322,7 +323,7 @@ def get_image(url):
     ''' wrapper for requesting an image '''
     try:
         resp = requests.get(url)
-    except RequestError:
+    except (RequestError, SSLError):
         return None
     if not resp.ok:
         return None

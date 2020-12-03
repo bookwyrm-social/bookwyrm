@@ -174,7 +174,8 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' create a key pair '''
-        self.private_key, self.public_key = create_key_pair()
+        if not self.public_key:
+            self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
 
     def to_activity(self):
@@ -194,6 +195,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
     if not instance.local:
         set_remote_server.delay(instance.id)
+        return
 
     instance.key_pair = KeyPair.objects.create(
         remote_id='%s/#main-key' % instance.remote_id)

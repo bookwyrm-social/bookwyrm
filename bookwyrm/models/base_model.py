@@ -80,7 +80,9 @@ class ActivitypubMixin:
                 activity[key] += value
             else:
                 activity[key] = value
+
         if hasattr(self, 'serialize_reverse_fields'):
+            # for example, editions of a work
             for field_name in self.serialize_reverse_fields:
                 related_field = getattr(self, field_name)
                 activity[field_name] = unfurl_related_field(related_field)

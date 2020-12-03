@@ -1,20 +1,13 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
-from uuid import uuid4
 
-import dateutil.parser
-from dateutil.parser import ParserError
-from django.core.files.base import ContentFile
 from django.db.models.fields.related_descriptors \
     import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
         ReverseManyToOneDescriptor
-from django.db.models.fields import DateTimeField
 from django.db.models.fields.files import ImageFileDescriptor
-from django.db.models.query_utils import DeferredAttribute
-from django.utils import timezone
 
-from bookwyrm.connectors import ConnectorException, get_data, get_image
+from bookwyrm.connectors import ConnectorException, get_data
 
 class ActivitySerializerError(ValueError):
     ''' routine problems serializing activitypub json '''
@@ -84,35 +77,28 @@ class ActivityObject:
         # check for an existing instance, if we're not updating a known obj
         if not instance:
             instance = find_existing_by_remote_id(model, self.id)
+	# TODO: deduplicate books by identifiers
 
-        model_fields = [m.name for m in model._meta.get_fields()]
         mapped_fields = {}
         many_to_many_fields = {}
         one_to_many_fields = {}
         image_fields = {}
 
-        for mapping in model.activity_mappings:
-            if mapping.model_key not in model_fields:
+        for field in model._meta.get_fields():
+            if not hasattr(field, 'field_to_activity'):
                 continue
+            activitypub_field = field.get_activitypub_field()
+            value = field.field_from_activity(getattr(self, activitypub_field))
+            if value is None:
+                continue
+
             # value is None if there's a default that isn't supplied
             # in the activity but is supplied in the formatter
-            value = None
-            if mapping.activity_key:
-                value = getattr(self, mapping.activity_key)
-            model_field = getattr(model, mapping.model_key)
+            value = getattr(self, activitypub_field)
+            model_field = getattr(model, field.name)
 
-            formatted_value = mapping.model_formatter(value)
-            if isinstance(model_field, DeferredAttribute) and \
-                    isinstance(model_field.field, DateTimeField):
-                try:
-                    date_value = dateutil.parser.parse(formatted_value)
-                    try:
-                        formatted_value = timezone.make_aware(date_value)
-                    except ValueError:
-                        formatted_value = date_value
-                except (ParserError, TypeError):
-                    formatted_value = None
-            elif isinstance(model_field, ForwardManyToOneDescriptor):
+            formatted_value = field.field_from_activity(value)
+            if isinstance(model_field, ForwardManyToOneDescriptor):
                 if not formatted_value:
                     continue
                 # foreign key remote id reolver (work on Edition, for example)
@@ -120,25 +106,30 @@ class ActivityObject:
                 if isinstance(formatted_value, dict) and \
                         formatted_value.get('id'):
                     # if the AP field is a serialized object (as in Add)
-                    remote_id = formatted_value['id']
+                    # or PublicKey
+                    related_model = field.related_model
+                    related_activity = related_model.activity_serializer
+                    mapped_fields[field.name] = related_activity(
+                        **formatted_value
+                    ).to_model(related_model)
                 else:
                     # if the field is just a remote_id (as in every other case)
                     remote_id = formatted_value
-                reference = resolve_remote_id(fk_model, remote_id)
-                mapped_fields[mapping.model_key] = reference
+                    reference = resolve_remote_id(fk_model, remote_id)
+                    mapped_fields[field.name] = reference
             elif isinstance(model_field, ManyToManyDescriptor):
                 # status mentions book/users
-                many_to_many_fields[mapping.model_key] = formatted_value
+                many_to_many_fields[field.name] = formatted_value
             elif isinstance(model_field, ReverseManyToOneDescriptor):
                 # attachments on Status, for example
-                one_to_many_fields[mapping.model_key] = formatted_value
+                one_to_many_fields[field.name] = formatted_value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                image_fields[mapping.model_key] = formatted_value
+                image_fields[field.name] = formatted_value
             else:
                 if formatted_value == MISSING:
                     formatted_value = None
-                mapped_fields[mapping.model_key] = formatted_value
+                mapped_fields[field.name] = formatted_value
 
         if instance:
             # updating an existing model instance
@@ -154,7 +145,6 @@ class ActivityObject:
 
         # add images
         for (model_key, value) in image_fields.items():
-            formatted_value = image_formatter(value)
             if not formatted_value:
                 continue
             getattr(instance, model_key).save(*formatted_value, save=True)
@@ -243,25 +233,3 @@ def resolve_remote_id(model, remote_id, refresh=False):
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model, instance=result)
-
-
-def image_formatter(image_slug):
-    ''' helper function to load images and format them for a model '''
-    # when it's an inline image (User avatar/icon, Book cover), it's a json
-    # blob, but when it's an attached image, it's just a url
-    if isinstance(image_slug, dict):
-        url = image_slug.get('url')
-    elif isinstance(image_slug, str):
-        url = image_slug
-    else:
-        return None
-    if not url:
-        return None
-
-    response = get_image(url)
-    if not response:
-        return None
-
-    image_name = str(uuid4()) + '.' + url.split('.')[-1]
-    image_content = ContentFile(response.content)
-    return [image_name, image_content]
