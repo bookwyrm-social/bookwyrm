@@ -6,15 +6,17 @@ from bookwyrm import models, incoming
 
 class IncomingFollow(TestCase):
     def setUp(self):
-        self.remote_user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'ratword',
-            local=False,
-            remote_id='https://example.com/users/rat',
-            inbox='https://example.com/users/rat/inbox',
-            outbox='https://example.com/users/rat/outbox',
-        )
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            with patch('bookwyrm.models.user.get_remote_reviews.delay'):
+                self.remote_user = models.User.objects.create_user(
+                    'rat', 'rat@rat.com', 'ratword',
+                    local=False,
+                    remote_id='https://example.com/users/rat',
+                    inbox='https://example.com/users/rat/inbox',
+                    outbox='https://example.com/users/rat/outbox',
+                )
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword')
+            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
         self.local_user.remote_id = 'http://local.com/user/mouse'
         self.local_user.save()
 
