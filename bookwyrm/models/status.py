@@ -145,7 +145,8 @@ class GeneratedNote(Status):
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''
-    book = fields.ForeignKey('Edition', on_delete=models.PROTECT)
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
     @property
     def pure_content(self):
@@ -160,7 +161,8 @@ class Comment(Status):
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
     quote = fields.TextField()
-    book = fields.ForeignKey('Edition', on_delete=models.PROTECT)
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
     @property
     def pure_content(self):
@@ -179,7 +181,8 @@ class Quotation(Status):
 class Review(Status):
     ''' a book review '''
     name = fields.CharField(max_length=255, null=True)
-    book = fields.ForeignKey('Edition', on_delete=models.PROTECT)
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
     rating = fields.IntegerField(
         default=None,
         null=True,
