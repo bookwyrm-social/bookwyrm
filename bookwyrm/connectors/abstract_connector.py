@@ -315,7 +315,11 @@ def get_data(url):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
-    data = resp.json()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
     return data
 
 
