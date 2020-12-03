@@ -102,16 +102,6 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
             return None
         return value.remote_id
 
-    def field_from_activity(self, value):
-        if isinstance(value, dict) and value.get('id'):
-            # if the AP field is a serialized object (as in Add)
-            remote_id = value['id']
-        else:
-            # if the field is just a remote_id (as in every other case)
-            remote_id = value
-
-        return resolve_remote_id(remote_id)
-
 
 class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
@@ -131,12 +121,6 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         if self.link_only:
             return '%s/followers' % value.instance.remote_id
         return [i.remote_id for i in value.all()]
-
-    def field_from_activity(self, valueactivity_data):
-        if self.link_only:
-            return None
-        values = super().field_from_activity(values)
-        return values# TODO
 
 
 class TagField(ManyToManyField):
