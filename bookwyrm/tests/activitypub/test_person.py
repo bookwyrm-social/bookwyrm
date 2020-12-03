@@ -2,14 +2,11 @@ import json
 import pathlib
 from django.test import TestCase
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub
 
 
 class Person(TestCase):
     def setUp(self):
-        self.user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'ratword',
-        )
         datafile = pathlib.Path(__file__).parent.joinpath(
             '../data/ap_user.json'
         )
