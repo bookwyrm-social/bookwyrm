@@ -199,6 +199,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
     instance.key_pair = KeyPair.objects.create(
         remote_id='%s/#main-key' % instance.remote_id)
+    instance.save()
 
     shelves = [{
         'name': 'To Read',

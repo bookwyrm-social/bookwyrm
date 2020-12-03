@@ -138,10 +138,10 @@ class Signature(TestCase):
         )
 
         # Second and subsequent fetches get a different key:
-        new_private_key, new_public_key = create_key_pair()
+        key_pair = KeyPair(*create_key_pair())
         new_sender = Sender(
-            self.fake_remote.remote_id, new_private_key, new_public_key)
-        data['publicKey']['publicKeyPem'] = new_public_key
+            self.fake_remote.remote_id, key_pair)
+        data['publicKey']['publicKeyPem'] = key_pair.public_key
         responses.add(
             responses.GET,
             self.fake_remote.remote_id,
