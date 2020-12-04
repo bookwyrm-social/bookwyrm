@@ -89,7 +89,7 @@ class Signature:
 
     def verify(self, public_key, request):
         ''' verify rsa signature '''
-        if False:#http_date_age(request.headers['date']) > MAX_SIGNATURE_AGE:
+        if http_date_age(request.headers['date']) > MAX_SIGNATURE_AGE:
             raise ValueError(
                 "Request too old: %s" % (request.headers['date'],))
         public_key = RSA.import_key(public_key)
