@@ -151,8 +151,9 @@ class ActivityObject:
 
         # add many to many fields
         for (model_key, values) in many_to_many_fields.items():
-            # mention books, mention users
-            if values == MISSING:
+            # mention books, mention users, followers
+            if values == MISSING or not isinstance(values, list):
+                # user followers is a link to an orderedcollection, skip it
                 continue
             model_field = getattr(instance, model_key)
             model = model_field.model
