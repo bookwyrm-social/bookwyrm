@@ -142,10 +142,10 @@ class ActivitypubMixin:
     def to_undo_activity(self, user):
         ''' undo an action '''
         return activitypub.Undo(
-            id='%s#undo' % user.remote_id,
+            id='%s#undo' % self.remote_id,
             actor=user.remote_id,
             object=self.to_activity()
-        )
+        ).serialize()
 
 
 class OrderedCollectionPageMixin(ActivitypubMixin):
