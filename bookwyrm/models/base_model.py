@@ -87,6 +87,8 @@ class ActivitypubMixin:
                 related_field = getattr(self, field_name)
                 activity[field_name] = unfurl_related_field(related_field)
 
+        if not activity.get('id'):
+            activity['id'] = self.get_remote_id()
         return self.activity_serializer(**activity).serialize()
 
 
