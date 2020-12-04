@@ -44,11 +44,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     )
     objects = InheritanceManager()
 
-    @property
-    def ap_replies(self):
-        ''' structured replies block '''
-        return self.to_replies()
-
     activity_serializer = activitypub.Note
     serialize_reverse_fields = ['attachments']
 

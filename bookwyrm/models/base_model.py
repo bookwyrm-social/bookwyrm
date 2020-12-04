@@ -96,7 +96,7 @@ class ActivitypubMixin:
         ''' returns the object wrapped in a Create activity '''
         activity_object = self.to_activity()
 
-        signer = pkcs1_15.new(RSA.import_key(user.private_key))
+        signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
         content = activity_object['content']
         signed_message = signer.sign(SHA256.new(content.encode('utf8')))
         create_id = self.remote_id + '/activity'
