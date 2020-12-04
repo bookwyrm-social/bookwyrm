@@ -102,7 +102,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         queryset = Status.objects.filter(
             user=self,
             deleted=False,
-        ).select_subclasses()
+        ).select_subclasses().order_by('-published_date')
         return self.to_ordered_collection(queryset, \
                 remote_id=self.outbox, **kwargs)
 
