@@ -1,5 +1,6 @@
 ''' testing models '''
 from collections import namedtuple
+import re
 from django.test import TestCase
 
 from bookwyrm import models
@@ -62,6 +63,7 @@ class BaseModel(TestCase):
             'https://example.com/status/1/activity'
         )
         self.assertEqual(activity['actor'], user.remote_id)
+        self.assertEqual(activity['type'], 'Create')
         self.assertEqual(activity['to'], 'to field')
         self.assertEqual(activity['cc'], 'cc field')
         self.assertEqual(activity['object'], object_activity)
@@ -69,3 +71,50 @@ class BaseModel(TestCase):
             activity['signature'].creator,
             '%s#main-key' % user.remote_id
         )
+
+    def test_to_delete_activity(self):
+        user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+
+        MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
+        mock_self = MockSelf(
+            'https://example.com/status/1',
+            lambda *args: {}
+        )
+        activity = ActivitypubMixin.to_delete_activity(mock_self, user)
+        self.assertEqual(
+            activity['id'],
+            'https://example.com/status/1/activity'
+        )
+        self.assertEqual(activity['actor'], user.remote_id)
+        self.assertEqual(activity['type'], 'Delete')
+        self.assertEqual(
+            activity['to'],
+            ['%s/followers' % user.remote_id])
+        self.assertEqual(
+            activity['cc'],
+            ['https://www.w3.org/ns/activitystreams#Public'])
+
+    def test_to_update_activity(self):
+        user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+
+        MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
+        mock_self = MockSelf(
+            'https://example.com/status/1',
+            lambda *args: {}
+        )
+        activity = ActivitypubMixin.to_update_activity(mock_self, user)
+        print(activity['id'])
+        self.assertIsNotNone(
+            re.match(
+                r'^https:\/\/example\.com\/status\/1#update\/.*',
+                activity['id']
+            )
+        )
+        self.assertEqual(activity['actor'], user.remote_id)
+        self.assertEqual(activity['type'], 'Update')
+        self.assertEqual(
+            activity['to'],
+            ['https://www.w3.org/ns/activitystreams#Public'])
+        self.assertEqual(activity['object'], {})

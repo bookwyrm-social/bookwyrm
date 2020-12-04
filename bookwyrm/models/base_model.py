@@ -130,7 +130,7 @@ class ActivitypubMixin:
 
     def to_update_activity(self, user):
         ''' wrapper for Updates to an activity '''
-        activity_id = '%s#update/%s' % (user.remote_id, uuid4())
+        activity_id = '%s#update/%s' % (self.remote_id, uuid4())
         return activitypub.Update(
             id=activity_id,
             actor=user.remote_id,
