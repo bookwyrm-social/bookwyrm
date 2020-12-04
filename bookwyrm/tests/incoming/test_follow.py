@@ -75,24 +75,3 @@ class IncomingFollow(TestCase):
         # the follow relationship should not exist
         follow = models.UserFollows.objects.all()
         self.assertEqual(list(follow), [])
-
-
-    def test_nonexistent_user_follow(self):
-        activity = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": "https://example.com/users/rat/follows/123",
-            "type": "Follow",
-            "actor": "https://example.com/users/rat",
-            "object": "http://local.com/user/nonexistent-user"
-        }
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay') as _:
-            incoming.handle_follow(activity)
-
-        # do nothing
-        notifications = models.Notification.objects.all()
-        self.assertEqual(list(notifications), [])
-        requests = models.UserFollowRequest.objects.all()
-        self.assertEqual(list(requests), [])
-        follows = models.UserFollows.objects.all()
-        self.assertEqual(list(follows), [])
