@@ -1,8 +1,10 @@
 ''' testing models '''
 from collections import namedtuple
+from dataclasses import dataclass
 import re
 from django.test import TestCase
 
+from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm import models
 from bookwyrm.models import base_model
 from bookwyrm.models.base_model import ActivitypubMixin
@@ -135,3 +137,21 @@ class BaseModel(TestCase):
         self.assertEqual(activity['actor'], user.remote_id)
         self.assertEqual(activity['type'], 'Undo')
         self.assertEqual(activity['object'], {})
+
+
+    def test_to_activity(self):
+        @dataclass(init=False)
+        class TestActivity(ActivityObject):
+            type: str = 'Test'
+
+        class TestModel(ActivitypubMixin, base_model.BookWyrmModel):
+            pass
+
+        instance = TestModel()
+        instance.remote_id = 'https://www.example.com/test'
+        instance.activity_serializer = TestActivity
+
+        activity = instance.to_activity()
+        self.assertIsInstance(activity, dict)
+        self.assertEqual(activity['id'], 'https://www.example.com/test')
+        self.assertEqual(activity['type'], 'Test')
