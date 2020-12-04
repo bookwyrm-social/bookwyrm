@@ -8,7 +8,7 @@ from bookwyrm.settings import DOMAIN
 class User(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
 
     def test_computed_fields(self):
         ''' username instead of id here '''
@@ -53,7 +53,6 @@ class User(TestCase):
         self.assertEqual(activity['name'], self.user.name)
         self.assertEqual(activity['inbox'], self.user.inbox)
         self.assertEqual(activity['outbox'], self.user.outbox)
-        self.assertEqual(activity['followers'], self.user.ap_followers)
         self.assertEqual(activity['bookwyrmUser'], True)
         self.assertEqual(activity['discoverable'], True)
         self.assertEqual(activity['type'], 'Person')

@@ -24,7 +24,7 @@ class Book(TestCase):
     def test_remote_id(self):
         remote_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
         self.assertEqual(self.work.get_remote_id(), remote_id)
-        self.assertEqual(self.work.remote_id, 'https://example.com/book/1')
+        self.assertEqual(self.work.remote_id, remote_id)
 
     def test_create_book(self):
         ''' you shouldn't be able to create Books (only editions and works) '''
@@ -59,7 +59,7 @@ class Book(TestCase):
 class Shelf(TestCase):
     def setUp(self):
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf', user=user)
 

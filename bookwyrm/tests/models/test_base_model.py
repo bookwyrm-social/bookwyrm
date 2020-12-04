@@ -15,7 +15,7 @@ class BaseModel(TestCase):
 
     def test_remote_id_with_user(self):
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword')
+            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
         instance = BookWyrmModel()
         instance.user = user
         instance.id = 1
