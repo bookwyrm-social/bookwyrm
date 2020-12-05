@@ -103,7 +103,7 @@ def has_valid_signature(request, activity):
             signature.verify(remote_user.key_pair.public_key, request)
         except ValueError:
             old_key = remote_user.key_pair.public_key
-            activitypub.resolve_remote_id(
+            remote_user = activitypub.resolve_remote_id(
                 models.User, remote_user.remote_id, refresh=True
             )
             if remote_user.key_pair.public_key == old_key:

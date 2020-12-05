@@ -111,7 +111,7 @@ class Signature(TestCase):
             status=200
         )
 
-        with patch('bookwyrm.models.user.get_remote_reviews.delay') as _:
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
             response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
 
@@ -131,17 +131,10 @@ class Signature(TestCase):
             responses.GET,
             'https://localhost/.well-known/nodeinfo',
             status=404)
-        responses.add(
-            responses.GET,
-            'https://example.com/user/mouse/outbox?page=true',
-            json={'orderedItems': []},
-            status=200
-        )
 
         # Second and subsequent fetches get a different key:
         key_pair = KeyPair(*create_key_pair())
-        new_sender = Sender(
-            self.fake_remote.remote_id, key_pair)
+        new_sender = Sender(self.fake_remote.remote_id, key_pair)
         data['publicKey']['publicKeyPem'] = key_pair.public_key
         responses.add(
             responses.GET,
@@ -149,7 +142,7 @@ class Signature(TestCase):
             json=data,
             status=200)
 
-        with patch('bookwyrm.models.user.get_remote_reviews.delay') as _:
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
             # Key correct:
             response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
@@ -181,7 +174,7 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_changed_data(self):
         '''Message data must match the digest header.'''
-        with patch('bookwyrm.activitypub.resolve_remote_id') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 send_data=get_follow_data(self.mouse, self.cat))
@@ -189,7 +182,7 @@ class Signature(TestCase):
 
     @pytest.mark.integration
     def test_invalid_digest(self):
-        with patch('bookwyrm.activitypub.resolve_remote_id') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 digest='SHA-256=AAAAAAAAAAAAAAAAAA')
@@ -198,7 +191,7 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_old_message(self):
         '''Old messages should be rejected to prevent replay attacks.'''
-        with patch('bookwyrm.activitypub.resolve_remote_id') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 date=http_date(time.time() - 301)

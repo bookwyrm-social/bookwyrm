@@ -106,7 +106,7 @@ class ActivityObject:
                 if isinstance(formatted_value, dict) and \
                         formatted_value.get('id'):
                     # if the AP field is a serialized object (as in Add)
-                    # or PublicKey
+                    # or KeyPair (even though it's OneToOne)
                     related_model = field.related_model
                     related_activity = related_model.activity_serializer
                     mapped_fields[field.name] = related_activity(
@@ -130,6 +130,7 @@ class ActivityObject:
                 if formatted_value == MISSING:
                     formatted_value = None
                 mapped_fields[field.name] = formatted_value
+
 
         if instance:
             # updating an existing model instance
@@ -178,13 +179,13 @@ class ActivityObject:
             if values == MISSING:
                 continue
             model_field = getattr(instance, model_key)
-            model = model_field.model
+            related_model = model_field.model
             for item in values:
                 if isinstance(item, str):
-                    item = resolve_remote_id(model, item)
+                    item = resolve_remote_id(related_model, item)
                 else:
-                    item = model.activity_serializer(**item)
-                    item = item.to_model(model)
+                    item = related_model.activity_serializer(**item)
+                    item = item.to_model(related_model)
                 field_name = instance.__class__.__name__.lower()
                 setattr(item, field_name, instance)
                 item.save()
