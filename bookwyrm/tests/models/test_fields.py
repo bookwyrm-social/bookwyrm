@@ -1,4 +1,6 @@
 ''' testing models '''
+from collections import namedtuple
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.test import TestCase
@@ -73,5 +75,6 @@ class ActivitypubFields(TestCase):
 
     def test_foreign_key(self):
         instance = fields.ForeignKey('User', on_delete=models.CASCADE)
-        item = namedtuple('Serializable', ('to_activity'))(lambda: {'a': 'b'})
-        self.assertEqual(instance.field_to_activity(item), {'a': 'b'})
+        Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
+        item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
+        self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
