@@ -119,7 +119,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_to_activity(self, value):
         if self.link_only:
-            return '%s/followers' % value.instance.remote_id
+            return '%s/%s' % (value.instance.remote_id, self.name)
         return [i.remote_id for i in value.all()]
 
 

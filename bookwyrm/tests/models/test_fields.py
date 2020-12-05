@@ -78,3 +78,28 @@ class ActivitypubFields(TestCase):
         Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
         item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
+
+    def test_one_to_one_field(self):
+        instance = fields.OneToOneField('User', on_delete=models.CASCADE)
+        Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
+        item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
+        self.assertEqual(instance.field_to_activity(item), {'a': 'b'})
+
+    def test_many_to_many_field(self):
+        instance = fields.ManyToManyField('User')
+
+        Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
+        Queryset = namedtuple('Queryset', ('all', 'instance'))
+        item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
+        another_item = Serializable(lambda: {}, 'example.com')
+
+        items = Queryset(lambda: [item], another_item)
+
+        self.assertEqual(instance.field_to_activity(items), ['https://e.b/c'])
+
+        instance = fields.ManyToManyField('User', link_only=True)
+        instance.name = 'snake_case'
+        self.assertEqual(
+            instance.field_to_activity(items),
+            'example.com/snake_case'
+        )
