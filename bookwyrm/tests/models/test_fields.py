@@ -152,7 +152,7 @@ class ActivitypubFields(TestCase):
         output = fields.image_serializer(user.avatar)
         self.assertIsNotNone(
             re.match(
-                r'https://%s/images/avatars/test_.*\.jpg' % DOMAIN,
+                r'.*\.jpg',
                 output.url,
             )
         )
@@ -170,7 +170,6 @@ class ActivitypubFields(TestCase):
         loaded_image = instance.field_from_activity(
             'http://www.example.com/image.jpg')
         self.assertIsInstance(loaded_image, list)
-        self.assertIsNotNone(re.match(r'.*\.jpg', loaded_image[0]))
         self.assertIsInstance(loaded_image[1], ContentFile)
 
 
