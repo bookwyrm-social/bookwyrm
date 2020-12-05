@@ -1,0 +1,77 @@
+''' testing models '''
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.test import TestCase
+
+from bookwyrm.models import fields
+
+class ActivitypubFields(TestCase):
+    def test_validate_remote_id(self):
+        self.assertIsNone(fields.validate_remote_id(
+            'http://www.example.com'
+        ))
+        self.assertIsNone(fields.validate_remote_id(
+            'https://www.example.com'
+        ))
+        self.assertIsNone(fields.validate_remote_id(
+            'http://example.com/dlfjg-23/x'
+        ))
+        self.assertRaises(
+            ValidationError, fields.validate_remote_id,
+            'http:/example.com/dlfjg-23/x'
+        )
+        self.assertRaises(
+            ValidationError, fields.validate_remote_id,
+            'www.example.com/dlfjg-23/x'
+        )
+        self.assertRaises(
+            ValidationError, fields.validate_remote_id,
+            'http://www.example.com/dlfjg 23/x'
+        )
+
+    def test_activitypub_field_mixin(self):
+        instance = fields.ActivitypubFieldMixin()
+        self.assertEqual(instance.field_to_activity('fish'), 'fish')
+        self.assertEqual(instance.field_from_activity('fish'), 'fish')
+
+        instance = fields.ActivitypubFieldMixin(
+            activitypub_wrapper='endpoints', activitypub_field='outbox'
+        )
+        self.assertEqual(
+            instance.field_to_activity('fish'),
+            {'outbox': 'fish'}
+        )
+        self.assertEqual(
+            instance.field_from_activity({'outbox': 'fish'}),
+            'fish'
+        )
+        self.assertEqual(instance.get_activitypub_field(), 'endpoints')
+
+        instance = fields.ActivitypubFieldMixin()
+        instance.name = 'snake_case_name'
+        self.assertEqual(instance.get_activitypub_field(), 'snakeCaseName')
+
+    def test_remote_id_field(self):
+        instance = fields.RemoteIdField()
+        self.assertEqual(instance.max_length, 255)
+
+        with self.assertRaises(ValidationError):
+            instance.run_validators('http://www.example.com/dlfjg 23/x')
+
+    def test_username_field(self):
+        instance = fields.UsernameField()
+        self.assertEqual(instance.activitypub_field, 'preferredUsername')
+        self.assertEqual(instance.max_length, 150)
+        self.assertEqual(instance.unique, True)
+        with self.assertRaises(ValidationError):
+            instance.run_validators('one two')
+            instance.run_validators('a*&')
+            instance.run_validators('trailingwhite ')
+        self.assertIsNone(instance.run_validators('aksdhf'))
+
+        self.assertEqual(instance.field_to_activity('test@example.com'), 'test')
+
+    def test_foreign_key(self):
+        instance = fields.ForeignKey('User', on_delete=models.CASCADE)
+        item = namedtuple('Serializable', ('to_activity'))(lambda: {'a': 'b'})
+        self.assertEqual(instance.field_to_activity(item), {'a': 'b'})
