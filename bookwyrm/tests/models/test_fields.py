@@ -152,7 +152,7 @@ class ActivitypubFields(TestCase):
         output = fields.image_serializer(user.avatar)
         self.assertIsNotNone(
             re.match(
-                r'https://%s/images/avatars/test_[A-z0-9]+\.jpg' % DOMAIN,
+                r'https://%s/images/avatars/test_.*\.jpg' % DOMAIN,
                 output.url,
             )
         )
