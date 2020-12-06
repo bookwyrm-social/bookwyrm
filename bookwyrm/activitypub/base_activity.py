@@ -92,44 +92,24 @@ class ActivityObject:
             if value is None:
                 continue
 
-            # value is None if there's a default that isn't supplied
-            # in the activity but is supplied in the formatter
-            value = getattr(self, activitypub_field)
             model_field = getattr(model, field.name)
 
-            formatted_value = field.field_from_activity(value)
             if isinstance(model_field, ForwardManyToOneDescriptor):
-                if not formatted_value:
-                    continue
-                # foreign key remote id reolver (work on Edition, for example)
-                fk_model = model_field.field.related_model
-                if isinstance(formatted_value, dict) and \
-                        formatted_value.get('id'):
-                    # if the AP field is a serialized object (as in Add)
-                    # or KeyPair (even though it's OneToOne)
-                    related_model = field.related_model
-                    related_activity = related_model.activity_serializer
-                    mapped_fields[field.name] = related_activity(
-                        **formatted_value
-                    ).to_model(related_model)
-                else:
-                    # if the field is just a remote_id (as in every other case)
-                    remote_id = formatted_value
-                    reference = resolve_remote_id(fk_model, remote_id)
-                    mapped_fields[field.name] = reference
-            elif isinstance(model_field, ManyToManyDescriptor):
+                mapped_fields[field.name] = value
+            if isinstance(model_field, ManyToManyDescriptor):
                 # status mentions book/users
-                many_to_many_fields[field.name] = formatted_value
+                many_to_many_fields[field.name] = value
             elif isinstance(model_field, ReverseManyToOneDescriptor):
                 # attachments on Status, for example
-                one_to_many_fields[field.name] = formatted_value
+                one_to_many_fields[field.name] = value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                image_fields[field.name] = formatted_value
+                print(model_field, field.name, value)
+                image_fields[field.name] = value
             else:
-                if formatted_value == MISSING:
-                    formatted_value = None
-                mapped_fields[field.name] = formatted_value
+                if value == MISSING:
+                    value = None
+                mapped_fields[field.name] = value
 
 
         if instance:
@@ -146,33 +126,14 @@ class ActivityObject:
 
         # add images
         for (model_key, value) in image_fields.items():
-            if not formatted_value:
+            if not value:
                 continue
-            getattr(instance, model_key).save(*formatted_value, save=True)
+            getattr(instance, model_key).save(*value, save=True)
 
         # add many to many fields
         for (model_key, values) in many_to_many_fields.items():
             # mention books, mention users, followers
-            if values == MISSING or not isinstance(values, list):
-                # user followers is a link to an orderedcollection, skip it
-                continue
-            model_field = getattr(instance, model_key)
-            model = model_field.model
-            items = []
-            for link in values:
-                if isinstance(link, dict):
-                    # check that the Type matches the model (Status
-                    # tags contain both user mentions and book tags)
-                    if not model.activity_serializer.type == \
-                            link.get('type'):
-                        continue
-                    remote_id = link.get('href')
-                else:
-                    remote_id = link
-                items.append(
-                    resolve_remote_id(model, remote_id)
-                )
-            getattr(instance, model_key).set(items)
+            getattr(instance, model_key).set(values)
 
         # add one to many fields
         for (model_key, values) in one_to_many_fields.items():

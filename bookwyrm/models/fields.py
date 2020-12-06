@@ -57,6 +57,27 @@ class ActivitypubFieldMixin:
         return components[0] + ''.join(x.title() for x in components[1:])
 
 
+class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
+    ''' default (de)serialization for foreign key and one to one '''
+    def field_from_activity(self, value):
+        if not value:
+            return None
+
+        related_model = self.related_model
+        if isinstance(value, dict) and value.get('id'):
+            # this is an activitypub object, which we can deserialize
+            activity_serializer = related_model.activity_serializer
+            return activity_serializer(**value).to_model(related_model)
+        try:
+            # make sure the value looks like a remote id
+            validate_remote_id(value)
+        except ValidationError:
+            # we don't know what this is, ignore it
+            return None
+        # gets or creates the model field from the remote id
+        return activitypub.resolve_remote_id(related_model, value)
+
+
 class RemoteIdField(ActivitypubFieldMixin, models.CharField):
     ''' a url that serves as a unique identifier '''
     def __init__(self, *args, max_length=255, validators=None, **kwargs):
@@ -95,7 +116,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         return value.split('@')[0]
 
 
-class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
+class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
     ''' activitypub-aware foreign key field '''
     def field_to_activity(self, value):
         if not value:
@@ -103,7 +124,7 @@ class ForeignKey(ActivitypubFieldMixin, models.ForeignKey):
         return value.remote_id
 
 
-class OneToOneField(ActivitypubFieldMixin, models.OneToOneField):
+class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
     def field_to_activity(self, value):
         if not value:
@@ -121,6 +142,15 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         if self.link_only:
             return '%s/%s' % (value.instance.remote_id, self.name)
         return [i.remote_id for i in value.all()]
+
+    def field_from_activity(self, value):
+        items = []
+        for remote_id in value:
+            validate_remote_id(remote_id)
+            items.append(
+                activitypub.resolve_remote_id(self.related_model, remote_id)
+            )
+        return items
 
 
 class TagField(ManyToManyField):
@@ -141,6 +171,15 @@ class TagField(ManyToManyField):
                 type=activity_type
             ))
         return tags
+
+    def field_from_activity(self, value):
+        items = []
+        for link_json in value:
+            link = activitypub.Link(**link_json)
+            items.append(
+                activitypub.resolve_remote_id(self.related_model, link.href)
+            )
+        return items
 
 
 def image_serializer(value):

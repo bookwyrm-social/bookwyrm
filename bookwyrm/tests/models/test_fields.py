@@ -14,7 +14,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm.models import fields, User
-from bookwyrm.settings import DOMAIN
+from bookwyrm import activitypub
 
 class ActivitypubFields(TestCase):
     def test_validate_remote_id(self):
@@ -86,7 +86,22 @@ class ActivitypubFields(TestCase):
         instance = fields.ForeignKey('User', on_delete=models.CASCADE)
         Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
         item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
+        # returns the remote_id field of the related object
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
+
+    def test_foreign_key_from_activity(self):
+        instance = fields.ForeignKey(User, on_delete=models.CASCADE)
+
+        # test receiving an unknown remote id and loading data TODO
+
+        # test recieving activity json TODO
+
+        # test receiving a remote id of an object in the db
+        user = User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        value = instance.field_from_activity(user.remote_id)
+        self.assertEqual(value, user)
+
 
     def test_one_to_one_field(self):
         instance = fields.OneToOneField('User', on_delete=models.CASCADE)
