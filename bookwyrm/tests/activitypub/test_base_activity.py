@@ -1,9 +1,14 @@
 ''' tests the base functionality for activitypub dataclasses '''
+import json
+import pathlib
+from unittest.mock import patch
+
 from dataclasses import dataclass
 from django.test import TestCase
+import responses
 
 from bookwyrm.activitypub.base_activity import ActivityObject, \
-    find_existing_by_remote_id
+    find_existing_by_remote_id, resolve_remote_id
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
 
@@ -79,3 +84,35 @@ class BaseActivity(TestCase):
         # test subclass match
         result = find_existing_by_remote_id(
             models.Status, 'https://comment.net')
+
+    @responses.activate
+    def test_resolve_remote_id(self):
+        ''' look up or load remote data '''
+        user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        user.remote_id = 'http://example.com/a/b'
+        user.save()
+
+        # existing item
+        result = resolve_remote_id(models.User, 'http://example.com/a/b')
+        self.assertEqual(result, user)
+
+        # remote item
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        userdata = json.loads(datafile.read_bytes())
+        # don't try to load the user icon
+        del userdata['icon']
+        responses.add(
+            responses.GET,
+            'https://example.com/user/mouse',
+            json=userdata,
+            status=200)
+
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            result = resolve_remote_id(
+                models.User, 'https://example.com/user/mouse')
+        self.assertIsInstance(result, models.User)
+        self.assertEqual(result.remote_id, 'https://example.com/user/mouse')
+        self.assertEqual(result.name, 'MOUSE?? MOUSE!!')
