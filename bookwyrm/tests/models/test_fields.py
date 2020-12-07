@@ -1,6 +1,7 @@
 ''' testing models '''
 from io import BytesIO
 from collections import namedtuple
+import json
 import pathlib
 import re
 
@@ -14,10 +15,11 @@ from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm.models import fields, User
-from bookwyrm import activitypub
 
 class ActivitypubFields(TestCase):
+    ''' overwrites standard model feilds to work with activitypub '''
     def test_validate_remote_id(self):
+        ''' should look like a url '''
         self.assertIsNone(fields.validate_remote_id(
             'http://www.example.com'
         ))
@@ -41,6 +43,7 @@ class ActivitypubFields(TestCase):
         )
 
     def test_activitypub_field_mixin(self):
+        ''' generic mixin with super basic to and from functionality '''
         instance = fields.ActivitypubFieldMixin()
         self.assertEqual(instance.field_to_activity('fish'), 'fish')
         self.assertEqual(instance.field_from_activity('fish'), 'fish')
@@ -63,6 +66,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.get_activitypub_field(), 'snakeCaseName')
 
     def test_remote_id_field(self):
+        ''' just sets some defaults on charfield '''
         instance = fields.RemoteIdField()
         self.assertEqual(instance.max_length, 255)
 
@@ -70,6 +74,7 @@ class ActivitypubFields(TestCase):
             instance.run_validators('http://www.example.com/dlfjg 23/x')
 
     def test_username_field(self):
+        ''' again, just setting defaults on username field '''
         instance = fields.UsernameField()
         self.assertEqual(instance.activitypub_field, 'preferredUsername')
         self.assertEqual(instance.max_length, 150)
@@ -83,6 +88,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity('test@example.com'), 'test')
 
     def test_foreign_key(self):
+        ''' should be able to format a related model '''
         instance = fields.ForeignKey('User', on_delete=models.CASCADE)
         Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
         item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
@@ -90,11 +96,22 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
 
     def test_foreign_key_from_activity(self):
+        ''' this is the important stuff '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
 
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        userdata = json.loads(datafile.read_bytes())
+        del userdata['icon']
         # test receiving an unknown remote id and loading data TODO
 
-        # test recieving activity json TODO
+        # test recieving activity json
+        value = instance.field_from_activity(userdata)
+        self.assertIsInstance(value, User)
+        self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
+        self.assertEqual(value.name, 'MOUSE?? MOUSE!!')
+        # et cetera but we're not testing serializing user json
 
         # test receiving a remote id of an object in the db
         user = User.objects.create_user(
@@ -104,12 +121,14 @@ class ActivitypubFields(TestCase):
 
 
     def test_one_to_one_field(self):
+        ''' a gussied up foreign key '''
         instance = fields.OneToOneField('User', on_delete=models.CASCADE)
         Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
         item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
         self.assertEqual(instance.field_to_activity(item), {'a': 'b'})
 
     def test_many_to_many_field(self):
+        ''' lists! '''
         instance = fields.ManyToManyField('User')
 
         Serializable = namedtuple('Serializable', ('to_activity', 'remote_id'))
@@ -128,7 +147,12 @@ class ActivitypubFields(TestCase):
             'example.com/snake_case'
         )
 
+    def test_many_to_many_field_from_activity(self):
+        ''' resolve related fields for a list '''
+        # TODO
+
     def test_tag_field(self):
+        ''' a special type of many to many field '''
         instance = fields.TagField('User')
 
         Serializable = namedtuple(
@@ -150,8 +174,14 @@ class ActivitypubFields(TestCase):
         self.assertEqual(result[0].type, 'Serializable')
 
 
+    def test_tag_field_from_activity(self):
+        ''' loadin' a list of items from Links '''
+        # TODO
+
+
     @responses.activate
     def test_image_field(self):
+        ''' storing images '''
         user = User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         image_file = pathlib.Path(__file__).parent.joinpath(
@@ -189,6 +219,7 @@ class ActivitypubFields(TestCase):
 
 
     def test_datetime_field(self):
+        ''' this one is pretty simple, it just has to use isoformat '''
         instance = fields.DateTimeField()
         now = timezone.now()
         self.assertEqual(instance.field_to_activity(now), now.isoformat())
@@ -199,5 +230,6 @@ class ActivitypubFields(TestCase):
 
 
     def test_array_field(self):
+        ''' idk why it makes them strings but probably for a good reason '''
         instance = fields.ArrayField(fields.IntegerField)
         self.assertEqual(instance.field_to_activity([0, 1]), ['0', '1'])

@@ -92,7 +92,10 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
     ''' activitypub-aware username field '''
     def __init__(self, activitypub_field='preferredUsername'):
         self.activitypub_field = activitypub_field
-        super(ActivitypubFieldMixin, self).__init__(
+        # I don't totally know why pylint is mad at this, but it makes it work
+        super( #pylint: disable=bad-super-call
+            ActivitypubFieldMixin, self
+        ).__init__(
             _('username'),
             max_length=150,
             unique=True,
@@ -146,7 +149,10 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
     def field_from_activity(self, value):
         items = []
         for remote_id in value:
-            validate_remote_id(remote_id)
+            try:
+                validate_remote_id(remote_id)
+            except ValidationError:
+                return None
             items.append(
                 activitypub.resolve_remote_id(self.related_model, remote_id)
             )
@@ -207,7 +213,10 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             url = image_slug
         else:
             return None
-        if not url:
+
+        try:
+            validate_remote_id(url)
+        except ValidationError:
             return None
 
         response = get_image(url)
