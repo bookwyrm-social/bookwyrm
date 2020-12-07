@@ -4,6 +4,7 @@ from collections import namedtuple
 import json
 import pathlib
 import re
+from unittest.mock import patch
 
 from PIL import Image
 import responses
@@ -113,7 +114,9 @@ class ActivitypubFields(TestCase):
             'https://example.com/user/mouse',
             json=userdata,
             status=200)
-        value = instance.field_from_activity('https://example.com/user/mouse')
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            value = instance.field_from_activity(
+                'https://example.com/user/mouse')
 
         # test recieving activity json
         value = instance.field_from_activity(userdata)
@@ -173,9 +176,10 @@ class ActivitypubFields(TestCase):
             'https://example.com/user/mouse',
             json=userdata,
             status=200)
-        value = instance.field_from_activity(
-            ['https://example.com/user/mouse', 'bleh']
-        )
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            value = instance.field_from_activity(
+                ['https://example.com/user/mouse', 'bleh']
+            )
         self.assertIsInstance(value, list)
         self.assertEqual(len(value), 1)
         self.assertIsInstance(value[0], User)

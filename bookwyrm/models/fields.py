@@ -179,6 +179,8 @@ class TagField(ManyToManyField):
         return tags
 
     def field_from_activity(self, value):
+        if not isinstance(value, list):
+            return None
         items = []
         for link_json in value:
             link = activitypub.Link(**link_json)
