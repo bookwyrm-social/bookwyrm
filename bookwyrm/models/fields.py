@@ -152,7 +152,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             try:
                 validate_remote_id(remote_id)
             except ValidationError:
-                return None
+                continue
             items.append(
                 activitypub.resolve_remote_id(self.related_model, remote_id)
             )

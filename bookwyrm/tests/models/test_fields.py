@@ -95,6 +95,7 @@ class ActivitypubFields(TestCase):
         # returns the remote_id field of the related object
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
 
+    @responses.activate
     def test_foreign_key_from_activity(self):
         ''' this is the important stuff '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
@@ -103,8 +104,16 @@ class ActivitypubFields(TestCase):
             '../data/ap_user.json'
         )
         userdata = json.loads(datafile.read_bytes())
+        # don't try to load the user icon
         del userdata['icon']
-        # test receiving an unknown remote id and loading data TODO
+
+        # test receiving an unknown remote id and loading data
+        responses.add(
+            responses.GET,
+            'https://example.com/user/mouse',
+            json=userdata,
+            status=200)
+        value = instance.field_from_activity('https://example.com/user/mouse')
 
         # test recieving activity json
         value = instance.field_from_activity(userdata)
@@ -147,9 +156,29 @@ class ActivitypubFields(TestCase):
             'example.com/snake_case'
         )
 
+    @responses.activate
     def test_many_to_many_field_from_activity(self):
-        ''' resolve related fields for a list '''
-        # TODO
+        ''' resolve related fields for a list, takes a list of remote ids '''
+        instance = fields.ManyToManyField(User)
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        userdata = json.loads(datafile.read_bytes())
+        # don't try to load the user icon
+        del userdata['icon']
+
+        # test receiving an unknown remote id and loading data
+        responses.add(
+            responses.GET,
+            'https://example.com/user/mouse',
+            json=userdata,
+            status=200)
+        value = instance.field_from_activity(
+            ['https://example.com/user/mouse', 'bleh']
+        )
+        self.assertIsInstance(value, list)
+        self.assertEqual(len(value), 1)
+        self.assertIsInstance(value[0], User)
 
     def test_tag_field(self):
         ''' a special type of many to many field '''
