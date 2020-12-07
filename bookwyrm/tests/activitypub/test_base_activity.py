@@ -31,6 +31,9 @@ class BaseActivity(TestCase):
         # don't try to load the user icon
         del self.userdata['icon']
 
+        self.book = models.Edition.objects.create(
+            title='Test Edition', remote_id='http://book.com/book')
+
     def test_init(self):
         ''' simple successfuly init '''
         instance = ActivityObject(id='a', type='b')
@@ -70,15 +73,13 @@ class BaseActivity(TestCase):
     def test_find_existing_by_remote_id(self):
         ''' attempt to match a remote id to an object in the db '''
         # uses a different remote id scheme
-        book = models.Edition.objects.create(
-            title='Test Edition', remote_id='http://book.com/book')
         # this isn't really part of this test directly but it's helpful to state
-        self.assertEqual(book.origin_id, 'http://book.com/book')
-        self.assertNotEqual(book.remote_id, 'http://book.com/book')
+        self.assertEqual(self.book.origin_id, 'http://book.com/book')
+        self.assertNotEqual(self.book.remote_id, 'http://book.com/book')
 
         # uses subclasses
         models.Comment.objects.create(
-            user=self.user, content='test status', book=book, \
+            user=self.user, content='test status', book=self.book, \
             remote_id='https://comment.net')
 
         result = find_existing_by_remote_id(models.User, 'hi')
@@ -91,7 +92,7 @@ class BaseActivity(TestCase):
         # test using origin id
         result = find_existing_by_remote_id(
             models.Edition, 'http://book.com/book')
-        self.assertEqual(result, book)
+        self.assertEqual(result, self.book)
 
         # test subclass match
         result = find_existing_by_remote_id(
@@ -165,3 +166,26 @@ class BaseActivity(TestCase):
         update_data.to_model(models.User, self.user)
         self.assertIsNotNone(self.user.avatar.name)
         self.assertIsNotNone(self.user.avatar.file)
+
+    def test_to_model_many_to_many(self):
+        ''' annoying that these all need special handling '''
+        status = models.Status.objects.create(
+            content='test status',
+            user=self.user,
+        )
+        update_data = activitypub.Note(**status.to_activity())
+        update_data.tag = [
+            {
+                'type': 'Mention',
+                'name': 'gerald',
+                'href': 'http://example.com/a/b'
+            },
+            {
+                'type': 'Edition',
+                'name': 'gerald j. books',
+                'href': 'http://book.com/book'
+            },
+        ]
+        update_data.to_model(models.Status, instance=status)
+        self.assertEqual(status.mention_users.first(), self.user)
+        self.assertEqual(status.mention_books.first(), self.book)

@@ -182,6 +182,10 @@ class TagField(ManyToManyField):
         items = []
         for link_json in value:
             link = activitypub.Link(**link_json)
+            tag_type = link.type if link.type != 'Mention' else 'Person'
+            if tag_type != self.related_model.activity_serializer.type:
+                # tags can contain multiple types
+                continue
             items.append(
                 activitypub.resolve_remote_id(self.related_model, link.href)
             )
