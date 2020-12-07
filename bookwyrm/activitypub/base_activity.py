@@ -104,13 +104,11 @@ class ActivityObject:
                 one_to_many_fields[field.name] = value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                print(model_field, field.name, value)
                 image_fields[field.name] = value
             else:
                 if value == MISSING:
                     value = None
                 mapped_fields[field.name] = value
-
 
         if instance:
             # updating an existing model instance

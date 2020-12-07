@@ -1,12 +1,15 @@
 ''' tests the base functionality for activitypub dataclasses '''
+from io import BytesIO
 import json
 import pathlib
 from unittest.mock import patch
 
 from dataclasses import dataclass
 from django.test import TestCase
+from PIL import Image
 import responses
 
+from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject, \
     find_existing_by_remote_id, resolve_remote_id
 from bookwyrm.activitypub import ActivitySerializerError
@@ -14,6 +17,20 @@ from bookwyrm import models
 
 class BaseActivity(TestCase):
     ''' the super class for model-linked activitypub dataclasses '''
+    def setUp(self):
+        ''' we're probably going to re-use this so why copy/paste '''
+        self.user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        self.user.remote_id = 'http://example.com/a/b'
+        self.user.save()
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        self.userdata = json.loads(datafile.read_bytes())
+        # don't try to load the user icon
+        del self.userdata['icon']
+
     def test_init(self):
         ''' simple successfuly init '''
         instance = ActivityObject(id='a', type='b')
@@ -52,11 +69,6 @@ class BaseActivity(TestCase):
 
     def test_find_existing_by_remote_id(self):
         ''' attempt to match a remote id to an object in the db '''
-        user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
-        user.remote_id = 'http://example.com/a/b'
-        user.save()
-
         # uses a different remote id scheme
         book = models.Edition.objects.create(
             title='Test Edition', remote_id='http://book.com/book')
@@ -66,7 +78,7 @@ class BaseActivity(TestCase):
 
         # uses subclasses
         models.Comment.objects.create(
-            user=user, content='test status', book=book, \
+            user=self.user, content='test status', book=book, \
             remote_id='https://comment.net')
 
         result = find_existing_by_remote_id(models.User, 'hi')
@@ -74,7 +86,7 @@ class BaseActivity(TestCase):
 
         result = find_existing_by_remote_id(
             models.User, 'http://example.com/a/b')
-        self.assertEqual(result, user)
+        self.assertEqual(result, self.user)
 
         # test using origin id
         result = find_existing_by_remote_id(
@@ -88,26 +100,15 @@ class BaseActivity(TestCase):
     @responses.activate
     def test_resolve_remote_id(self):
         ''' look up or load remote data '''
-        user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
-        user.remote_id = 'http://example.com/a/b'
-        user.save()
-
         # existing item
         result = resolve_remote_id(models.User, 'http://example.com/a/b')
-        self.assertEqual(result, user)
+        self.assertEqual(result, self.user)
 
         # remote item
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            '../data/ap_user.json'
-        )
-        userdata = json.loads(datafile.read_bytes())
-        # don't try to load the user icon
-        del userdata['icon']
         responses.add(
             responses.GET,
             'https://example.com/user/mouse',
-            json=userdata,
+            json=self.userdata,
             status=200)
 
         with patch('bookwyrm.models.user.set_remote_server.delay'):
@@ -116,3 +117,51 @@ class BaseActivity(TestCase):
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(result.name, 'MOUSE?? MOUSE!!')
+
+    def test_to_model(self):
+        ''' the big boy of this module. it feels janky to test this with actual
+        models rather than a test model, but I don't know how to make a test
+        model so here we are. '''
+        instance = ActivityObject(id='a', type='b')
+        with self.assertRaises(ActivitySerializerError):
+            instance.to_model(models.User)
+
+        # test setting simple fields
+        self.assertEqual(self.user.name, '')
+        update_data = activitypub.Person(**self.user.to_activity())
+        update_data.name = 'New Name'
+        update_data.to_model(models.User, self.user)
+
+        self.assertEqual(self.user.name, 'New Name')
+
+    def test_to_model_foreign_key(self):
+        ''' test setting one to one/foreign key '''
+        update_data = activitypub.Person(**self.user.to_activity())
+        update_data.publicKey['publicKeyPem'] = 'hi im secure'
+        update_data.to_model(models.User, self.user)
+        self.assertEqual(self.user.key_pair.public_key, 'hi im secure')
+
+    @responses.activate
+    def test_to_model_image(self):
+        ''' update an image field '''
+        update_data = activitypub.Person(**self.user.to_activity())
+        update_data.icon = {'url': 'http://www.example.com/image.jpg'}
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            '../../static/images/default_avi.jpg')
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        image_data = output.getvalue()
+        responses.add(
+            responses.GET,
+            'http://www.example.com/image.jpg',
+            body=image_data,
+            status=200)
+
+        self.assertIsNone(self.user.avatar.name)
+        with self.assertRaises(ValueError):
+            self.user.avatar.file #pylint: disable=pointless-statement
+
+        update_data.to_model(models.User, self.user)
+        self.assertIsNotNone(self.user.avatar.name)
+        self.assertIsNotNone(self.user.avatar.file)
