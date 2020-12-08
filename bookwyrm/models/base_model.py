@@ -83,9 +83,11 @@ class ActivitypubMixin:
 
         if hasattr(self, 'serialize_reverse_fields'):
             # for example, editions of a work
-            for field_name in self.serialize_reverse_fields:
-                related_field = getattr(self, field_name)
-                activity[field_name] = unfurl_related_field(related_field)
+            for model_field_name, activity_field_name in \
+                    self.serialize_reverse_fields:
+                related_field = getattr(self, model_field_name)
+                activity[activity_field_name] = \
+                        unfurl_related_field(related_field)
 
         if not activity.get('id'):
             activity['id'] = self.get_remote_id()

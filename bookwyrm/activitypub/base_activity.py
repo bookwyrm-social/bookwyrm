@@ -76,77 +76,68 @@ class ActivityObject:
 
         # check for an existing instance, if we're not updating a known obj
         if not instance:
-            instance = find_existing_by_remote_id(model, self.id)
+            instance = find_existing_by_remote_id(model, self.id) or model()
 	# TODO: deduplicate books by identifiers
 
-        mapped_fields = {}
         many_to_many_fields = {}
-        one_to_many_fields = {}
-        image_fields = {}
-
         for field in model._meta.get_fields():
             if not hasattr(field, 'field_to_activity'):
                 continue
-            activitypub_field = field.get_activitypub_field()
-            value = field.field_from_activity(getattr(self, activitypub_field))
-            if value is None:
+            # call the formatter associated with the model field class
+            value = field.field_from_activity(
+                getattr(self, field.get_activitypub_field())
+            )
+            if value is None or value is MISSING:
                 continue
 
             model_field = getattr(model, field.name)
 
-            if isinstance(model_field, ForwardManyToOneDescriptor):
-                mapped_fields[field.name] = value
             if isinstance(model_field, ManyToManyDescriptor):
-                # status mentions book/users
+                # status mentions book/users for example, stash this for later
                 many_to_many_fields[field.name] = value
-            elif isinstance(model_field, ReverseManyToOneDescriptor):
-                # attachments on Status, for example
-                one_to_many_fields[field.name] = value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                image_fields[field.name] = value
+                getattr(instance, field.name).save(*value)
             else:
-                if value == MISSING:
-                    value = None
-                mapped_fields[field.name] = value
+                # just a good old fashioned model.field = value
+                setattr(instance, field.name, value)
 
-        if instance:
-            # updating an existing model instance
-            for k, v in mapped_fields.items():
-                setattr(instance, k, v)
-            instance.save()
-        else:
-            # creating a new model instance
-            instance = model.objects.create(**mapped_fields)
+        instance.save()
 
-        # --- these are all fields that can't be saved until after the
-        # instance has an id (after it's been saved). ---------------#
-
-        # add images
-        for (model_key, value) in image_fields.items():
-            if not value:
-                continue
-            getattr(instance, model_key).save(*value, save=True)
-
-        # add many to many fields
+        # add many to many fields, which have to be set post-save
         for (model_key, values) in many_to_many_fields.items():
             # mention books, mention users, followers
             getattr(instance, model_key).set(values)
 
-        # add one to many fields
-        for (model_key, values) in one_to_many_fields.items():
-            if values == MISSING:
+        if not hasattr(model, 'deserialize_reverse_fields'):
+            return instance
+
+        # reversed relationships in the models
+        for (model_field_name, activity_field_name) in \
+                model.deserialize_reverse_fields:
+            if not activity_field_name:
                 continue
-            model_field = getattr(instance, model_key)
-            related_model = model_field.model
+            # attachments on Status, for example
+            values = getattr(self, activity_field_name)
+            if values is None or values is MISSING:
+                continue
+            try:
+                # this is for one to many
+                related_model = getattr(model, model_field_name).field.model
+            except AttributeError:
+                # it's a one to one or foreign key
+                related_model = getattr(model, model_field_name)\
+                        .related.related_model
+                values = [values]
+
             for item in values:
                 if isinstance(item, str):
                     item = resolve_remote_id(related_model, item)
                 else:
                     item = related_model.activity_serializer(**item)
                     item = item.to_model(related_model)
-                field_name = instance.__class__.__name__.lower()
-                setattr(item, field_name, instance)
+                related_name = instance.__class__.__name__.lower()
+                setattr(item, related_name, instance)
                 item.save()
 
         return instance

@@ -45,7 +45,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     objects = InheritanceManager()
 
     activity_serializer = activitypub.Note
-    serialize_reverse_fields = ['attachments']
+    serialize_reverse_fields = [('attachments', 'attachment')]
+    deserialize_reverse_fields = [('attachments', 'attachment')]
 
     #----- replies collection activitypub ----#
     @classmethod

@@ -9,7 +9,7 @@ from . import fields
 
 class Attachment(ActivitypubMixin, BookWyrmModel):
     ''' an image (or, in the future, video etc) associated with a status '''
-    status = fields.ForeignKey(
+    status = models.ForeignKey(
         'Status',
         on_delete=models.CASCADE,
         related_name='attachments',
@@ -23,7 +23,8 @@ class Attachment(ActivitypubMixin, BookWyrmModel):
 
 class Image(Attachment):
     ''' an image attachment '''
-    image = fields.ImageField(upload_to='status/', null=True, blank=True)
-    caption = fields.TextField(null=True, blank=True)
+    image = fields.ImageField(
+        upload_to='status/', null=True, blank=True, activitypub_field='url')
+    caption = fields.TextField(null=True, blank=True, activitypub_field='name')
 
     activity_serializer = activitypub.Image

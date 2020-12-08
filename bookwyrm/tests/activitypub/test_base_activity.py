@@ -34,6 +34,13 @@ class BaseActivity(TestCase):
         self.book = models.Edition.objects.create(
             title='Test Edition', remote_id='http://book.com/book')
 
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            '../../static/images/default_avi.jpg')
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        self.image_data = output.getvalue()
+
     def test_init(self):
         ''' simple successfuly init '''
         instance = ActivityObject(id='a', type='b')
@@ -147,16 +154,10 @@ class BaseActivity(TestCase):
         ''' update an image field '''
         update_data = activitypub.Person(**self.user.to_activity())
         update_data.icon = {'url': 'http://www.example.com/image.jpg'}
-        image_file = pathlib.Path(__file__).parent.joinpath(
-            '../../static/images/default_avi.jpg')
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        image_data = output.getvalue()
         responses.add(
             responses.GET,
             'http://www.example.com/image.jpg',
-            body=image_data,
+            body=self.image_data,
             status=200)
 
         self.assertIsNone(self.user.avatar.name)
@@ -189,3 +190,28 @@ class BaseActivity(TestCase):
         update_data.to_model(models.Status, instance=status)
         self.assertEqual(status.mention_users.first(), self.user)
         self.assertEqual(status.mention_books.first(), self.book)
+
+
+    @responses.activate
+    def test_to_model_one_to_many(self):
+        ''' these are reversed relationships, where the secondary object
+        keys the primary object but not vice versa '''
+        status = models.Status.objects.create(
+            content='test status',
+            user=self.user,
+        )
+        update_data = activitypub.Note(**status.to_activity())
+        update_data.attachment = [{
+            'url': 'http://www.example.com/image.jpg',
+            'name': 'alt text',
+            'type': 'Image',
+        }]
+
+        responses.add(
+            responses.GET,
+            'http://www.example.com/image.jpg',
+            body=self.image_data,
+            status=200)
+
+        update_data.to_model(models.Status, instance=status)
+        self.assertIsInstance(status.attachments.first(), models.Image)

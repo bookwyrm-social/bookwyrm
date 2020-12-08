@@ -96,7 +96,8 @@ class Work(OrderedCollectionPageMixin, Book):
         return self.default_edition or self.editions.first()
 
     activity_serializer = activitypub.Work
-    serialize_reverse_fields = ['editions']
+    serialize_reverse_fields = [('editions', 'editions')]
+    deserialize_reverse_fields = [('editions', 'editions')]
 
 
 class Edition(Book):
