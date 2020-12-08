@@ -19,8 +19,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
-app.autodiscover_tasks(['bookwyrm'], related_name='broadcast')
+app.autodiscover_tasks(['bookwyrm'], related_name='activitypub.base_activity')
 app.autodiscover_tasks(['bookwyrm'], related_name='books_manager')
+app.autodiscover_tasks(['bookwyrm'], related_name='broadcast')
 app.autodiscover_tasks(['bookwyrm'], related_name='emailing')
 app.autodiscover_tasks(['bookwyrm'], related_name='goodreads_import')
 app.autodiscover_tasks(['bookwyrm'], related_name='incoming')

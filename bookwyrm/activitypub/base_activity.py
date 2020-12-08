@@ -2,12 +2,13 @@
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 
-from django.db.models.fields.related_descriptors \
-    import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
-        ReverseManyToOneDescriptor
+from django.apps import apps
+from django.db import transaction
 from django.db.models.fields.files import ImageFileDescriptor
+from django.db.models.fields.related_descriptors import ManyToManyDescriptor
 
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.tasks import app
 
 class ActivitySerializerError(ValueError):
     ''' routine problems serializing activitypub json '''
@@ -64,7 +65,8 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, model, instance=None):
+    @transaction.atomic
+    def to_model(self, model, instance=None, save=True):
         ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
             raise ActivitySerializerError(
@@ -97,26 +99,28 @@ class ActivityObject:
                 many_to_many_fields[field.name] = value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                getattr(instance, field.name).save(*value)
+                getattr(instance, field.name).save(*value, save=save)
             else:
                 # just a good old fashioned model.field = value
                 setattr(instance, field.name, value)
+
+        if not save:
+            # we can't set many to many and reverse fields on an unsaved object
+            return instance
 
         instance.save()
 
         # add many to many fields, which have to be set post-save
         for (model_key, values) in many_to_many_fields.items():
-            # mention books, mention users, followers
+            # mention books/users, for example
             getattr(instance, model_key).set(values)
 
-        if not hasattr(model, 'deserialize_reverse_fields'):
+        if not save or not hasattr(model, 'deserialize_reverse_fields'):
             return instance
 
         # reversed relationships in the models
         for (model_field_name, activity_field_name) in \
                 model.deserialize_reverse_fields:
-            if not activity_field_name:
-                continue
             # attachments on Status, for example
             values = getattr(self, activity_field_name)
             if values is None or values is MISSING:
@@ -131,15 +135,13 @@ class ActivityObject:
                 values = [values]
 
             for item in values:
-                if isinstance(item, str):
-                    item = resolve_remote_id(related_model, item)
-                else:
-                    item = related_model.activity_serializer(**item)
-                    item = item.to_model(related_model)
-                related_name = instance.__class__.__name__.lower()
-                setattr(item, related_name, instance)
-                item.save()
-
+                set_related_field.delay(
+                    related_model.__name__,
+                    instance.__class__.__name__,
+                    instance.__class__.__name__.lower(),
+                    instance.remote_id,
+                    item
+                )
         return instance
 
 
@@ -148,6 +150,28 @@ class ActivityObject:
         data = self.__dict__
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
+
+
+@app.task
+@transaction.atomic
+def set_related_field(
+        model_name, origin_model_name,
+        related_field_name, related_remote_id, data):
+    ''' load reverse related fields (editions, attachments) without blocking '''
+    model = apps.get_model('bookwyrm.%s' % model_name, require_ready=True)
+    origin_model = apps.get_model(
+        'bookwyrm.%s' % origin_model_name,
+        require_ready=True
+    )
+
+    if isinstance(data, str):
+        item = resolve_remote_id(model, data, save=False)
+    else:
+        item = model.activity_serializer(**data)
+        item = item.to_model(model, save=False)
+    instance = find_existing_by_remote_id(origin_model, related_remote_id)
+    setattr(item, related_field_name, instance)
+    item.save()
 
 
 def find_existing_by_remote_id(model, remote_id):
@@ -168,7 +192,7 @@ def find_existing_by_remote_id(model, remote_id):
     return result
 
 
-def resolve_remote_id(model, remote_id, refresh=False):
+def resolve_remote_id(model, remote_id, refresh=False, save=True):
     ''' look up the remote_id in the database or load it remotely '''
     result = find_existing_by_remote_id(model, remote_id)
     if result and not refresh:
@@ -184,4 +208,4 @@ def resolve_remote_id(model, remote_id, refresh=False):
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
-    return item.to_model(model, instance=result)
+    return item.to_model(model, instance=result, save=save)

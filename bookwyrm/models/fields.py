@@ -126,6 +126,15 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
             return None
         return value.remote_id
 
+    def field_from_activity(self, value):
+        print(value)
+        try:
+            validate_remote_id(value)
+        except ValidationError:
+            return None
+        return activitypub.resolve_remote_id(self.related_model, value)
+
+
 
 class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
     ''' activitypub-aware foreign key field '''
