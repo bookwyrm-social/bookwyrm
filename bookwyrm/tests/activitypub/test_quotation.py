@@ -1,3 +1,4 @@
+''' quotation activty object serializer class '''
 import json
 import pathlib
 from unittest.mock import patch
@@ -9,6 +10,7 @@ from bookwyrm import activitypub, models
 class Quotation(TestCase):
     ''' we have hecka ways to create statuses '''
     def setUp(self):
+        ''' model objects we'll need '''
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.user = models.User.objects.create_user(
                 'mouse', 'mouse@mouse.mouse', 'mouseword',
@@ -28,6 +30,7 @@ class Quotation(TestCase):
 
 
     def test_quotation_activity(self):
+        ''' create a Quoteation ap object from json '''
         quotation = activitypub.Quotation(**self.status_data)
 
         self.assertEqual(quotation.type, 'Quotation')
@@ -41,6 +44,7 @@ class Quotation(TestCase):
 
 
     def test_activity_to_model(self):
+        ''' create a model instance from an activity object '''
         activity = activitypub.Quotation(**self.status_data)
         quotation = activity.to_model(models.Quotation)
 

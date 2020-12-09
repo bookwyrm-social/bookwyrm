@@ -18,7 +18,7 @@ from bookwyrm.connectors import get_image
 
 def validate_remote_id(value):
     ''' make sure the remote_id looks like a url '''
-    if not re.match(r'^http.?:\/\/[^\s]+$', value):
+    if not value or not re.match(r'^http.?:\/\/[^\s]+$', value):
         raise ValidationError(
             _('%(value)s is not a valid remote_id'),
             params={'value': value},
@@ -127,7 +127,6 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
         return value.remote_id
 
     def field_from_activity(self, value):
-        print(value)
         try:
             validate_remote_id(value)
         except ValidationError:
