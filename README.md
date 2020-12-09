@@ -8,6 +8,7 @@ Social reading and reviewing, decentralized with ActivityPub
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
  - [Setting up the developer environment](#setting-up-the-developer-environment)
+ - [Installing in Production](#installing-in-production)
  - [Project structure](#project-structure)
  - [Book data](#book-data)
  - [Contributing](#contributing)
