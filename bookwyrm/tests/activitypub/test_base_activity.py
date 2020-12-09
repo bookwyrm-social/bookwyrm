@@ -11,7 +11,7 @@ import responses
 
 from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject, \
-    find_existing_by_remote_id, resolve_remote_id
+    find_existing_by_remote_id, resolve_remote_id, set_related_field
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
 
@@ -213,5 +213,32 @@ class BaseActivity(TestCase):
             body=self.image_data,
             status=200)
 
-        update_data.to_model(models.Status, instance=status)
+        # sets the celery task call to the function call
+        with patch(
+                'bookwyrm.activitypub.base_activity.set_related_field.delay'):
+            update_data.to_model(models.Status, instance=status)
+        self.assertIsNone(status.attachments.first())
+
+
+    @responses.activate
+    def test_set_related_field(self):
+        ''' celery task to add back-references to created objects '''
+        status = models.Status.objects.create(
+            content='test status',
+            user=self.user,
+        )
+        data = {
+            'url': 'http://www.example.com/image.jpg',
+            'name': 'alt text',
+            'type': 'Image',
+        }
+        responses.add(
+            responses.GET,
+            'http://www.example.com/image.jpg',
+            body=self.image_data,
+            status=200)
+        set_related_field(
+            'Image', 'Status', 'status', status.remote_id, data)
+
         self.assertIsInstance(status.attachments.first(), models.Image)
+        self.assertIsNotNone(status.attachments.first().image)
