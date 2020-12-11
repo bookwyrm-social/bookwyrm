@@ -124,8 +124,23 @@
 <div class="footer">
     <div class="columns">
         <div class="column">
-            About this server
-
+            <p>
+                <a href="/about">About this server</a>
+            </p>
+            {% if site.admin_email %}
+            <p>
+                <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
+            </p>
+            {% endif %}
+        </div>
+        {% if site.support_link %}
+        <div class="column">
+            <span class="icon icon-heart"></span>
+            Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
+        </div>
+        {% endif %}
+        <div class="column">
+            BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
         </div>
     </div>
 </div>
