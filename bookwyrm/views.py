@@ -235,7 +235,6 @@ def login_page(request):
     # send user to the login page
     data = {
         'title': 'Login',
-        'site_settings': models.SiteSettings.get(),
         'login_form': forms.LoginForm(),
         'register_form': forms.RegisterForm(),
     }
@@ -247,7 +246,6 @@ def about_page(request):
     ''' more information about the instance '''
     data = {
         'title': 'About',
-        'site_settings': models.SiteSettings.get(),
     }
     return TemplateResponse(request, 'about.html', data)
 
@@ -295,7 +293,6 @@ def invite_page(request, code):
 
     data = {
         'title': 'Join',
-        'site_settings': models.SiteSettings.get(),
         'register_form': forms.RegisterForm(),
         'invite': invite,
     }

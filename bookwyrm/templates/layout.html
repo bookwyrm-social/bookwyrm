@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% if title %}{{ title }} | {% endif %}BookWyrm</title>
+    <title>{% if title %}{{ title }} | {% endif %}{{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="/static/css/bulma.min.css">
     <link type="text/css" rel="stylesheet" href="/static/css/format.css">
@@ -11,12 +11,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="BookWyrm">
-    <meta name="og:title" content="BookWyrm">
+    <meta name="twitter:title" content="{{ site.name }}">
+    <meta name="og:title" content="{{ site.name }}">
     <meta name="twitter:description" content="Federated Social Reading">
     <meta name="og:description" content="Federated Social Reading">
-    <meta name="twitter:creator" content="@tripofmice">
-    <meta name="twitter:site" content="@tripofmice">
 </head>
 <body>
 
@@ -121,6 +119,15 @@
 <div class="section">
     {% block content %}
     {% endblock %}
+</div>
+
+<div class="footer">
+    <div class="columns">
+        <div class="column">
+            About this server
+
+        </div>
+    </div>
 </div>
 
 <script>
