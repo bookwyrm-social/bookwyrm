@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
-{% load humanize %}l
+{% load humanize %}
+{% load fr_display %}
 {% block content %}
 <div class="block">
     <h1 class="title">Notifications</h1>
@@ -12,9 +13,10 @@
 
 <div class="block">
     {% for notification in notifications %}
-    <div class="notification level{% if notification.id in unread %} is-primary{% endif %}">
-        <div class="level-left">
+    <div class="notification {% if notification.id in unread %} is-primary{% endif %}">
+        <div class="block">
             <p>
+                {# DESCRIPTION #}
                 {% if notification.related_user %}
                 {% include 'snippets/avatar.html' with user=notification.related_user %}
                 {% include 'snippets/username.html' with user=notification.related_user %}
@@ -30,10 +32,8 @@
                     <a href="{{ notification.related_status.remote_id}}">replied</a>
                     to your
                     <a href="{{ notification.related_status.reply_parent.remote_id}}">status</a>
-
                 {% elif notification.notification_type == 'FOLLOW' %}
                     followed you
-
                 {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
                     sent you a follow request
                     <div class="row shrink">
@@ -45,17 +45,30 @@
                 {% endif %}
                 {% else %}
                     your <a href="/import-status/{{ notification.related_import.id }}">import</a> completed.
-
                 {% endif %}
             </p>
         </div>
-
-        <p class="level-right">{{ notification.created_date | naturaltime }}</p>
+        {% if notification.related_status %}
+        <div class="block">
+            {# PREVIEW #}
+            <div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white{% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %} has-text-black{% else %}-bis has-text-grey-dark{% endif %}{% endif %}">
+                <div class="columns">
+                    <div class="column">
+                        <a href="{{ notification.related_status.remote_id }}">{{ notification.related_status.content | truncatewords_html:10 }}</a>
+                    </div>
+                    <div class="column is-narrow {% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %}has-text-black{% else %}has-text-grey-dark{% endif %}">
+                        {{ notification.related_status.published_date | post_date }}
+                        {% include 'snippets/privacy-icons.html' with item=notification.related_status %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% endfor %}
+
     {% if not notifications %}
     <p>You're all caught up!</p>
     {% endif %}
 </div>
-
 {% endblock %}
