@@ -17,6 +17,9 @@ class SiteSettings(models.Model):
     code_of_conduct = models.TextField(
         default="Add a code of conduct here.")
     allow_registration = models.BooleanField(default=True)
+    support_link = models.CharField(max_length=255, null=True, blank=True)
+    support_title = models.CharField(max_length=100, null=True, blank=True)
+    admin_email = models.EmailField(max_length=255, null=True, blank=True)
 
     @classmethod
     def get(cls):

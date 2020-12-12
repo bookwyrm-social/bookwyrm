@@ -3,13 +3,13 @@
 
 <div class="columns">
     <div class="column block">
-        {% include 'snippets/about.html' with site_settings=site_settings %}
+        {% include 'snippets/about.html' %}
     </div>
 
     <div class="column block">
         <h2 class="title">Code of Conduct</h2>
         <div class="content">
-            {{ site_settings.code_of_conduct | safe }}
+            {{ site.code_of_conduct | safe }}
         </div>
     </div>
 </div>
