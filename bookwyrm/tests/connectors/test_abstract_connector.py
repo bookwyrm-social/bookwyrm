@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 from bookwyrm.connectors.abstract_connector import Mapping
-from bookwyrm.connectors.bookwyrm_connector import Connector
+from bookwyrm.connectors.openlibrary import Connector
 
 
 class AbstractConnector(TestCase):
@@ -12,7 +12,7 @@ class AbstractConnector(TestCase):
 
         models.Connector.objects.create(
             identifier='example.com',
-            connector_file='bookwyrm_connector',
+            connector_file='openlibrary',
             base_url='https://example.com',
             books_url='https:/example.com',
             covers_url='https://example.com',

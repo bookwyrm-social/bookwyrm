@@ -12,37 +12,6 @@ def delete_status(status):
     status.save()
 
 
-def create_status(activity):
-    ''' unfortunately, it's not QUITE as simple as deserializing it '''
-    # render the json into an activity object
-    serializer = activitypub.activity_objects[activity['type']]
-    activity = serializer(**activity)
-    try:
-        model = models.activity_models[activity.type]
-    except KeyError:
-        # not a type of status we are prepared to deserialize
-        return None
-
-    # ignore notes that aren't replies to known statuses
-    if activity.type == 'Note':
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-        if not reply:
-            return None
-
-    # look up books
-    book_urls = []
-    if hasattr(activity, 'inReplyToBook'):
-        book_urls.append(activity.inReplyToBook)
-    if hasattr(activity, 'tag'):
-        book_urls += [t['href'] for t in activity.tag if t['type'] == 'Book']
-    for remote_id in book_urls:
-        books_manager.get_or_create_book(remote_id)
-
-    return activity.to_model(model)
-
-
 def create_generated_note(user, content, mention_books=None, privacy='public'):
     ''' a note created by the app about user activity '''
     # sanitize input html

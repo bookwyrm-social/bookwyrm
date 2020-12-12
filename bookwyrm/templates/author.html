@@ -2,7 +2,7 @@
 {% load fr_display %}
 {% block content %}
 <div class="block">
-    <h1 class="title">{{ author.display_name }}</h1>
+    <h1 class="title">{{ author.name }}</h1>
 
     {% if author.bio %}
     <p>
@@ -12,7 +12,7 @@
 </div>
 
 <div class="block">
-    <h3 class="title is-4">Books by {{ author.display_name }}</h3>
+    <h3 class="title is-4">Books by {{ author.name }}</h3>
     {% include 'snippets/book_tiles.html' with books=books %}
 </div>
 {% endblock %}

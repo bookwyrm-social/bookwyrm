@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
-from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
-        JsonResponse
+from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -534,7 +533,7 @@ def book_page(request, book_id):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 
     if isinstance(book, models.Work):
-        book = book.default_edition
+        book = book.get_default_edition()
     if not book:
         return HttpResponseNotFound()
 
@@ -543,7 +542,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     reviews = models.Review.objects.filter(
-        book__in=work.edition_set.all(),
+        book__in=work.editions.all(),
     )
     # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
@@ -563,9 +562,9 @@ def book_page(request, book_id):
     user_tags = []
     readthroughs = []
     if request.user.is_authenticated:
-        user_tags = models.Tag.objects.filter(
+        user_tags = models.UserTag.objects.filter(
             book=book, user=request.user
-        ).values_list('identifier', flat=True)
+        ).values_list('tag__identifier', flat=True)
 
         readthroughs = models.ReadThrough.objects.filter(
             user=request.user,
@@ -573,11 +572,9 @@ def book_page(request, book_id):
         ).order_by('start_date')
 
     rating = reviews.aggregate(Avg('rating'))
-    tags = models.Tag.objects.filter(
-        book=book
-    ).values(
-        'book', 'name', 'identifier'
-    ).distinct().all()
+    tags = models.UserTag.objects.filter(
+        book=book,
+    )
 
     data = {
         'title': book.title,
@@ -651,7 +648,7 @@ def author_page(request, author_id):
     data = {
         'title': author.name,
         'author': author,
-        'books': [b.default_edition for b in books],
+        'books': [b.get_default_edition() for b in books],
     }
     return TemplateResponse(request, 'author.html', data)
 
@@ -667,7 +664,9 @@ def tag_page(request, tag_id):
         return JsonResponse(
             tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
 
-    books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
+    books = models.Edition.objects.filter(
+        usertag__tag__identifier=tag_id
+    ).distinct()
     data = {
         'title': tag_obj.name,
         'books': books,

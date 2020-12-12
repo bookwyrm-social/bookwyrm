@@ -12,9 +12,9 @@ from .status import Status, GeneratedNote, Review, Comment, Quotation
 from .status import Favorite, Boost, Notification, ReadThrough
 from .attachment import Image
 
-from .tag import Tag
+from .tag import Tag, UserTag
 
-from .user import User
+from .user import User, KeyPair
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .federated_server import FederatedServer
 
@@ -25,3 +25,8 @@ from .site import SiteSettings, SiteInvite, PasswordReset
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[1].activity_serializer.__name__: c[1] \
     for c in cls_members if hasattr(c[1], 'activity_serializer')}
+
+def to_activity(activity_json):
+    ''' link up models and activities '''
+    activity_type = activity_json.get('type')
+    return activity_models[activity_type].to_activity(activity_json)

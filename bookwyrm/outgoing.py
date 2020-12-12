@@ -4,15 +4,15 @@ import re
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import requests
+from requests import HTTPError
 
 from bookwyrm import activitypub
 from bookwyrm import models
+from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
-from bookwyrm.remote_user import get_or_create_remote_user
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
 
@@ -54,16 +54,16 @@ def handle_remote_webfinger(query):
         url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
             (domain, query)
         try:
-            response = requests.get(url)
-        except requests.exceptions.ConnectionError:
+            data = get_data(url)
+        except (ConnectorException, HTTPError):
             return None
-        if not response.ok:
-            return None
-        data = response.json()
-        for link in data['links']:
-            if link['rel'] == 'self':
+
+        for link in data.get('links'):
+            if link.get('rel') == 'self':
                 try:
-                    user = get_or_create_remote_user(link['href'])
+                    user = activitypub.resolve_remote_id(
+                        models.User, link['href']
+                    )
                 except KeyError:
                     return None
     return user

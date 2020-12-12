@@ -25,20 +25,23 @@ def get_follow_data(follower, followee):
     ).serialize()
     return json.dumps(follow_activity)
 
-Sender = namedtuple('Sender', ('remote_id', 'private_key', 'public_key'))
+KeyPair = namedtuple('KeyPair', ('private_key', 'public_key'))
+Sender = namedtuple('Sender', ('remote_id', 'key_pair'))
 
 class Signature(TestCase):
     def setUp(self):
-        self.mouse = User.objects.create_user('mouse', 'mouse@example.com', '')
-        self.rat = User.objects.create_user('rat', 'rat@example.com', '')
-        self.cat = User.objects.create_user('cat', 'cat@example.com', '')
+        self.mouse = User.objects.create_user(
+            'mouse', 'mouse@example.com', '', local=True)
+        self.rat = User.objects.create_user(
+            'rat', 'rat@example.com', '', local=True)
+        self.cat = User.objects.create_user(
+            'cat', 'cat@example.com', '', local=True)
 
         private_key, public_key = create_key_pair()
 
         self.fake_remote = Sender(
             'http://localhost/user/remote',
-            private_key,
-            public_key,
+            KeyPair(private_key, public_key)
         )
 
     def send(self, signature, now, data, digest):
@@ -70,8 +73,9 @@ class Signature(TestCase):
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)
-        with patch('bookwyrm.incoming.handle_follow.delay') as _:
-            return self.send(signature, now, send_data or data, digest)
+        with patch('bookwyrm.incoming.handle_follow.delay'):
+            with patch('bookwyrm.models.user.set_remote_server.delay'):
+                return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
         response = self.send_test_request(sender=self.mouse)
@@ -89,7 +93,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
-        data['publicKey']['publicKeyPem'] = self.fake_remote.public_key
+        data['publicKey']['publicKeyPem'] = self.fake_remote.key_pair.public_key
         del data['icon'] # Avoid having to return an avatar.
         responses.add(
             responses.GET,
@@ -107,7 +111,7 @@ class Signature(TestCase):
             status=200
         )
 
-        with patch('bookwyrm.remote_user.get_remote_reviews.delay') as _:
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
             response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
 
@@ -116,7 +120,7 @@ class Signature(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
-        data['publicKey']['publicKeyPem'] = self.fake_remote.public_key
+        data['publicKey']['publicKeyPem'] = self.fake_remote.key_pair.public_key
         del data['icon'] # Avoid having to return an avatar.
         responses.add(
             responses.GET,
@@ -127,25 +131,18 @@ class Signature(TestCase):
             responses.GET,
             'https://localhost/.well-known/nodeinfo',
             status=404)
-        responses.add(
-            responses.GET,
-            'https://example.com/user/mouse/outbox?page=true',
-            json={'orderedItems': []},
-            status=200
-        )
 
         # Second and subsequent fetches get a different key:
-        new_private_key, new_public_key = create_key_pair()
-        new_sender = Sender(
-            self.fake_remote.remote_id, new_private_key, new_public_key)
-        data['publicKey']['publicKeyPem'] = new_public_key
+        key_pair = KeyPair(*create_key_pair())
+        new_sender = Sender(self.fake_remote.remote_id, key_pair)
+        data['publicKey']['publicKeyPem'] = key_pair.public_key
         responses.add(
             responses.GET,
             self.fake_remote.remote_id,
             json=data,
             status=200)
 
-        with patch('bookwyrm.remote_user.get_remote_reviews.delay') as _:
+        with patch('bookwyrm.models.user.get_remote_reviews.delay'):
             # Key correct:
             response = self.send_test_request(sender=self.fake_remote)
             self.assertEqual(response.status_code, 200)
@@ -177,7 +174,7 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_changed_data(self):
         '''Message data must match the digest header.'''
-        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 send_data=get_follow_data(self.mouse, self.cat))
@@ -185,7 +182,7 @@ class Signature(TestCase):
 
     @pytest.mark.integration
     def test_invalid_digest(self):
-        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 digest='SHA-256=AAAAAAAAAAAAAAAAAA')
@@ -194,7 +191,7 @@ class Signature(TestCase):
     @pytest.mark.integration
     def test_old_message(self):
         '''Old messages should be rejected to prevent replay attacks.'''
-        with patch('bookwyrm.remote_user.fetch_user_data') as _:
+        with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
                 date=http_date(time.time() - 301)
