@@ -1,4 +1,5 @@
 ''' testing models '''
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
@@ -21,6 +22,13 @@ class User(TestCase):
         self.assertEqual(self.user.outbox, '%s/outbox' % expected_id)
         self.assertIsNotNone(self.user.key_pair.private_key)
         self.assertIsNotNone(self.user.key_pair.public_key)
+
+    def test_remote_user(self):
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            user = models.User.objects.create_user(
+                'rat', 'rat@rat.rat', 'ratword', local=False,
+                remote_id='https://example.com/dfjkg')
+        self.assertEqual(user.username, 'rat@example.com')
 
 
     def test_user_shelves(self):

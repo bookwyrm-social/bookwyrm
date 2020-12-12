@@ -190,6 +190,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 
 @receiver(models.signals.post_save, sender=User)
+#pylint: disable=unused-argument
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' create shelves for new users '''
     if not created:
