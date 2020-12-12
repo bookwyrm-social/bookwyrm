@@ -43,7 +43,6 @@ def user_login(request):
     login_form.non_field_errors = 'Username or password are incorrect'
     register_form = forms.RegisterForm()
     data = {
-        'site_settings': models.SiteSettings.get(),
         'login_form': login_form,
         'register_form': register_form
     }
@@ -79,7 +78,6 @@ def register(request):
 
     if errors:
         data = {
-            'site_settings': models.SiteSettings.get(),
             'login_form': forms.LoginForm(),
             'register_form': form
         }
