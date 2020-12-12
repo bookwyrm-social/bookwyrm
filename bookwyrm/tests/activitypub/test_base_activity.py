@@ -31,9 +31,6 @@ class BaseActivity(TestCase):
         # don't try to load the user icon
         del self.userdata['icon']
 
-        self.book = models.Edition.objects.create(
-            title='Test Edition', remote_id='http://book.com/book')
-
         image_file = pathlib.Path(__file__).parent.joinpath(
             '../../static/images/default_avi.jpg')
         image = Image.open(image_file)
@@ -146,6 +143,8 @@ class BaseActivity(TestCase):
             content='test status',
             user=self.user,
         )
+        book = models.Edition.objects.create(
+            title='Test Edition', remote_id='http://book.com/book')
         update_data = activitypub.Note(**status.to_activity())
         update_data.tag = [
             {
@@ -161,7 +160,7 @@ class BaseActivity(TestCase):
         ]
         update_data.to_model(models.Status, instance=status)
         self.assertEqual(status.mention_users.first(), self.user)
-        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.mention_books.first(), book)
 
 
     @responses.activate

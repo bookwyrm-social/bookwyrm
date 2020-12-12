@@ -170,12 +170,19 @@ class BaseModel(TestCase):
         ''' attempt to match a remote id to an object in the db '''
         # uses a different remote id scheme
         # this isn't really part of this test directly but it's helpful to state
-        self.assertEqual(self.book.origin_id, 'http://book.com/book')
-        self.assertNotEqual(self.book.remote_id, 'http://book.com/book')
+        book = models.Edition.objects.create(
+            title='Test Edition', remote_id='http://book.com/book')
+        user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        user.remote_id = 'http://example.com/a/b'
+        user.save()
+
+        self.assertEqual(book.origin_id, 'http://book.com/book')
+        self.assertNotEqual(book.remote_id, 'http://book.com/book')
 
         # uses subclasses
         models.Comment.objects.create(
-            user=self.user, content='test status', book=self.book, \
+            user=user, content='test status', book=book, \
             remote_id='https://comment.net')
 
         result = models.User.find_existing_by_remote_id('hi')
@@ -183,12 +190,12 @@ class BaseModel(TestCase):
 
         result = models.User.find_existing_by_remote_id(
             'http://example.com/a/b')
-        self.assertEqual(result, self.user)
+        self.assertEqual(result, user)
 
         # test using origin id
         result = models.Edition.find_existing_by_remote_id(
             'http://book.com/book')
-        self.assertEqual(result, self.book)
+        self.assertEqual(result, book)
 
         # test subclass match
         result = models.Status.find_existing_by_remote_id(
