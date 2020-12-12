@@ -28,7 +28,9 @@ def validate_remote_id(value):
 class ActivitypubFieldMixin:
     ''' make a database field serializable '''
     def __init__(self, *args, \
-            activitypub_field=None, activitypub_wrapper=None, **kwargs):
+                 activitypub_field=None, activitypub_wrapper=None,
+                 deduplication_field=False, **kwargs):
+        self.deduplication_field = deduplication_field
         if activitypub_wrapper:
             self.activitypub_wrapper = activitypub_field
             self.activitypub_field = activitypub_wrapper
@@ -86,6 +88,8 @@ class RemoteIdField(ActivitypubFieldMixin, models.CharField):
             *args, max_length=max_length, validators=validators,
             **kwargs
         )
+        # for this field, the default is true. false everywhere else.
+        self.deduplication_field = kwargs.get('deduplication_field', True)
 
 
 class UsernameField(ActivitypubFieldMixin, models.CharField):

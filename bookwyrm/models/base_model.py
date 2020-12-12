@@ -1,5 +1,7 @@
 ''' base model with default fields '''
 from base64 import b64encode
+from functools import reduce
+import operator
 from uuid import uuid4
 
 from Crypto.PublicKey import RSA
@@ -7,6 +9,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.core.paginator import Paginator
 from django.db import models
+from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -63,6 +66,50 @@ class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
     reverse_unfurl = False
+
+    @classmethod
+    def find_existing_by_remote_id(cls, remote_id):
+        ''' look up a remote id in the db '''
+        return cls.find_existing({'id': remote_id})
+
+    @classmethod
+    def find_existing(cls, data):
+        ''' compare data to fields that can be used for deduplation.
+        This always includes remote_id, but can also be unique identifiers
+        like an isbn for an edition '''
+        filters = []
+        for field in cls._meta.get_fields():
+            if not hasattr(field, 'deduplication_field') or \
+                    not field.deduplication_field:
+                continue
+
+            value = data.get(field.activitypub_field)
+            if not value:
+                continue
+            filters.append({field.name: value})
+
+        if hasattr(cls, 'origin_id') and 'id' in data:
+            # kinda janky, but this handles special case for books
+            filters.append({'origin_id': data['id']})
+
+        if not filters:
+            # if there are no deduplication fields, it will match the first
+            # item no matter what. this shouldn't happen but just in case.
+            return None
+
+        objects = cls.objects
+        if hasattr(objects, 'select_subclasses'):
+            objects = objects.select_subclasses()
+
+        # an OR operation on all the match fields
+        match = objects.filter(
+            reduce(
+                operator.or_, (Q(**f) for f in filters)
+            )
+        )
+        # there OUGHT to be only one match
+        return match.first()
+
 
     def to_activity(self):
         ''' convert from a model to an activity '''

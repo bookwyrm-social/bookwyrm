@@ -11,7 +11,7 @@ import responses
 
 from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject, \
-    find_existing_by_remote_id, resolve_remote_id, set_related_field
+    resolve_remote_id, set_related_field
 from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
 
@@ -76,34 +76,6 @@ class BaseActivity(TestCase):
         self.assertIsInstance(serialized, dict)
         self.assertEqual(serialized['id'], 'a')
         self.assertEqual(serialized['type'], 'b')
-
-    def test_find_existing_by_remote_id(self):
-        ''' attempt to match a remote id to an object in the db '''
-        # uses a different remote id scheme
-        # this isn't really part of this test directly but it's helpful to state
-        self.assertEqual(self.book.origin_id, 'http://book.com/book')
-        self.assertNotEqual(self.book.remote_id, 'http://book.com/book')
-
-        # uses subclasses
-        models.Comment.objects.create(
-            user=self.user, content='test status', book=self.book, \
-            remote_id='https://comment.net')
-
-        result = find_existing_by_remote_id(models.User, 'hi')
-        self.assertIsNone(result)
-
-        result = find_existing_by_remote_id(
-            models.User, 'http://example.com/a/b')
-        self.assertEqual(result, self.user)
-
-        # test using origin id
-        result = find_existing_by_remote_id(
-            models.Edition, 'http://book.com/book')
-        self.assertEqual(result, self.book)
-
-        # test subclass match
-        result = find_existing_by_remote_id(
-            models.Status, 'https://comment.net')
 
     @responses.activate
     def test_resolve_remote_id(self):

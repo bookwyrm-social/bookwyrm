@@ -16,9 +16,12 @@ class Book(ActivitypubMixin, BookWyrmModel):
     ''' a generic book, which can mean either an edition or a work '''
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     # these identifiers apply to both works and editions
-    openlibrary_key = fields.CharField(max_length=255, blank=True, null=True)
-    librarything_key = fields.CharField(max_length=255, blank=True, null=True)
-    goodreads_key = fields.CharField(max_length=255, blank=True, null=True)
+    openlibrary_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    librarything_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    goodreads_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
 
     # info about where the data comes from and where/if to sync
     sync = models.BooleanField(default=True)
@@ -83,7 +86,8 @@ class Book(ActivitypubMixin, BookWyrmModel):
 class Work(OrderedCollectionPageMixin, Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
-    lccn = fields.CharField(max_length=255, blank=True, null=True)
+    lccn = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
     # this has to be nullable but should never be null
     default_edition = fields.ForeignKey(
         'Edition',
@@ -103,10 +107,14 @@ class Work(OrderedCollectionPageMixin, Book):
 class Edition(Book):
     ''' an edition of a book '''
     # these identifiers only apply to editions, not works
-    isbn_10 = fields.CharField(max_length=255, blank=True, null=True)
-    isbn_13 = fields.CharField(max_length=255, blank=True, null=True)
-    oclc_number = fields.CharField(max_length=255, blank=True, null=True)
-    asin = fields.CharField(max_length=255, blank=True, null=True)
+    isbn_10 = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    isbn_13 = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    oclc_number = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    asin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
     pages = fields.IntegerField(blank=True, null=True)
     physical_format = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(

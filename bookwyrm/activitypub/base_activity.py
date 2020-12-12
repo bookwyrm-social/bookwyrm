@@ -78,11 +78,11 @@ class ActivityObject:
 
         # check for an existing instance, if we're not updating a known obj
         if not instance:
-            instance = find_existing_by_remote_id(model, self.id) or model()
-	# TODO: deduplicate books by identifiers
+            instance = model.find_existing(self.serialize()) or model()
 
         many_to_many_fields = {}
         for field in model._meta.get_fields():
+            # check if it's an activitypub field
             if not hasattr(field, 'field_to_activity'):
                 continue
             # call the formatter associated with the model field class
@@ -167,34 +167,25 @@ def set_related_field(
     if isinstance(data, str):
         item = resolve_remote_id(model, data, save=False)
     else:
-        item = model.activity_serializer(**data)
-        item = item.to_model(model, save=False)
-    instance = find_existing_by_remote_id(origin_model, related_remote_id)
+        # look for a match based on all the available data
+        item = model.find_existing(data)
+        if not item:
+            # create a new model instance
+            item = model.activity_serializer(**data)
+            item = item.to_model(model, save=False)
+    # this must exist because it's the object that triggered this function
+    instance = origin_model.find_existing_by_remote_id(related_remote_id)
+    if not instance:
+        raise ValueError('Invalid related remote id: %s' % related_remote_id)
+
+    # edition.parent_work = instance, for example
     setattr(item, related_field_name, instance)
     item.save()
 
 
-def find_existing_by_remote_id(model, remote_id):
-    ''' check for an existing instance of this id in the db '''
-    objects = model.objects
-    if hasattr(model.objects, 'select_subclasses'):
-        objects = objects.select_subclasses()
-
-    # first, check for an existing copy in the database
-    result = objects.filter(
-        remote_id=remote_id
-    ).first()
-
-    if not result and hasattr(model, 'origin_id'):
-        result = objects.filter(
-            origin_id=remote_id
-        ).first()
-    return result
-
-
 def resolve_remote_id(model, remote_id, refresh=False, save=True):
-    ''' look up the remote_id in the database or load it remotely '''
-    result = find_existing_by_remote_id(model, remote_id)
+    ''' take a remote_id and return an instance, creating if necessary '''
+    result = model.find_existing_by_remote_id(remote_id)
     if result and not refresh:
         return result
 
@@ -205,6 +196,11 @@ def resolve_remote_id(model, remote_id, refresh=False, save=True):
         raise ActivitySerializerError(
             'Could not connect to host for remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
+
+    # check for existing items with shared unique identifiers
+    item = model.find_existing(data)
+    if item:
+        return item
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it

@@ -12,11 +12,11 @@ from . import fields
 class Author(ActivitypubMixin, BookWyrmModel):
     ''' basic biographic info '''
     origin_id = models.CharField(max_length=255, null=True)
-    ''' copy of an author from OL '''
-    openlibrary_key = fields.CharField(max_length=255, blank=True, null=True)
+    openlibrary_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
     sync = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=timezone.now)
-    wikipedia_link = fields.CharField(max_length=255, blank=True, null=True)
+    wikipedia_link = fields.CharField(max_length=255, blank=True, null=True, deduplication_field=True)
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)

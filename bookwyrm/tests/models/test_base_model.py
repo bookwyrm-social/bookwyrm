@@ -11,13 +11,16 @@ from bookwyrm.models.base_model import ActivitypubMixin
 from bookwyrm.settings import DOMAIN
 
 class BaseModel(TestCase):
+    ''' functionality shared across models '''
     def test_remote_id(self):
+        ''' these should be generated '''
         instance = base_model.BookWyrmModel()
         instance.id = 1
         expected = instance.get_remote_id()
         self.assertEqual(expected, 'https://%s/bookwyrmmodel/1' % DOMAIN)
 
     def test_remote_id_with_user(self):
+        ''' format of remote id when there's a user object '''
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
         instance = base_model.BookWyrmModel()
@@ -46,6 +49,7 @@ class BaseModel(TestCase):
         self.assertIsNone(instance.remote_id)
 
     def test_to_create_activity(self):
+        ''' wrapper for ActivityPub "create" action '''
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
 
@@ -75,6 +79,7 @@ class BaseModel(TestCase):
         )
 
     def test_to_delete_activity(self):
+        ''' wrapper for Delete activity '''
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
 
@@ -98,6 +103,7 @@ class BaseModel(TestCase):
             ['https://www.w3.org/ns/activitystreams#Public'])
 
     def test_to_update_activity(self):
+        ''' ditto above but for Update '''
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
 
@@ -121,6 +127,7 @@ class BaseModel(TestCase):
         self.assertEqual(activity['object'], {})
 
     def test_to_undo_activity(self):
+        ''' and again, for Undo '''
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
 
@@ -140,12 +147,14 @@ class BaseModel(TestCase):
 
 
     def test_to_activity(self):
+        ''' model to ActivityPub json '''
         @dataclass(init=False)
         class TestActivity(ActivityObject):
+            ''' real simple mock '''
             type: str = 'Test'
 
         class TestModel(ActivitypubMixin, base_model.BookWyrmModel):
-            pass
+            ''' real simple mock model because BookWyrmModel is abstract '''
 
         instance = TestModel()
         instance.remote_id = 'https://www.example.com/test'
@@ -155,3 +164,32 @@ class BaseModel(TestCase):
         self.assertIsInstance(activity, dict)
         self.assertEqual(activity['id'], 'https://www.example.com/test')
         self.assertEqual(activity['type'], 'Test')
+
+
+    def test_find_existing_by_remote_id(self):
+        ''' attempt to match a remote id to an object in the db '''
+        # uses a different remote id scheme
+        # this isn't really part of this test directly but it's helpful to state
+        self.assertEqual(self.book.origin_id, 'http://book.com/book')
+        self.assertNotEqual(self.book.remote_id, 'http://book.com/book')
+
+        # uses subclasses
+        models.Comment.objects.create(
+            user=self.user, content='test status', book=self.book, \
+            remote_id='https://comment.net')
+
+        result = models.User.find_existing_by_remote_id('hi')
+        self.assertIsNone(result)
+
+        result = models.User.find_existing_by_remote_id(
+            'http://example.com/a/b')
+        self.assertEqual(result, self.user)
+
+        # test using origin id
+        result = models.Edition.find_existing_by_remote_id(
+            'http://book.com/book')
+        self.assertEqual(result, self.book)
+
+        # test subclass match
+        result = models.Status.find_existing_by_remote_id(
+            'https://comment.net')

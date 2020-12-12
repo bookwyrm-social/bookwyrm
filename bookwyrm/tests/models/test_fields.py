@@ -48,6 +48,7 @@ class ActivitypubFields(TestCase):
         instance = fields.ActivitypubFieldMixin()
         self.assertEqual(instance.field_to_activity('fish'), 'fish')
         self.assertEqual(instance.field_from_activity('fish'), 'fish')
+        self.assertFalse(instance.deduplication_field)
 
         instance = fields.ActivitypubFieldMixin(
             activitypub_wrapper='endpoints', activitypub_field='outbox'
@@ -70,6 +71,7 @@ class ActivitypubFields(TestCase):
         ''' just sets some defaults on charfield '''
         instance = fields.RemoteIdField()
         self.assertEqual(instance.max_length, 255)
+        self.assertTrue(instance.deduplication_field)
 
         with self.assertRaises(ValidationError):
             instance.run_validators('http://www.example.com/dlfjg 23/x')
@@ -97,7 +99,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
 
     @responses.activate
-    def test_foreign_key_from_activity(self):
+    def test_foreign_key_from_activity_str(self):
         ''' this is the important stuff '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -117,15 +119,47 @@ class ActivitypubFields(TestCase):
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             value = instance.field_from_activity(
                 'https://example.com/user/mouse')
+        self.assertIsInstance(value, User)
+        self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
+        self.assertEqual(value.name, 'MOUSE?? MOUSE!!')
 
-        # test recieving activity json
-        value = instance.field_from_activity(userdata)
+
+    def test_foreign_key_from_activity_dict(self):
+        ''' test recieving activity json '''
+        instance = fields.ForeignKey(User, on_delete=models.CASCADE)
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        userdata = json.loads(datafile.read_bytes())
+        # don't try to load the user icon
+        del userdata['icon']
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            value = instance.field_from_activity(userdata)
         self.assertIsInstance(value, User)
         self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(value.name, 'MOUSE?? MOUSE!!')
         # et cetera but we're not testing serializing user json
 
-        # test receiving a remote id of an object in the db
+
+    def test_foreign_key_from_activity_dict_existing(self):
+        ''' test receiving a dict of an existing object in the db '''
+        instance = fields.ForeignKey(User, on_delete=models.CASCADE)
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        userdata = json.loads(datafile.read_bytes())
+        user = User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        user.remote_id = 'https://example.com/user/mouse'
+        user.save()
+        value = instance.field_from_activity(userdata)
+        self.assertEqual(value, user)
+
+
+    def test_foreign_key_from_activity_str_existing(self):
+        ''' test receiving a remote id of an existing object in the db '''
+        instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         user = User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         value = instance.field_from_activity(user.remote_id)

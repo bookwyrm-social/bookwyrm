@@ -32,7 +32,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     inbox = fields.RemoteIdField(unique=True)
     shared_inbox = fields.RemoteIdField(
         activitypub_field='sharedInbox',
-        activitypub_wrapper='endpoints', null=True)
+        activitypub_wrapper='endpoints',
+        deduplication_field=False,
+        null=True)
     federated_server = models.ForeignKey(
         'FederatedServer',
         on_delete=models.PROTECT,
