@@ -100,15 +100,17 @@ class ActivitypubFields(TestCase):
 
     @responses.activate
     def test_foreign_key_from_activity_str(self):
-        ''' this is the important stuff '''
+        ''' create a new object from a foreign key '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
-
         datafile = pathlib.Path(__file__).parent.joinpath(
-            '../data/ap_user.json'
-        )
+            '../data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
         # don't try to load the user icon
         del userdata['icon']
+
+        # it shouldn't match with this unrelated user:
+        unrelated_user = User.objects.create_user(
+            'rat', 'rat@rat.rat', 'ratword', local=True)
 
         # test receiving an unknown remote id and loading data
         responses.add(
@@ -120,6 +122,7 @@ class ActivitypubFields(TestCase):
             value = instance.field_from_activity(
                 'https://example.com/user/mouse')
         self.assertIsInstance(value, User)
+        self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(value.name, 'MOUSE?? MOUSE!!')
 
@@ -127,16 +130,19 @@ class ActivitypubFields(TestCase):
     def test_foreign_key_from_activity_dict(self):
         ''' test recieving activity json '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
-
         datafile = pathlib.Path(__file__).parent.joinpath(
-            '../data/ap_user.json'
-        )
+            '../data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
         # don't try to load the user icon
         del userdata['icon']
+
+        # it shouldn't match with this unrelated user:
+        unrelated_user = User.objects.create_user(
+            'rat', 'rat@rat.rat', 'ratword', local=True)
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             value = instance.field_from_activity(userdata)
         self.assertIsInstance(value, User)
+        self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(value.name, 'MOUSE?? MOUSE!!')
         # et cetera but we're not testing serializing user json
@@ -153,6 +159,9 @@ class ActivitypubFields(TestCase):
             'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         user.remote_id = 'https://example.com/user/mouse'
         user.save()
+        User.objects.create_user(
+            'rat', 'rat@rat.rat', 'ratword', local=True)
+
         value = instance.field_from_activity(userdata)
         self.assertEqual(value, user)
 
@@ -162,6 +171,9 @@ class ActivitypubFields(TestCase):
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         user = User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+        User.objects.create_user(
+            'rat', 'rat@rat.rat', 'ratword', local=True)
+
         value = instance.field_from_activity(user.remote_id)
         self.assertEqual(value, user)
 
