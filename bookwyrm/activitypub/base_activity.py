@@ -81,6 +81,7 @@ class ActivityObject:
             instance = model.find_existing(self.serialize()) or model()
 
         many_to_many_fields = {}
+        image_fields = {}
         for field in model._meta.get_fields():
             # check if it's an activitypub field
             if not hasattr(field, 'field_to_activity'):
@@ -99,10 +100,14 @@ class ActivityObject:
                 many_to_many_fields[field.name] = value
             elif isinstance(model_field, ImageFileDescriptor):
                 # image fields need custom handling
-                getattr(instance, field.name).save(*value, save=save)
+                image_fields[field.name] = value
             else:
                 # just a good old fashioned model.field = value
                 setattr(instance, field.name, value)
+
+        # if this isn't here, it messes up saving users. who even knows.
+        for (model_key, value) in image_fields.items():
+            getattr(instance, model_key).save(*value, save=save)
 
         if not save:
             # we can't set many to many and reverse fields on an unsaved object
