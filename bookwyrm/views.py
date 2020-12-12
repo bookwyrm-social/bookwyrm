@@ -131,7 +131,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = model.objects
 
     activities = activities.filter(
-        deleted=False
+        deleted=False,
     ).order_by(
         '-published_date'
     )
@@ -159,6 +159,11 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = activities.filter(
             Q(user__in=following, privacy='followers') | Q(privacy='public')
         )
+
+    try:
+        activities = activities.filter(~Q(boosters__in=activities))
+    except ValueError:
+        pass
 
     return activities
 
