@@ -4,5 +4,5 @@ from bookwyrm import models
 def site_settings(request):
     ''' include the custom info about the site '''
     return {
-        'site': models.SiteSettings.objects.first()
+        'site': models.SiteSettings.objects.get()
     }
