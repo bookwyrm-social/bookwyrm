@@ -103,7 +103,7 @@
                 {% for shelf in other_edition_shelves %}
                 <p>
                     A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelves/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
-                    {% include 'snippets/switch_edition_button.html' with desired_edition=book %}
+                    {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}
 

@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -242,6 +243,32 @@ def edit_book(request, book_id):
 
     outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.id)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def switch_edition(request):
+    ''' switch your copy of a book to a different edition '''
+    edition_id = request.POST.get('edition')
+    new_edition = get_object_or_404(models.Edition, id=edition_id)
+    shelfbooks = models.ShelfBook.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        added_by=request.user
+    )
+    for shelfbook in shelfbooks.all():
+        shelfbook.book = new_edition
+        shelfbook.save()
+
+    readthroughs = models.ReadThrough.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        user=request.user
+    )
+    for readthrough in readthroughs.all():
+        readthrough.book = new_edition
+        readthrough.save()
+
+    return redirect('/book/%d' % new_edition.id)
 
 
 @login_required
