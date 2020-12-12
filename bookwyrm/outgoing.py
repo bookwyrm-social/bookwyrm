@@ -4,10 +4,11 @@ import re
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from requests import HTTPError
 
 from bookwyrm import activitypub
 from bookwyrm import models
-from bookwyrm.connectors import get_data
+from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
@@ -52,7 +53,11 @@ def handle_remote_webfinger(query):
     except models.User.DoesNotExist:
         url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
             (domain, query)
-        data = get_data(url)
+        try:
+            data = get_data(url)
+        except (ConnectorException, HTTPError):
+            return None
+
         for link in data.get('links'):
             if link.get('rel') == 'self':
                 try:
