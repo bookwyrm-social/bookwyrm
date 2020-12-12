@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
-from django.http import HttpResponseBadRequest, HttpResponseNotFound,\
-        JsonResponse
+from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -558,8 +557,7 @@ def book_page(request, book_id):
         prev_page = '/book/%s/?page=%d' % \
                 (book_id, reviews_page.previous_page_number())
 
-    user_tags = []
-    readthroughs = []
+    user_tags = readthroughs = user_shelves = other_edition_shelves = []
     if request.user.is_authenticated:
         user_tags = models.Tag.objects.filter(
             book=book, user=request.user
@@ -569,6 +567,16 @@ def book_page(request, book_id):
             user=request.user,
             book=book,
         ).order_by('start_date')
+
+        user_shelves = models.ShelfBook.objects.filter(
+            added_by=request.user, book=book
+        )
+
+        other_edition_shelves = models.ShelfBook.objects.filter(
+            ~Q(book=book),
+            added_by=request.user,
+            book__parent_work=book.parent_work,
+        )
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.Tag.objects.filter(
@@ -585,6 +593,8 @@ def book_page(request, book_id):
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
+        'user_shelves': user_shelves,
+        'other_edition_shelves': other_edition_shelves,
         'readthroughs': readthroughs,
         'path': '/book/%s' % book_id,
         'info_fields': [
@@ -628,10 +638,9 @@ def editions_page(request, book_id):
             encoder=ActivityEncoder
         )
 
-    editions = models.Edition.objects.filter(parent_work=work).all()
     data = {
         'title': 'Editions of %s' % work.title,
-        'editions': editions,
+        'editions': work.edition_set.all(),
         'work': work,
     }
     return TemplateResponse(request, 'editions.html', data)
