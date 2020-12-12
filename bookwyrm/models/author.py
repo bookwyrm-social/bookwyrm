@@ -21,8 +21,6 @@ class Author(ActivitypubMixin, BookWyrmModel):
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
     name = fields.CharField(max_length=255)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
-    first_name = models.CharField(max_length=255, blank=True, null=True)
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
@@ -41,15 +39,5 @@ class Author(ActivitypubMixin, BookWyrmModel):
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
         return 'https://%s/author/%s' % (DOMAIN, self.id)
-
-    @property
-    def display_name(self):
-        ''' Helper to return a displayable name'''
-        if self.name:
-            return self.name
-        # don't want to return a spurious space if all of these are None
-        if self.first_name and self.last_name:
-            return self.first_name + ' ' + self.last_name
-        return self.last_name or self.first_name
 
     activity_serializer = activitypub.Author

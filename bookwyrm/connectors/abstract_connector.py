@@ -178,8 +178,7 @@ class AbstractConnector(AbstractMinimalConnector):
         author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-            if author.display_name:
-                author_text.append(author.display_name)
+            author_text.append(author.name)
         book.author_text = ', '.join(author_text)
         book.save()
 
