@@ -198,9 +198,10 @@ def resolve_remote_id(model, remote_id, refresh=False, save=True):
                 (model.__name__, remote_id))
 
     # check for existing items with shared unique identifiers
-    item = model.find_existing(data)
-    if item:
-        return item
+    if not result:
+        result = model.find_existing(data)
+        if result and not refresh:
+            return result
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
