@@ -6,7 +6,7 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import BookWyrmModel, PrivacyLevels
+from .base_model import BookWyrmModel
 from . import fields
 from .fields import image_serializer
 
@@ -18,11 +18,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     mention_users = fields.TagField('User', related_name='mention_user')
     mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
-    privacy = models.CharField(
-        max_length=255,
-        default='public',
-        choices=PrivacyLevels.choices
-    )
+    privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
     # created date is different than publish date because of federated posts
     published_date = fields.DateTimeField(
@@ -48,7 +44,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
-    #----- replies collection activitypub ----#
     @classmethod
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
@@ -81,25 +76,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             ).serialize()
         activity = ActivitypubMixin.to_activity(self)
         activity['replies'] = self.to_replies()
-
-        # privacy controls
-        public = 'https://www.w3.org/ns/activitystreams#Public'
-        mentions = [u.remote_id for u in self.mention_users.all()]
-        # this is a link to the followers list:
-        followers = self.user.__class__._meta.get_field('followers')\
-                .field_to_activity(self.user.followers)
-        if self.privacy == 'public':
-            activity['to'] = [public]
-            activity['cc'] = [followers] + mentions
-        elif self.privacy == 'unlisted':
-            activity['to'] = [followers]
-            activity['cc'] = [public] + mentions
-        elif self.privacy == 'followers':
-            activity['to'] = [followers]
-            activity['cc'] = mentions
-        if self.privacy == 'direct':
-            activity['to'] = mentions
-            activity['cc'] = []
 
         # "pure" serialization for non-bookwyrm instances
         if pure:

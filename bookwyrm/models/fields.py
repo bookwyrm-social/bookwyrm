@@ -49,6 +49,20 @@ class ActivitypubFieldMixin:
         setattr(instance, self.name, formatted)
 
 
+    def set_activity_from_field(self, activity, instance):
+        ''' update the json object '''
+        value = getattr(instance, self.name)
+        formatted = self.field_to_activity(value)
+        if formatted is None:
+            return
+
+        key = self.get_activitypub_field()
+        if isinstance(activity.get(key), list):
+            activity[key] += formatted
+        else:
+            activity[key] = value
+
+
     def field_to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
         if hasattr(self, 'activitypub_wrapper'):
@@ -132,6 +146,52 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
 
     def field_to_activity(self, value):
         return value.split('@')[0]
+
+
+PrivacyLevels = models.TextChoices('Privacy', [
+    'public',
+    'unlisted',
+    'followers',
+    'direct'
+])
+
+class PrivacyField(ActivitypubFieldMixin, models.CharField):
+    ''' this maps to two differente activitypub fields '''
+    public = 'https://www.w3.org/ns/activitystreams#Public'
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args, max_length=255,
+            choices=PrivacyLevels.choices, default='public')
+
+    def set_field_from_activity(self, instance, data):
+        to = data.to
+        cc = data.cc
+        if to == [self.public]:
+            setattr(instance, self.name, 'public')
+        elif cc == []:
+            setattr(instance, self.name, 'direct')
+        elif self.public in cc:
+            setattr(instance, self.name, 'unlisted')
+        else:
+            setattr(instance, self.name, 'followers')
+
+    def set_activity_from_field(self, activity, instance):
+        mentions = [u.remote_id for u in instance.mention_users.all()]
+        # this is a link to the followers list
+        followers = instance.user.__class__._meta.get_field('followers')\
+                .field_to_activity(instance.user.followers)
+        if self.privacy == 'public':
+            activity['to'] = [self.public]
+            activity['cc'] = [followers] + mentions
+        elif self.privacy == 'unlisted':
+            activity['to'] = [followers]
+            activity['cc'] = [self.public] + mentions
+        elif self.privacy == 'followers':
+            activity['to'] = [followers]
+            activity['cc'] = mentions
+        if self.privacy == 'direct':
+            activity['to'] = mentions
+            activity['cc'] = []
 
 
 class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
