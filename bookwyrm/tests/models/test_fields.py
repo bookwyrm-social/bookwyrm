@@ -116,7 +116,7 @@ class ActivitypubFields(TestCase):
             id: str = 'http://hi.com'
             type: str = 'Test'
 
-        class TestModel(ActivitypubMixin, BookWyrmModel):
+        class TestPrivacyModel(ActivitypubMixin, BookWyrmModel):
             ''' real simple mock model because BookWyrmModel is abstract '''
             privacy_field = fields.PrivacyField()
             mention_users = fields.TagField(User)
@@ -127,7 +127,7 @@ class ActivitypubFields(TestCase):
             to=[public],
             cc=['bleh'],
         )
-        model_instance = TestModel(privacy_field='direct')
+        model_instance = TestPrivacyModel(privacy_field='direct')
         self.assertEqual(model_instance.privacy_field, 'direct')
 
         instance = fields.PrivacyField()
