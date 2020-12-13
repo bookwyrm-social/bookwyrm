@@ -1,4 +1,4 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% with activity.id|uuid as uuid %}
 <form class="is-flex-grow-1" name="reply" action="/reply" method="post" onsubmit="return reply(event)">
     <div class="columns">

@@ -1,4 +1,4 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% if request.user|follow_request_exists:user %}
 <form action="/accept-follow-request/" method="POST">
     {% csrf_token %}

@@ -116,6 +116,7 @@ def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
     return book.description or book.parent_work.description
 
+
 @register.filter(name='text_overflow')
 def text_overflow(text):
     ''' dont' let book descriptions run for ages '''
@@ -160,7 +161,6 @@ def time_since(date):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
-    #TODO: books can be on multiple shelves, handle that better
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
         book=book
