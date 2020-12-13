@@ -44,6 +44,7 @@ class BookWyrmModel(models.Model):
 
 
 @receiver(models.signals.post_save)
+#pylint: disable=unused-argument
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' set the remote_id after save (when the id is available) '''
     if not created or not hasattr(instance, 'get_remote_id'):

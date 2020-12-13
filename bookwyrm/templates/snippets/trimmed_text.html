@@ -1,8 +1,8 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% with 0|uuid as uuid %}
 {% if full %}
 
-{% with full|text_overflow as trimmed %}
+{% with full|truncatewords_html:60 as trimmed %}
 {% if trimmed != full %}
 <div>
     <input type="radio" name="show-hide-{{ uuid }}" id="show-{{ uuid }}" class="toggle-control" checked>

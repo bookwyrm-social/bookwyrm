@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import books_manager
-from bookwyrm.connectors import ConnectorException
 from bookwyrm.models import ReadThrough, User, Book
 from bookwyrm.utils.fields import JSONField
 from .base_model import PrivacyLevels

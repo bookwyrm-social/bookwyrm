@@ -30,7 +30,7 @@ class CustomForm(ModelForm):
                 visible.field.widget.attrs['rows'] = None
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
-
+# pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
@@ -131,6 +131,7 @@ class ImportForm(forms.Form):
 
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
+        ''' human-readable exiration time buckets '''
         selected_string = super().value_from_datadict(data, files, name)
 
         if selected_string == 'day':
