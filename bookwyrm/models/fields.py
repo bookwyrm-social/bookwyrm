@@ -180,16 +180,16 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         # this is a link to the followers list
         followers = instance.user.__class__._meta.get_field('followers')\
                 .field_to_activity(instance.user.followers)
-        if self.privacy == 'public':
+        if instance.privacy == 'public':
             activity['to'] = [self.public]
             activity['cc'] = [followers] + mentions
-        elif self.privacy == 'unlisted':
+        elif instance.privacy == 'unlisted':
             activity['to'] = [followers]
             activity['cc'] = [self.public] + mentions
-        elif self.privacy == 'followers':
+        elif instance.privacy == 'followers':
             activity['to'] = [followers]
             activity['cc'] = mentions
-        if self.privacy == 'direct':
+        if instance.privacy == 'direct':
             activity['to'] = mentions
             activity['cc'] = []
 
