@@ -2,12 +2,12 @@
 import re
 import dateutil.parser
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 
 from bookwyrm import books_manager
 from bookwyrm.models import ReadThrough, User, Book
-from bookwyrm.utils.fields import JSONField
 from .base_model import PrivacyLevels
 
 
