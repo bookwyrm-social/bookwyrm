@@ -1,7 +1,7 @@
 ''' Handle user activity '''
 from django.utils import timezone
 
-from bookwyrm import activitypub, books_manager, models
+from bookwyrm import models
 from bookwyrm.sanitize_html import InputHtmlParser
 
 
