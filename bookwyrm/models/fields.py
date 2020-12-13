@@ -60,7 +60,7 @@ class ActivitypubFieldMixin:
         if isinstance(activity.get(key), list):
             activity[key] += formatted
         else:
-            activity[key] = value
+            activity[key] = formatted
 
 
     def field_to_activity(self, value):
