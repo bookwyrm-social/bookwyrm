@@ -23,6 +23,7 @@ class Note(ActivityObject):
     cc: List[str] = field(default_factory=lambda: [])
     replies: Dict = field(default_factory=lambda: {})
     inReplyTo: str = ''
+    summary: str = ''
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Image] = field(default_factory=lambda: [])
     sensitive: bool = False

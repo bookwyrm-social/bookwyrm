@@ -23,6 +23,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         default='public',
         choices=PrivacyLevels.choices
     )
+    content_warning = fields.CharField(
+        max_length=150, blank=True, null=True, activitypub_field='summary')
     sensitive = fields.BooleanField(default=False)
     # the created date can't be this, because of receiving federated posts
     published_date = fields.DateTimeField(
@@ -68,7 +70,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, pure=False):
+    def to_activity(self, pure=False):# pylint: disable=arguments-differ
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
