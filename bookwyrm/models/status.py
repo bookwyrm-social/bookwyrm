@@ -24,7 +24,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         choices=PrivacyLevels.choices
     )
     sensitive = fields.BooleanField(default=False)
-    # the created date can't be this, because of receiving federated posts
+    # created date is different than publish date because of federated posts
     published_date = fields.DateTimeField(
         default=timezone.now, activitypub_field='published')
     deleted = models.BooleanField(default=False)
@@ -53,7 +53,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
             to write this so it's just a property '''
-        return cls.objects.filter(reply_parent=status).select_subclasses()
+        return cls.objects.filter(
+            reply_parent=status
+        ).select_subclasses().order_by('published_date')
 
     @property
     def status_type(self):
@@ -68,7 +70,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, pure=False):
+    def to_activity(self, pure=False):# pylint: disable=arguments-differ
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -190,6 +192,7 @@ class Review(Status):
     def pure_name(self):
         ''' clarify review names for mastodon serialization '''
         if self.rating:
+            #pylint: disable=bad-string-format-type
             return 'Review of "%s" (%d stars): %s' % (
                 self.book.title,
                 self.rating,
