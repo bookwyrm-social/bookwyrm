@@ -1,4 +1,5 @@
 ''' activitypub-aware django model fields '''
+from dataclasses import MISSING
 import re
 from uuid import uuid4
 
@@ -37,6 +38,16 @@ class ActivitypubFieldMixin:
         else:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
+
+
+    def set_field_from_activity(self, instance, data):
+        ''' helper function for assinging a value to the field '''
+        value = getattr(data, self.get_activitypub_field())
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        setattr(instance, self.name, formatted)
+
 
     def field_to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
@@ -145,6 +156,14 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
+    def set_field_from_activity(self, instance, data):
+        ''' helper function for assinging a value to the field '''
+        value = getattr(data, self.get_activitypub_field())
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        getattr(instance, self.name).set(formatted)
+
     def field_to_activity(self, value):
         if self.link_only:
             return '%s/%s' % (value.instance.remote_id, self.name)
@@ -210,8 +229,19 @@ def image_serializer(value):
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     ''' activitypub-aware image field '''
+    # pylint: disable=arguments-differ
+    def set_field_from_activity(self, instance, data, save=True):
+        ''' helper function for assinging a value to the field '''
+        value = getattr(data, self.get_activitypub_field())
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        getattr(instance, self.name).save(*formatted, save=save)
+
+
     def field_to_activity(self, value):
         return image_serializer(value)
+
 
     def field_from_activity(self, value):
         image_slug = value

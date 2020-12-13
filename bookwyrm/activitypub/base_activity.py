@@ -4,8 +4,6 @@ from json import JSONEncoder
 
 from django.apps import apps
 from django.db import transaction
-from django.db.models.fields.files import ImageFileDescriptor
-from django.db.models.fields.related_descriptors import ManyToManyDescriptor
 
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.tasks import app
@@ -77,55 +75,30 @@ class ActivityObject:
             )
 
         # check for an existing instance, if we're not updating a known obj
-        if not instance:
-            instance = model.find_existing(self.serialize()) or model()
+        instance = instance or model.find_existing(self.serialize()) or model()
 
-        many_to_many_fields = {}
-        image_fields = {}
-        for field in model._meta.get_fields():
-            # check if it's an activitypub field
-            if not hasattr(field, 'field_to_activity'):
-                continue
-            # call the formatter associated with the model field class
-            value = field.field_from_activity(
-                getattr(self, field.get_activitypub_field())
-            )
-            if value is None or value is MISSING:
-                continue
+        for field in instance.simple_fields:
+            field.set_field_from_activity(instance, self)
 
-            model_field = getattr(model, field.name)
-
-            if isinstance(model_field, ManyToManyDescriptor):
-                # status mentions book/users for example, stash this for later
-                many_to_many_fields[field.name] = value
-            elif isinstance(model_field, ImageFileDescriptor):
-                # image fields need custom handling
-                image_fields[field.name] = value
-            else:
-                # just a good old fashioned model.field = value
-                setattr(instance, field.name, value)
-
-        # if this isn't here, it messes up saving users. who even knows.
-        for (model_key, value) in image_fields.items():
-            getattr(instance, model_key).save(*value, save=save)
+        # image fields have to be set after other fields because they can save
+        # too early and jank up users
+        for field in instance.image_fields:
+            field.set_field_from_activity(instance, self, save=save)
 
         if not save:
-            # we can't set many to many and reverse fields on an unsaved object
             return instance
 
+        # we can't set many to many and reverse fields on an unsaved object
         instance.save()
 
         # add many to many fields, which have to be set post-save
-        for (model_key, values) in many_to_many_fields.items():
+        for field in instance.many_to_many_fields:
             # mention books/users, for example
-            getattr(instance, model_key).set(values)
-
-        if not save or not hasattr(model, 'deserialize_reverse_fields'):
-            return instance
+            field.set_field_from_activity(instance, self)
 
         # reversed relationships in the models
         for (model_field_name, activity_field_name) in \
-                model.deserialize_reverse_fields:
+                instance.deserialize_reverse_fields:
             # attachments on Status, for example
             values = getattr(self, activity_field_name)
             if values is None or values is MISSING:

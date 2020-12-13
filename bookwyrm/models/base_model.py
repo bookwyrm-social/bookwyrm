@@ -10,13 +10,11 @@ from Crypto.Hash import SHA256
 from django.core.paginator import Paginator
 from django.db import models
 from django.db.models import Q
-from django.db.models.fields.files import ImageFileDescriptor
-from django.db.models.fields.related_descriptors import ManyToManyDescriptor
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN, PAGE_LENGTH
-from .fields import RemoteIdField
+from .fields import ImageField, ManyToManyField, RemoteIdField
 
 
 PrivacyLevels = models.TextChoices('Privacy', [
@@ -79,9 +77,9 @@ class ActivitypubMixin:
             if not hasattr(field, 'field_to_activity'):
                 continue
 
-            if isinstance(field, ImageFileDescriptor):
+            if isinstance(field, ImageField):
                 self.image_fields.append(field)
-            elif isinstance(field, ManyToManyDescriptor):
+            elif isinstance(field, ManyToManyField):
                 self.many_to_many_fields.append(field)
             else:
                 self.simple_fields.append(field)
