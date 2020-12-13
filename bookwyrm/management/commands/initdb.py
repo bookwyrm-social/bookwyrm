@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from bookwyrm.models import Connector, User
+from bookwyrm.models import Connector, SiteSettings, User
 from bookwyrm.settings import DOMAIN
 
 def init_groups():
@@ -73,7 +73,7 @@ def init_connectors():
         identifier='bookwyrm.social',
         name='BookWyrm dot Social',
         connector_file='bookwyrm_connector',
-        base_url='https://bookwyrm.social' ,
+        base_url='https://bookwyrm.social',
         books_url='https://bookwyrm.social/book',
         covers_url='https://bookwyrm.social/images/covers',
         search_url='https://bookwyrm.social/search?q=',
@@ -91,6 +91,9 @@ def init_connectors():
         priority=3,
     )
 
+def init_settings():
+    SiteSettings.objects.create()
+
 class Command(BaseCommand):
     help = 'Initializes the database with starter data'
 
@@ -98,3 +101,4 @@ class Command(BaseCommand):
         init_groups()
         init_permissions()
         init_connectors()
+        init_settings()
