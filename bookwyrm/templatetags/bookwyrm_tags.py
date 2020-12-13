@@ -13,7 +13,7 @@ register = template.Library()
 
 @register.filter(name='dict_key')
 def dict_key(d, k):
-    '''Returns the given key from a dictionary.'''
+    ''' Returns the given key from a dictionary. '''
     return d.get(k) or 0
 
 
@@ -115,21 +115,6 @@ def get_edition_info(book):
 def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
     return book.description or book.parent_work.description
-
-
-@register.filter(name='text_overflow')
-def text_overflow(text):
-    ''' dont' let book descriptions run for ages '''
-    if not text:
-        return ''
-    char_max = 400
-    if text and len(text) < char_max:
-        return text
-
-    trimmed = text[:char_max]
-    # go back to the last space
-    trimmed = ' '.join(trimmed.split(' ')[:-1])
-    return trimmed + '...'
 
 
 @register.filter(name='uuid')
