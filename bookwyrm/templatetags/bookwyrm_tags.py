@@ -132,6 +132,8 @@ def time_since(date):
     delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
+        if date.year != now.year:
+            return date.strftime('%b %-d %Y')
         return date.strftime('%b %-d')
     delta = relativedelta(now, date)
     if delta.days:
