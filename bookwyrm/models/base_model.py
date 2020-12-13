@@ -10,6 +10,8 @@ from Crypto.Hash import SHA256
 from django.core.paginator import Paginator
 from django.db import models
 from django.db.models import Q
+from django.db.models.fields.files import ImageFileDescriptor
+from django.db.models.fields.related_descriptors import ManyToManyDescriptor
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
@@ -67,6 +69,30 @@ class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
     reverse_unfurl = False
+
+    def __init__(self, *args, **kwargs):
+        ''' collect some info on model fields '''
+        self.image_fields = []
+        self.many_to_many_fields = []
+        self.simple_fields = [] # "simple"
+        for field in self._meta.get_fields():
+            if not hasattr(field, 'field_to_activity'):
+                continue
+
+            if isinstance(field, ImageFileDescriptor):
+                self.image_fields.append(field)
+            elif isinstance(field, ManyToManyDescriptor):
+                self.many_to_many_fields.append(field)
+            else:
+                self.simple_fields.append(field)
+
+        self.deserialize_reverse_fields = self.deserialize_reverse_fields \
+                if hasattr(self, 'deserialize_reverse_fields') else []
+        self.serialize_reverse_fields = self.serialize_reverse_fields \
+                if hasattr(self, 'serialize_reverse_fields') else []
+
+        super().__init__(*args, **kwargs)
+
 
     @classmethod
     def find_existing_by_remote_id(cls, remote_id):
