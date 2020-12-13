@@ -199,12 +199,23 @@ def handle_create(activity):
         return
 
     if activity.type == 'Note':
-        # discard notes that aren't replies to existing statuses
+        # keep notes if they are replies to existing statuses
         reply = models.Status.objects.filter(
             remote_id=activity.inReplyTo
         ).first()
+
         if not reply:
-            return
+            discard = True
+            # keep notes if they mention local users
+            tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+            for tag in tags:
+                if models.User.objects.filter(
+                        remote_id=tag, local=True).exists():
+                    # we found a mention of a known use boost
+                    discard = False
+                    break
+            if discard:
+                return
 
     status = activity.to_model(model)
     # create a notification if this is a reply
