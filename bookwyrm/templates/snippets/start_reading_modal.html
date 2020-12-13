@@ -1,0 +1,39 @@
+<div>
+    <input class="toggle-control" type="checkbox" name="start-reading-{{ uuid }}" id="start-reading-{{ uuid }}">
+    <div class="modal toggle-content hidden">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Start "{{ book.title }}"</p>
+                <label class="delete" for="start-reading-{{ uuid }}" aria-label="close" role="button" tabindex="0"></label>
+            </header>
+            <form name="start-reading" action="/start-reading/{{ book.id }}" method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label class="label">
+                            Started reading
+                            <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+                        </label>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <div class="columns">
+                        <div class="column field">
+                            <label for="post-status">
+                                <input type="checkbox" name="post-status" class="checkbox" checked>
+                                Post to feed
+                            </label>
+                            {% include 'snippets/privacy_select.html' %}
+                        </div>
+                        <div class="column">
+                            <button class="button is-success" type="submit">Save</button>
+                            <label for="start-reading-{{ uuid }}" class="button" role="button" tabindex="0">Cancel</button>
+                        </div>
+                    </div>
+                </footer>
+            </form>
+        </div>
+        <label class="modal-close is-large" for="start-reading-{{ uuid }}" aria-label="close"></label>
+    </div>
+</div>

@@ -1,9 +1,22 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="block">
-    {% include 'user_header.html' with user=user %}
+<div class="columns">
+    <div class="column">
+        <h1 class="title">User profile</h1>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        <a href="/user-edit/">
+            <span class="icon icon-pencil">
+                <span class="is-sr-only">Edit profile</span>
+            </span>
+        </a>
+    </div>
+    {% endif %}
 </div>
+
+{% include 'snippets/user_header.html' with user=user %}
 
 <div class="block">
     <h2 class="title">Shelves</h2>
@@ -41,6 +54,26 @@
         <p>No activities yet!</a>
     </div>
     {% endif %}
+
+    <nav class="pagination" role="navigation" aria-label="pagination">
+        {% if prev %}
+        <p class="pagination-previous">
+            <a href="{{ prev }}">
+                <span class="icon icon-arrow-left"></span>
+                Previous
+            </a>
+        </p>
+        {% endif %}
+
+        {% if next %}
+        <p class="pagination-next">
+            <a href="{{ next }}">
+                Next
+                <span class="icon icon-arrow-right"></span>
+            </a>
+        </p>
+        {% endif %}
+    </nav>
 </div>
 
 {% endblock %}

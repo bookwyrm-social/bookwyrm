@@ -2,11 +2,24 @@
 {% load humanize %}
 {% block content %}
 <div class="block">
-    <h2 class="title">Import Books from GoodReads</h2>
-    <form name="import" action="/import_data/" method="post" enctype="multipart/form-data">
+    <h1 class="title">Import Books from GoodReads</h1>
+    <form name="import" action="/import-data/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ import_form.as_p }}
-        <button class="button" type="submit">Import</button>
+        <div class="field">
+            {{ import_form.as_p }}
+        </div>
+        <div class="field">
+            <label class="label">
+                <input type="checkbox" name="include_reviews" checked> Include reviews
+            </label>
+        </div>
+        <div class="field">
+            <label class="label">
+                <p>Privacy setting for imported reviews:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True %}
+            </label>
+        </div>
+        <button class="button is-primary" type="submit">Import</button>
     </form>
     <p>
     Imports are limited in size, and only the first {{ limit }} items will be imported.
@@ -19,7 +32,7 @@
     {% endif %}
     <ul>
         {% for job in jobs %}
-            <li><a href="/import_status/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
+            <li><a href="/import-status/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
         {% endfor %}
     </ul>
 </div>

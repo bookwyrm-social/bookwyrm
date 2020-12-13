@@ -12,8 +12,6 @@ class Author(TestCase):
         )
         self.author = models.Author.objects.create(
             name='Author fullname',
-            first_name='Auth',
-            last_name='Or',
             aliases=['One', 'Two'],
             bio='bio bio bio',
         )

@@ -1,22 +1,40 @@
 ''' puttin' books on shelves '''
+import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import BookWyrmModel, OrderedCollectionMixin
+from .base_model import BookWyrmModel
+from .base_model import OrderedCollectionMixin, PrivacyLevels
+from . import fields
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
     ''' a list of books owned by a user '''
-    name = models.CharField(max_length=100)
+    name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='owner')
     editable = models.BooleanField(default=True)
+    privacy = fields.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
     books = models.ManyToManyField(
         'Edition',
         symmetrical=False,
         through='ShelfBook',
         through_fields=('shelf', 'book')
     )
+
+    def save(self, *args, **kwargs):
+        ''' set the identifier '''
+        saved = super().save(*args, **kwargs)
+        if not self.identifier:
+            slug = re.sub(r'[^\w]', '', self.name).lower()
+            self.identifier = '%s-%d' % (slug, self.id)
+            return super().save(*args, **kwargs)
+        return saved
 
     @property
     def collection_queryset(self):
@@ -35,14 +53,19 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
 class ShelfBook(BookWyrmModel):
     ''' many to many join table for books and shelves '''
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-    shelf = models.ForeignKey('Shelf', on_delete=models.PROTECT)
-    added_by = models.ForeignKey(
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='object')
+    shelf = fields.ForeignKey(
+        'Shelf', on_delete=models.PROTECT, activitypub_field='target')
+    added_by = fields.ForeignKey(
         'User',
         blank=True,
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        activitypub_field='actor'
     )
+
+    activity_serializer = activitypub.AddBook
 
     def to_add_activity(self, user):
         ''' AP for shelving a book'''
@@ -50,7 +73,7 @@ class ShelfBook(BookWyrmModel):
             id='%s#add' % self.remote_id,
             actor=user.remote_id,
             object=self.book.to_activity(),
-            target=self.shelf.to_activity()
+            target=self.shelf.remote_id,
         ).serialize()
 
     def to_remove_activity(self, user):

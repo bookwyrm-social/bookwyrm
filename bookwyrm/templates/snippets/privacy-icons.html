@@ -1,0 +1,18 @@
+{% if item.privacy == 'public' %}
+<span class="icon icon-globe">
+    <span class="is-sr-only">Public post</span>
+</span>
+{% elif item.privacy == 'unlisted' %}
+<span class="icon icon-unlock">
+    <span class="is-sr-only">Unlisted post</span>
+</span>
+{% elif item.privacy == 'followers' %}
+<span class="icon icon-lock">
+    <span class="is-sr-only">Followers-only post</span>
+</span>
+{% else %}
+<span class="icon icon-envelope">
+    <span class="is-sr-only">Private post</span>
+</span>
+{% endif %}
+

@@ -1,7 +1,17 @@
 {% extends 'layout.html' %}
 {% load fr_display %}
 {% block content %}
-{% include 'user_header.html' with user=user %}
+<div class="block">
+    <h1 class="title">
+        {% if is_self %}Your
+        {% else %}
+        {% include 'snippets/username.html' with user=user possessive=True %}
+        {% endif %}
+        followers
+    </h1>
+</div>
+
+{% include 'snippets/user_header.html' with user=user %}
 
 <div class="block">
     <h2 class="title">Followers</h2>

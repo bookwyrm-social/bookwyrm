@@ -1,79 +1,43 @@
 {% load humanize %}
 {% load fr_display %}
 
-<div class="columns">
-    <div class="column">
-        <div class="tabs is-boxed">
-            <ul>
-                <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-                    <label for="review-{{ book.id }}" onclick="tabChange(event)"><a>Review</a></label>
-                </li>
-                <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-                    <label for="comment-{{ book.id}}" onclick="tabChange(event)"><a>Comment</a></label>
-                </li>
-                <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-                    <label for="quote-{{ book.id }}" onclick="tabChange(event)"><a>Quote</a></label>
-                </li>
-            </ul>
-        </div>
-
-        <div>
-            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="review-{{ book.id }}" checked>
-            <form class="toggle-content hidden tab-option-{{ book.id }}" name="review" action="/review/" method="post" id="tab-review-{{ book.id }}">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="{{ book.id }}">
-                <div class="control">
-                    <label class="label" for="id_name_{{ book.id }}_review">Title:</label>
-                    <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_review" placeholder="My review of '{{ book.title }}'">
+<div class="tabs is-boxed">
+    <ul role="tablist">
+        <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <label for="review-{{ book.id }}">
+                <div onclick="tabChange(event)" role="tab" aria-selected="true" tabindex="0">
+                    <a>Review</a>
                 </div>
-                <div class="control">
-                    <label class="label" for="id_content_{{ book.id }}_review">Review:</label>
-
-                    <span class="is-sr-only">Rating</span>
-                    <div class="field is-grouped stars form-rate-stars">
-                        <input class="hidden" type="radio" name="rating" value="" checked>
-                        {% for i in '12345'|make_list %}
-                            <input class="hidden" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
-                            <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
-                                <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
-                            </label>
-                        {% endfor %}
-                    </div>
-
-                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_review"></textarea>
+            </label>
+        </li>
+        <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <label for="comment-{{ book.id}}">
+                <div onclick="tabChange(event)" role="tab" tabindex="0">
+                    <a>Comment</a>
                 </div>
-                <button class="button is-primary" type="submit">post review</button>
-            </form>
-        </div>
+            </label>
+        </li>
+        <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
+            <label for="quote-{{ book.id }}">
+                <div onclick="tabChange(event)" role="tab" tabindex="0">
+                    <a>Quote</a>
+                </div>
+            </label>
+        </li>
+    </ul>
+</div>
 
-        <div>
-            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="comment-{{ book.id }}">
-            <form class="toggle-content hidden tab-option-{{ book.id }}" name="comment" action="/comment/" method="post" id="tab-comment-{{ book.id }}">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="{{ book.id }}">
-                <div class="control">
-                    <label class="label" for="id_content_{{ book.id }}_comment">Comment:</label>
-                    <textarea name="content" class="textarea" id="id_content_{{ book.id }}_comment" placeholder="Some thoughts on '{{ book.title }}'"></textarea>
-                </div>
-                <button class="button is-primary" type="submit">post comment</button>
-            </form>
-        </div>
+<div>
+    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="review-{{ book.id }}" checked>
+    {% include 'snippets/create_status_form.html' with type='review' %}
+</div>
 
-        <div>
-            <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="quote-{{ book.id }}">
-            <form class="toggle-content hidden tab-option-{{ book.id }}" name="quotation" action="/quotate/" method="post" id="tab-quotation-{{ book.id }}">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="{{ book.id }}">
-                <div class="control">
-                    <label class="label" for="id_quote_{{ book.id }}_quote">Quote:</label>
-                    <textarea name="quote" class="textarea" required="" id="id_quote_{{ book.id }}_quote" placeholder="An except from '{{ book.title }}'"></textarea>
-                </div>
-                <div class="control">
-                    <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
-                    <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
-                </div>
-                <button class="button is-primary" type="submit">post quote</button>
-            </form>
-        </div>
-    </div>
+<div>
+    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="comment-{{ book.id }}">
+    {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
+</div>
+
+<div>
+    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="quote-{{ book.id }}">
+    {% include 'snippets/create_status_form.html' with type="quote" placeholder="An excerpt from '"|add:book.title|add:"'" %}
 </div>

@@ -1,0 +1,36 @@
+<div class="dropdown">
+    <div class="dropdown-trigger">
+        <label for="shelf-select-dropdown-{{ book.id }}-toggle" role="button" aria-expanded="false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ book.id }}">
+            <div class="button">
+                <span>Change shelf</span>
+                <span class="icon icon-arrow-down" aria-hidden="true"></span>
+            </div>
+        </label>
+    </div>
+    <input type="checkbox" class="toggle-control" id="shelf-select-dropdown-{{ book.id }}-toggle">
+    <div class="dropdown-menu toggle-content hidden" id="shelf-select-{{ book.id }}" role="menu">
+        <ul class="dropdown-content">
+            {% for shelf in request.user.shelf_set.all %}
+            {% if shelf.identifier != current.identifier %}
+            <li role="menuitem">
+                <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
+                    <button class="button is-small" type="submit">{{ shelf.name }}</button>
+                </form>
+            </li>
+            {% endif %}
+            {% endfor %}
+            <hr class="navbar-divider">
+            <li>
+                <form class="dropdown-item pt-0 pb-0" name="shelve" action="/unshelve/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="shelf" value="{{ current.id }}">
+                    <button class="button is-small is-danger is-light" type="submit">Unshelve</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>

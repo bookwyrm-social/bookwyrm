@@ -31,7 +31,7 @@ def make_signature(sender, destination, date, digest):
         'digest: %s' % digest,
     ]
     message_to_sign = '\n'.join(signature_headers)
-    signer = pkcs1_15.new(RSA.import_key(sender.private_key))
+    signer = pkcs1_15.new(RSA.import_key(sender.key_pair.private_key))
     signed_message = signer.sign(SHA256.new(message_to_sign.encode('utf8')))
     signature = {
         'keyId': '%s#main-key' % sender.remote_id,
@@ -44,7 +44,8 @@ def make_signature(sender, destination, date, digest):
 
 def make_digest(data):
     ''' creates a message digest for signing '''
-    return 'SHA-256=' + b64encode(hashlib.sha256(data).digest()).decode('utf-8')
+    return 'SHA-256=' + b64encode(hashlib.sha256(data.encode('utf-8'))\
+                        .digest()).decode('utf-8')
 
 
 def verify_digest(request):

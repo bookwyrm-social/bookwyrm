@@ -2,11 +2,11 @@
 {% block content %}
 <div class="block columns">
     <div class="column is-half">
-        <h2 class="title">Profile</h2>
+        <h1 class="title">Profile</h1>
         {% if form.non_field_errors %}
         <p class="notification is-danger">{{ form.non_field_errors }}</p>
         {% endif %}
-        <form name="edit-profile" action="/edit_profile/" method="post" enctype="multipart/form-data">
+        <form name="edit-profile" action="/edit-profile/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p class="block">
                 <label class="label" for="id_avatar">Avatar:</label>
@@ -37,7 +37,7 @@
                 {% endfor %}
             </p>
             <p class="block">
-                <label class="checkbox label" for="id_manually_approve_followers">
+                <label class="checkbox label" for="id_manually_approves_followers">
                     Manually approve followers:
                     {{ form.manually_approves_followers }}
                 </label>

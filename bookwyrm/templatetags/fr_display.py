@@ -1,5 +1,10 @@
 ''' template filters '''
+from uuid import uuid4
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from django import template
+from django.utils import timezone
 
 from bookwyrm import models
 
@@ -42,7 +47,8 @@ def get_replies(status):
     ''' get all direct replies to a status '''
     #TODO: this limit could cause problems
     return models.Status.objects.filter(
-        reply_parent=status
+        reply_parent=status,
+        deleted=False,
     ).select_subclasses().all()[:10]
 
 
@@ -105,42 +111,61 @@ def get_edition_info(book):
     return ', '.join(i for i in items if i)
 
 
+@register.filter(name='book_description')
+def get_book_description(book):
+    ''' use the work's text if the book doesn't have it '''
+    return book.description or book.parent_work.description
+
+@register.filter(name='text_overflow')
+def text_overflow(text):
+    ''' dont' let book descriptions run for ages '''
+    if not text:
+        return ''
+    char_max = 400
+    if text and len(text) < char_max:
+        return text
+
+    trimmed = text[:char_max]
+    # go back to the last space
+    trimmed = ' '.join(trimmed.split(' ')[:-1])
+    return trimmed + '...'
+
+
+@register.filter(name='uuid')
+def get_uuid(identifier):
+    ''' for avoiding clashing ids when there are many forms '''
+    return '%s%s' % (identifier, uuid4())
+
+
+@register.filter(name="post_date")
+def time_since(date):
+    ''' concise time ago function '''
+    if not isinstance(date, datetime):
+        return ''
+    now = timezone.now()
+    delta = now - date
+
+    if date < (now - relativedelta(weeks=1)):
+        return date.strftime('%b %-d')
+    delta = relativedelta(now, date)
+    if delta.days:
+        return '%dd' % delta.days
+    if delta.hours:
+        return '%dh' % delta.hours
+    if delta.minutes:
+        return '%dm' % delta.minutes
+    return '%ds' % delta.seconds
+
+
 @register.simple_tag(takes_context=True)
-def shelve_button_identifier(context, book):
+def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
     #TODO: books can be on multiple shelves, handle that better
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
         book=book
     ).first()
-    if not shelf:
-        return 'to-read'
-
-    identifier = shelf.shelf.identifier
-    if identifier == 'to-read':
-        return 'reading'
-    if identifier == 'reading':
-        return 'read'
-    return 'to-read'
-
-
-@register.simple_tag(takes_context=True)
-def shelve_button_text(context, book):
-    ''' check what shelf a user has a book on, if any '''
-    #TODO: books can be on multiple shelves
-    shelf = models.ShelfBook.objects.filter(
-        shelf__user=context['request'].user,
-        book=book
-    ).first()
-    if not shelf:
-        return 'Want to read'
-
-    identifier = shelf.shelf.identifier
-    if identifier == 'to-read':
-        return 'Start reading'
-    if identifier == 'reading':
-        return 'I\'m done!'
-    return 'Want to read'
+    return shelf.shelf if shelf else None
 
 
 @register.simple_tag(takes_context=False)
@@ -148,4 +173,15 @@ def latest_read_through(book, user):
     ''' the most recent read activity '''
     return models.ReadThrough.objects.filter(
         user=user,
-        book=book).order_by('-created_date').first()
+        book=book
+    ).order_by('-start_date').first()
+
+
+@register.simple_tag(takes_context=False)
+def active_read_through(book, user):
+    ''' the most recent read activity '''
+    return models.ReadThrough.objects.filter(
+        user=user,
+        book=book,
+        finish_date__isnull=True
+    ).order_by('-start_date').first()

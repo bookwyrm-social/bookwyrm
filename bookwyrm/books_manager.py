@@ -16,23 +16,6 @@ def get_edition(book_id):
     return book
 
 
-def get_or_create_book(remote_id):
-    ''' pull up a book record by whatever means possible '''
-    book = models.Book.objects.select_subclasses().filter(
-        remote_id=remote_id
-    ).first()
-    if book:
-        return book
-
-    connector = get_or_create_connector(remote_id)
-
-    # raises ConnectorException
-    book = connector.get_or_create_book(remote_id)
-    if book:
-        load_more_data.delay(book.id)
-    return book
-
-
 def get_or_create_connector(remote_id):
     ''' get the connector related to the author's server '''
     url = urlparse(remote_id)
@@ -50,7 +33,7 @@ def get_or_create_connector(remote_id):
             books_url='https://%s/book' % identifier,
             covers_url='https://%s/images/covers' % identifier,
             search_url='https://%s/search?q=' % identifier,
-            priority=3
+            priority=2
         )
 
     return load_connector(connector_info)
@@ -64,14 +47,14 @@ def load_more_data(book_id):
     connector.expand_book_data(book)
 
 
-def search(query):
+def search(query, min_confidence=0.1):
     ''' find books based on arbitary keywords '''
     results = []
     dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
     result_index = set()
     for connector in get_connectors():
         try:
-            result_set = connector.search(query)
+            result_set = connector.search(query, min_confidence=min_confidence)
         except HTTPError:
             continue
 
@@ -87,25 +70,19 @@ def search(query):
     return results
 
 
-def local_search(query):
+def local_search(query, min_confidence=0.1):
     ''' only look at local search results '''
     connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(query)
+    return connector.search(query, min_confidence=min_confidence)
 
 
-def first_search_result(query):
+def first_search_result(query, min_confidence=0.1):
     ''' search until you find a result that fits '''
     for connector in get_connectors():
-        result = connector.search(query)
+        result = connector.search(query, min_confidence=min_confidence)
         if result:
             return result[0]
     return None
-
-
-def update_book(book, data=None):
-    ''' re-sync with the original data source '''
-    connector = load_connector(book.connector)
-    connector.update_book(book, data=data)
 
 
 def get_connectors():

@@ -2,66 +2,66 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from .base_activity import ActivityObject, Image
+from .base_activity import ActivityObject
+from .image import Image
 
 @dataclass(init=False)
 class Book(ActivityObject):
     ''' serializes an edition or work, abstract '''
-    authors: List[str]
-    first_published_date: str
-    published_date: str
-
     title: str
-    sort_title: str
-    subtitle: str
-    description: str
-    languages: List[str]
-    series: str
-    series_number: str
-    subjects: List[str]
-    subject_places: List[str]
+    sortTitle: str = ''
+    subtitle: str = ''
+    description: str = ''
+    languages: List[str] = field(default_factory=lambda: [])
+    series: str = ''
+    seriesNumber: str = ''
+    subjects: List[str] = field(default_factory=lambda: [])
+    subjectPlaces: List[str] = field(default_factory=lambda: [])
 
-    openlibrary_key: str
-    librarything_key: str
-    goodreads_key: str
+    authors: List[str] = field(default_factory=lambda: [])
+    firstPublishedDate: str = ''
+    publishedDate: str = ''
 
-    attachment: List[Image] = field(default=lambda: [])
+    openlibraryKey: str = ''
+    librarythingKey: str = ''
+    goodreadsKey: str = ''
+
+    cover: Image = field(default_factory=lambda: {})
     type: str = 'Book'
 
 
 @dataclass(init=False)
 class Edition(Book):
     ''' Edition instance of a book object '''
-    isbn_10: str
-    isbn_13: str
-    oclc_number: str
-    asin: str
-    pages: str
-    physical_format: str
-    publishers: List[str]
-
     work: str
+    isbn10: str = ''
+    isbn13: str = ''
+    oclcNumber: str = ''
+    asin: str = ''
+    pages: str = ''
+    physicalFormat: str = ''
+    publishers: List[str] = field(default_factory=lambda: [])
+
     type: str = 'Edition'
 
 
 @dataclass(init=False)
 class Work(Book):
     ''' work instance of a book object '''
-    lccn: str
+    lccn: str = ''
+    defaultEdition: str = ''
     editions: List[str]
     type: str = 'Work'
-
 
 
 @dataclass(init=False)
 class Author(ActivityObject):
     ''' author of a book '''
-    url: str
     name: str
-    born: str
-    died: str
-    aliases: str
-    bio: str
-    openlibrary_key: str
-    wikipedia_link: str
+    born: str = ''
+    died: str = ''
+    aliases: str = ''
+    bio: str = ''
+    openlibraryKey: str = ''
+    wikipediaLink: str = ''
     type: str = 'Person'

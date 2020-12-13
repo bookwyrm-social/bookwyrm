@@ -2,7 +2,17 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from .base_activity import ActivityObject, Image, PublicKey
+from .base_activity import ActivityObject
+from .image import Image
+
+
+@dataclass(init=False)
+class PublicKey(ActivityObject):
+    ''' public key block '''
+    owner: str
+    publicKeyPem: str
+    type: str = 'PublicKey'
+
 
 @dataclass(init=False)
 class Person(ActivityObject):
@@ -15,8 +25,8 @@ class Person(ActivityObject):
     summary: str
     publicKey: PublicKey
     endpoints: Dict
-    icon: Image = field(default=lambda: {})
-    bookwyrmUser: str = False
+    icon: Image = field(default_factory=lambda: {})
+    bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
     type: str = 'Person'

@@ -2,9 +2,8 @@
 from django.test import TestCase
 
 from bookwyrm import models
-from bookwyrm.connectors.abstract_connector import Mapping,\
-        update_from_mappings
-from bookwyrm.connectors.bookwyrm_connector import Connector
+from bookwyrm.connectors.abstract_connector import Mapping
+from bookwyrm.connectors.openlibrary import Connector
 
 
 class AbstractConnector(TestCase):
@@ -13,7 +12,7 @@ class AbstractConnector(TestCase):
 
         models.Connector.objects.create(
             identifier='example.com',
-            connector_file='bookwyrm_connector',
+            connector_file='openlibrary',
             base_url='https://example.com',
             books_url='https:/example.com',
             covers_url='https://example.com',
@@ -62,29 +61,6 @@ class AbstractConnector(TestCase):
         self.assertEqual(mapping.formatter, formatter)
         self.assertEqual(mapping.model, None)
         self.assertEqual(mapping.formatter('bb'), 'aabb')
-
-
-    def test_update_from_mappings(self):
-        data = {
-            'title': 'Unused title',
-            'isbn_10': '1234567890',
-            'isbn_13': 'blahhh',
-            'blah': 'bip',
-            'format': 'hardcover',
-            'series': ['one', 'two'],
-        }
-        mappings = [
-            Mapping('isbn_10'),
-            Mapping('blah'),# not present on self.book
-            Mapping('physical_format', remote_field='format'),
-            Mapping('series', formatter=lambda x: x[0]),
-        ]
-        book = update_from_mappings(self.book, data, mappings)
-        self.assertEqual(book.title, 'Example Edition')
-        self.assertEqual(book.isbn_10, '1234567890')
-        self.assertEqual(book.isbn_13, None)
-        self.assertEqual(book.physical_format, 'hardcover')
-        self.assertEqual(book.series, 'one')
 
 
     def test_match_from_mappings(self):

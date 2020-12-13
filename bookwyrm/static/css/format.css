@@ -1,4 +1,7 @@
 /* --- --- */
+.image {
+    overflow: hidden;
+}
 .navbar .logo {
     max-height: 50px;
 }
@@ -13,6 +16,10 @@ input.toggle-control {
 
 input.toggle-control:checked ~ .toggle-content {
     display: block;
+}
+
+input.toggle-control:checked ~ .modal.toggle-content {
+    display: flex;
 }
 
 /* --- STARS --- */
@@ -62,12 +69,25 @@ input.toggle-control:checked ~ .toggle-content {
 .cover-container.is-medium {
     height: 150px;
 }
+.cover-container.is-small {
+    height: 100px;
+}
+@media only screen and (max-width: 768px) {
+    .cover-container {
+        height: 200px;
+        width: max-content;
+    }
+    .cover-container.is-medium {
+        height: 100px;
+    }
+    .cover-container.is-small {
+        height: 70px;
+    }
+}
+
 .cover-container.is-medium .no-cover div {
     font-size: 0.9em;
     padding: 0.3em;
-}
-.cover-container.is-small {
-    height: 100px;
 }
 .cover-container.is-small .no-cover div {
     font-size: 0.7em;
@@ -108,11 +128,16 @@ input.toggle-control:checked ~ .toggle-content {
     position: absolute;
 }
 .quote blockquote:before {
-    content: "\e904";
+    content: "\e905";
     top: 0;
     left: 0;
 }
 .quote blockquote:after {
-    content: "\e903";
+    content: "\e904";
     right: 0;
+}
+
+/* --- BLOCKQUOTE --- */
+blockquote {
+    white-space: pre-line;
 }

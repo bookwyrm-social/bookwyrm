@@ -4,7 +4,7 @@
 <div class="columns">
     <div class="column">
         <div class="box">
-            <h2 class="title">Log in</h2>
+            <h1 class="title">Log in</h1>
             {% if login_form.non_field_errors %}
             <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
             {% endif %}
@@ -15,9 +15,6 @@
                     <div class="control">
                         {{ login_form.username }}
                     </div>
-                    {% for error in login_form.username.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
-                    {% endfor %}
                 </div>
                 <div class="field">
                     <label class="label" for="id_password">Password:</label>
@@ -33,13 +30,13 @@
                         <button class="button is-primary" type="submit">Log in</button>
                     </div>
                     <div class="control">
-                        <small><a href="/reset-password">Forgot your password?</a></small>
+                        <small><a href="/password-reset">Forgot your password?</a></small>
                     </div>
                 </div>
             </form>
         </div>
         <div class="box has-background-primary-light">
-            {% if site_settings.allow_registration %}
+            {% if site.allow_registration %}
             <h2 class="title">Create an Account</h2>
             <form name="register" method="post" action="/user-register">
                 {% include 'snippets/register_form.html' %}
@@ -53,9 +50,12 @@
 
     <div class="column">
         <div class="block">
-            {% include 'snippets/about.html' with site_settings=site_settings %}
+            {% include 'snippets/about.html' %}
+
+            <p class="block">
+                <a href="/about/">More about this site</a>
+            </p>
         </div>
     </div>
-
 </div>
 {% endblock %}

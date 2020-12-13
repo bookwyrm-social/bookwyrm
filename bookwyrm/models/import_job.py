@@ -9,6 +9,8 @@ from bookwyrm import books_manager
 from bookwyrm.connectors import ConnectorException
 from bookwyrm.models import ReadThrough, User, Book
 from bookwyrm.utils.fields import JSONField
+from .base_model import PrivacyLevels
+
 
 # Mapping goodreads -> bookwyrm shelf titles.
 GOODREADS_SHELVES = {
@@ -40,8 +42,14 @@ class ImportJob(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
-    import_status = models.ForeignKey(
-        'Status', null=True, on_delete=models.PROTECT)
+    include_reviews = models.BooleanField(default=True)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
+    retry = models.BooleanField(default=False)
+
 
 class ImportItem(models.Model):
     ''' a single line of a csv being imported '''
@@ -64,13 +72,14 @@ class ImportItem(models.Model):
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_result = books_manager.first_search_result(self.isbn)
+        search_result = books_manager.first_search_result(
+            self.isbn, min_confidence=0.999
+        )
         if search_result:
-            try:
-                # don't crash the import when the connector fails
-                return books_manager.get_or_create_book(search_result.key)
-            except ConnectorException:
-                pass
+            # raises ConnectorException
+            return books_manager.get_or_create_book(search_result.key)
+        return None
+
 
     def get_book_from_title_author(self):
         ''' search by title and author '''
@@ -78,9 +87,24 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_result = books_manager.first_search_result(search_term)
+        search_result = books_manager.first_search_result(
+            search_term, min_confidence=0.999
+        )
         if search_result:
+            # raises ConnectorException
             return books_manager.get_or_create_book(search_result.key)
+        return None
+
+
+    @property
+    def title(self):
+        ''' get the book title '''
+        return self.data['Title']
+
+    @property
+    def author(self):
+        ''' get the book title '''
+        return self.data['Author']
 
     @property
     def isbn(self):
@@ -92,6 +116,7 @@ class ImportItem(models.Model):
         ''' the goodreads shelf field '''
         if self.data['Exclusive Shelf']:
             return GOODREADS_SHELVES.get(self.data['Exclusive Shelf'])
+        return None
 
     @property
     def review(self):
@@ -107,13 +132,17 @@ class ImportItem(models.Model):
     def date_added(self):
         ''' when the book was added to this dataset '''
         if self.data['Date Added']:
-            return dateutil.parser.parse(self.data['Date Added'])
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data['Date Added']))
+        return None
 
     @property
     def date_read(self):
         ''' the date a book was completed '''
         if self.data['Date Read']:
-            return dateutil.parser.parse(self.data['Date Read'])
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data['Date Read']))
+        return None
 
     @property
     def reads(self):
@@ -123,6 +152,7 @@ class ImportItem(models.Model):
             return [ReadThrough(start_date=self.date_added)]
         if self.date_read:
             return [ReadThrough(
+                start_date=self.date_added,
                 finish_date=self.date_read,
             )]
         return []

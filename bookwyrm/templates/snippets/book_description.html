@@ -1,6 +1,0 @@
-{% if book.description %}
-<blockquote class="content">{{ book.description }}</blockquote>
-{% elif book.parent_work.description %}
-<blockquote>{{ book.parent_work.description }}</blockquote>
-{% endif %}
-

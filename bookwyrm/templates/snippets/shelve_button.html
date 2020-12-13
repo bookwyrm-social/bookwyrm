@@ -1,34 +1,67 @@
 {% load fr_display %}
 {% if request.user.is_authenticated %}
 
+{% with book.id|uuid as uuid %}
+{% active_shelf book as active_shelf %}
 <div class="field is-grouped">
-<form name="shelve" action="/shelve/" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="book" value="{{ book.id }}">
-    <input type="hidden" name="shelf" value="{% shelve_button_identifier book %}">
-    <button class="button is-small" type="submit" style="">{% shelve_button_text book %}</button>
-</form>
-<div class="dropdown is-hoverable">
-    {% if not hide_pulldown %}
-    <div class="button dropdown-trigger is-small" >
-        <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
-    </div>
+    {% if active_shelf.identifier == 'read' %}
+    <button class="button is-small" disabled>
+        <span>Read</span> <span class="icon icon-check"></span>
+    </button>
+    {% elif active_shelf.identifier == 'reading' %}
+    <label class="button is-small" for="finish-reading-{{ uuid }}" role="button" tabindex="0">
+        I'm done!
+    </label>
+    {% include 'snippets/finish_reading_modal.html' %}
+    {% elif active_shelf.identifier == 'to-read' %}
+    <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
+        Start reading
+    </label>
+    {% include 'snippets/start_reading_modal.html' %}
+    {% else %}
+    <form name="shelve" action="/shelve/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="shelf" value="to-read">
+        <button class="button is-small" type="submit">Want to read</button>
+    </form>
+    {% endif %}
 
-    <div class="dropdown-menu">
-        <ul class="dropdown-content">
-            <form class="dropdown-item" name="shelve" action="/shelve/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="book" value="{{ book.id }}">
+    <div class="dropdown">
+        <div class="dropdown-trigger">
+            <label for="shelf-select-dropdown-{{ uuid }}-toggle" role="button" aria-expanded="false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ uuid }}">
+                <div class="button is-small">
+                    <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
+                </div>
+            </label>
+        </div>
+        <input type="checkbox" class="toggle-control" id="shelf-select-dropdown-{{ uuid }}-toggle">
+        <div class="dropdown-menu toggle-content hidden" id="shelf-select-{{ uuid }}" role="menu">
+            <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
-                <li>
-                <button class="is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>{{ shelf.name }} {% if shelf in book.shelf_set.all %} ✓ {% endif %}</button>
+                <li role="menuitem">
+                    {% if shelf.identifier == 'to-read' %}
+                    <div class="dropdown-item pt-0 pb-0">
+                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
+                            Start reading
+                        </label>
+                        {% include 'snippets/start_reading_modal.html' %}
+                    </div>
+                    {% else %}
+                    <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="book" value="{{ book.id }}">
+                        <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
+                            <span>{{ shelf.name }}</span>
+                            {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
                 </li>
                 {% endfor %}
-            </form>
-        </ul>
+            </ul>
+        </div>
     </div>
-    {% endif %}
 </div>
-
-</div>
+{% endwith %}
 {% endif %}

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 from .base_activity import ActivityObject, Signature
+from .book import Book
 
 @dataclass(init=False)
 class Verb(ActivityObject):
@@ -19,6 +20,14 @@ class Create(Verb):
     cc: List
     signature: Signature
     type: str = 'Create'
+
+
+@dataclass(init=False)
+class Delete(Verb):
+    ''' Create activity '''
+    to: List
+    cc: List
+    type: str = 'Delete'
 
 
 @dataclass(init=False)
@@ -58,6 +67,13 @@ class Reject(Verb):
 class Add(Verb):
     '''Add activity '''
     target: ActivityObject
+    type: str = 'Add'
+
+
+@dataclass(init=False)
+class AddBook(Verb):
+    '''Add activity that's aware of the book obj '''
+    target: Book
     type: str = 'Add'
 
 

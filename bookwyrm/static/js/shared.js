@@ -20,6 +20,11 @@ function reply(e) {
     return true;
 }
 
+function selectAll(el) {
+    el.parentElement.querySelectorAll('[type="checkbox"]')
+        .forEach(t => t.checked=true);
+}
+
 function rate_stars(e) {
     e.preventDefault();
     ajaxPost(e.target);
@@ -31,20 +36,27 @@ function rate_stars(e) {
     return true;
 }
 
-function tabChange(e) {
+function tabChange(e, nested) {
     var target = e.target.closest('li')
     var identifier = target.getAttribute('data-id');
 
-    var tabs = target.parentElement.children;
-    for (i = 0; i < tabs.length; i++) {
-        if (tabs[i].getAttribute('data-id') == identifier) {
-            tabs[i].className += ' is-active';
-        } else {
-            tabs[i].className = tabs[i].className.replace('is-active', '');
-        }
+    if (nested) {
+        var parent_element = target.parentElement.closest('li').parentElement;
+    } else {
+        var parent_element = target.parentElement;
     }
 
-    var el = document.getElementById(identifier);
+    parent_element.querySelectorAll('[aria-selected="true"]')
+        .forEach(t => t.setAttribute("aria-selected", false));
+    target.querySelector('[role="tab"]').setAttribute("aria-selected", true);
+
+    parent_element.querySelectorAll('li')
+        .forEach(t => t.className='');
+    target.className = 'is-active';
+}
+
+function toggleMenu(el) {
+    el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
 }
 
 function ajaxPost(form) {

@@ -1,19 +1,127 @@
 {% extends 'layout.html' %}
+{% load fr_display %}
 {% block content %}
 
-<div class="block">
-    <nav class="breadcrumb has-succeeds-separator" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/user/{{ user.username }}">{% include 'snippets/username.html' with user=user %}</a></li>
-            <li><a href="/user/{{ user.username }}/shelves">Shelves</a></li>
-            <li class="is-active"><a href="#" aria-current="page">{{ shelf.name }}</a></li>
-        </ul>
-    </nav>
+<div class="columns">
+    <div class="column">
+        <h1 class="title">
+            {% if is_self %}Your
+            {% else %}
+            {% include 'snippets/username.html' with user=user possessive=True %}
+            {% endif %}
+            shelves
+        </h1>
+    </div>
+</div>
+
+{% include 'snippets/user_header.html' with user=user %}
+
+<div class="block columns">
+    <div class="column">
+        <div class="tabs" role="tablist">
+            <ul>
+            {% for shelf_tab in shelves %}
+            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                    <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}" role="tab" aria-selected="{% if shelf_tab.identifier == shelf.identifier %}true{% else %}false{% endif %}">{{ shelf_tab.name }}</a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% if is_self %}
+    <div class="column is-narrow">
+        <input type="radio" id="create-shelf-form-hide" name="create-shelf-form" class="toggle-control" checked>
+        <div class="toggle-content hidden">
+            <label for="create-shelf-form-show">
+                <div role="button" tabindex="0">
+                    <span class="icon icon-plus">
+                        <span class="is-sr-only">Create new shelf</span>
+                    </span>
+                </div>
+            </label>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<input type="radio" id="create-shelf-form-show" name="create-shelf-form" class="toggle-control">
+<div class="toggle-content hidden">
+    <div class="box mb-5">
+        <h2 class="title is-4">Create new shelf</h2>
+        <form name="create-shelf" action="/create-shelf/" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            <div class="field">
+                <label class="label" for="id_name_create">Name:</label>
+                <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
+            </div>
+
+            <label class="label">
+                <p>Shelf privacy:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True %}
+            </label>
+            <div class="field is-grouped">
+                <button class="button is-primary" type="submit">Create shelf</button>
+                <label role="button" class="button" for="create-shelf-form-hide" tabindex="0">Cancel<label>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="block columns">
+    <div class="column">
+        <h2 class="title is-3">
+            {{ shelf.name }}
+            <span class="subtitle">
+                {% include 'snippets/privacy-icons.html' with item=shelf %}
+            </span>
+        </h2>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        <input type="radio" id="edit-shelf-form-hide" name="edit-shelf-form" class="toggle-control" checked>
+        <div class="toggle-content hidden">
+            <label for="edit-shelf-form-show">
+                <div role="button" tabindex="0">
+                    <span class="icon icon-pencil">
+                        <span class="is-sr-only">Edit shelf</span>
+                    </span>
+                </div>
+            </label>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<input type="radio" id="edit-shelf-form-show" name="edit-shelf-form" class="toggle-control">
+<div class="toggle-content hidden">
+    <div class="box mb-5">
+        <h2 class="title is-4">Edit shelf</h2>
+        <form name="create-shelf" action="/edit-shelf/{{ shelf.id }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            {% if shelf.editable %}
+            <div class="field">
+                <label class="label" for="id_name">Name:</label>
+                <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
+            </div>
+            {% endif %}
+
+            <label class="label">
+                <p>Shelf privacy:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True current=shelf.privacy %}
+            </label>
+            <div class="field is-grouped">
+                <button class="button is-primary" type="submit">Update shelf</button>
+                <label role="button" class="button" for="edit-shelf-form-hide" tabindex="0">Cancel<label>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="block">
     <div>
-        <h2 class="title">{{ shelf.name }}</h2>
         {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
     </div>
 </div>

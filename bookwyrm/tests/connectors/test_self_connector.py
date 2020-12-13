@@ -1,6 +1,7 @@
 ''' testing book data connectors '''
 import datetime
 from django.test import TestCase
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.connectors.self_connector import Connector
@@ -27,7 +28,7 @@ class SelfConnector(TestCase):
         self.edition = models.Edition.objects.create(
             title='Edition of Example Work',
             author_text='Anonymous',
-            published_date=datetime.datetime(1980, 5, 10),
+            published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
             parent_work=self.work,
         )
         models.Edition.objects.create(
@@ -48,7 +49,7 @@ class SelfConnector(TestCase):
 
 
     def test_format_search_result(self):
-        result = self.connector.format_search_result(self.edition)
+        result = self.connector.search('Edition of Example')[0]
         self.assertEqual(result.title, 'Edition of Example Work')
         self.assertEqual(result.key, self.edition.remote_id)
         self.assertEqual(result.author, 'Anonymous')
@@ -57,15 +58,16 @@ class SelfConnector(TestCase):
 
     def test_search_rank(self):
         results = self.connector.search('Anonymous')
-        self.assertEqual(len(results), 3)
-        self.assertEqual(results[0].title, 'Edition of Example Work')
-        self.assertEqual(results[1].title, 'More Editions')
-        self.assertEqual(results[2].title, 'Another Edition')
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0].title, 'More Editions')
+        self.assertEqual(results[1].title, 'Edition of Example Work')
 
 
     def test_search_default_filter(self):
-        self.edition.default = True
-        self.edition.save()
+        ''' it should get rid of duplicate editions for the same work '''
+        self.work.default_edition = self.edition
+        self.work.save()
+
         results = self.connector.search('Anonymous')
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].title, 'Edition of Example Work')

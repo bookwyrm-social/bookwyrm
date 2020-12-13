@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>BookWyrm</title>
+    <title>{% if title %}{{ title }} | {% endif %}{{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="/static/css/bulma.min.css">
     <link type="text/css" rel="stylesheet" href="/static/css/format.css">
@@ -11,35 +11,39 @@
     <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="BookWyrm">
-    <meta name="og:title" content="BookWyrm">
+    <meta name="twitter:title" content="{{ site.name }}">
+    <meta name="og:title" content="{{ site.name }}">
     <meta name="twitter:description" content="Federated Social Reading">
     <meta name="og:description" content="Federated Social Reading">
-    <meta name="twitter:creator" content="@tripofmice">
-    <meta name="twitter:site" content="@tripofmice">
 </head>
 <body>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img class="image logo" src="/static/images/logo-small.png" alt="BookWyrm">
+            <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
         </a>
-	<form class="navbar-item" action="/search/">
-	    <div class="field is-grouped">
-		<input class="input" type="text" name="q" placeholder="Search for a book or user">
-		<button class="button" type="submit">
-		    <span class="icon icon-search">
-			<span class="is-sr-only">search</span>
-		    </span>
-		</button>
-	    </div>
-	</form>
+        <form class="navbar-item column" action="/search/">
+            <div class="field has-addons">
+                <div class="control">
+                    <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
+                </div>
+                <div class="control">
+                    <button class="button" type="submit">
+                        <span class="icon icon-search">
+                            <span class="is-sr-only">search</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
 
-        <label for="main-nav" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="mainNav">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
+        <label for="main-nav" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav" onclick="toggleMenu(this)" tabindex="0">
+            <div class="navbar-item mt-3">
+                <div class="icon icon-dots-three-vertical">
+                    <span class="is-sr-only">Main navigation menu</span>
+                </div>
+            </div>
         </label>
     </div>
 
@@ -47,11 +51,11 @@
     <div id="mainNav" class="navbar-menu toggle-content">
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
-            <a href="" class="navbar-item">
-                Lists
+            <a href="/user/{{ request.user.localname }}/shelves" class="navbar-item">
+                Your shelves
             </a>
-            <a href="" class="navbar-item">
-                Groups
+            <a href="/#feed" class="navbar-item">
+                Feed
             </a>
             {% endif %}
         </div>
@@ -60,7 +64,7 @@
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
                 <div class="navbar-link"><p>
-                    {% include 'snippets/avatar.html' with user=user %}
+                    {% include 'snippets/avatar.html' with user=request.user %}
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>
                 <div class="navbar-dropdown">
@@ -89,7 +93,7 @@
                     <div class="tags has-addons">
                         <span class="tag is-medium">
                             <span class="icon icon-bell">
-                                <span class="is-sr-only">Notitications</span>
+                                <span class="is-sr-only">Notifications</span>
                             </span>
                         </span>
                         {% if request.user|notification_count %}
@@ -115,6 +119,30 @@
 <div class="section">
     {% block content %}
     {% endblock %}
+</div>
+
+<div class="footer">
+    <div class="columns">
+        <div class="column">
+            <p>
+                <a href="/about">About this server</a>
+            </p>
+            {% if site.admin_email %}
+            <p>
+                <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
+            </p>
+            {% endif %}
+        </div>
+        {% if site.support_link %}
+        <div class="column">
+            <span class="icon icon-heart"></span>
+            Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
+        </div>
+        {% endif %}
+        <div class="column">
+            BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+        </div>
+    </div>
 </div>
 
 <script>

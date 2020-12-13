@@ -6,12 +6,19 @@ from django.urls import path, re_path
 from bookwyrm import incoming, outgoing, views, settings, wellknown
 from bookwyrm import view_actions as actions
 
-username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
-localname_regex = r'(?P<username>[\w\-_]+)'
+username_regex = r'(?P<username>[\w\-_\.]+@[\w\-\_\.]+)'
+localname_regex = r'(?P<username>[\w\-_\.]+)'
 user_path = r'^user/%s' % username_regex
 local_user_path = r'^user/%s' % localname_regex
 
-status_types = ['status', 'review', 'comment', 'quotation', 'boost']
+status_types = [
+    'status',
+    'review',
+    'comment',
+    'quotation',
+    'boost',
+    'generatednote'
+]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
         (local_user_path, '|'.join(status_types))
 
@@ -47,15 +54,15 @@ urlpatterns = [
     path('', views.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
     re_path(r'^notifications/?', views.notifications_page),
-    re_path(r'import/?$', views.import_page),
-    re_path(r'import_status/(\d+)/?$', views.import_status),
-    re_path(r'user-edit/?$', views.edit_profile_page),
+    re_path(r'^import/?$', views.import_page),
+    re_path(r'^import-status/(\d+)/?$', views.import_status),
+    re_path(r'^user-edit/?$', views.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
-    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
+    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
     re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
@@ -68,10 +75,10 @@ urlpatterns = [
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
-    re_path(r'^editions/(?P<work_id>\d+)/?$', views.editions_page),
+    re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
-    # TODO: tag needs a .json path
+    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.tag_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
             user_path, views.shelf_page),
@@ -88,16 +95,21 @@ urlpatterns = [
     re_path(r'^reset-password/?$', actions.password_reset),
     re_path(r'^change-password/?$', actions.password_change),
 
-    re_path(r'^edit_profile/?$', actions.edit_profile),
+    re_path(r'^edit-profile/?$', actions.edit_profile),
 
-    re_path(r'^import_data/?', actions.import_data),
-    re_path(r'^resolve_book/?', actions.resolve_book),
-    re_path(r'^edit_book/(?P<book_id>\d+)/?', actions.edit_book),
-    re_path(r'^upload_cover/(?P<book_id>\d+)/?', actions.upload_cover),
+    re_path(r'^import-data/?', actions.import_data),
+    re_path(r'^retry-import/?', actions.retry_import),
+    re_path(r'^resolve-book/?', actions.resolve_book),
+    re_path(r'^edit-book/(?P<book_id>\d+)/?', actions.edit_book),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?', actions.upload_cover),
+    re_path(r'^add-description/(?P<book_id>\d+)/?', actions.add_description),
+
+    re_path(r'^edit-readthrough/?', actions.edit_readthrough),
+    re_path(r'^delete-readthrough/?', actions.delete_readthrough),
 
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),
-    re_path(r'^quotate/?$', actions.quotate),
+    re_path(r'^quote/?$', actions.quotate),
     re_path(r'^comment/?$', actions.comment),
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),
@@ -106,16 +118,25 @@ urlpatterns = [
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
+    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
 
+    re_path(r'^delete-status/(?P<status_id>\d+)/?$', actions.delete_status),
+
+    re_path(r'^create-shelf/?$', actions.create_shelf),
+    re_path(r'^edit-shelf/(?P<shelf_id>\d+)?$', actions.edit_shelf),
+    re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', actions.delete_shelf),
     re_path(r'^shelve/?$', actions.shelve),
+    re_path(r'^unshelve/?$', actions.unshelve),
+    re_path(r'^start-reading/(?P<book_id>\d+)/?$', actions.start_reading),
+    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', actions.finish_reading),
 
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),
-    re_path(r'^accept_follow_request/?$', actions.accept_follow_request),
-    re_path(r'^delete_follow_request/?$', actions.delete_follow_request),
+    re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
+    re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
 
     re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
-    re_path(r'^create_invite/?$', actions.create_invite),
+    re_path(r'^create-invite/?$', actions.create_invite),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

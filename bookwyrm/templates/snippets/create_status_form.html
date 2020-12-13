@@ -1,0 +1,47 @@
+<form class="toggle-content hidden tab-option-{{ book.id }}" name="{{ type }}" action="/{{ type }}" method="post" id="tab-{{ type }}-{{ book.id }}">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    {% if type == 'review' %}
+    <div class="control">
+        <label class="label" for="id_name_{{ book.id }}_{{ type }}">Title:</label>
+        <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'">
+    </div>
+    {% endif %}
+    <div class="control">
+        <label class="label" for="id_{% if type == 'quote' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+
+        {% if type == 'review' %}
+        <fieldset>
+            <legend class="is-sr-only">Rating</legend>
+            <div class="field is-grouped stars form-rate-stars">
+                <label class="is-sr-only" for="no-rating-{{ book.id }}">No rating</label>
+                <input class="is-sr-only" type="radio" name="rating" value="" id="no-rating-{{ book.id }}" checked>
+                {% for i in '12345'|make_list %}
+                <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
+                <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+                    <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+        {% endif %}
+        {% if type == 'quote' %}
+        <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% else %}
+        <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% endif %}
+
+    </div>
+    {% if type == 'quote' %}
+    <div class="control">
+        <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
+        <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
+    </div>
+    {% endif %}
+    <div class="control is-grouped">
+        {% include 'snippets/privacy_select.html' %}
+        <button class="button is-primary" type="submit">post {{ type }}</button>
+    </div>
+</form>
+

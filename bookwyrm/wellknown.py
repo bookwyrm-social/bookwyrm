@@ -1,6 +1,9 @@
 ''' responds to various requests to /.well-know '''
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+
+from dateutil.relativedelta import relativedelta
+from django.http import HttpResponseNotFound
 from django.http import JsonResponse
+from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN
@@ -13,11 +16,14 @@ def webfinger(request):
 
     resource = request.GET.get('resource')
     if not resource and not resource.startswith('acct:'):
-        return HttpResponseBadRequest()
-    ap_id = resource.replace('acct:', '')
-    user = models.User.objects.filter(username=ap_id).first()
-    if not user:
+        return HttpResponseNotFound()
+
+    username = resource.replace('acct:', '')
+    try:
+        user = models.User.objects.get(username=username)
+    except models.User.DoesNotExist:
         return HttpResponseNotFound('No account found')
+
     return JsonResponse({
         'subject': 'acct:%s' % (user.username),
         'links': [
@@ -51,7 +57,21 @@ def nodeinfo(request):
         return HttpResponseNotFound()
 
     status_count = models.Status.objects.filter(user__local=True).count()
-    user_count = models.User.objects.count()
+    user_count = models.User.objects.filter(local=True).count()
+
+    month_ago = timezone.now() - relativedelta(months=1)
+    last_month_count = models.User.objects.filter(
+        local=True,
+        last_active_date__gt=month_ago
+    ).count()
+
+    six_months_ago = timezone.now() - relativedelta(months=6)
+    six_month_count = models.User.objects.filter(
+        local=True,
+        last_active_date__gt=six_months_ago
+    ).count()
+
+    site = models.SiteSettings.get()
     return JsonResponse({
         'version': '2.0',
         'software': {
@@ -64,38 +84,39 @@ def nodeinfo(request):
         'usage': {
             'users': {
                 'total': user_count,
-                'activeMonth': user_count, # TODO
-                'activeHalfyear': user_count, # TODO
+                'activeMonth': last_month_count,
+                'activeHalfyear': six_month_count,
             },
             'localPosts': status_count,
         },
-        'openRegistrations': True,
+        'openRegistrations': site.allow_registration,
     })
 
 
 def instance_info(request):
-    ''' what this place is TODO: should be settable/editable '''
+    ''' let's talk about your cool unique instance '''
     if request.method != 'GET':
         return HttpResponseNotFound()
 
-    user_count = models.User.objects.count()
-    status_count = models.Status.objects.count()
+    user_count = models.User.objects.filter(local=True).count()
+    status_count = models.Status.objects.filter(user__local=True).count()
+
+    site = models.SiteSettings.get()
     return JsonResponse({
         'uri': DOMAIN,
-        'title': 'BookWyrm',
-        'short_description': 'Social reading, decentralized',
-        'description': '',
-        'email': 'mousereeve@riseup.net',
+        'title': site.name,
+        'short_description': '',
+        'description': site.instance_description,
         'version': '0.0.1',
         'stats': {
             'user_count': user_count,
             'status_count': status_count,
         },
-        'thumbnail': '', # TODO: logo thumbnail
+        'thumbnail': 'https://%s/static/images/logo.png' % DOMAIN,
         'languages': [
             'en'
         ],
-        'registrations': True,
+        'registrations': site.allow_registration,
         'approval_required': False,
     })
 

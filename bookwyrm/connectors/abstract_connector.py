@@ -1,31 +1,28 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
-from dateutil import parser
+from dataclasses import dataclass
 import pytz
-import requests
+from urllib3.exceptions import RequestError
 
 from django.db import transaction
+from dateutil import parser
+import requests
+from requests import HTTPError
+from requests.exceptions import SSLError
 
 from bookwyrm import models
 
 
-class ConnectorException(Exception):
+class ConnectorException(HTTPError):
     ''' when the connector can't do what was asked '''
 
 
-class AbstractConnector(ABC):
-    ''' generic book data connector '''
-
+class AbstractMinimalConnector(ABC):
+    ''' just the bare bones, for other bookwyrm instances '''
     def __init__(self, identifier):
         # load connector settings
         info = models.Connector.objects.get(identifier=identifier)
         self.connector = info
-
-        self.key_mappings = []
-
-        # fields we want to look for in book data to copy over
-        # title we handle separately.
-        self.book_mappings = []
 
         # the things in the connector model to copy over
         self_fields = [
@@ -41,16 +38,7 @@ class AbstractConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-
-    def is_available(self):
-        ''' check if you're allowed to use this connector '''
-        if self.max_query_count is not None:
-            if self.connector.query_count >= self.max_query_count:
-                return False
-        return True
-
-
-    def search(self, query):
+    def search(self, query, min_confidence=None):
         ''' free text search '''
         resp = requests.get(
             '%s%s' % (self.search_url, query),
@@ -67,12 +55,43 @@ class AbstractConnector(ABC):
             results.append(self.format_search_result(doc))
         return results
 
-
+    @abstractmethod
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
+
+    @abstractmethod
+    def parse_search_data(self, data):
+        ''' turn the result json from a search into a list '''
+
+    @abstractmethod
+    def format_search_result(self, search_result):
+        ''' create a SearchResult obj from json '''
+
+
+class AbstractConnector(AbstractMinimalConnector):
+    ''' generic book data connector '''
+    def __init__(self, identifier):
+        super().__init__(identifier)
+
+        self.key_mappings = []
+
+        # fields we want to look for in book data to copy over
+        # title we handle separately.
+        self.book_mappings = []
+
+
+    def is_available(self):
+        ''' check if you're allowed to use this connector '''
+        if self.max_query_count is not None:
+            if self.connector.query_count >= self.max_query_count:
+                return False
+        return True
+
+
+    def get_or_create_book(self, remote_id):
         # try to load the book
         book = models.Book.objects.select_subclasses().filter(
-            remote_id=remote_id
+            origin_id=remote_id
         ).first()
         if book:
             if isinstance(book, models.Work):
@@ -112,22 +131,26 @@ class AbstractConnector(ABC):
                 # remember this hack: re-use the work data as the edition data
                 work_data = data
 
+        if not work_data or not edition_data:
+            raise ConnectorException('Unable to load book data: %s' % remote_id)
+
         # at this point, we need to figure out the work, edition, or both
         # atomic so that we don't save a work with no edition for vice versa
         with transaction.atomic():
             if not work:
-                work_key = work_data.get('url')
+                work_key = self.get_remote_id_from_data(work_data)
                 work = self.create_book(work_key, work_data, models.Work)
 
             if not edition:
-                ed_key = edition_data.get('url')
+                ed_key = self.get_remote_id_from_data(edition_data)
                 edition = self.create_book(ed_key, edition_data, models.Edition)
-                edition.default = True
                 edition.parent_work = work
                 edition.save()
+            work.default_edition = edition
+            work.save()
 
         # now's our change to fill in author gaps
-        if not edition.authors and work.authors:
+        if not edition.authors.exists() and work.authors.exists():
             edition.authors.set(work.authors.all())
             edition.author_text = work.author_text
             edition.save()
@@ -141,7 +164,7 @@ class AbstractConnector(ABC):
     def create_book(self, remote_id, data, model):
         ''' create a work or edition from data '''
         book = model.objects.create(
-            remote_id=remote_id,
+            origin_id=remote_id,
             title=data['title'],
             connector=self.connector,
         )
@@ -152,9 +175,11 @@ class AbstractConnector(ABC):
         ''' for creating a new book or syncing with data '''
         book = update_from_mappings(book, data, self.book_mappings)
 
+        author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-        book.author_text = ', '.join(a.display_name for a in book.authors.all())
+            author_text.append(author.name)
+        book.author_text = ', '.join(author_text)
         book.save()
 
         if not update_cover:
@@ -208,6 +233,11 @@ class AbstractConnector(ABC):
 
 
     @abstractmethod
+    def get_remote_id_from_data(self, data):
+        ''' otherwise we won't properly set the remote_id in the db '''
+
+
+    @abstractmethod
     def is_work_data(self, data):
         ''' differentiate works and editions '''
 
@@ -230,17 +260,6 @@ class AbstractConnector(ABC):
     @abstractmethod
     def get_cover_from_data(self, data):
         ''' load cover '''
-
-
-    @abstractmethod
-    def parse_search_data(self, data):
-        ''' turn the result json from a search into a list '''
-
-
-    @abstractmethod
-    def format_search_result(self, search_result):
-        ''' create a SearchResult obj from json '''
-
 
     @abstractmethod
     def expand_book_data(self, book):
@@ -284,25 +303,44 @@ def get_date(date_string):
 
 def get_data(url):
     ''' wrapper for request.get '''
-    resp = requests.get(
-        url,
-        headers={
-            'Accept': 'application/json; charset=utf-8',
-        },
-    )
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+            },
+        )
+    except RequestError:
+        raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
-    data = resp.json()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
     return data
 
 
+def get_image(url):
+    ''' wrapper for requesting an image '''
+    try:
+        resp = requests.get(url)
+    except (RequestError, SSLError):
+        return None
+    if not resp.ok:
+        return None
+    return resp
+
+
+@dataclass
 class SearchResult:
     ''' standardized search result object '''
-    def __init__(self, title, key, author, year):
-        self.title = title
-        self.key = key
-        self.author = author
-        self.year = year
+    title: str
+    key: str
+    author: str
+    year: str
+    confidence: int = 1
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(

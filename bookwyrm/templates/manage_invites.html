@@ -2,7 +2,7 @@
 {% load humanize %}
 {% block content %}
 <div class="block">
-    <h2 class="title">Invites</h2>
+    <h1 class="title">Invites</h1>
     <table class="table is-striped">
         <tr>
             <th>Link</th>
@@ -27,23 +27,20 @@
 <div class="block">
     <h2 class="title is-4">Generate New Invite</h2>
 
-    <form name="invite" action="/create_invite/" method="post">
+    <form name="invite" action="/create-invite/" method="post">
         {% csrf_token %}
-        <div class="field">
+        <div class="field is-grouped">
             <div class="control">
                 <label class="label" for="id_expiry">Expiry:</label>
+                <div class="select">
+                    {{ form.expiry }}
+                </div>
             </div>
-            <div class="select">
-                {{ form.expiry }}
-            </div>
-        </div>
-
-        <div class="field">
             <div class="control">
                 <label class="label" for="id_use_limit">Use limit:</label>
-            </div>
-            <div class="select">
-                {{ form.use_limit }}
+                <div class="select">
+                    {{ form.use_limit }}
+                </div>
             </div>
         </div>
 

@@ -4,7 +4,7 @@
 <div class="columns">
     <div class="column">
         <div class="block login">
-            <h2 class="title">Create an Account</h2>
+            <h1 class="title">Create an Account</h1>
             <div>
                 <form name="register" method="post" action="/user-register">
                     <input type=hidden name="invite_code" value="{{ invite.code }}">
@@ -15,7 +15,7 @@
     </div>
     <div class="column">
         <div class="block">
-            {% include 'snippets/about.html' with site_settings=site_settings %}
+            {% include 'snippets/about.html' %}
         </div>
     </div>
 </div>

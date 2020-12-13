@@ -29,6 +29,9 @@ class SiteSettings(models.Model):
         upload_to='static/images/',
         default='/static/images/favicon.ico'
     )
+    support_link = models.CharField(max_length=255, null=True, blank=True)
+    support_title = models.CharField(max_length=100, null=True, blank=True)
+    admin_email = models.EmailField(max_length=255, null=True, blank=True)
 
     @classmethod
     def get(cls):
@@ -66,7 +69,7 @@ class SiteInvite(models.Model):
 
 def get_passowrd_reset_expiry():
     ''' give people a limited time to use the link '''
-    now = datetime.datetime.now()
+    now = timezone.now()
     return now + datetime.timedelta(days=1)
 
 

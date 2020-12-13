@@ -5,6 +5,7 @@ from collections import defaultdict
 from django import forms
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
+from django.utils import timezone
 
 from bookwyrm import models
 
@@ -29,6 +30,7 @@ class CustomForm(ModelForm):
                 visible.field.widget.attrs['rows'] = None
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
+
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
@@ -52,47 +54,31 @@ class RegisterForm(CustomForm):
 class RatingForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['rating']
+        fields = ['user', 'book', 'content', 'rating', 'privacy']
 
 
 class ReviewForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['name', 'content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'name': 'Title',
-            'content': 'Review',
-        }
+        fields = ['user', 'book', 'name', 'content', 'rating', 'privacy']
 
 
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ['content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'content': 'Comment',
-        }
+        fields = ['user', 'book', 'content', 'privacy']
 
 
 class QuotationForm(CustomForm):
     class Meta:
         model = models.Quotation
-        fields = ['quote', 'content']
-        help_texts = {f: None for f in fields}
-        labels = {
-            'quote': 'Quote',
-            'content': 'Comment',
-        }
+        fields = ['user', 'book', 'quote', 'content', 'privacy']
 
 
 class ReplyForm(CustomForm):
     class Meta:
         model = models.Status
-        fields = ['content']
-        help_texts = {f: None for f in fields}
-        labels = {'content': 'Comment'}
+        fields = ['user', 'content', 'reply_parent', 'privacy']
 
 
 class EditUserForm(CustomForm):
@@ -158,7 +144,7 @@ class ExpiryWidget(widgets.Select):
         else:
             return selected_string # "This will raise
 
-        return datetime.datetime.now() + interval
+        return timezone.now() + interval
 
 class CreateInviteForm(CustomForm):
     class Meta:
@@ -174,3 +160,8 @@ class CreateInviteForm(CustomForm):
                 choices=[(i, "%d uses" % (i,)) for i in [1, 5, 10, 25, 50, 100]]
                 + [(None, 'Unlimited')])
         }
+
+class ShelfForm(CustomForm):
+    class Meta:
+        model = models.Shelf
+        fields = ['user', 'name', 'privacy']

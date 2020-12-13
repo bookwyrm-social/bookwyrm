@@ -1,27 +1,34 @@
 ''' models for storing different kinds of Activities '''
 from django.utils import timezone
-from django.utils.http import http_date
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import ActivityMapping, BookWyrmModel
-
+from .base_model import BookWyrmModel, PrivacyLevels
+from . import fields
+from .fields import image_serializer
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    content = models.TextField(blank=True, null=True)
-    mention_users = models.ManyToManyField('User', related_name='mention_user')
-    mention_books = models.ManyToManyField(
-        'Edition', related_name='mention_book')
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='attributedTo')
+    content = fields.TextField(blank=True, null=True)
+    mention_users = fields.TagField('User', related_name='mention_user')
+    mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
-    privacy = models.CharField(max_length=255, default='public')
-    sensitive = models.BooleanField(default=False)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=PrivacyLevels.choices
+    )
+    sensitive = fields.BooleanField(default=False)
     # the created date can't be this, because of receiving federated posts
-    published_date = models.DateTimeField(default=timezone.now)
+    published_date = fields.DateTimeField(
+        default=timezone.now, activitypub_field='published')
+    deleted = models.BooleanField(default=False)
+    deleted_date = models.DateTimeField(blank=True, null=True)
     favorites = models.ManyToManyField(
         'User',
         symmetrical=False,
@@ -29,60 +36,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         through_fields=('status', 'user'),
         related_name='user_favorites'
     )
-    reply_parent = models.ForeignKey(
+    reply_parent = fields.ForeignKey(
         'self',
         null=True,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        activitypub_field='inReplyTo',
     )
     objects = InheritanceManager()
 
-    # ---- activitypub serialization settings for this model ----- #
-    @property
-    def ap_to(self):
-        ''' should be related to post privacy I think '''
-        return ['https://www.w3.org/ns/activitystreams#Public']
-
-    @property
-    def ap_cc(self):
-        ''' should be related to post privacy I think '''
-        return [self.user.ap_followers]
-
-    @property
-    def ap_replies(self):
-        ''' structured replies block '''
-        return self.to_replies()
-
-    shared_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('url', 'remote_id'),
-        ActivityMapping('inReplyTo', 'reply_parent'),
-        ActivityMapping(
-            'published',
-            'published_date',
-            activity_formatter=lambda d: http_date(d.timestamp())
-        ),
-        ActivityMapping('attributedTo', 'user'),
-        ActivityMapping('to', 'ap_to'),
-        ActivityMapping('cc', 'ap_cc'),
-        ActivityMapping('replies', 'ap_replies'),
-    ]
-
-    # serializing to bookwyrm expanded activitypub
-    activity_mappings = shared_mappings + [
-        ActivityMapping('name', 'name'),
-        ActivityMapping('inReplyToBook', 'book'),
-        ActivityMapping('rating', 'rating'),
-        ActivityMapping('quote', 'quote'),
-        ActivityMapping('content', 'content'),
-    ]
-
-    # for serializing to standard activitypub without extended types
-    pure_activity_mappings = shared_mappings + [
-        ActivityMapping('name', 'ap_pure_name'),
-        ActivityMapping('content', 'ap_pure_content'),
-    ]
-
     activity_serializer = activitypub.Note
+    serialize_reverse_fields = [('attachments', 'attachment')]
+    deserialize_reverse_fields = [('attachments', 'attachment')]
 
     #----- replies collection activitypub ----#
     @classmethod
@@ -104,60 +68,118 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-class GeneratedStatus(Status):
+    def to_activity(self, pure=False):
+        ''' return tombstone if the status is deleted '''
+        if self.deleted:
+            return activitypub.Tombstone(
+                id=self.remote_id,
+                url=self.remote_id,
+                deleted=self.deleted_date.isoformat(),
+                published=self.deleted_date.isoformat()
+            ).serialize()
+        activity = ActivitypubMixin.to_activity(self)
+        activity['replies'] = self.to_replies()
+
+        # privacy controls
+        public = 'https://www.w3.org/ns/activitystreams#Public'
+        mentions = [u.remote_id for u in self.mention_users.all()]
+        # this is a link to the followers list:
+        followers = self.user.__class__._meta.get_field('followers')\
+                .field_to_activity(self.user.followers)
+        if self.privacy == 'public':
+            activity['to'] = [public]
+            activity['cc'] = [followers] + mentions
+        elif self.privacy == 'unlisted':
+            activity['to'] = [followers]
+            activity['cc'] = [public] + mentions
+        elif self.privacy == 'followers':
+            activity['to'] = [followers]
+            activity['cc'] = mentions
+        if self.privacy == 'direct':
+            activity['to'] = mentions
+            activity['cc'] = []
+
+        # "pure" serialization for non-bookwyrm instances
+        if pure:
+            activity['content'] = self.pure_content
+            if 'name' in activity:
+                activity['name'] = self.pure_name
+            activity['type'] = self.pure_type
+            activity['attachment'] = [
+                image_serializer(b.cover) for b in self.mention_books.all() \
+                        if b.cover]
+            if hasattr(self, 'book'):
+                activity['attachment'].append(
+                    image_serializer(self.book.cover)
+                )
+        return activity
+
+
+    def save(self, *args, **kwargs):
+        ''' update user active time '''
+        if self.user.local:
+            self.user.last_active_date = timezone.now()
+            self.user.save()
+        return super().save(*args, **kwargs)
+
+
+class GeneratedNote(Status):
     ''' these are app-generated messages about user activity '''
     @property
-    def ap_pure_content(self):
+    def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
         message = self.content
         books = ', '.join(
-            '<a href="%s">"%s"</a>' % (self.book.local_id, self.book.title) \
-            for book in self.mention_books
+            '<a href="%s">"%s"</a>' % (book.remote_id, book.title) \
+            for book in self.mention_books.all()
         )
-        return '%s %s' % (message, books)
+        return '%s %s %s' % (self.user.display_name, message, books)
 
     activity_serializer = activitypub.GeneratedNote
-    pure_activity_serializer = activitypub.Note
+    pure_type = 'Note'
 
 
 class Comment(Status):
     ''' like a review but without a rating and transient '''
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
     @property
-    def ap_pure_content(self):
+    def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
         return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-                (self.book.local_id, self.book.title)
+                (self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
-    pure_activity_serializer = activitypub.Note
+    pure_type = 'Note'
 
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    quote = models.TextField()
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
+    quote = fields.TextField()
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
     @property
-    def ap_pure_content(self):
+    def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '"%s"<br>-- <a href="%s">"%s"</a>)<br><br>%s' % (
+        return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
             self.quote,
-            self.book.local_id,
+            self.book.remote_id,
             self.book.title,
             self.content,
         )
 
     activity_serializer = activitypub.Quotation
-    pure_activity_serializer = activitypub.Note
+    pure_type = 'Note'
 
 
 class Review(Status):
     ''' a book review '''
-    name = models.CharField(max_length=255, null=True)
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-    rating = models.IntegerField(
+    name = fields.CharField(max_length=255, null=True)
+    book = fields.ForeignKey(
+        'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
+    rating = fields.IntegerField(
         default=None,
         null=True,
         blank=True,
@@ -165,38 +187,43 @@ class Review(Status):
     )
 
     @property
-    def ap_pure_name(self):
+    def pure_name(self):
         ''' clarify review names for mastodon serialization '''
-        return 'Review of "%s" (%d stars): %s' % (
+        if self.rating:
+            return 'Review of "%s" (%d stars): %s' % (
+                self.book.title,
+                self.rating,
+                self.name
+            )
+        return 'Review of "%s": %s' % (
             self.book.title,
-            self.rating,
             self.name
         )
 
     @property
-    def ap_pure_content(self):
+    def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
         return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
-                (self.book.local_id, self.book.title)
+                (self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Review
-    pure_activity_serializer = activitypub.Article
+    pure_type = 'Article'
 
 
 class Favorite(ActivitypubMixin, BookWyrmModel):
     ''' fav'ing a post '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    status = models.ForeignKey('Status', on_delete=models.PROTECT)
-
-    # ---- activitypub serialization settings for this model ----- #
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('actor', 'user'),
-        ActivityMapping('object', 'status'),
-    ]
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='actor')
+    status = fields.ForeignKey(
+        'Status', on_delete=models.PROTECT, activitypub_field='object')
 
     activity_serializer = activitypub.Like
 
+    def save(self, *args, **kwargs):
+        ''' update user active time '''
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
 
     class Meta:
         ''' can't fav things twice '''
@@ -205,16 +232,12 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
 
 class Boost(Status):
     ''' boost'ing a post '''
-    boosted_status = models.ForeignKey(
+    boosted_status = fields.ForeignKey(
         'Status',
         on_delete=models.PROTECT,
-        related_name="boosters")
-
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('actor', 'user'),
-        ActivityMapping('object', 'boosted_status'),
-    ]
+        related_name='boosters',
+        activitypub_field='object',
+    )
 
     activity_serializer = activitypub.Boost
 
@@ -237,10 +260,16 @@ class ReadThrough(BookWyrmModel):
         blank=True,
         null=True)
 
+    def save(self, *args, **kwargs):
+        ''' update user active time '''
+        self.user.last_active_date = timezone.now()
+        self.user.save()
+        super().save(*args, **kwargs)
+
 
 NotificationType = models.TextChoices(
     'NotificationType',
-    'FAVORITE REPLY TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
+    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
 
 class Notification(BookWyrmModel):
     ''' you've been tagged, liked, followed, etc '''

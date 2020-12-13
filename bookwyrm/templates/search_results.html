@@ -1,0 +1,88 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% with book_results|first as local_results %}
+<div class="block">
+    <h1 class="title">Search Results for "{{ query }}"</h1>
+</div>
+
+<div class="block columns">
+    <div class="column">
+        <h2 class="title">Matching Books</h2>
+        <section class="block">
+            {% if not local_results.results %}
+            <p>No books found for "{{ query }}"</p>
+            {% else %}
+            <ul>
+            {% for result in local_results.results %}
+                <li class="pd-4">
+                    <a href="{{ result.key }}">{% include 'snippets/search_result_text.html' with result=result link=True %}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </section>
+
+        {% if book_results|slice:":1" and local_results.results and request.user.is_authenticated %}
+        <div class="block">
+            <p>
+                Didn't find what you were looking for?
+            </p>
+
+            <input class="toggle-control" type="radio" name="more-results" id="fewer-results" checked>
+            <div class="toggle-content hidden">
+                <label class="button is-small" for="more-results">
+                    <div role="button" tabindex="0">Show results from other catalogues</div>
+                </label>
+            </div>
+        </div>
+        {% endif %}
+
+        <input class="toggle-control" type="radio" name="more-results" id="more-results" {% if not local_results.results %}checked{% endif %}>
+        <div class="toggle-content hidden">
+            {% for result_set in book_results|slice:"1:" %}
+            {% if result_set.results %}
+            <section class="block">
+                {% if not result_set.connector.local %}
+                <h3 class="title is-5">
+                    Results from <a href="{{ result_set.connector.base_url }}" target="_blank">{% if result_set.connector.name %}{{ result_set.connector.name }}{% else %}{{ result_set.connector.identifier }}{% endif %}</a>
+                </h3>
+                {% endif %}
+
+                <ul>
+                {% for result in result_set.results %}
+                    <li class="pb-4">
+                        <form action="/resolve-book" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="remote_id" value="{{ result.key }}">
+                            <div>{% include 'snippets/search_result_text.html' with result=result link=False %}</div>
+                            <button type="submit" class="button is-small is-link">Import book</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+            {% endfor %}
+            {% if local_results.results %}
+            <label class="button is-small" for="fewer-results">
+                <div role="button" tabindex="0">Hide results from other catalogues</div>
+            </label>
+            {% endif %}
+        </div>
+    </div>
+    <div class="column">
+        <h2 class="title">Matching Users</h2>
+        {% if not user_results %}
+        <p>No users found for "{{ query }}"</p>
+        {% endif %}
+        {% for result in user_results %}
+        <div class="block">
+            {% include 'snippets/avatar.html' with user=result %}</h2>
+            {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+            {% include 'snippets/follow_button.html' with user=result %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endwith %}
+{% endblock %}

@@ -7,8 +7,7 @@ from django.core.files.base import ContentFile
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import ConnectorException
-from .abstract_connector import update_from_mappings
-from .abstract_connector import get_date, get_data
+from .abstract_connector import get_date, get_data, update_from_mappings
 from .openlibrary_languages import languages
 
 
@@ -66,11 +65,19 @@ class Connector(AbstractConnector):
         ]
 
         self.author_mappings = [
+            Mapping('name'),
             Mapping('born', remote_field='birth_date', formatter=get_date),
             Mapping('died', remote_field='death_date', formatter=get_date),
             Mapping('bio', formatter=get_description),
         ]
 
+
+    def get_remote_id_from_data(self, data):
+        try:
+            key = data['key']
+        except KeyError:
+            raise ConnectorException('Invalid book data')
+        return '%s/%s' % (self.books_url, key)
 
 
     def is_work_data(self, data):
@@ -129,10 +136,10 @@ class Connector(AbstractConnector):
         key = self.books_url + search_result['key']
         author = search_result.get('author_name') or ['Unknown']
         return SearchResult(
-            search_result.get('title'),
-            key,
-            ', '.join(author),
-            search_result.get('first_publish_year'),
+            title=search_result.get('title'),
+            key=key,
+            author=', '.join(author),
+            year=search_result.get('first_publish_year'),
         )
 
 
@@ -170,21 +177,15 @@ class Connector(AbstractConnector):
         ''' load that author '''
         if not re.match(r'^OL\d+A$', olkey):
             raise ValueError('Invalid OpenLibrary author ID')
-        try:
-            return models.Author.objects.get(openlibrary_key=olkey)
-        except models.Author.DoesNotExist:
-            pass
+        author = models.Author.objects.filter(openlibrary_key=olkey).first()
+        if author:
+            return author
 
         url = '%s/authors/%s.json' % (self.base_url, olkey)
         data = get_data(url)
 
         author = models.Author(openlibrary_key=olkey)
         author = update_from_mappings(author, data, self.author_mappings)
-        name = data.get('name')
-        # TODO this is making some BOLD assumption
-        if name:
-            author.last_name = name.split(' ')[-1]
-            author.first_name = ' '.join(name.split(' ')[:-1])
         author.save()
 
         return author

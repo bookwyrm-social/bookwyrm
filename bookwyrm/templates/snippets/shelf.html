@@ -1,6 +1,6 @@
 {% load humanize %}
 {% load fr_display %}
-{% if shelf.books %}
+{% if shelf.books.all|length > 0 %}
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">
@@ -43,7 +43,7 @@
         <a href="/book/{{ book.id }}">{{ book.title }}</a>
     </td>
     <td>
-        {{ book.authors.first.display_name }}
+        {{ book.authors.first.name }}
     </td>
     <td>
         {% if book.first_published_date %}{{ book.first_published_date }}{% endif %}
@@ -66,10 +66,25 @@
         {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
     </td>
     {% endif %}
+    {% if shelf.user == request.user %}
+    <td>
+        {% include 'snippets/shelf_selector.html' with current=shelf %}
+    </td>
+    {% endif %}
 </tr>
 {% endfor %}
 </table>
 {% else %}
 <p>This shelf is empty.</p>
+{% if shelf.editable %}
+<form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <button class="button is-danger is-light" type="submit">
+        Delete shelf
+    </button>
+</form>
+{% endif %}
+
 {% endif %}
 
