@@ -99,10 +99,6 @@ BOOKWYRM_DBS = {
         'HOST': env('POSTGRES_HOST', ''),
         'PORT': 5432
     },
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'fedireads.db')
-    }
 }
 
 DATABASES = {
