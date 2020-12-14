@@ -12,6 +12,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, incoming
 
 
+#pylint: disable=too-many-public-methods
 class Incoming(TestCase):
     ''' a lot here: all handlers for receiving activitypub requests '''
     def setUp(self):
@@ -385,11 +386,13 @@ class Incoming(TestCase):
                 'id': 'https://example.com/fav/1',
                 'actor': 'https://example.com/users/rat',
                 'published': 'Mon, 25 May 2020 19:31:20 GMT',
-                'object': 'https://example.com/status/1',
+                'object': 'https://example.com/fav/1',
             }
         }
         models.Favorite.objects.create(
-            status=self.status, user=self.remote_user)
+            status=self.status,
+            user=self.remote_user,
+            remote_id='https://example.com/fav/1')
         self.assertEqual(models.Favorite.objects.count(), 1)
 
         incoming.handle_unfavorite(activity)
