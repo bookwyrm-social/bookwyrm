@@ -1,4 +1,5 @@
 ''' test incoming activities '''
+from datetime import datetime
 import json
 import pathlib
 from unittest.mock import patch
@@ -310,6 +311,53 @@ class Incoming(TestCase):
             models.Notification.objects.get().notification_type, 'REPLY')
 
 
+    def test_handle_delete_status(self):
+        ''' remove a status '''
+        self.assertFalse(self.status.deleted)
+        activity = {
+            'type': 'Delete',
+            'id': '%s/activity' % self.status.remote_id,
+            'actor': self.local_user.remote_id,
+            'object': {'id': self.status.remote_id},
+        }
+        incoming.handle_delete_status(activity)
+        # deletion doens't remove the status, it turns it into a tombstone
+        status = models.Status.objects.get()
+        self.assertTrue(status.deleted)
+        self.assertIsInstance(status.deleted_date, datetime)
+
+
+    def test_handle_delete_status_notifications(self):
+        ''' remove a status with related notifications '''
+        models.Notification.objects.create(
+            related_status=self.status,
+            user=self.local_user,
+            notification_type='MENTION'
+        )
+        # this one is innocent, don't delete it
+        notif = models.Notification.objects.create(
+            user=self.local_user,
+            notification_type='MENTION'
+        )
+        self.assertFalse(self.status.deleted)
+        self.assertEqual(models.Notification.objects.count(), 2)
+        activity = {
+            'type': 'Delete',
+            'id': '%s/activity' % self.status.remote_id,
+            'actor': self.local_user.remote_id,
+            'object': {'id': self.status.remote_id},
+        }
+        incoming.handle_delete_status(activity)
+        # deletion doens't remove the status, it turns it into a tombstone
+        status = models.Status.objects.get()
+        self.assertTrue(status.deleted)
+        self.assertIsInstance(status.deleted_date, datetime)
+
+        # notifications should be truly deleted
+        self.assertEqual(models.Notification.objects.count(), 1)
+        self.assertEqual(models.Notification.objects.get(), notif)
+
+
     def test_handle_favorite(self):
         ''' fav a status '''
         activity = {
@@ -326,3 +374,23 @@ class Incoming(TestCase):
         self.assertEqual(fav.status, self.status)
         self.assertEqual(fav.remote_id, 'https://example.com/fav/1')
         self.assertEqual(fav.user, self.remote_user)
+
+    def test_handle_unfavorite(self):
+        ''' fav a status '''
+        activity = {
+            'id': 'https://example.com/fav/1#undo',
+            'type': 'Undo',
+            'object': {
+                '@context': 'https://www.w3.org/ns/activitystreams',
+                'id': 'https://example.com/fav/1',
+                'actor': 'https://example.com/users/rat',
+                'published': 'Mon, 25 May 2020 19:31:20 GMT',
+                'object': 'https://example.com/status/1',
+            }
+        }
+        models.Favorite.objects.create(
+            status=self.status, user=self.remote_user)
+        self.assertEqual(models.Favorite.objects.count(), 1)
+
+        incoming.handle_unfavorite(activity)
+        self.assertEqual(models.Favorite.objects.count(), 0)

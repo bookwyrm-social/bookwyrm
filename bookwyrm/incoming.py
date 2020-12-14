@@ -248,11 +248,12 @@ def handle_delete_status(activity):
         # is trying to delete a user.
         return
     try:
-        status = models.Status.objects.select_subclasses().get(
+        status = models.Status.objects.get(
             remote_id=status_id
         )
     except models.Status.DoesNotExist:
         return
+    models.Notification.objects.filter(related_status=status).all().delete()
     status_builder.delete_status(status)
 
 
