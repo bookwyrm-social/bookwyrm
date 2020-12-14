@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="block">
+    <h1 class="title">Direct Messages</h1>
+
+    {% if not activities %}
+    <p>You have no messages right now.</p>
+    {% endif %}
+    {% for activity in activities %}
+    <div class="block">
+    {% include 'snippets/status.html' with status=activity %}
+    </div>
+    {% endfor %}
+
+    <nav class="pagination" role="navigation" aria-label="pagination">
+        {% if prev %}
+        <p class="pagination-previous">
+            <a href="{{ prev }}">
+                <span class="icon icon-arrow-left"></span>
+                Previous
+            </a>
+        </p>
+        {% endif %}
+
+        {% if next %}
+        <p class="pagination-next">
+            <a href="{{ next }}">
+                Next
+                <span class="icon icon-arrow-right"></span>
+            </a>
+        </p>
+        {% endif %}
+    </nav>
+</div>
+
+{% endblock %}
