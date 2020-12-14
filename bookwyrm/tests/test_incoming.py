@@ -1,4 +1,6 @@
 ''' test incoming activities '''
+import json
+import pathlib
 from unittest.mock import patch
 
 from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, \
@@ -15,7 +17,7 @@ class Incoming(TestCase):
         ''' we need basic things, like users '''
         self.local_user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
-        self.local_user.remote_id = 'http://local.com/user/mouse'
+        self.local_user.remote_id = 'https://example.com/user/mouse'
         self.local_user.save()
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
@@ -28,14 +30,14 @@ class Incoming(TestCase):
         self.status = models.Status.objects.create(
             user=self.local_user,
             content='Test status',
-            remote_id='http://local.com/status/1',
+            remote_id='https://example.com/status/1',
         )
         self.factory = RequestFactory()
 
 
     def test_inbox_invalid_get(self):
         ''' shouldn't try to handle if the user is not found '''
-        request = self.factory.get('http://www.example.com/')
+        request = self.factory.get('https://www.example.com/')
         self.assertIsInstance(
             incoming.inbox(request, 'anything'), HttpResponseNotAllowed)
         self.assertIsInstance(
@@ -43,7 +45,7 @@ class Incoming(TestCase):
 
     def test_inbox_invalid_user(self):
         ''' shouldn't try to handle if the user is not found '''
-        request = self.factory.post('http://www.example.com/')
+        request = self.factory.post('https://www.example.com/')
         self.assertIsInstance(
             incoming.inbox(request, 'fish@tomato.com'), HttpResponseNotFound)
 
@@ -108,7 +110,7 @@ class Incoming(TestCase):
             "id": "https://example.com/users/rat/follows/123",
             "type": "Follow",
             "actor": "https://example.com/users/rat",
-            "object": "http://local.com/user/mouse"
+            "object": "https://example.com/user/mouse"
         }
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
@@ -135,7 +137,7 @@ class Incoming(TestCase):
             "id": "https://example.com/users/rat/follows/123",
             "type": "Follow",
             "actor": "https://example.com/users/rat",
-            "object": "http://local.com/user/mouse"
+            "object": "https://example.com/user/mouse"
         }
 
         self.local_user.manually_approves_followers = True
@@ -168,7 +170,7 @@ class Incoming(TestCase):
                 "id": "https://example.com/users/rat/follows/123",
                 "type": "Follow",
                 "actor": "https://example.com/users/rat",
-                "object": "http://local.com/user/mouse"
+                "object": "https://example.com/user/mouse"
             }
         }
         models.UserFollows.objects.create(
@@ -189,7 +191,7 @@ class Incoming(TestCase):
             "object": {
                 "id": "https://example.com/users/rat/follows/123",
                 "type": "Follow",
-                "actor": "http://local.com/user/mouse",
+                "actor": "https://example.com/user/mouse",
                 "object": "https://example.com/users/rat"
             }
         }
@@ -221,7 +223,7 @@ class Incoming(TestCase):
             "object": {
                 "id": "https://example.com/users/rat/follows/123",
                 "type": "Follow",
-                "actor": "http://local.com/user/mouse",
+                "actor": "https://example.com/user/mouse",
                 "object": "https://example.com/users/rat"
             }
         }
@@ -242,19 +244,85 @@ class Incoming(TestCase):
         self.assertEqual(follows.count(), 0)
 
 
+    def test_handle_create(self):
+        ''' the "it justs works" mode '''
+        self.assertEqual(models.Status.objects.count(), 1)
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/ap_quotation.json')
+        status_data = json.loads(datafile.read_bytes())
+        models.Edition.objects.create(
+            title='Test Book', remote_id='https://example.com/book/1')
+        activity = {'object': status_data, 'type': 'Create'}
+        incoming.handle_create(activity)
+        status = models.Quotation.objects.get()
+        self.assertEqual(
+            status.remote_id, 'https://example.com/user/mouse/quotation/13')
+        self.assertEqual(status.quote, 'quote body')
+        self.assertEqual(status.content, 'commentary')
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(models.Status.objects.count(), 2)
+
+        # while we're here, lets ensure we avoid dupes
+        incoming.handle_create(activity)
+        self.assertEqual(models.Status.objects.count(), 2)
+
+    def test_handle_create_remote_note_with_mention(self):
+        ''' should only create it under the right circumstances '''
+        self.assertEqual(models.Status.objects.count(), 1)
+        self.assertFalse(
+            models.Notification.objects.filter(user=self.local_user).exists())
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/ap_note.json')
+        status_data = json.loads(datafile.read_bytes())
+        activity = {'object': status_data, 'type': 'Create'}
+
+        incoming.handle_create(activity)
+        status = models.Status.objects.last()
+        self.assertEqual(status.content, 'test content in note')
+        self.assertEqual(status.mention_users.first(), self.local_user)
+        self.assertTrue(
+            models.Notification.objects.filter(user=self.local_user).exists())
+        self.assertEqual(
+            models.Notification.objects.get().notification_type, 'MENTION')
+
+    def test_handle_create_remote_note_with_reply(self):
+        ''' should only create it under the right circumstances '''
+        self.assertEqual(models.Status.objects.count(), 1)
+        self.assertFalse(
+            models.Notification.objects.filter(user=self.local_user))
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/ap_note.json')
+        status_data = json.loads(datafile.read_bytes())
+        del status_data['tag']
+        status_data['inReplyTo'] = self.status.remote_id
+        activity = {'object': status_data, 'type': 'Create'}
+
+        incoming.handle_create(activity)
+        status = models.Status.objects.last()
+        self.assertEqual(status.content, 'test content in note')
+        self.assertEqual(status.reply_parent, self.status)
+        self.assertTrue(
+            models.Notification.objects.filter(user=self.local_user))
+        self.assertEqual(
+            models.Notification.objects.get().notification_type, 'REPLY')
+
+
     def test_handle_favorite(self):
         ''' fav a status '''
         activity = {
             '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': 'http://example.com/fav/1',
+            'id': 'https://example.com/fav/1',
             'actor': 'https://example.com/users/rat',
             'published': 'Mon, 25 May 2020 19:31:20 GMT',
-            'object': 'http://local.com/status/1',
+            'object': 'https://example.com/status/1',
         }
 
         incoming.handle_favorite(activity)
 
-        fav = models.Favorite.objects.get(remote_id='http://example.com/fav/1')
+        fav = models.Favorite.objects.get(remote_id='https://example.com/fav/1')
         self.assertEqual(fav.status, self.status)
-        self.assertEqual(fav.remote_id, 'http://example.com/fav/1')
+        self.assertEqual(fav.remote_id, 'https://example.com/fav/1')
         self.assertEqual(fav.user, self.remote_user)

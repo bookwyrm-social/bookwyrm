@@ -226,6 +226,16 @@ def handle_create(activity):
             related_user=status.user,
             related_status=status,
         )
+    if status.mention_users.exists():
+        for mentioned_user in status.mention_users.all():
+            if not mentioned_user.local:
+                continue
+            status_builder.create_notification(
+                mentioned_user,
+                'MENTION',
+                related_user=status.user,
+                related_status=status,
+            )
 
 
 @app.task
