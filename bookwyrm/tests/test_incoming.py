@@ -159,6 +159,26 @@ class Incoming(TestCase):
         self.assertEqual(list(follow), [])
 
 
+    def test_handle_unfollow(self):
+        ''' remove a relationship '''
+        activity = {
+            "type": "Undo",
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "object": {
+                "id": "https://example.com/users/rat/follows/123",
+                "type": "Follow",
+                "actor": "https://example.com/users/rat",
+                "object": "http://local.com/user/mouse"
+            }
+        }
+        models.UserFollows.objects.create(
+            user_subject=self.remote_user, user_object=self.local_user)
+        self.assertEqual(self.remote_user, self.local_user.followers.first())
+
+        incoming.handle_unfollow(activity)
+        self.assertIsNone(self.local_user.followers.first())
+
+
     def test_handle_follow_accept(self):
         ''' a remote user approved a follow request from local '''
         activity = {
@@ -189,6 +209,37 @@ class Incoming(TestCase):
         follows = self.remote_user.followers
         self.assertEqual(follows.count(), 1)
         self.assertEqual(follows.first(), self.local_user)
+
+
+    def test_handle_follow_reject(self):
+        ''' turn down a follow request '''
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/rat/follows/123#accepts",
+            "type": "Reject",
+            "actor": "https://example.com/users/rat",
+            "object": {
+                "id": "https://example.com/users/rat/follows/123",
+                "type": "Follow",
+                "actor": "http://local.com/user/mouse",
+                "object": "https://example.com/users/rat"
+            }
+        }
+
+        models.UserFollowRequest.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user
+        )
+        self.assertEqual(models.UserFollowRequest.objects.count(), 1)
+
+        incoming.handle_follow_reject(activity)
+
+        # request should be deleted
+        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
+
+        # relationship should be created
+        follows = self.remote_user.followers
+        self.assertEqual(follows.count(), 0)
 
 
     def test_handle_favorite(self):

@@ -141,7 +141,7 @@ def handle_follow(activity):
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    requester = activitypub.resolve_remote_id(models.user, obj['actor'])
+    requester = activitypub.resolve_remote_id(models.User, obj['actor'])
     to_unfollow = models.User.objects.get(remote_id=obj['object'])
     # raises models.User.DoesNotExist
 
