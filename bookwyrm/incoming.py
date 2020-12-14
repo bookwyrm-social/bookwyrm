@@ -6,6 +6,7 @@ import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import requests
 
 from bookwyrm import activitypub, models, outgoing
@@ -15,6 +16,7 @@ from bookwyrm.signatures import Signature
 
 
 @csrf_exempt
+@require_POST
 def inbox(request, username):
     ''' incoming activitypub events '''
     try:
@@ -26,11 +28,9 @@ def inbox(request, username):
 
 
 @csrf_exempt
+@require_POST
 def shared_inbox(request):
     ''' incoming activitypub events '''
-    if request.method == 'GET':
-        return HttpResponseNotFound()
-
     try:
         resp = request.body
         activity = json.loads(resp)
