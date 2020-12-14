@@ -14,15 +14,8 @@ from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN, PAGE_LENGTH
-from .fields import RemoteIdField
+from .fields import ImageField, ManyToManyField, RemoteIdField
 
-
-PrivacyLevels = models.TextChoices('Privacy', [
-    'public',
-    'unlisted',
-    'followers',
-    'direct'
-])
 
 class BookWyrmModel(models.Model):
     ''' shared fields '''
@@ -67,6 +60,33 @@ class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
     reverse_unfurl = False
+
+    def __init__(self, *args, **kwargs):
+        ''' collect some info on model fields '''
+        self.image_fields = []
+        self.many_to_many_fields = []
+        self.simple_fields = [] # "simple"
+        for field in self._meta.get_fields():
+            if not hasattr(field, 'field_to_activity'):
+                continue
+
+            if isinstance(field, ImageField):
+                self.image_fields.append(field)
+            elif isinstance(field, ManyToManyField):
+                self.many_to_many_fields.append(field)
+            else:
+                self.simple_fields.append(field)
+
+        self.activity_fields = self.image_fields + \
+                self.many_to_many_fields + self.simple_fields
+
+        self.deserialize_reverse_fields = self.deserialize_reverse_fields \
+                if hasattr(self, 'deserialize_reverse_fields') else []
+        self.serialize_reverse_fields = self.serialize_reverse_fields \
+                if hasattr(self, 'serialize_reverse_fields') else []
+
+        super().__init__(*args, **kwargs)
+
 
     @classmethod
     def find_existing_by_remote_id(cls, remote_id):
@@ -115,19 +135,8 @@ class ActivitypubMixin:
     def to_activity(self):
         ''' convert from a model to an activity '''
         activity = {}
-        for field in self._meta.get_fields():
-            if not hasattr(field, 'field_to_activity'):
-                continue
-            value = field.field_to_activity(getattr(self, field.name))
-            if value is None:
-                continue
-
-            key = field.get_activitypub_field()
-            if key in activity and isinstance(activity[key], list):
-                # handles tags on status, which accumulate across fields
-                activity[key] += value
-            else:
-                activity[key] = value
+        for field in self.activity_fields:
+            field.set_activity_from_field(activity, self)
 
         if hasattr(self, 'serialize_reverse_fields'):
             # for example, editions of a work

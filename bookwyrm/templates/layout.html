@@ -68,6 +68,9 @@
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>
                 <div class="navbar-dropdown">
+                    <a href="/direct-messages" class="navbar-item">
+                        Direct messages
+                    </a>
                     <a href="/user/{{request.user.localname}}" class="navbar-item">
                         Profile
                     </a>

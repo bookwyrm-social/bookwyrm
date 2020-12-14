@@ -53,7 +53,8 @@ urlpatterns = [
 
     path('', views.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
-    re_path(r'^notifications/?', views.notifications_page),
+    re_path(r'^notifications/?$', views.notifications_page),
+    re_path(r'^direct-messages/?$', views.direct_messages_page),
     re_path(r'^import/?$', views.import_page),
     re_path(r'^import-status/(\d+)/?$', views.import_status),
     re_path(r'^user-edit/?$', views.edit_profile_page),

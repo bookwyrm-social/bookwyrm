@@ -1,9 +1,11 @@
 ''' testing models '''
 from io import BytesIO
 from collections import namedtuple
+from dataclasses import dataclass
 import json
 import pathlib
 import re
+from typing import List
 from unittest.mock import patch
 
 from PIL import Image
@@ -15,7 +17,9 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from bookwyrm.models import fields, User
+from bookwyrm.activitypub.base_activity import ActivityObject
+from bookwyrm.models import fields, User, Status
+from bookwyrm.models.base_model import ActivitypubMixin, BookWyrmModel
 
 class ActivitypubFields(TestCase):
     ''' overwrites standard model feilds to work with activitypub '''
@@ -90,6 +94,97 @@ class ActivitypubFields(TestCase):
 
         self.assertEqual(instance.field_to_activity('test@example.com'), 'test')
 
+
+    def test_privacy_field_defaults(self):
+        ''' post privacy field's many default values '''
+        instance = fields.PrivacyField()
+        self.assertEqual(instance.max_length, 255)
+        self.assertEqual(
+            [c[0] for c in instance.choices],
+            ['public', 'unlisted', 'followers', 'direct'])
+        self.assertEqual(instance.default, 'public')
+        self.assertEqual(
+            instance.public, 'https://www.w3.org/ns/activitystreams#Public')
+
+    def test_privacy_field_set_field_from_activity(self):
+        ''' translate between to/cc fields and privacy '''
+        @dataclass(init=False)
+        class TestActivity(ActivityObject):
+            ''' real simple mock '''
+            to: List[str]
+            cc: List[str]
+            id: str = 'http://hi.com'
+            type: str = 'Test'
+
+        class TestPrivacyModel(ActivitypubMixin, BookWyrmModel):
+            ''' real simple mock model because BookWyrmModel is abstract '''
+            privacy_field = fields.PrivacyField()
+            mention_users = fields.TagField(User)
+            user = fields.ForeignKey(User, on_delete=models.CASCADE)
+
+        public = 'https://www.w3.org/ns/activitystreams#Public'
+        data = TestActivity(
+            to=[public],
+            cc=['bleh'],
+        )
+        model_instance = TestPrivacyModel(privacy_field='direct')
+        self.assertEqual(model_instance.privacy_field, 'direct')
+
+        instance = fields.PrivacyField()
+        instance.name = 'privacy_field'
+        instance.set_field_from_activity(model_instance, data)
+        self.assertEqual(model_instance.privacy_field, 'public')
+
+        data.to = ['bleh']
+        data.cc = []
+        instance.set_field_from_activity(model_instance, data)
+        self.assertEqual(model_instance.privacy_field, 'direct')
+
+        data.to = ['bleh']
+        data.cc = [public, 'waah']
+        instance.set_field_from_activity(model_instance, data)
+        self.assertEqual(model_instance.privacy_field, 'unlisted')
+
+
+    def test_privacy_field_set_activity_from_field(self):
+        ''' translate between to/cc fields and privacy '''
+        user = User.objects.create_user(
+            'rat', 'rat@rat.rat', 'ratword', local=True)
+        public = 'https://www.w3.org/ns/activitystreams#Public'
+        followers = '%s/followers' % user.remote_id
+
+        instance = fields.PrivacyField()
+        instance.name = 'privacy_field'
+
+        model_instance = Status.objects.create(user=user, content='hi')
+        activity = {}
+        instance.set_activity_from_field(activity, model_instance)
+        self.assertEqual(activity['to'], [public])
+        self.assertEqual(activity['cc'], [followers])
+
+        model_instance = Status.objects.create(user=user, privacy='unlisted')
+        activity = {}
+        instance.set_activity_from_field(activity, model_instance)
+        self.assertEqual(activity['to'], [followers])
+        self.assertEqual(activity['cc'], [public])
+
+        model_instance = Status.objects.create(user=user, privacy='followers')
+        activity = {}
+        instance.set_activity_from_field(activity, model_instance)
+        self.assertEqual(activity['to'], [followers])
+        self.assertEqual(activity['cc'], [])
+
+        model_instance = Status.objects.create(
+            user=user,
+            privacy='direct',
+        )
+        model_instance.mention_users.set([user])
+        activity = {}
+        instance.set_activity_from_field(activity, model_instance)
+        self.assertEqual(activity['to'], [user.remote_id])
+        self.assertEqual(activity['cc'], [])
+
+
     def test_foreign_key(self):
         ''' should be able to format a related model '''
         instance = fields.ForeignKey('User', on_delete=models.CASCADE)
@@ -97,6 +192,7 @@ class ActivitypubFields(TestCase):
         item = Serializable(lambda: {'a': 'b'}, 'https://e.b/c')
         # returns the remote_id field of the related object
         self.assertEqual(instance.field_to_activity(item), 'https://e.b/c')
+
 
     @responses.activate
     def test_foreign_key_from_activity_str(self):

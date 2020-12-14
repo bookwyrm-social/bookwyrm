@@ -185,12 +185,13 @@ def handle_follow_reject(activity):
 def handle_create(activity):
     ''' someone did something, good on them '''
     # deduplicate incoming activities
-    status_id = activity['object']['id']
+    activity = activity['object']
+    status_id = activity['id']
     if models.Status.objects.filter(remote_id=status_id).count():
         return
 
     serializer = activitypub.activity_objects[activity['type']]
-    status = serializer(**activity)
+    activity = serializer(**activity)
     try:
         model = models.activity_models[activity.type]
     except KeyError:
@@ -198,13 +199,25 @@ def handle_create(activity):
         return
 
     if activity.type == 'Note':
+        # keep notes if they are replies to existing statuses
         reply = models.Status.objects.filter(
             remote_id=activity.inReplyTo
         ).first()
-        if not reply:
-            return
 
-    activity.to_model(model)
+        if not reply:
+            discard = True
+            # keep notes if they mention local users
+            tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+            for tag in tags:
+                if models.User.objects.filter(
+                        remote_id=tag, local=True).exists():
+                    # we found a mention of a known use boost
+                    discard = False
+                    break
+            if discard:
+                return
+
+    status = activity.to_model(model)
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
         status_builder.create_notification(

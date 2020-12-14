@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from bookwyrm import books_manager
 from bookwyrm.models import ReadThrough, User, Book
-from .base_model import PrivacyLevels
+from .fields import PrivacyLevels
 
 
 # Mapping goodreads -> bookwyrm shelf titles.
