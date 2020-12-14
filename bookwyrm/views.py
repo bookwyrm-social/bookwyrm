@@ -113,11 +113,36 @@ def get_suggested_books(user, max_books=5):
     return suggested_books
 
 
+@login_required
+@require_GET
+def direct_messages_page(request, page=1):
+    ''' like a feed but for dms only '''
+    activities = get_activity_feed(request.user, 'direct')
+    paginated = Paginator(activities, PAGE_LENGTH)
+    activity_page = paginated.page(page)
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '/direct-message/?page=%d#feed' % \
+                activity_page.next_page_number()
+    if activity_page.has_previous():
+        prev_page = '/direct-messages/?page=%d#feed' % \
+                activity_page.previous_page_number()
+    data = {
+        'title': 'Direct Messages',
+        'user': request.user,
+        'activities': activity_page.object_list,
+        'next': next_page,
+        'prev': prev_page,
+    }
+    return TemplateResponse(request, 'direct_messages.html', data)
+
+
 def get_activity_feed(user, filter_level, model=models.Status):
     ''' get a filtered queryset of statuses '''
-    # status updates for your follow network
     if user.is_anonymous:
         user = None
+
     if user:
         following = models.User.objects.filter(
             Q(followers=user) | Q(id=user.id)
@@ -130,10 +155,20 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = model.objects
 
     activities = activities.filter(
-        deleted=False
+        deleted=False,
     ).order_by(
         '-published_date'
     )
+
+    if filter_level == 'direct':
+        return activities.filter(
+            Q(user=user) | Q(mention_users=user),
+            privacy='direct'
+        )
+
+    # never show DMs in the regular feed
+    activities = activities.filter(~Q(privacy='direct'))
+
 
     if hasattr(activities, 'select_subclasses'):
         activities = activities.select_subclasses()
@@ -158,6 +193,11 @@ def get_activity_feed(user, filter_level, model=models.Status):
         activities = activities.filter(
             Q(user__in=following, privacy='followers') | Q(privacy='public')
         )
+
+    try:
+        activities = activities.filter(~Q(boosters__in=activities))
+    except ValueError:
+        pass
 
     return activities
 
@@ -528,7 +568,7 @@ def book_page(request, book_id):
         return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
 
     if isinstance(book, models.Work):
-        book = book.default_edition
+        book = book.get_default_edition()
     if not book:
         return HttpResponseNotFound()
 
@@ -537,7 +577,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     reviews = models.Review.objects.filter(
-        book__in=work.edition_set.all(),
+        book__in=work.editions.all(),
     )
     # all reviews for the book
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
@@ -556,9 +596,9 @@ def book_page(request, book_id):
 
     user_tags = readthroughs = user_shelves = other_edition_shelves = []
     if request.user.is_authenticated:
-        user_tags = models.Tag.objects.filter(
+        user_tags = models.UserTag.objects.filter(
             book=book, user=request.user
-        ).values_list('identifier', flat=True)
+        ).values_list('tag__identifier', flat=True)
 
         readthroughs = models.ReadThrough.objects.filter(
             user=request.user,
@@ -576,11 +616,9 @@ def book_page(request, book_id):
         )
 
     rating = reviews.aggregate(Avg('rating'))
-    tags = models.Tag.objects.filter(
-        book=book
-    ).values(
-        'book', 'name', 'identifier'
-    ).distinct().all()
+    tags = models.UserTag.objects.filter(
+        book=book,
+    )
 
     data = {
         'title': book.title,
@@ -655,7 +693,7 @@ def author_page(request, author_id):
     data = {
         'title': author.name,
         'author': author,
-        'books': [b.default_edition for b in books],
+        'books': [b.get_default_edition() for b in books],
     }
     return TemplateResponse(request, 'author.html', data)
 
@@ -671,7 +709,9 @@ def tag_page(request, tag_id):
         return JsonResponse(
             tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
 
-    books = models.Edition.objects.filter(tag__identifier=tag_id).distinct()
+    books = models.Edition.objects.filter(
+        usertag__tag__identifier=tag_id
+    ).distinct()
     data = {
         'title': tag_obj.name,
         'books': books,

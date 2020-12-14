@@ -1,6 +1,6 @@
 ''' handles all of the activity coming in to the server '''
 import json
-from urllib.parse import urldefrag, unquote_plus
+from urllib.parse import urldefrag
 
 import django.db.utils
 from django.http import HttpResponse
@@ -8,9 +8,8 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
-from bookwyrm import activitypub, books_manager, models, outgoing
+from bookwyrm import activitypub, models, outgoing
 from bookwyrm import status as status_builder
-from bookwyrm.remote_user import get_or_create_remote_user, refresh_remote_user
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 
@@ -18,9 +17,6 @@ from bookwyrm.signatures import Signature
 @csrf_exempt
 def inbox(request, username):
     ''' incoming activitypub events '''
-    # TODO: should do some kind of checking if the user accepts
-    # this action from the sender probably? idk
-    # but this will just throw a 404 if the user doesn't exist
     try:
         models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
@@ -60,9 +56,8 @@ def shared_inbox(request):
         'Like': handle_favorite,
         'Announce': handle_boost,
         'Add': {
-            'Tag': handle_tag,
-            'Edition': handle_shelve,
-            'Work': handle_shelve,
+            'Edition': handle_add,
+            'Work': handle_add,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -97,16 +92,20 @@ def has_valid_signature(request, activity):
         if key_actor != activity.get('actor'):
             raise ValueError("Wrong actor created signature.")
 
-        remote_user = get_or_create_remote_user(key_actor)
+        remote_user = activitypub.resolve_remote_id(models.User, key_actor)
+        if not remote_user:
+            return False
 
         try:
-            signature.verify(remote_user.public_key, request)
+            signature.verify(remote_user.key_pair.public_key, request)
         except ValueError:
-            old_key = remote_user.public_key
-            refresh_remote_user(remote_user)
-            if remote_user.public_key == old_key:
+            old_key = remote_user.key_pair.public_key
+            remote_user = activitypub.resolve_remote_id(
+                models.User, remote_user.remote_id, refresh=True
+            )
+            if remote_user.key_pair.public_key == old_key:
                 raise # Key unchanged.
-            signature.verify(remote_user.public_key, request)
+            signature.verify(remote_user.key_pair.public_key, request)
     except (ValueError, requests.exceptions.HTTPError):
         return False
     return True
@@ -115,26 +114,10 @@ def has_valid_signature(request, activity):
 @app.task
 def handle_follow(activity):
     ''' someone wants to follow a local user '''
-    # figure out who they want to follow -- not using get_or_create because
-    # we only care if you want to follow local users
     try:
-        to_follow = models.User.objects.get(remote_id=activity['object'])
-    except models.User.DoesNotExist:
-        # some rando, who cares
-        return
-    if not to_follow.local:
-        # just ignore follow alerts about other servers. maybe they should be
-        # handled. maybe they shouldn't be sent at all.
-        return
-
-    # figure out who the actor is
-    actor = get_or_create_remote_user(activity['actor'])
-    try:
-        relationship = models.UserFollowRequest.objects.create(
-            user_subject=actor,
-            user_object=to_follow,
-            remote_id=activity['id']
-        )
+        relationship = activitypub.Follow(
+            **activity
+        ).to_model(models.UserFollowRequest)
     except django.db.utils.IntegrityError as err:
         if err.__cause__.diag.constraint_name != 'userfollowrequest_unique':
             raise
@@ -143,27 +126,22 @@ def handle_follow(activity):
         )
         # send the accept normally for a duplicate request
 
-    if not to_follow.manually_approves_followers:
-        status_builder.create_notification(
-            to_follow,
-            'FOLLOW',
-            related_user=actor
-        )
+    manually_approves = relationship.user_object.manually_approves_followers
+
+    status_builder.create_notification(
+        relationship.user_object,
+        'FOLLOW_REQUEST' if manually_approves else 'FOLLOW',
+        related_user=relationship.user_subject
+    )
+    if not manually_approves:
         outgoing.handle_accept(relationship)
-    else:
-        # Accept will be triggered manually
-        status_builder.create_notification(
-            to_follow,
-            'FOLLOW_REQUEST',
-            related_user=actor
-        )
 
 
 @app.task
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    requester = get_or_create_remote_user(obj['actor'])
+    requester = activitypub.resolve_remote_id(models.user, obj['actor'])
     to_unfollow = models.User.objects.get(remote_id=obj['object'])
     # raises models.User.DoesNotExist
 
@@ -176,7 +154,7 @@ def handle_follow_accept(activity):
     # figure out who they want to follow
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
     # figure out who they are
-    accepter = get_or_create_remote_user(activity['actor'])
+    accepter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
     try:
         request = models.UserFollowRequest.objects.get(
@@ -193,7 +171,7 @@ def handle_follow_accept(activity):
 def handle_follow_reject(activity):
     ''' someone is rejecting a follow request '''
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
-    rejecter = get_or_create_remote_user(activity['actor'])
+    rejecter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
     request = models.UserFollowRequest.objects.get(
         user_subject=requester,
@@ -206,25 +184,40 @@ def handle_follow_reject(activity):
 @app.task
 def handle_create(activity):
     ''' someone did something, good on them '''
-    if activity['object'].get('type') not in \
-            ['Note', 'Comment', 'Quotation', 'Review', 'GeneratedNote']:
-        # if it's an article or unknown type, ignore it
-        return
-
-    user = get_or_create_remote_user(activity['actor'])
-    if user.local:
-        # we really oughtn't even be sending in this case
-        return
-
     # deduplicate incoming activities
-    status_id = activity['object']['id']
+    activity = activity['object']
+    status_id = activity['id']
     if models.Status.objects.filter(remote_id=status_id).count():
         return
 
-    status = status_builder.create_status(activity['object'])
-    if not status:
+    serializer = activitypub.activity_objects[activity['type']]
+    activity = serializer(**activity)
+    try:
+        model = models.activity_models[activity.type]
+    except KeyError:
+        # not a type of status we are prepared to deserialize
         return
 
+    if activity.type == 'Note':
+        # keep notes if they are replies to existing statuses
+        reply = models.Status.objects.filter(
+            remote_id=activity.inReplyTo
+        ).first()
+
+        if not reply:
+            discard = True
+            # keep notes if they mention local users
+            tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+            for tag in tags:
+                if models.User.objects.filter(
+                        remote_id=tag, local=True).exists():
+                    # we found a mention of a known use boost
+                    discard = False
+                    break
+            if discard:
+                return
+
+    status = activity.to_model(model)
     # create a notification if this is a reply
     if status.reply_parent and status.reply_parent.user.local:
         status_builder.create_notification(
@@ -258,16 +251,14 @@ def handle_favorite(activity):
     ''' approval of your good good post '''
     fav = activitypub.Like(**activity)
 
-    liker = get_or_create_remote_user(activity['actor'])
-    if liker.local:
-        return
-
     fav = fav.to_model(models.Favorite)
+    if fav.user.local:
+        return
 
     status_builder.create_notification(
         fav.status.user,
         'FAVORITE',
-        related_user=liker,
+        related_user=fav.user,
         related_status=fav.status,
     )
 
@@ -312,35 +303,13 @@ def handle_unboost(activity):
 
 
 @app.task
-def handle_tag(activity):
-    ''' someone is tagging a book '''
-    user = get_or_create_remote_user(activity['actor'])
-    if not user.local:
-        # ordered collection weirndess so we can't just to_model
-        book = books_manager.get_or_create_book(activity['object']['id'])
-        name = activity['object']['target'].split('/')[-1]
-        name = unquote_plus(name)
-        models.Tag.objects.get_or_create(
-            user=user,
-            book=book,
-            name=name
-        )
-
-
-@app.task
-def handle_shelve(activity):
+def handle_add(activity):
     ''' putting a book on a shelf '''
-    user = get_or_create_remote_user(activity['actor'])
-    book = books_manager.get_or_create_book(activity['object'])
+    #this is janky as heck but I haven't thought of a better solution
     try:
-        shelf = models.Shelf.objects.get(remote_id=activity['target'])
-    except models.Shelf.DoesNotExist:
-        return
-    if shelf.user != user:
-        # this doesn't add up.
-        return
-    shelf.books.add(book)
-    shelf.save()
+        activitypub.AddBook(**activity).to_model(models.ShelfBook)
+    except activitypub.ActivitySerializerError:
+        activitypub.AddBook(**activity).to_model(models.Tag)
 
 
 @app.task
@@ -360,13 +329,4 @@ def handle_update_user(activity):
 @app.task
 def handle_update_book(activity):
     ''' a remote instance changed a book (Document) '''
-    document = activity['object']
-    # check if we have their copy and care about their updates
-    book = models.Book.objects.select_subclasses().filter(
-        remote_id=document['id'],
-        sync=True,
-    ).first()
-    if not book:
-        return
-
-    books_manager.update_book(book, data=document)
+    activitypub.Edition(**activity['object']).to_model(models.Edition)

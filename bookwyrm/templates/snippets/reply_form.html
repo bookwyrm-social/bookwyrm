@@ -1,4 +1,4 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% with activity.id|uuid as uuid %}
 <form class="is-flex-grow-1" name="reply" action="/reply" method="post" onsubmit="return reply(event)">
     <div class="columns">
@@ -13,7 +13,7 @@
 
         <div class="column is-narrow">
             <div class="field">
-                {% include 'snippets/privacy_select.html' %}
+                {% include 'snippets/privacy_select.html' with current=activity.privacy %}
             </div>
             <div class="field">
                 <button class="button is-primary" type="submit">

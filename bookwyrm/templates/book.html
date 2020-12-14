@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% load humanize %}
 {% block content %}
 
@@ -86,8 +86,8 @@
                 {% endif %}
 
 
-                {% if book.parent_work.edition_set.count > 1 %}
-                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
+                {% if book.parent_work.editions.count > 1 %}
+                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.editions.count }} editions</a></p>
                 {% endif %}
             </div>
 

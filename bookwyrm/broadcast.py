@@ -65,7 +65,7 @@ def sign_and_send(sender, data, destination):
     ''' crpyto whatever and http junk '''
     now = http_date()
 
-    if not sender.private_key:
+    if not sender.key_pair.private_key:
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError('No private key found for sender')
 

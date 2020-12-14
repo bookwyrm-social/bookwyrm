@@ -83,7 +83,8 @@ def register(request):
         }
         return TemplateResponse(request, 'login.html', data)
 
-    user = models.User.objects.create_user(username, email, password)
+    user = models.User.objects.create_user(
+        username, email, password, local=True)
     if invite:
         invite.times_used += 1
         invite.save()
@@ -218,7 +219,9 @@ def edit_profile(request):
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    book = books_manager.get_or_create_book(remote_id)
+    connector = books_manager.get_or_create_connector(remote_id)
+    book = connector.get_or_create_book(remote_id)
+
     return redirect('/book/%d' % book.id)
 
 
@@ -556,12 +559,15 @@ def tag(request):
     book = get_object_or_404(models.Edition, id=book_id)
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
+    )
+    user_tag = models.UserTag.objects.get_or_create(
+        user=request.user,
         book=book,
-        user=request.user
+        tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, tag_obj)
+        outgoing.handle_tag(request.user, user_tag)
     return redirect('/book/%s' % book_id)
 
 

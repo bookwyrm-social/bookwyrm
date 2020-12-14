@@ -52,7 +52,7 @@ class ImportJob(TestCase):
         unknown_read_data['Date Read'] = ''
 
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         job = models.ImportJob.objects.create(user=user)
         models.ImportItem.objects.create(
             job=job, index=1, data=currently_reading_data)

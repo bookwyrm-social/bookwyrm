@@ -7,7 +7,7 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import bookwyrm.utils.fields
+from django.contrib.postgres.fields import JSONField
 
 
 class Migration(migrations.Migration):
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('openlibrary_key', models.CharField(max_length=255)),
-                ('data', bookwyrm.utils.fields.JSONField()),
+                ('data', JSONField()),
             ],
             options={
                 'abstract': False,
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('openlibrary_key', models.CharField(max_length=255, unique=True)),
-                ('data', bookwyrm.utils.fields.JSONField()),
+                ('data', JSONField()),
                 ('cover', models.ImageField(blank=True, null=True, upload_to='covers/')),
                 ('added_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
                 ('authors', models.ManyToManyField(to='bookwyrm.Author')),

@@ -8,6 +8,7 @@ from django.db import transaction
 from dateutil import parser
 import requests
 from requests import HTTPError
+from requests.exceptions import SSLError
 
 from bookwyrm import models
 
@@ -16,19 +17,12 @@ class ConnectorException(HTTPError):
     ''' when the connector can't do what was asked '''
 
 
-class AbstractConnector(ABC):
-    ''' generic book data connector '''
-
+class AbstractMinimalConnector(ABC):
+    ''' just the bare bones, for other bookwyrm instances '''
     def __init__(self, identifier):
         # load connector settings
         info = models.Connector.objects.get(identifier=identifier)
         self.connector = info
-
-        self.key_mappings = []
-
-        # fields we want to look for in book data to copy over
-        # title we handle separately.
-        self.book_mappings = []
 
         # the things in the connector model to copy over
         self_fields = [
@@ -43,15 +37,6 @@ class AbstractConnector(ABC):
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))
-
-
-    def is_available(self):
-        ''' check if you're allowed to use this connector '''
-        if self.max_query_count is not None:
-            if self.connector.query_count >= self.max_query_count:
-                return False
-        return True
-
 
     def search(self, query, min_confidence=None):
         ''' free text search '''
@@ -70,9 +55,40 @@ class AbstractConnector(ABC):
             results.append(self.format_search_result(doc))
         return results
 
-
+    @abstractmethod
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
+
+    @abstractmethod
+    def parse_search_data(self, data):
+        ''' turn the result json from a search into a list '''
+
+    @abstractmethod
+    def format_search_result(self, search_result):
+        ''' create a SearchResult obj from json '''
+
+
+class AbstractConnector(AbstractMinimalConnector):
+    ''' generic book data connector '''
+    def __init__(self, identifier):
+        super().__init__(identifier)
+
+        self.key_mappings = []
+
+        # fields we want to look for in book data to copy over
+        # title we handle separately.
+        self.book_mappings = []
+
+
+    def is_available(self):
+        ''' check if you're allowed to use this connector '''
+        if self.max_query_count is not None:
+            if self.connector.query_count >= self.max_query_count:
+                return False
+        return True
+
+
+    def get_or_create_book(self, remote_id):
         # try to load the book
         book = models.Book.objects.select_subclasses().filter(
             origin_id=remote_id
@@ -157,13 +173,12 @@ class AbstractConnector(ABC):
 
     def update_book_from_data(self, book, data, update_cover=True):
         ''' for creating a new book or syncing with data '''
-        book = self.update_from_mappings(book, data, self.book_mappings)
+        book = update_from_mappings(book, data, self.book_mappings)
 
         author_text = []
         for author in self.get_authors_from_data(data):
             book.authors.add(author)
-            if author.display_name:
-                author_text.append(author.display_name)
+            author_text.append(author.name)
         book.author_text = ', '.join(author_text)
         book.save()
 
@@ -246,39 +261,28 @@ class AbstractConnector(ABC):
     def get_cover_from_data(self, data):
         ''' load cover '''
 
-
-    @abstractmethod
-    def parse_search_data(self, data):
-        ''' turn the result json from a search into a list '''
-
-
-    @abstractmethod
-    def format_search_result(self, search_result):
-        ''' create a SearchResult obj from json '''
-
-
     @abstractmethod
     def expand_book_data(self, book):
         ''' get more info on a book '''
 
 
-    def update_from_mappings(self, obj, data, mappings):
-        ''' assign data to model with mappings '''
-        for mapping in mappings:
-            # check if this field is present in the data
-            value = data.get(mapping.remote_field)
-            if not value:
-                continue
+def update_from_mappings(obj, data, mappings):
+    ''' assign data to model with mappings '''
+    for mapping in mappings:
+        # check if this field is present in the data
+        value = data.get(mapping.remote_field)
+        if not value:
+            continue
 
-            # extract the value in the right format
-            try:
-                value = mapping.formatter(value)
-            except:
-                continue
+        # extract the value in the right format
+        try:
+            value = mapping.formatter(value)
+        except:
+            continue
 
-            # assign the formatted value to the model
-            obj.__setattr__(mapping.local_field, value)
-        return obj
+        # assign the formatted value to the model
+        obj.__setattr__(mapping.local_field, value)
+    return obj
 
 
 def get_date(date_string):
@@ -310,8 +314,23 @@ def get_data(url):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
-    data = resp.json()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
     return data
+
+
+def get_image(url):
+    ''' wrapper for requesting an image '''
+    try:
+        resp = requests.get(url)
+    except (RequestError, SSLError):
+        return None
+    if not resp.ok:
+        return None
+    return resp
 
 
 @dataclass
