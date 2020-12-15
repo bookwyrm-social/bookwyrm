@@ -237,6 +237,8 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_from_activity(self, value):
         items = []
+        if value is None or value is MISSING:
+            return []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)

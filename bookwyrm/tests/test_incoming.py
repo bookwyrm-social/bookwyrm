@@ -432,3 +432,50 @@ class Incoming(TestCase):
         models.Boost.objects.create(
             boosted_status=self.status, user=self.remote_user)
         incoming.handle_unboost(activity)
+
+    def test_handle_update_user(self):
+        ''' update an existing user '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/ap_user.json')
+        userdata = json.loads(datafile.read_bytes())
+        del userdata['icon']
+        self.assertEqual(self.local_user.name, '')
+        incoming.handle_update_user({'object': userdata})
+        user = models.User.objects.get(id=self.local_user.id)
+        self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
+
+
+    def test_handle_update_edition(self):
+        ''' update an existing edition '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/fr_edition.json')
+        bookdata = json.loads(datafile.read_bytes())
+
+        book = models.Edition.objects.create(
+            title='Test Book', remote_id='https://bookwyrm.social/book/5989')
+
+        del bookdata['authors']
+        self.assertEqual(book.title, 'Test Book')
+        with patch(
+                'bookwyrm.activitypub.base_activity.set_related_field.delay'):
+            incoming.handle_update_edition({'object': bookdata})
+        book = models.Edition.objects.get(id=book.id)
+        self.assertEqual(book.title, 'Piranesi')
+
+
+    def test_handle_update_work(self):
+        ''' update an existing edition '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            'data/fr_work.json')
+        bookdata = json.loads(datafile.read_bytes())
+
+        book = models.Work.objects.create(
+            title='Test Book', remote_id='https://bookwyrm.social/book/5988')
+
+        del bookdata['authors']
+        self.assertEqual(book.title, 'Test Book')
+        with patch(
+                'bookwyrm.activitypub.base_activity.set_related_field.delay'):
+            incoming.handle_update_work({'object': bookdata})
+        book = models.Work.objects.get(id=book.id)
+        self.assertEqual(book.title, 'Piranesi')

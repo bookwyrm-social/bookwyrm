@@ -66,8 +66,8 @@ def shared_inbox(request):
         },
         'Update': {
             'Person': handle_update_user,
-            'Edition': handle_update_book,
-            'Work': handle_update_book,
+            'Edition': handle_update_edition,
+            'Work': handle_update_work,
         },
     }
     activity_type = activity['type']
@@ -338,6 +338,12 @@ def handle_update_user(activity):
 
 
 @app.task
-def handle_update_book(activity):
+def handle_update_edition(activity):
     ''' a remote instance changed a book (Document) '''
     activitypub.Edition(**activity['object']).to_model(models.Edition)
+
+
+@app.task
+def handle_update_work(activity):
+    ''' a remote instance changed a book (Document) '''
+    activitypub.Work(**activity['object']).to_model(models.Work)
