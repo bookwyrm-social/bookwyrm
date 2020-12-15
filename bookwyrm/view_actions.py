@@ -66,7 +66,7 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username']
+    username = form.data['username'].strip()
     email = form.data['email']
     password = form.data['password']
 
