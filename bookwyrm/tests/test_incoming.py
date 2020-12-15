@@ -256,7 +256,9 @@ class Incoming(TestCase):
         models.Edition.objects.create(
             title='Test Book', remote_id='https://example.com/book/1')
         activity = {'object': status_data, 'type': 'Create'}
+
         incoming.handle_create(activity)
+
         status = models.Quotation.objects.get()
         self.assertEqual(
             status.remote_id, 'https://example.com/user/mouse/quotation/13')
@@ -397,3 +399,36 @@ class Incoming(TestCase):
 
         incoming.handle_unfavorite(activity)
         self.assertEqual(models.Favorite.objects.count(), 0)
+
+
+    def test_handle_boost(self):
+        ''' boost a status '''
+        self.assertEqual(models.Notification.objects.count(), 0)
+        activity = {
+            'type': 'Announce',
+            'id': '%s/boost' % self.status.remote_id,
+            'actor': self.remote_user.remote_id,
+            'object': self.status.to_activity(),
+        }
+        incoming.handle_boost(activity)
+        boost = models.Boost.objects.get()
+        self.assertEqual(boost.boosted_status, self.status)
+        notification = models.Notification.objects.get()
+        self.assertEqual(notification.user, self.local_user)
+        self.assertEqual(notification.related_status, self.status)
+
+
+    def test_handle_unboost(self):
+        ''' undo a boost '''
+        activity = {
+            'type': 'Undo',
+            'object': {
+                'type': 'Announce',
+                'id': '%s/boost' % self.status.remote_id,
+                'actor': self.local_user.remote_id,
+                'object': self.status.to_activity(),
+            }
+        }
+        models.Boost.objects.create(
+            boosted_status=self.status, user=self.remote_user)
+        incoming.handle_unboost(activity)
