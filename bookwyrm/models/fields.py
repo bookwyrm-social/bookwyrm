@@ -42,7 +42,13 @@ class ActivitypubFieldMixin:
 
     def set_field_from_activity(self, instance, data):
         ''' helper function for assinging a value to the field '''
-        value = getattr(data, self.get_activitypub_field())
+        try:
+            value = getattr(data, self.get_activitypub_field())
+        except AttributeError:
+            # masssively hack-y workaround for boosts
+            if self.get_activitypub_field() != 'attributedTo':
+                raise
+            value = getattr(data, 'actor')
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
             return
@@ -231,6 +237,8 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_from_activity(self, value):
         items = []
+        if value is None or value is MISSING:
+            return []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)
