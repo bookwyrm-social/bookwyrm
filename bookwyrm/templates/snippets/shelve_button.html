@@ -4,6 +4,10 @@
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
+    {% if switch_mode and active_shelf.book != book %}
+    {% include 'snippets/switch_edition_button.html' with edition=book size='is-small' %}
+    {% else %}
+
     {% if active_shelf.shelf.identifier == 'read' %}
     <button class="button is-small" disabled>
         <span>Read</span> <span class="icon icon-check"></span>
@@ -62,6 +66,7 @@
             </ul>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endwith %}
 {% endif %}
