@@ -240,7 +240,7 @@ class Boost(Status):
 class ReadThrough(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     pages_read = models.IntegerField(
         null=True,
         blank=True)

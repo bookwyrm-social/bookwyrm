@@ -594,8 +594,7 @@ def book_page(request, book_id):
         prev_page = '/book/%s/?page=%d' % \
                 (book_id, reviews_page.previous_page_number())
 
-    user_tags = []
-    readthroughs = []
+    user_tags = readthroughs = user_shelves = other_edition_shelves = []
     if request.user.is_authenticated:
         user_tags = models.UserTag.objects.filter(
             book=book, user=request.user
@@ -605,6 +604,16 @@ def book_page(request, book_id):
             user=request.user,
             book=book,
         ).order_by('start_date')
+
+        user_shelves = models.ShelfBook.objects.filter(
+            added_by=request.user, book=book
+        )
+
+        other_edition_shelves = models.ShelfBook.objects.filter(
+            ~Q(book=book),
+            added_by=request.user,
+            book__parent_work=book.parent_work,
+        )
 
     rating = reviews.aggregate(Avg('rating'))
     tags = models.UserTag.objects.filter(
@@ -619,6 +628,8 @@ def book_page(request, book_id):
         'rating': rating['rating__avg'],
         'tags': tags,
         'user_tags': user_tags,
+        'user_shelves': user_shelves,
+        'other_edition_shelves': other_edition_shelves,
         'readthroughs': readthroughs,
         'path': '/book/%s' % book_id,
         'info_fields': [
@@ -662,10 +673,9 @@ def editions_page(request, book_id):
             encoder=ActivityEncoder
         )
 
-    editions = models.Edition.objects.filter(parent_work=work).all()
     data = {
         'title': 'Editions of %s' % work.title,
-        'editions': editions,
+        'editions': work.editions.all(),
         'work': work,
     }
     return TemplateResponse(request, 'editions.html', data)

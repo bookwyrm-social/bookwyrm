@@ -132,9 +132,10 @@ def time_since(date):
     delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
+        formatter = '%b %-d'
         if date.year != now.year:
-            return date.strftime('%b %-d %Y')
-        return date.strftime('%b %-d')
+            formatter += ' %Y'
+        return date.strftime(formatter)
     delta = relativedelta(now, date)
     if delta.days:
         return '%dd' % delta.days
@@ -150,9 +151,9 @@ def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
-        book=book
+        book__in=book.parent_work.editions.all()
     ).first()
-    return shelf.shelf if shelf else None
+    return shelf if shelf else {'book': book}
 
 
 @register.simple_tag(takes_context=False)
