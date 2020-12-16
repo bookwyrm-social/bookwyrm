@@ -67,7 +67,7 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username']
+    username = form.data['username'].strip()
     email = form.data['email']
     password = form.data['password']
 
@@ -216,6 +216,7 @@ def edit_profile(request):
     return redirect('/user/%s' % request.user.localname)
 
 
+@require_POST
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')

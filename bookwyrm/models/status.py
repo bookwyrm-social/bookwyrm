@@ -218,6 +218,18 @@ class Boost(Status):
         activitypub_field='object',
     )
 
+    def __init__(self, *args, **kwargs):
+        ''' the user field is "actor" here instead of "attributedTo" '''
+        super().__init__(*args, **kwargs)
+
+        reserve_fields = ['user', 'boosted_status']
+        self.simple_fields = [f for f in self.simple_fields if \
+                f.name in reserve_fields]
+        self.activity_fields = self.simple_fields
+        self.many_to_many_fields = []
+        self.image_fields = []
+        self.deserialize_reverse_fields = []
+
     activity_serializer = activitypub.Boost
 
     # This constraint can't work as it would cross tables.

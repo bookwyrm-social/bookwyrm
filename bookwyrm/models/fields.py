@@ -5,7 +5,6 @@ from uuid import uuid4
 
 import dateutil.parser
 from dateutil.parser import ParserError
-from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
@@ -20,6 +19,14 @@ from bookwyrm.connectors import get_image
 def validate_remote_id(value):
     ''' make sure the remote_id looks like a url '''
     if not value or not re.match(r'^http.?:\/\/[^\s]+$', value):
+        raise ValidationError(
+            _('%(value)s is not a valid remote_id'),
+            params={'value': value},
+        )
+
+def validate_username(value):
+    ''' make sure usernames look okay '''
+    if not re.match(r'^[A-Za-z\-_\.]+$', value):
         raise ValidationError(
             _('%(value)s is not a valid remote_id'),
             params={'value': value},
@@ -42,7 +49,13 @@ class ActivitypubFieldMixin:
 
     def set_field_from_activity(self, instance, data):
         ''' helper function for assinging a value to the field '''
-        value = getattr(data, self.get_activitypub_field())
+        try:
+            value = getattr(data, self.get_activitypub_field())
+        except AttributeError:
+            # masssively hack-y workaround for boosts
+            if self.get_activitypub_field() != 'attributedTo':
+                raise
+            value = getattr(data, 'actor')
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
             return
@@ -128,7 +141,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
             _('username'),
             max_length=150,
             unique=True,
-            validators=[AbstractUser.username_validator],
+            validators=[validate_username],
             error_messages={
                 'unique': _('A user with that username already exists.'),
             },
@@ -231,6 +244,8 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_from_activity(self, value):
         items = []
+        if value is None or value is MISSING:
+            return []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)
@@ -268,6 +283,8 @@ class TagField(ManyToManyField):
         for link_json in value:
             link = activitypub.Link(**link_json)
             tag_type = link.type if link.type != 'Mention' else 'Person'
+            if tag_type == 'Book':
+                tag_type = 'Edition'
             if tag_type != self.related_model.activity_serializer.type:
                 # tags can contain multiple types
                 continue
