@@ -1,0 +1,51 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        {
+            "ostatus": "http://ostatus.org#",
+            "atomUri": "ostatus:atomUri",
+            "inReplyToAtomUri": "ostatus:inReplyToAtomUri",
+            "conversation": "ostatus:conversation",
+            "sensitive": "as:sensitive",
+            "toot": "http://joinmastodon.org/ns#",
+            "votersCount": "toot:votersCount"
+        }
+    ],
+    "id": "https://example.com/users/rat/statuses/1234567",
+    "type": "Note",
+    "summary": null,
+    "inReplyTo": null,
+    "published": "2020-12-13T05:09:29Z",
+    "url": "https://example.com/@rat/1234567",
+    "attributedTo": "https://example.com/users/rat",
+    "to": [
+        "https://example.com/user/mouse"
+    ],
+    "cc": [],
+    "sensitive": false,
+    "atomUri": "https://example.com/users/rat/statuses/1234567",
+    "inReplyToAtomUri": null,
+    "conversation": "tag:example.com,2020-12-13:objectId=7309346:objectType=Conversation",
+    "content": "test content in note",
+    "contentMap": {
+        "en": "<p><span class=\"h-card\"><a href=\"https://5ebd724a6abd.ngrok.io/user/mouse\" class=\"u-url mention\">@<span>mouse</span></a></span> hi</p>"
+    },
+    "attachment": [],
+    "tag": [
+        {
+            "type": "Mention",
+            "href": "https://example.com/user/mouse",
+            "name": "@mouse@example.com"
+        }
+    ],
+    "replies": {
+        "id": "https://example.com/users/rat/statuses/105371151200548049/replies",
+        "type": "Collection",
+        "first": {
+            "type": "CollectionPage",
+            "next": "https://example.com/users/rat/statuses/105371151200548049/replies?only_other_accounts=true&page=true",
+            "partOf": "https://example.com/users/rat/statuses/105371151200548049/replies",
+            "items": []
+        }
+    }
+}

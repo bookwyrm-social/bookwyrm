@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import ConnectorException
-from .abstract_connector import get_date, get_data
+from .abstract_connector import get_date, get_data, update_from_mappings
 from .openlibrary_languages import languages
 
 
@@ -65,6 +65,7 @@ class Connector(AbstractConnector):
         ]
 
         self.author_mappings = [
+            Mapping('name'),
             Mapping('born', remote_field='birth_date', formatter=get_date),
             Mapping('died', remote_field='death_date', formatter=get_date),
             Mapping('bio', formatter=get_description),
@@ -184,12 +185,7 @@ class Connector(AbstractConnector):
         data = get_data(url)
 
         author = models.Author(openlibrary_key=olkey)
-        author = self.update_from_mappings(author, data, self.author_mappings)
-        name = data.get('name')
-        # TODO this is making some BOLD assumption
-        if name:
-            author.last_name = name.split(' ')[-1]
-            author.first_name = ' '.join(name.split(' ')[:-1])
+        author = update_from_mappings(author, data, self.author_mappings)
         author.save()
 
         return author

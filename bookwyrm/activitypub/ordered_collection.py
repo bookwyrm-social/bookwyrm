@@ -12,6 +12,7 @@ class OrderedCollection(ActivityObject):
     first: str
     last: str = ''
     name: str = ''
+    owner: str = ''
     type: str = 'OrderedCollection'
 
 

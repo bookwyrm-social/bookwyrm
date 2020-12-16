@@ -2,20 +2,23 @@
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, ActivityMapping, BookWyrmModel
+from .base_model import ActivitypubMixin, BookWyrmModel
+from . import fields
 
 
 class UserRelationship(ActivitypubMixin, BookWyrmModel):
     ''' many-to-many through table for followers '''
-    user_subject = models.ForeignKey(
+    user_subject = fields.ForeignKey(
         'User',
         on_delete=models.PROTECT,
-        related_name='%(class)s_user_subject'
+        related_name='%(class)s_user_subject',
+        activitypub_field='actor',
     )
-    user_object = models.ForeignKey(
+    user_object = fields.ForeignKey(
         'User',
         on_delete=models.PROTECT,
-        related_name='%(class)s_user_object'
+        related_name='%(class)s_user_object',
+        activitypub_field='object',
     )
 
     class Meta:
@@ -32,14 +35,9 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
             )
         ]
 
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('actor', 'user_subject'),
-        ActivityMapping('object', 'user_object'),
-    ]
     activity_serializer = activitypub.Follow
 
-    def get_remote_id(self, status=None):
+    def get_remote_id(self, status=None):# pylint: disable=arguments-differ
         ''' use shelf identifier in remote_id '''
         status = status or 'follows'
         base_path = self.user_subject.remote_id

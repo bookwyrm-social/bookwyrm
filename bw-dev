@@ -39,7 +39,8 @@ case "$1" in
         initdb
         ;;
     makemigrations)
-        execweb python manage.py makemigrations
+        shift 1
+        execweb python manage.py makemigrations "$@"
         ;;
     migrate)
         execweb python manage.py rename_app fedireads bookwyrm

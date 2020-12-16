@@ -8,7 +8,6 @@ from .image import Image
 @dataclass(init=False)
 class Tombstone(ActivityObject):
     ''' the placeholder for a deleted status '''
-    url: str
     published: str
     deleted: str
     type: str = 'Tombstone'
@@ -17,14 +16,13 @@ class Tombstone(ActivityObject):
 @dataclass(init=False)
 class Note(ActivityObject):
     ''' Note activity '''
-    url: str
-    inReplyTo: str
     published: str
     attributedTo: str
-    to: List[str]
-    cc: List[str]
     content: str
-    replies: Dict
+    to: List[str] = field(default_factory=lambda: [])
+    cc: List[str] = field(default_factory=lambda: [])
+    replies: Dict = field(default_factory=lambda: {})
+    inReplyTo: str = ''
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Image] = field(default_factory=lambda: [])
     sensitive: bool = False

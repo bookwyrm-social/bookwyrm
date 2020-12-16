@@ -7,7 +7,7 @@ from bookwyrm import models, settings
 class Status(TestCase):
     def setUp(self):
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
+            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         book = models.Edition.objects.create(title='Example Edition')
 
         models.Status.objects.create(user=user, content='Blah blah')
@@ -40,13 +40,3 @@ class Status(TestCase):
         expected_id = 'https://%s/user/mouse/review/%d' % \
                 (settings.DOMAIN, review.id)
         self.assertEqual(review.remote_id, expected_id)
-
-
-class Tag(TestCase):
-    def test_tag(self):
-        book = models.Edition.objects.create(title='Example Edition')
-        user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword')
-        tag = models.Tag.objects.create(user=user, book=book, name='t/est tag')
-        self.assertEqual(tag.identifier, 't%2Fest+tag')
-

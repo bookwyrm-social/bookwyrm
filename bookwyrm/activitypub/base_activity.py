@@ -1,18 +1,12 @@
 ''' basics for an activitypub serializer '''
 from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
-from uuid import uuid4
 
-from django.core.files.base import ContentFile
+from django.apps import apps
 from django.db import transaction
-from django.db.models.fields.related_descriptors \
-        import ForwardManyToOneDescriptor, ManyToManyDescriptor, \
-        ReverseManyToOneDescriptor
-from django.db.models.fields.files import ImageFileDescriptor
-import requests
 
-from bookwyrm import books_manager, models
-
+from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.tasks import app
 
 class ActivitySerializerError(ValueError):
     ''' routine problems serializing activitypub json '''
@@ -25,24 +19,17 @@ class ActivityEncoder(JSONEncoder):
 
 
 @dataclass
-class Link():
+class Link:
     ''' for tagging a book in a status '''
     href: str
     name: str
     type: str = 'Link'
 
+
 @dataclass
 class Mention(Link):
     ''' a subtype of Link for mentioning an actor '''
     type: str = 'Mention'
-
-
-@dataclass
-class PublicKey:
-    ''' public key block '''
-    id: str
-    owner: str
-    publicKeyPem: str
 
 
 @dataclass
@@ -76,88 +63,63 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, model, instance=None):
+    @transaction.atomic
+    def to_model(self, model, instance=None, save=True):
         ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
-            raise ActivitySerializerError('Wrong activity type for model')
+            raise ActivitySerializerError(
+                'Wrong activity type "%s" for model "%s" (expects "%s")' % \
+                        (self.__class__,
+                         model.__name__,
+                         model.activity_serializer)
+            )
 
         # check for an existing instance, if we're not updating a known obj
-        if not instance:
-            try:
-                return model.objects.get(remote_id=self.id)
-            except model.DoesNotExist:
-                pass
+        instance = instance or model.find_existing(self.serialize()) or model()
 
-        model_fields = [m.name for m in model._meta.get_fields()]
-        mapped_fields = {}
-        many_to_many_fields = {}
-        one_to_many_fields = {}
-        image_fields = {}
+        for field in instance.simple_fields:
+            field.set_field_from_activity(instance, self)
 
-        for mapping in model.activity_mappings:
-            if mapping.model_key not in model_fields:
+        # image fields have to be set after other fields because they can save
+        # too early and jank up users
+        for field in instance.image_fields:
+            field.set_field_from_activity(instance, self, save=save)
+
+        if not save:
+            return instance
+
+        # we can't set many to many and reverse fields on an unsaved object
+        instance.save()
+
+        # add many to many fields, which have to be set post-save
+        for field in instance.many_to_many_fields:
+            # mention books/users, for example
+            field.set_field_from_activity(instance, self)
+
+        # reversed relationships in the models
+        for (model_field_name, activity_field_name) in \
+                instance.deserialize_reverse_fields:
+            # attachments on Status, for example
+            values = getattr(self, activity_field_name)
+            if values is None or values is MISSING:
                 continue
-            # value is None if there's a default that isn't supplied
-            # in the activity but is supplied in the formatter
-            value = None
-            if mapping.activity_key:
-                value = getattr(self, mapping.activity_key)
-            model_field = getattr(model, mapping.model_key)
+            try:
+                # this is for one to many
+                related_model = getattr(model, model_field_name).field.model
+            except AttributeError:
+                # it's a one to one or foreign key
+                related_model = getattr(model, model_field_name)\
+                        .related.related_model
+                values = [values]
 
-            formatted_value = mapping.model_formatter(value)
-            if isinstance(model_field, ForwardManyToOneDescriptor) and \
-                    formatted_value:
-                # foreign key remote id reolver (work on Edition, for example)
-                fk_model = model_field.field.related_model
-                reference = resolve_foreign_key(fk_model, formatted_value)
-                mapped_fields[mapping.model_key] = reference
-            elif isinstance(model_field, ManyToManyDescriptor):
-                # status mentions book/users
-                many_to_many_fields[mapping.model_key] = formatted_value
-            elif isinstance(model_field, ReverseManyToOneDescriptor):
-                # attachments on Status, for example
-                one_to_many_fields[mapping.model_key] = formatted_value
-            elif isinstance(model_field, ImageFileDescriptor):
-                # image fields need custom handling
-                image_fields[mapping.model_key] = formatted_value
-            else:
-                mapped_fields[mapping.model_key] = formatted_value
-
-        with transaction.atomic():
-            if instance:
-                # updating an existing model isntance
-                for k, v in mapped_fields.items():
-                    setattr(instance, k, v)
-                instance.save()
-            else:
-                # creating a new model instance
-                instance = model.objects.create(**mapped_fields)
-
-            # add images
-            for (model_key, value) in image_fields.items():
-                formatted_value = image_formatter(value)
-                if not formatted_value:
-                    continue
-                getattr(instance, model_key).save(*formatted_value, save=True)
-
-            for (model_key, values) in many_to_many_fields.items():
-                # mention books, mention users
-                getattr(instance, model_key).set(values)
-
-            # add one to many fields
-            for (model_key, values) in one_to_many_fields.items():
-                if values == MISSING:
-                    continue
-                model_field = getattr(instance, model_key)
-                model = model_field.model
-                for item in values:
-                    item = model.activity_serializer(**item)
-                    field_name = instance.__class__.__name__.lower()
-                    with transaction.atomic():
-                        item = item.to_model(model)
-                        setattr(item, field_name, instance)
-                        item.save()
-
+            for item in values:
+                set_related_field.delay(
+                    related_model.__name__,
+                    instance.__class__.__name__,
+                    instance.__class__.__name__.lower(),
+                    instance.remote_id,
+                    item
+                )
         return instance
 
 
@@ -168,66 +130,57 @@ class ActivityObject:
         return data
 
 
-def resolve_foreign_key(model, remote_id):
-    ''' look up the remote_id on an activity json field '''
-    if model in [models.Edition, models.Work, models.Book]:
-        return books_manager.get_or_create_book(remote_id)
+@app.task
+@transaction.atomic
+def set_related_field(
+        model_name, origin_model_name,
+        related_field_name, related_remote_id, data):
+    ''' load reverse related fields (editions, attachments) without blocking '''
+    model = apps.get_model('bookwyrm.%s' % model_name, require_ready=True)
+    origin_model = apps.get_model(
+        'bookwyrm.%s' % origin_model_name,
+        require_ready=True
+    )
 
-    result = model.objects
-    if hasattr(model.objects, 'select_subclasses'):
-        result = result.select_subclasses()
-
-    result = result.filter(
-        remote_id=remote_id
-    ).first()
-
-    if not result:
-        raise ActivitySerializerError(
-            'Could not resolve remote_id in %s model: %s' % \
-                (model.__name__, remote_id))
-    return result
-
-
-def tag_formatter(tags, tag_type):
-    ''' helper function to extract foreign keys from tag activity json '''
-    if not isinstance(tags, list):
-        return []
-    items = []
-    types = {
-        'Book': models.Book,
-        'Mention': models.User,
-    }
-    for tag in [t for t in tags if t.get('type') == tag_type]:
-        if not tag_type in types:
-            continue
-        remote_id = tag.get('href')
-        try:
-            item = resolve_foreign_key(types[tag_type], remote_id)
-        except ActivitySerializerError:
-            continue
-        items.append(item)
-    return items
-
-
-def image_formatter(image_slug):
-    ''' helper function to load images and format them for a model '''
-    # when it's an inline image (User avatar/icon, Book cover), it's a json
-    # blob, but when it's an attached image, it's just a url
-    if isinstance(image_slug, dict):
-        url = image_slug.get('url')
-    elif isinstance(image_slug, str):
-        url = image_slug
+    if isinstance(data, str):
+        item = resolve_remote_id(model, data, save=False)
     else:
-        return None
-    if not url:
-        return None
-    try:
-        response = requests.get(url)
-    except ConnectionError:
-        return None
-    if not response.ok:
-        return None
+        # look for a match based on all the available data
+        item = model.find_existing(data)
+        if not item:
+            # create a new model instance
+            item = model.activity_serializer(**data)
+            item = item.to_model(model, save=False)
+    # this must exist because it's the object that triggered this function
+    instance = origin_model.find_existing_by_remote_id(related_remote_id)
+    if not instance:
+        raise ValueError('Invalid related remote id: %s' % related_remote_id)
 
-    image_name = str(uuid4()) + '.' + url.split('.')[-1]
-    image_content = ContentFile(response.content)
-    return [image_name, image_content]
+    # edition.parent_work = instance, for example
+    setattr(item, related_field_name, instance)
+    item.save()
+
+
+def resolve_remote_id(model, remote_id, refresh=False, save=True):
+    ''' take a remote_id and return an instance, creating if necessary '''
+    result = model.find_existing_by_remote_id(remote_id)
+    if result and not refresh:
+        return result
+
+    # load the data and create the object
+    try:
+        data = get_data(remote_id)
+    except (ConnectorException, ConnectionError):
+        raise ActivitySerializerError(
+            'Could not connect to host for remote_id in %s model: %s' % \
+                (model.__name__, remote_id))
+
+    # check for existing items with shared unique identifiers
+    if not result:
+        result = model.find_existing(data)
+        if result and not refresh:
+            return result
+
+    item = model.activity_serializer(**data)
+    # if we're refreshing, "result" will be set and we'll update it
+    return item.to_model(model, instance=result, save=save)

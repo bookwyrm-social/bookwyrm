@@ -13,7 +13,7 @@ register = template.Library()
 
 @register.filter(name='dict_key')
 def dict_key(d, k):
-    '''Returns the given key from a dictionary.'''
+    ''' Returns the given key from a dictionary. '''
     return d.get(k) or 0
 
 
@@ -116,20 +116,6 @@ def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
     return book.description or book.parent_work.description
 
-@register.filter(name='text_overflow')
-def text_overflow(text):
-    ''' dont' let book descriptions run for ages '''
-    if not text:
-        return ''
-    char_max = 400
-    if text and len(text) < char_max:
-        return text
-
-    trimmed = text[:char_max]
-    # go back to the last space
-    trimmed = ' '.join(trimmed.split(' ')[:-1])
-    return trimmed + '...'
-
 
 @register.filter(name='uuid')
 def get_uuid(identifier):
@@ -146,7 +132,10 @@ def time_since(date):
     delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
-        return date.strftime('%b %-d')
+        formatter = '%b %-d'
+        if date.year != now.year:
+            formatter += ' %Y'
+        return date.strftime(formatter)
     delta = relativedelta(now, date)
     if delta.days:
         return '%dd' % delta.days
@@ -160,12 +149,11 @@ def time_since(date):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
-    #TODO: books can be on multiple shelves, handle that better
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
-        book=book
+        book__in=book.parent_work.editions.all()
     ).first()
-    return shelf.shelf if shelf else None
+    return shelf if shelf else {'book': book}
 
 
 @register.simple_tag(takes_context=False)
