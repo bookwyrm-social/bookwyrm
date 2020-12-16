@@ -215,6 +215,7 @@ def edit_profile(request):
     return redirect('/user/%s' % request.user.localname)
 
 
+@require_POST
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
