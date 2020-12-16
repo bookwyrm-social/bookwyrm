@@ -237,3 +237,28 @@ class ViewActions(TestCase):
         resp = actions.password_reset(request)
         self.assertEqual(resp.template_name, 'password_reset.html')
         self.assertTrue(models.PasswordReset.objects.exists())
+
+    def test_switch_edition(self):
+        ''' updates user's relationships to a book '''
+        work = models.Work.objects.create(title='test work')
+        edition1 = models.Edition.objects.create(
+            title='first ed', parent_work=work)
+        edition2 = models.Edition.objects.create(
+            title='second ed', parent_work=work)
+        shelf = models.Shelf.objects.create(
+            name='Test Shelf', user=self.local_user)
+        shelf.books.add(edition1)
+        models.ReadThrough.objects.create(
+            user=self.local_user, book=edition1)
+
+        self.assertEqual(models.ShelfBook.objects.get().book, edition1)
+        self.assertEqual(models.ReadThrough.objects.get().book, edition1)
+        request = self.factory.post('', {
+            'edition': edition2.id
+        })
+        request.user = self.local_user
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.switch_edition(request)
+
+        self.assertEqual(models.ShelfBook.objects.get().book, edition2)
+        self.assertEqual(models.ReadThrough.objects.get().book, edition2)

@@ -18,6 +18,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
 from bookwyrm import books_manager
+from bookwyrm.broadcast import broadcast
 from bookwyrm import forms, models, outgoing
 from bookwyrm import goodreads_import
 from bookwyrm.emailing import password_reset_email
@@ -256,11 +257,15 @@ def switch_edition(request):
     new_edition = get_object_or_404(models.Edition, id=edition_id)
     shelfbooks = models.ShelfBook.objects.filter(
         book__parent_work=new_edition.parent_work,
-        added_by=request.user
+        shelf__user=request.user
     )
     for shelfbook in shelfbooks.all():
+        broadcast(request.user, shelfbook.to_remove_activity(request.user))
+
         shelfbook.book = new_edition
         shelfbook.save()
+
+        broadcast(request.user, shelfbook.to_add_activity(request.user))
 
     readthroughs = models.ReadThrough.objects.filter(
         book__parent_work=new_edition.parent_work,
