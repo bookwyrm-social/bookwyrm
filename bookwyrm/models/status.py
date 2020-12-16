@@ -78,7 +78,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activity['replies'] = self.to_replies()
 
         # "pure" serialization for non-bookwyrm instances
-        if pure:
+        if pure and hasattr(self, 'pure_content'):
             activity['content'] = self.pure_content
             if 'name' in activity:
                 activity['name'] = self.pure_name

@@ -151,9 +151,9 @@ class ActivitypubMixin:
         return self.activity_serializer(**activity).serialize()
 
 
-    def to_create_activity(self, user):
+    def to_create_activity(self, user, **kwargs):
         ''' returns the object wrapped in a Create activity '''
-        activity_object = self.to_activity()
+        activity_object = self.to_activity(**kwargs)
 
         signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
         content = activity_object['content']
