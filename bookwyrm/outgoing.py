@@ -252,9 +252,8 @@ def handle_status(user, form):
     broadcast(user, status.to_create_activity(user), software='bookwyrm')
 
     # re-format the activity for non-bookwyrm servers
-    if hasattr(status, 'pure_activity_serializer'):
-        remote_activity = status.to_create_activity(user, pure=True)
-        broadcast(user, remote_activity, software='other')
+    remote_activity = status.to_create_activity(user, pure=True)
+    broadcast(user, remote_activity, software='other')
 
 
 def handle_tag(user, tag):
