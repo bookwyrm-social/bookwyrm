@@ -4,24 +4,24 @@
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 <div class="field is-grouped">
-    {% if active_shelf.identifier == 'read' %}
+    {% if active_shelf.shelf.identifier == 'read' %}
     <button class="button is-small" disabled>
         <span>Read</span> <span class="icon icon-check"></span>
     </button>
-    {% elif active_shelf.identifier == 'reading' %}
+    {% elif active_shelf.shelf.identifier == 'reading' %}
     <label class="button is-small" for="finish-reading-{{ uuid }}" role="button" tabindex="0">
         I'm done!
     </label>
-    {% include 'snippets/finish_reading_modal.html' %}
-    {% elif active_shelf.identifier == 'to-read' %}
+    {% include 'snippets/finish_reading_modal.html' with book=active_shelf.book %}
+    {% elif active_shelf.shelf.identifier == 'to-read' %}
     <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
         Start reading
     </label>
-    {% include 'snippets/start_reading_modal.html' %}
+    {% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
     {% else %}
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
         <input type="hidden" name="shelf" value="to-read">
         <button class="button is-small" type="submit">Want to read</button>
     </form>
@@ -40,17 +40,17 @@
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li role="menuitem">
-                    {% if shelf.identifier == 'to-read' %}
+                    {% if active_shelf.shelf.identifier == 'to-read' and shelf.identifier == 'reading' %}
                     <div class="dropdown-item pt-0 pb-0">
                         <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
                             Start reading
                         </label>
-                        {% include 'snippets/start_reading_modal.html' %}
+                        {% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
                     </div>
                     {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
                         {% csrf_token %}
-                        <input type="hidden" name="book" value="{{ book.id }}">
+                        <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
                         <button class="button is-small" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
                             <span>{{ shelf.name }}</span>
                             {% if shelf in book.shelf_set.all %}<span class="icon icon-check"></span>{% endif %}

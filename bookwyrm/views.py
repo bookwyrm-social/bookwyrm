@@ -675,7 +675,7 @@ def editions_page(request, book_id):
 
     data = {
         'title': 'Editions of %s' % work.title,
-        'editions': work.edition_set.all(),
+        'editions': work.editions.all(),
         'work': work,
     }
     return TemplateResponse(request, 'editions.html', data)
