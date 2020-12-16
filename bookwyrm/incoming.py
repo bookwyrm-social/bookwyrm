@@ -57,7 +57,6 @@ def shared_inbox(request):
         'Announce': handle_boost,
         'Add': {
             'Edition': handle_add,
-            'Work': handle_add,
         },
         'Undo': {
             'Follow': handle_unfollow,

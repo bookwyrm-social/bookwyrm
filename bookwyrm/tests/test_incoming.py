@@ -433,6 +433,28 @@ class Incoming(TestCase):
             boosted_status=self.status, user=self.remote_user)
         incoming.handle_unboost(activity)
 
+
+    def test_handle_add_book(self):
+        ''' shelving a book '''
+        book = models.Edition.objects.create(
+            title='Test', remote_id='https://bookwyrm.social/book/37292')
+        shelf = models.Shelf.objects.create(
+            user=self.remote_user, name='Test Shelf')
+        shelf.remote_id = 'https://bookwyrm.social/user/mouse/shelf/to-read'
+        shelf.save()
+
+        activity = {
+            "id": "https://bookwyrm.social/shelfbook/6189#add",
+            "type": "Add",
+            "actor": "hhttps://example.com/users/rat",
+            "object": "https://bookwyrm.social/book/37292",
+            "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
+            "@context": "https://www.w3.org/ns/activitystreams"
+        }
+        incoming.handle_add(activity)
+        self.assertEqual(shelf.books.first(), book)
+
+
     def test_handle_update_user(self):
         ''' update an existing user '''
         datafile = pathlib.Path(__file__).parent.joinpath(

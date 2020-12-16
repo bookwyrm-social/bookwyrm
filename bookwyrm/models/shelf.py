@@ -3,7 +3,7 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import BookWyrmModel
+from .base_model import ActivitypubMixin, BookWyrmModel
 from .base_model import OrderedCollectionMixin
 from . import fields
 
@@ -51,7 +51,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         unique_together = ('user', 'identifier')
 
 
-class ShelfBook(BookWyrmModel):
+class ShelfBook(ActivitypubMixin, BookWyrmModel):
     ''' many to many join table for books and shelves '''
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='object')
