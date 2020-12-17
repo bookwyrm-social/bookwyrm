@@ -218,7 +218,9 @@ def handle_create(activity):
 
     status = activity.to_model(model)
     # create a notification if this is a reply
+    notified = []
     if status.reply_parent and status.reply_parent.user.local:
+        notified.append(status.reply_parent.user)
         status_builder.create_notification(
             status.reply_parent.user,
             'REPLY',
@@ -226,7 +228,8 @@ def handle_create(activity):
             related_status=status,
         )
     if status.mention_users.exists():
-        for mentioned_user in status.mention_users.all():
+        for mentioned_user in status.mention_users.all() and \
+                mentioned_user not in notified:
             if not mentioned_user.local:
                 continue
             status_builder.create_notification(
