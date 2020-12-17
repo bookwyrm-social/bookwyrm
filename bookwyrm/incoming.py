@@ -228,9 +228,8 @@ def handle_create(activity):
             related_status=status,
         )
     if status.mention_users.exists():
-        for mentioned_user in status.mention_users.all() and \
-                mentioned_user not in notified:
-            if not mentioned_user.local:
+        for mentioned_user in status.mention_users.all():
+            if not mentioned_user.local or mentioned_user in notified:
                 continue
             status_builder.create_notification(
                 mentioned_user,
