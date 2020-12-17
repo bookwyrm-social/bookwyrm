@@ -473,11 +473,14 @@ class Incoming(TestCase):
             'data/fr_edition.json')
         bookdata = json.loads(datafile.read_bytes())
 
+        models.Work.objects.create(
+            title='Test Work', remote_id='https://bookwyrm.social/book/5988')
         book = models.Edition.objects.create(
             title='Test Book', remote_id='https://bookwyrm.social/book/5989')
 
         del bookdata['authors']
         self.assertEqual(book.title, 'Test Book')
+
         with patch(
                 'bookwyrm.activitypub.base_activity.set_related_field.delay'):
             incoming.handle_update_edition({'object': bookdata})
