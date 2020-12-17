@@ -53,7 +53,7 @@ class Comment(Note):
 @dataclass(init=False)
 class Review(Comment):
     ''' a full book review '''
-    name: str
+    name: str = None
     rating: int = None
     type: str = 'Review'
 
