@@ -42,7 +42,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         blank=True,
     )
     outbox = fields.RemoteIdField(unique=True)
-    summary = fields.TextField(default='')
+    summary = fields.HtmlField(default='')
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
     localname = models.CharField(

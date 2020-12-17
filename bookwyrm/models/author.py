@@ -25,7 +25,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    bio = fields.TextField(null=True, blank=True)
+    bio = fields.HtmlField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
