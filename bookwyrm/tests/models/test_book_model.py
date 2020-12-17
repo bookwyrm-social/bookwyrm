@@ -1,5 +1,7 @@
 ''' testing models '''
+from dateutil.parser import parse
 from django.test import TestCase
+from django.utils import timezone
 
 from bookwyrm import models, settings
 from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
@@ -56,3 +58,27 @@ class Book(TestCase):
         isbn_13 = '978-1788-16167-1'
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, '178816167X')
+
+
+    def test_get_edition_info(self):
+        ''' text slug about an edition '''
+        book = models.Book.object.create(title='Test Edition')
+        self.assertEqual(book.edition_info, '')
+
+        book.physical_format = 'worm'
+        book.save()
+        self.assertEqual(book.edition_info, 'worm')
+
+        book.languages = ['English']
+        book.save()
+        self.assertEqual(book.edition_info, 'worm')
+
+        book.languages = ['Glorbish', 'English']
+        book.save()
+        self.assertEqual(book.edition_info, 'worm, Glorbish language')
+
+        book.published_date = timezone.make_aware(parse('2020'))
+        book.save()
+        self.assertEqual(book.edition_info, 'worm, Glorbish language, 2020')
+        self.assertEqual(
+            book.alt_text, 'Test Edition cover (worm, Glorbish language, 2020)')

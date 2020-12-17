@@ -58,6 +58,21 @@ class Book(ActivitypubMixin, BookWyrmModel):
 
     objects = InheritanceManager()
 
+    @property
+    def edition_info(self):
+        ''' properties of this edition, as a string '''
+        items = [
+            self.physical_format if isinstance(self, models.Edition) else None,
+            self.languages[0] + ' language' if self.languages and \
+                    self.languages[0] != 'English' else None,
+            str(self.published_date.year) if self.published_date else None,
+        ]
+        return ', '.join(i for i in items if i)
+
+    def alt_text(self):
+        ''' image alt test '''
+        return '%s cover (%s)' % (self.title, self.edition_info)
+
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):

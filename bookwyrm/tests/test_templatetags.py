@@ -158,34 +158,6 @@ class TemplateTags(TestCase):
         self.assertEqual(boosted, status)
 
 
-    def test_get_edition_info(self):
-        ''' text slug about an edition '''
-        self.assertEqual(
-            bookwyrm_tags.get_edition_info(self.book), '')
-
-        self.book.physical_format = 'worm'
-        self.book.save()
-        self.assertEqual(
-            bookwyrm_tags.get_edition_info(self.book), 'worm')
-
-        self.book.languages = ['English']
-        self.book.save()
-        self.assertEqual(
-            bookwyrm_tags.get_edition_info(self.book), 'worm')
-
-        self.book.languages = ['Glorbish', 'English']
-        self.book.save()
-        self.assertEqual(
-            bookwyrm_tags.get_edition_info(self.book),
-            'worm, Glorbish language')
-
-        self.book.published_date = timezone.make_aware(parse('2020'))
-        self.book.save()
-        self.assertEqual(
-            bookwyrm_tags.get_edition_info(self.book),
-            'worm, Glorbish language, 2020')
-
-
     def test_get_book_description(self):
         ''' grab it from the edition or the parent '''
         work = models.Work.objects.create(title='Test Work')
