@@ -209,7 +209,11 @@ def handle_delete_status(user, status):
 
 def handle_status(user, form):
     ''' generic handler for statuses '''
-    status = form.save()
+    status = form.save(commit=False)
+    if not status.sensitive and status.content_warning:
+        # the cw text field remains populated hen you click "remove"
+        status.content_warning = None
+    status.save()
 
     # inspect the text for user tags
     text = status.content
