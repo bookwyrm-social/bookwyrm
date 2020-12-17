@@ -1,7 +1,7 @@
 ''' html parser to clean up incoming text from unknown sources '''
 from html.parser import HTMLParser
 
-class InputHtmlParser(HTMLParser):
+class InputHtmlParser(HTMLParser):#pylint: disable=abstract-method
     ''' Removes any html that isn't allowed_tagsed from a block '''
 
     def __init__(self):

@@ -36,7 +36,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
     title = fields.CharField(max_length=255)
     sort_title = fields.CharField(max_length=255, blank=True, null=True)
     subtitle = fields.CharField(max_length=255, blank=True, null=True)
-    description = fields.TextField(blank=True, null=True)
+    description = fields.HtmlField(blank=True, null=True)
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
