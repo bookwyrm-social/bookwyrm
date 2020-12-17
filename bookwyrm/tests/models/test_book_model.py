@@ -62,7 +62,7 @@ class Book(TestCase):
 
     def test_get_edition_info(self):
         ''' text slug about an edition '''
-        book = models.Book.objects.create(title='Test Edition')
+        book = models.Edition.objects.create(title='Test Edition')
         self.assertEqual(book.edition_info, '')
 
         book.physical_format = 'worm'
