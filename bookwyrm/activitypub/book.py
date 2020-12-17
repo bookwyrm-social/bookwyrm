@@ -38,7 +38,7 @@ class Edition(Book):
     isbn13: str = ''
     oclcNumber: str = ''
     asin: str = ''
-    pages: str = ''
+    pages: int = None
     physicalFormat: str = ''
     publishers: List[str] = field(default_factory=lambda: [])
 

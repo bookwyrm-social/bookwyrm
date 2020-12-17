@@ -100,12 +100,19 @@ class ActivitypubFieldMixin:
 
 class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
     ''' default (de)serialization for foreign key and one to one '''
+    def __init__(self, *args, load_remote=True, **kwargs):
+        self.load_remote = load_remote
+        super().__init__(*args, **kwargs)
+
     def field_from_activity(self, value):
         if not value:
             return None
 
         related_model = self.related_model
         if isinstance(value, dict) and value.get('id'):
+            if not self.load_remote:
+                # only look in the local database
+                return related_model.find_existing(value)
             # this is an activitypub object, which we can deserialize
             activity_serializer = related_model.activity_serializer
             return activity_serializer(**value).to_model(related_model)
@@ -116,6 +123,9 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
             # we don't know what this is, ignore it
             return None
         # gets or creates the model field from the remote id
+        if not self.load_remote:
+            # only look in the local database
+            return related_model.find_existing_by_remote_id(value)
         return activitypub.resolve_remote_id(related_model, value)
 
 

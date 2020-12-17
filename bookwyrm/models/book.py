@@ -92,7 +92,8 @@ class Work(OrderedCollectionPageMixin, Book):
     default_edition = fields.ForeignKey(
         'Edition',
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        load_remote=False
     )
 
     def get_default_edition(self):
