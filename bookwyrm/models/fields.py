@@ -12,6 +12,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
+from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.connectors import get_image
 
@@ -361,6 +362,15 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+class HtmlField(ActivitypubFieldMixin, models.TextField):
+    ''' a text field for storing html '''
+    def field_from_activity(self, value):
+        if not value or value == MISSING:
+            return None
+        sanitizer = InputHtmlParser()
+        sanitizer.feed(value)
+        return sanitizer.get_output()
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
     ''' activitypub-aware array field '''

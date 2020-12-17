@@ -14,10 +14,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='attributedTo')
-    content = fields.TextField(blank=True, null=True)
+    content = fields.HtmlField(blank=True, null=True)
     mention_users = fields.TagField('User', related_name='mention_user')
     mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
+    content_warning = fields.CharField(
+        max_length=500, blank=True, null=True, activitypub_field='summary')
     privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
     # created date is different than publish date because of federated posts
@@ -134,7 +136,7 @@ class Comment(Status):
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    quote = fields.TextField()
+    quote = fields.HtmlField()
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
