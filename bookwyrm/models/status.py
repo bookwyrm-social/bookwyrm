@@ -18,6 +18,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     mention_users = fields.TagField('User', related_name='mention_user')
     mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
+    content_warning = fields.CharField(
+        max_length=500, blank=True, null=True, activitypub_field='summary')
     privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
     # created date is different than publish date because of federated posts
