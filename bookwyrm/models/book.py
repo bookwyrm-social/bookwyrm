@@ -52,11 +52,28 @@ class Book(ActivitypubMixin, BookWyrmModel):
     authors = fields.ManyToManyField('Author')
     # preformatted authorship string for search and easier display
     author_text = models.CharField(max_length=255, blank=True, null=True)
-    cover = fields.ImageField(upload_to='covers/', blank=True, null=True)
+    cover = fields.ImageField(
+        upload_to='covers/', blank=True, null=True, alt_field='alt_text')
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
+
+    @property
+    def edition_info(self):
+        ''' properties of this edition, as a string '''
+        items = [
+            self.physical_format,
+            self.languages[0] + ' language' if self.languages and \
+                    self.languages[0] != 'English' else None,
+            str(self.published_date.year) if self.published_date else None,
+        ]
+        return ', '.join(i for i in items if i)
+
+    @property
+    def alt_text(self):
+        ''' image alt test '''
+        return '%s cover (%s)' % (self.title, self.edition_info)
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
@@ -92,7 +109,8 @@ class Work(OrderedCollectionPageMixin, Book):
     default_edition = fields.ForeignKey(
         'Edition',
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        load_remote=False
     )
 
     def get_default_edition(self):

@@ -1,4 +1,5 @@
-{% with uuid as uuid %}
+{% load bookwyrm_tags %}
+{% with 0|uuid as uuid %}
 <div class="control">
     <div>
         <input type="radio" class="toggle-control" name="sensitive" value="false" id="hide-spoilers-{{ uuid }}" {% if not parent_status.content_warning %}checked{% endif %}>
