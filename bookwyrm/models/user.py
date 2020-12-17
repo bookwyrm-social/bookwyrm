@@ -53,7 +53,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, default='')
     avatar = fields.ImageField(
-        upload_to='avatars/', blank=True, null=True, activitypub_field='icon')
+        upload_to='avatars/', blank=True, null=True,
+        activitypub_field='icon', alt_field='alt_text')
     followers = fields.ManyToManyField(
         'self',
         link_only=True,
@@ -89,6 +90,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
+
+    @property
+    def alt_text(self):
+        ''' alt text with username '''
+        return 'avatar for %s' % (self.localname or self.username)
 
     @property
     def display_name(self):
