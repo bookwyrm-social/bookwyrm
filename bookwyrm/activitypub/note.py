@@ -54,7 +54,7 @@ class Comment(Note):
 class Review(Comment):
     ''' a full book review '''
     name: str
-    rating: int
+    rating: int = None
     type: str = 'Review'
 
 

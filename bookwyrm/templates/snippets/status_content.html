@@ -1,5 +1,14 @@
 {% load bookwyrm_tags %}
 <div class="block">
+    {% if status.status_type == 'Review' %}
+    <div>
+        <h3 class="title is-5 has-subtitle">
+            {% if status.name %}{{ status.name }}<br>{% endif %}
+        </h3>
+        <p class="subtitle">{% include 'snippets/stars.html' with rating=status.rating %}</p>
+    </div>
+    {% endif %}
+
     {% if status.content_warning %}
     <div class="toggle-content">
         <p>{{ status.content_warning }}</p>
@@ -14,13 +23,6 @@
     <div{% if status.content_warning %} class="toggle-content hidden"{% endif %}>
         {% if status.content_warning %}
         <label class="button is-small" for="hide-status-cw-{{ status.id }}" tabindex="0" role="button">Show Less</label>
-        {% endif %}
-
-        {% if status.status_type == 'Review' %}
-        <h3>
-            {% if status.name %}{{ status.name }}<br>{% endif %}
-            {% include 'snippets/stars.html' with rating=status.rating %}
-        </h3>
         {% endif %}
 
         {% if status.quote %}
