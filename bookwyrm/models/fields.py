@@ -1,10 +1,10 @@
 ''' activitypub-aware django model fields '''
+from dataclasses import MISSING
 import re
 from uuid import uuid4
 
 import dateutil.parser
 from dateutil.parser import ParserError
-from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
@@ -12,6 +12,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
+from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.connectors import get_image
 
@@ -19,6 +20,14 @@ from bookwyrm.connectors import get_image
 def validate_remote_id(value):
     ''' make sure the remote_id looks like a url '''
     if not value or not re.match(r'^http.?:\/\/[^\s]+$', value):
+        raise ValidationError(
+            _('%(value)s is not a valid remote_id'),
+            params={'value': value},
+        )
+
+def validate_username(value):
+    ''' make sure usernames look okay '''
+    if not re.match(r'^[A-Za-z\-_\.]+$', value):
         raise ValidationError(
             _('%(value)s is not a valid remote_id'),
             params={'value': value},
@@ -37,6 +46,36 @@ class ActivitypubFieldMixin:
         else:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
+
+
+    def set_field_from_activity(self, instance, data):
+        ''' helper function for assinging a value to the field '''
+        try:
+            value = getattr(data, self.get_activitypub_field())
+        except AttributeError:
+            # masssively hack-y workaround for boosts
+            if self.get_activitypub_field() != 'attributedTo':
+                raise
+            value = getattr(data, 'actor')
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        setattr(instance, self.name, formatted)
+
+
+    def set_activity_from_field(self, activity, instance):
+        ''' update the json object '''
+        value = getattr(instance, self.name)
+        formatted = self.field_to_activity(value)
+        if formatted is None:
+            return
+
+        key = self.get_activitypub_field()
+        if isinstance(activity.get(key), list):
+            activity[key] += formatted
+        else:
+            activity[key] = formatted
+
 
     def field_to_activity(self, value):
         ''' formatter to convert a model value into activitypub '''
@@ -103,7 +142,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
             _('username'),
             max_length=150,
             unique=True,
-            validators=[AbstractUser.username_validator],
+            validators=[validate_username],
             error_messages={
                 'unique': _('A user with that username already exists.'),
             },
@@ -121,6 +160,52 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
 
     def field_to_activity(self, value):
         return value.split('@')[0]
+
+
+PrivacyLevels = models.TextChoices('Privacy', [
+    'public',
+    'unlisted',
+    'followers',
+    'direct'
+])
+
+class PrivacyField(ActivitypubFieldMixin, models.CharField):
+    ''' this maps to two differente activitypub fields '''
+    public = 'https://www.w3.org/ns/activitystreams#Public'
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args, max_length=255,
+            choices=PrivacyLevels.choices, default='public')
+
+    def set_field_from_activity(self, instance, data):
+        to = data.to
+        cc = data.cc
+        if to == [self.public]:
+            setattr(instance, self.name, 'public')
+        elif cc == []:
+            setattr(instance, self.name, 'direct')
+        elif self.public in cc:
+            setattr(instance, self.name, 'unlisted')
+        else:
+            setattr(instance, self.name, 'followers')
+
+    def set_activity_from_field(self, activity, instance):
+        mentions = [u.remote_id for u in instance.mention_users.all()]
+        # this is a link to the followers list
+        followers = instance.user.__class__._meta.get_field('followers')\
+                .field_to_activity(instance.user.followers)
+        if instance.privacy == 'public':
+            activity['to'] = [self.public]
+            activity['cc'] = [followers] + mentions
+        elif instance.privacy == 'unlisted':
+            activity['to'] = [followers]
+            activity['cc'] = [self.public] + mentions
+        elif instance.privacy == 'followers':
+            activity['to'] = [followers]
+            activity['cc'] = mentions
+        if instance.privacy == 'direct':
+            activity['to'] = mentions
+            activity['cc'] = []
 
 
 class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
@@ -145,6 +230,14 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
+    def set_field_from_activity(self, instance, data):
+        ''' helper function for assinging a value to the field '''
+        value = getattr(data, self.get_activitypub_field())
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        getattr(instance, self.name).set(formatted)
+
     def field_to_activity(self, value):
         if self.link_only:
             return '%s/%s' % (value.instance.remote_id, self.name)
@@ -152,6 +245,8 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
     def field_from_activity(self, value):
         items = []
+        if value is None or value is MISSING:
+            return []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)
@@ -189,6 +284,8 @@ class TagField(ManyToManyField):
         for link_json in value:
             link = activitypub.Link(**link_json)
             tag_type = link.type if link.type != 'Mention' else 'Person'
+            if tag_type == 'Book':
+                tag_type = 'Edition'
             if tag_type != self.related_model.activity_serializer.type:
                 # tags can contain multiple types
                 continue
@@ -210,8 +307,19 @@ def image_serializer(value):
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     ''' activitypub-aware image field '''
+    # pylint: disable=arguments-differ
+    def set_field_from_activity(self, instance, data, save=True):
+        ''' helper function for assinging a value to the field '''
+        value = getattr(data, self.get_activitypub_field())
+        formatted = self.field_from_activity(value)
+        if formatted is None or formatted is MISSING:
+            return
+        getattr(instance, self.name).save(*formatted, save=save)
+
+
     def field_to_activity(self, value):
         return image_serializer(value)
+
 
     def field_from_activity(self, value):
         image_slug = value
@@ -254,6 +362,15 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+class HtmlField(ActivitypubFieldMixin, models.TextField):
+    ''' a text field for storing html '''
+    def field_from_activity(self, value):
+        if not value or value == MISSING:
+            return None
+        sanitizer = InputHtmlParser()
+        sanitizer.feed(value)
+        return sanitizer.get_output()
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
     ''' activitypub-aware array field '''

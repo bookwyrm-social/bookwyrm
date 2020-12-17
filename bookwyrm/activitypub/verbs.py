@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 
 from .base_activity import ActivityObject, Signature
-from .book import Book
+from .book import Edition
 
 @dataclass(init=False)
 class Verb(ActivityObject):
@@ -73,7 +73,7 @@ class Add(Verb):
 @dataclass(init=False)
 class AddBook(Verb):
     '''Add activity that's aware of the book obj '''
-    target: Book
+    target: Edition
     type: str = 'Add'
 
 

@@ -6,7 +6,7 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
-from .base_model import BookWyrmModel, PrivacyLevels
+from .base_model import BookWyrmModel
 from . import fields
 from .fields import image_serializer
 
@@ -14,19 +14,15 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='attributedTo')
-    content = fields.TextField(blank=True, null=True)
+    content = fields.HtmlField(blank=True, null=True)
     mention_users = fields.TagField('User', related_name='mention_user')
     mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
-    privacy = models.CharField(
-        max_length=255,
-        default='public',
-        choices=PrivacyLevels.choices
-    )
     content_warning = fields.CharField(
         max_length=150, blank=True, null=True, activitypub_field='summary')
+    privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
-    # the created date can't be this, because of receiving federated posts
+    # created date is different than publish date because of federated posts
     published_date = fields.DateTimeField(
         default=timezone.now, activitypub_field='published')
     deleted = models.BooleanField(default=False)
@@ -50,12 +46,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
-    #----- replies collection activitypub ----#
     @classmethod
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
             to write this so it's just a property '''
-        return cls.objects.filter(reply_parent=status).select_subclasses()
+        return cls.objects.filter(
+            reply_parent=status
+        ).select_subclasses().order_by('published_date')
 
     @property
     def status_type(self):
@@ -82,27 +79,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activity = ActivitypubMixin.to_activity(self)
         activity['replies'] = self.to_replies()
 
-        # privacy controls
-        public = 'https://www.w3.org/ns/activitystreams#Public'
-        mentions = [u.remote_id for u in self.mention_users.all()]
-        # this is a link to the followers list:
-        followers = self.user.__class__._meta.get_field('followers')\
-                .field_to_activity(self.user.followers)
-        if self.privacy == 'public':
-            activity['to'] = [public]
-            activity['cc'] = [followers] + mentions
-        elif self.privacy == 'unlisted':
-            activity['to'] = [followers]
-            activity['cc'] = [public] + mentions
-        elif self.privacy == 'followers':
-            activity['to'] = [followers]
-            activity['cc'] = mentions
-        if self.privacy == 'direct':
-            activity['to'] = mentions
-            activity['cc'] = []
-
         # "pure" serialization for non-bookwyrm instances
-        if pure:
+        if pure and hasattr(self, 'pure_content'):
             activity['content'] = self.pure_content
             if 'name' in activity:
                 activity['name'] = self.pure_name
@@ -158,7 +136,7 @@ class Comment(Status):
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    quote = fields.TextField()
+    quote = fields.HtmlField()
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
@@ -192,6 +170,7 @@ class Review(Status):
     def pure_name(self):
         ''' clarify review names for mastodon serialization '''
         if self.rating:
+            #pylint: disable=bad-string-format-type
             return 'Review of "%s" (%d stars): %s' % (
                 self.book.title,
                 self.rating,
@@ -241,6 +220,18 @@ class Boost(Status):
         activitypub_field='object',
     )
 
+    def __init__(self, *args, **kwargs):
+        ''' the user field is "actor" here instead of "attributedTo" '''
+        super().__init__(*args, **kwargs)
+
+        reserve_fields = ['user', 'boosted_status']
+        self.simple_fields = [f for f in self.simple_fields if \
+                f.name in reserve_fields]
+        self.activity_fields = self.simple_fields
+        self.many_to_many_fields = []
+        self.image_fields = []
+        self.deserialize_reverse_fields = []
+
     activity_serializer = activitypub.Boost
 
     # This constraint can't work as it would cross tables.
@@ -251,7 +242,7 @@ class Boost(Status):
 class ReadThrough(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     pages_read = models.IntegerField(
         null=True,
         blank=True)

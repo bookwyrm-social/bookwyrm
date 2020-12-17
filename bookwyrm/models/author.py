@@ -16,7 +16,8 @@ class Author(ActivitypubMixin, BookWyrmModel):
         max_length=255, blank=True, null=True, deduplication_field=True)
     sync = models.BooleanField(default=True)
     last_sync_date = models.DateTimeField(default=timezone.now)
-    wikipedia_link = fields.CharField(max_length=255, blank=True, null=True, deduplication_field=True)
+    wikipedia_link = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
@@ -24,7 +25,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    bio = fields.TextField(null=True, blank=True)
+    bio = fields.HtmlField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''

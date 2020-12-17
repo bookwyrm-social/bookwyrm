@@ -1,4 +1,4 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 <div class="cover-container is-{{ size }}">
 {% if book.cover %}
     <img class="book-cover" src="/images/{{ book.cover }}" alt="{% include 'snippets/cover_alt.html' with book=book %}">

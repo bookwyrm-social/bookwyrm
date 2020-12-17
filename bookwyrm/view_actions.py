@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -17,6 +18,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
 from bookwyrm import books_manager
+from bookwyrm.broadcast import broadcast
 from bookwyrm import forms, models, outgoing
 from bookwyrm import goodreads_import
 from bookwyrm.emailing import password_reset_email
@@ -66,7 +68,7 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username']
+    username = form.data['username'].strip()
     email = form.data['email']
     password = form.data['password']
 
@@ -215,6 +217,7 @@ def edit_profile(request):
     return redirect('/user/%s' % request.user.localname)
 
 
+@require_POST
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
@@ -243,6 +246,36 @@ def edit_book(request, book_id):
 
     outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.id)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def switch_edition(request):
+    ''' switch your copy of a book to a different edition '''
+    edition_id = request.POST.get('edition')
+    new_edition = get_object_or_404(models.Edition, id=edition_id)
+    shelfbooks = models.ShelfBook.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        shelf__user=request.user
+    )
+    for shelfbook in shelfbooks.all():
+        broadcast(request.user, shelfbook.to_remove_activity(request.user))
+
+        shelfbook.book = new_edition
+        shelfbook.save()
+
+        broadcast(request.user, shelfbook.to_add_activity(request.user))
+
+    readthroughs = models.ReadThrough.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        user=request.user
+    )
+    for readthrough in readthroughs.all():
+        readthrough.book = new_edition
+        readthrough.save()
+
+    return redirect('/book/%d' % new_edition.id)
 
 
 @login_required
