@@ -86,11 +86,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 activity['name'] = self.pure_name
             activity['type'] = self.pure_type
             activity['attachment'] = [
-                image_serializer(b.cover) for b in self.mention_books.all() \
-                        if b.cover]
+                image_serializer(b.cover, b.alt_text) \
+                    for b in self.mention_books.all()[:4] if b.cover]
             if hasattr(self, 'book'):
                 activity['attachment'].append(
-                    image_serializer(self.book.cover)
+                    image_serializer(self.book.cover, self.book.alt_text)
                 )
         return activity
 

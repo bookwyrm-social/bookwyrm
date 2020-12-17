@@ -393,17 +393,19 @@ class ActivitypubFields(TestCase):
             ContentFile(output.getvalue())
         )
 
-        output = fields.image_serializer(user.avatar)
+        output = fields.image_serializer(user.avatar, alt='alt text')
         self.assertIsNotNone(
             re.match(
                 r'.*\.jpg',
                 output.url,
             )
         )
+        self.assertEqual(output.name, 'alt text')
         self.assertEqual(output.type, 'Image')
 
         instance = fields.ImageField()
 
+        output = fields.image_serializer(user.avatar, alt=None)
         self.assertEqual(instance.field_to_activity(user.avatar), output)
 
         responses.add(
