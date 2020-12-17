@@ -1,0 +1,18 @@
+<div class="control">
+    <div>
+        <input type="radio" class="toggle-control" name="content-warning-toggle" id="hide-spoilers-{{ book.id }}-{{ type }}" {% if not parent_status.content_warning %}checked{% endif %}>
+        <div class="toggle-content hidden">
+            <label class="button is-small" role="button" tabindex="0" for="include-spoilers-{{ book.id }}-{{ type }}">Add spoilers/content warning</label>
+        </div>
+    </div>
+
+    <div>
+        <input type="radio" class="toggle-control" id="include-spoilers-{{ book.id }}-{{ type }}" name="content-warning-toggle" {% if parent_status.content_warning %}checked{% endif %}>
+        <div class="toggle-content hidden">
+            <label class="button is-small" role="button" tabindex="0" for="hide-spoilers-{{ book.id }}-{{ type }}">Remove spoilers/content warning</label>
+            <label class="is-sr-only" for="id_content_warning_{{ book.id }}_{{ type }}">Spoilers/content warning:</label>
+            <input type="text" name="content_warning" maxlength="255" class="input" id="id_content_warning_{{ book.id }}_{{ type }}" placeholder="Spoilers ahead!" value="{{ parent_status.content_warning }}">
+        </div>
+    </div>
+</div>
+

@@ -27,14 +27,7 @@
         </fieldset>
         {% endif %}
 
-        <div class="control">
-            <label class="button is-small" role="button" tabindex="0" for="include-spoilers-{{ book.id }}-{{ type }}">Add spoilers/content warning</label>
-            <input type="checkbox" class="toggle-control" id="include-spoilers-{{ book.id }}-{{ type }}">
-            <div class="toggle-content hidden">
-                <label class="is-sr-only" for="id_content_warning_{{ book.id }}_{{ type }}">Spoilers/content warning:</label>
-                <input type="text" name="content_warning" maxlength="255" class="input" id="id_content_warning_{{ book.id }}_{{ type }}" placeholder="Spoilers ahead!">
-            </div>
-        </div>
+        {% include 'snippets/content_warning_field.html' %}
 
         {% if type == 'quote' %}
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
