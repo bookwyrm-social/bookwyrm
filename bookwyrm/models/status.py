@@ -132,8 +132,8 @@ class Comment(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return '<p>%s</p><p>(comment on <a href="%s">"%s"</a>)</p>' % \
+                (self.content, self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
     pure_type = 'Note'
@@ -148,7 +148,7 @@ class Quotation(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
+        return '<p>"%s"<br>-- <a href="%s">"%s"</a></p><p>%s</p>' % (
             self.quote,
             self.book.remote_id,
             self.book.title,

@@ -91,6 +91,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
 
+    name_field = 'username'
     @property
     def alt_text(self):
         ''' alt text with username '''
