@@ -410,7 +410,10 @@ class Incoming(TestCase):
             'actor': self.remote_user.remote_id,
             'object': self.status.to_activity(),
         }
-        incoming.handle_boost(activity)
+        with patch('bookwyrm.models.status.Status.ignore_activity') \
+                as discarder:
+            discarder.return_value = False
+            incoming.handle_boost(activity)
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status, self.status)
         notification = models.Notification.objects.get()

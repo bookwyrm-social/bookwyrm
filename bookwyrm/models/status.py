@@ -1,7 +1,9 @@
 ''' models for storing different kinds of Activities '''
-from django.utils import timezone
+from dataclasses import MISSING
+from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -45,6 +47,27 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     activity_serializer = activitypub.Note
     serialize_reverse_fields = [('attachments', 'attachment')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
+
+    @classmethod
+    def ignore_activity(cls, activity):
+        ''' keep notes if they are replies to existing statuses '''
+        if activity.type != 'Note':
+            return False
+        if cls.objects.filter(
+                remote_id=activity.inReplyTo).exists():
+            return False
+
+        # keep notes if they mention local users
+        if activity.tag == MISSING or activity.tag is None:
+            return True
+        tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+        for tag in tags:
+            user_model = apps.get_model('bookwyrm.User', require_ready=True)
+            if user_model.objects.filter(
+                    remote_id=tag, local=True).exists():
+                # we found a mention of a known use boost
+                return False
+        return True
 
     @classmethod
     def replies(cls, status):
