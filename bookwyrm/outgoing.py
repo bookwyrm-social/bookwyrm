@@ -315,15 +315,19 @@ def handle_unfavorite(user, status):
 
 def handle_boost(user, status):
     ''' a user wishes to boost a status '''
+    # is it boostable?
+    if not status.boostable:
+        return
+
     if models.Boost.objects.filter(
             boosted_status=status, user=user).exists():
         # you already boosted that.
         return
     boost = models.Boost.objects.create(
         boosted_status=status,
+        privacy=status.privacy,
         user=user,
     )
-    boost.save()
 
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)

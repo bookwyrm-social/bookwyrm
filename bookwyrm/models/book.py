@@ -73,7 +73,10 @@ class Book(ActivitypubMixin, BookWyrmModel):
     @property
     def alt_text(self):
         ''' image alt test '''
-        return '%s cover (%s)' % (self.title, self.edition_info)
+        text = '%s cover' % self.title
+        if self.edition_info:
+            text += ' (%s)' % self.edition_info
+        return text
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''

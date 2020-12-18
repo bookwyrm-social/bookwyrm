@@ -71,6 +71,9 @@ class ActivitypubFieldMixin:
             return
 
         key = self.get_activitypub_field()
+        # TODO: surely there's a better way
+        if instance.__class__.__name__ == 'Boost' and key == 'attributedTo':
+            key = 'actor'
         if isinstance(activity.get(key), list):
             activity[key] += formatted
         else:
