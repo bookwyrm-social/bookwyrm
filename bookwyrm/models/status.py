@@ -59,6 +59,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ''' expose the type of status for the ui using activity type '''
         return self.activity_serializer.__name__
 
+    @property
+    def boostable(self):
+        ''' you can't boost dms '''
+        return self.privacy in ['unlisted', 'public']
+
     def to_replies(self, **kwargs):
         ''' helper function for loading AP serialized replies to a status '''
         return self.to_ordered_collection(
