@@ -189,8 +189,7 @@ class Review(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return self.content
 
     activity_serializer = activitypub.Review
     pure_type = 'Article'

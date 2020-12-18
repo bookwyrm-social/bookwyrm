@@ -4,6 +4,7 @@ import pathlib
 
 from PIL import Image
 from django.core.files.base import ContentFile
+from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
@@ -204,3 +205,71 @@ class Status(TestCase):
                 (settings.DOMAIN, self.book.cover.url))
         self.assertEqual(
             activity['attachment'][0].name, 'Test Edition cover')
+
+    def test_review_to_activity(self):
+        ''' subclass of the base model version with a "pure" serializer '''
+        status = models.Review.objects.create(
+            name='Review name', content='test content', rating=3,
+            user=self.user, book=self.book)
+        activity = status.to_activity()
+        self.assertEqual(activity['id'], status.remote_id)
+        self.assertEqual(activity['type'], 'Review')
+        self.assertEqual(activity['rating'], 3)
+        self.assertEqual(activity['name'], 'Review name')
+        self.assertEqual(activity['content'], 'test content')
+        self.assertEqual(activity['inReplyToBook'], self.book.remote_id)
+
+    def test_review_to_pure_activity(self):
+        ''' subclass of the base model version with a "pure" serializer '''
+        status = models.Review.objects.create(
+            name='Review name', content='test content', rating=3,
+            user=self.user, book=self.book)
+        activity = status.to_activity(pure=True)
+        self.assertEqual(activity['id'], status.remote_id)
+        self.assertEqual(activity['type'], 'Article')
+        self.assertEqual(
+            activity['name'], 'Review of "%s" (3 stars): Review name' \
+                % self.book.title)
+        self.assertEqual(activity['content'], 'test content')
+        self.assertEqual(activity['attachment'][0].type, 'Image')
+        self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
+                (settings.DOMAIN, self.book.cover.url))
+        self.assertEqual(
+            activity['attachment'][0].name, 'Test Edition cover')
+
+    def test_favorite(self):
+        ''' fav a status '''
+        status = models.Status.objects.create(
+            content='test content', user=self.user)
+        fav = models.Favorite.objects.create(status=status, user=self.user)
+
+        # can't fav a status twice
+        with self.assertRaises(IntegrityError):
+            models.Favorite.objects.create(status=status, user=self.user)
+
+        activity = fav.to_activity()
+        self.assertEqual(activity['type'], 'Like')
+        self.assertEqual(activity['actor'], self.user.remote_id)
+        self.assertEqual(activity['object'], status.remote_id)
+
+    def test_boost(self):
+        ''' boosting, this one's a bit fussy '''
+        status = models.Status.objects.create(
+            content='test content', user=self.user)
+        boost = models.Boost.objects.create(
+            boosted_status=status, user=self.user)
+        activity = boost.to_activity()
+        self.assertEqual(activity['actor'], self.user.remote_id)
+        self.assertEqual(activity['object'], status.remote_id)
+        self.assertEqual(activity['type'], 'Announce')
+        self.assertEqual(activity, boost.to_activity(pure=True))
+
+    def test_notification(self):
+        ''' a simple model '''
+        notification = models.Notification.objects.create(
+            user=self.user, notification_type='FAVORITE')
+        self.assertFalse(notification.read)
+
+        with self.assertRaises(IntegrityError):
+            models.Notification.objects.create(
+                user=self.user, notification_type='GLORB')
