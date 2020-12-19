@@ -17,50 +17,35 @@ class Connector(AbstractConnector):
         super().__init__(identifier)
 
         get_first = lambda a: a[0]
-        self.key_mappings = [
-            Mapping('isbn_13', model=models.Edition, formatter=get_first),
-            Mapping('isbn_10', model=models.Edition, formatter=get_first),
-            Mapping('lccn', model=models.Work, formatter=get_first),
-            Mapping(
-                'oclc_number',
-                remote_field='oclc_numbers',
-                model=models.Edition,
-                formatter=get_first
-            ),
-            Mapping(
-                'openlibrary_key',
-                remote_field='key',
-                formatter=get_openlibrary_key
-            ),
-            Mapping('goodreads_key'),
-            Mapping('asin'),
-        ]
-
-        self.book_mappings = self.key_mappings + [
-            Mapping('sort_title'),
+        self.book_mappings = [
+            Mapping('title'),
+            Mapping('sortTitle', remote_field='sort_title'),
             Mapping('subtitle'),
             Mapping('description', formatter=get_description),
             Mapping('languages', formatter=get_languages),
             Mapping('series', formatter=get_first),
-            Mapping('series_number'),
+            Mapping('seriesNumber', remote_field='series_number'),
             Mapping('subjects'),
-            Mapping('subject_places'),
+            Mapping('subjectPlaces'),
+            Mapping('isbn13', formatter=get_first),
+            Mapping('isbn10', formatter=get_first),
+            Mapping('lccn', formatter=get_first),
             Mapping(
-                'first_published_date',
-                remote_field='first_publish_date',
-                formatter=get_date
+                'oclcNumber', remote_field='oclc_numbers',
+                formatter=get_first
             ),
             Mapping(
-                'published_date',
-                remote_field='publish_date',
-                formatter=get_date
+                'openlibraryKey', remote_field='key',
+                formatter=get_openlibrary_key
             ),
+            Mapping('goodreadsKey', remote_field='goodreads_key'),
+            Mapping('asin'),
             Mapping(
-                'pages',
-                model=models.Edition,
-                remote_field='number_of_pages'
+                'firstPublishedDate', remote_field='first_publish_date',
             ),
-            Mapping('physical_format', model=models.Edition),
+            Mapping('publishedDate', remote_field='publish_date'),
+            Mapping('pages', remote_field='number_of_pages'),
+            Mapping('physicalFormat', remote_field='physical_format'),
             Mapping('publishers'),
         ]
 
