@@ -6,8 +6,8 @@ from django.core.files.base import ContentFile
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import ConnectorException
-from .abstract_connector import get_date, get_data, update_from_mappings
+from .abstract_connector import ConnectorException, dict_from_mappings
+from .abstract_connector import get_data, update_from_mappings
 from .openlibrary_languages import languages
 
 
@@ -51,8 +51,8 @@ class Connector(AbstractConnector):
 
         self.author_mappings = [
             Mapping('name'),
-            Mapping('born', remote_field='birth_date', formatter=get_date),
-            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('born', remote_field='birth_date'),
+            Mapping('died', remote_field='death_date'),
             Mapping('bio', formatter=get_description),
         ]
 
@@ -92,9 +92,10 @@ class Connector(AbstractConnector):
         ''' parse author json and load or create authors '''
         for author_blob in data.get('authors', []):
             author_blob = author_blob.get('author', author_blob)
-            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
+            # this id is "/authors/OL1234567A"
             author_id = author_blob['key'].split('/')[-1]
-            yield self.get_or_create_author(author_id)
+            url = '%s/%s.json' % (self.base_url, author_id)
+            yield self.get_or_create_author(url)
 
 
     def get_cover_from_data(self, data):
@@ -156,24 +157,6 @@ class Connector(AbstractConnector):
             # get author data from the work if it's missing from the edition
             if not edition.authors and work.authors:
                 edition.authors.set(work.authors.all())
-
-
-    def get_or_create_author(self, olkey):
-        ''' load that author '''
-        if not re.match(r'^OL\d+A$', olkey):
-            raise ValueError('Invalid OpenLibrary author ID')
-        author = models.Author.objects.filter(openlibrary_key=olkey).first()
-        if author:
-            return author
-
-        url = '%s/authors/%s.json' % (self.base_url, olkey)
-        data = get_data(url)
-
-        author = models.Author(openlibrary_key=olkey)
-        author = update_from_mappings(author, data, self.author_mappings)
-        author.save()
-
-        return author
 
 
 def get_description(description_blob):

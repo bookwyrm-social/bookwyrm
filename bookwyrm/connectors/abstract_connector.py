@@ -98,11 +98,12 @@ class AbstractConnector(AbstractMinimalConnector):
 
         # load the json
         data = get_data(remote_id)
-        mapped_data = self.dict_from_mappings(data)
+        mapped_data = dict_from_mappings(data, self.book_mappings)
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
-                edition_data = self.dict_from_mappings(edition_data)
+                edition_data = dict_from_mappings(\
+                        edition_data, self.book_mappings)
             except KeyError:
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
@@ -111,7 +112,7 @@ class AbstractConnector(AbstractMinimalConnector):
         else:
             try:
                 work_data = self.get_work_from_edition_data(data)
-                work_data = self.dict_from_mappings(work_data)
+                work_data = dict_from_mappings(work_data, self.book_mappings)
             except KeyError:
                 work_data = mapped_data
             edition_data = mapped_data
@@ -140,13 +141,17 @@ class AbstractConnector(AbstractMinimalConnector):
         return edition
 
 
-    def dict_from_mappings(self, data):
-        ''' create a dict in Activitypub format, using mappings supplies by
-        the subclass '''
-        result = {}
-        for mapping in self.book_mapping:
-            result[mapping.local_field] = mapping.get_value(data)
-        return result
+    def get_or_create_author(self, remote_id):
+        ''' load that author '''
+        existing = models.Author.find_exising_by_remote_id(remote_id)
+        if existing:
+            return existing
+
+        data = get_data(remote_id)
+
+        author_activity = dict_from_mappings(data, self.author_mappings)
+        # this will dedupe
+        return activitypub.Author(**author_activity).to_model()
 
 
     @abstractmethod
@@ -178,20 +183,13 @@ class AbstractConnector(AbstractMinimalConnector):
         ''' get more info on a book '''
 
 
-def get_date(date_string):
-    ''' helper function to try to interpret dates '''
-    if not date_string:
-        return None
-
-    try:
-        return pytz.utc.localize(parser.parse(date_string))
-    except ValueError:
-        pass
-
-    try:
-        return parser.parse(date_string)
-    except ValueError:
-        return None
+def dict_from_mappings(self, data, mappings):
+    ''' create a dict in Activitypub format, using mappings supplies by
+    the subclass '''
+    result = {}
+    for mapping in mappings:
+        result[mapping.local_field] = mapping.get_value(data)
+    return result
 
 
 def get_data(url):
