@@ -18,13 +18,13 @@ class PublicKey(ActivityObject):
 class Person(ActivityObject):
     ''' actor activitypub json '''
     preferredUsername: str
-    name: str
     inbox: str
     outbox: str
     followers: str
-    summary: str
     publicKey: PublicKey
     endpoints: Dict
+    name: str = None
+    summary: str = None
     icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False

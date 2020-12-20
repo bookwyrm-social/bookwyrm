@@ -221,8 +221,6 @@ def handle_status(user, form):
     matches = []
     for match in re.finditer(regex.username, status.content):
         username = match.group().strip().split('@')[1:]
-        print(match.group())
-        print(len(username))
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
             username.append(DOMAIN)
@@ -251,9 +249,9 @@ def handle_status(user, form):
             r'<a href="%s">%s</a>\g<1>' % (url, username),
             content)
     if not isinstance(status, models.GeneratedNote):
-        status.content = to_markown(content)
+        status.content = to_markdown(content)
     if hasattr(status, 'quote'):
-        status.quote = to_markown(status.quote)
+        status.quote = to_markdown(status.quote)
     status.save()
 
     # notify reply parent or tagged users
@@ -272,7 +270,7 @@ def handle_status(user, form):
     broadcast(user, remote_activity, software='other')
 
 
-def to_markown(content):
+def to_markdown(content):
     ''' catch links and convert to markdown '''
     content = re.sub(
         r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \

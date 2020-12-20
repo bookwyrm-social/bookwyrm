@@ -83,10 +83,9 @@ class Book(ActivitypubMixin, BookWyrmModel):
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
 
-        if self.id and not self.remote_id:
+        if self.id:
             self.remote_id = self.get_remote_id()
-
-        if not self.id:
+        else:
             self.origin_id = self.remote_id
             self.remote_id = None
         return super().save(*args, **kwargs)

@@ -167,8 +167,7 @@ class Status(TestCase):
         self.assertEqual(activity['type'], 'Note')
         self.assertEqual(
             activity['content'],
-            '<p>test content</p><p>' \
-                    '(comment on <a href="%s">"Test Edition"</a>)</p>' %
+            'test content<p>(comment on <a href="%s">"Test Edition"</a>)</p>' %
             self.book.remote_id)
         self.assertEqual(activity['attachment'][0].type, 'Image')
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
@@ -198,8 +197,8 @@ class Status(TestCase):
         self.assertEqual(activity['type'], 'Note')
         self.assertEqual(
             activity['content'],
-            '<p>"a sickening sense"<br>-- <a href="%s">"Test Edition"</a></p>' \
-                    '<p>test content</p>' % self.book.remote_id)
+            'a sickening sense <p>-- <a href="%s">"Test Edition"</a></p>' \
+                    'test content' % self.book.remote_id)
         self.assertEqual(activity['attachment'][0].type, 'Image')
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
                 (settings.DOMAIN, self.book.cover.url))

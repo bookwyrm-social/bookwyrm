@@ -464,7 +464,7 @@ class Incoming(TestCase):
             'data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
         del userdata['icon']
-        self.assertEqual(self.local_user.name, '')
+        self.assertIsNone(self.local_user.name)
         incoming.handle_update_user({'object': userdata})
         user = models.User.objects.get(id=self.local_user.id)
         self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
