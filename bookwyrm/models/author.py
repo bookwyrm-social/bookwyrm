@@ -28,11 +28,10 @@ class Author(ActivitypubMixin, BookWyrmModel):
     bio = fields.HtmlField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        ''' can't be abstract for query reasons, but you shouldn't USE it '''
-        if self.id and not self.remote_id:
+        ''' handle remote vs origin ids '''
+        if self.id:
             self.remote_id = self.get_remote_id()
-
-        if not self.id:
+        else:
             self.origin_id = self.remote_id
             self.remote_id = None
         return super().save(*args, **kwargs)
