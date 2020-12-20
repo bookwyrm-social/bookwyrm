@@ -1,15 +1,16 @@
 ''' testing book data connectors '''
-from dateutil import parser
-from django.test import TestCase
 import json
 import pathlib
+from dateutil import parser
+from django.test import TestCase
 import pytz
 
 from bookwyrm import models
 from bookwyrm.connectors.openlibrary import Connector
 from bookwyrm.connectors.openlibrary import get_languages, get_description
-from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
-from bookwyrm.connectors.abstract_connector import SearchResult, get_date
+from bookwyrm.connectors.openlibrary import pick_default_edition, \
+        get_openlibrary_key
+from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class Openlibrary(TestCase):
@@ -67,12 +68,6 @@ class Openlibrary(TestCase):
         self.assertEqual(description, expected)
 
 
-    def test_get_date(self):
-        date = get_date(self.work_data['first_publish_date'])
-        expected = pytz.utc.localize(parser.parse('1995'))
-        self.assertEqual(date, expected)
-
-
     def test_get_languages(self):
         languages = get_languages(self.edition_data['languages'])
         self.assertEqual(languages, ['English'])
@@ -81,4 +76,3 @@ class Openlibrary(TestCase):
     def test_get_ol_key(self):
         key = get_openlibrary_key('/books/OL27320736M')
         self.assertEqual(key, 'OL27320736M')
-
