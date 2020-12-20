@@ -74,6 +74,9 @@ class ActivityObject:
                          model.activity_serializer)
             )
 
+        if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
+            return instance
+
         # check for an existing instance, if we're not updating a known obj
         instance = instance or model.find_existing(self.serialize()) or model()
 

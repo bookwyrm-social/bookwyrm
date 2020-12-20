@@ -262,8 +262,8 @@ class Incoming(TestCase):
         status = models.Quotation.objects.get()
         self.assertEqual(
             status.remote_id, 'https://example.com/user/mouse/quotation/13')
-        self.assertEqual(status.quote, 'quote body')
-        self.assertEqual(status.content, 'commentary')
+        self.assertEqual(status.quote, '<p>quote body</p>')
+        self.assertEqual(status.content, '<p>commentary</p>')
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(models.Status.objects.count(), 2)
 
@@ -284,7 +284,7 @@ class Incoming(TestCase):
 
         incoming.handle_create(activity)
         status = models.Status.objects.last()
-        self.assertEqual(status.content, 'test content in note')
+        self.assertEqual(status.content, '<p>test content in note</p>')
         self.assertEqual(status.mention_users.first(), self.local_user)
         self.assertTrue(
             models.Notification.objects.filter(user=self.local_user).exists())
@@ -306,7 +306,7 @@ class Incoming(TestCase):
 
         incoming.handle_create(activity)
         status = models.Status.objects.last()
-        self.assertEqual(status.content, 'test content in note')
+        self.assertEqual(status.content, '<p>test content in note</p>')
         self.assertEqual(status.reply_parent, self.status)
         self.assertTrue(
             models.Notification.objects.filter(user=self.local_user))
@@ -410,7 +410,10 @@ class Incoming(TestCase):
             'actor': self.remote_user.remote_id,
             'object': self.status.to_activity(),
         }
-        incoming.handle_boost(activity)
+        with patch('bookwyrm.models.status.Status.ignore_activity') \
+                as discarder:
+            discarder.return_value = False
+            incoming.handle_boost(activity)
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status, self.status)
         notification = models.Notification.objects.get()

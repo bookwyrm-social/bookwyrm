@@ -1,7 +1,9 @@
 ''' models for storing different kinds of Activities '''
-from django.utils import timezone
+from dataclasses import MISSING
+from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -47,6 +49,27 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
     @classmethod
+    def ignore_activity(cls, activity):
+        ''' keep notes if they are replies to existing statuses '''
+        if activity.type != 'Note':
+            return False
+        if cls.objects.filter(
+                remote_id=activity.inReplyTo).exists():
+            return False
+
+        # keep notes if they mention local users
+        if activity.tag == MISSING or activity.tag is None:
+            return True
+        tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+        for tag in tags:
+            user_model = apps.get_model('bookwyrm.User', require_ready=True)
+            if user_model.objects.filter(
+                    remote_id=tag, local=True).exists():
+                # we found a mention of a known use boost
+                return False
+        return True
+
+    @classmethod
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
             to write this so it's just a property '''
@@ -58,6 +81,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def status_type(self):
         ''' expose the type of status for the ui using activity type '''
         return self.activity_serializer.__name__
+
+    @property
+    def boostable(self):
+        ''' you can't boost dms '''
+        return self.privacy in ['unlisted', 'public']
 
     def to_replies(self, **kwargs):
         ''' helper function for loading AP serialized replies to a status '''
@@ -127,8 +155,8 @@ class Comment(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return '<p>%s</p><p>(comment on <a href="%s">"%s"</a>)</p>' % \
+                (self.content, self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
     pure_type = 'Note'
@@ -143,7 +171,7 @@ class Quotation(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
+        return '<p>"%s"<br>-- <a href="%s">"%s"</a></p><p>%s</p>' % (
             self.quote,
             self.book.remote_id,
             self.book.title,
@@ -184,8 +212,7 @@ class Review(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return self.content
 
     activity_serializer = activitypub.Review
     pure_type = 'Article'

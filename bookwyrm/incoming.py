@@ -197,26 +197,11 @@ def handle_create(activity):
         # not a type of status we are prepared to deserialize
         return
 
-    if activity.type == 'Note':
-        # keep notes if they are replies to existing statuses
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-
-        if not reply:
-            discard = True
-            # keep notes if they mention local users
-            tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
-            for tag in tags:
-                if models.User.objects.filter(
-                        remote_id=tag, local=True).exists():
-                    # we found a mention of a known use boost
-                    discard = False
-                    break
-            if discard:
-                return
-
     status = activity.to_model(model)
+    if not status:
+        # it was discarded because it's not a bookwyrm type
+        return
+
     # create a notification if this is a reply
     notified = []
     if status.reply_parent and status.reply_parent.user.local:
