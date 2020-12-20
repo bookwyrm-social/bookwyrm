@@ -100,7 +100,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     @property
     def display_name(self):
         ''' show the cleanest version of the user's name possible '''
-        if self.name != '':
+        if self.name and self.name != '':
             return self.name
         return self.localname or self.username
 
