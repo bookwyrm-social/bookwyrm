@@ -7,6 +7,7 @@ from django import template
 from django.utils import timezone
 
 from bookwyrm import models
+from bookwyrm.outgoing import to_markdown
 
 
 register = template.Library()
@@ -131,6 +132,13 @@ def time_since(date):
         return '%dm' % delta.minutes
     return '%ds' % delta.seconds
 
+
+@register.filter(name="to_markdown")
+def get_markdown(content):
+    ''' convert markdown to html '''
+    if content:
+        return to_markdown(content)
+    return None
 
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):

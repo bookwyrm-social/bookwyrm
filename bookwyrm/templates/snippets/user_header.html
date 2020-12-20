@@ -23,7 +23,14 @@
 
         <div class="column">
             {% if user.summary %}
-            <blockquote><span class="icon icon-quote-open"></span>{{ user.summary | safe }}</blockquote>
+            <div class="columns">
+                <div class="column is-narrow">
+                    <span class="icon icon-quote-open"></span>
+                </div>
+                <div class="column">
+                    <blockquote>{{ user.summary | to_markdown | safe }}</blockquote>
+                </div>
+            </div>
             {% endif %}
         </div>
     </div>
