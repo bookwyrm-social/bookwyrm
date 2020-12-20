@@ -684,7 +684,8 @@ def author_page(request, author_id):
     if is_api_request(request):
         return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
 
-    books = models.Work.objects.filter(authors=author)
+    books = models.Work.objects.filter(
+        Q(authors=author) | Q(editions__authors=author)).distinct()
     data = {
         'title': author.name,
         'author': author,
