@@ -103,14 +103,14 @@
             <div>
                 {% for shelf in user_shelves %}
                 <p>
-                    This edition is on your <a href="/user/{{ user.localname }}/shelves/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                    This edition is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
                 </p>
                 {% endfor %}
 
                 {% for shelf in other_edition_shelves %}
                 <p>
-                    A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelves/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                    A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}

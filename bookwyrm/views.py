@@ -615,18 +615,13 @@ def book_page(request, book_id):
             book__parent_work=book.parent_work,
         )
 
-    rating = reviews.aggregate(Avg('rating'))
-    tags = models.UserTag.objects.filter(
-        book=book,
-    )
-
     data = {
         'title': book.title,
         'book': book,
         'reviews': reviews_page,
         'ratings': reviews.filter(content__isnull=True),
-        'rating': rating['rating__avg'],
-        'tags': tags,
+        'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
+        'tags':  models.UserTag.objects.filter(book=book),
         'user_tags': user_tags,
         'user_shelves': user_shelves,
         'other_edition_shelves': other_edition_shelves,
@@ -761,7 +756,7 @@ def shelf_page(request, username, shelf_identifier):
         return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
-        'title': user.name,
+        'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
         'user': user,
         'is_self': is_self,
         'shelves': shelves.all(),

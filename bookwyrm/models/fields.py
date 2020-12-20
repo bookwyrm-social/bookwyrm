@@ -11,6 +11,7 @@ from django.core.files.base import ContentFile
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from markdown import markdown
 from bookwyrm import activitypub
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
@@ -24,6 +25,7 @@ def validate_remote_id(value):
             _('%(value)s is not a valid remote_id'),
             params={'value': value},
         )
+
 
 def validate_username(value):
     ''' make sure usernames look okay '''
@@ -397,6 +399,16 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
             return None
         sanitizer = InputHtmlParser()
         sanitizer.feed(value)
+        return sanitizer.get_output()
+
+    def to_python(self, value):# pylint: disable=no-self-use
+        ''' process markdown before save '''
+        if not value:
+            return value
+        content = markdown(value)
+        # sanitize resulting html
+        sanitizer = InputHtmlParser()
+        sanitizer.feed(content)
         return sanitizer.get_output()
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):

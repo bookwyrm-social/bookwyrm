@@ -6,7 +6,11 @@ class InputHtmlParser(HTMLParser):#pylint: disable=abstract-method
 
     def __init__(self):
         HTMLParser.__init__(self)
-        self.allowed_tags = ['p', 'b', 'i', 'pre', 'a', 'span']
+        self.allowed_tags = [
+            'p', 'br',
+            'b', 'i', 'strong', 'em', 'pre',
+            'a', 'span', 'ul', 'ol', 'li'
+        ]
         self.tag_stack = []
         self.output = []
         # if the html appears invalid, we just won't allow any at all
