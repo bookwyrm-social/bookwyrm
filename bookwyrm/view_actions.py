@@ -208,7 +208,7 @@ def edit_profile(request):
             ContentFile(output.getvalue())
         )
 
-    request.user.summary = form.data['summary']
+    request.user.summary = outgoing.to_markdown(form.data['summary'])
     request.user.manually_approves_followers = \
         form.cleaned_data['manually_approves_followers']
     request.user.save()
@@ -244,7 +244,9 @@ def edit_book(request, book_id):
             'form': form
         }
         return TemplateResponse(request, 'edit_book.html', data)
-    form.save()
+    book = form.save(commit=False)
+    book.description = outgoing.to_markown(book.description)
+    book.save()
 
     outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.id)
