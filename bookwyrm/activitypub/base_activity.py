@@ -63,7 +63,6 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    @transaction.atomic
     def to_model(self, model, instance=None, save=True):
         ''' convert from an activity to a model instance '''
         if not isinstance(self, model.activity_serializer):
@@ -91,13 +90,14 @@ class ActivityObject:
         if not save:
             return instance
 
-        # we can't set many to many and reverse fields on an unsaved object
-        instance.save()
+        with transaction.atomic():
+            # we can't set many to many and reverse fields on an unsaved object
+            instance.save()
 
-        # add many to many fields, which have to be set post-save
-        for field in instance.many_to_many_fields:
-            # mention books/users, for example
-            field.set_field_from_activity(instance, self)
+            # add many to many fields, which have to be set post-save
+            for field in instance.many_to_many_fields:
+                # mention books/users, for example
+                field.set_field_from_activity(instance, self)
 
         # reversed relationships in the models
         for (model_field_name, activity_field_name) in \
@@ -106,20 +106,23 @@ class ActivityObject:
             values = getattr(self, activity_field_name)
             if values is None or values is MISSING:
                 continue
+
+            model_field = getattr(model, model_field_name)
             try:
                 # this is for one to many
-                related_model = getattr(model, model_field_name).field.model
+                related_model = model_field.field.model
+                related_field_name = model_field.field.name
             except AttributeError:
                 # it's a one to one or foreign key
-                related_model = getattr(model, model_field_name)\
-                        .related.related_model
+                related_model = model_field.related.related_model
+                related_field_name = model_field.related.related_name
                 values = [values]
 
             for item in values:
                 set_related_field.delay(
                     related_model.__name__,
                     instance.__class__.__name__,
-                    instance.__class__.__name__.lower(),
+                    related_field_name,
                     instance.remote_id,
                     item
                 )
@@ -145,23 +148,25 @@ def set_related_field(
         require_ready=True
     )
 
-    if isinstance(data, str):
-        item = resolve_remote_id(model, data, save=False)
-    else:
-        # look for a match based on all the available data
-        item = model.find_existing(data)
-        if not item:
-            # create a new model instance
-            item = model.activity_serializer(**data)
-            item = item.to_model(model, save=False)
-    # this must exist because it's the object that triggered this function
-    instance = origin_model.find_existing_by_remote_id(related_remote_id)
-    if not instance:
-        raise ValueError('Invalid related remote id: %s' % related_remote_id)
+    with transaction.atomic():
+        if isinstance(data, str):
+            item = resolve_remote_id(model, data, save=False)
+        else:
+            # look for a match based on all the available data
+            item = model.find_existing(data)
+            if not item:
+                # create a new model instance
+                item = model.activity_serializer(**data)
+                item = item.to_model(model, save=False)
+        # this must exist because it's the object that triggered this function
+        instance = origin_model.find_existing_by_remote_id(related_remote_id)
+        if not instance:
+            raise ValueError(
+                'Invalid related remote id: %s' % related_remote_id)
 
-    # edition.parent_work = instance, for example
-    setattr(item, related_field_name, instance)
-    item.save()
+        # edition.parent_work = instance, for example
+        setattr(item, related_field_name, instance)
+        item.save()
 
 
 def resolve_remote_id(model, remote_id, refresh=False, save=True):
