@@ -216,9 +216,11 @@ def handle_status(user, form):
     status.save()
 
     # inspect the text for user tags
-    text = status.content
-    for match in re.finditer(regex.username, text):
+    matches = []
+    for match in re.finditer(regex.username, status.content):
         username = match.group().strip().split('@')[1:]
+        print(match.group())
+        print(len(username))
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
             username.append(DOMAIN)
@@ -228,6 +230,7 @@ def handle_status(user, form):
         if not mention_user:
             # we can ignore users we don't know about
             continue
+        matches.append((match.group(), mention_user.remote_id))
         # add them to status mentions fk
         status.mention_users.add(mention_user)
         # create notification if the mentioned user is local
@@ -238,7 +241,20 @@ def handle_status(user, form):
                 related_user=user,
                 related_status=status
             )
+    # add links
+    content = status.content
+    content = re.sub(
+        r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \
+            r'\.[A-Za-z]{2,}[A-Za-z\.\-_\/]+))',
+        r'\g<1><a href="\g<2>">\g<3></a>',
+        content)
+    for (username, url) in matches:
+        content = re.sub(
+            r'%s([^@])' % username,
+            r'<a href="%s">%s</a>\g<1>' % (url, username),
+            content)
 
+    status.content = content
     status.save()
 
     # notify reply parent or tagged users
