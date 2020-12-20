@@ -1,5 +1,7 @@
 ''' models for storing different kinds of Activities '''
 from dataclasses import MISSING
+import re
+
 from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -155,7 +157,7 @@ class Comment(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '<p>%s</p><p>(comment on <a href="%s">"%s"</a>)</p>' % \
+        return '%s<p>(comment on <a href="%s">"%s"</a>)</p>' % \
                 (self.content, self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
@@ -171,8 +173,10 @@ class Quotation(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '<p>"%s"<br>-- <a href="%s">"%s"</a></p><p>%s</p>' % (
-            self.quote,
+        quote = re.sub(r'^<p>', '<p>"', self.quote)
+        quote = re.sub(r'</p>$', '"</p>', quote)
+        return '%s <p>-- <a href="%s">"%s"</a></p>%s' % (
+            quote,
             self.book.remote_id,
             self.book.title,
             self.content,

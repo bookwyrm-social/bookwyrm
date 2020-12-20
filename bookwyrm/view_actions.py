@@ -17,10 +17,8 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from bookwyrm import books_manager
+from bookwyrm import books_manager, forms, models, outgoing, goodreads_import
 from bookwyrm.broadcast import broadcast
-from bookwyrm import forms, models, outgoing
-from bookwyrm import goodreads_import
 from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
 from bookwyrm.views import get_user_from_username
@@ -244,7 +242,7 @@ def edit_book(request, book_id):
             'form': form
         }
         return TemplateResponse(request, 'edit_book.html', data)
-    form.save()
+    book = form.save()
 
     outgoing.handle_update_book(request.user, book)
     return redirect('/book/%s' % book.id)
