@@ -50,7 +50,7 @@ class Work(Book):
     ''' work instance of a book object '''
     lccn: str = ''
     defaultEdition: str = ''
-    editions: List[str]
+    editions: List[str] = field(default_factory=lambda: [])
     type: str = 'Work'
 
 
@@ -58,9 +58,9 @@ class Work(Book):
 class Author(ActivityObject):
     ''' author of a book '''
     name: str
-    born: str = ''
-    died: str = ''
-    aliases: str = ''
+    born: str = None
+    died: str = None
+    aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ''
     openlibraryKey: str = ''
     wikipediaLink: str = ''

@@ -1,11 +1,9 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import pytz
 from urllib3.exceptions import RequestError
 
 from django.db import transaction
-from dateutil import parser
 import requests
 from requests import HTTPError
 from requests.exceptions import SSLError
@@ -102,12 +100,10 @@ class AbstractConnector(AbstractMinimalConnector):
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
-                edition_data = dict_from_mappings(\
-                        edition_data, self.book_mappings)
             except KeyError:
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
-                edition_data = mapped_data
+                edition_data = data
             work_data = mapped_data
         else:
             try:
@@ -115,75 +111,76 @@ class AbstractConnector(AbstractMinimalConnector):
                 work_data = dict_from_mappings(work_data, self.book_mappings)
             except KeyError:
                 work_data = mapped_data
-            edition_data = mapped_data
+            edition_data = data
 
         if not work_data or not edition_data:
             raise ConnectorException('Unable to load book data: %s' % remote_id)
 
         # create activitypub object
         work_activity = activitypub.Work(**work_data)
-        edition_activity = activitypub.Edition(**edition_data)
-
         # this will dedupe automatically
-        work = work_activity.to_model(models.Work, save=False)
-        edition = edition_activity.to_model(models.Edition, save=False)
-
-        edition.parent_work = work
-        work.default_edition = edition
-
-        work.save()
-        edition.save()
-
+        work = work_activity.to_model(models.Work)
         for author in self.get_authors_from_data(data):
             work.authors.add(author)
+        return self.create_edition_from_data(work, edition_data)
+
+
+    def create_edition_from_data(self, work, edition_data):
+        ''' if we already have the work, we're ready '''
+        mapped_data = dict_from_mappings(edition_data, self.book_mappings)
+        mapped_data['work'] = work.remote_id
+        edition_activity = activitypub.Edition(**mapped_data)
+        edition = edition_activity.to_model(models.Edition)
+        edition.connector = self.connector
+        edition.save()
+
+        work.default_edition = edition
+        work.save()
+
+        for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
+        if not edition.authors.exists() and work.authors.exists():
+            edition.authors.add(work.authors.all())
 
         return edition
 
 
     def get_or_create_author(self, remote_id):
         ''' load that author '''
-        existing = models.Author.find_exising_by_remote_id(remote_id)
+        existing = models.Author.find_existing_by_remote_id(remote_id)
         if existing:
             return existing
 
         data = get_data(remote_id)
 
-        author_activity = dict_from_mappings(data, self.author_mappings)
+        mapped_data = dict_from_mappings(data, self.author_mappings)
+        activity = activitypub.Author(**mapped_data)
         # this will dedupe
-        return activitypub.Author(**author_activity).to_model()
+        return activity.to_model(models.Author)
 
 
     @abstractmethod
     def is_work_data(self, data):
         ''' differentiate works and editions '''
 
-
     @abstractmethod
     def get_edition_from_work_data(self, data):
         ''' every work needs at least one edition '''
-
 
     @abstractmethod
     def get_work_from_edition_date(self, data):
         ''' every edition needs a work '''
 
-
     @abstractmethod
     def get_authors_from_data(self, data):
         ''' load author data '''
-
-
-    @abstractmethod
-    def get_cover_from_data(self, data):
-        ''' load cover '''
 
     @abstractmethod
     def expand_book_data(self, book):
         ''' get more info on a book '''
 
 
-def dict_from_mappings(self, data, mappings):
+def dict_from_mappings(data, mappings):
     ''' create a dict in Activitypub format, using mappings supplies by
     the subclass '''
     result = {}
@@ -250,4 +247,9 @@ class Mapping:
     def get_value(self, data):
         ''' pull a field from incoming json and return the formatted version '''
         value = data.get(self.remote_field)
-        return self.formatter(value)
+        if not value:
+            return None
+        try:
+            return self.formatter(value)
+        except:# pylint: disable=bare-except
+            return None

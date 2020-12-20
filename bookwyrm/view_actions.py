@@ -223,6 +223,8 @@ def resolve_book(request):
     remote_id = request.POST.get('remote_id')
     connector = books_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
+    if book.connector:
+        books_manager.load_more_data.delay(book.id)
 
     return redirect('/book/%d' % book.id)
 

@@ -1,13 +1,9 @@
 ''' openlibrary data connector '''
 import re
-import requests
-
-from django.core.files.base import ContentFile
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import ConnectorException, dict_from_mappings
-from .abstract_connector import get_data, update_from_mappings
+from .abstract_connector import ConnectorException, get_data
 from .openlibrary_languages import languages
 
 
@@ -17,8 +13,12 @@ class Connector(AbstractConnector):
         super().__init__(identifier)
 
         get_first = lambda a: a[0]
+        get_remote_id = lambda a: self.base_url + a
         self.book_mappings = [
             Mapping('title'),
+            Mapping('id', remote_field='key', formatter=get_remote_id),
+            Mapping(
+                'cover', remote_field='covers', formatter=self.get_cover_url),
             Mapping('sortTitle', remote_field='sort_title'),
             Mapping('subtitle'),
             Mapping('description', formatter=get_description),
@@ -50,7 +50,12 @@ class Connector(AbstractConnector):
         ]
 
         self.author_mappings = [
+            Mapping('id', remote_field='key', formatter=get_remote_id),
             Mapping('name'),
+            Mapping(
+                'openlibraryKey', remote_field='key',
+                formatter=get_openlibrary_key
+            ),
             Mapping('born', remote_field='birth_date'),
             Mapping('died', remote_field='death_date'),
             Mapping('bio', formatter=get_description),
@@ -58,6 +63,7 @@ class Connector(AbstractConnector):
 
 
     def get_remote_id_from_data(self, data):
+        ''' format a url from an openlibrary id field '''
         try:
             key = data['key']
         except KeyError:
@@ -93,24 +99,16 @@ class Connector(AbstractConnector):
         for author_blob in data.get('authors', []):
             author_blob = author_blob.get('author', author_blob)
             # this id is "/authors/OL1234567A"
-            author_id = author_blob['key'].split('/')[-1]
+            author_id = author_blob['key']
             url = '%s/%s.json' % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
 
-    def get_cover_from_data(self, data):
+    def get_cover_url(self, cover_blob):
         ''' ask openlibrary for the cover '''
-        if not data.get('covers'):
-            return None
-
-        cover_id = data.get('covers')[0]
+        cover_id = cover_blob[0]
         image_name = '%s-M.jpg' % cover_id
-        url = '%s/b/id/%s' % (self.covers_url, image_name)
-        response = requests.get(url)
-        if not response.ok:
-            response.raise_for_status()
-        image_content = ContentFile(response.content)
-        return [image_name, image_content]
+        return '%s/b/id/%s' % (self.covers_url, image_name)
 
 
     def parse_search_data(self, data):
@@ -144,19 +142,7 @@ class Connector(AbstractConnector):
         # we can mass download edition data from OL to avoid repeatedly querying
         edition_options = self.load_edition_data(work.openlibrary_key)
         for edition_data in edition_options.get('entries'):
-            olkey = edition_data.get('key').split('/')[-1]
-            # make sure the edition isn't already in the database
-            if models.Edition.objects.filter(openlibrary_key=olkey).count():
-                continue
-
-            # creates and populates the book from the data
-            edition = self.create_book(olkey, edition_data, models.Edition)
-            # ensures that the edition is associated with the work
-            edition.parent_work = work
-            edition.save()
-            # get author data from the work if it's missing from the edition
-            if not edition.authors and work.authors:
-                edition.authors.set(work.authors.all())
+            self.create_edition_from_data(work, edition_data)
 
 
 def get_description(description_blob):
