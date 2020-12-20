@@ -4,12 +4,14 @@ import re
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from markdown import markdown
 from requests import HTTPError
 
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.broadcast import broadcast
+from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
@@ -241,20 +243,17 @@ def handle_status(user, form):
                 related_user=user,
                 related_status=status
             )
-    # add links
+    # add mentions
     content = status.content
-    content = re.sub(
-        r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \
-            r'\.[A-Za-z]{2,}[A-Za-z\.\-_\/]+))',
-        r'\g<1><a href="\g<2>">\g<3></a>',
-        content)
     for (username, url) in matches:
         content = re.sub(
             r'%s([^@])' % username,
             r'<a href="%s">%s</a>\g<1>' % (url, username),
             content)
-
-    status.content = content
+    if not isinstance(status, models.GeneratedNote):
+        status.content = to_markown(content)
+    if hasattr(status, 'quote'):
+        status.quote = to_markown(status.quote)
     status.save()
 
     # notify reply parent or tagged users
@@ -271,6 +270,20 @@ def handle_status(user, form):
     # re-format the activity for non-bookwyrm servers
     remote_activity = status.to_create_activity(user, pure=True)
     broadcast(user, remote_activity, software='other')
+
+
+def to_markown(content):
+    ''' catch links and convert to markdown '''
+    content = re.sub(
+        r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \
+            r'\.[A-Za-z]{2,}[A-Za-z\.\-_\/]+))',
+        r'\g<1><a href="\g<2>">\g<3></a>',
+        content)
+    content = markdown(content)
+    # sanitize resulting html
+    sanitizer = InputHtmlParser()
+    sanitizer.feed(content)
+    return sanitizer.get_output()
 
 
 def handle_tag(user, tag):
