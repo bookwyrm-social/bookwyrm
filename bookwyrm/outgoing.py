@@ -211,17 +211,13 @@ def handle_status(user, form):
     ''' generic handler for statuses '''
     status = form.save(commit=False)
     if not status.sensitive and status.content_warning:
-        # the cw text field remains populated hen you click "remove"
+        # the cw text field remains populated when you click "remove"
         status.content_warning = None
     status.save()
 
     # inspect the text for user tags
     text = status.content
-    matches = re.finditer(
-        regex.username,
-        text
-    )
-    for match in matches:
+    for match in re.finditer(regex.username, text):
         username = match.group().strip().split('@')[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
@@ -242,6 +238,7 @@ def handle_status(user, form):
                 related_user=user,
                 related_status=status
             )
+
     status.save()
 
     # notify reply parent or tagged users
