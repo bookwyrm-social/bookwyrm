@@ -21,7 +21,7 @@ class Author(ActivitypubMixin, BookWyrmModel):
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
-    name = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255, deduplication_field=True)
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
