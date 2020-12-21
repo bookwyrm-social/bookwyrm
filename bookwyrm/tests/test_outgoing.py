@@ -33,9 +33,11 @@ class Outgoing(TestCase):
         self.userdata = json.loads(datafile.read_bytes())
         del self.userdata['icon']
 
+        work = models.Work.objects.create(title='Test Work')
         self.book = models.Edition.objects.create(
             title='Example Edition',
             remote_id='https://example.com/book/1',
+            parent_work=work
         )
         self.shelf = models.Shelf.objects.create(
             name='Test Shelf',
@@ -107,14 +109,11 @@ class Outgoing(TestCase):
 
     def test_existing_user(self):
         ''' simple database lookup by username '''
-        user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
-
         result = outgoing.handle_remote_webfinger('@mouse@%s' % DOMAIN)
-        self.assertEqual(result, user)
+        self.assertEqual(result, self.local_user)
 
         result = outgoing.handle_remote_webfinger('mouse@%s' % DOMAIN)
-        self.assertEqual(result, user)
+        self.assertEqual(result, self.local_user)
 
 
     @responses.activate
