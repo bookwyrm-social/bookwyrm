@@ -51,13 +51,17 @@ class Book(ActivitypubMixin, BookWyrmModel):
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = fields.ManyToManyField('Author')
     # preformatted authorship string for search and easier display
-    author_text = models.CharField(max_length=255, blank=True, null=True)
     cover = fields.ImageField(
         upload_to='covers/', blank=True, null=True, alt_field='alt_text')
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
+
+    @property
+    def author_text(self):
+        ''' format a list of authors '''
+        return ', '.join(a.name for a in self.authors.all())
 
     @property
     def edition_info(self):
