@@ -159,7 +159,7 @@ def password_change(request):
     request.user.set_password(new_password)
     request.user.save()
     login(request, request.user)
-    return redirect('/user-edit')
+    return redirect('/user/%s' % request.user.localname)
 
 
 @login_required
@@ -168,14 +168,11 @@ def edit_profile(request):
     ''' les get fancy with images '''
     form = forms.EditUserForm(request.POST, request.FILES)
     if not form.is_valid():
-        data = {
-            'form': form,
-            'user': request.user,
-        }
+        data = {'form': form, 'user': request.user}
         return TemplateResponse(request, 'edit_user.html', data)
 
-    request.user.name = form.data['name']
-    request.user.email = form.data['email']
+    user = form.save(commit=False)
+
     if 'avatar' in form.files:
         # crop and resize avatar upload
         image = Image.open(form.files['avatar'])
@@ -201,15 +198,8 @@ def edit_profile(request):
         # set the name to a hash
         extension = form.files['avatar'].name.split('.')[-1]
         filename = '%s.%s' % (uuid4(), extension)
-        request.user.avatar.save(
-            filename,
-            ContentFile(output.getvalue())
-        )
-
-    request.user.summary = form.data['summary']
-    request.user.manually_approves_followers = \
-        form.cleaned_data['manually_approves_followers']
-    request.user.save()
+        user.avatar.save(filename, ContentFile(output.getvalue()))
+    user.save()
 
     outgoing.handle_update_user(request.user)
     return redirect('/user/%s' % request.user.localname)

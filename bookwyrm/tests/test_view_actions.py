@@ -238,6 +238,36 @@ class ViewActions(TestCase):
         self.assertEqual(resp.template_name, 'password_reset.html')
         self.assertTrue(models.PasswordReset.objects.exists())
 
+
+    def test_password_change(self):
+        ''' change password '''
+        password_hash = self.local_user.password
+        request = self.factory.post('', {
+            'password': 'hi',
+            'confirm-password': 'hi'
+        })
+        request.user = self.local_user
+        resp = actions.password_change(request)
+        self.assertEqual(resp.template_name, 'user.html')
+        self.assertNotEqual(self.user.password, password_hash)
+
+    def test_password_change_mismatch(self):
+        ''' change password '''
+        password_hash = self.local_user.password
+        request = self.factory.post('', {
+            'password': 'hi',
+            'confirm-password': 'hihi'
+        })
+        request.user = self.local_user
+        resp = actions.password_change(request)
+        self.assertEqual(resp.template_name, 'edit_user.html')
+        self.assertEqual(self.user.password, password_hash)
+
+
+    def test_edit_user(self):
+        ''' use a form to update a user '''
+
+
     def test_switch_edition(self):
         ''' updates user's relationships to a book '''
         work = models.Work.objects.create(title='test work')
