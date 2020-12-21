@@ -22,7 +22,7 @@ class SelfConnector(TestCase):
             priority=1,
         )
         self.connector = Connector(DOMAIN)
-        author = models.Author.objects.create(name='Anonymouse')
+        author = models.Author.objects.create(name='Anonymous')
         self.work = models.Work.objects.create(
             title='Example Work',
         )
