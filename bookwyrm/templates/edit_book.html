@@ -28,20 +28,6 @@
 
 <form class="block" name="edit-book" action="/edit-book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="block">
-        <h2 class="title is-4">Data sync
-            <p class="subtitle is-6">If sync is enabled, any changes will be over-written</p>
-        </h2>
-        <div class="columns">
-            <div class="column is-narrow">
-                <label class="checkbox" for="id_sync"><input class="checkbox" type="checkbox" name="sync" id="id_sync"> Sync</label>
-            </div>
-            <div class="column is-narrow">
-                <label class="checkbox" for="id_sync_cover"><input class="checkbox" type="checkbox" name="sync_cover" id="id_sync_cover"> Sync cover</label>
-            </div>
-        </div>
-    </div>
-
     <div class="columns">
         <div class="column">
             <h2 class="title is-4">Metadata</h2>

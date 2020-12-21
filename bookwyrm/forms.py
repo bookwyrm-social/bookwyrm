@@ -123,7 +123,6 @@ class EditionForm(CustomForm):
             'remote_id',
             'created_date',
             'updated_date',
-            'last_sync_date',
 
             'authors',# TODO
             'parent_work',

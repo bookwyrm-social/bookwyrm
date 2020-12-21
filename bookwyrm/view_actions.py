@@ -289,7 +289,6 @@ def upload_cover(request, book_id):
         return redirect('/book/%d' % book.id)
 
     book.cover = form.files['cover']
-    book.sync_cover = False
     book.save()
 
     outgoing.handle_update_book(request.user, book)
