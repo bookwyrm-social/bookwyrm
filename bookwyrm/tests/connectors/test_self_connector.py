@@ -25,12 +25,13 @@ class SelfConnector(TestCase):
         self.work = models.Work.objects.create(
             title='Example Work',
         )
+        author = models.Author.objects.create(name='Anonymous')
         self.edition = models.Edition.objects.create(
             title='Edition of Example Work',
-            author_text='Anonymous',
             published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
             parent_work=self.work,
         )
+        self.edition.authors.add(author)
         models.Edition.objects.create(
             title='Another Edition',
             parent_work=self.work,
@@ -41,11 +42,12 @@ class SelfConnector(TestCase):
             subtitle='The Anonymous Edition',
             parent_work=self.work,
         )
-        models.Edition.objects.create(
+
+        edition = models.Edition.objects.create(
             title='An Edition',
-            author_text='Fish',
             parent_work=self.work
         )
+        edition.authors.add(models.Author.objects.create(name='Fish'))
 
 
     def test_format_search_result(self):

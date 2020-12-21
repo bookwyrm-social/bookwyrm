@@ -13,7 +13,7 @@ class Connector(AbstractConnector):
         that gets implemented it will totally rule '''
         vector = SearchVector('title', weight='A') +\
             SearchVector('subtitle', weight='B') +\
-            SearchVector('author_text', weight='C') +\
+            SearchVector('authors__name', weight='C') +\
             SearchVector('isbn_13', weight='A') +\
             SearchVector('isbn_10', weight='A') +\
             SearchVector('openlibrary_key', weight='C') +\
