@@ -174,7 +174,7 @@ def pick_default_edition(options):
     if len(options) == 1:
         return options[0]
 
-    options = [e for e in options if e.get('cover')] or options
+    options = [e for e in options if e.get('covers')] or options
     options = [e for e in options if \
         '/languages/eng' in str(e.get('languages'))] or options
     formats = ['paperback', 'hardcover', 'mass market paperback']

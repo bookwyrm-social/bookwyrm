@@ -140,7 +140,7 @@ class AbstractConnector(AbstractMinimalConnector):
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
         if not edition.authors.exists() and work.authors.exists():
-            edition.authors.add(work.authors.all())
+            edition.authors.set(work.authors.all())
 
         return edition
 
