@@ -40,7 +40,7 @@ class Outgoing(TestCase):
         self.shelf = models.Shelf.objects.create(
             name='Test Shelf',
             identifier='test-shelf',
-            user=self.user
+            user=self.local_user
         )
 
 
@@ -149,7 +149,7 @@ class Outgoing(TestCase):
     def test_handle_shelve(self):
         ''' shelve a book '''
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.user, self.book, self.shelf)
+            outgoing.handle_shelve(self.local_user, self.book, self.shelf)
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
@@ -159,7 +159,7 @@ class Outgoing(TestCase):
         shelf = models.Shelf.objects.get(identifier='to-read')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.user, self.book, shelf)
+            outgoing.handle_shelve(self.local_user, self.book, shelf)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -169,7 +169,7 @@ class Outgoing(TestCase):
         shelf = models.Shelf.objects.get(identifier='reading')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.user, self.book, shelf)
+            outgoing.handle_shelve(self.local_user, self.book, shelf)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -179,7 +179,7 @@ class Outgoing(TestCase):
         shelf = models.Shelf.objects.get(identifier='read')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.user, self.book, shelf)
+            outgoing.handle_shelve(self.local_user, self.book, shelf)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -190,5 +190,5 @@ class Outgoing(TestCase):
         self.shelf.save()
         self.assertEqual(self.shelf.books.count(), 1)
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_unshelve(self.user, self.book, self.shelf)
+            outgoing.handle_unshelve(self.local_user, self.book, self.shelf)
         self.assertEqual(self.shelf.books.count(), 0)
