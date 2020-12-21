@@ -5,7 +5,6 @@ from uuid import uuid4
 
 import dateutil.parser
 from dateutil.parser import ParserError
-from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
@@ -13,13 +12,23 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
 from bookwyrm.connectors import get_image
+from bookwyrm.sanitize_html import InputHtmlParser
+from bookwyrm.settings import DOMAIN
 
 
 def validate_remote_id(value):
     ''' make sure the remote_id looks like a url '''
     if not value or not re.match(r'^http.?:\/\/[^\s]+$', value):
+        raise ValidationError(
+            _('%(value)s is not a valid remote_id'),
+            params={'value': value},
+        )
+
+
+def validate_username(value):
+    ''' make sure usernames look okay '''
+    if not re.match(r'^[A-Za-z\-_\.]+$', value):
         raise ValidationError(
             _('%(value)s is not a valid remote_id'),
             params={'value': value},
@@ -63,6 +72,9 @@ class ActivitypubFieldMixin:
             return
 
         key = self.get_activitypub_field()
+        # TODO: surely there's a better way
+        if instance.__class__.__name__ == 'Boost' and key == 'attributedTo':
+            key = 'actor'
         if isinstance(activity.get(key), list):
             activity[key] += formatted
         else:
@@ -92,12 +104,19 @@ class ActivitypubFieldMixin:
 
 class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
     ''' default (de)serialization for foreign key and one to one '''
+    def __init__(self, *args, load_remote=True, **kwargs):
+        self.load_remote = load_remote
+        super().__init__(*args, **kwargs)
+
     def field_from_activity(self, value):
         if not value:
             return None
 
         related_model = self.related_model
         if isinstance(value, dict) and value.get('id'):
+            if not self.load_remote:
+                # only look in the local database
+                return related_model.find_existing(value)
             # this is an activitypub object, which we can deserialize
             activity_serializer = related_model.activity_serializer
             return activity_serializer(**value).to_model(related_model)
@@ -108,6 +127,9 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
             # we don't know what this is, ignore it
             return None
         # gets or creates the model field from the remote id
+        if not self.load_remote:
+            # only look in the local database
+            return related_model.find_existing_by_remote_id(value)
         return activitypub.resolve_remote_id(related_model, value)
 
 
@@ -134,7 +156,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
             _('username'),
             max_length=150,
             unique=True,
-            validators=[AbstractUser.username_validator],
+            validators=[validate_username],
             error_messages={
                 'unique': _('A user with that username already exists.'),
             },
@@ -276,6 +298,8 @@ class TagField(ManyToManyField):
         for link_json in value:
             link = activitypub.Link(**link_json)
             tag_type = link.type if link.type != 'Mention' else 'Person'
+            if tag_type == 'Book':
+                tag_type = 'Edition'
             if tag_type != self.related_model.activity_serializer.type:
                 # tags can contain multiple types
                 continue
@@ -285,18 +309,22 @@ class TagField(ManyToManyField):
         return items
 
 
-def image_serializer(value):
+def image_serializer(value, alt):
     ''' helper for serializing images '''
     if value and hasattr(value, 'url'):
         url = value.url
     else:
         return None
     url = 'https://%s%s' % (DOMAIN, url)
-    return activitypub.Image(url=url)
+    return activitypub.Image(url=url, name=alt)
 
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
     ''' activitypub-aware image field '''
+    def __init__(self, *args, alt_field=None, **kwargs):
+        self.alt_field = alt_field
+        super().__init__(*args, **kwargs)
+
     # pylint: disable=arguments-differ
     def set_field_from_activity(self, instance, data, save=True):
         ''' helper function for assinging a value to the field '''
@@ -306,9 +334,19 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             return
         getattr(instance, self.name).save(*formatted, save=save)
 
+    def set_activity_from_field(self, activity, instance):
+        value = getattr(instance, self.name)
+        if value is None:
+            return
+        alt_text = getattr(instance, self.alt_field)
+        formatted = self.field_to_activity(value, alt_text)
 
-    def field_to_activity(self, value):
-        return image_serializer(value)
+        key = self.get_activitypub_field()
+        activity[key] = formatted
+
+
+    def field_to_activity(self, value, alt=None):
+        return image_serializer(value, alt)
 
 
     def field_from_activity(self, value):
@@ -352,6 +390,15 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
                 return date_value
         except (ParserError, TypeError):
             return None
+
+class HtmlField(ActivitypubFieldMixin, models.TextField):
+    ''' a text field for storing html '''
+    def field_from_activity(self, value):
+        if not value or value == MISSING:
+            return None
+        sanitizer = InputHtmlParser()
+        sanitizer.feed(value)
+        return sanitizer.get_output()
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
     ''' activitypub-aware array field '''

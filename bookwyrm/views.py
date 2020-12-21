@@ -594,8 +594,7 @@ def book_page(request, book_id):
         prev_page = '/book/%s/?page=%d' % \
                 (book_id, reviews_page.previous_page_number())
 
-    user_tags = []
-    readthroughs = []
+    user_tags = readthroughs = user_shelves = other_edition_shelves = []
     if request.user.is_authenticated:
         user_tags = models.UserTag.objects.filter(
             book=book, user=request.user
@@ -606,19 +605,26 @@ def book_page(request, book_id):
             book=book,
         ).order_by('start_date')
 
-    rating = reviews.aggregate(Avg('rating'))
-    tags = models.UserTag.objects.filter(
-        book=book,
-    )
+        user_shelves = models.ShelfBook.objects.filter(
+            added_by=request.user, book=book
+        )
+
+        other_edition_shelves = models.ShelfBook.objects.filter(
+            ~Q(book=book),
+            added_by=request.user,
+            book__parent_work=book.parent_work,
+        )
 
     data = {
         'title': book.title,
         'book': book,
         'reviews': reviews_page,
         'ratings': reviews.filter(content__isnull=True),
-        'rating': rating['rating__avg'],
-        'tags': tags,
+        'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
+        'tags':  models.UserTag.objects.filter(book=book),
         'user_tags': user_tags,
+        'user_shelves': user_shelves,
+        'other_edition_shelves': other_edition_shelves,
         'readthroughs': readthroughs,
         'path': '/book/%s' % book_id,
         'info_fields': [
@@ -662,10 +668,9 @@ def editions_page(request, book_id):
             encoder=ActivityEncoder
         )
 
-    editions = models.Edition.objects.filter(parent_work=work).all()
     data = {
         'title': 'Editions of %s' % work.title,
-        'editions': editions,
+        'editions': work.editions.all(),
         'work': work,
     }
     return TemplateResponse(request, 'editions.html', data)
@@ -679,7 +684,8 @@ def author_page(request, author_id):
     if is_api_request(request):
         return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
 
-    books = models.Work.objects.filter(authors=author)
+    books = models.Work.objects.filter(
+        Q(authors=author) | Q(editions__authors=author)).distinct()
     data = {
         'title': author.name,
         'author': author,
@@ -751,7 +757,7 @@ def shelf_page(request, username, shelf_identifier):
         return JsonResponse(shelf.to_activity(**request.GET))
 
     data = {
-        'title': user.name,
+        'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
         'user': user,
         'is_self': is_self,
         'shelves': shelves.all(),

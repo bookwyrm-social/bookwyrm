@@ -98,15 +98,16 @@ urlpatterns = [
 
     re_path(r'^edit-profile/?$', actions.edit_profile),
 
-    re_path(r'^import-data/?', actions.import_data),
-    re_path(r'^retry-import/?', actions.retry_import),
-    re_path(r'^resolve-book/?', actions.resolve_book),
-    re_path(r'^edit-book/(?P<book_id>\d+)/?', actions.edit_book),
-    re_path(r'^upload-cover/(?P<book_id>\d+)/?', actions.upload_cover),
-    re_path(r'^add-description/(?P<book_id>\d+)/?', actions.add_description),
+    re_path(r'^import-data/?$', actions.import_data),
+    re_path(r'^retry-import/?$', actions.retry_import),
+    re_path(r'^resolve-book/?$', actions.resolve_book),
+    re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
+    re_path(r'^add-description/(?P<book_id>\d+)/?$', actions.add_description),
 
-    re_path(r'^edit-readthrough/?', actions.edit_readthrough),
-    re_path(r'^delete-readthrough/?', actions.delete_readthrough),
+    re_path(r'^switch-edition/?$', actions.switch_edition),
+    re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
+    re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
 
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),

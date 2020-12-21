@@ -60,25 +60,36 @@ class RatingForm(CustomForm):
 class ReviewForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['user', 'book', 'name', 'content', 'rating', 'privacy']
+        fields = [
+            'user', 'book',
+            'name', 'content', 'rating',
+            'content_warning', 'sensitive',
+            'privacy']
 
 
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ['user', 'book', 'content', 'privacy']
+        fields = [
+            'user', 'book', 'content',
+            'content_warning', 'sensitive',
+            'privacy']
 
 
 class QuotationForm(CustomForm):
     class Meta:
         model = models.Quotation
-        fields = ['user', 'book', 'quote', 'content', 'privacy']
+        fields = [
+            'user', 'book', 'quote', 'content',
+            'content_warning', 'sensitive', 'privacy']
 
 
 class ReplyForm(CustomForm):
     class Meta:
         model = models.Status
-        fields = ['user', 'content', 'reply_parent', 'privacy']
+        fields = [
+            'user', 'content', 'content_warning', 'sensitive',
+            'reply_parent', 'privacy']
 
 
 class EditUserForm(CustomForm):

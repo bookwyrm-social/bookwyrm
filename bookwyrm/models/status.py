@@ -1,7 +1,11 @@
 ''' models for storing different kinds of Activities '''
-from django.utils import timezone
+from dataclasses import MISSING
+import re
+
+from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -14,10 +18,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='attributedTo')
-    content = fields.TextField(blank=True, null=True)
+    content = fields.HtmlField(blank=True, null=True)
     mention_users = fields.TagField('User', related_name='mention_user')
     mention_books = fields.TagField('Edition', related_name='mention_book')
     local = models.BooleanField(default=True)
+    content_warning = fields.CharField(
+        max_length=500, blank=True, null=True, activitypub_field='summary')
     privacy = fields.PrivacyField(max_length=255)
     sensitive = fields.BooleanField(default=False)
     # created date is different than publish date because of federated posts
@@ -45,6 +51,27 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
     @classmethod
+    def ignore_activity(cls, activity):
+        ''' keep notes if they are replies to existing statuses '''
+        if activity.type != 'Note':
+            return False
+        if cls.objects.filter(
+                remote_id=activity.inReplyTo).exists():
+            return False
+
+        # keep notes if they mention local users
+        if activity.tag == MISSING or activity.tag is None:
+            return True
+        tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+        for tag in tags:
+            user_model = apps.get_model('bookwyrm.User', require_ready=True)
+            if user_model.objects.filter(
+                    remote_id=tag, local=True).exists():
+                # we found a mention of a known use boost
+                return False
+        return True
+
+    @classmethod
     def replies(cls, status):
         ''' load all replies to a status. idk if there's a better way
             to write this so it's just a property '''
@@ -56,6 +83,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def status_type(self):
         ''' expose the type of status for the ui using activity type '''
         return self.activity_serializer.__name__
+
+    @property
+    def boostable(self):
+        ''' you can't boost dms '''
+        return self.privacy in ['unlisted', 'public']
 
     def to_replies(self, **kwargs):
         ''' helper function for loading AP serialized replies to a status '''
@@ -78,17 +110,17 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         activity['replies'] = self.to_replies()
 
         # "pure" serialization for non-bookwyrm instances
-        if pure:
+        if pure and hasattr(self, 'pure_content'):
             activity['content'] = self.pure_content
             if 'name' in activity:
                 activity['name'] = self.pure_name
             activity['type'] = self.pure_type
             activity['attachment'] = [
-                image_serializer(b.cover) for b in self.mention_books.all() \
-                        if b.cover]
+                image_serializer(b.cover, b.alt_text) \
+                    for b in self.mention_books.all()[:4] if b.cover]
             if hasattr(self, 'book'):
                 activity['attachment'].append(
-                    image_serializer(self.book.cover)
+                    image_serializer(self.book.cover, self.book.alt_text)
                 )
         return activity
 
@@ -125,8 +157,8 @@ class Comment(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(comment on <a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return '%s<p>(comment on <a href="%s">"%s"</a>)</p>' % \
+                (self.content, self.book.remote_id, self.book.title)
 
     activity_serializer = activitypub.Comment
     pure_type = 'Note'
@@ -134,15 +166,17 @@ class Comment(Status):
 
 class Quotation(Status):
     ''' like a review but without a rating and transient '''
-    quote = fields.TextField()
+    quote = fields.HtmlField()
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='inReplyToBook')
 
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return '"%s"<br>-- <a href="%s">"%s"</a><br><br>%s' % (
-            self.quote,
+        quote = re.sub(r'^<p>', '<p>"', self.quote)
+        quote = re.sub(r'</p>$', '"</p>', quote)
+        return '%s <p>-- <a href="%s">"%s"</a></p>%s' % (
+            quote,
             self.book.remote_id,
             self.book.title,
             self.content,
@@ -182,8 +216,7 @@ class Review(Status):
     @property
     def pure_content(self):
         ''' indicate the book in question for mastodon (or w/e) users '''
-        return self.content + '<br><br>(<a href="%s">"%s"</a>)' % \
-                (self.book.remote_id, self.book.title)
+        return self.content
 
     activity_serializer = activitypub.Review
     pure_type = 'Article'
@@ -240,7 +273,7 @@ class Boost(Status):
 class ReadThrough(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Book', on_delete=models.PROTECT)
+    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     pages_read = models.IntegerField(
         null=True,
         blank=True)

@@ -1,8 +1,9 @@
 {% load bookwyrm_tags %}
+
 {% with status.id|uuid as uuid %}
 <form name="boost" action="/boost/{{ status.id }}" method="post" onsubmit="return interact(event)" class="boost-{{ status.id }}-{{ uuid }} {% if request.user|boosted:status  %}hidden{% endif %}" data-id="boost-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-small" type="submit">
+    <button class="button is-small" type="submit" {% if not status.boostable %}disabled{% endif %}>
         <span class="icon icon-boost">
             <span class="is-sr-only">Boost status</span>
         </span>

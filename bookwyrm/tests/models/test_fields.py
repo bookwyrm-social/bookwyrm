@@ -21,31 +21,23 @@ from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import ActivitypubMixin, BookWyrmModel
 
+#pylint: disable=too-many-public-methods
 class ActivitypubFields(TestCase):
     ''' overwrites standard model feilds to work with activitypub '''
     def test_validate_remote_id(self):
         ''' should look like a url '''
-        self.assertIsNone(fields.validate_remote_id(
-            'http://www.example.com'
-        ))
-        self.assertIsNone(fields.validate_remote_id(
-            'https://www.example.com'
-        ))
-        self.assertIsNone(fields.validate_remote_id(
-            'http://example.com/dlfjg-23/x'
-        ))
+        self.assertIsNone(fields.validate_remote_id('http://www.example.com'))
+        self.assertIsNone(fields.validate_remote_id('https://www.example.com'))
+        self.assertIsNone(fields.validate_remote_id('http://exle.com/dlg-23/x'))
         self.assertRaises(
             ValidationError, fields.validate_remote_id,
-            'http:/example.com/dlfjg-23/x'
-        )
+            'http:/example.com/dlfjg-23/x')
         self.assertRaises(
             ValidationError, fields.validate_remote_id,
-            'www.example.com/dlfjg-23/x'
-        )
+            'www.example.com/dlfjg-23/x')
         self.assertRaises(
             ValidationError, fields.validate_remote_id,
-            'http://www.example.com/dlfjg 23/x'
-        )
+            'http://www.example.com/dlfjg 23/x')
 
     def test_activitypub_field_mixin(self):
         ''' generic mixin with super basic to and from functionality '''
@@ -70,6 +62,38 @@ class ActivitypubFields(TestCase):
         instance = fields.ActivitypubFieldMixin()
         instance.name = 'snake_case_name'
         self.assertEqual(instance.get_activitypub_field(), 'snakeCaseName')
+
+    def test_set_field_from_activity(self):
+        ''' setter from entire json blob '''
+        @dataclass
+        class TestModel:
+            ''' real simple mock '''
+            field_name: str
+
+        mock_model = TestModel(field_name='bip')
+        TestActivity = namedtuple('test', ('fieldName', 'unrelated'))
+        data = TestActivity(fieldName='hi', unrelated='bfkjh')
+
+        instance = fields.ActivitypubFieldMixin()
+        instance.name = 'field_name'
+
+        instance.set_field_from_activity(mock_model, data)
+        self.assertEqual(mock_model.field_name, 'hi')
+
+    def test_set_activity_from_field(self):
+        ''' set json field given entire model '''
+        @dataclass
+        class TestModel:
+            ''' real simple mock '''
+            field_name: str
+            unrelated: str
+        mock_model = TestModel(field_name='bip', unrelated='field')
+        instance = fields.ActivitypubFieldMixin()
+        instance.name = 'field_name'
+
+        data = {}
+        instance.set_activity_from_field(data, mock_model)
+        self.assertEqual(data['fieldName'], 'bip')
 
     def test_remote_id_field(self):
         ''' just sets some defaults on charfield '''
@@ -369,17 +393,19 @@ class ActivitypubFields(TestCase):
             ContentFile(output.getvalue())
         )
 
-        output = fields.image_serializer(user.avatar)
+        output = fields.image_serializer(user.avatar, alt='alt text')
         self.assertIsNotNone(
             re.match(
                 r'.*\.jpg',
                 output.url,
             )
         )
+        self.assertEqual(output.name, 'alt text')
         self.assertEqual(output.type, 'Image')
 
         instance = fields.ImageField()
 
+        output = fields.image_serializer(user.avatar, alt=None)
         self.assertEqual(instance.field_to_activity(user.avatar), output)
 
         responses.add(
@@ -408,3 +434,12 @@ class ActivitypubFields(TestCase):
         ''' idk why it makes them strings but probably for a good reason '''
         instance = fields.ArrayField(fields.IntegerField)
         self.assertEqual(instance.field_to_activity([0, 1]), ['0', '1'])
+
+
+    def test_html_field(self):
+        ''' sanitizes html, the sanitizer has its own tests '''
+        instance = fields.HtmlField()
+        self.assertEqual(
+            instance.field_from_activity('<marquee><p>hi</p></marquee>'),
+            '<p>hi</p>'
+        )

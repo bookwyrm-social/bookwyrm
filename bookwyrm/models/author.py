@@ -21,18 +21,17 @@ class Author(ActivitypubMixin, BookWyrmModel):
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
-    name = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255, deduplication_field=True)
     aliases = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    bio = fields.TextField(null=True, blank=True)
+    bio = fields.HtmlField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        ''' can't be abstract for query reasons, but you shouldn't USE it '''
-        if self.id and not self.remote_id:
+        ''' handle remote vs origin ids '''
+        if self.id:
             self.remote_id = self.get_remote_id()
-
-        if not self.id:
+        else:
             self.origin_id = self.remote_id
             self.remote_id = None
         return super().save(*args, **kwargs)

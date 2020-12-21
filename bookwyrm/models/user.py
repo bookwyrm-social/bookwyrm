@@ -42,7 +42,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         blank=True,
     )
     outbox = fields.RemoteIdField(unique=True)
-    summary = fields.TextField(default='')
+    summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
     localname = models.CharField(
@@ -51,9 +51,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         unique=True
     )
     # name is your display name, which you can change at will
-    name = fields.CharField(max_length=100, default='')
+    name = fields.CharField(max_length=100, null=True, blank=True)
     avatar = fields.ImageField(
-        upload_to='avatars/', blank=True, null=True, activitypub_field='icon')
+        upload_to='avatars/', blank=True, null=True,
+        activitypub_field='icon', alt_field='alt_text')
     followers = fields.ManyToManyField(
         'self',
         link_only=True,
@@ -90,10 +91,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
 
+    name_field = 'username'
+    @property
+    def alt_text(self):
+        ''' alt text with username '''
+        return 'avatar for %s' % (self.localname or self.username)
+
     @property
     def display_name(self):
         ''' show the cleanest version of the user's name possible '''
-        if self.name != '':
+        if self.name and self.name != '':
             return self.name
         return self.localname or self.username
 

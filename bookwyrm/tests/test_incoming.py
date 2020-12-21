@@ -410,7 +410,10 @@ class Incoming(TestCase):
             'actor': self.remote_user.remote_id,
             'object': self.status.to_activity(),
         }
-        incoming.handle_boost(activity)
+        with patch('bookwyrm.models.status.Status.ignore_activity') \
+                as discarder:
+            discarder.return_value = False
+            incoming.handle_boost(activity)
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status, self.status)
         notification = models.Notification.objects.get()
@@ -433,13 +436,35 @@ class Incoming(TestCase):
             boosted_status=self.status, user=self.remote_user)
         incoming.handle_unboost(activity)
 
+
+    def test_handle_add_book(self):
+        ''' shelving a book '''
+        book = models.Edition.objects.create(
+            title='Test', remote_id='https://bookwyrm.social/book/37292')
+        shelf = models.Shelf.objects.create(
+            user=self.remote_user, name='Test Shelf')
+        shelf.remote_id = 'https://bookwyrm.social/user/mouse/shelf/to-read'
+        shelf.save()
+
+        activity = {
+            "id": "https://bookwyrm.social/shelfbook/6189#add",
+            "type": "Add",
+            "actor": "hhttps://example.com/users/rat",
+            "object": "https://bookwyrm.social/book/37292",
+            "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
+            "@context": "https://www.w3.org/ns/activitystreams"
+        }
+        incoming.handle_add(activity)
+        self.assertEqual(shelf.books.first(), book)
+
+
     def test_handle_update_user(self):
         ''' update an existing user '''
         datafile = pathlib.Path(__file__).parent.joinpath(
             'data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
         del userdata['icon']
-        self.assertEqual(self.local_user.name, '')
+        self.assertIsNone(self.local_user.name)
         incoming.handle_update_user({'object': userdata})
         user = models.User.objects.get(id=self.local_user.id)
         self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
@@ -451,11 +476,14 @@ class Incoming(TestCase):
             'data/fr_edition.json')
         bookdata = json.loads(datafile.read_bytes())
 
+        models.Work.objects.create(
+            title='Test Work', remote_id='https://bookwyrm.social/book/5988')
         book = models.Edition.objects.create(
             title='Test Book', remote_id='https://bookwyrm.social/book/5989')
 
         del bookdata['authors']
         self.assertEqual(book.title, 'Test Book')
+
         with patch(
                 'bookwyrm.activitypub.base_activity.set_related_field.delay'):
             incoming.handle_update_edition({'object': bookdata})

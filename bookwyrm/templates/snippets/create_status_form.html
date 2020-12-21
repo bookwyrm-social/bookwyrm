@@ -26,6 +26,9 @@
             </div>
         </fieldset>
         {% endif %}
+
+        {% include 'snippets/content_warning_field.html' %}
+
         {% if type == 'quote' %}
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% else %}

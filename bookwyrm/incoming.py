@@ -57,7 +57,6 @@ def shared_inbox(request):
         'Announce': handle_boost,
         'Add': {
             'Edition': handle_add,
-            'Work': handle_add,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -198,28 +197,15 @@ def handle_create(activity):
         # not a type of status we are prepared to deserialize
         return
 
-    if activity.type == 'Note':
-        # keep notes if they are replies to existing statuses
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-
-        if not reply:
-            discard = True
-            # keep notes if they mention local users
-            tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
-            for tag in tags:
-                if models.User.objects.filter(
-                        remote_id=tag, local=True).exists():
-                    # we found a mention of a known use boost
-                    discard = False
-                    break
-            if discard:
-                return
-
     status = activity.to_model(model)
+    if not status:
+        # it was discarded because it's not a bookwyrm type
+        return
+
     # create a notification if this is a reply
+    notified = []
     if status.reply_parent and status.reply_parent.user.local:
+        notified.append(status.reply_parent.user)
         status_builder.create_notification(
             status.reply_parent.user,
             'REPLY',
@@ -228,7 +214,7 @@ def handle_create(activity):
         )
     if status.mention_users.exists():
         for mentioned_user in status.mention_users.all():
-            if not mentioned_user.local:
+            if not mentioned_user.local or mentioned_user in notified:
                 continue
             status_builder.create_notification(
                 mentioned_user,

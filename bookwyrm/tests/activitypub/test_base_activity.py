@@ -103,7 +103,7 @@ class BaseActivity(TestCase):
 
     def test_to_model_simple_fields(self):
         ''' test setting simple fields '''
-        self.assertEqual(self.user.name, '')
+        self.assertIsNone(self.user.name)
 
         activity = activitypub.Person(
             id=self.user.remote_id,

@@ -7,6 +7,7 @@ from django import template
 from django.utils import timezone
 
 from bookwyrm import models
+from bookwyrm.outgoing import to_markdown
 
 
 register = template.Library()
@@ -97,20 +98,6 @@ def get_boosted(boost):
     ).get()
 
 
-@register.filter(name='edition_info')
-def get_edition_info(book):
-    ''' paperback, French language, 1982 '''
-    if not book:
-        return ''
-    items = [
-        book.physical_format if isinstance(book, models.Edition) else None,
-        book.languages[0] + ' language' if book.languages and \
-                book.languages[0] != 'English' else None,
-        str(book.published_date.year) if book.published_date else None,
-    ]
-    return ', '.join(i for i in items if i)
-
-
 @register.filter(name='book_description')
 def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
@@ -132,9 +119,10 @@ def time_since(date):
     delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
+        formatter = '%b %-d'
         if date.year != now.year:
-            return date.strftime('%b %-d %Y')
-        return date.strftime('%b %-d')
+            formatter += ' %Y'
+        return date.strftime(formatter)
     delta = relativedelta(now, date)
     if delta.days:
         return '%dd' % delta.days
@@ -145,14 +133,21 @@ def time_since(date):
     return '%ds' % delta.seconds
 
 
+@register.filter(name="to_markdown")
+def get_markdown(content):
+    ''' convert markdown to html '''
+    if content:
+        return to_markdown(content)
+    return None
+
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
-        book=book
+        book__in=book.parent_work.editions.all()
     ).first()
-    return shelf.shelf if shelf else None
+    return shelf if shelf else {'book': book}
 
 
 @register.simple_tag(takes_context=False)

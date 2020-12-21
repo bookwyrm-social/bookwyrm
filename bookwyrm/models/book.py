@@ -36,7 +36,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
     title = fields.CharField(max_length=255)
     sort_title = fields.CharField(max_length=255, blank=True, null=True)
     subtitle = fields.CharField(max_length=255, blank=True, null=True)
-    description = fields.TextField(blank=True, null=True)
+    description = fields.HtmlField(blank=True, null=True)
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
@@ -51,22 +51,45 @@ class Book(ActivitypubMixin, BookWyrmModel):
     # TODO: include an annotation about the type of authorship (ie, translator)
     authors = fields.ManyToManyField('Author')
     # preformatted authorship string for search and easier display
-    author_text = models.CharField(max_length=255, blank=True, null=True)
-    cover = fields.ImageField(upload_to='covers/', blank=True, null=True)
+    cover = fields.ImageField(
+        upload_to='covers/', blank=True, null=True, alt_field='alt_text')
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
+
+    @property
+    def author_text(self):
+        ''' format a list of authors '''
+        return ', '.join(a.name for a in self.authors.all())
+
+    @property
+    def edition_info(self):
+        ''' properties of this edition, as a string '''
+        items = [
+            self.physical_format if hasattr(self, 'physical_format') else None,
+            self.languages[0] + ' language' if self.languages and \
+                    self.languages[0] != 'English' else None,
+            str(self.published_date.year) if self.published_date else None,
+        ]
+        return ', '.join(i for i in items if i)
+
+    @property
+    def alt_text(self):
+        ''' image alt test '''
+        text = '%s cover' % self.title
+        if self.edition_info:
+            text += ' (%s)' % self.edition_info
+        return text
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
 
-        if self.id and not self.remote_id:
+        if self.id:
             self.remote_id = self.get_remote_id()
-
-        if not self.id:
+        else:
             self.origin_id = self.remote_id
             self.remote_id = None
         return super().save(*args, **kwargs)
@@ -92,7 +115,8 @@ class Work(OrderedCollectionPageMixin, Book):
     default_edition = fields.ForeignKey(
         'Edition',
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        load_remote=False
     )
 
     def get_default_edition(self):

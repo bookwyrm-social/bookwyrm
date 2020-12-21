@@ -30,10 +30,10 @@ class AbstractConnector(TestCase):
             'series': ['one', 'two'],
         }
         self.connector.key_mappings = [
-            Mapping('isbn_10', model=models.Edition),
+            Mapping('isbn_10'),
             Mapping('isbn_13'),
-            Mapping('lccn', model=models.Work),
-            Mapping('asin', remote_field='ASIN'),
+            Mapping('lccn'),
+            Mapping('asin'),
         ]
 
 
@@ -41,7 +41,6 @@ class AbstractConnector(TestCase):
         mapping = Mapping('isbn')
         self.assertEqual(mapping.local_field, 'isbn')
         self.assertEqual(mapping.remote_field, 'isbn')
-        self.assertEqual(mapping.model, None)
         self.assertEqual(mapping.formatter('bb'), 'bb')
 
 
@@ -49,7 +48,6 @@ class AbstractConnector(TestCase):
         mapping = Mapping('isbn', remote_field='isbn13')
         self.assertEqual(mapping.local_field, 'isbn')
         self.assertEqual(mapping.remote_field, 'isbn13')
-        self.assertEqual(mapping.model, None)
         self.assertEqual(mapping.formatter('bb'), 'bb')
 
 
@@ -59,40 +57,4 @@ class AbstractConnector(TestCase):
         self.assertEqual(mapping.local_field, 'isbn')
         self.assertEqual(mapping.remote_field, 'isbn')
         self.assertEqual(mapping.formatter, formatter)
-        self.assertEqual(mapping.model, None)
         self.assertEqual(mapping.formatter('bb'), 'aabb')
-
-
-    def test_match_from_mappings(self):
-        edition = models.Edition.objects.create(
-            title='Blah',
-            isbn_13='blahhh',
-        )
-        match = self.connector.match_from_mappings(self.data, models.Edition)
-        self.assertEqual(match, edition)
-
-
-    def test_match_from_mappings_with_model(self):
-        edition = models.Edition.objects.create(
-            title='Blah',
-            isbn_10='1234567890',
-        )
-        match = self.connector.match_from_mappings(self.data, models.Edition)
-        self.assertEqual(match, edition)
-
-
-    def test_match_from_mappings_with_remote(self):
-        edition = models.Edition.objects.create(
-            title='Blah',
-            asin='A00BLAH',
-        )
-        match = self.connector.match_from_mappings(self.data, models.Edition)
-        self.assertEqual(match, edition)
-
-
-    def test_match_from_mappings_no_match(self):
-        edition = models.Edition.objects.create(
-            title='Blah',
-        )
-        match = self.connector.match_from_mappings(self.data, models.Edition)
-        self.assertEqual(match, None)

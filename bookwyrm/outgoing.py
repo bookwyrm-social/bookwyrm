@@ -4,12 +4,14 @@ import re
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseNotFound, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from markdown import markdown
 from requests import HTTPError
 
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.broadcast import broadcast
+from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
 from bookwyrm.status import delete_status
@@ -209,15 +211,15 @@ def handle_delete_status(user, status):
 
 def handle_status(user, form):
     ''' generic handler for statuses '''
-    status = form.save()
+    status = form.save(commit=False)
+    if not status.sensitive and status.content_warning:
+        # the cw text field remains populated when you click "remove"
+        status.content_warning = None
+    status.save()
 
     # inspect the text for user tags
-    text = status.content
-    matches = re.finditer(
-        regex.username,
-        text
-    )
-    for match in matches:
+    matches = []
+    for match in re.finditer(regex.username, status.content):
         username = match.group().strip().split('@')[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
@@ -228,6 +230,7 @@ def handle_status(user, form):
         if not mention_user:
             # we can ignore users we don't know about
             continue
+        matches.append((match.group(), mention_user.remote_id))
         # add them to status mentions fk
         status.mention_users.add(mention_user)
         # create notification if the mentioned user is local
@@ -238,6 +241,17 @@ def handle_status(user, form):
                 related_user=user,
                 related_status=status
             )
+    # add mentions
+    content = status.content
+    for (username, url) in matches:
+        content = re.sub(
+            r'%s([^@])' % username,
+            r'<a href="%s">%s</a>\g<1>' % (url, username),
+            content)
+    if not isinstance(status, models.GeneratedNote):
+        status.content = to_markdown(content)
+    if hasattr(status, 'quote'):
+        status.quote = to_markdown(status.quote)
     status.save()
 
     # notify reply parent or tagged users
@@ -252,9 +266,22 @@ def handle_status(user, form):
     broadcast(user, status.to_create_activity(user), software='bookwyrm')
 
     # re-format the activity for non-bookwyrm servers
-    if hasattr(status, 'pure_activity_serializer'):
-        remote_activity = status.to_create_activity(user, pure=True)
-        broadcast(user, remote_activity, software='other')
+    remote_activity = status.to_create_activity(user, pure=True)
+    broadcast(user, remote_activity, software='other')
+
+
+def to_markdown(content):
+    ''' catch links and convert to markdown '''
+    content = re.sub(
+        r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \
+            r'\.[A-Za-z]{2,}[A-Za-z\.\-_\/]+))',
+        r'\g<1><a href="\g<2>">\g<3></a>',
+        content)
+    content = markdown(content)
+    # sanitize resulting html
+    sanitizer = InputHtmlParser()
+    sanitizer.feed(content)
+    return sanitizer.get_output()
 
 
 def handle_tag(user, tag):
@@ -312,15 +339,19 @@ def handle_unfavorite(user, status):
 
 def handle_boost(user, status):
     ''' a user wishes to boost a status '''
+    # is it boostable?
+    if not status.boostable:
+        return
+
     if models.Boost.objects.filter(
             boosted_status=status, user=user).exists():
         # you already boosted that.
         return
     boost = models.Boost.objects.create(
         boosted_status=status,
+        privacy=status.privacy,
         user=user,
     )
-    boost.save()
 
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)

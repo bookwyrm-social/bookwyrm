@@ -1,1 +1,1 @@
-<a href="/author/{{ book.authors.first.id }}" class="author">{{ book.authors.first.name }}</a>
+{% for author in book.authors.all %}<a href="/author/{{ author.id }}" class="author">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
