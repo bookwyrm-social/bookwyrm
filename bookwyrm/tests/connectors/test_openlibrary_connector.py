@@ -44,7 +44,7 @@ class Openlibrary(TestCase):
 
     def test_pick_default_edition(self):
         edition = pick_default_edition(self.edition_list_data['entries'])
-        self.assertEqual(edition['key'], '/books/OL9952943M')
+        self.assertEqual(edition['key'], '/books/OL9788823M')
 
 
     def test_format_search_result(self):
