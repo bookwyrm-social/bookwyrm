@@ -63,7 +63,9 @@
         {% endfor %}
         {% endwith %}
         {% endfor %}
-        <input class="toggle-control" type="radio" name="recent-books" id="no-book" {% if shelf_counter == 1 and forloop.first %}checked{% endif %}>
+        <div>
+            <input class="toggle-control" type="radio" name="recent-books" id="no-book">
+        </div>
         {% endif %}
     </div>
 
