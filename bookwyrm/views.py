@@ -657,6 +657,20 @@ def edit_book_page(request, book_id):
     return TemplateResponse(request, 'edit_book.html', data)
 
 
+@login_required
+@permission_required('bookwyrm.edit_book', raise_exception=True)
+@require_GET
+def edit_author_page(request, author_id):
+    ''' info about a book '''
+    author = get_object_or_404(models.Author, id=author_id)
+    data = {
+        'title': 'Edit Author',
+        'author': author,
+        'form': forms.AuthorForm(instance=author)
+    }
+    return TemplateResponse(request, 'edit_author.html', data)
+
+
 @require_GET
 def editions_page(request, book_id):
     ''' list of editions of a book '''

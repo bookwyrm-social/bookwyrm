@@ -76,6 +76,7 @@ urlpatterns = [
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', views.edit_author_page),
     re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
@@ -104,6 +105,7 @@ urlpatterns = [
     re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
     re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
     re_path(r'^add-description/(?P<book_id>\d+)/?$', actions.add_description),
+    re_path(r'^edit-author/(?P<author_id>\d+)/?$', actions.edit_author),
 
     re_path(r'^switch-edition/?$', actions.switch_edition),
     re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
