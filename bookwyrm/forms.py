@@ -30,6 +30,7 @@ class CustomForm(ModelForm):
                 visible.field.widget.attrs['rows'] = None
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
+
 # pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
@@ -121,18 +122,28 @@ class EditionForm(CustomForm):
         model = models.Edition
         exclude = [
             'remote_id',
+            'origin_id',
             'created_date',
             'updated_date',
 
             'authors',# TODO
             'parent_work',
             'shelves',
-            'misc_identifiers',
 
             'subjects',# TODO
             'subject_places',# TODO
 
             'connector',
+        ]
+
+class AuthorForm(CustomForm):
+    class Meta:
+        model = models.Author
+        exclude = [
+            'remote_id',
+            'origin_id',
+            'created_date',
+            'updated_date',
         ]
 
 

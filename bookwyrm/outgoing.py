@@ -375,9 +375,9 @@ def handle_unboost(user, status):
     broadcast(user, activity)
 
 
-def handle_update_book(user, book):
+def handle_update_book_data(user, item):
     ''' broadcast the news about our book '''
-    broadcast(user, book.to_update_activity(user))
+    broadcast(user, item.to_update_activity(user))
 
 
 def handle_update_user(user):
