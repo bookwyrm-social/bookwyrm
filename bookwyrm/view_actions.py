@@ -166,7 +166,8 @@ def password_change(request):
 @require_POST
 def edit_profile(request):
     ''' les get fancy with images '''
-    form = forms.EditUserForm(request.POST, request.FILES)
+    form = forms.EditUserForm(
+        request.POST, request.FILES, instance=request.user)
     if not form.is_valid():
         data = {'form': form, 'user': request.user}
         return TemplateResponse(request, 'edit_user.html', data)
@@ -201,7 +202,7 @@ def edit_profile(request):
         user.avatar.save(filename, ContentFile(output.getvalue()))
     user.save()
 
-    outgoing.handle_update_user(request.user)
+    outgoing.handle_update_user(user)
     return redirect('/user/%s' % request.user.localname)
 
 

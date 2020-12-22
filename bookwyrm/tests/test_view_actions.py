@@ -6,7 +6,7 @@ from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import view_actions as actions, models
+from bookwyrm import forms, models, view_actions as actions
 from bookwyrm.settings import DOMAIN
 
 
@@ -247,9 +247,9 @@ class ViewActions(TestCase):
             'confirm-password': 'hi'
         })
         request.user = self.local_user
-        resp = actions.password_change(request)
-        self.assertEqual(resp.template_name, 'user.html')
-        self.assertNotEqual(self.user.password, password_hash)
+        with patch('bookwyrm.view_actions.login'):
+            resp = actions.password_change(request)
+        self.assertNotEqual(self.local_user.password, password_hash)
 
     def test_password_change_mismatch(self):
         ''' change password '''
@@ -260,12 +260,19 @@ class ViewActions(TestCase):
         })
         request.user = self.local_user
         resp = actions.password_change(request)
-        self.assertEqual(resp.template_name, 'edit_user.html')
-        self.assertEqual(self.user.password, password_hash)
+        self.assertEqual(self.local_user.password, password_hash)
 
 
     def test_edit_user(self):
         ''' use a form to update a user '''
+        form = forms.EditUserForm(instance=self.local_user)
+        form.data['name'] = 'New Name'
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.edit_profile(request)
+        self.assertEqual(self.local_user.name, 'New Name')
 
 
     def test_switch_edition(self):
