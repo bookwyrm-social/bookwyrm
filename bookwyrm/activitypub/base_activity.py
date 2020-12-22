@@ -3,7 +3,7 @@ from dataclasses import dataclass, fields, MISSING
 from json import JSONEncoder
 
 from django.apps import apps
-from django.db import transaction
+from django.db import IntegrityError, transaction
 
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.tasks import app
@@ -92,7 +92,10 @@ class ActivityObject:
 
         with transaction.atomic():
             # we can't set many to many and reverse fields on an unsaved object
-            instance.save()
+            try:
+                instance.save()
+            except IntegrityError as e:
+                raise ActivitySerializerError(e)
 
             # add many to many fields, which have to be set post-save
             for field in instance.many_to_many_fields:

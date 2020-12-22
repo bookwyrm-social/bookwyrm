@@ -159,23 +159,21 @@ def password_change(request):
     request.user.set_password(new_password)
     request.user.save()
     login(request, request.user)
-    return redirect('/user-edit')
+    return redirect('/user/%s' % request.user.localname)
 
 
 @login_required
 @require_POST
 def edit_profile(request):
     ''' les get fancy with images '''
-    form = forms.EditUserForm(request.POST, request.FILES)
+    form = forms.EditUserForm(
+        request.POST, request.FILES, instance=request.user)
     if not form.is_valid():
-        data = {
-            'form': form,
-            'user': request.user,
-        }
+        data = {'form': form, 'user': request.user}
         return TemplateResponse(request, 'edit_user.html', data)
 
-    request.user.name = form.data['name']
-    request.user.email = form.data['email']
+    user = form.save(commit=False)
+
     if 'avatar' in form.files:
         # crop and resize avatar upload
         image = Image.open(form.files['avatar'])
@@ -201,17 +199,10 @@ def edit_profile(request):
         # set the name to a hash
         extension = form.files['avatar'].name.split('.')[-1]
         filename = '%s.%s' % (uuid4(), extension)
-        request.user.avatar.save(
-            filename,
-            ContentFile(output.getvalue())
-        )
+        user.avatar.save(filename, ContentFile(output.getvalue()))
+    user.save()
 
-    request.user.summary = form.data['summary']
-    request.user.manually_approves_followers = \
-        form.cleaned_data['manually_approves_followers']
-    request.user.save()
-
-    outgoing.handle_update_user(request.user)
+    outgoing.handle_update_user(user)
     return redirect('/user/%s' % request.user.localname)
 
 
