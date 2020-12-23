@@ -111,15 +111,10 @@ class ActivityObject:
                 continue
 
             model_field = getattr(model, model_field_name)
-            try:
-                # this is for one to many
-                related_model = model_field.field.model
-                related_field_name = model_field.field.name
-            except AttributeError:
-                # it's a one to one or foreign key
-                related_model = model_field.related.related_model
-                related_field_name = model_field.related.related_name
-                values = [values]
+            # creating a Work, model_field is 'editions'
+            # creating a User, model field is 'key_pair'
+            related_model = model_field.field.model
+            related_field_name = model_field.field.activitypub_field
 
             for item in values:
                 set_related_field.delay(
@@ -153,23 +148,24 @@ def set_related_field(
 
     with transaction.atomic():
         if isinstance(data, str):
-            item = resolve_remote_id(model, data, save=False)
-        else:
-            # look for a match based on all the available data
-            item = model.find_existing(data)
-            if not item:
-                # create a new model instance
-                item = model.activity_serializer(**data)
-                item = item.to_model(model, save=False)
+            existing = model.find_existing_by_remote_id(data)
+            if existing:
+                data = existing.to_activity()
+            else:
+                data = get_data(data)
+        activity = model.activity_serializer(**data)
+
         # this must exist because it's the object that triggered this function
         instance = origin_model.find_existing_by_remote_id(related_remote_id)
         if not instance:
             raise ValueError(
                 'Invalid related remote id: %s' % related_remote_id)
 
-        # edition.parent_work = instance, for example
-        setattr(item, related_field_name, instance)
-        item.save()
+        # set the origin's remote id on the activity so it will be there when
+        # the model instance is created
+        # edition.parentWork = instance, for example
+        setattr(activity, related_field_name, instance.remote_id)
+        activity.to_model(model)
 
 
 def resolve_remote_id(model, remote_id, refresh=False, save=True):
