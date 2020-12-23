@@ -114,7 +114,7 @@ class ActivityObject:
             # creating a Work, model_field is 'editions'
             # creating a User, model field is 'key_pair'
             related_model = model_field.field.model
-            related_field_name = model_field.field.activitypub_field
+            related_field_name = model_field.field.name
 
             for item in values:
                 set_related_field.delay(
@@ -137,8 +137,8 @@ class ActivityObject:
 @app.task
 @transaction.atomic
 def set_related_field(
-        model_name, origin_model_name,
-        related_field_name, related_remote_id, data):
+        model_name, origin_model_name, related_field_name,
+        related_remote_id, data):
     ''' load reverse related fields (editions, attachments) without blocking '''
     model = apps.get_model('bookwyrm.%s' % model_name, require_ready=True)
     origin_model = apps.get_model(
@@ -164,8 +164,19 @@ def set_related_field(
         # set the origin's remote id on the activity so it will be there when
         # the model instance is created
         # edition.parentWork = instance, for example
-        setattr(activity, related_field_name, instance.remote_id)
-        activity.to_model(model)
+        model_field = getattr(model, related_field_name)
+        if hasattr(model_field, 'activitypub_field'):
+            setattr(
+                activity,
+                getattr(model_field, 'activitypub_field'),
+                instance.remote_id
+            )
+        item = activity.to_model(model)
+
+        # if the related field isn't serialized (attachments on Status), then
+        # we have to set it post-creation
+        if not hasattr(model_field, 'activitypub_field'):
+            setattr(item, related_field_name, instance)
 
 
 def resolve_remote_id(model, remote_id, refresh=False, save=True):
