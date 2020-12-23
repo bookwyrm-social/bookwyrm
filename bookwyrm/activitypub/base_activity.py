@@ -177,6 +177,7 @@ def set_related_field(
         # we have to set it post-creation
         if not hasattr(model_field, 'activitypub_field'):
             setattr(item, related_field_name, instance)
+            item.save()
 
 
 def resolve_remote_id(model, remote_id, refresh=False, save=True):
