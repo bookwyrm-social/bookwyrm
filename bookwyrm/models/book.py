@@ -59,9 +59,7 @@ class Book(BookDataModel):
     subject_places = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    # TODO: include an annotation about the type of authorship (ie, translator)
     authors = fields.ManyToManyField('Author')
-    # preformatted authorship string for search and easier display
     cover = fields.ImageField(
         upload_to='covers/', blank=True, null=True, alt_field='alt_text')
     first_published_date = fields.DateTimeField(blank=True, null=True)
