@@ -48,7 +48,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     localname = models.CharField(
         max_length=255,
         null=True,
-        unique=True
+        unique=True,
+        validators=[fields.validate_localname],
     )
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
@@ -157,10 +158,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return super().save(*args, **kwargs)
 
         # populate fields for local users
-        self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.username)
-        self.localname = self.username
-        self.username = '%s@%s' % (self.username, DOMAIN)
-        self.actor = self.remote_id
+        self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.localname)
         self.inbox = '%s/inbox' % self.remote_id
         self.shared_inbox = 'https://%s/inbox' % DOMAIN
         self.outbox = '%s/outbox' % self.remote_id

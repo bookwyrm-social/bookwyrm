@@ -66,13 +66,13 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username'].strip()
+    localname = form.data['localname'].strip()
     email = form.data['email']
     password = form.data['password']
 
-    # check username and email uniqueness
-    if models.User.objects.filter(localname=username).first():
-        form.add_error('username', 'User with this username already exists')
+    # check localname and email uniqueness
+    if models.User.objects.filter(localname=localname).first():
+        form.add_error('localname', 'User with this username already exists')
         errors = True
 
     if errors:
@@ -82,8 +82,9 @@ def register(request):
         }
         return TemplateResponse(request, 'login.html', data)
 
+    username = '%s@%s' % (localname, DOMAIN)
     user = models.User.objects.create_user(
-        username, email, password, local=True)
+        username, email, password, localname=localname, local=True)
     if invite:
         invite.times_used += 1
         invite.save()

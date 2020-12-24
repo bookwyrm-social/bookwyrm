@@ -26,11 +26,11 @@ def validate_remote_id(value):
         )
 
 
-def validate_username(value):
+def validate_localname(value):
     ''' make sure usernames look okay '''
     if not re.match(r'^[A-Za-z\-_\.]+$', value):
         raise ValidationError(
-            _('%(value)s is not a valid remote_id'),
+            _('%(value)s is not a valid username'),
             params={'value': value},
         )
 
@@ -156,7 +156,6 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
             _('username'),
             max_length=150,
             unique=True,
-            validators=[validate_username],
             error_messages={
                 'unique': _('A user with that username already exists.'),
             },
@@ -168,7 +167,6 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         del kwargs['verbose_name']
         del kwargs['max_length']
         del kwargs['unique']
-        del kwargs['validators']
         del kwargs['error_messages']
         return name, path, args, kwargs
 
