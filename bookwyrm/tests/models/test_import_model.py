@@ -1,9 +1,15 @@
 ''' testing models '''
 import datetime
+import json
+import pathlib
+from unittest.mock import patch
+
 from django.utils import timezone
 from django.test import TestCase
+import responses
 
-from bookwyrm import models
+from bookwyrm import books_manager, models
+from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class ImportJob(TestCase):
@@ -54,11 +60,11 @@ class ImportJob(TestCase):
         user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
         job = models.ImportJob.objects.create(user=user)
-        models.ImportItem.objects.create(
+        self.item_1 = models.ImportItem.objects.create(
             job=job, index=1, data=currently_reading_data)
-        models.ImportItem.objects.create(
+        self.item_2 = models.ImportItem.objects.create(
             job=job, index=2, data=read_data)
-        models.ImportItem.objects.create(
+        self.item_3 = models.ImportItem.objects.create(
             job=job, index=3, data=unknown_read_data)
 
 
@@ -72,8 +78,7 @@ class ImportJob(TestCase):
     def test_shelf(self):
         ''' converts to the local shelf typology '''
         expected = 'reading'
-        item = models.ImportItem.objects.get(index=1)
-        self.assertEqual(item.shelf, expected)
+        self.assertEqual(self.item_1.shelf, expected)
 
 
     def test_date_added(self):
@@ -91,21 +96,75 @@ class ImportJob(TestCase):
 
 
     def test_currently_reading_reads(self):
+        ''' infer currently reading dates where available '''
         expected = [models.ReadThrough(
-            start_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc))]
+            start_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc)
+        )]
         actual = models.ImportItem.objects.get(index=1)
         self.assertEqual(actual.reads[0].start_date, expected[0].start_date)
         self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
     def test_read_reads(self):
-        actual = models.ImportItem.objects.get(index=2)
-        self.assertEqual(actual.reads[0].start_date, datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc))
-        self.assertEqual(actual.reads[0].finish_date, datetime.datetime(2019, 4, 12, 0, 0, tzinfo=timezone.utc))
+        ''' infer read dates where available '''
+        actual = self.item_2
+        self.assertEqual(
+            actual.reads[0].start_date,
+            datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc))
+        self.assertEqual(
+            actual.reads[0].finish_date,
+            datetime.datetime(2019, 4, 12, 0, 0, tzinfo=timezone.utc))
 
     def test_unread_reads(self):
+        ''' handle books with no read dates '''
         expected = []
         actual = models.ImportItem.objects.get(index=3)
         self.assertEqual(actual.reads, expected)
 
 
+    @responses.activate
+    def test_get_book_from_isbn(self):
+        ''' search and load books by isbn (9780356506999) '''
+        connector_info = models.Connector.objects.create(
+            identifier='openlibrary.org',
+            name='OpenLibrary',
+            connector_file='openlibrary',
+            base_url='https://openlibrary.org',
+            books_url='https://openlibrary.org',
+            covers_url='https://covers.openlibrary.org',
+            search_url='https://openlibrary.org/search?q=',
+            priority=3,
+        )
+        connector = books_manager.load_connector(connector_info)
+        result = SearchResult(
+            title='Test Result',
+            key='https://openlibrary.org/works/OL1234W',
+            author='An Author',
+            year='1980',
+            connector=connector,
+        )
 
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ol_edition.json')
+        bookdata = json.loads(datafile.read_bytes())
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/works/OL1234W',
+            json=bookdata,
+            status=200)
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org//works/OL15832982W',
+            json=bookdata,
+            status=200)
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org//authors/OL382982A.json',
+            json={'name': 'test author'},
+            status=200)
+
+        with patch('bookwyrm.books_manager.first_search_result') as search:
+            search.return_value = result
+            book = self.item_1.get_book_from_isbn()
+
+        self.assertEqual(book.title, 'Sabriel')

@@ -85,7 +85,7 @@ class Connector(AbstractConnector):
         return pick_default_edition(data['entries'])
 
 
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         try:
             key = data['works'][0]['key']
         except (IndexError, KeyError):
@@ -123,6 +123,7 @@ class Connector(AbstractConnector):
             title=search_result.get('title'),
             key=key,
             author=', '.join(author),
+            connector=self,
             year=search_result.get('first_publish_year'),
         )
 

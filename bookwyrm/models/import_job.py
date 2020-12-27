@@ -76,7 +76,7 @@ class ImportItem(models.Model):
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 
@@ -91,7 +91,7 @@ class ImportItem(models.Model):
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 
