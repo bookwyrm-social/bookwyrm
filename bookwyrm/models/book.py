@@ -2,7 +2,6 @@
 import re
 
 from django.db import models
-from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -12,10 +11,9 @@ from .base_model import BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from . import fields
 
-class Book(ActivitypubMixin, BookWyrmModel):
-    ''' a generic book, which can mean either an edition or a work '''
+class BookDataModel(ActivitypubMixin, BookWyrmModel):
+    ''' fields shared between editable book data (books, works, authors) '''
     origin_id = models.CharField(max_length=255, null=True, blank=True)
-    # these identifiers apply to both works and editions
     openlibrary_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True)
     librarything_key = fields.CharField(
@@ -23,14 +21,27 @@ class Book(ActivitypubMixin, BookWyrmModel):
     goodreads_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True)
 
-    # info about where the data comes from and where/if to sync
-    sync = models.BooleanField(default=True)
-    sync_cover = models.BooleanField(default=True)
-    last_sync_date = models.DateTimeField(default=timezone.now)
+    last_edited_by = models.ForeignKey(
+        'User', on_delete=models.PROTECT, null=True)
+
+    class Meta:
+        ''' can't initialize this model, that wouldn't make sense '''
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        ''' ensure that the remote_id is within this instance '''
+        if self.id:
+            self.remote_id = self.get_remote_id()
+        else:
+            self.origin_id = self.remote_id
+            self.remote_id = None
+        return super().save(*args, **kwargs)
+
+
+class Book(BookDataModel):
+    ''' a generic book, which can mean either an edition or a work '''
     connector = models.ForeignKey(
         'Connector', on_delete=models.PROTECT, null=True)
-
-    # TODO: edit history
 
     # book/work metadata
     title = fields.CharField(max_length=255)
@@ -48,9 +59,7 @@ class Book(ActivitypubMixin, BookWyrmModel):
     subject_places = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    # TODO: include an annotation about the type of authorship (ie, translator)
     authors = fields.ManyToManyField('Author')
-    # preformatted authorship string for search and easier display
     cover = fields.ImageField(
         upload_to='covers/', blank=True, null=True, alt_field='alt_text')
     first_published_date = fields.DateTimeField(blank=True, null=True)
@@ -86,12 +95,6 @@ class Book(ActivitypubMixin, BookWyrmModel):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
-
-        if self.id:
-            self.remote_id = self.get_remote_id()
-        else:
-            self.origin_id = self.remote_id
-            self.remote_id = None
         return super().save(*args, **kwargs)
 
     def get_remote_id(self):

@@ -2,11 +2,13 @@
 from unittest.mock import patch
 
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import view_actions as actions, models
+from bookwyrm import forms, models, view_actions as actions
 from bookwyrm.settings import DOMAIN
 
 
@@ -19,6 +21,13 @@ class ViewActions(TestCase):
             'mouse', 'mouse@mouse.com', 'mouseword', local=True)
         self.local_user.remote_id = 'https://example.com/user/mouse'
         self.local_user.save()
+        self.group = Group.objects.create(name='editor')
+        self.group.permissions.add(
+            Permission.objects.create(
+                name='edit_book',
+                codename='edit_book',
+                content_type=ContentType.objects.get_for_model(models.User)).id
+        )
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
                 'rat', 'rat@rat.com', 'ratword',
@@ -238,6 +247,43 @@ class ViewActions(TestCase):
         self.assertEqual(resp.template_name, 'password_reset.html')
         self.assertTrue(models.PasswordReset.objects.exists())
 
+
+    def test_password_change(self):
+        ''' change password '''
+        password_hash = self.local_user.password
+        request = self.factory.post('', {
+            'password': 'hi',
+            'confirm-password': 'hi'
+        })
+        request.user = self.local_user
+        with patch('bookwyrm.view_actions.login'):
+            actions.password_change(request)
+        self.assertNotEqual(self.local_user.password, password_hash)
+
+    def test_password_change_mismatch(self):
+        ''' change password '''
+        password_hash = self.local_user.password
+        request = self.factory.post('', {
+            'password': 'hi',
+            'confirm-password': 'hihi'
+        })
+        request.user = self.local_user
+        actions.password_change(request)
+        self.assertEqual(self.local_user.password, password_hash)
+
+
+    def test_edit_user(self):
+        ''' use a form to update a user '''
+        form = forms.EditUserForm(instance=self.local_user)
+        form.data['name'] = 'New Name'
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.edit_profile(request)
+        self.assertEqual(self.local_user.name, 'New Name')
+
+
     def test_switch_edition(self):
         ''' updates user's relationships to a book '''
         work = models.Work.objects.create(title='test work')
@@ -262,3 +308,46 @@ class ViewActions(TestCase):
 
         self.assertEqual(models.ShelfBook.objects.get().book, edition2)
         self.assertEqual(models.ReadThrough.objects.get().book, edition2)
+
+
+    def test_edit_author(self):
+        ''' edit an author '''
+        author = models.Author.objects.create(name='Test Author')
+        self.local_user.groups.add(self.group)
+        form = forms.AuthorForm(instance=author)
+        form.data['name'] = 'New Name'
+        form.data['last_edited_by'] = self.local_user.id
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.edit_author(request, author.id)
+        author.refresh_from_db()
+        self.assertEqual(author.name, 'New Name')
+        self.assertEqual(author.last_edited_by, self.local_user)
+
+    def test_edit_author_non_editor(self):
+        ''' edit an author with invalid post data'''
+        author = models.Author.objects.create(name='Test Author')
+        form = forms.AuthorForm(instance=author)
+        form.data['name'] = 'New Name'
+        form.data['last_edited_by'] = self.local_user.id
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+        with self.assertRaises(PermissionDenied):
+            actions.edit_author(request, author.id)
+        author.refresh_from_db()
+        self.assertEqual(author.name, 'Test Author')
+
+    def test_edit_author_invalid_form(self):
+        ''' edit an author with invalid post data'''
+        author = models.Author.objects.create(name='Test Author')
+        self.local_user.groups.add(self.group)
+        form = forms.AuthorForm(instance=author)
+        form.data['name'] = ''
+        form.data['last_edited_by'] = self.local_user.id
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+        resp = actions.edit_author(request, author.id)
+        author.refresh_from_db()
+        self.assertEqual(author.name, 'Test Author')
+        self.assertEqual(resp.template_name, 'edit_author.html')

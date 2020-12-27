@@ -63,5 +63,7 @@ class Author(ActivityObject):
     aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ''
     openlibraryKey: str = ''
+    librarythingKey: str = ''
+    goodreadsKey: str = ''
     wikipediaLink: str = ''
     type: str = 'Person'

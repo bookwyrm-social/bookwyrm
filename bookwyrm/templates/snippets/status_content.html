@@ -43,7 +43,7 @@
                 <div class="column is-narrow">
                     <figure class="image is-128x128">
                         <a href="/images/{{ attachment.image }}" target="_blank" aria-label="open image in new window">
-                            <img src="/images/{{ attachment.image }}" alt="{{ attachment.caption }}">
+                            <img src="/images/{{ attachment.image }}"{% if attachment.caption %} alt="{{ attachment.caption }}" title="{{ attachment.caption }}"{% endif %}>
                         </a>
                     </figure>
                 </div>

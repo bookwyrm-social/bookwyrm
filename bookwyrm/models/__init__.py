@@ -2,7 +2,7 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition
+from .book import Book, Work, Edition, BookDataModel
 from .author import Author
 from .connector import Connector
 

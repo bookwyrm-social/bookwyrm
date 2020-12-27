@@ -8,6 +8,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, \
         HttpResponseNotFound
 from django.test import TestCase
 from django.test.client import RequestFactory
+import responses
 
 from bookwyrm import models, incoming
 
@@ -419,6 +420,25 @@ class Incoming(TestCase):
         notification = models.Notification.objects.get()
         self.assertEqual(notification.user, self.local_user)
         self.assertEqual(notification.related_status, self.status)
+
+
+    @responses.activate
+    def test_handle_discarded_boost(self):
+        ''' test a boost of a mastodon status that will be discarded '''
+        activity = {
+            'type': 'Announce',
+            'id': 'http://www.faraway.com/boost/12',
+            'actor': self.remote_user.remote_id,
+            'object': self.status.to_activity(),
+        }
+        responses.add(
+            responses.GET,
+            'http://www.faraway.com/boost/12',
+            json={'id': 'http://www.faraway.com/boost/12'},
+            status=200)
+        incoming.handle_boost(activity)
+        self.assertEqual(models.Boost.objects.count(), 0)
+
 
 
     def test_handle_unboost(self):
