@@ -9,7 +9,8 @@ class Shelf(TestCase):
     def setUp(self):
         ''' look, a shelf '''
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         self.shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf', user=self.user)
 

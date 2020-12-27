@@ -19,7 +19,8 @@ class Incoming(TestCase):
     def setUp(self):
         ''' we need basic things, like users '''
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
         self.local_user.remote_id = 'https://example.com/user/mouse'
         self.local_user.save()
         with patch('bookwyrm.models.user.set_remote_server.delay'):

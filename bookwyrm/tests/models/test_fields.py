@@ -173,7 +173,8 @@ class ActivitypubFields(TestCase):
     def test_privacy_field_set_activity_from_field(self):
         ''' translate between to/cc fields and privacy '''
         user = User.objects.create_user(
-            'rat', 'rat@rat.rat', 'ratword', local=True)
+            'rat', 'rat@rat.rat', 'ratword',
+            local=True, localname='rat')
         public = 'https://www.w3.org/ns/activitystreams#Public'
         followers = '%s/followers' % user.remote_id
 
@@ -230,7 +231,8 @@ class ActivitypubFields(TestCase):
 
         # it shouldn't match with this unrelated user:
         unrelated_user = User.objects.create_user(
-            'rat', 'rat@rat.rat', 'ratword', local=True)
+            'rat', 'rat@rat.rat', 'ratword',
+            local=True, localname='rat')
 
         # test receiving an unknown remote id and loading data
         responses.add(
@@ -258,7 +260,8 @@ class ActivitypubFields(TestCase):
 
         # it shouldn't match with this unrelated user:
         unrelated_user = User.objects.create_user(
-            'rat', 'rat@rat.rat', 'ratword', local=True)
+            'rat', 'rat@rat.rat', 'ratword',
+            local=True, localname='rat')
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             value = instance.field_from_activity(userdata)
         self.assertIsInstance(value, User)
@@ -276,11 +279,13 @@ class ActivitypubFields(TestCase):
         )
         userdata = json.loads(datafile.read_bytes())
         user = User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         user.remote_id = 'https://example.com/user/mouse'
         user.save()
         User.objects.create_user(
-            'rat', 'rat@rat.rat', 'ratword', local=True)
+            'rat', 'rat@rat.rat', 'ratword',
+            local=True, localname='rat')
 
         value = instance.field_from_activity(userdata)
         self.assertEqual(value, user)
@@ -290,9 +295,11 @@ class ActivitypubFields(TestCase):
         ''' test receiving a remote id of an existing object in the db '''
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         user = User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         User.objects.create_user(
-            'rat', 'rat@rat.rat', 'ratword', local=True)
+            'rat', 'rat@rat.rat', 'ratword',
+            local=True, localname='rat')
 
         value = instance.field_from_activity(user.remote_id)
         self.assertEqual(value, user)
@@ -382,7 +389,8 @@ class ActivitypubFields(TestCase):
     def test_image_field(self):
         ''' storing images '''
         user = User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         image_file = pathlib.Path(__file__).parent.joinpath(
             '../../static/images/default_avi.jpg')
         image = Image.open(image_file)

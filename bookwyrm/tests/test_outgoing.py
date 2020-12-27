@@ -23,7 +23,8 @@ class Outgoing(TestCase):
                 outbox='https://example.com/users/rat/outbox',
             )
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True,
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse',
             remote_id='https://example.com/users/mouse',
         )
 

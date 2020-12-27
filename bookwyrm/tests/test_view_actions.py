@@ -18,7 +18,8 @@ class ViewActions(TestCase):
     def setUp(self):
         ''' we need basic things, like users '''
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
         self.local_user.remote_id = 'https://example.com/user/mouse'
         self.local_user.save()
         self.group = Group.objects.create(name='editor')
@@ -51,7 +52,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria-user.user_nutria',
+                'localname': 'nutria-user.user_nutria',
                 'password': 'mouseword',
                 'email': 'aa@bb.cccc'
             })
@@ -69,7 +70,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria ',
+                'localname': 'nutria ',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc'
             })
@@ -88,7 +89,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria',
+                'localname': 'nutria',
                 'password': 'mouseword',
                 'email': 'aa'
             })
@@ -102,7 +103,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nut@ria',
+                'localname': 'nut@ria',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc'
             })
@@ -113,7 +114,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutr ia',
+                'localname': 'nutr ia',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc'
             })
@@ -124,7 +125,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nut@ria',
+                'localname': 'nut@ria',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc'
             })
@@ -140,7 +141,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria ',
+                'localname': 'nutria ',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc'
             })
@@ -158,7 +159,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria',
+                'localname': 'nutria',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc',
                 'invite_code': 'testcode'
@@ -173,7 +174,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria2',
+                'localname': 'nutria2',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc',
                 'invite_code': 'testcode'
@@ -185,7 +186,7 @@ class ViewActions(TestCase):
         request = self.factory.post(
             'register/',
             {
-                'username': 'nutria3',
+                'localname': 'nutria3',
                 'password': 'mouseword',
                 'email': 'aa@bb.ccc',
                 'invite_code': 'dkfkdjgdfkjgkdfj'
