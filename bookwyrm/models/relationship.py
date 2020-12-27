@@ -54,7 +54,7 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
 
 
     def to_reject_activity(self):
-        ''' generate an Accept for this follow request '''
+        ''' generate a Reject for this follow request '''
         return activitypub.Reject(
             id=self.get_remote_id(status='rejects'),
             actor=self.user_object.remote_id,
