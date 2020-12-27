@@ -82,7 +82,7 @@ def handle_follow(user, to_follow):
 
 
 def handle_unfollow(user, to_unfollow):
-    ''' someone local wants to follow someone '''
+    ''' someone local wants to unfollow someone '''
     relationship = models.UserFollows.objects.get(
         user_subject=user,
         user_object=to_unfollow
