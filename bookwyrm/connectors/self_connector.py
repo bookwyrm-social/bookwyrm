@@ -51,12 +51,10 @@ class Connector(AbstractConnector):
             author=search_result.author_text,
             year=search_result.published_date.year if \
                     search_result.published_date else None,
+            connector=self,
             confidence=search_result.rank,
         )
 
-
-    def get_remote_id_from_data(self, data):
-        pass
 
     def is_work_data(self, data):
         pass
@@ -64,13 +62,10 @@ class Connector(AbstractConnector):
     def get_edition_from_work_data(self, data):
         pass
 
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         pass
 
     def get_authors_from_data(self, data):
-        return None
-
-    def get_cover_from_data(self, data):
         return None
 
     def parse_search_data(self, data):

@@ -1,9 +1,15 @@
 ''' testing models '''
 import datetime
+import json
+import pathlib
+from unittest.mock import patch
+
 from django.utils import timezone
 from django.test import TestCase
+import responses
 
-from bookwyrm import models
+from bookwyrm import books_manager, models
+from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class ImportJob(TestCase):
@@ -113,3 +119,52 @@ class ImportJob(TestCase):
         expected = []
         actual = models.ImportItem.objects.get(index=3)
         self.assertEqual(actual.reads, expected)
+
+
+    @responses.activate
+    def test_get_book_from_isbn(self):
+        ''' search and load books by isbn (9780356506999) '''
+        connector_info = models.Connector.objects.create(
+            identifier='openlibrary.org',
+            name='OpenLibrary',
+            connector_file='openlibrary',
+            base_url='https://openlibrary.org',
+            books_url='https://openlibrary.org',
+            covers_url='https://covers.openlibrary.org',
+            search_url='https://openlibrary.org/search?q=',
+            priority=3,
+        )
+        connector = books_manager.load_connector(connector_info)
+        result = SearchResult(
+            title='Test Result',
+            key='https://openlibrary.org/works/OL1234W',
+            author='An Author',
+            year='1980',
+            connector=connector,
+        )
+
+
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ol_edition.json')
+        bookdata = json.loads(datafile.read_bytes())
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/works/OL1234W',
+            json=bookdata,
+            status=200)
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org//works/OL15832982W',
+            json=bookdata,
+            status=200)
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org//authors/OL382982A.json',
+            json={'name': 'test author'},
+            status=200)
+
+        with patch('bookwyrm.books_manager.first_search_result') as search:
+            search.return_value = result
+            book = self.item_1.get_book_from_isbn()
+
+        self.assertEqual(book.title, 'Sabriel')

@@ -168,7 +168,7 @@ class AbstractConnector(AbstractMinimalConnector):
         ''' every work needs at least one edition '''
 
     @abstractmethod
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         ''' every edition needs a work '''
 
     @abstractmethod
@@ -228,6 +228,7 @@ class SearchResult:
     key: str
     author: str
     year: str
+    connector: object
     confidence: int = 1
 
     def __repr__(self):
