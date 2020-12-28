@@ -114,6 +114,15 @@ def handle_reject(follow_request):
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
+def handle_cancel(follow_request):
+    ''' a local user cancels a follow request to another user '''
+    user = follow_request.user_subject
+    requested = follow_request.user_object
+    activity = follow_request.to_undo_activity(user)
+    follow_request.delete()
+    broadcast(user, activity, privacy='direct', direct_recipients=[requested])
+
+
 def handle_shelve(user, book, shelf):
     ''' a local user is getting a book put on their shelf '''
     # update the database

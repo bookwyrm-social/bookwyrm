@@ -1,9 +1,11 @@
 {% if request.user == user or not request.user.is_authenticated %}
 {% elif request.user in user.follower_requests.all %}
 
-<div>
-Follow request already sent.
-</div>
+<form action="/cancel-follow-request/" method="POST" onsubmit="interact(event)" class="follow-{{ user.id }}" data-id="follow-{{ user.id }}">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ user.username }}">
+    <button class="button is-small is-danger is-light" type="submit">Cancel request</button>
+</form>
 
 {% else %}
 

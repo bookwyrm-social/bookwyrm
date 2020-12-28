@@ -737,6 +737,30 @@ def delete_follow_request(request):
 
 @login_required
 @require_POST
+def cancel_follow_request(request):
+    ''' cancel a follow request from the requester's side '''
+    username = request.POST['user']
+    try:
+        requested = get_user_from_username(username)
+    except models.User.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    try:
+        follow_request = models.UserFollowRequest.objects.get(
+            user_subject=request.user,
+            user_object=requested
+        )
+    except models.UserFollowRequest.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    outgoing.handle_cancel(follow_request)
+    user_slug = requested.localname if requested.localname \
+        else requested.username
+    return redirect('/user/%s' % user_slug)
+
+
+@login_required
+@require_POST
 def import_data(request):
     ''' ingest a goodreads csv '''
     form = forms.ImportForm(request.POST, request.FILES)

@@ -138,6 +138,7 @@ urlpatterns = [
     re_path(r'^unfollow/?$', actions.unfollow),
     re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
     re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
+    re_path(r'^cancel-follow-request/?$', actions.cancel_follow_request),
 
     re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
