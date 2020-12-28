@@ -754,8 +754,7 @@ def cancel_follow_request(request):
         return HttpResponseBadRequest()
 
     outgoing.handle_cancel(follow_request)
-    user_slug = requested.localname if requested.localname \
-        else requested.username
+    user_slug = requested.localname or requested.username
     return redirect('/user/%s' % user_slug)
 
 
