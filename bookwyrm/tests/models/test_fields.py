@@ -111,10 +111,16 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.max_length, 150)
         self.assertEqual(instance.unique, True)
         with self.assertRaises(ValidationError):
-            instance.run_validators('one two')
-            instance.run_validators('a*&')
-            instance.run_validators('trailingwhite ')
-        self.assertIsNone(instance.run_validators('aksdhf'))
+            instance.run_validators('mouseexample.com')
+            instance.run_validators('mouse@example.c')
+            instance.run_validators('@example.com')
+            instance.run_validators('mouse@examplecom')
+            instance.run_validators('one two@fish.aaaa')
+            instance.run_validators('a*&@exampke.com')
+            instance.run_validators('trailingwhite@example.com ')
+        self.assertIsNone(instance.run_validators('mouse@example.com'))
+        self.assertIsNone(instance.run_validators('mo-2use@ex3ample.com'))
+        self.assertIsNone(instance.run_validators('aksdhf@sdkjf-df.cm'))
 
         self.assertEqual(instance.field_to_activity('test@example.com'), 'test')
 

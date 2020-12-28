@@ -27,8 +27,17 @@ def validate_remote_id(value):
 
 
 def validate_localname(value):
+    ''' make sure localnames look okay '''
+    if not re.match(r'^[A-Za-z\-_\.0-9]+$', value):
+        raise ValidationError(
+            _('%(value)s is not a valid username'),
+            params={'value': value},
+        )
+
+
+def validate_username(value):
     ''' make sure usernames look okay '''
-    if not re.match(r'^[A-Za-z\-_\.]+$', value):
+    if not re.match(r'^[A-Za-z\-_\.0-9]+@[A-Za-z\-_\.0-9]+\.[a-z]{2,}$', value):
         raise ValidationError(
             _('%(value)s is not a valid username'),
             params={'value': value},
@@ -147,7 +156,7 @@ class RemoteIdField(ActivitypubFieldMixin, models.CharField):
 
 class UsernameField(ActivitypubFieldMixin, models.CharField):
     ''' activitypub-aware username field '''
-    def __init__(self, activitypub_field='preferredUsername'):
+    def __init__(self, activitypub_field='preferredUsername', **kwargs):
         self.activitypub_field = activitypub_field
         # I don't totally know why pylint is mad at this, but it makes it work
         super( #pylint: disable=bad-super-call
@@ -156,6 +165,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
             _('username'),
             max_length=150,
             unique=True,
+            validators=[validate_username],
             error_messages={
                 'unique': _('A user with that username already exists.'),
             },
