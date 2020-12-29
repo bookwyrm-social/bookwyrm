@@ -8,6 +8,10 @@ from django.db import IntegrityError, transaction
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.tasks import app
 
+import requests
+from django.utils.http import http_date
+from bookwyrm import models
+from bookwyrm.signatures import make_signature
 
 class ActivitySerializerError(ValueError):
     """routine problems serializing activitypub json"""
@@ -284,6 +288,12 @@ def resolve_remote_id(
     # load the data and create the object
     try:
         data = get_data(remote_id)
+    except requests.HTTPError as e:
+        if e.response.status_code == 401:
+            ''' This most likely means it's a mastodon with secure fetch enabled. Need to be specific '''
+            data = get_activitypub_data(remote_id)
+        else:
+            raise e
     except ConnectorException:
         raise ActivitySerializerError(
             f"Could not connect to host for remote_id: {remote_id}"
@@ -304,3 +314,33 @@ def resolve_remote_id(
 
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
+
+def get_activitypub_data(url):
+    ''' wrapper for request.get '''
+    now = http_date()
+
+    # XXX TEMP!!
+    sender = models.User.objects.get(id=1)
+    if not sender.key_pair.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError('No private key found for sender')
+
+    try:
+        resp = requests.get(
+            url,
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+                'Date': now,
+                'Signature': make_signature('get', sender, url, now),
+            },
+        )
+    except RequestError:
+        raise ConnectorException()
+    if not resp.ok:
+        resp.raise_for_status()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise ConnectorException()
+
+    return data

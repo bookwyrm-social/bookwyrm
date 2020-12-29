@@ -533,7 +533,7 @@ def sign_and_send(sender, data, destination):
         headers={
             "Date": now,
             "Digest": digest,
-            "Signature": make_signature(sender, destination, now, digest),
+            "Signature": make_signature("post", sender, destination, now, digest),
             "Content-Type": "application/activity+json; charset=utf-8",
             "User-Agent": USER_AGENT,
         },
