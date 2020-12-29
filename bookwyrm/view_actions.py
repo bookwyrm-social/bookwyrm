@@ -236,7 +236,12 @@ def edit_book(request, book_id):
 
     form = forms.EditionForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        data = {
+            'title': 'Edit Book',
+            'book': book,
+            'form': form
+        }
+        return TemplateResponse(request, 'edit_book.html', data)
     form.save()
 
     outgoing.handle_update_book(request.user, book)

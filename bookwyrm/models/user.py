@@ -10,7 +10,9 @@ from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
-from .base_model import OrderedCollectionPageMixin, ActivityMapping, PrivacyLevels
+from .base_model import ActivityMapping, OrderedCollectionPageMixin, PrivacyLevels
+from .base_model import image_formatter
+
 
 class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
@@ -82,16 +84,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return '%s/followers' % self.remote_id
 
     @property
-    def ap_icon(self):
-        ''' send default icon if one isn't set '''
-        if self.avatar:
-            url = self.avatar.url
-        else:
-            url = '/static/images/default_avi.jpg'
-        url = 'https://%s%s' % (DOMAIN, url)
-        return activitypub.Image(url=url)
-
-    @property
     def ap_public_key(self):
         ''' format the public key block for activitypub '''
         return activitypub.PublicKey(**{
@@ -125,7 +117,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             activity_formatter=lambda x: {'sharedInbox': x},
             model_formatter=lambda x: x.get('sharedInbox')
         ),
-        ActivityMapping('icon', 'ap_icon'),
+        ActivityMapping(
+            'icon', 'avatar',
+            lambda x: image_formatter(x, '/static/images/default_avi.jpg'),
+            activitypub.image_formatter
+        ),
         ActivityMapping(
             'manuallyApprovesFollowers',
             'manually_approves_followers'

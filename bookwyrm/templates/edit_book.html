@@ -20,6 +20,12 @@
     </div>
 </div>
 
+{% if login_form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
+</div>
+{% endif %}
+
 <form class="block" name="edit-book" action="/edit-book/{{ book.id }}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
@@ -37,13 +43,40 @@
     </div>
 
     <div class="columns">
-        <div class="block column">
-            <h2 class="title is-4">Book Identifiers</h2>
-            <p class="fields is-grouped"><label class="label"for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
-            <p class="fields is-grouped"><label class="label"for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
-            <p class="fields is-grouped"><label class="label"for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
-            <p class="fields is-grouped"><label class="label"for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
-            <p class="fields is-grouped"><label class="label"for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+        <div class="column">
+            <h2 class="title is-4">Metadata</h2>
+            <p class="fields is-grouped"><label class="label"for="id_title">Title:</label> {{ form.title }} </p>
+            {% for error in form.title.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
+            {% for error in form.sort_title.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
+            {% for error in form.subtitle.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_description">Description:</label> {{ form.description }} </p>
+            {% for error in form.description.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_series">Series:</label> {{ form.series }} </p>
+            {% for error in form.series.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_series_number">Series number:</label> {{ form.series_number }} </p>
+            {% for error in form.series_number.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
+            {% for error in form.first_published_date.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            <p class="fields is-grouped"><label class="label"for="id_published_date">Published date:</label> {{ form.published_date }} </p>
+            {% for error in form.published_date.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
         </div>
 
         <div class="column">
@@ -55,6 +88,9 @@
                     <div class="block">
                         <h2 class="title is-4">Cover</h2>
                         <p>{{ form.cover }} </p>
+                        {% for error in form.cover.errors %}
+                        <p class="help is-danger">{{ error | escape }}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -62,22 +98,45 @@
             <div class="block">
                 <h2 class="title is-4">Physical Properties</h2>
                 <p class="fields is-grouped"><label class="label"for="id_physical_format">Format:</label> {{ form.physical_format }} </p>
+                {% for error in form.physical_format.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+                {% for error in form.physical_format.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+
                 <p class="fields is-grouped"><label class="label"for="id_pages">Pages:</label> {{ form.pages }} </p>
+                {% for error in form.pages.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="block">
+                <h2 class="title is-4">Book Identifiers</h2>
+                <p class="fields is-grouped"><label class="label"for="id_isbn_13">ISBN 13:</label> {{ form.isbn_13 }} </p>
+                {% for error in form.isbn_13.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+                <p class="fields is-grouped"><label class="label"for="id_isbn_10">ISBN 10:</label> {{ form.isbn_10 }} </p>
+                {% for error in form.isbn_10.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+                <p class="fields is-grouped"><label class="label"for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }} </p>
+                {% for error in form.openlibrary_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+                <p class="fields is-grouped"><label class="label"for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }} </p>
+                {% for error in form.librarything_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+                <p class="fields is-grouped"><label class="label"for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }} </p>
+                {% for error in form.goodreads_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>
 
-    <div class="block">
-        <h2 class="title is-4">Metadata</h2>
-        <p class="fields is-grouped"><label class="label"for="id_title">Title:</label> {{ form.title }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_sort_title">Sort title:</label> {{ form.sort_title }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_subtitle">Subtitle:</label> {{ form.subtitle }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_description">Description:</label> {{ form.description }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_series">Series:</label> {{ form.series }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_series_number">Series number:</label> {{ form.series_number }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_first_published_date">First published date:</label> {{ form.first_published_date }} </p>
-        <p class="fields is-grouped"><label class="label"for="id_published_date">Published date:</label> {{ form.published_date }} </p>
-    </div>
     <div class="block">
         <button class="button is-primary" type="submit">Save</button>
         <a class="button" href="/book/{{ book.id }}">Cancel</a>
@@ -85,4 +144,3 @@
 </form>
 
 {% endblock %}
-
