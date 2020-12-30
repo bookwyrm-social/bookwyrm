@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from requests import HTTPError
 
 from bookwyrm import models
+from bookwyrm.connectors import ConnectorException
 from bookwyrm.tasks import app
 
 
@@ -55,7 +56,7 @@ def search(query, min_confidence=0.1):
     for connector in get_connectors():
         try:
             result_set = connector.search(query, min_confidence=min_confidence)
-        except HTTPError:
+        except (HTTPError, ConnectorException):
             continue
 
         result_set = [r for r in result_set \

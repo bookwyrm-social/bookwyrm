@@ -1,6 +1,7 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+import logging
 from urllib3.exceptions import RequestError
 
 from django.db import transaction
@@ -11,6 +12,7 @@ from requests.exceptions import SSLError
 from bookwyrm import activitypub, models, settings
 
 
+logger = logging.getLogger(__name__)
 class ConnectorException(HTTPError):
     ''' when the connector can't do what was asked '''
 
@@ -47,7 +49,11 @@ class AbstractMinimalConnector(ABC):
         )
         if not resp.ok:
             resp.raise_for_status()
-        data = resp.json()
+        try:
+            data = resp.json()
+        except ValueError as e:
+            logger.exception(e)
+            raise ConnectorException('Unable to parse json response', e)
         results = []
 
         for doc in self.parse_search_data(data)[:10]:
@@ -241,6 +247,12 @@ class SearchResult:
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author)
+
+    def json(self):
+        ''' serialize a connector for json response '''
+        serialized = asdict(self)
+        del serialized['connector']
+        return serialized
 
 
 class Mapping:

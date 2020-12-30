@@ -38,12 +38,14 @@ def is_api_request(request):
 
 def server_error_page(request):
     ''' 500 errors '''
-    return TemplateResponse(request, 'error.html', {'title': 'Oops!'})
+    return TemplateResponse(
+        request, 'error.html', {'title': 'Oops!'}, status=500)
 
 
 def not_found_page(request, _):
     ''' 404s '''
-    return TemplateResponse(request, 'notfound.html', {'title': 'Not found'})
+    return TemplateResponse(
+        request, 'notfound.html', {'title': 'Not found'}, status=404)
 
 
 @login_required
@@ -210,7 +212,7 @@ def search(request):
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
         book_results = books_manager.local_search(query)
-        return JsonResponse([r.__dict__ for r in book_results], safe=False)
+        return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
