@@ -8,7 +8,7 @@ import requests
 from requests import HTTPError
 from requests.exceptions import SSLError
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub, models, settings
 
 
 class ConnectorException(HTTPError):
@@ -42,6 +42,7 @@ class AbstractMinimalConnector(ABC):
             '%s%s' % (self.search_url, query),
             headers={
                 'Accept': 'application/json; charset=utf-8',
+                'User-Agent': settings.USER_AGENT,
             },
         )
         if not resp.ok:
@@ -196,6 +197,7 @@ def get_data(url):
             url,
             headers={
                 'Accept': 'application/json; charset=utf-8',
+                'User-Agent': settings.USER_AGENT,
             },
         )
     except RequestError:
@@ -213,7 +215,12 @@ def get_data(url):
 def get_image(url):
     ''' wrapper for requesting an image '''
     try:
-        resp = requests.get(url)
+        resp = requests.get(
+            url,
+            headers={
+                'User-Agent': settings.USER_AGENT,
+            },
+        )
     except (RequestError, SSLError):
         return None
     if not resp.ok:
