@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm.activitypub import ActivityEncoder
+from bookwyrm.activitypub import ActivityEncoder, ActivitypubResponse
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
 from bookwyrm.settings import PAGE_LENGTH
@@ -378,7 +378,7 @@ def user_page(request, username):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(user.to_activity())
     # otherwise we're at a UI view
 
     try:
@@ -446,7 +446,7 @@ def followers_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_followers_activity(**request.GET))
+        return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
     data = {
         'title': '%s: followers' % user.name,
@@ -467,7 +467,7 @@ def following_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_following_activity(**request.GET))
+        return ActivitypubResponse(user.to_following_activity(**request.GET))
 
     data = {
         'title': '%s: following' % user.name,
@@ -497,7 +497,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(status.to_activity())
 
     data = {
         'title': 'Status by %s' % user.username,
@@ -530,10 +530,7 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    return JsonResponse(
-        status.to_replies(**request.GET),
-        encoder=ActivityEncoder
-    )
+    return ActivitypubResponse(status.to_replies(**request.GET))
 
 
 @login_required
@@ -565,7 +562,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(book.to_activity())
 
     if isinstance(book, models.Work):
         book = book.get_default_edition()
@@ -677,10 +674,7 @@ def editions_page(request, book_id):
     work = get_object_or_404(models.Work, id=book_id)
 
     if is_api_request(request):
-        return JsonResponse(
-            work.to_edition_list(**request.GET),
-            encoder=ActivityEncoder
-        )
+        return ActivitypubResponse(work.to_edition_list(**request.GET))
 
     data = {
         'title': 'Editions of %s' % work.title,
@@ -696,7 +690,7 @@ def author_page(request, author_id):
     author = get_object_or_404(models.Author, id=author_id)
 
     if is_api_request(request):
-        return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(author.to_activity())
 
     books = models.Work.objects.filter(
         Q(authors=author) | Q(editions__authors=author)).distinct()
@@ -716,8 +710,7 @@ def tag_page(request, tag_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(
-            tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
+        return ActivitypubResponse(tag_obj.to_activity(**request.GET))
 
     books = models.Edition.objects.filter(
         usertag__tag__identifier=tag_id
@@ -768,7 +761,7 @@ def shelf_page(request, username, shelf_identifier):
 
 
     if is_api_request(request):
-        return JsonResponse(shelf.to_activity(**request.GET))
+        return ActivitypubResponse(shelf.to_activity(**request.GET))
 
     data = {
         'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
