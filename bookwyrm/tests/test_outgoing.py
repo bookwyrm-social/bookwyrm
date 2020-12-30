@@ -87,6 +87,28 @@ class Outgoing(TestCase):
         self.assertEqual(data['type'], 'OrderedCollection')
         self.assertEqual(data['totalItems'], 2)
 
+    def test_outbox_filter(self):
+        ''' if we only care about reviews, only get reviews '''
+        models.Review.objects.create(
+            content='look at this', name='hi', rating=1,
+            book=self.book, user=self.local_user)
+        models.Status.objects.create(
+            content='look at this', user=self.local_user)
+
+        request = self.factory.get('', {'type': 'bleh'})
+        result = outgoing.outbox(request, 'mouse')
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.content)
+        self.assertEqual(data['type'], 'OrderedCollection')
+        self.assertEqual(data['totalItems'], 2)
+
+        request = self.factory.get('', {'type': 'Review'})
+        result = outgoing.outbox(request, 'mouse')
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.content)
+        self.assertEqual(data['type'], 'OrderedCollection')
+        self.assertEqual(data['totalItems'], 1)
+
 
     def test_handle_follow(self):
         ''' send a follow request '''
