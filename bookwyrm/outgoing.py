@@ -2,8 +2,10 @@
 import re
 
 from django.db import IntegrityError, transaction
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from markdown import markdown
 from requests import HTTPError
 
@@ -20,17 +22,11 @@ from bookwyrm.utils import regex
 
 
 @csrf_exempt
+@require_GET
 def outbox(request, username):
     ''' outbox for the requested user '''
-    if request.method != 'GET':
-        return HttpResponseNotFound()
+    user = get_object_or_404(models.User, localname=username)
 
-    try:
-        user = models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
-
-    # collection overview
     return JsonResponse(
         user.to_outbox(**request.GET),
         encoder=activitypub.ActivityEncoder
