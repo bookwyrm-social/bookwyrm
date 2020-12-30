@@ -237,7 +237,9 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
         ).serialize()
 
 
-def to_ordered_collection_page(queryset, remote_id, id_only=False, page=1):
+# pylint: disable=unused-argument
+def to_ordered_collection_page(
+        queryset, remote_id, id_only=False, page=1, **kwargs):
     ''' serialize and pagiante a queryset '''
     paginated = Paginator(queryset, PAGE_LENGTH)
 

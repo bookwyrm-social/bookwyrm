@@ -25,3 +25,6 @@ from .site import SiteSettings, SiteInvite, PasswordReset
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[1].activity_serializer.__name__: c[1] \
     for c in cls_members if hasattr(c[1], 'activity_serializer')}
+
+status_models = [
+    c.__name__ for (_, c) in activity_models.items() if issubclass(c, Status)]

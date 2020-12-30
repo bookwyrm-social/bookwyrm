@@ -1,6 +1,7 @@
 ''' database schema for user data '''
 from urllib.parse import urlparse
 
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
@@ -106,9 +107,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     activity_serializer = activitypub.Person
 
-    def to_outbox(self, **kwargs):
+    def to_outbox(self, filter_type=None, **kwargs):
         ''' an ordered collection of statuses '''
-        queryset = Status.objects.filter(
+        if filter_type:
+            filter_class = apps.get_model(
+                'bookwyrm.%s' % filter_type, require_ready=True)
+            if not issubclass(filter_class, Status):
+                raise TypeError(
+                    'filter_status_class must be a subclass of models.Status')
+            queryset = filter_class.objects
+        else:
+            queryset = Status.objects
+
+        queryset = queryset.filter(
             user=self,
             deleted=False,
             privacy__in=['public', 'unlisted'],

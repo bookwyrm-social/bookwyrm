@@ -26,9 +26,12 @@ from bookwyrm.utils import regex
 def outbox(request, username):
     ''' outbox for the requested user '''
     user = get_object_or_404(models.User, localname=username)
+    filter_type = request.GET.get('type')
+    if filter_type not in models.status_models:
+        filter_type = None
 
     return JsonResponse(
-        user.to_outbox(**request.GET),
+        user.to_outbox(**request.GET, filter_type=filter_type),
         encoder=activitypub.ActivityEncoder
     )
 
