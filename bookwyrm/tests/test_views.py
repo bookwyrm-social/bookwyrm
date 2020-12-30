@@ -25,6 +25,14 @@ class Views(TestCase):
         )
         self.local_user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'password', local=True)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            self.remote_user = models.User.objects.create_user(
+                'rat', 'rat@rat.com', 'ratword',
+                local=False,
+                remote_id='https://example.com/users/rat',
+                inbox='https://example.com/users/rat/inbox',
+                outbox='https://example.com/users/rat/outbox',
+            )
 
 
     def test_get_user_from_username(self):
@@ -35,6 +43,83 @@ class Views(TestCase):
             views.get_user_from_username('mouse@%s' % DOMAIN), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
             views.get_user_from_username('mojfse@example.com')
+
+
+    def test_is_api_request(self):
+        ''' should it return html or json '''
+        request = self.factory.get('/path')
+        request.headers = {'Accept': 'application/json'}
+        self.assertTrue(views.is_api_request(request))
+
+        request = self.factory.get('/path.json')
+        request.headers = {'Accept': 'Praise'}
+        self.assertTrue(views.is_api_request(request))
+
+        request = self.factory.get('/path')
+        request.headers = {'Accept': 'Praise'}
+        self.assertFalse(views.is_api_request(request))
+
+
+    def test_get_activity_feed(self):
+        ''' loads statuses '''
+        rat = models.User.objects.create_user(
+            'rat', 'rat@rat.rat', 'password', local=True)
+
+        public_status = models.Comment.objects.create(
+            content='public status', book=self.book, user=self.local_user)
+        direct_status = models.Status.objects.create(
+            content='direct', user=self.local_user, privacy='direct')
+
+        rat_public = models.Status.objects.create(
+            content='blah blah', user=rat)
+        rat_unlisted = models.Status.objects.create(
+            content='blah blah', user=rat, privacy='unlisted')
+        remote_status = models.Status.objects.create(
+            content='blah blah', user=self.remote_user)
+        followers_status = models.Status.objects.create(
+            content='blah', user=rat, privacy='followers')
+        rat_mention = models.Status.objects.create(
+            content='blah blah blah', user=rat, privacy='followers')
+        rat_mention.mention_users.set([self.local_user])
+
+        statuses = views.get_activity_feed(self.local_user, 'home')
+        self.assertEqual(len(statuses), 2)
+        self.assertEqual(statuses[1], public_status)
+        self.assertEqual(statuses[0], rat_mention)
+
+        statuses = views.get_activity_feed(
+            self.local_user, 'home', model=models.Comment)
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], public_status)
+
+        statuses = views.get_activity_feed(self.local_user, 'local')
+        self.assertEqual(len(statuses), 2)
+        self.assertEqual(statuses[1], public_status)
+        self.assertEqual(statuses[0], rat_public)
+
+        statuses = views.get_activity_feed(self.local_user, 'direct')
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], direct_status)
+
+        statuses = views.get_activity_feed(self.local_user, 'federated')
+        self.assertEqual(len(statuses), 3)
+        self.assertEqual(statuses[2], public_status)
+        self.assertEqual(statuses[1], rat_public)
+        self.assertEqual(statuses[0], remote_status)
+
+        statuses = views.get_activity_feed(self.local_user, 'friends')
+        self.assertEqual(len(statuses), 2)
+        self.assertEqual(statuses[1], public_status)
+        self.assertEqual(statuses[0], rat_mention)
+
+        rat.followers.add(self.local_user)
+        statuses = views.get_activity_feed(self.local_user, 'friends')
+        self.assertEqual(len(statuses), 5)
+        self.assertEqual(statuses[4], public_status)
+        self.assertEqual(statuses[3], rat_public)
+        self.assertEqual(statuses[2], rat_unlisted)
+        self.assertEqual(statuses[1], followers_status)
+        self.assertEqual(statuses[0], rat_mention)
 
 
     def test_search_json_response(self):
