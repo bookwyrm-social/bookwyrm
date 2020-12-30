@@ -1,6 +1,7 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import logging
 from urllib3.exceptions import RequestError
 
 from django.db import transaction
@@ -11,6 +12,7 @@ from requests.exceptions import SSLError
 from bookwyrm import activitypub, models
 
 
+logger = logging.getLogger(__name__)
 class ConnectorException(HTTPError):
     ''' when the connector can't do what was asked '''
 
@@ -49,6 +51,7 @@ class AbstractMinimalConnector(ABC):
         try:
             data = resp.json()
         except ValueError as e:
+            logger.exception(e)
             raise ConnectorException('Unable to parse json response', e)
         results = []
 
