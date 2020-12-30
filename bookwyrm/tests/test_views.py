@@ -23,6 +23,18 @@ class Views(TestCase):
             connector_file='self_connector',
             local=True
         )
+        self.local_user = models.User.objects.create_user(
+            'mouse', 'mouse@mouse.mouse', 'password', local=True)
+
+
+    def test_get_user_from_username(self):
+        ''' works for either localname or username '''
+        self.assertEqual(
+            views.get_user_from_username('mouse'), self.local_user)
+        self.assertEqual(
+            views.get_user_from_username('mouse@%s' % DOMAIN), self.local_user)
+        with self.assertRaises(models.User.DoesNotExist):
+            views.get_user_from_username('mojfse@example.com')
 
 
     def test_search_json_response(self):

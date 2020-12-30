@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm.activitypub import ActivityEncoder, ActivitypubResponse
+from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
 from bookwyrm.settings import PAGE_LENGTH
@@ -23,11 +23,11 @@ from bookwyrm.utils import regex
 
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
+    # raises DoesNotExist if user is now found
     try:
-        user = models.User.objects.get(localname=username)
+        return models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
-        user = models.User.objects.get(username=username)
-    return user
+        return models.User.objects.get(username=username)
 
 
 def is_api_request(request):
