@@ -27,7 +27,6 @@ def outbox(request, username):
     ''' outbox for the requested user '''
     user = get_object_or_404(models.User, localname=username)
 
-    # collection overview
     return JsonResponse(
         user.to_outbox(**request.GET),
         encoder=activitypub.ActivityEncoder

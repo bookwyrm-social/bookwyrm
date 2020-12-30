@@ -69,6 +69,24 @@ class Outgoing(TestCase):
         result = outgoing.outbox(request, 'rat')
         self.assertEqual(result.status_code, 405)
 
+    def test_outbox_privacy(self):
+        ''' don't show dms et cetera in outbox '''
+        models.Status.objects.create(
+            content='PRIVATE!!', user=self.local_user, privacy='direct')
+        models.Status.objects.create(
+            content='bffs ONLY', user=self.local_user, privacy='followers')
+        models.Status.objects.create(
+            content='unlisted status', user=self.local_user, privacy='unlisted')
+        models.Status.objects.create(
+            content='look at this', user=self.local_user, privacy='public')
+
+        request = self.factory.get('')
+        result = outgoing.outbox(request, 'mouse')
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.content)
+        self.assertEqual(data['type'], 'OrderedCollection')
+        self.assertEqual(data['totalItems'], 2)
+
 
     def test_handle_follow(self):
         ''' send a follow request '''
