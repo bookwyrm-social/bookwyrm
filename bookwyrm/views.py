@@ -210,7 +210,7 @@ def search(request):
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
         book_results = books_manager.local_search(query)
-        return JsonResponse([r.__dict__ for r in book_results], safe=False)
+        return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
