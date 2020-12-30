@@ -46,7 +46,10 @@ class AbstractMinimalConnector(ABC):
         )
         if not resp.ok:
             resp.raise_for_status()
-        data = resp.json()
+        try:
+            data = resp.json()
+        except ValueError as e:
+            raise ConnectorException('Unable to parse json response', e)
         results = []
 
         for doc in self.parse_search_data(data)[:10]:
