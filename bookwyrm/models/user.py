@@ -284,7 +284,7 @@ def get_or_create_remote_server(domain):
 @app.task
 def get_remote_reviews(outbox):
     ''' ingest reviews by a new remote bookwyrm user '''
-    outbox_page = outbox + '?page=true'
+    outbox_page = outbox + '?page=true&type=Review'
     data = get_data(outbox_page)
 
     # TODO: pagination?
