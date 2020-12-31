@@ -86,12 +86,6 @@ class Openlibrary(TestCase):
         self.assertEqual(result, {'hi': 'there'})
 
 
-    def test_pick_default_edition(self):
-        ''' detect if the loaded json is an edition '''
-        edition = pick_default_edition(self.edition_list_data['entries'])
-        self.assertEqual(edition['key'], '/books/OL9788823M')
-
-
     @responses.activate
     def test_get_authors_from_data(self):
         ''' find authors in data '''
@@ -103,6 +97,23 @@ class Openlibrary(TestCase):
         results = self.connector.get_authors_from_data(self.work_data)
         for result in results:
             self.assertIsInstance(result, models.Author)
+
+
+    def test_get_cover_url(self):
+        ''' formats a url that should contain the cover image '''
+        blob = ['image']
+        result = self.connector.get_cover_url(blob)
+        self.assertEqual(
+            result, 'https://covers.openlibrary.org/b/id/image-M.jpg')
+
+    def test_parse_search_result(self):
+        ''' extract the results from the search json response '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ol_search.json')
+        search_data = json.loads(datafile.read_bytes())
+        result = self.connector.parse_search_data(search_data)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 2)
 
 
     def test_format_search_result(self):
@@ -123,11 +134,50 @@ class Openlibrary(TestCase):
         self.assertEqual(result.connector, self.connector)
 
 
+    @responses.activate
+    def test_load_edition_data(self):
+        ''' format url from key and make request '''
+        key = 'OL1234W'
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/works/OL1234W/editions',
+            json={'hi': 'there'}
+        )
+        result = self.connector.load_edition_data(key)
+        self.assertEqual(result, {'hi': 'there'})
+
+
+    @responses.activate
+    def test_expand_book_data(self):
+        ''' given a book, get more editions '''
+        work = models.Work.objects.create(
+            title='Test Work', openlibrary_key='OL1234W')
+        edition = models.Edition.objects.create(
+            title='Test Edition', parent_work=work)
+
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/works/OL1234W/editions',
+            json={'entries': []},
+        )
+        with patch(
+                'bookwyrm.connectors.abstract_connector.AbstractConnector.' \
+                    'create_edition_from_data'):
+            self.connector.expand_book_data(edition)
+            self.connector.expand_book_data(work)
+
+
     def test_get_description(self):
         ''' should do some cleanup on the description data '''
         description = get_description(self.work_data['description'])
         expected = 'First in the Old Kingdom/Abhorsen series.'
         self.assertEqual(description, expected)
+
+
+    def test_get_openlibrary_key(self):
+        ''' extracts the uuid '''
+        key = get_openlibrary_key('/books/OL27320736M')
+        self.assertEqual(key, 'OL27320736M')
 
 
     def test_get_languages(self):
@@ -136,7 +186,7 @@ class Openlibrary(TestCase):
         self.assertEqual(languages, ['English'])
 
 
-    def test_get_ol_key(self):
-        ''' extracts the uuid '''
-        key = get_openlibrary_key('/books/OL27320736M')
-        self.assertEqual(key, 'OL27320736M')
+    def test_pick_default_edition(self):
+        ''' detect if the loaded json is an edition '''
+        edition = pick_default_edition(self.edition_list_data['entries'])
+        self.assertEqual(edition['key'], '/books/OL9788823M')

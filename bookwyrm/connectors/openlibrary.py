@@ -130,7 +130,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
-        url = '%s/works/%s/editions.json' % (self.books_url, olkey)
+        url = '%s/works/%s/editions' % (self.books_url, olkey)
         return get_data(url)
 
 
@@ -150,7 +150,7 @@ def get_description(description_blob):
     ''' descriptions can be a string or a dict '''
     if isinstance(description_blob, dict):
         return description_blob.get('value')
-    return  description_blob
+    return description_blob
 
 
 def get_openlibrary_key(key):
