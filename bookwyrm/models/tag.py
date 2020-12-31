@@ -66,7 +66,7 @@ class UserTag(BookWyrmModel):
             id='%s#remove' % self.remote_id,
             actor=user.remote_id,
             object=self.book.to_activity(),
-            target=self.to_activity(),
+            target=self.remote_id,
         ).serialize()
 
 

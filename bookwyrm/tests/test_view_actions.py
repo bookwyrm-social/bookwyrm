@@ -374,3 +374,23 @@ class ViewActions(TestCase):
         self.assertEqual(tag.identifier, 'A+Tag%21%3F')
         self.assertEqual(user_tag.user, self.local_user)
         self.assertEqual(user_tag.book, self.book)
+
+
+    def test_untag(self):
+        ''' remove a tag from a book '''
+        tag = models.Tag.objects.create(name='A Tag!?')
+        user_tag = models.UserTag.objects.create(
+            user=self.local_user, book=self.book, tag=tag)
+        request = self.factory.post(
+            '', {
+                'user': self.local_user.id,
+                'book': self.book.id,
+                'name': tag.name,
+            })
+        request.user = self.local_user
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.untag(request)
+
+        self.assertTrue(models.Tag.objects.filter(name='A Tag!?').exists())
+        self.assertFalse(models.UserTag.objects.exists())

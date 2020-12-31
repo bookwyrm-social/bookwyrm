@@ -593,9 +593,16 @@ def tag(request):
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
+    tag = get_object_or_404(models.Tag, name=name)
     book_id = request.POST.get('book')
+    book = get_object_or_404(models.Edition, id=book_id)
 
-    outgoing.handle_untag(request.user, book_id, name)
+    tag = get_object_or_404(
+        models.UserTag, tag=tag, book=book, user=request.user)
+    tag_activity = tag.to_remove_activity(request.user)
+    tag.delete()
+
+    broadcast(request.user, tag_activity)
     return redirect('/book/%s' % book_id)
 
 
