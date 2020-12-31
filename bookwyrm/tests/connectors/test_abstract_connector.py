@@ -5,15 +5,12 @@ import responses
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.connectors.abstract_connector import Mapping, SearchResult
-from bookwyrm.connectors.openlibrary import Connector
 
 
 class AbstractConnector(TestCase):
     ''' generic code for connecting to outside data sources '''
     def setUp(self):
         ''' we need an example connector '''
-        self.book = models.Edition.objects.create(title='Example Edition')
-
         self.connector_info = models.Connector.objects.create(
             identifier='example.com',
             connector_file='openlibrary',
@@ -22,70 +19,49 @@ class AbstractConnector(TestCase):
             covers_url='https://example.com/covers',
             search_url='https://example.com/search?q=',
         )
-        self.connector = Connector('example.com')
 
-        self.data = {
-            'title': 'Unused title',
-            'ASIN': 'A00BLAH',
-            'isbn_10': '1234567890',
-            'isbn_13': 'blahhh',
-            'blah': 'bip',
-            'format': 'hardcover',
-            'series': ['one', 'two'],
-        }
-        self.connector.key_mappings = [
-            Mapping('isbn_10'),
-            Mapping('isbn_13'),
-            Mapping('lccn'),
-            Mapping('asin'),
-        ]
+        class TestConnector(abstract_connector.AbstractMinimalConnector):
+            ''' nothing added here '''
+            def format_search_result(self, search_result):
+                return search_result
+            def get_or_create_book(self, remote_id):
+                pass
+            def parse_search_data(self, data):
+                return data
+        self.test_connector = TestConnector('example.com')
 
 
     def test_abstract_minimal_connector_init(self):
         ''' barebones connector for search with defaults '''
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
-            ''' nothing added here '''
-            def format_search_result():
-                pass
-            def get_or_create_book():
-                pass
-            def parse_search_data():
-                pass
-
-        connector = TestConnector('example.com')
+        connector = self.test_connector
         self.assertEqual(connector.connector, self.connector_info)
         self.assertEqual(connector.base_url, 'https://example.com')
         self.assertEqual(connector.books_url, 'https://example.com/books')
         self.assertEqual(connector.covers_url, 'https://example.com/covers')
         self.assertEqual(connector.search_url, 'https://example.com/search?q=')
-        self.assertIsNone(connector.name),
-        self.assertEqual(connector.identifier, 'example.com'),
+        self.assertIsNone(connector.name)
+        self.assertEqual(connector.identifier, 'example.com')
         self.assertIsNone(connector.max_query_count)
         self.assertFalse(connector.local)
 
 
     @responses.activate
-    def test_abstract_minimal_connector_search(self):
+    def test_search(self):
         ''' makes an http request to the outside service '''
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
-            ''' nothing added here '''
-            def format_search_result(self, data):
-                return data
-            def get_or_create_book(self, data):
-                pass
-            def parse_search_data(self, data):
-                return data
-        connector = TestConnector('example.com')
         responses.add(
             responses.GET,
             'https://example.com/search?q=a%20book%20title',
             json=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
             status=200)
-        results = connector.search('a book title')
+        results = self.test_connector.search('a book title')
         self.assertEqual(len(results), 10)
         self.assertEqual(results[0], 'a')
         self.assertEqual(results[1], 'b')
         self.assertEqual(results[2], 'c')
+
+
+    def test_is_available(self):
+        ''' is the connector usable '''
 
 
     def test_search_result(self):
@@ -95,7 +71,7 @@ class AbstractConnector(TestCase):
             key='https://example.com/book/1',
             author='Author Name',
             year='1850',
-            connector=self.connector,
+            connector=self.test_connector,
         )
         # there's really not much to test here, it's just a dataclass
         self.assertEqual(result.confidence, 1)
