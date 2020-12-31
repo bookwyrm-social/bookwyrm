@@ -577,14 +577,14 @@ def tag(request):
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
     )
-    user_tag = models.UserTag.objects.get_or_create(
+    user_tag, _ = models.UserTag.objects.get_or_create(
         user=request.user,
         book=book,
         tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, user_tag)
+        broadcast(request.user, user_tag.to_add_activity(request.user))
     return redirect('/book/%s' % book_id)
 
 

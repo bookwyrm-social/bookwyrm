@@ -283,11 +283,6 @@ def to_markdown(content):
     return sanitizer.get_output()
 
 
-def handle_tag(user, tag):
-    ''' tag a book '''
-    broadcast(user, tag.to_add_activity(user))
-
-
 def handle_untag(user, book, name):
     ''' tag a book '''
     book = models.Book.objects.get(id=book)

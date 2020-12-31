@@ -41,6 +41,9 @@ class ViewActions(TestCase):
             content='Test status',
             remote_id='https://example.com/status/1',
         )
+        self.work = models.Work.objects.create(title='Test Work')
+        self.book = models.Edition.objects.create(
+            title='Test Book', parent_work=self.work)
         self.settings = models.SiteSettings.objects.create(id=1)
         self.factory = RequestFactory()
 
@@ -351,3 +354,23 @@ class ViewActions(TestCase):
         author.refresh_from_db()
         self.assertEqual(author.name, 'Test Author')
         self.assertEqual(resp.template_name, 'edit_author.html')
+
+
+    def test_tag(self):
+        ''' add a tag to a book '''
+        request = self.factory.post(
+            '', {
+                'name': 'A Tag!?',
+                'book': self.book.id,
+            })
+        request.user = self.local_user
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.tag(request)
+
+        tag = models.Tag.objects.get()
+        user_tag = models.UserTag.objects.get()
+        self.assertEqual(tag.name, 'A Tag!?')
+        self.assertEqual(tag.identifier, 'A+Tag%21%3F')
+        self.assertEqual(user_tag.user, self.local_user)
+        self.assertEqual(user_tag.book, self.book)
