@@ -9,7 +9,7 @@
 
             {% include 'snippets/content_warning_field.html' with parent_status=activity %}
             <div class="field">
-                <textarea class="textarea" name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}-{{ uuid }}" required="true"></textarea>
+                <textarea class="textarea" name="content" placeholder="Leave a comment..." id="id_content_{{ activity.id }}-{{ uuid }}" required="true">{{ activity|mentions:request.user }}</textarea>
             </div>
         </div>
         <div class="column is-narrow">
