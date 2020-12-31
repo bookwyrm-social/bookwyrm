@@ -4,16 +4,14 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.connectors import abstract_connector
-from bookwyrm.connectors.abstract_connector import Mapping, SearchResult
-from bookwyrm.connectors.openlibrary import Connector
+from bookwyrm.connectors.abstract_connector import Mapping
+from bookwyrm.settings import DOMAIN
 
 
 class AbstractConnector(TestCase):
     ''' generic code for connecting to outside data sources '''
     def setUp(self):
         ''' we need an example connector '''
-        self.book = models.Edition.objects.create(title='Example Edition')
-
         self.connector_info = models.Connector.objects.create(
             identifier='example.com',
             connector_file='openlibrary',
@@ -22,107 +20,92 @@ class AbstractConnector(TestCase):
             covers_url='https://example.com/covers',
             search_url='https://example.com/search?q=',
         )
-        self.connector = Connector('example.com')
-
-        self.data = {
-            'title': 'Unused title',
-            'ASIN': 'A00BLAH',
-            'isbn_10': '1234567890',
-            'isbn_13': 'blahhh',
-            'blah': 'bip',
-            'format': 'hardcover',
-            'series': ['one', 'two'],
+        work_data = {
+            'id': 'abc1',
+            'title': 'Test work',
+            'type': 'work',
+            'openlibraryKey': 'OL1234W',
         }
-        self.connector.key_mappings = [
-            Mapping('isbn_10'),
-            Mapping('isbn_13'),
-            Mapping('lccn'),
-            Mapping('asin'),
-        ]
+        self.work_data = work_data
+        edition_data = {
+            'id': 'abc2',
+            'title': 'Test edition',
+            'type': 'edition',
+            'openlibraryKey': 'OL1234M',
+        }
+        self.edition_data = edition_data
 
-
-    def test_abstract_minimal_connector_init(self):
-        ''' barebones connector for search with defaults '''
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
+        class TestConnector(abstract_connector.AbstractConnector):
             ''' nothing added here '''
-            def format_search_result():
-                pass
-            def get_or_create_book():
-                pass
-            def parse_search_data():
-                pass
-
-        connector = TestConnector('example.com')
-        self.assertEqual(connector.connector, self.connector_info)
-        self.assertEqual(connector.base_url, 'https://example.com')
-        self.assertEqual(connector.books_url, 'https://example.com/books')
-        self.assertEqual(connector.covers_url, 'https://example.com/covers')
-        self.assertEqual(connector.search_url, 'https://example.com/search?q=')
-        self.assertIsNone(connector.name),
-        self.assertEqual(connector.identifier, 'example.com'),
-        self.assertIsNone(connector.max_query_count)
-        self.assertFalse(connector.local)
-
-
-    @responses.activate
-    def test_abstract_minimal_connector_search(self):
-        ''' makes an http request to the outside service '''
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
-            ''' nothing added here '''
-            def format_search_result(self, data):
-                return data
-            def get_or_create_book(self, data):
-                pass
+            def format_search_result(self, search_result):
+                return search_result
             def parse_search_data(self, data):
                 return data
-        connector = TestConnector('example.com')
+            def is_work_data(self, data):
+                return data['type'] == 'work'
+            def get_edition_from_work_data(self, data):
+                return edition_data
+            def get_work_from_edition_data(self, data):
+                return work_data
+            def get_authors_from_data(self, data):
+                return []
+            def expand_book_data(self, book):
+                pass
+        self.connector = TestConnector('example.com')
+        self.connector.book_mappings = [
+            Mapping('id'),
+            Mapping('title'),
+            Mapping('openlibraryKey'),
+        ]
+
+        self.book = models.Edition.objects.create(
+            title='Test Book', remote_id='https://example.com/book/1234',
+            openlibrary_key='OL1234M')
+
+
+    def test_abstract_connector_init(self):
+        ''' barebones connector for search with defaults '''
+        self.assertIsInstance(self.connector.book_mappings, list)
+
+
+    def test_is_available(self):
+        ''' this isn't used.... '''
+        self.assertTrue(self.connector.is_available())
+        self.connector.max_query_count = 1
+        self.connector.connector.query_count = 2
+        self.assertFalse(self.connector.is_available())
+
+
+    def test_get_or_create_book_existing(self):
+        ''' find an existing book by remote/origin id '''
+        self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(
+            self.book.remote_id, 'https://%s/book/%d' % (DOMAIN, self.book.id))
+        self.assertEqual(
+            self.book.origin_id, 'https://example.com/book/1234')
+
+        # dedupe by origin id
+        result = self.connector.get_or_create_book(
+            'https://example.com/book/1234')
+        self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(result, self.book)
+
+        # dedupe by remote id
+        result = self.connector.get_or_create_book(
+            'https://%s/book/%d' % (DOMAIN, self.book.id))
+        self.assertEqual(models.Book.objects.count(), 1)
+        self.assertEqual(result, self.book)
+
+    @responses.activate
+    def test_get_or_create_book_deduped(self):
+        ''' load remote data and deduplicate '''
         responses.add(
             responses.GET,
-            'https://example.com/search?q=a%20book%20title',
-            json=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'],
-            status=200)
-        results = connector.search('a book title')
-        self.assertEqual(len(results), 10)
-        self.assertEqual(results[0], 'a')
-        self.assertEqual(results[1], 'b')
-        self.assertEqual(results[2], 'c')
-
-
-    def test_search_result(self):
-        ''' a class that stores info about a search result '''
-        result = SearchResult(
-            title='Title',
-            key='https://example.com/book/1',
-            author='Author Name',
-            year='1850',
-            connector=self.connector,
+            'https://example.com/book/abcd',
+            json=self.edition_data
         )
-        # there's really not much to test here, it's just a dataclass
-        self.assertEqual(result.confidence, 1)
-        self.assertEqual(result.title, 'Title')
-
-
-    def test_create_mapping(self):
-        ''' maps remote fields for book data to bookwyrm activitypub fields '''
-        mapping = Mapping('isbn')
-        self.assertEqual(mapping.local_field, 'isbn')
-        self.assertEqual(mapping.remote_field, 'isbn')
-        self.assertEqual(mapping.formatter('bb'), 'bb')
-
-
-    def test_create_mapping_with_remote(self):
-        ''' the remote field is different than the local field '''
-        mapping = Mapping('isbn', remote_field='isbn13')
-        self.assertEqual(mapping.local_field, 'isbn')
-        self.assertEqual(mapping.remote_field, 'isbn13')
-        self.assertEqual(mapping.formatter('bb'), 'bb')
-
-
-    def test_create_mapping_with_formatter(self):
-        ''' a function is provided to modify the data '''
-        formatter = lambda x: 'aa' + x
-        mapping = Mapping('isbn', formatter=formatter)
-        self.assertEqual(mapping.local_field, 'isbn')
-        self.assertEqual(mapping.remote_field, 'isbn')
-        self.assertEqual(mapping.formatter, formatter)
-        self.assertEqual(mapping.formatter('bb'), 'aabb')
+        result = self.connector.get_or_create_book(
+            'https://example.com/book/abcd')
+        self.assertEqual(result, self.book)
+        self.assertEqual(models.Edition.objects.count(), 1)
+        self.assertEqual(models.Edition.objects.count(), 1)
