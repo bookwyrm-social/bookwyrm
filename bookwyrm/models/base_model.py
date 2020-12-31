@@ -109,7 +109,7 @@ class ActivitypubMixin:
                     not field.deduplication_field:
                 continue
 
-            value = data.get(field.activitypub_field)
+            value = data.get(field.get_activitypub_field())
             if not value:
                 continue
             filters.append({field.name: value})
