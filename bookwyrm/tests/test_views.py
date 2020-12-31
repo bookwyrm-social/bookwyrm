@@ -196,3 +196,43 @@ class Views(TestCase):
             result = views.editions_page(request, self.work.id)
         self.assertIsInstance(result, JsonResponse)
         self.assertEqual(result.status_code, 200)
+
+
+    def test_author_page(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        author = models.Author.objects.create(name='Jessica')
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = False
+            result = views.author_page(request, author.id)
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.template_name, 'author.html')
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = True
+            result = views.author_page(request, author.id)
+        self.assertIsInstance(result, JsonResponse)
+        self.assertEqual(result.status_code, 200)
+
+
+    def test_tag_page(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        tag = models.Tag.objects.create(name='hi there')
+        models.UserTag.objects.create(
+            tag=tag, user=self.local_user, book=self.book)
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = False
+            result = views.tag_page(request, tag.identifier)
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.template_name, 'tag.html')
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = True
+            result = views.tag_page(request, tag.identifier)
+        self.assertIsInstance(result, JsonResponse)
+        self.assertEqual(result.status_code, 200)

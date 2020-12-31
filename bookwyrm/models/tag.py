@@ -17,7 +17,9 @@ class Tag(OrderedCollectionMixin, BookWyrmModel):
     @classmethod
     def book_queryset(cls, identifier):
         ''' county of books associated with this tag '''
-        return cls.objects.filter(identifier=identifier)
+        return cls.objects.filter(
+            identifier=identifier
+        ).order_by('-updated_date')
 
     @property
     def collection_queryset(self):
