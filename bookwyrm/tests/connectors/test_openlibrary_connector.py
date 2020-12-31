@@ -92,6 +92,19 @@ class Openlibrary(TestCase):
         self.assertEqual(edition['key'], '/books/OL9788823M')
 
 
+    @responses.activate
+    def test_get_authors_from_data(self):
+        ''' find authors in data '''
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/authors/OL382982A',
+            json={'hi': 'there'},
+            status=200)
+        results = self.connector.get_authors_from_data(self.work_data)
+        for result in results:
+            self.assertIsInstance(result, models.Author)
+
+
     def test_format_search_result(self):
         ''' translate json from openlibrary into SearchResult '''
         datafile = pathlib.Path(__file__).parent.joinpath(

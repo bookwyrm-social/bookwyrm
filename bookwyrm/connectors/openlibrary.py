@@ -100,7 +100,7 @@ class Connector(AbstractConnector):
             author_blob = author_blob.get('author', author_blob)
             # this id is "/authors/OL1234567A"
             author_id = author_blob['key']
-            url = '%s%s.json' % (self.base_url, author_id)
+            url = '%s%s' % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
 
