@@ -179,6 +179,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         return super().save(*args, **kwargs)
 
+    @property
+    def local_path(self):
+        ''' this model doesn't inherit bookwyrm model, so here we are '''
+        return '/user/%s' % (self.localname or self.username)
+
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
     ''' public and private keys for a user '''

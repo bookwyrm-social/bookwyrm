@@ -405,7 +405,7 @@ def user_page(request, username):
             continue
         shelf_preview.append({
             'name': user_shelf.name,
-            'remote_id': user_shelf.remote_id,
+            'local_path': user_shelf.local_path,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
@@ -765,12 +765,17 @@ def shelf_page(request, username, shelf_identifier):
     if is_api_request(request):
         return ActivitypubResponse(shelf.to_activity(**request.GET))
 
+    books = models.ShelfBook.objects.filter(
+        added_by=user, shelf=shelf
+    ).order_by('-updated_date').all()
+
     data = {
         'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
         'user': user,
         'is_self': is_self,
         'shelves': shelves.all(),
         'shelf': shelf,
+        'books': [b.book for b in books],
     }
 
     return TemplateResponse(request, 'shelf.html', data)

@@ -5,7 +5,7 @@
         <input type="hidden" name="name" value="{{ tag.tag.name }}">
 
         <div class="tags has-addons">
-            <a class="tag" href="/tag/{{ tag.tag.identifier|urlencode }}">
+            <a class="tag" href="{{ tag.tag.local_path }}">
                 {{ tag.tag.name }}
             </a>
             {% if tag.tag.identifier in user_tags %}

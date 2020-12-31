@@ -110,7 +110,7 @@ def get_uuid(identifier):
     return '%s%s' % (identifier, uuid4())
 
 
-@register.filter(name="post_date")
+@register.filter(name='post_date')
 def time_since(date):
     ''' concise time ago function '''
     if not isinstance(date, datetime):
@@ -133,12 +133,19 @@ def time_since(date):
     return '%ds' % delta.seconds
 
 
-@register.filter(name="to_markdown")
+@register.filter(name='to_markdown')
 def get_markdown(content):
     ''' convert markdown to html '''
     if content:
         return to_markdown(content)
     return None
+
+@register.filter(name='mentions')
+def get_mentions(status, user):
+    ''' anyone tagged or replied to in this status '''
+    mentions = set([status.user] + list(status.mention_users.all()))
+    return ' '.join(
+        '@' + get_user_identifier(m) for m in mentions if not m == user)
 
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):

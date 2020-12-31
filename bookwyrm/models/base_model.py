@@ -35,6 +35,11 @@ class BookWyrmModel(models.Model):
         ''' this is just here to provide default fields for other models '''
         abstract = True
 
+    @property
+    def local_path(self):
+        ''' how to link to this object in the local app '''
+        return self.get_remote_id().replace('https://%s' % DOMAIN, '')
+
 
 @receiver(models.signals.post_save)
 #pylint: disable=unused-argument
