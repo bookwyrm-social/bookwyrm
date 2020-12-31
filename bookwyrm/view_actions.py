@@ -577,14 +577,14 @@ def tag(request):
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
     )
-    user_tag = models.UserTag.objects.get_or_create(
+    user_tag, _ = models.UserTag.objects.get_or_create(
         user=request.user,
         book=book,
         tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, user_tag)
+        broadcast(request.user, user_tag.to_add_activity(request.user))
     return redirect('/book/%s' % book_id)
 
 
@@ -593,9 +593,16 @@ def tag(request):
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
+    tag = get_object_or_404(models.Tag, name=name)
     book_id = request.POST.get('book')
+    book = get_object_or_404(models.Edition, id=book_id)
 
-    outgoing.handle_untag(request.user, book_id, name)
+    tag = get_object_or_404(
+        models.UserTag, tag=tag, book=book, user=request.user)
+    tag_activity = tag.to_remove_activity(request.user)
+    tag.delete()
+
+    broadcast(request.user, tag_activity)
     return redirect('/book/%s' % book_id)
 
 

@@ -129,7 +129,7 @@ class Work(OrderedCollectionPageMixin, Book):
     def to_edition_list(self, **kwargs):
         ''' an ordered collection of editions '''
         return self.to_ordered_collection(
-            self.editions.all(),
+            self.editions.order_by('-updated_date').all(),
             remote_id='%s/editions' % self.remote_id,
             **kwargs
         )
