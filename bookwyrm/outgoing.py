@@ -2,8 +2,10 @@
 import re
 
 from django.db import IntegrityError, transaction
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from markdown import markdown
 from requests import HTTPError
 
@@ -20,19 +22,16 @@ from bookwyrm.utils import regex
 
 
 @csrf_exempt
+@require_GET
 def outbox(request, username):
     ''' outbox for the requested user '''
-    if request.method != 'GET':
-        return HttpResponseNotFound()
+    user = get_object_or_404(models.User, localname=username)
+    filter_type = request.GET.get('type')
+    if filter_type not in models.status_models:
+        filter_type = None
 
-    try:
-        user = models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
-
-    # collection overview
     return JsonResponse(
-        user.to_outbox(**request.GET),
+        user.to_outbox(**request.GET, filter_type=filter_type),
         encoder=activitypub.ActivityEncoder
     )
 
@@ -282,21 +281,6 @@ def to_markdown(content):
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)
     return sanitizer.get_output()
-
-
-def handle_tag(user, tag):
-    ''' tag a book '''
-    broadcast(user, tag.to_add_activity(user))
-
-
-def handle_untag(user, book, name):
-    ''' tag a book '''
-    book = models.Book.objects.get(id=book)
-    tag = models.Tag.objects.get(name=name, book=book, user=user)
-    tag_activity = tag.to_remove_activity(user)
-    tag.delete()
-
-    broadcast(user, tag_activity)
 
 
 def handle_favorite(user, status):

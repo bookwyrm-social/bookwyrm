@@ -154,12 +154,12 @@ class ImportJob(TestCase):
             status=200)
         responses.add(
             responses.GET,
-            'https://openlibrary.org//works/OL15832982W',
+            'https://openlibrary.org/works/OL15832982W',
             json=bookdata,
             status=200)
         responses.add(
             responses.GET,
-            'https://openlibrary.org//authors/OL382982A.json',
+            'https://openlibrary.org/authors/OL382982A',
             json={'name': 'test author'},
             status=200)
 

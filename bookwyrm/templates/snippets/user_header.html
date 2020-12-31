@@ -5,7 +5,7 @@
         <div class="column is-narrow">
             <div class="media">
                 <div class="media-left">
-                    <a href="/user/{{ user|username }}">
+                    <a href="{{ user.local_path }}">
                     {% include 'snippets/avatar.html' with user=user large=True %}
                     </a>
                 </div>
@@ -14,8 +14,8 @@
                     <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
                     <p>Joined {{ user.created_date | naturaltime }}</p>
                     <p>
-                        <a href="/user/{{ user | username }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-                        <a href="/user/{{ user | username }}/following">{{ user.following.count }} following</a>
+                        <a href="{{ user.local_path }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
+                        <a href="{{ user.local_path }}/following">{{ user.following.count }} following</a>
                     </p>
                 </div>
             </div>

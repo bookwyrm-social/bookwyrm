@@ -3,8 +3,11 @@ import os
 
 from environs import Env
 
+import requests
+
 env = Env()
 DOMAIN = env('DOMAIN')
+VERSION = '0.0.1'
 
 PAGE_LENGTH = env('PAGE_LENGTH', 15)
 
@@ -150,3 +153,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, env('STATIC_ROOT', 'static'))
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, env('MEDIA_ROOT', 'images'))
+
+USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
+    requests.utils.default_user_agent(), VERSION, DOMAIN)

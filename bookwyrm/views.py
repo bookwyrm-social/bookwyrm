@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm.activitypub import ActivityEncoder
+from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm import forms, models, books_manager
 from bookwyrm import goodreads_import
 from bookwyrm.settings import PAGE_LENGTH
@@ -23,11 +23,11 @@ from bookwyrm.utils import regex
 
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
+    # raises DoesNotExist if user is now found
     try:
-        user = models.User.objects.get(localname=username)
+        return models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
-        user = models.User.objects.get(username=username)
-    return user
+        return models.User.objects.get(username=username)
 
 
 def is_api_request(request):
@@ -38,12 +38,14 @@ def is_api_request(request):
 
 def server_error_page(request):
     ''' 500 errors '''
-    return TemplateResponse(request, 'error.html', {'title': 'Oops!'})
+    return TemplateResponse(
+        request, 'error.html', {'title': 'Oops!'}, status=500)
 
 
 def not_found_page(request, _):
     ''' 404s '''
-    return TemplateResponse(request, 'notfound.html', {'title': 'Not found'})
+    return TemplateResponse(
+        request, 'notfound.html', {'title': 'Not found'}, status=404)
 
 
 @login_required
@@ -210,7 +212,7 @@ def search(request):
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
         book_results = books_manager.local_search(query)
-        return JsonResponse([r.__dict__ for r in book_results], safe=False)
+        return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
@@ -378,7 +380,7 @@ def user_page(request, username):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(user.to_activity())
     # otherwise we're at a UI view
 
     try:
@@ -403,7 +405,7 @@ def user_page(request, username):
             continue
         shelf_preview.append({
             'name': user_shelf.name,
-            'remote_id': user_shelf.remote_id,
+            'local_path': user_shelf.local_path,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
@@ -446,7 +448,7 @@ def followers_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_followers_activity(**request.GET))
+        return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
     data = {
         'title': '%s: followers' % user.name,
@@ -467,7 +469,7 @@ def following_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_following_activity(**request.GET))
+        return ActivitypubResponse(user.to_following_activity(**request.GET))
 
     data = {
         'title': '%s: following' % user.name,
@@ -497,7 +499,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(status.to_activity())
 
     data = {
         'title': 'Status by %s' % user.username,
@@ -530,10 +532,7 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    return JsonResponse(
-        status.to_replies(**request.GET),
-        encoder=ActivityEncoder
-    )
+    return ActivitypubResponse(status.to_replies(**request.GET))
 
 
 @login_required
@@ -565,7 +564,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(book.to_activity())
 
     if isinstance(book, models.Work):
         book = book.get_default_edition()
@@ -677,10 +676,7 @@ def editions_page(request, book_id):
     work = get_object_or_404(models.Work, id=book_id)
 
     if is_api_request(request):
-        return JsonResponse(
-            work.to_edition_list(**request.GET),
-            encoder=ActivityEncoder
-        )
+        return ActivitypubResponse(work.to_edition_list(**request.GET))
 
     data = {
         'title': 'Editions of %s' % work.title,
@@ -696,7 +692,7 @@ def author_page(request, author_id):
     author = get_object_or_404(models.Author, id=author_id)
 
     if is_api_request(request):
-        return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(author.to_activity())
 
     books = models.Work.objects.filter(
         Q(authors=author) | Q(editions__authors=author)).distinct()
@@ -716,8 +712,7 @@ def tag_page(request, tag_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(
-            tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
+        return ActivitypubResponse(tag_obj.to_activity(**request.GET))
 
     books = models.Edition.objects.filter(
         usertag__tag__identifier=tag_id
@@ -768,7 +763,11 @@ def shelf_page(request, username, shelf_identifier):
 
 
     if is_api_request(request):
-        return JsonResponse(shelf.to_activity(**request.GET))
+        return ActivitypubResponse(shelf.to_activity(**request.GET))
+
+    books = models.ShelfBook.objects.filter(
+        added_by=user, shelf=shelf
+    ).order_by('-updated_date').all()
 
     data = {
         'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
@@ -776,6 +775,7 @@ def shelf_page(request, username, shelf_identifier):
         'is_self': is_self,
         'shelves': shelves.all(),
         'shelf': shelf,
+        'books': [b.book for b in books],
     }
 
     return TemplateResponse(request, 'shelf.html', data)

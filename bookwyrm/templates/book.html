@@ -166,10 +166,10 @@
     {% for rating in ratings %}
     <div class="column">
         <div class="media">
-            <div class="media-left">{% include 'snippets/avatar.html' %}</div>
+            <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
             <div class="media-content">
                 <div>
-                    {% include 'snippets/username.html' %}
+                    {% include 'snippets/username.html' with user=rating.user %}
                 </div>
                 <div class="field is-grouped mb-0">
                     <div>rated it</div>

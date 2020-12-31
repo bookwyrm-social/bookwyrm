@@ -126,6 +126,14 @@ class Work(OrderedCollectionPageMixin, Book):
         ''' in case the default edition is not set '''
         return self.default_edition or self.editions.first()
 
+    def to_edition_list(self, **kwargs):
+        ''' an ordered collection of editions '''
+        return self.to_ordered_collection(
+            self.editions.order_by('-updated_date').all(),
+            remote_id='%s/editions' % self.remote_id,
+            **kwargs
+        )
+
     activity_serializer = activitypub.Work
     serialize_reverse_fields = [('editions', 'editions')]
     deserialize_reverse_fields = [('editions', 'editions')]

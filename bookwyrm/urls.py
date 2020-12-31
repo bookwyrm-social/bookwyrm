@@ -5,11 +5,10 @@ from django.urls import path, re_path
 
 from bookwyrm import incoming, outgoing, views, settings, wellknown
 from bookwyrm import view_actions as actions
+from bookwyrm.utils import regex
 
-username_regex = r'(?P<username>[\w\-_\.]+@[\w\-\_\.]+)'
-localname_regex = r'(?P<username>[\w\-_\.]+)'
-user_path = r'^user/%s' % username_regex
-local_user_path = r'^user/%s' % localname_regex
+user_path = r'^user/(?P<username>%s)' % regex.username
+local_user_path = r'^user/(?P<username>%s)' % regex.localname
 
 status_types = [
     'status',
@@ -20,7 +19,7 @@ status_types = [
     'generatednote'
 ]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
-        (local_user_path, '|'.join(status_types))
+        (user_path, '|'.join(status_types))
 
 book_path = r'^book/(?P<book_id>\d+)'
 
