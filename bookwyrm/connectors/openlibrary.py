@@ -68,7 +68,7 @@ class Connector(AbstractConnector):
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        return '%s/%s' % (self.books_url, key)
+        return '%s%s' % (self.books_url, key)
 
 
     def is_work_data(self, data):
@@ -80,7 +80,7 @@ class Connector(AbstractConnector):
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        url = '%s/%s/editions' % (self.books_url, key)
+        url = '%s%s/editions' % (self.books_url, key)
         data = get_data(url)
         return pick_default_edition(data['entries'])
 
@@ -90,7 +90,7 @@ class Connector(AbstractConnector):
             key = data['works'][0]['key']
         except (IndexError, KeyError):
             raise ConnectorException('No work found for edition')
-        url = '%s/%s' % (self.books_url, key)
+        url = '%s%s' % (self.books_url, key)
         return get_data(url)
 
 
@@ -100,7 +100,7 @@ class Connector(AbstractConnector):
             author_blob = author_blob.get('author', author_blob)
             # this id is "/authors/OL1234567A"
             author_id = author_blob['key']
-            url = '%s/%s.json' % (self.base_url, author_id)
+            url = '%s%s.json' % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
 
