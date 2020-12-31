@@ -17,7 +17,9 @@ class Views(TestCase):
     def setUp(self):
         ''' we need basic test data and mocks '''
         self.factory = RequestFactory()
-        self.book = models.Edition.objects.create(title='Test Book')
+        self.work = models.Work.objects.create(title='Test Work')
+        self.book = models.Edition.objects.create(
+            title='Test Book', parent_work=self.work)
         models.Connector.objects.create(
             identifier='self',
             connector_file='self_connector',
@@ -176,3 +178,21 @@ class Views(TestCase):
         self.assertEqual(response.template_name, 'search_results.html')
         self.assertEqual(
             response.context_data['book_results'][0].title, 'Gideon the Ninth')
+
+
+    def test_editions_page(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = False
+            result = views.editions_page(request, self.work.id)
+        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.template_name, 'editions.html')
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get('')
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = True
+            result = views.editions_page(request, self.work.id)
+        self.assertIsInstance(result, JsonResponse)
+        self.assertEqual(result.status_code, 200)
