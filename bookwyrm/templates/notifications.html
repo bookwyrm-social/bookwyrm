@@ -22,16 +22,16 @@
                 {% include 'snippets/username.html' with user=notification.related_user %}
                 {% if notification.notification_type == 'FAVORITE' %}
                     favorited your
-                    <a href="{{ notification.related_status.remote_id}}">status</a>
+                    <a href="{{ notification.related_status.local_path }}">status</a>
 
                 {% elif notification.notification_type == 'MENTION' %}
                     mentioned you in a
-                    <a href="/user/{{ notification.related_status.user }}/status/{{ notification.related_status.id}}">status</a>
+                    <a href="{{ notification.related_status.local_path }}">status</a>
 
                 {% elif notification.notification_type == 'REPLY' %}
-                    <a href="/user/{{ notification.related_status.user }}/status/{{ notification.related_status.id}}">replied</a>
+                    <a href="{{ notification.related_status.local_path }}">replied</a>
                     to your
-                    <a href="{{ notification.related_status.reply_parent.remote_id}}">status</a>
+                    <a href="{{ notification.related_status.reply_parent.local_path }}">status</a>
                 {% elif notification.notification_type == 'FOLLOW' %}
                     followed you
                 {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
@@ -41,7 +41,7 @@
                     </div>
 
                 {% elif notification.notification_type == 'BOOST' %}
-                    boosted your <a href="{{ notification.related_status.remote_id}}">status</a>
+                    boosted your <a href="{{ notification.related_status.local_path }}">status</a>
                 {% endif %}
                 {% else %}
                     your <a href="/import-status/{{ notification.related_import.id }}">import</a> completed.
@@ -54,7 +54,7 @@
             <div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white{% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %} has-text-black{% else %}-bis has-text-grey-dark{% endif %}{% endif %}">
                 <div class="columns">
                     <div class="column">
-                        <a href="{{ notification.related_status.remote_id }}">{{ notification.related_status.content | safe | truncatewords_html:10 }}</a>
+                        <a href="{{ notification.related_status.local_path }}">{{ notification.related_status.content | safe | truncatewords_html:10 }}</a>
                     </div>
                     <div class="column is-narrow {% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %}has-text-black{% else %}has-text-grey-dark{% endif %}">
                         {{ notification.related_status.published_date | post_date }}

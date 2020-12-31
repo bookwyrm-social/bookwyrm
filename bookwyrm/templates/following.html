@@ -31,7 +31,7 @@
     </div>
     {% endfor %}
     {% if not following.count %}
-    <div>No one is following {{ user|username }}</div>
+    <div>{{ user|username }} isn't following any users</div>
     {% endif %}
 </div>
 

@@ -1,13 +1,15 @@
 {% load bookwyrm_tags %}
 {% if request.user|follow_request_exists:user %}
-<form action="/accept-follow-request/" method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="user" value="{{ user.username }}">
-    <button class="button is-link is-small" type="submit">Accept</button>
-</form>
-<form action="/delete-follow-request/" method="POST">
-    {% csrf_token %}
-    <input type="hidden" name="user" value="{{ user.username }}">
-    <button class="button is-danger is-light is-small" type="submit" class="warning">Delete</button>
-</form>
+<div class="field is-grouped">
+    <form action="/accept-follow-request/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{{ user.username }}">
+        <button class="button is-link is-small" type="submit">Accept</button>
+    </form>
+    <form action="/delete-follow-request/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{{ user.username }}">
+        <button class="button is-danger is-light is-small" type="submit" class="warning">Delete</button>
+    </form>
+</div>
 {% endif %}

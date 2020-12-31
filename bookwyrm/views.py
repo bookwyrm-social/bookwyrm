@@ -405,7 +405,7 @@ def user_page(request, username):
             continue
         shelf_preview.append({
             'name': user_shelf.name,
-            'remote_id': user_shelf.remote_id,
+            'local_path': user_shelf.local_path,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
