@@ -20,7 +20,7 @@ status_types = [
     'generatednote'
 ]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
-        (local_user_path, '|'.join(status_types))
+        (user_path, '|'.join(status_types))
 
 book_path = r'^book/(?P<book_id>\d+)'
 
