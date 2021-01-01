@@ -41,6 +41,9 @@ def handle_remote_webfinger(query):
     user = None
 
     # usernames could be @user@domain or user@domain
+    if not query:
+        return None
+
     if query[0] == '@':
         query = query[1:]
 
@@ -218,7 +221,7 @@ def handle_status(user, form):
 
     # inspect the text for user tags
     matches = []
-    for match in re.finditer(regex.username, status.content):
+    for match in re.finditer(regex.strict_username, status.content):
         username = match.group().strip().split('@')[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
