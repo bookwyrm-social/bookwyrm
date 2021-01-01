@@ -8,7 +8,8 @@ from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
 
-from .status import Status, GeneratedNote, Review, Comment, Quotation
+from .status import Status, GeneratedNote, Comment, Quotation
+from .status import Review, ReviewRating
 from .status import Boost
 from .attachment import Image
 from .favorite import Favorite

@@ -51,6 +51,13 @@ class Comment(Note):
 
 
 @dataclass(init=False)
+class Quotation(Comment):
+    ''' a quote and commentary on a book '''
+    quote: str
+    type: str = 'Quotation'
+
+
+@dataclass(init=False)
 class Review(Comment):
     ''' a full book review '''
     name: str = None
@@ -59,7 +66,8 @@ class Review(Comment):
 
 
 @dataclass(init=False)
-class Quotation(Comment):
-    ''' a quote and commentary on a book '''
-    quote: str
-    type: str = 'Quotation'
+class Rating(Comment):
+    ''' a full book review '''
+    rating: int = None
+    content: str = None
+    type: str = 'Rating'
