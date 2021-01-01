@@ -8,10 +8,11 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 import responses
 
-from bookwyrm import models, outgoing
+from bookwyrm import forms, models, outgoing
 from bookwyrm.settings import DOMAIN
 
 
+# pylint: disable=too-many-public-methods
 class Outgoing(TestCase):
     ''' sends out activities '''
     def setUp(self):
@@ -255,3 +256,89 @@ class Outgoing(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             outgoing.handle_unshelve(self.local_user, self.book, self.shelf)
         self.assertEqual(self.shelf.books.count(), 0)
+
+
+    def test_handle_status(self):
+        ''' create a status '''
+        form = forms.CommentForm({
+            'content': 'hi',
+            'user': self.local_user.id,
+            'book': self.book.id,
+            'privacy': 'public',
+        })
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_status(self.local_user, form)
+        status = models.Comment.objects.get()
+        self.assertEqual(status.content, '<p>hi</p>')
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.book, self.book)
+
+    def test_handle_status_reply(self):
+        ''' create a status in reply to an existing status '''
+        user = models.User.objects.create_user(
+            'rat', 'rat@rat.com', 'password', local=True)
+        parent = models.Status.objects.create(
+            content='parent status', user=self.local_user)
+        form = forms.ReplyForm({
+            'content': 'hi',
+            'user': user.id,
+            'reply_parent': parent.id,
+            'privacy': 'public',
+        })
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_status(user, form)
+        status = models.Status.objects.get(user=user)
+        self.assertEqual(status.content, '<p>hi</p>')
+        self.assertEqual(status.user, user)
+        self.assertEqual(
+            models.Notification.objects.get().user, self.local_user)
+
+    def test_handle_status_mentions(self):
+        ''' @mention a user in a post '''
+        user = models.User.objects.create_user(
+            'rat', 'rat@rat.com', 'password', local=True)
+        form = forms.CommentForm({
+            'content': 'hi @rat',
+            'user': self.local_user.id,
+            'book': self.book.id,
+            'privacy': 'public',
+        })
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_status(self.local_user, form)
+        status = models.Status.objects.get()
+        self.assertEqual(
+            status.content,
+            '<p>hi <a href="%s">@rat</a></p>' % user.remote_id)
+        self.assertEqual(list(status.mention_users.all()), [user])
+        self.assertEqual(models.Notification.objects.get().user, user)
+
+    def test_handle_status_reply_with_mentions(self):
+        ''' reply to a post with an @mention'ed user '''
+        user = models.User.objects.create_user(
+            'rat', 'rat@rat.com', 'password', local=True)
+        form = forms.CommentForm({
+            'content': 'hi @rat@example.com',
+            'user': self.local_user.id,
+            'book': self.book.id,
+            'privacy': 'public',
+        })
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_status(self.local_user, form)
+        status = models.Status.objects.get()
+
+        form = forms.ReplyForm({
+            'content': 'right',
+            'user': user,
+            'privacy': 'public',
+            'reply_parent': status.id
+        })
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_status(user, form)
+
+        reply = models.Status.replies(status).first()
+        self.assertEqual(reply.content, '<p>right</p>')
+        self.assertEqual(reply.user, user)
+        self.assertTrue(self.remote_user in reply.mention_users.all())
+        self.assertTrue(self.local_user in reply.mention_users.all())
