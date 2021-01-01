@@ -9,8 +9,11 @@ from .connector import Connector
 from .shelf import Shelf, ShelfBook
 
 from .status import Status, GeneratedNote, Review, Comment, Quotation
-from .status import Favorite, Boost, Notification, ReadThrough
+from .status import Boost
 from .attachment import Image
+from .favorite import Favorite
+from .notification import Notification
+from .readthrough import ReadThrough
 
 from .tag import Tag, UserTag
 
