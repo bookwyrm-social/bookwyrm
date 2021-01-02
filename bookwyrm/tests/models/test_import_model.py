@@ -165,9 +165,11 @@ class ImportJob(TestCase):
             status=200)
 
         with patch(
-                'bookwyrm.connectors.connector_manager.first_search_result'
-            ) as search:
-            search.return_value = result
-            book = self.item_1.get_book_from_isbn()
+                'bookwyrm.connectors.abstract_connector.load_more_data.delay'):
+            with patch(
+                    'bookwyrm.connectors.connector_manager.first_search_result'
+                ) as search:
+                search.return_value = result
+                book = self.item_1.get_book_from_isbn()
 
         self.assertEqual(book.title, 'Sabriel')
