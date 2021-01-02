@@ -36,7 +36,7 @@ class Connector(AbstractConnector):
                     or results
 
         search_results = []
-        for book in results[:10]:
+        for book in set(results[:10]):
             search_results.append(
                 self.format_search_result(book)
             )
