@@ -193,7 +193,7 @@ class Views(TestCase):
         request = self.factory.get('', {'q': 'Test Book'})
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = False
-            with patch('bookwyrm.books_manager.search') as manager:
+            with patch('bookwyrm.connectors.connector_manager.search') as manager:
                 manager.return_value = [search_result]
                 response = views.search(request)
         self.assertIsInstance(response, TemplateResponse)

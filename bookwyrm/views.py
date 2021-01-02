@@ -13,13 +13,21 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm import forms, models, books_manager
+from bookwyrm import forms, models
 from bookwyrm import goodreads_import
+from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
+
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.default_edition
+    return book
 
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
@@ -211,7 +219,7 @@ def search(request):
 
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
-        book_results = books_manager.local_search(query)
+        book_results = connector_manager.local_search(query)
         return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
@@ -225,7 +233,7 @@ def search(request):
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
-    book_results = books_manager.search(query)
+    book_results = connector_manager.search(query)
     data = {
         'title': 'Search Results',
         'book_results': book_results,
@@ -645,7 +653,7 @@ def book_page(request, book_id):
 @require_GET
 def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {
