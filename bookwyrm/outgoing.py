@@ -166,22 +166,24 @@ def handle_imported_book(user, item, include_reviews, privacy):
     if not item.book:
         return
 
-    if item.shelf:
+    existing_shelf = models.ShelfBook.objects.filter(
+        book=item.book, added_by=user).exists()
+
+    # shelve the book if it hasn't been shelved already
+    if item.shelf and not existing_shelf:
         desired_shelf = models.Shelf.objects.get(
             identifier=item.shelf,
             user=user
         )
-        # shelve the book if it hasn't been shelved already
-        shelf_book, created = models.ShelfBook.objects.get_or_create(
+        shelf_book = models.ShelfBook.objects.create(
             book=item.book, shelf=desired_shelf, added_by=user)
-        if created:
-            broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
+        broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
-            # only add new read-throughs if the item isn't already shelved
-            for read in item.reads:
-                read.book = item.book
-                read.user = user
-                read.save()
+        # only add new read-throughs if the item isn't already shelved
+        for read in item.reads:
+            read.book = item.book
+            read.user = user
+            read.save()
 
     if include_reviews and (item.rating or item.review):
         review_title = 'Review of {!r} on Goodreads'.format(

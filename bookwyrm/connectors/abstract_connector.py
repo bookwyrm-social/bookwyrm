@@ -205,7 +205,7 @@ def get_data(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except RequestError:
+    except (RequestError, SSLError):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
