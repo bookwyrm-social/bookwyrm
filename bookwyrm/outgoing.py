@@ -179,11 +179,10 @@ def handle_imported_book(user, item, include_reviews, privacy):
             book=item.book, shelf=desired_shelf, added_by=user)
         broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
-        # only add new read-throughs if the item isn't already shelved
-        for read in item.reads:
-            read.book = item.book
-            read.user = user
-            read.save()
+    for read in item.reads:
+        read.book = item.book
+        read.user = user
+        read.save()
 
     if include_reviews and (item.rating or item.review):
         review_title = 'Review of {!r} on Goodreads'.format(
