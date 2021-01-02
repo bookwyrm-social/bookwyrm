@@ -9,8 +9,7 @@ from .abstract_connector import AbstractConnector, SearchResult
 class Connector(AbstractConnector):
     ''' instantiate a connector  '''
     def search(self, query, min_confidence=0.1):
-        ''' right now you can't search bookwyrm sorry, but when
-        that gets implemented it will totally rule '''
+        ''' search your local database '''
         vector = SearchVector('title', weight='A') +\
             SearchVector('subtitle', weight='B') +\
             SearchVector('authors__name', weight='C') +\
