@@ -39,6 +39,14 @@ class Views(TestCase):
             )
 
 
+    def test_get_edition(self):
+        ''' given an edition or a work, returns an edition '''
+        self.assertEqual(
+            views.get_edition(self.book.id), self.book)
+        self.assertEqual(
+            views.get_edition(self.work.id), self.book)
+
+
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
@@ -193,7 +201,8 @@ class Views(TestCase):
         request = self.factory.get('', {'q': 'Test Book'})
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = False
-            with patch('bookwyrm.books_manager.search') as manager:
+            with patch(
+                    'bookwyrm.connectors.connector_manager.search') as manager:
                 manager.return_value = [search_result]
                 response = views.search(request)
         self.assertIsInstance(response, TemplateResponse)

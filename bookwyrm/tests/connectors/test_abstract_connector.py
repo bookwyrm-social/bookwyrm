@@ -1,4 +1,5 @@
 ''' testing book data connectors '''
+from unittest.mock import patch
 from django.test import TestCase
 import responses
 
@@ -104,8 +105,10 @@ class AbstractConnector(TestCase):
             'https://example.com/book/abcd',
             json=self.edition_data
         )
-        result = self.connector.get_or_create_book(
-            'https://example.com/book/abcd')
+        with patch(
+                'bookwyrm.connectors.abstract_connector.load_more_data.delay'):
+            result = self.connector.get_or_create_book(
+                'https://example.com/book/abcd')
         self.assertEqual(result, self.book)
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Edition.objects.count(), 1)

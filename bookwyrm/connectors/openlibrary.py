@@ -3,7 +3,8 @@ import re
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import ConnectorException, get_data
+from .abstract_connector import get_data
+from .connector_manager import ConnectorException
 from .openlibrary_languages import languages
 
 
