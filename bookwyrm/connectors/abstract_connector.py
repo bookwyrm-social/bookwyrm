@@ -1,6 +1,7 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
+import importlib
 import logging
 from urllib3.exceptions import RequestError
 
@@ -10,6 +11,7 @@ from requests import HTTPError
 from requests.exceptions import SSLError
 
 from bookwyrm import activitypub, models, settings
+from bookwyrm.tasks import app
 
 
 logger = logging.getLogger(__name__)
@@ -90,7 +92,6 @@ class AbstractConnector(AbstractMinimalConnector):
         return True
 
 
-    @transaction.atomic
     def get_or_create_book(self, remote_id):
         ''' translate arbitrary json into an Activitypub dataclass '''
         # first, check if we have the origin_id saved
@@ -123,13 +124,17 @@ class AbstractConnector(AbstractMinimalConnector):
         if not work_data or not edition_data:
             raise ConnectorException('Unable to load book data: %s' % remote_id)
 
-        # create activitypub object
-        work_activity = activitypub.Work(**work_data)
-        # this will dedupe automatically
-        work = work_activity.to_model(models.Work)
-        for author in self.get_authors_from_data(data):
-            work.authors.add(author)
-        return self.create_edition_from_data(work, edition_data)
+        with transaction.atomic():
+            # create activitypub object
+            work_activity = activitypub.Work(**work_data)
+            # this will dedupe automatically
+            work = work_activity.to_model(models.Work)
+            for author in self.get_authors_from_data(data):
+                work.authors.add(author)
+
+            edition = self.create_edition_from_data(work, edition_data)
+        load_more_data.delay(self.connector.id, work.id)
+        return edition
 
 
     def create_edition_from_data(self, work, edition_data):
@@ -185,6 +190,23 @@ class AbstractConnector(AbstractMinimalConnector):
     @abstractmethod
     def expand_book_data(self, book):
         ''' get more info on a book '''
+
+
+@app.task
+def load_more_data(connector_id, book_id):
+    ''' background the work of getting all 10,000 editions of LoTR '''
+    connector_info = models.Connector.objects.get(id=connector_id)
+    connector = load_connector(connector_info)
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    connector.expand_book_data(book)
+
+
+def load_connector(connector_info):
+    ''' instantiate the connector class '''
+    connector = importlib.import_module(
+        'bookwyrm.connectors.%s' % connector_info.connector_file
+    )
+    return connector.Connector(connector_info.identifier)
 
 
 def dict_from_mappings(data, mappings):

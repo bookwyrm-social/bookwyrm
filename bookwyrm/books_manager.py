@@ -1,12 +1,10 @@
 ''' select and call a connector for whatever book task needs doing '''
-import importlib
 from urllib.parse import urlparse
 
 from requests import HTTPError
 
 from bookwyrm import models
-from bookwyrm.connectors import ConnectorException
-from bookwyrm.tasks import app
+from bookwyrm.connectors import ConnectorException, load_connector
 
 
 def get_edition(book_id):
@@ -38,14 +36,6 @@ def get_or_create_connector(remote_id):
         )
 
     return load_connector(connector_info)
-
-
-@app.task
-def load_more_data(book_id):
-    ''' background the work of getting all 10,000 editions of LoTR '''
-    book = models.Book.objects.select_subclasses().get(id=book_id)
-    connector = load_connector(book.connector)
-    connector.expand_book_data(book)
 
 
 def search(query, min_confidence=0.1):
@@ -90,11 +80,3 @@ def get_connectors():
     ''' load all connectors '''
     for info in models.Connector.objects.order_by('priority').all():
         yield load_connector(info)
-
-
-def load_connector(connector_info):
-    ''' instantiate the connector class '''
-    connector = importlib.import_module(
-        'bookwyrm.connectors.%s' % connector_info.connector_file
-    )
-    return connector.Connector(connector_info.identifier)
