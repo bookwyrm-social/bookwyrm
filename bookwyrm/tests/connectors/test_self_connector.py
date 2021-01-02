@@ -76,10 +76,10 @@ class SelfConnector(TestCase):
         self.assertEqual(results[2].title, 'Edition of Example Work')
 
 
-    def test_search_default_filter(self):
+    def test_search_multiple_editions(self):
         ''' it should get rid of duplicate editions for the same work '''
         work = models.Work.objects.create(title='Work Title')
-        models.Edition.objects.create(
+        edition_1 = models.Edition.objects.create(
             title='Edition 1 Title', parent_work=work)
         edition_2 = models.Edition.objects.create(
             title='Edition 2 Title', parent_work=work)
@@ -88,10 +88,17 @@ class SelfConnector(TestCase):
         work.default_edition = edition_2
         work.save()
 
+        # pick the best edition
+        results = self.connector.search('Edition 1 Title')
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].key, edition_1.remote_id)
+
+        # pick the default edition when no match is best
         results = self.connector.search('Edition Title')
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].key, edition_2.remote_id)
 
+        # only matches one edition, so no deduplication takes place
         results = self.connector.search('Fish')
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].key, edition_3.remote_id)

@@ -1,6 +1,6 @@
 ''' using a bookwyrm instance as a source of book data '''
 from django.contrib.postgres.search import SearchRank, SearchVector
-from django.db.models import F
+from django.db.models import Count, F
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -12,16 +12,7 @@ class Connector(AbstractConnector):
         ''' search your local database '''
         vector = SearchVector('title', weight='A') +\
             SearchVector('subtitle', weight='B') +\
-            SearchVector('authors__name', weight='C') +\
-            SearchVector('isbn_13', weight='A') +\
-            SearchVector('isbn_10', weight='A') +\
-            SearchVector('openlibrary_key', weight='C') +\
-            SearchVector('goodreads_key', weight='C') +\
-            SearchVector('asin', weight='C') +\
-            SearchVector('oclc_number', weight='C') +\
-            SearchVector('remote_id', weight='C') +\
-            SearchVector('description', weight='D') +\
-            SearchVector('series', weight='D')
+            SearchVector('authors__name', weight='C')
 
         results = models.Edition.objects.annotate(
             search=vector
@@ -31,15 +22,26 @@ class Connector(AbstractConnector):
             rank__gt=min_confidence
         ).order_by('-rank')
 
-        # remove non-default editions, if possible
-        results = results.filter(parent_work__default_edition__id=F('id')) \
-                    or results
+        # when there are multiple editions of the same work, pick the closest
+        editions_of_work = results.values(
+            'parent_work'
+        ).annotate(
+            Count('parent_work')
+        ).values_list('parent_work')
 
         search_results = []
-        for book in set(results[:10]):
-            search_results.append(
-                self.format_search_result(book)
-            )
+        for work_id in set(editions_of_work):
+            editions = results.filter(parent_work=work_id)
+            default = editions.filter(parent_work__default_edition=F('id'))
+            default_rank = default.first().rank if default.exists() else 0
+            # if mutliple books have the top rank, pick the default edition
+            if default_rank == editions.first().rank:
+                selected = default.first()
+            else:
+                selected = editions.first()
+            search_results.append(self.format_search_result(selected))
+            if len(search_results) >= 10:
+                break
         return search_results
 
 
