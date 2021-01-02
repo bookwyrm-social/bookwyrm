@@ -164,7 +164,9 @@ class ImportJob(TestCase):
             json={'name': 'test author'},
             status=200)
 
-        with patch('bookwyrm.connector_manager.first_search_result') as search:
+        with patch(
+                'bookwyrm.connectors.connector_manager.first_search_result'
+            ) as search:
             search.return_value = result
             book = self.item_1.get_book_from_isbn()
 
