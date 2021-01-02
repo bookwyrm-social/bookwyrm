@@ -23,6 +23,7 @@ def create_job(user, csv_file, include_reviews, privacy):
         ImportItem(job=job, index=index, data=entry).save()
     return job
 
+
 def create_retry_job(user, original_job, items):
     ''' retry items that didn't import '''
     job = ImportJob.objects.create(
@@ -34,6 +35,7 @@ def create_retry_job(user, original_job, items):
     for item in items:
         ImportItem(job=job, index=item.index, data=item.data).save()
     return job
+
 
 def start_import(job):
     ''' initalizes a csv import job '''
@@ -47,7 +49,6 @@ def import_data(job_id):
     ''' does the actual lookup work in a celery task '''
     job = ImportJob.objects.get(id=job_id)
     try:
-        results = []
         for item in job.items.all():
             try:
                 item.resolve()
@@ -59,7 +60,6 @@ def import_data(job_id):
 
             if item.book:
                 item.save()
-                results.append(item)
 
                 # shelves book and handles reviews
                 outgoing.handle_imported_book(
