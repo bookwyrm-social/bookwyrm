@@ -1,4 +1,5 @@
 ''' sending out activities '''
+import csv
 import json
 import pathlib
 from unittest.mock import patch
@@ -256,6 +257,60 @@ class Outgoing(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             outgoing.handle_unshelve(self.local_user, self.book, self.shelf)
         self.assertEqual(self.shelf.books.count(), 0)
+
+
+    def test_handle_imported_book(self):
+        ''' goodreads import added a book, this adds related connections '''
+        shelf = self.local_user.shelf_set.filter(identifier='read').first()
+        self.assertIsNone(shelf.books.first())
+
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            import_item = models.ImportItem.objects.create(
+                job_id=import_job.id, index=index, data=entry, book=self.book)
+            break
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+
+        shelf.refresh_from_db()
+        self.assertEqual(shelf.books.first(), self.book)
+
+        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+        self.assertEqual(readthrough.start_date.year, 2020)
+        self.assertEqual(readthrough.start_date.month, 10)
+        self.assertEqual(readthrough.start_date.day, 21)
+        self.assertEqual(readthrough.finish_date.year, 2020)
+        self.assertEqual(readthrough.finish_date.month, 10)
+        self.assertEqual(readthrough.finish_date.day, 25)
+
+
+    def test_handle_imported_book_already_shelved(self):
+        ''' goodreads import added a book, this adds related connections '''
+        shelf = self.local_user.shelf_set.filter(identifier='to-read').first()
+        models.ShelfBook.objects.create(
+            shelf=shelf, added_by=self.local_user, book=self.book)
+
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            import_item = models.ImportItem.objects.create(
+                job_id=import_job.id, index=index, data=entry, book=self.book)
+            break
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+
+        shelf.refresh_from_db()
+        self.assertEqual(shelf.books.first(), self.book)
+        self.assertIsNone(
+            self.local_user.shelf_set.get(identifier='read').books.first())
 
 
     def test_handle_status(self):
