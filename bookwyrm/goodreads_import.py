@@ -8,8 +8,6 @@ from bookwyrm.models import ImportJob, ImportItem
 from bookwyrm.status import create_notification
 
 logger = logging.getLogger(__name__)
-# TODO: remove or increase once we're confident it's not causing problems.
-MAX_ENTRIES = 500
 
 
 def create_job(user, csv_file, include_reviews, privacy):
@@ -19,7 +17,7 @@ def create_job(user, csv_file, include_reviews, privacy):
         include_reviews=include_reviews,
         privacy=privacy
     )
-    for index, entry in enumerate(list(csv.DictReader(csv_file))[:MAX_ENTRIES]):
+    for index, entry in enumerate(list(csv.DictReader(csv_file))):
         if not all(x in entry for x in ('ISBN13', 'Title', 'Author')):
             raise ValueError('Author, title, and isbn must be in data.')
         ImportItem(job=job, index=index, data=entry).save()
