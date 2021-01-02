@@ -14,7 +14,6 @@ from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
 from bookwyrm import forms, models
-from bookwyrm import goodreads_import
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
@@ -252,7 +251,6 @@ def import_page(request):
         'import_form': forms.ImportForm(),
         'jobs': models.ImportJob.
                 objects.filter(user=request.user).order_by('-created_date'),
-        'limit': goodreads_import.MAX_ENTRIES,
     })
 
 
