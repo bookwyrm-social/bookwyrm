@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
+from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -234,7 +235,10 @@ def search(request):
 
     # do a local user search
     user_results = models.User.objects.annotate(
-        similarity=TrigramSimilarity('username', query),
+        similarity=Greatest(
+            TrigramSimilarity('username', query),
+            TrigramSimilarity('localname', query),
+        )
     ).filter(
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
