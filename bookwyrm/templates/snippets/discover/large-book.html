@@ -10,7 +10,9 @@
         {% if book.authors %}
         <p class="subtitle is-5">by {% include 'snippets/authors.html' with book=book %}</p>
         {% endif %}
+        {% if book|book_description %}
         <blockquote class="content">{{ book|book_description|to_markdown|safe|truncatewords_html:50 }}</blockquote>
+        {% endif %}
     </div>
 </div>
 {% endif %}

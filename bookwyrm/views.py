@@ -4,7 +4,7 @@ import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
-from django.db.models import Avg, F, Q, Max
+from django.db.models import Avg, Q, Max
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -137,7 +137,8 @@ def discover_page(request):
     ''' tiled book activity page '''
     books = models.Edition.objects.filter(
         review__published_date__isnull=False,
-        review__user__local=True
+        review__user__local=True,
+        review__privacy__in=['public', 'unlisted'],
     ).exclude(
         cover__exact=''
     ).annotate(
