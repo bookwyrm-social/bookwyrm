@@ -119,10 +119,28 @@
             </div>
 	    {% else %}
             <div class="navbar-item">
-                <div class="buttons">
-                    <a href="/login" class="button is-primary">
-                        Join
-                    </a>
+                <div class="columns">
+                    <div class="column">
+                        <form name="login" method="post" action="/user-login">
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <label class="is-sr-only" for="id_username">Username:</label>
+                                    <input type="text" name="username" maxlength="150" class="input" required="" id="id_username" placeholder="username">
+                                </div>
+                                <div class="control">
+                                    <label class="is-sr-only" for="id_password">Username:</label>
+                                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="password">
+                                    <p class="help"><a href="/password-reset">Forgot your password?</a></p>
+                                </div>
+                                <button class="button is-primary" type="submit">Log in</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="column is-narrow">
+                        <a href="/login" class="button is-link">
+                            Join
+                        </a>
+                    </div>
                 </div>
             </div>
 	    {% endif %}

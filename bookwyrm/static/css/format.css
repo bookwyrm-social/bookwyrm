@@ -67,11 +67,15 @@ input.toggle-control:checked ~ .modal.toggle-content {
     width: max-content;
     max-width: 250px;
 }
+.cover-container.is-large {
+    height: 500px;
+    max-width: 500px;
+}
 .cover-container.is-medium {
-    height: 150px;
+    height: 200px;
 }
 .cover-container.is-small {
-    height: 100px;
+    height: 150px;
 }
 @media only screen and (max-width: 768px) {
     .cover-container {

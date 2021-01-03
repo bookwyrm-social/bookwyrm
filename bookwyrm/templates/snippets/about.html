@@ -1,7 +1,12 @@
-<h1 class="title">About {{ site.name }}</h1>
-<div class="block">
-    <img src="/static/images/logo.png" alt="BookWyrm">
+<div class="columns">
+    <div class="column is-narrow">
+        <figure class="block">
+            <img src="/static/images/logo.png" alt="BookWyrm">
+        </figure>
+    </div>
+    <div class="content">
+        <p class="block">
+            {{ site.instance_description | safe }}
+        </p>
+    </div>
 </div>
-<p class="block">
-    {{ site.instance_description }}
-</p>

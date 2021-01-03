@@ -108,7 +108,7 @@ class Connector(AbstractConnector):
     def get_cover_url(self, cover_blob):
         ''' ask openlibrary for the cover '''
         cover_id = cover_blob[0]
-        image_name = '%s-M.jpg' % cover_id
+        image_name = '%s-L.jpg' % cover_id
         return '%s/b/id/%s' % (self.covers_url, image_name)
 
 

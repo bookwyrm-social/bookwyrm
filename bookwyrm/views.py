@@ -4,7 +4,7 @@ import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Avg, Count, Q
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -129,6 +129,26 @@ def get_suggested_books(user, max_books=5):
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview['books'])
     return suggested_books
+
+
+@require_GET
+def discover_page(request):
+    ''' tiled book activity page '''
+    books = models.Edition.objects.exclude(
+        cover__exact=''
+    ).annotate(
+        Count('review')
+    ).annotate(
+        Avg('review__rating')
+    ).order_by('-review__count')
+
+    data = {
+        'title': 'Discover',
+        'login_form': forms.LoginForm(),
+        'register_form': forms.RegisterForm(),
+        'books': books
+    }
+    return TemplateResponse(request, 'discover.html', data)
 
 
 @login_required
