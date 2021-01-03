@@ -63,7 +63,7 @@
         <div class="navbar-end">
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
-                <div class="navbar-link" role="button" aria-expanded=false" onmouseover="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
+                <div class="navbar-link" role="button" aria-expanded=false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
                     {% include 'snippets/avatar.html' with user=request.user %}
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>
