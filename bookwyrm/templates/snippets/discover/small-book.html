@@ -1,8 +1,11 @@
+{% load bookwyrm_tags %}
+{% if book %}
 {% include 'snippets/book_cover.html' with book=book %}
-{% include 'snippets/stars.html' with rating=book.review__rating__avg %}
+{% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
 
 <h3 class="title is-6"><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
 {% if book.authors %}
 <p class="subtitle is-6">by {% include 'snippets/authors.html' with book=book %}</p>
 {% endif %}
 
+{% endif %}
