@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+{% if not request.user.is_authenticated %}
 <div class="block">
     <h1 class="title has-text-centered">{{ site.name }}: Social Reading and Reviewing</h1>
 </div>
@@ -25,6 +26,11 @@
         </div>
     </div>
 </section>
+{% else %}
+<div class="block">
+    <h1 class="title has-text-centered">Discover</h1>
+</div>
+{% endif %}
 
 <div class="block is-hidden-tablet">
     <h2 class="title has-text-centered">Recent Books</h2>
