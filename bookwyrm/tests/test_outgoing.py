@@ -1,4 +1,5 @@
 ''' sending out activities '''
+import csv
 import json
 import pathlib
 from unittest.mock import patch
@@ -256,6 +257,107 @@ class Outgoing(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             outgoing.handle_unshelve(self.local_user, self.book, self.shelf)
         self.assertEqual(self.shelf.books.count(), 0)
+
+
+    def test_handle_imported_book(self):
+        ''' goodreads import added a book, this adds related connections '''
+        shelf = self.local_user.shelf_set.filter(identifier='read').first()
+        self.assertIsNone(shelf.books.first())
+
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            import_item = models.ImportItem.objects.create(
+                job_id=import_job.id, index=index, data=entry, book=self.book)
+            break
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+
+        shelf.refresh_from_db()
+        self.assertEqual(shelf.books.first(), self.book)
+
+        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+        # I can't remember how to create dates and I don't want to look it up.
+        self.assertEqual(readthrough.start_date.year, 2020)
+        self.assertEqual(readthrough.start_date.month, 10)
+        self.assertEqual(readthrough.start_date.day, 21)
+        self.assertEqual(readthrough.finish_date.year, 2020)
+        self.assertEqual(readthrough.finish_date.month, 10)
+        self.assertEqual(readthrough.finish_date.day, 25)
+
+
+    def test_handle_imported_book_already_shelved(self):
+        ''' goodreads import added a book, this adds related connections '''
+        shelf = self.local_user.shelf_set.filter(identifier='to-read').first()
+        models.ShelfBook.objects.create(
+            shelf=shelf, added_by=self.local_user, book=self.book)
+
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            import_item = models.ImportItem.objects.create(
+                job_id=import_job.id, index=index, data=entry, book=self.book)
+            break
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+
+        shelf.refresh_from_db()
+        self.assertEqual(shelf.books.first(), self.book)
+        self.assertIsNone(
+            self.local_user.shelf_set.get(identifier='read').books.first())
+        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+        self.assertEqual(readthrough.start_date.year, 2020)
+        self.assertEqual(readthrough.start_date.month, 10)
+        self.assertEqual(readthrough.start_date.day, 21)
+        self.assertEqual(readthrough.finish_date.year, 2020)
+        self.assertEqual(readthrough.finish_date.month, 10)
+        self.assertEqual(readthrough.finish_date.day, 25)
+
+
+    def test_handle_imported_book_review(self):
+        ''' goodreads review import '''
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        entry = list(csv.DictReader(csv_file))[2]
+        import_item = models.ImportItem.objects.create(
+            job_id=import_job.id, index=0, data=entry, book=self.book)
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, True, 'unlisted')
+        review = models.Review.objects.get(book=self.book, user=self.local_user)
+        self.assertEqual(review.content, 'mixed feelings')
+        self.assertEqual(review.rating, 2)
+        self.assertEqual(review.published_date.year, 2019)
+        self.assertEqual(review.published_date.month, 7)
+        self.assertEqual(review.published_date.day, 8)
+        self.assertEqual(review.privacy, 'unlisted')
+
+
+    def test_handle_imported_book_reviews_disabled(self):
+        ''' goodreads review import '''
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        entry = list(csv.DictReader(csv_file))[2]
+        import_item = models.ImportItem.objects.create(
+            job_id=import_job.id, index=0, data=entry, book=self.book)
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'unlisted')
+        self.assertFalse(models.Review.objects.filter(
+            book=self.book, user=self.local_user
+        ).exists())
 
 
     def test_handle_status(self):
