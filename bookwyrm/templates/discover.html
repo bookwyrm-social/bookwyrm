@@ -1,5 +1,4 @@
 {% extends 'layout.html' %}
-{% load bookwyrm_tags %}
 {% block content %}
 
 <div class="block">
@@ -31,31 +30,18 @@
     <div class="tile is-vertical">
         <div class="tile is-parent">
             <div class="tile is-child box has-background-white-ter">
-                <div class="columns">
-                    <div class="column is-narrow">
-                        {% include 'snippets/book_cover.html' with book=books.2 size="large" %}
-                        {% include 'snippets/stars.html' with rating=books.2.review__rating__avg %}
-                    </div>
-                    <div class="column">
-                        {% include 'snippets/book_titleby.html' with book=books.2 %}
-                        <blockquote class="content">{{ books.2|book_description|to_markdown|safe|truncatewords_html:50 }}</blockquote>
-                    </div>
-                </div>
+                {% include 'snippets/discover/large-book.html' with book=books.0 %}
             </div>
         </div>
         <div class="tile">
             <div class="tile is-parent is-6">
                 <div class="tile is-child box has-background-white-ter">
-                    {% include 'snippets/book_cover.html' with book=books.0 %}
-                    {% include 'snippets/book_titleby.html' with book=books.0 %}
-                    {% include 'snippets/stars.html' with rating=books.0.review__rating__avg %}
+                    {% include 'snippets/discover/small-book.html' with book=books.1 %}
                 </div>
             </div>
             <div class="tile is-parent is-6">
                 <div class="tile is-child box has-background-white-ter">
-                    {% include 'snippets/book_cover.html' with book=books.1 %}
-                    {% include 'snippets/book_titleby.html' with book=books.1 %}
-                    {% include 'snippets/stars.html' with rating=books.1.review__rating__avg %}
+                    {% include 'snippets/discover/small-book.html' with book=books.2 %}
                 </div>
             </div>
         </div>
@@ -64,31 +50,18 @@
         <div class="tile">
             <div class="tile is-parent is-6">
                 <div class="tile is-child box has-background-white-ter">
-                    {% include 'snippets/book_cover.html' with book=books.4 %}
-                    {% include 'snippets/book_titleby.html' with book=books.4 %}
-                    {% include 'snippets/stars.html' with rating=books.4.review__rating__avg %}
+                    {% include 'snippets/discover/small-book.html' with book=books.3 %}
                 </div>
             </div>
             <div class="tile is-parent is-6">
                 <div class="tile is-child box has-background-white-ter">
-                    {% include 'snippets/book_cover.html' with book=books.5 %}
-                    {% include 'snippets/book_titleby.html' with book=books.5 %}
-                    {% include 'snippets/stars.html' with rating=books.5.review__rating__avg %}
+                    {% include 'snippets/discover/small-book.html' with book=books.4 %}
                 </div>
             </div>
         </div>
         <div class="tile is-parent">
             <div class="tile is-child box has-background-white-ter">
-                <div class="columns">
-                    <div class="column is-narrow">
-                        {% include 'snippets/book_cover.html' with book=books.3 size="large" %}
-                        {% include 'snippets/stars.html' with rating=books.3.review__rating__avg %}
-                    </div>
-                    <div class="column">
-                        {% include 'snippets/book_titleby.html' with book=books.3 %}
-                        <blockquote class="content">{{ books.3|book_description|to_markdown|safe|truncatewords_html:50 }}</blockquote>
-                    </div>
-                </div>
+                {% include 'snippets/discover/large-book.html' with book=books.5 %}
             </div>
         </div>
     </div>

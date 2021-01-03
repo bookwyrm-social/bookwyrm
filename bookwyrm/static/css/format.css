@@ -68,8 +68,11 @@ input.toggle-control:checked ~ .modal.toggle-content {
     max-width: 250px;
 }
 .cover-container.is-large {
-    height: 500px;
+    height: max-content;
     max-width: 500px;
+}
+.cover-container.is-large img {
+    max-height: 500px;
 }
 .cover-container.is-medium {
     height: 200px;
