@@ -23,6 +23,7 @@ class Connector(AbstractConnector):
             search_results.append(self.format_search_result(result))
             if len(search_results) >= 10:
                 break
+        search_results.sort(key=lambda r: r.confidence, reverse=True)
         return search_results
 
 
@@ -75,10 +76,10 @@ def search_identifiers(query):
 
 def search_title_author(query, min_confidence):
     ''' searches for title and author '''
-    print('DON"T BOTHER')
     vector = SearchVector('title', weight='A') +\
         SearchVector('subtitle', weight='B') +\
-        SearchVector('authors__name', weight='C')
+        SearchVector('authors__name', weight='C') +\
+        SearchVector('series', weight='D')
 
     results = models.Edition.objects.annotate(
         search=vector

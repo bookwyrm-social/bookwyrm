@@ -48,6 +48,7 @@ class SelfConnector(TestCase):
         edition = models.Edition.objects.create(
             title='Edition of Example Work',
             published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
+            parent_work=models.Work.objects.create(title='')
         )
         # author text is rank C
         edition.authors.add(author)
@@ -55,18 +56,21 @@ class SelfConnector(TestCase):
         # series is rank D
         models.Edition.objects.create(
             title='Another Edition',
-            series='Anonymous'
+            series='Anonymous',
+            parent_work=models.Work.objects.create(title='')
         )
         # subtitle is rank B
         models.Edition.objects.create(
             title='More Editions',
             subtitle='The Anonymous Edition',
+            parent_work=models.Work.objects.create(title='')
         )
         # title is rank A
         models.Edition.objects.create(title='Anonymous')
         # doesn't rank in this search
         edition = models.Edition.objects.create(
             title='An Edition',
+            parent_work=models.Work.objects.create(title='')
         )
 
         results = self.connector.search('Anonymous')
