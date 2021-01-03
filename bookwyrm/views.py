@@ -42,6 +42,13 @@ def is_api_request(request):
     return 'json' in request.headers.get('Accept') or \
             request.path[-5:] == '.json'
 
+def is_bookworm_request(request):
+    ''' check if the request is coming from another bookworm instance '''
+    user_agent = request.headers.get('User-Agent')
+    if user_agent is None or re.search(regex.bookwyrm_user_agent, user_agent) is None:
+        return False
+
+    return True
 
 def server_error_page(request):
     ''' 500 errors '''
@@ -505,7 +512,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return ActivitypubResponse(status.to_activity())
+        return ActivitypubResponse(status.to_activity(pure=not is_bookworm_request(request)))
 
     data = {
         'title': 'Status by %s' % user.username,

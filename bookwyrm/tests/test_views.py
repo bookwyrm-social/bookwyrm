@@ -10,7 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.connectors import abstract_connector
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
@@ -539,3 +539,16 @@ class Views(TestCase):
                 request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, JsonResponse)
         self.assertEqual(result.status_code, 200)
+
+
+    def test_is_bookwyrm_request(self):
+        ''' tests the function that checks if a request came from a bookwyrm instance '''
+        request = self.factory.get('', {'q': 'Test Book'})
+        self.assertFalse(views.is_bookworm_request(request))
+
+        request = self.factory.get('', {'q': 'Test Book'},
+                HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)")
+        self.assertFalse(views.is_bookworm_request(request))
+
+        request = self.factory.get('', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
+        self.assertTrue(views.is_bookworm_request(request))
