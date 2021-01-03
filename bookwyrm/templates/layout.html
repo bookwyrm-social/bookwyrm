@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
             <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
@@ -149,34 +149,36 @@
 </nav>
 
 
-<div class="section">
+<div class="section container">
     {% block content %}
     {% endblock %}
 </div>
 
-<div class="footer">
-    <div class="columns">
-        <div class="column">
-            <p>
-                <a href="/about">About this server</a>
-            </p>
-            {% if site.admin_email %}
-            <p>
-                <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
-            </p>
+<footer class="footer">
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <p>
+                    <a href="/about">About this server</a>
+                </p>
+                {% if site.admin_email %}
+                <p>
+                    <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
+                </p>
+                {% endif %}
+            </div>
+            {% if site.support_link %}
+            <div class="column">
+                <span class="icon icon-heart"></span>
+                Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
+            </div>
             {% endif %}
-        </div>
-        {% if site.support_link %}
-        <div class="column">
-            <span class="icon icon-heart"></span>
-            Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
-        </div>
-        {% endif %}
-        <div class="column">
-            BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+            <div class="column">
+                BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+            </div>
         </div>
     </div>
-</div>
+</footer>
 
 <script>
     var csrf_token = '{{ csrf_token }}';
@@ -184,4 +186,3 @@
 <script src="/static/js/shared.js"></script>
 </body>
 </html>
-
