@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
             <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
@@ -63,7 +63,7 @@
         <div class="navbar-end">
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
-                <div class="navbar-link" role="button" aria-expanded=false" onmouseover="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
+                <div class="navbar-link" role="button" aria-expanded=false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
                     {% include 'snippets/avatar.html' with user=request.user %}
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>
@@ -117,48 +117,74 @@
                     </div>
                 </a>
             </div>
-	    {% else %}
+	    {% elif request.path != '/login' and request.path != '/login/' %}
             <div class="navbar-item">
-                <div class="buttons">
-                    <a href="/login" class="button is-primary">
-                        Join
-                    </a>
+                <div class="columns">
+                    <div class="column">
+                        <form name="login" method="post" action="/user-login">
+                            {% csrf_token %}
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <label class="is-sr-only" for="id_username">Username:</label>
+                                    <input type="text" name="username" maxlength="150" class="input" required="" id="id_username" placeholder="username">
+                                </div>
+                                <div class="control">
+                                    <label class="is-sr-only" for="id_password">Username:</label>
+                                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="password">
+                                    <p class="help"><a href="/password-reset">Forgot your password?</a></p>
+                                </div>
+                                <button class="button is-primary" type="submit">Log in</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="column is-narrow">
+                        <a href="/login" class="button is-link">
+                            Join
+                        </a>
+                    </div>
                 </div>
             </div>
+            {% else %}
+            <div class="navbar-item">
+            <a href="/login" class="button is-link">
+                Join
+            </a>
 	    {% endif %}
         </div>
     </div>
 </nav>
 
 
-<div class="section">
+<div class="section container">
     {% block content %}
     {% endblock %}
 </div>
 
-<div class="footer">
-    <div class="columns">
-        <div class="column">
-            <p>
-                <a href="/about">About this server</a>
-            </p>
-            {% if site.admin_email %}
-            <p>
-                <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
-            </p>
+<footer class="footer">
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <p>
+                    <a href="/about">About this server</a>
+                </p>
+                {% if site.admin_email %}
+                <p>
+                    <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
+                </p>
+                {% endif %}
+            </div>
+            {% if site.support_link %}
+            <div class="column">
+                <span class="icon icon-heart"></span>
+                Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
+            </div>
             {% endif %}
-        </div>
-        {% if site.support_link %}
-        <div class="column">
-            <span class="icon icon-heart"></span>
-            Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
-        </div>
-        {% endif %}
-        <div class="column">
-            BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+            <div class="column">
+                BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+            </div>
         </div>
     </div>
-</div>
+</footer>
 
 <script>
     var csrf_token = '{{ csrf_token }}';
@@ -166,4 +192,3 @@
 <script src="/static/js/shared.js"></script>
 </body>
 </html>
-

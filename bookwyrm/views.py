@@ -4,7 +4,7 @@ import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Avg, F, Q, Max
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -64,11 +64,12 @@ def not_found_page(request, _):
         request, 'notfound.html', {'title': 'Not found'}, status=404)
 
 
-@login_required
 @require_GET
 def home(request):
     ''' this is the same as the feed on the home tab '''
-    return home_tab(request, 'home')
+    if request.user.is_authenticated:
+        return home_tab(request, 'home')
+    return discover_page(request)
 
 
 @login_required
@@ -129,6 +130,35 @@ def get_suggested_books(user, max_books=5):
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview['books'])
     return suggested_books
+
+
+@require_GET
+def discover_page(request):
+    ''' tiled book activity page '''
+    books = models.Edition.objects.filter(
+        review__published_date__isnull=False,
+        review__user__local=True
+    ).exclude(
+        cover__exact=''
+    ).annotate(
+        Max('review__published_date')
+    ).order_by('-review__published_date__max')[:6]
+
+    ratings = {}
+    for book in books:
+        reviews = models.Review.objects.filter(
+            book__in=book.parent_work.editions.all()
+        )
+        reviews = get_activity_feed(
+            request.user, 'federated', model=reviews)
+        ratings[book.id] = reviews.aggregate(Avg('rating'))['rating__avg']
+    data = {
+        'title': 'Discover',
+        'register_form': forms.RegisterForm(),
+        'books': list(set(books)),
+        'ratings': ratings
+    }
+    return TemplateResponse(request, 'discover.html', data)
 
 
 @login_required

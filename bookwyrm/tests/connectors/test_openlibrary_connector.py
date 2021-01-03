@@ -104,7 +104,7 @@ class Openlibrary(TestCase):
         blob = ['image']
         result = self.connector.get_cover_url(blob)
         self.assertEqual(
-            result, 'https://covers.openlibrary.org/b/id/image-M.jpg')
+            result, 'https://covers.openlibrary.org/b/id/image-L.jpg')
 
     def test_parse_search_result(self):
         ''' extract the results from the search json response '''
