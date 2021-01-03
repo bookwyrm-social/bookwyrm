@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
 from django.db.models import Avg, Q
+from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -45,7 +46,8 @@ def is_api_request(request):
 def is_bookworm_request(request):
     ''' check if the request is coming from another bookworm instance '''
     user_agent = request.headers.get('User-Agent')
-    if user_agent is None or re.search(regex.bookwyrm_user_agent, user_agent) is None:
+    if user_agent is None or \
+            re.search(regex.bookwyrm_user_agent, user_agent) is None:
         return False
 
     return True
@@ -180,7 +182,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
         return activities.filter(
             Q(user=user) | Q(mention_users=user),
             privacy='direct'
-        )
+        ).distinct()
 
     # never show DMs in the regular feed
     activities = activities.filter(~Q(privacy='direct'))
@@ -195,7 +197,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
             Q(user__in=following, privacy__in=[
                 'public', 'unlisted', 'followers'
             ]) | Q(mention_users=user) | Q(user=user)
-        )
+        ).distinct()
     elif filter_level == 'self':
         activities = activities.filter(user=user, privacy='public')
     elif filter_level == 'local':
@@ -234,7 +236,10 @@ def search(request):
 
     # do a local user search
     user_results = models.User.objects.annotate(
-        similarity=TrigramSimilarity('username', query),
+        similarity=Greatest(
+            TrigramSimilarity('username', query),
+            TrigramSimilarity('localname', query),
+        )
     ).filter(
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
@@ -512,7 +517,8 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return ActivitypubResponse(status.to_activity(pure=not is_bookworm_request(request)))
+        return ActivitypubResponse(
+            status.to_activity(pure=not is_bookworm_request(request)))
 
     data = {
         'title': 'Status by %s' % user.username,

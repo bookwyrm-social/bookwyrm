@@ -63,33 +63,45 @@
         <div class="navbar-end">
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
-                <div class="navbar-link"><p>
+                <div class="navbar-link" role="button" aria-expanded=false" onmouseover="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
                     {% include 'snippets/avatar.html' with user=request.user %}
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>
-                <div class="navbar-dropdown">
-                    <a href="/direct-messages" class="navbar-item">
-                        Direct messages
-                    </a>
-                    <a href="/user/{{request.user.localname}}" class="navbar-item">
-                        Profile
-                    </a>
-                    <a href="/user-edit" class="navbar-item">
-                        Settings
-                    </a>
-                    <a href="/import" class="navbar-item">
-                        Import books
-                    </a>
+                <ul class="navbar-dropdown" id="navbar-dropdown">
+                    <li>
+                        <a href="/direct-messages" class="navbar-item">
+                            Direct messages
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/{{request.user.localname}}" class="navbar-item">
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user-edit" class="navbar-item">
+                            Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/import" class="navbar-item">
+                            Import books
+                        </a>
+                    </li>
                     {% if perms.bookwyrm.create_invites %}
-                    <a href="/invite" class="navbar-item">
-                        Invites
-                    </a>
+                    <li>
+                        <a href="/invite" class="navbar-item">
+                            Invites
+                        </a>
+                    </li>
                     {% endif %}
                     <hr class="navbar-divider">
-                    <a href="/logout" class="navbar-item">
-                        Log out
-                    </a>
-                </div>
+                    <li>
+                        <a href="/logout" class="navbar-item">
+                            Log out
+                        </a>
+                    </li>
+                </ul>
             </div>
             <div class="navbar-item">
                 <a href="/notifications">

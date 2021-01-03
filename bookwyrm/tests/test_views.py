@@ -211,6 +211,19 @@ class Views(TestCase):
             response.context_data['book_results'][0].title, 'Gideon the Ninth')
 
 
+    def test_search_html_response_users(self):
+        ''' searches remote connectors '''
+        request = self.factory.get('', {'q': 'mouse'})
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = False
+            with patch('bookwyrm.connectors.connector_manager.search'):
+                response = views.search(request)
+        self.assertIsInstance(response, TemplateResponse)
+        self.assertEqual(response.template_name, 'search_results.html')
+        self.assertEqual(
+            response.context_data['user_results'][0], self.local_user)
+
+
     def test_import_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         request = self.factory.get('')
