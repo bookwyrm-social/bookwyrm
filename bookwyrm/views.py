@@ -13,13 +13,20 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
+from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm import forms, models, books_manager
-from bookwyrm import goodreads_import
+from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
+
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.get_default_edition()
+    return book
 
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
@@ -35,6 +42,13 @@ def is_api_request(request):
     return 'json' in request.headers.get('Accept') or \
             request.path[-5:] == '.json'
 
+def is_bookworm_request(request):
+    ''' check if the request is coming from another bookworm instance '''
+    user_agent = request.headers.get('User-Agent')
+    if user_agent is None or re.search(regex.bookwyrm_user_agent, user_agent) is None:
+        return False
+
+    return True
 
 def server_error_page(request):
     ''' 500 errors '''
@@ -211,7 +225,7 @@ def search(request):
 
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
-        book_results = books_manager.local_search(query)
+        book_results = connector_manager.local_search(query)
         return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
@@ -225,7 +239,7 @@ def search(request):
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
-    book_results = books_manager.search(query)
+    book_results = connector_manager.search(query)
     data = {
         'title': 'Search Results',
         'book_results': book_results,
@@ -244,7 +258,6 @@ def import_page(request):
         'import_form': forms.ImportForm(),
         'jobs': models.ImportJob.
                 objects.filter(user=request.user).order_by('-created_date'),
-        'limit': goodreads_import.MAX_ENTRIES,
     })
 
 
@@ -499,7 +512,7 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return ActivitypubResponse(status.to_activity())
+        return ActivitypubResponse(status.to_activity(pure=not is_bookworm_request(request)))
 
     data = {
         'title': 'Status by %s' % user.username,
@@ -645,7 +658,7 @@ def book_page(request, book_id):
 @require_GET
 def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {

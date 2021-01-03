@@ -12,7 +12,7 @@ from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, \
         get_openlibrary_key
 from bookwyrm.connectors.abstract_connector import SearchResult
-from bookwyrm.connectors.abstract_connector import ConnectorException
+from bookwyrm.connectors.connector_manager import ConnectorException
 
 
 class Openlibrary(TestCase):

@@ -10,7 +10,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 from bookwyrm.connectors import abstract_connector
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
@@ -37,6 +37,14 @@ class Views(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
+
+
+    def test_get_edition(self):
+        ''' given an edition or a work, returns an edition '''
+        self.assertEqual(
+            views.get_edition(self.book.id), self.book)
+        self.assertEqual(
+            views.get_edition(self.work.id), self.book)
 
 
     def test_get_user_from_username(self):
@@ -193,7 +201,8 @@ class Views(TestCase):
         request = self.factory.get('', {'q': 'Test Book'})
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = False
-            with patch('bookwyrm.books_manager.search') as manager:
+            with patch(
+                    'bookwyrm.connectors.connector_manager.search') as manager:
                 manager.return_value = [search_result]
                 response = views.search(request)
         self.assertIsInstance(response, TemplateResponse)
@@ -530,3 +539,16 @@ class Views(TestCase):
                 request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, JsonResponse)
         self.assertEqual(result.status_code, 200)
+
+
+    def test_is_bookwyrm_request(self):
+        ''' tests the function that checks if a request came from a bookwyrm instance '''
+        request = self.factory.get('', {'q': 'Test Book'})
+        self.assertFalse(views.is_bookworm_request(request))
+
+        request = self.factory.get('', {'q': 'Test Book'},
+                HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)")
+        self.assertFalse(views.is_bookworm_request(request))
+
+        request = self.factory.get('', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
+        self.assertTrue(views.is_bookworm_request(request))

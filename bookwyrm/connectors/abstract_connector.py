@@ -6,17 +6,13 @@ from urllib3.exceptions import RequestError
 
 from django.db import transaction
 import requests
-from requests import HTTPError
 from requests.exceptions import SSLError
 
 from bookwyrm import activitypub, models, settings
+from .connector_manager import load_more_data, ConnectorException
 
 
 logger = logging.getLogger(__name__)
-class ConnectorException(HTTPError):
-    ''' when the connector can't do what was asked '''
-
-
 class AbstractMinimalConnector(ABC):
     ''' just the bare bones, for other bookwyrm instances '''
     def __init__(self, identifier):
@@ -90,7 +86,6 @@ class AbstractConnector(AbstractMinimalConnector):
         return True
 
 
-    @transaction.atomic
     def get_or_create_book(self, remote_id):
         ''' translate arbitrary json into an Activitypub dataclass '''
         # first, check if we have the origin_id saved
@@ -123,13 +118,17 @@ class AbstractConnector(AbstractMinimalConnector):
         if not work_data or not edition_data:
             raise ConnectorException('Unable to load book data: %s' % remote_id)
 
-        # create activitypub object
-        work_activity = activitypub.Work(**work_data)
-        # this will dedupe automatically
-        work = work_activity.to_model(models.Work)
-        for author in self.get_authors_from_data(data):
-            work.authors.add(author)
-        return self.create_edition_from_data(work, edition_data)
+        with transaction.atomic():
+            # create activitypub object
+            work_activity = activitypub.Work(**work_data)
+            # this will dedupe automatically
+            work = work_activity.to_model(models.Work)
+            for author in self.get_authors_from_data(data):
+                work.authors.add(author)
+
+            edition = self.create_edition_from_data(work, edition_data)
+        load_more_data.delay(self.connector.id, work.id)
+        return edition
 
 
     def create_edition_from_data(self, work, edition_data):
@@ -206,7 +205,7 @@ def get_data(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except RequestError:
+    except (RequestError, SSLError):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
