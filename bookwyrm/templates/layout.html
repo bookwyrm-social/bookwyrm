@@ -117,8 +117,9 @@
                     </div>
                 </a>
             </div>
-	    {% elif request.path != '/login' and request.path != '/login/' %}
+            {% else %}
             <div class="navbar-item">
+                {% if request.path != '/login' and request.path != '/login/' %}
                 <div class="columns">
                     <div class="column">
                         <form name="login" method="post" action="/user-login">
@@ -137,19 +138,17 @@
                             </div>
                         </form>
                     </div>
+                    {% if site.allow_registration and request.path != '' and request.path != '/' %}
                     <div class="column is-narrow">
-                        <a href="/login" class="button is-link">
+                        <a href="/" class="button is-link">
                             Join
                         </a>
                     </div>
+                    {% endif %}
                 </div>
+                {% endif %}
             </div>
-            {% else %}
-            <div class="navbar-item">
-            <a href="/login" class="button is-link">
-                Join
-            </a>
-	    {% endif %}
+            {% endif %}
         </div>
     </div>
 </nav>
