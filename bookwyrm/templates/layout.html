@@ -117,11 +117,12 @@
                     </div>
                 </a>
             </div>
-	    {% else %}
+	    {% elif request.path != '/login' and request.path != '/login/' %}
             <div class="navbar-item">
                 <div class="columns">
                     <div class="column">
                         <form name="login" method="post" action="/user-login">
+                            {% csrf_token %}
                             <div class="field is-grouped">
                                 <div class="control">
                                     <label class="is-sr-only" for="id_username">Username:</label>
@@ -143,6 +144,11 @@
                     </div>
                 </div>
             </div>
+            {% else %}
+            <div class="navbar-item">
+            <a href="/login" class="button is-link">
+                Join
+            </a>
 	    {% endif %}
         </div>
     </div>
