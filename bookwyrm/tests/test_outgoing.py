@@ -176,10 +176,10 @@ class Outgoing(TestCase):
 
     def test_existing_user(self):
         ''' simple database lookup by username '''
-        result = outgoing.handle_remote_webfinger('@mouse@%s' % DOMAIN)
+        result = outgoing.handle_remote_webfinger('@mouse@local.com')
         self.assertEqual(result, self.local_user)
 
-        result = outgoing.handle_remote_webfinger('mouse@%s' % DOMAIN)
+        result = outgoing.handle_remote_webfinger('mouse@local.com')
         self.assertEqual(result, self.local_user)
 
 
@@ -399,7 +399,7 @@ class Outgoing(TestCase):
     def test_handle_status_mentions(self):
         ''' @mention a user in a post '''
         user = models.User.objects.create_user(
-            'rat@local.com', 'rat@rat.com', 'password',
+            'rat@%s' % DOMAIN, 'rat@rat.com', 'password',
             local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat',
@@ -411,16 +411,16 @@ class Outgoing(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             outgoing.handle_status(self.local_user, form)
         status = models.Status.objects.get()
+        self.assertEqual(list(status.mention_users.all()), [user])
+        self.assertEqual(models.Notification.objects.get().user, user)
         self.assertEqual(
             status.content,
             '<p>hi <a href="%s">@rat</a></p>' % user.remote_id)
-        self.assertEqual(list(status.mention_users.all()), [user])
-        self.assertEqual(models.Notification.objects.get().user, user)
 
     def test_handle_status_reply_with_mentions(self):
         ''' reply to a post with an @mention'ed user '''
         user = models.User.objects.create_user(
-            'rat@local.com', 'rat@rat.com', 'password',
+            'rat', 'rat@rat.com', 'password',
             local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat@example.com',
