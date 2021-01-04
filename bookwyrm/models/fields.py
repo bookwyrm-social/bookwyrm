@@ -177,6 +177,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         del kwargs['verbose_name']
         del kwargs['max_length']
         del kwargs['unique']
+        del kwargs['validators']
         del kwargs['error_messages']
         return name, path, args, kwargs
 
