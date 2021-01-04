@@ -111,6 +111,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.max_length, 150)
         self.assertEqual(instance.unique, True)
         with self.assertRaises(ValidationError):
+            instance.run_validators('mouse')
             instance.run_validators('mouseexample.com')
             instance.run_validators('mouse@example.c')
             instance.run_validators('@example.com')

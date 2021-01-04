@@ -1,4 +1,5 @@
 ''' database schema for user data '''
+import re
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -13,6 +14,7 @@ from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
+from bookwyrm.utils import regex
 from .base_model import OrderedCollectionPageMixin
 from .base_model import ActivitypubMixin, BookWyrmModel
 from .federated_server import FederatedServer
@@ -168,13 +170,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         ''' populate fields for new local users '''
         # this user already exists, no need to populate fields
-        if self.id:
-            return super().save(*args, **kwargs)
-
-        if not self.local:
+        if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = '%s@%s' % (self.username, actor_parts.netloc)
+            return super().save(*args, **kwargs)
+
+        if self.id or not self.local:
             return super().save(*args, **kwargs)
 
         # populate fields for local users

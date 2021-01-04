@@ -487,6 +487,10 @@ class Incoming(TestCase):
 
     def test_handle_update_user(self):
         ''' update an existing user '''
+        # we only do this with remote users
+        self.local_user.local = False
+        self.local_user.save()
+
         datafile = pathlib.Path(__file__).parent.joinpath(
             'data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
