@@ -18,16 +18,13 @@ class SiteSettings(models.Model):
         default="Add a code of conduct here.")
     allow_registration = models.BooleanField(default=True)
     logo = models.ImageField(
-        upload_to='static/images/',
-        default='/static/images/logo.png'
+        upload_to='logos/', null=True, blank=True
     )
     logo_small = models.ImageField(
-        upload_to='static/images/',
-        default='/static/images/logo-small.png'
+        upload_to='logos/', null=True, blank=True
     )
     favicon = models.ImageField(
-        upload_to='static/images/',
-        default='/static/images/favicon.ico'
+        upload_to='logos/', null=True, blank=True
     )
     support_link = models.CharField(max_length=255, null=True, blank=True)
     support_title = models.CharField(max_length=100, null=True, blank=True)
