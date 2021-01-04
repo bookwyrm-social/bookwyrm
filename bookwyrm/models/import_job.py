@@ -6,7 +6,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 
-from bookwyrm import books_manager
+from bookwyrm.connectors import connector_manager
 from bookwyrm.models import ReadThrough, User, Book
 from .fields import PrivacyLevels
 
@@ -71,12 +71,12 @@ class ImportItem(models.Model):
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_result = books_manager.first_search_result(
+        search_result = connector_manager.first_search_result(
             self.isbn, min_confidence=0.999
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 
@@ -86,12 +86,12 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_result = books_manager.first_search_result(
+        search_result = connector_manager.first_search_result(
             search_term, min_confidence=0.999
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 

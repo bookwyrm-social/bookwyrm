@@ -31,6 +31,7 @@ class BookWyrmConnector(TestCase):
 
 
     def test_format_search_result(self):
+        ''' create a SearchResult object from search response json '''
         datafile = pathlib.Path(__file__).parent.joinpath(
             '../data/fr_search.json')
         search_data = json.loads(datafile.read_bytes())
@@ -43,3 +44,4 @@ class BookWyrmConnector(TestCase):
         self.assertEqual(result.key, 'https://example.com/book/122')
         self.assertEqual(result.author, 'Susanna Clarke')
         self.assertEqual(result.year, 2017)
+        self.assertEqual(result.connector, self.connector)

@@ -1,20 +1,18 @@
 ''' functionality outline for a book data connector '''
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+import logging
 from urllib3.exceptions import RequestError
 
 from django.db import transaction
 import requests
-from requests import HTTPError
 from requests.exceptions import SSLError
 
-from bookwyrm import activitypub, models
+from bookwyrm import activitypub, models, settings
+from .connector_manager import load_more_data, ConnectorException
 
 
-class ConnectorException(HTTPError):
-    ''' when the connector can't do what was asked '''
-
-
+logger = logging.getLogger(__name__)
 class AbstractMinimalConnector(ABC):
     ''' just the bare bones, for other bookwyrm instances '''
     def __init__(self, identifier):
@@ -42,11 +40,16 @@ class AbstractMinimalConnector(ABC):
             '%s%s' % (self.search_url, query),
             headers={
                 'Accept': 'application/json; charset=utf-8',
+                'User-Agent': settings.USER_AGENT,
             },
         )
         if not resp.ok:
             resp.raise_for_status()
-        data = resp.json()
+        try:
+            data = resp.json()
+        except ValueError as e:
+            logger.exception(e)
+            raise ConnectorException('Unable to parse json response', e)
         results = []
 
         for doc in self.parse_search_data(data)[:10]:
@@ -83,7 +86,6 @@ class AbstractConnector(AbstractMinimalConnector):
         return True
 
 
-    @transaction.atomic
     def get_or_create_book(self, remote_id):
         ''' translate arbitrary json into an Activitypub dataclass '''
         # first, check if we have the origin_id saved
@@ -116,13 +118,17 @@ class AbstractConnector(AbstractMinimalConnector):
         if not work_data or not edition_data:
             raise ConnectorException('Unable to load book data: %s' % remote_id)
 
-        # create activitypub object
-        work_activity = activitypub.Work(**work_data)
-        # this will dedupe automatically
-        work = work_activity.to_model(models.Work)
-        for author in self.get_authors_from_data(data):
-            work.authors.add(author)
-        return self.create_edition_from_data(work, edition_data)
+        with transaction.atomic():
+            # create activitypub object
+            work_activity = activitypub.Work(**work_data)
+            # this will dedupe automatically
+            work = work_activity.to_model(models.Work)
+            for author in self.get_authors_from_data(data):
+                work.authors.add(author)
+
+            edition = self.create_edition_from_data(work, edition_data)
+        load_more_data.delay(self.connector.id, work.id)
+        return edition
 
 
     def create_edition_from_data(self, work, edition_data):
@@ -168,7 +174,7 @@ class AbstractConnector(AbstractMinimalConnector):
         ''' every work needs at least one edition '''
 
     @abstractmethod
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         ''' every edition needs a work '''
 
     @abstractmethod
@@ -196,9 +202,10 @@ def get_data(url):
             url,
             headers={
                 'Accept': 'application/json; charset=utf-8',
+                'User-Agent': settings.USER_AGENT,
             },
         )
-    except RequestError:
+    except (RequestError, SSLError):
         raise ConnectorException()
     if not resp.ok:
         resp.raise_for_status()
@@ -213,7 +220,12 @@ def get_data(url):
 def get_image(url):
     ''' wrapper for requesting an image '''
     try:
-        resp = requests.get(url)
+        resp = requests.get(
+            url,
+            headers={
+                'User-Agent': settings.USER_AGENT,
+            },
+        )
     except (RequestError, SSLError):
         return None
     if not resp.ok:
@@ -228,11 +240,18 @@ class SearchResult:
     key: str
     author: str
     year: str
+    connector: object
     confidence: int = 1
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
             self.key, self.title, self.author)
+
+    def json(self):
+        ''' serialize a connector for json response '''
+        serialized = asdict(self)
+        del serialized['connector']
+        return serialized
 
 
 class Mapping:

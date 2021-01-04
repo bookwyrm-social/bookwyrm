@@ -118,7 +118,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             activity['attachment'] = [
                 image_serializer(b.cover, b.alt_text) \
                     for b in self.mention_books.all()[:4] if b.cover]
-            if hasattr(self, 'book'):
+            if hasattr(self, 'book') and self.book.cover:
                 activity['attachment'].append(
                     image_serializer(self.book.cover, self.book.alt_text)
                 )
@@ -222,26 +222,6 @@ class Review(Status):
     pure_type = 'Article'
 
 
-class Favorite(ActivitypubMixin, BookWyrmModel):
-    ''' fav'ing a post '''
-    user = fields.ForeignKey(
-        'User', on_delete=models.PROTECT, activitypub_field='actor')
-    status = fields.ForeignKey(
-        'Status', on_delete=models.PROTECT, activitypub_field='object')
-
-    activity_serializer = activitypub.Like
-
-    def save(self, *args, **kwargs):
-        ''' update user active time '''
-        self.user.last_active_date = timezone.now()
-        self.user.save()
-        super().save(*args, **kwargs)
-
-    class Meta:
-        ''' can't fav things twice '''
-        unique_together = ('user', 'status')
-
-
 class Boost(Status):
     ''' boost'ing a post '''
     boosted_status = fields.ForeignKey(
@@ -268,54 +248,3 @@ class Boost(Status):
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
-
-
-class ReadThrough(BookWyrmModel):
-    ''' Store progress through a book in the database. '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    book = models.ForeignKey('Edition', on_delete=models.PROTECT)
-    pages_read = models.IntegerField(
-        null=True,
-        blank=True)
-    start_date = models.DateTimeField(
-        blank=True,
-        null=True)
-    finish_date = models.DateTimeField(
-        blank=True,
-        null=True)
-
-    def save(self, *args, **kwargs):
-        ''' update user active time '''
-        self.user.last_active_date = timezone.now()
-        self.user.save()
-        super().save(*args, **kwargs)
-
-
-NotificationType = models.TextChoices(
-    'NotificationType',
-    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
-
-class Notification(BookWyrmModel):
-    ''' you've been tagged, liked, followed, etc '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
-    related_book = models.ForeignKey(
-        'Edition', on_delete=models.PROTECT, null=True)
-    related_user = models.ForeignKey(
-        'User',
-        on_delete=models.PROTECT, null=True, related_name='related_user')
-    related_status = models.ForeignKey(
-        'Status', on_delete=models.PROTECT, null=True)
-    related_import = models.ForeignKey(
-        'ImportJob', on_delete=models.PROTECT, null=True)
-    read = models.BooleanField(default=False)
-    notification_type = models.CharField(
-        max_length=255, choices=NotificationType.choices)
-
-    class Meta:
-        ''' checks if notifcation is in enum list for valid types '''
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(notification_type__in=NotificationType.values),
-                name="notification_type_valid",
-            )
-        ]

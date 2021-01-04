@@ -3,7 +3,8 @@ import re
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import ConnectorException, get_data
+from .abstract_connector import get_data
+from .connector_manager import ConnectorException
 from .openlibrary_languages import languages
 
 
@@ -68,7 +69,7 @@ class Connector(AbstractConnector):
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        return '%s/%s' % (self.books_url, key)
+        return '%s%s' % (self.books_url, key)
 
 
     def is_work_data(self, data):
@@ -80,17 +81,17 @@ class Connector(AbstractConnector):
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        url = '%s/%s/editions' % (self.books_url, key)
+        url = '%s%s/editions' % (self.books_url, key)
         data = get_data(url)
         return pick_default_edition(data['entries'])
 
 
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         try:
             key = data['works'][0]['key']
         except (IndexError, KeyError):
             raise ConnectorException('No work found for edition')
-        url = '%s/%s' % (self.books_url, key)
+        url = '%s%s' % (self.books_url, key)
         return get_data(url)
 
 
@@ -100,14 +101,14 @@ class Connector(AbstractConnector):
             author_blob = author_blob.get('author', author_blob)
             # this id is "/authors/OL1234567A"
             author_id = author_blob['key']
-            url = '%s/%s.json' % (self.base_url, author_id)
+            url = '%s%s' % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
 
     def get_cover_url(self, cover_blob):
         ''' ask openlibrary for the cover '''
         cover_id = cover_blob[0]
-        image_name = '%s-M.jpg' % cover_id
+        image_name = '%s-L.jpg' % cover_id
         return '%s/b/id/%s' % (self.covers_url, image_name)
 
 
@@ -123,13 +124,14 @@ class Connector(AbstractConnector):
             title=search_result.get('title'),
             key=key,
             author=', '.join(author),
+            connector=self,
             year=search_result.get('first_publish_year'),
         )
 
 
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
-        url = '%s/works/%s/editions.json' % (self.books_url, olkey)
+        url = '%s/works/%s/editions' % (self.books_url, olkey)
         return get_data(url)
 
 
@@ -149,7 +151,7 @@ def get_description(description_blob):
     ''' descriptions can be a string or a dict '''
     if isinstance(description_blob, dict):
         return description_blob.get('value')
-    return  description_blob
+    return description_blob
 
 
 def get_openlibrary_key(key):

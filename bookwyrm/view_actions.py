@@ -17,11 +17,12 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from bookwyrm import books_manager, forms, models, outgoing, goodreads_import
+from bookwyrm import forms, models, outgoing, goodreads_import
+from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
-from bookwyrm.views import get_user_from_username
+from bookwyrm.views import get_user_from_username, get_edition
 
 
 @require_POST
@@ -211,10 +212,8 @@ def edit_profile(request):
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    connector = books_manager.get_or_create_connector(remote_id)
+    connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
-    if book.connector:
-        books_manager.load_more_data.delay(book.id)
 
     return redirect('/book/%d' % book.id)
 
@@ -372,7 +371,7 @@ def delete_shelf(request, shelf_id):
 @require_POST
 def shelve(request):
     ''' put a  on a user's shelf '''
-    book = books_manager.get_edition(request.POST['book'])
+    book = get_edition(request.POST['book'])
 
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],
@@ -418,7 +417,7 @@ def unshelve(request):
 @require_POST
 def start_reading(request, book_id):
     ''' begin reading a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='reading',
         user=request.user
@@ -454,7 +453,7 @@ def start_reading(request, book_id):
 @require_POST
 def finish_reading(request, book_id):
     ''' a user completed a book, yay '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='read',
         user=request.user
@@ -578,14 +577,14 @@ def tag(request):
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
     )
-    user_tag = models.UserTag.objects.get_or_create(
+    user_tag, _ = models.UserTag.objects.get_or_create(
         user=request.user,
         book=book,
         tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, user_tag)
+        broadcast(request.user, user_tag.to_add_activity(request.user))
     return redirect('/book/%s' % book_id)
 
 
@@ -594,9 +593,16 @@ def tag(request):
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
+    tag_obj = get_object_or_404(models.Tag, name=name)
     book_id = request.POST.get('book')
+    book = get_object_or_404(models.Edition, id=book_id)
 
-    outgoing.handle_untag(request.user, book_id, name)
+    user_tag = get_object_or_404(
+        models.UserTag, tag=tag_obj, book=book, user=request.user)
+    tag_activity = user_tag.to_remove_activity(request.user)
+    user_tag.delete()
+
+    broadcast(request.user, tag_activity)
     return redirect('/book/%s' % book_id)
 
 

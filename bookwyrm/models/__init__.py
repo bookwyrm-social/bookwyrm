@@ -9,8 +9,11 @@ from .connector import Connector
 from .shelf import Shelf, ShelfBook
 
 from .status import Status, GeneratedNote, Review, Comment, Quotation
-from .status import Favorite, Boost, Notification, ReadThrough
+from .status import Boost
 from .attachment import Image
+from .favorite import Favorite
+from .notification import Notification
+from .readthrough import ReadThrough
 
 from .tag import Tag, UserTag
 
@@ -25,3 +28,6 @@ from .site import SiteSettings, SiteInvite, PasswordReset
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[1].activity_serializer.__name__: c[1] \
     for c in cls_members if hasattr(c[1], 'activity_serializer')}
+
+status_models = [
+    c.__name__ for (_, c) in activity_models.items() if issubclass(c, Status)]

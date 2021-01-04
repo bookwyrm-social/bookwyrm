@@ -2,8 +2,10 @@
 import re
 
 from django.db import IntegrityError, transaction
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 from markdown import markdown
 from requests import HTTPError
 
@@ -20,19 +22,16 @@ from bookwyrm.utils import regex
 
 
 @csrf_exempt
+@require_GET
 def outbox(request, username):
     ''' outbox for the requested user '''
-    if request.method != 'GET':
-        return HttpResponseNotFound()
+    user = get_object_or_404(models.User, localname=username)
+    filter_type = request.GET.get('type')
+    if filter_type not in models.status_models:
+        filter_type = None
 
-    try:
-        user = models.User.objects.get(localname=username)
-    except models.User.DoesNotExist:
-        return HttpResponseNotFound()
-
-    # collection overview
     return JsonResponse(
-        user.to_outbox(**request.GET),
+        user.to_outbox(**request.GET, filter_type=filter_type),
         encoder=activitypub.ActivityEncoder
     )
 
@@ -42,6 +41,9 @@ def handle_remote_webfinger(query):
     user = None
 
     # usernames could be @user@domain or user@domain
+    if not query:
+        return None
+
     if query[0] == '@':
         query = query[1:]
 
@@ -164,22 +166,23 @@ def handle_imported_book(user, item, include_reviews, privacy):
     if not item.book:
         return
 
-    if item.shelf:
+    existing_shelf = models.ShelfBook.objects.filter(
+        book=item.book, added_by=user).exists()
+
+    # shelve the book if it hasn't been shelved already
+    if item.shelf and not existing_shelf:
         desired_shelf = models.Shelf.objects.get(
             identifier=item.shelf,
             user=user
         )
-        # shelve the book if it hasn't been shelved already
-        shelf_book, created = models.ShelfBook.objects.get_or_create(
+        shelf_book = models.ShelfBook.objects.create(
             book=item.book, shelf=desired_shelf, added_by=user)
-        if created:
-            broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
+        broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
-            # only add new read-throughs if the item isn't already shelved
-            for read in item.reads:
-                read.book = item.book
-                read.user = user
-                read.save()
+    for read in item.reads:
+        read.book = item.book
+        read.user = user
+        read.save()
 
     if include_reviews and (item.rating or item.review):
         review_title = 'Review of {!r} on Goodreads'.format(
@@ -218,8 +221,65 @@ def handle_status(user, form):
     status.save()
 
     # inspect the text for user tags
-    matches = []
-    for match in re.finditer(regex.username, status.content):
+    content = status.content
+    for (mention_text, mention_user) in find_mentions(content):
+        # add them to status mentions fk
+        status.mention_users.add(mention_user)
+
+        # turn the mention into a link
+        content = re.sub(
+            r'%s([^@]|$)' % mention_text,
+            r'<a href="%s">%s</a>\g<1>' % \
+                (mention_user.remote_id, mention_text),
+            content)
+
+    # add reply parent to mentions and notify
+    if status.reply_parent:
+        status.mention_users.add(status.reply_parent.user)
+        for mention_user in status.reply_parent.mention_users.all():
+            status.mention_users.add(mention_user)
+
+        if status.reply_parent.user.local:
+            create_notification(
+                status.reply_parent.user,
+                'REPLY',
+                related_user=user,
+                related_status=status
+            )
+
+    # deduplicate mentions
+    status.mention_users.set(set(status.mention_users.all()))
+    # create mention notifications
+    for mention_user in status.mention_users.all():
+        if status.reply_parent and mention_user == status.reply_parent.user:
+            continue
+        if mention_user.local:
+            create_notification(
+                mention_user,
+                'MENTION',
+                related_user=user,
+                related_status=status
+            )
+
+    # don't apply formatting to generated notes
+    if not isinstance(status, models.GeneratedNote):
+        status.content = to_markdown(content)
+    # do apply formatting to quotes
+    if hasattr(status, 'quote'):
+        status.quote = to_markdown(status.quote)
+
+    status.save()
+
+    broadcast(user, status.to_create_activity(user), software='bookwyrm')
+
+    # re-format the activity for non-bookwyrm servers
+    remote_activity = status.to_create_activity(user, pure=True)
+    broadcast(user, remote_activity, software='other')
+
+
+def find_mentions(content):
+    ''' detect @mentions in raw status content '''
+    for match in re.finditer(regex.strict_username, content):
         username = match.group().strip().split('@')[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
@@ -230,44 +290,7 @@ def handle_status(user, form):
         if not mention_user:
             # we can ignore users we don't know about
             continue
-        matches.append((match.group(), mention_user.remote_id))
-        # add them to status mentions fk
-        status.mention_users.add(mention_user)
-        # create notification if the mentioned user is local
-        if mention_user.local:
-            create_notification(
-                mention_user,
-                'MENTION',
-                related_user=user,
-                related_status=status
-            )
-    # add mentions
-    content = status.content
-    for (username, url) in matches:
-        content = re.sub(
-            r'%s([^@])' % username,
-            r'<a href="%s">%s</a>\g<1>' % (url, username),
-            content)
-    if not isinstance(status, models.GeneratedNote):
-        status.content = to_markdown(content)
-    if hasattr(status, 'quote'):
-        status.quote = to_markdown(status.quote)
-    status.save()
-
-    # notify reply parent or tagged users
-    if status.reply_parent and status.reply_parent.user.local:
-        create_notification(
-            status.reply_parent.user,
-            'REPLY',
-            related_user=user,
-            related_status=status
-        )
-
-    broadcast(user, status.to_create_activity(user), software='bookwyrm')
-
-    # re-format the activity for non-bookwyrm servers
-    remote_activity = status.to_create_activity(user, pure=True)
-    broadcast(user, remote_activity, software='other')
+        yield (match.group(), mention_user)
 
 
 def to_markdown(content):
@@ -282,21 +305,6 @@ def to_markdown(content):
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)
     return sanitizer.get_output()
-
-
-def handle_tag(user, tag):
-    ''' tag a book '''
-    broadcast(user, tag.to_add_activity(user))
-
-
-def handle_untag(user, book, name):
-    ''' tag a book '''
-    book = models.Book.objects.get(id=book)
-    tag = models.Tag.objects.get(name=name, book=book, user=user)
-    tag_activity = tag.to_remove_activity(user)
-    tag.delete()
-
-    broadcast(user, tag_activity)
 
 
 def handle_favorite(user, status):

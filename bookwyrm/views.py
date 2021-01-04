@@ -4,7 +4,8 @@ import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q
+from django.db.models import Avg, Q, Max
+from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
@@ -13,21 +14,28 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm.activitypub import ActivityEncoder
-from bookwyrm import forms, models, books_manager
-from bookwyrm import goodreads_import
+from bookwyrm import forms, models
+from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
 
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.get_default_edition()
+    return book
+
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
+    # raises DoesNotExist if user is now found
     try:
-        user = models.User.objects.get(localname=username)
+        return models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
-        user = models.User.objects.get(username=username)
-    return user
+        return models.User.objects.get(username=username)
 
 
 def is_api_request(request):
@@ -35,22 +43,33 @@ def is_api_request(request):
     return 'json' in request.headers.get('Accept') or \
             request.path[-5:] == '.json'
 
+def is_bookworm_request(request):
+    ''' check if the request is coming from another bookworm instance '''
+    user_agent = request.headers.get('User-Agent')
+    if user_agent is None or \
+            re.search(regex.bookwyrm_user_agent, user_agent) is None:
+        return False
+
+    return True
 
 def server_error_page(request):
     ''' 500 errors '''
-    return TemplateResponse(request, 'error.html', {'title': 'Oops!'})
+    return TemplateResponse(
+        request, 'error.html', {'title': 'Oops!'}, status=500)
 
 
 def not_found_page(request, _):
     ''' 404s '''
-    return TemplateResponse(request, 'notfound.html', {'title': 'Not found'})
+    return TemplateResponse(
+        request, 'notfound.html', {'title': 'Not found'}, status=404)
 
 
-@login_required
 @require_GET
 def home(request):
     ''' this is the same as the feed on the home tab '''
-    return home_tab(request, 'home')
+    if request.user.is_authenticated:
+        return home_tab(request, 'home')
+    return discover_page(request)
 
 
 @login_required
@@ -113,6 +132,36 @@ def get_suggested_books(user, max_books=5):
     return suggested_books
 
 
+@require_GET
+def discover_page(request):
+    ''' tiled book activity page '''
+    books = models.Edition.objects.filter(
+        review__published_date__isnull=False,
+        review__user__local=True,
+        review__privacy__in=['public', 'unlisted'],
+    ).exclude(
+        cover__exact=''
+    ).annotate(
+        Max('review__published_date')
+    ).order_by('-review__published_date__max')[:6]
+
+    ratings = {}
+    for book in books:
+        reviews = models.Review.objects.filter(
+            book__in=book.parent_work.editions.all()
+        )
+        reviews = get_activity_feed(
+            request.user, 'federated', model=reviews)
+        ratings[book.id] = reviews.aggregate(Avg('rating'))['rating__avg']
+    data = {
+        'title': 'Discover',
+        'register_form': forms.RegisterForm(),
+        'books': list(set(books)),
+        'ratings': ratings
+    }
+    return TemplateResponse(request, 'discover.html', data)
+
+
 @login_required
 @require_GET
 def direct_messages_page(request, page=1):
@@ -164,7 +213,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
         return activities.filter(
             Q(user=user) | Q(mention_users=user),
             privacy='direct'
-        )
+        ).distinct()
 
     # never show DMs in the regular feed
     activities = activities.filter(~Q(privacy='direct'))
@@ -179,7 +228,7 @@ def get_activity_feed(user, filter_level, model=models.Status):
             Q(user__in=following, privacy__in=[
                 'public', 'unlisted', 'followers'
             ]) | Q(mention_users=user) | Q(user=user)
-        )
+        ).distinct()
     elif filter_level == 'self':
         activities = activities.filter(user=user, privacy='public')
     elif filter_level == 'local':
@@ -209,8 +258,8 @@ def search(request):
 
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
-        book_results = books_manager.local_search(query)
-        return JsonResponse([r.__dict__ for r in book_results], safe=False)
+        book_results = connector_manager.local_search(query)
+        return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
     if re.match(regex.full_username, query):
@@ -218,12 +267,15 @@ def search(request):
 
     # do a local user search
     user_results = models.User.objects.annotate(
-        similarity=TrigramSimilarity('username', query),
+        similarity=Greatest(
+            TrigramSimilarity('username', query),
+            TrigramSimilarity('localname', query),
+        )
     ).filter(
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
-    book_results = books_manager.search(query)
+    book_results = connector_manager.search(query)
     data = {
         'title': 'Search Results',
         'book_results': book_results,
@@ -242,7 +294,6 @@ def import_page(request):
         'import_form': forms.ImportForm(),
         'jobs': models.ImportJob.
                 objects.filter(user=request.user).order_by('-created_date'),
-        'limit': goodreads_import.MAX_ENTRIES,
     })
 
 
@@ -378,7 +429,7 @@ def user_page(request, username):
 
     if is_api_request(request):
         # we have a json request
-        return JsonResponse(user.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(user.to_activity())
     # otherwise we're at a UI view
 
     try:
@@ -403,7 +454,7 @@ def user_page(request, username):
             continue
         shelf_preview.append({
             'name': user_shelf.name,
-            'remote_id': user_shelf.remote_id,
+            'local_path': user_shelf.local_path,
             'books': user_shelf.books.all()[:3],
             'size': user_shelf.books.count(),
         })
@@ -446,7 +497,7 @@ def followers_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_followers_activity(**request.GET))
+        return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
     data = {
         'title': '%s: followers' % user.name,
@@ -467,7 +518,7 @@ def following_page(request, username):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(user.to_following_activity(**request.GET))
+        return ActivitypubResponse(user.to_following_activity(**request.GET))
 
     data = {
         'title': '%s: following' % user.name,
@@ -497,7 +548,8 @@ def status_page(request, username, status_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(status.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(
+            status.to_activity(pure=not is_bookworm_request(request)))
 
     data = {
         'title': 'Status by %s' % user.username,
@@ -530,10 +582,7 @@ def replies_page(request, username, status_id):
     if status.user.localname != username:
         return HttpResponseNotFound()
 
-    return JsonResponse(
-        status.to_replies(**request.GET),
-        encoder=ActivityEncoder
-    )
+    return ActivitypubResponse(status.to_replies(**request.GET))
 
 
 @login_required
@@ -565,7 +614,7 @@ def book_page(request, book_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(book.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(book.to_activity())
 
     if isinstance(book, models.Work):
         book = book.get_default_edition()
@@ -646,7 +695,7 @@ def book_page(request, book_id):
 @require_GET
 def edit_book_page(request, book_id):
     ''' info about a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     if not book.description:
         book.description = book.parent_work.description
     data = {
@@ -677,10 +726,7 @@ def editions_page(request, book_id):
     work = get_object_or_404(models.Work, id=book_id)
 
     if is_api_request(request):
-        return JsonResponse(
-            work.to_edition_list(**request.GET),
-            encoder=ActivityEncoder
-        )
+        return ActivitypubResponse(work.to_edition_list(**request.GET))
 
     data = {
         'title': 'Editions of %s' % work.title,
@@ -696,7 +742,7 @@ def author_page(request, author_id):
     author = get_object_or_404(models.Author, id=author_id)
 
     if is_api_request(request):
-        return JsonResponse(author.to_activity(), encoder=ActivityEncoder)
+        return ActivitypubResponse(author.to_activity())
 
     books = models.Work.objects.filter(
         Q(authors=author) | Q(editions__authors=author)).distinct()
@@ -716,8 +762,7 @@ def tag_page(request, tag_id):
         return HttpResponseNotFound()
 
     if is_api_request(request):
-        return JsonResponse(
-            tag_obj.to_activity(**request.GET), encoder=ActivityEncoder)
+        return ActivitypubResponse(tag_obj.to_activity(**request.GET))
 
     books = models.Edition.objects.filter(
         usertag__tag__identifier=tag_id
@@ -768,7 +813,11 @@ def shelf_page(request, username, shelf_identifier):
 
 
     if is_api_request(request):
-        return JsonResponse(shelf.to_activity(**request.GET))
+        return ActivitypubResponse(shelf.to_activity(**request.GET))
+
+    books = models.ShelfBook.objects.filter(
+        added_by=user, shelf=shelf
+    ).order_by('-updated_date').all()
 
     data = {
         'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
@@ -776,6 +825,7 @@ def shelf_page(request, username, shelf_identifier):
         'is_self': is_self,
         'shelves': shelves.all(),
         'shelf': shelf,
+        'books': [b.book for b in books],
     }
 
     return TemplateResponse(request, 'shelf.html', data)

@@ -1,6 +1,7 @@
 ''' database schema for user data '''
 from urllib.parse import urlparse
 
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
@@ -107,11 +108,22 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     activity_serializer = activitypub.Person
 
-    def to_outbox(self, **kwargs):
+    def to_outbox(self, filter_type=None, **kwargs):
         ''' an ordered collection of statuses '''
-        queryset = Status.objects.filter(
+        if filter_type:
+            filter_class = apps.get_model(
+                'bookwyrm.%s' % filter_type, require_ready=True)
+            if not issubclass(filter_class, Status):
+                raise TypeError(
+                    'filter_status_class must be a subclass of models.Status')
+            queryset = filter_class.objects
+        else:
+            queryset = Status.objects
+
+        queryset = queryset.filter(
             user=self,
             deleted=False,
+            privacy__in=['public', 'unlisted'],
         ).select_subclasses().order_by('-published_date')
         return self.to_ordered_collection(queryset, \
                 remote_id=self.outbox, **kwargs)
@@ -119,14 +131,22 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_following_activity(self, **kwargs):
         ''' activitypub following list '''
         remote_id = '%s/following' % self.remote_id
-        return self.to_ordered_collection(self.following.all(), \
-                remote_id=remote_id, id_only=True, **kwargs)
+        return self.to_ordered_collection(
+            self.following.order_by('-updated_date').all(),
+            remote_id=remote_id,
+            id_only=True,
+            **kwargs
+        )
 
     def to_followers_activity(self, **kwargs):
         ''' activitypub followers list '''
         remote_id = '%s/followers' % self.remote_id
-        return self.to_ordered_collection(self.followers.all(), \
-                remote_id=remote_id, id_only=True, **kwargs)
+        return self.to_ordered_collection(
+            self.followers.order_by('-updated_date').all(),
+            remote_id=remote_id,
+            id_only=True,
+            **kwargs
+        )
 
     def to_activity(self):
         ''' override default AP serializer to add context object
@@ -164,6 +184,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.outbox = '%s/outbox' % self.remote_id
 
         return super().save(*args, **kwargs)
+
+    @property
+    def local_path(self):
+        ''' this model doesn't inherit bookwyrm model, so here we are '''
+        return '/user/%s' % (self.localname or self.username)
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
@@ -270,7 +295,7 @@ def get_or_create_remote_server(domain):
 @app.task
 def get_remote_reviews(outbox):
     ''' ingest reviews by a new remote bookwyrm user '''
-    outbox_page = outbox + '?page=true'
+    outbox_page = outbox + '?page=true&type=Review'
     data = get_data(outbox_page)
 
     # TODO: pagination?

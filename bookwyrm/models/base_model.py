@@ -35,6 +35,11 @@ class BookWyrmModel(models.Model):
         ''' this is just here to provide default fields for other models '''
         abstract = True
 
+    @property
+    def local_path(self):
+        ''' how to link to this object in the local app '''
+        return self.get_remote_id().replace('https://%s' % DOMAIN, '')
+
 
 @receiver(models.signals.post_save)
 #pylint: disable=unused-argument
@@ -104,7 +109,7 @@ class ActivitypubMixin:
                     not field.deduplication_field:
                 continue
 
-            value = data.get(field.activitypub_field)
+            value = data.get(field.get_activitypub_field())
             if not value:
                 continue
             filters.append({field.name: value})
@@ -237,7 +242,9 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
         ).serialize()
 
 
-def to_ordered_collection_page(queryset, remote_id, id_only=False, page=1):
+# pylint: disable=unused-argument
+def to_ordered_collection_page(
+        queryset, remote_id, id_only=False, page=1, **kwargs):
     ''' serialize and pagiante a queryset '''
     paginated = Paginator(queryset, PAGE_LENGTH)
 

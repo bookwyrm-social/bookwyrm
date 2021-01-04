@@ -273,6 +273,12 @@ class Incoming(TestCase):
         incoming.handle_create(activity)
         self.assertEqual(models.Status.objects.count(), 2)
 
+    def test_handle_create_unknown_type(self):
+        ''' folks send you all kinds of things '''
+        activity = {'object': {'id': 'hi'}, 'type': 'Fish'}
+        result = incoming.handle_create(activity)
+        self.assertIsNone(result)
+
     def test_handle_create_remote_note_with_mention(self):
         ''' should only create it under the right circumstances '''
         self.assertEqual(models.Status.objects.count(), 1)

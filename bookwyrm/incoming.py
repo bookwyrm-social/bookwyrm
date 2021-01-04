@@ -185,11 +185,15 @@ def handle_create(activity):
     ''' someone did something, good on them '''
     # deduplicate incoming activities
     activity = activity['object']
-    status_id = activity['id']
+    status_id = activity.get('id')
     if models.Status.objects.filter(remote_id=status_id).count():
         return
 
-    serializer = activitypub.activity_objects[activity['type']]
+    try:
+        serializer = activitypub.activity_objects[activity['type']]
+    except KeyError:
+        return
+
     activity = serializer(**activity)
     try:
         model = models.activity_models[activity.type]

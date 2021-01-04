@@ -206,3 +206,15 @@ class BaseModel(TestCase):
         # test subclass match
         result = models.Status.find_existing_by_remote_id(
             'https://comment.net')
+
+
+    def test_find_existing(self):
+        ''' match a blob of data to a model '''
+        book = models.Edition.objects.create(
+            title='Test edition',
+            openlibrary_key='OL1234',
+        )
+
+        result = models.Edition.find_existing(
+            {'openlibraryKey': 'OL1234'})
+        self.assertEqual(result, book)
