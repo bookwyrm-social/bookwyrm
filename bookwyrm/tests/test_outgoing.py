@@ -398,7 +398,7 @@ class Outgoing(TestCase):
     def test_handle_status_mentions(self):
         ''' @mention a user in a post '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat', 'rat@rat.com', 'password', local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat',
             'user': self.local_user.id,
@@ -418,7 +418,7 @@ class Outgoing(TestCase):
     def test_handle_status_reply_with_mentions(self):
         ''' reply to a post with an @mention'ed user '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat', 'rat@rat.com', 'password', local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat@example.com',
             'user': self.local_user.id,
