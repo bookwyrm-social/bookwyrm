@@ -17,11 +17,12 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from bookwyrm import books_manager, forms, models, outgoing, goodreads_import
+from bookwyrm import forms, models, outgoing, goodreads_import
+from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
-from bookwyrm.views import get_user_from_username
+from bookwyrm.views import get_user_from_username, get_edition
 
 
 @require_POST
@@ -29,8 +30,8 @@ def user_login(request):
     ''' authenticate user login '''
     login_form = forms.LoginForm(request.POST)
 
-    username = login_form.data['username']
-    username = '%s@%s' % (username, DOMAIN)
+    localname = login_form.data['localname']
+    username = '%s@%s' % (localname, DOMAIN)
     password = login_form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
@@ -58,6 +59,8 @@ def register(request):
             raise PermissionDenied
 
         invite = get_object_or_404(models.SiteInvite, code=invite_code)
+        if not invite.valid():
+            raise PermissionDenied
     else:
         invite = None
 
@@ -66,13 +69,13 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username'].strip()
+    localname = form.data['localname'].strip()
     email = form.data['email']
     password = form.data['password']
 
-    # check username and email uniqueness
-    if models.User.objects.filter(localname=username).first():
-        form.add_error('username', 'User with this username already exists')
+    # check localname and email uniqueness
+    if models.User.objects.filter(localname=localname).first():
+        form.errors['localname'] = ['User with this username already exists']
         errors = True
 
     if errors:
@@ -82,8 +85,9 @@ def register(request):
         }
         return TemplateResponse(request, 'login.html', data)
 
+    username = '%s@%s' % (localname, DOMAIN)
     user = models.User.objects.create_user(
-        username, email, password, local=True)
+        username, email, password, localname=localname, local=True)
     if invite:
         invite.times_used += 1
         invite.save()
@@ -210,10 +214,8 @@ def edit_profile(request):
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    connector = books_manager.get_or_create_connector(remote_id)
+    connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
-    if book.connector:
-        books_manager.load_more_data.delay(book.id)
 
     return redirect('/book/%d' % book.id)
 
@@ -371,7 +373,7 @@ def delete_shelf(request, shelf_id):
 @require_POST
 def shelve(request):
     ''' put a  on a user's shelf '''
-    book = books_manager.get_edition(request.POST['book'])
+    book = get_edition(request.POST['book'])
 
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],
@@ -417,7 +419,7 @@ def unshelve(request):
 @require_POST
 def start_reading(request, book_id):
     ''' begin reading a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='reading',
         user=request.user
@@ -453,7 +455,7 @@ def start_reading(request, book_id):
 @require_POST
 def finish_reading(request, book_id):
     ''' a user completed a book, yay '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='read',
         user=request.user

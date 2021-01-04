@@ -9,7 +9,8 @@ from bookwyrm.settings import DOMAIN
 class User(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse@%s' % DOMAIN, 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
 
     def test_computed_fields(self):
         ''' username instead of id here '''

@@ -7,10 +7,12 @@ from bookwyrm import models, broadcast
 class Book(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
 
         local_follower = models.User.objects.create_user(
-            'joe', 'joe@mouse.mouse', 'jeoword', local=True)
+            'joe', 'joe@mouse.mouse', 'jeoword',
+            local=True, localname='joe')
         self.user.followers.add(local_follower)
 
         with patch('bookwyrm.models.user.set_remote_server.delay'):

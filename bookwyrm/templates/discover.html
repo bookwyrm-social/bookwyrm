@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{% if not request.user.is_authenticated %}
+<div class="block">
+    <h1 class="title has-text-centered">{{ site.name }}: {{ site.instance_tagline }}</h1>
+</div>
+
+<section class="tile is-ancestor">
+    <div class="tile is-7 is-parent">
+        <div class="tile is-child box">
+            {% include 'snippets/about.html' %}
+        </div>
+    </div>
+    <div class="tile is-5 is-parent">
+        <div class="tile is-child box has-background-primary-light">
+            {% if site.allow_registration %}
+            <h2 class="title">Join {{ site.name }}</h2>
+            <form name="register" method="post" action="/user-register">
+                {% include 'snippets/register_form.html' %}
+            </form>
+            {% else %}
+            <h2 class="title">This instance is closed</h2>
+            <p>{{ site.registration_closed_text }}</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% else %}
+<div class="block">
+    <h1 class="title has-text-centered">Discover</h1>
+</div>
+{% endif %}
+
+<div class="block is-hidden-tablet">
+    <h2 class="title has-text-centered">Recent Books</h2>
+</div>
+
+<section class="tile is-ancestor">
+    <div class="tile is-vertical">
+        <div class="tile is-parent">
+            <div class="tile is-child box has-background-white-ter">
+                {% include 'snippets/discover/large-book.html' with book=books.0 %}
+            </div>
+        </div>
+        <div class="tile">
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'snippets/discover/small-book.html' with book=books.1 %}
+                </div>
+            </div>
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'snippets/discover/small-book.html' with book=books.2 %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tile is-vertical">
+        <div class="tile">
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'snippets/discover/small-book.html' with book=books.3 %}
+                </div>
+            </div>
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'snippets/discover/small-book.html' with book=books.4 %}
+                </div>
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <div class="tile is-child box has-background-white-ter">
+                {% include 'snippets/discover/large-book.html' with book=books.5 %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

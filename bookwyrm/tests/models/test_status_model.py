@@ -16,7 +16,8 @@ class Status(TestCase):
     def setUp(self):
         ''' useful things for creating a status '''
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         self.book = models.Edition.objects.create(title='Test Edition')
 
         image_file = pathlib.Path(__file__).parent.joinpath(

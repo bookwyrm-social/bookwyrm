@@ -8,7 +8,8 @@ from django.utils import timezone
 from django.test import TestCase
 import responses
 
-from bookwyrm import books_manager, models
+from bookwyrm import models
+from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.abstract_connector import SearchResult
 
 
@@ -58,7 +59,8 @@ class ImportJob(TestCase):
         unknown_read_data['Date Read'] = ''
 
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         job = models.ImportJob.objects.create(user=user)
         self.item_1 = models.ImportItem.objects.create(
             job=job, index=1, data=currently_reading_data)
@@ -134,7 +136,7 @@ class ImportJob(TestCase):
             search_url='https://openlibrary.org/search?q=',
             priority=3,
         )
-        connector = books_manager.load_connector(connector_info)
+        connector = connector_manager.load_connector(connector_info)
         result = SearchResult(
             title='Test Result',
             key='https://openlibrary.org/works/OL1234W',
@@ -163,8 +165,12 @@ class ImportJob(TestCase):
             json={'name': 'test author'},
             status=200)
 
-        with patch('bookwyrm.books_manager.first_search_result') as search:
-            search.return_value = result
-            book = self.item_1.get_book_from_isbn()
+        with patch(
+                'bookwyrm.connectors.abstract_connector.load_more_data.delay'):
+            with patch(
+                    'bookwyrm.connectors.connector_manager.first_search_result'
+                ) as search:
+                search.return_value = result
+                book = self.item_1.get_book_from_isbn()
 
         self.assertEqual(book.title, 'Sabriel')

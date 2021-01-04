@@ -12,11 +12,24 @@ from .user import User
 class SiteSettings(models.Model):
     ''' customized settings for this instance '''
     name = models.CharField(default='BookWyrm', max_length=100)
+    instance_tagline = models.CharField(
+        max_length=150, default='Social Reading and Reviewing')
     instance_description = models.TextField(
-        default="This instance has no description.")
+        default='This instance has no description.')
+    registration_closed_text = models.TextField(
+        default='Contact an administrator to get an invite')
     code_of_conduct = models.TextField(
-        default="Add a code of conduct here.")
+        default='Add a code of conduct here.')
     allow_registration = models.BooleanField(default=True)
+    logo = models.ImageField(
+        upload_to='logos/', null=True, blank=True
+    )
+    logo_small = models.ImageField(
+        upload_to='logos/', null=True, blank=True
+    )
+    favicon = models.ImageField(
+        upload_to='logos/', null=True, blank=True
+    )
     support_link = models.CharField(max_length=255, null=True, blank=True)
     support_title = models.CharField(max_length=100, null=True, blank=True)
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
@@ -52,7 +65,7 @@ class SiteInvite(models.Model):
     @property
     def link(self):
         ''' formats the invite link '''
-        return "https://{}/invite/{}".format(DOMAIN, self.code)
+        return 'https://{}/invite/{}'.format(DOMAIN, self.code)
 
 
 def get_passowrd_reset_expiry():
@@ -74,4 +87,4 @@ class PasswordReset(models.Model):
     @property
     def link(self):
         ''' formats the invite link '''
-        return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+        return 'https://{}/password-reset/{}'.format(DOMAIN, self.code)
