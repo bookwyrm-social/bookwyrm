@@ -30,7 +30,6 @@ def user_login(request):
     ''' authenticate user login '''
     login_form = forms.LoginForm(request.POST)
 
-    print(login_form.data)
     localname = login_form.data['localname']
     username = '%s@%s' % (localname, DOMAIN)
     password = login_form.data['password']
@@ -60,6 +59,8 @@ def register(request):
             raise PermissionDenied
 
         invite = get_object_or_404(models.SiteInvite, code=invite_code)
+        if not invite.valid():
+            raise PermissionDenied
     else:
         invite = None
 
@@ -74,7 +75,7 @@ def register(request):
 
     # check localname and email uniqueness
     if models.User.objects.filter(localname=localname).first():
-        form.add_error('localname', 'User with this username already exists')
+        form.errors['localname'] = ['User with this username already exists']
         errors = True
 
     if errors:

@@ -173,7 +173,7 @@ class ViewActions(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(models.SiteInvite.objects.get().times_used, 1)
 
-        # invalid invite
+        # invite already used to max capacity
         request = self.factory.post(
             'register/',
             {
@@ -182,7 +182,8 @@ class ViewActions(TestCase):
                 'email': 'aa@bb.ccc',
                 'invite_code': 'testcode'
             })
-        response = actions.register(request)
+        with self.assertRaises(PermissionDenied):
+            response = actions.register(request)
         self.assertEqual(models.User.objects.count(), 3)
 
         # bad invite code
@@ -380,7 +381,7 @@ class ViewActions(TestCase):
     def test_untag(self):
         ''' remove a tag from a book '''
         tag = models.Tag.objects.create(name='A Tag!?')
-        user_tag = models.UserTag.objects.create(
+        models.UserTag.objects.create(
             user=self.local_user, book=self.book, tag=tag)
         request = self.factory.post(
             '', {
