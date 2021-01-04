@@ -7,13 +7,14 @@ from django import template
 from django.utils import timezone
 
 from bookwyrm import models
+from bookwyrm.outgoing import to_markdown
 
 
 register = template.Library()
 
 @register.filter(name='dict_key')
 def dict_key(d, k):
-    '''Returns the given key from a dictionary.'''
+    ''' Returns the given key from a dictionary. '''
     return d.get(k) or 0
 
 
@@ -97,38 +98,10 @@ def get_boosted(boost):
     ).get()
 
 
-@register.filter(name='edition_info')
-def get_edition_info(book):
-    ''' paperback, French language, 1982 '''
-    if not book:
-        return ''
-    items = [
-        book.physical_format if isinstance(book, models.Edition) else None,
-        book.languages[0] + ' language' if book.languages and \
-                book.languages[0] != 'English' else None,
-        str(book.published_date.year) if book.published_date else None,
-    ]
-    return ', '.join(i for i in items if i)
-
-
 @register.filter(name='book_description')
 def get_book_description(book):
     ''' use the work's text if the book doesn't have it '''
     return book.description or book.parent_work.description
-
-@register.filter(name='text_overflow')
-def text_overflow(text):
-    ''' dont' let book descriptions run for ages '''
-    if not text:
-        return ''
-    char_max = 400
-    if text and len(text) < char_max:
-        return text
-
-    trimmed = text[:char_max]
-    # go back to the last space
-    trimmed = ' '.join(trimmed.split(' ')[:-1])
-    return trimmed + '...'
 
 
 @register.filter(name='uuid')
@@ -137,7 +110,7 @@ def get_uuid(identifier):
     return '%s%s' % (identifier, uuid4())
 
 
-@register.filter(name="post_date")
+@register.filter(name='post_date')
 def time_since(date):
     ''' concise time ago function '''
     if not isinstance(date, datetime):
@@ -146,7 +119,10 @@ def time_since(date):
     delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
-        return date.strftime('%b %-d')
+        formatter = '%b %-d'
+        if date.year != now.year:
+            formatter += ' %Y'
+        return date.strftime(formatter)
     delta = relativedelta(now, date)
     if delta.days:
         return '%dd' % delta.days
@@ -157,15 +133,28 @@ def time_since(date):
     return '%ds' % delta.seconds
 
 
+@register.filter(name='to_markdown')
+def get_markdown(content):
+    ''' convert markdown to html '''
+    if content:
+        return to_markdown(content)
+    return None
+
+@register.filter(name='mentions')
+def get_mentions(status, user):
+    ''' anyone tagged or replied to in this status '''
+    mentions = set([status.user] + list(status.mention_users.all()))
+    return ' '.join(
+        '@' + get_user_identifier(m) for m in mentions if not m == user)
+
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
-    #TODO: books can be on multiple shelves, handle that better
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context['request'].user,
-        book=book
+        book__in=book.parent_work.editions.all()
     ).first()
-    return shelf.shelf if shelf else None
+    return shelf if shelf else {'book': book}
 
 
 @register.simple_tag(takes_context=False)

@@ -1,10 +1,12 @@
-{% load fr_display %}
+{% load bookwyrm_tags %}
 <span class="is-sr-only">Leave a rating</span>
 <div class="field is-grouped stars rate-stars">
     {% for i in '12345'|make_list %}
     <form name="rate" action="/rate/" method="POST" onsubmit="return rate_stars(event)">
         {% csrf_token %}
+        <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="privacy" value="public">
         <input type="hidden" name="rating" value="{{ forloop.counter }}">
         <button type="submit" class="icon icon-star-{% if book|rating:user < forloop.counter %}empty{% else %}full{% endif %}">
             <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>

@@ -6,6 +6,7 @@ import django.db.utils
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import requests
 
 from bookwyrm import activitypub, models, outgoing
@@ -15,11 +16,9 @@ from bookwyrm.signatures import Signature
 
 
 @csrf_exempt
+@require_POST
 def inbox(request, username):
     ''' incoming activitypub events '''
-    # TODO: should do some kind of checking if the user accepts
-    # this action from the sender probably? idk
-    # but this will just throw a 404 if the user doesn't exist
     try:
         models.User.objects.get(localname=username)
     except models.User.DoesNotExist:
@@ -29,11 +28,9 @@ def inbox(request, username):
 
 
 @csrf_exempt
+@require_POST
 def shared_inbox(request):
     ''' incoming activitypub events '''
-    if request.method == 'GET':
-        return HttpResponseNotFound()
-
     try:
         resp = request.body
         activity = json.loads(resp)
@@ -60,7 +57,6 @@ def shared_inbox(request):
         'Announce': handle_boost,
         'Add': {
             'Edition': handle_add,
-            'Work': handle_add,
         },
         'Undo': {
             'Follow': handle_unfollow,
@@ -69,8 +65,8 @@ def shared_inbox(request):
         },
         'Update': {
             'Person': handle_update_user,
-            'Edition': handle_update_book,
-            'Work': handle_update_book,
+            'Edition': handle_update_edition,
+            'Work': handle_update_work,
         },
     }
     activity_type = activity['type']
@@ -144,7 +140,7 @@ def handle_follow(activity):
 def handle_unfollow(activity):
     ''' unfollow a local user '''
     obj = activity['object']
-    requester = activitypub.resolve_remote_id(models.user, obj['actor'])
+    requester = activitypub.resolve_remote_id(models.User, obj['actor'])
     to_unfollow = models.User.objects.get(remote_id=obj['object'])
     # raises models.User.DoesNotExist
 
@@ -188,34 +184,48 @@ def handle_follow_reject(activity):
 def handle_create(activity):
     ''' someone did something, good on them '''
     # deduplicate incoming activities
-    status_id = activity['object']['id']
+    activity = activity['object']
+    status_id = activity.get('id')
     if models.Status.objects.filter(remote_id=status_id).count():
         return
 
-    serializer = activitypub.activity_objects[activity['type']]
-    status = serializer(**activity)
+    try:
+        serializer = activitypub.activity_objects[activity['type']]
+    except KeyError:
+        return
+
+    activity = serializer(**activity)
     try:
         model = models.activity_models[activity.type]
     except KeyError:
         # not a type of status we are prepared to deserialize
         return
 
-    if activity.type == 'Note':
-        reply = models.Status.objects.filter(
-            remote_id=activity.inReplyTo
-        ).first()
-        if not reply:
-            return
+    status = activity.to_model(model)
+    if not status:
+        # it was discarded because it's not a bookwyrm type
+        return
 
-    activity.to_model(model)
     # create a notification if this is a reply
+    notified = []
     if status.reply_parent and status.reply_parent.user.local:
+        notified.append(status.reply_parent.user)
         status_builder.create_notification(
             status.reply_parent.user,
             'REPLY',
             related_user=status.user,
             related_status=status,
         )
+    if status.mention_users.exists():
+        for mentioned_user in status.mention_users.all():
+            if not mentioned_user.local or mentioned_user in notified:
+                continue
+            status_builder.create_notification(
+                mentioned_user,
+                'MENTION',
+                related_user=status.user,
+                related_status=status,
+            )
 
 
 @app.task
@@ -228,11 +238,12 @@ def handle_delete_status(activity):
         # is trying to delete a user.
         return
     try:
-        status = models.Status.objects.select_subclasses().get(
+        status = models.Status.objects.get(
             remote_id=status_id
         )
     except models.Status.DoesNotExist:
         return
+    models.Notification.objects.filter(related_status=status).all().delete()
     status_builder.delete_status(status)
 
 
@@ -317,6 +328,12 @@ def handle_update_user(activity):
 
 
 @app.task
-def handle_update_book(activity):
+def handle_update_edition(activity):
     ''' a remote instance changed a book (Document) '''
     activitypub.Edition(**activity['object']).to_model(models.Edition)
+
+
+@app.task
+def handle_update_work(activity):
+    ''' a remote instance changed a book (Document) '''
+    activitypub.Work(**activity['object']).to_model(models.Work)

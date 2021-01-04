@@ -22,7 +22,8 @@ class BaseModel(TestCase):
     def test_remote_id_with_user(self):
         ''' format of remote id when there's a user object '''
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
         instance = base_model.BookWyrmModel()
         instance.user = user
         instance.id = 1
@@ -51,7 +52,8 @@ class BaseModel(TestCase):
     def test_to_create_activity(self):
         ''' wrapper for ActivityPub "create" action '''
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
 
         object_activity = {
             'to': 'to field', 'cc': 'cc field',
@@ -81,7 +83,8 @@ class BaseModel(TestCase):
     def test_to_delete_activity(self):
         ''' wrapper for Delete activity '''
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
 
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
@@ -105,7 +108,8 @@ class BaseModel(TestCase):
     def test_to_update_activity(self):
         ''' ditto above but for Update '''
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
 
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
@@ -129,7 +133,8 @@ class BaseModel(TestCase):
     def test_to_undo_activity(self):
         ''' and again, for Undo '''
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse')
 
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
@@ -173,7 +178,8 @@ class BaseModel(TestCase):
         book = models.Edition.objects.create(
             title='Test Edition', remote_id='http://book.com/book')
         user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         user.remote_id = 'http://example.com/a/b'
         user.save()
 
@@ -200,3 +206,15 @@ class BaseModel(TestCase):
         # test subclass match
         result = models.Status.find_existing_by_remote_id(
             'https://comment.net')
+
+
+    def test_find_existing(self):
+        ''' match a blob of data to a model '''
+        book = models.Edition.objects.create(
+            title='Test edition',
+            openlibrary_key='OL1234',
+        )
+
+        result = models.Edition.find_existing(
+            {'openlibraryKey': 'OL1234'})
+        self.assertEqual(result, book)

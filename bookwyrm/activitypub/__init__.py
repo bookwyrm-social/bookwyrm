@@ -11,6 +11,7 @@ from .note import Tombstone
 from .interaction import Boost, Like
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .person import Person, PublicKey
+from .response import ActivitypubResponse
 from .book import Edition, Work, Author
 from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject

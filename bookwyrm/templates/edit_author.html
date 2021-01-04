@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+{% load humanize %}
+{% block content %}
+<div class="block">
+    <div class="level">
+        <h1 class="title level-left">
+            Edit "{{ author.name }}"
+        </h1>
+        <div class="level-right">
+            <a href="/author/{{ author.id }}">
+                <span class="edit-link icon icon-close">
+                    <span class="is-sr-only">Close</span>
+                </span>
+            </a>
+        </div>
+    </div>
+    <div>
+        <p>Added: {{ author.created_date | naturaltime }}</p>
+        <p>Updated: {{ author.updated_date | naturaltime }}</p>
+        <p>Last edited by: <a href="{{ author.last_edited_by.remote_id }}">{{ author.last_edited_by.display_name }}</a></p>
+    </div>
+</div>
+
+{% if form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+</div>
+{% endif %}
+
+<form class="block" name="edit-author" action="/edit-author/{{ author.id }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+
+    <div class="columns">
+        <div class="column">
+            <h2 class="title is-4">Metadata</h2>
+            <p><label class="label" for="id_name">Name:</label> {{ form.name }}</p>
+            {% for error in form.name.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_bio">Bio:</label> {{ form.bio }}</p>
+            {% for error in form.bio.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_wikipedia_link">Wikipedia link:</label> {{ form.wikipedia_link }}</p>
+            {% for error in form.wikipedia_link.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_born">Birth date:</label> {{ form.born }}</p>
+            {% for error in form.born.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_died">Death date:</label> {{ form.died }}</p>
+            {% for error in form.died.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+        </div>
+        <div class="column">
+            <h2 class="title is-4">Author Identifiers</h2>
+            <p><label class="label" for="id_openlibrary_key">Openlibrary key:</label> {{ form.openlibrary_key }}</p>
+            {% for error in form.openlibrary_key.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_librarything_key">Librarything key:</label> {{ form.librarything_key }}</p>
+            {% for error in form.librarything_key.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p><label class="label" for="id_goodreads_key">Goodreads key:</label> {{ form.goodreads_key }}</p>
+            {% for error in form.goodreads_key.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div class="block">
+        <button class="button is-primary" type="submit">Save</button>
+        <a class="button" href="/author/{{ author.id }}">Cancel</a>
+    </div>
+</form>
+
+{% endblock %}
+

@@ -1,10 +1,10 @@
 {% csrf_token %}
 <div class="field">
-    <label class="label" for="id_username_register">Username:</label>
+    <label class="label" for="id_localname_register">Username:</label>
     <div class="control">
-        <input type="text" name="username" maxlength="150" class="input" required="" id="id_username_register" value="{% if register_form.username.value %}{{ register_form.username.value }} {% endif %}">
+        <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname_register" value="{% if register_form.localname.value %}{{ register_form.localname.value }}{% endif %}">
     </div>
-    {% for error in register_form.username.errors %}
+    {% for error in register_form.localname.errors %}
     <p class="help is-danger">{{ error | escape }}</p>
     {% endfor %}
 </div>

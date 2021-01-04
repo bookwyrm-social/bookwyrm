@@ -2,15 +2,18 @@
 import inspect
 import sys
 
-from .book import Book, Work, Edition
+from .book import Book, Work, Edition, BookDataModel
 from .author import Author
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
 
 from .status import Status, GeneratedNote, Review, Comment, Quotation
-from .status import Favorite, Boost, Notification, ReadThrough
+from .status import Boost
 from .attachment import Image
+from .favorite import Favorite
+from .notification import Notification
+from .readthrough import ReadThrough
 
 from .tag import Tag, UserTag
 
@@ -26,7 +29,5 @@ cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {c[1].activity_serializer.__name__: c[1] \
     for c in cls_members if hasattr(c[1], 'activity_serializer')}
 
-def to_activity(activity_json):
-    ''' link up models and activities '''
-    activity_type = activity_json.get('type')
-    return activity_models[activity_type].to_activity(activity_json)
+status_models = [
+    c.__name__ for (_, c) in activity_models.items() if issubclass(c, Status)]

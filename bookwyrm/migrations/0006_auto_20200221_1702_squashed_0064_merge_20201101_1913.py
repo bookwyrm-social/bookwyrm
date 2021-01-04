@@ -2,7 +2,6 @@
 
 import bookwyrm.models.connector
 import bookwyrm.models.site
-import bookwyrm.utils.fields
 from django.conf import settings
 import django.contrib.postgres.operations
 import django.core.validators
@@ -10,6 +9,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.db.models.expressions
 import django.utils.timezone
+from django.contrib.postgres.fields import JSONField, ArrayField
 import uuid
 
 
@@ -148,7 +148,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='misc_identifiers',
-            field=bookwyrm.utils.fields.JSONField(null=True),
+            field=JSONField(null=True),
         ),
         migrations.AddField(
             model_name='book',
@@ -226,7 +226,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='author',
             name='aliases',
-            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=bookwyrm.models.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AddField(
             model_name='user',
@@ -394,17 +394,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='subject_places',
-            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AddField(
             model_name='book',
             name='subjects',
-            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AddField(
             model_name='edition',
             name='publishers',
-            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AlterField(
             model_name='connector',
@@ -578,7 +578,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='book',
             name='languages',
-            field=bookwyrm.utils.fields.ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
+            field=ArrayField(base_field=models.CharField(max_length=255), blank=True, default=list, size=None),
         ),
         migrations.AddField(
             model_name='edition',
@@ -676,7 +676,7 @@ class Migration(migrations.Migration):
             name='ImportItem',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data', bookwyrm.utils.fields.JSONField()),
+                ('data', JSONField()),
             ],
         ),
         migrations.CreateModel(

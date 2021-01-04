@@ -65,6 +65,14 @@ input.toggle-control:checked ~ .modal.toggle-content {
 .cover-container {
     height: 250px;
     width: max-content;
+    max-width: 250px;
+}
+.cover-container.is-large {
+    height: max-content;
+    max-width: 500px;
+}
+.cover-container.is-large img {
+    max-height: 500px;
 }
 .cover-container.is-medium {
     height: 150px;
@@ -135,9 +143,4 @@ input.toggle-control:checked ~ .modal.toggle-content {
 .quote blockquote:after {
     content: "\e904";
     right: 0;
-}
-
-/* --- BLOCKQUOTE --- */
-blockquote {
-    white-space: pre-line;
 }

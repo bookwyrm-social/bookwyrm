@@ -10,18 +10,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
+from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from bookwyrm import books_manager
-from bookwyrm import forms, models, outgoing
-from bookwyrm import goodreads_import
+from bookwyrm import forms, models, outgoing, goodreads_import
+from bookwyrm.connectors import connector_manager
+from bookwyrm.broadcast import broadcast
 from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
-from bookwyrm.views import get_user_from_username
+from bookwyrm.views import get_user_from_username, get_edition
 
 
 @require_POST
@@ -29,8 +30,8 @@ def user_login(request):
     ''' authenticate user login '''
     login_form = forms.LoginForm(request.POST)
 
-    username = login_form.data['username']
-    username = '%s@%s' % (username, DOMAIN)
+    localname = login_form.data['localname']
+    username = '%s@%s' % (localname, DOMAIN)
     password = login_form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
@@ -58,6 +59,8 @@ def register(request):
             raise PermissionDenied
 
         invite = get_object_or_404(models.SiteInvite, code=invite_code)
+        if not invite.valid():
+            raise PermissionDenied
     else:
         invite = None
 
@@ -66,13 +69,13 @@ def register(request):
     if not form.is_valid():
         errors = True
 
-    username = form.data['username']
+    localname = form.data['localname'].strip()
     email = form.data['email']
     password = form.data['password']
 
-    # check username and email uniqueness
-    if models.User.objects.filter(localname=username).first():
-        form.add_error('username', 'User with this username already exists')
+    # check localname and email uniqueness
+    if models.User.objects.filter(localname=localname).first():
+        form.errors['localname'] = ['User with this username already exists']
         errors = True
 
     if errors:
@@ -82,8 +85,9 @@ def register(request):
         }
         return TemplateResponse(request, 'login.html', data)
 
+    username = '%s@%s' % (localname, DOMAIN)
     user = models.User.objects.create_user(
-        username, email, password, local=True)
+        username, email, password, localname=localname, local=True)
     if invite:
         invite.times_used += 1
         invite.save()
@@ -159,23 +163,21 @@ def password_change(request):
     request.user.set_password(new_password)
     request.user.save()
     login(request, request.user)
-    return redirect('/user-edit')
+    return redirect('/user/%s' % request.user.localname)
 
 
 @login_required
 @require_POST
 def edit_profile(request):
     ''' les get fancy with images '''
-    form = forms.EditUserForm(request.POST, request.FILES)
+    form = forms.EditUserForm(
+        request.POST, request.FILES, instance=request.user)
     if not form.is_valid():
-        data = {
-            'form': form,
-            'user': request.user,
-        }
+        data = {'form': form, 'user': request.user}
         return TemplateResponse(request, 'edit_user.html', data)
 
-    request.user.name = form.data['name']
-    request.user.email = form.data['email']
+    user = form.save(commit=False)
+
     if 'avatar' in form.files:
         # crop and resize avatar upload
         image = Image.open(form.files['avatar'])
@@ -201,24 +203,18 @@ def edit_profile(request):
         # set the name to a hash
         extension = form.files['avatar'].name.split('.')[-1]
         filename = '%s.%s' % (uuid4(), extension)
-        request.user.avatar.save(
-            filename,
-            ContentFile(output.getvalue())
-        )
+        user.avatar.save(filename, ContentFile(output.getvalue()))
+    user.save()
 
-    request.user.summary = form.data['summary']
-    request.user.manually_approves_followers = \
-        form.cleaned_data['manually_approves_followers']
-    request.user.save()
-
-    outgoing.handle_update_user(request.user)
+    outgoing.handle_update_user(user)
     return redirect('/user/%s' % request.user.localname)
 
 
+@require_POST
 def resolve_book(request):
     ''' figure out the local path to a book from a remote_id '''
     remote_id = request.POST.get('remote_id')
-    connector = books_manager.get_or_create_connector(remote_id)
+    connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
 
     return redirect('/book/%d' % book.id)
@@ -239,10 +235,40 @@ def edit_book(request, book_id):
             'form': form
         }
         return TemplateResponse(request, 'edit_book.html', data)
-    form.save()
+    book = form.save()
 
-    outgoing.handle_update_book(request.user, book)
+    outgoing.handle_update_book_data(request.user, book)
     return redirect('/book/%s' % book.id)
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def switch_edition(request):
+    ''' switch your copy of a book to a different edition '''
+    edition_id = request.POST.get('edition')
+    new_edition = get_object_or_404(models.Edition, id=edition_id)
+    shelfbooks = models.ShelfBook.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        shelf__user=request.user
+    )
+    for shelfbook in shelfbooks.all():
+        broadcast(request.user, shelfbook.to_remove_activity(request.user))
+
+        shelfbook.book = new_edition
+        shelfbook.save()
+
+        broadcast(request.user, shelfbook.to_add_activity(request.user))
+
+    readthroughs = models.ReadThrough.objects.filter(
+        book__parent_work=new_edition.parent_work,
+        user=request.user
+    )
+    for readthrough in readthroughs.all():
+        readthrough.book = new_edition
+        readthrough.save()
+
+    return redirect('/book/%d' % new_edition.id)
 
 
 @login_required
@@ -256,10 +282,9 @@ def upload_cover(request, book_id):
         return redirect('/book/%d' % book.id)
 
     book.cover = form.files['cover']
-    book.sync_cover = False
     book.save()
 
-    outgoing.handle_update_book(request.user, book)
+    outgoing.handle_update_book_data(request.user, book)
     return redirect('/book/%s' % book.id)
 
 
@@ -278,8 +303,29 @@ def add_description(request, book_id):
     book.description = description
     book.save()
 
-    outgoing.handle_update_book(request.user, book)
+    outgoing.handle_update_book_data(request.user, book)
     return redirect('/book/%s' % book.id)
+
+
+@login_required
+@permission_required('bookwyrm.edit_book', raise_exception=True)
+@require_POST
+def edit_author(request, author_id):
+    ''' edit a author cool '''
+    author = get_object_or_404(models.Author, id=author_id)
+
+    form = forms.AuthorForm(request.POST, request.FILES, instance=author)
+    if not form.is_valid():
+        data = {
+            'title': 'Edit Author',
+            'author': author,
+            'form': form
+        }
+        return TemplateResponse(request, 'edit_author.html', data)
+    author = form.save()
+
+    outgoing.handle_update_book_data(request.user, author)
+    return redirect('/author/%s' % author.id)
 
 
 @login_required
@@ -327,7 +373,7 @@ def delete_shelf(request, shelf_id):
 @require_POST
 def shelve(request):
     ''' put a  on a user's shelf '''
-    book = books_manager.get_edition(request.POST['book'])
+    book = get_edition(request.POST['book'])
 
     desired_shelf = models.Shelf.objects.filter(
         identifier=request.POST['shelf'],
@@ -373,7 +419,7 @@ def unshelve(request):
 @require_POST
 def start_reading(request, book_id):
     ''' begin reading a book '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='reading',
         user=request.user
@@ -409,7 +455,7 @@ def start_reading(request, book_id):
 @require_POST
 def finish_reading(request, book_id):
     ''' a user completed a book, yay '''
-    book = books_manager.get_edition(book_id)
+    book = get_edition(book_id)
     shelf = models.Shelf.objects.filter(
         identifier='read',
         user=request.user
@@ -533,14 +579,14 @@ def tag(request):
     tag_obj, created = models.Tag.objects.get_or_create(
         name=name,
     )
-    user_tag = models.UserTag.objects.get_or_create(
+    user_tag, _ = models.UserTag.objects.get_or_create(
         user=request.user,
         book=book,
         tag=tag_obj,
     )
 
     if created:
-        outgoing.handle_tag(request.user, user_tag)
+        broadcast(request.user, user_tag.to_add_activity(request.user))
     return redirect('/book/%s' % book_id)
 
 
@@ -549,9 +595,16 @@ def tag(request):
 def untag(request):
     ''' untag a book '''
     name = request.POST.get('name')
+    tag_obj = get_object_or_404(models.Tag, name=name)
     book_id = request.POST.get('book')
+    book = get_object_or_404(models.Edition, id=book_id)
 
-    outgoing.handle_untag(request.user, book_id, name)
+    user_tag = get_object_or_404(
+        models.UserTag, tag=tag_obj, book=book, user=request.user)
+    tag_activity = user_tag.to_remove_activity(request.user)
+    user_tag.delete()
+
+    broadcast(request.user, tag_activity)
     return redirect('/book/%s' % book_id)
 
 

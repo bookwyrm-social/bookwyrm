@@ -31,11 +31,14 @@ Sender = namedtuple('Sender', ('remote_id', 'key_pair'))
 class Signature(TestCase):
     def setUp(self):
         self.mouse = User.objects.create_user(
-            'mouse', 'mouse@example.com', '', local=True)
+            'mouse@%s' % DOMAIN, 'mouse@example.com', '',
+            local=True, localname='mouse')
         self.rat = User.objects.create_user(
-            'rat', 'rat@example.com', '', local=True)
+            'rat@%s' % DOMAIN, 'rat@example.com', '',
+            local=True, localname='rat')
         self.cat = User.objects.create_user(
-            'cat', 'cat@example.com', '', local=True)
+            'cat@%s' % DOMAIN, 'cat@example.com', '',
+            local=True, localname='cat')
 
         private_key, public_key = create_key_pair()
 

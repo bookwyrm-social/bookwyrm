@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% block content %}
 
 <div class="columns">
@@ -122,7 +122,7 @@
 
 <div class="block">
     <div>
-        {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
+        {% include 'snippets/shelf.html' with shelf=shelf books=books ratings=ratings %}
     </div>
 </div>
 {% endblock %}

@@ -37,7 +37,7 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Follow
 
-    def get_remote_id(self, status=None):
+    def get_remote_id(self, status=None):# pylint: disable=arguments-differ
         ''' use shelf identifier in remote_id '''
         status = status or 'follows'
         base_path = self.user_subject.remote_id
@@ -54,7 +54,7 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
 
 
     def to_reject_activity(self):
-        ''' generate an Accept for this follow request '''
+        ''' generate a Reject for this follow request '''
         return activitypub.Reject(
             id=self.get_remote_id(status='rejects'),
             actor=self.user_object.remote_id,

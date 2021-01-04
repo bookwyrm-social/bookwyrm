@@ -31,10 +31,11 @@ class CustomForm(ModelForm):
             visible.field.widget.attrs['class'] = css_classes[input_type]
 
 
+# pylint: disable=missing-class-docstring
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ['username', 'password']
+        fields = ['localname', 'password']
         help_texts = {f: None for f in fields}
         widgets = {
             'password': PasswordInput(),
@@ -44,7 +45,7 @@ class LoginForm(CustomForm):
 class RegisterForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ['username', 'email', 'password']
+        fields = ['localname', 'email', 'password']
         help_texts = {f: None for f in fields}
         widgets = {
             'password': PasswordInput()
@@ -60,25 +61,36 @@ class RatingForm(CustomForm):
 class ReviewForm(CustomForm):
     class Meta:
         model = models.Review
-        fields = ['user', 'book', 'name', 'content', 'rating', 'privacy']
+        fields = [
+            'user', 'book',
+            'name', 'content', 'rating',
+            'content_warning', 'sensitive',
+            'privacy']
 
 
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ['user', 'book', 'content', 'privacy']
+        fields = [
+            'user', 'book', 'content',
+            'content_warning', 'sensitive',
+            'privacy']
 
 
 class QuotationForm(CustomForm):
     class Meta:
         model = models.Quotation
-        fields = ['user', 'book', 'quote', 'content', 'privacy']
+        fields = [
+            'user', 'book', 'quote', 'content',
+            'content_warning', 'sensitive', 'privacy']
 
 
 class ReplyForm(CustomForm):
     class Meta:
         model = models.Status
-        fields = ['user', 'content', 'reply_parent', 'privacy']
+        fields = [
+            'user', 'content', 'content_warning', 'sensitive',
+            'reply_parent', 'privacy']
 
 
 class EditUserForm(CustomForm):
@@ -110,19 +122,28 @@ class EditionForm(CustomForm):
         model = models.Edition
         exclude = [
             'remote_id',
+            'origin_id',
             'created_date',
             'updated_date',
-            'last_sync_date',
 
             'authors',# TODO
             'parent_work',
             'shelves',
-            'misc_identifiers',
 
             'subjects',# TODO
             'subject_places',# TODO
 
             'connector',
+        ]
+
+class AuthorForm(CustomForm):
+    class Meta:
+        model = models.Author
+        exclude = [
+            'remote_id',
+            'origin_id',
+            'created_date',
+            'updated_date',
         ]
 
 
@@ -131,6 +152,7 @@ class ImportForm(forms.Form):
 
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
+        ''' human-readable exiration time buckets '''
         selected_string = super().value_from_datadict(data, files, name)
 
         if selected_string == 'day':

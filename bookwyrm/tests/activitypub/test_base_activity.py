@@ -20,7 +20,8 @@ class BaseActivity(TestCase):
     def setUp(self):
         ''' we're probably going to re-use this so why copy/paste '''
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         self.user.remote_id = 'http://example.com/a/b'
         self.user.save()
 
@@ -95,34 +96,67 @@ class BaseActivity(TestCase):
         self.assertEqual(result.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(result.name, 'MOUSE?? MOUSE!!')
 
-    def test_to_model(self):
-        ''' the big boy of this module. it feels janky to test this with actual
-        models rather than a test model, but I don't know how to make a test
-        model so here we are. '''
+    def test_to_model_invalid_model(self):
+        ''' catch mismatch between activity type and model type '''
         instance = ActivityObject(id='a', type='b')
         with self.assertRaises(ActivitySerializerError):
             instance.to_model(models.User)
 
-        # test setting simple fields
-        self.assertEqual(self.user.name, '')
-        update_data = activitypub.Person(**self.user.to_activity())
-        update_data.name = 'New Name'
-        update_data.to_model(models.User, self.user)
+    def test_to_model_simple_fields(self):
+        ''' test setting simple fields '''
+        self.assertIsNone(self.user.name)
+
+        activity = activitypub.Person(
+            id=self.user.remote_id,
+            name='New Name',
+            preferredUsername='mouse',
+            inbox='http://www.com/',
+            outbox='http://www.com/',
+            followers='',
+            summary='',
+            publicKey=None,
+            endpoints={},
+        )
+
+        activity.to_model(models.User, self.user)
 
         self.assertEqual(self.user.name, 'New Name')
 
     def test_to_model_foreign_key(self):
         ''' test setting one to one/foreign key '''
-        update_data = activitypub.Person(**self.user.to_activity())
-        update_data.publicKey['publicKeyPem'] = 'hi im secure'
-        update_data.to_model(models.User, self.user)
+        activity = activitypub.Person(
+            id=self.user.remote_id,
+            name='New Name',
+            preferredUsername='mouse',
+            inbox='http://www.com/',
+            outbox='http://www.com/',
+            followers='',
+            summary='',
+            publicKey=self.user.key_pair.to_activity(),
+            endpoints={},
+        )
+
+        activity.publicKey['publicKeyPem'] = 'hi im secure'
+
+        activity.to_model(models.User, self.user)
         self.assertEqual(self.user.key_pair.public_key, 'hi im secure')
 
     @responses.activate
     def test_to_model_image(self):
         ''' update an image field '''
-        update_data = activitypub.Person(**self.user.to_activity())
-        update_data.icon = {'url': 'http://www.example.com/image.jpg'}
+        activity = activitypub.Person(
+            id=self.user.remote_id,
+            name='New Name',
+            preferredUsername='mouse',
+            inbox='http://www.com/',
+            outbox='http://www.com/',
+            followers='',
+            summary='',
+            publicKey=None,
+            endpoints={},
+            icon={'url': 'http://www.example.com/image.jpg'}
+        )
+
         responses.add(
             responses.GET,
             'http://www.example.com/image.jpg',
@@ -133,7 +167,7 @@ class BaseActivity(TestCase):
         with self.assertRaises(ValueError):
             self.user.avatar.file #pylint: disable=pointless-statement
 
-        update_data.to_model(models.User, self.user)
+        activity.to_model(models.User, self.user)
         self.assertIsNotNone(self.user.avatar.name)
         self.assertIsNotNone(self.user.avatar.file)
 
@@ -145,19 +179,26 @@ class BaseActivity(TestCase):
         )
         book = models.Edition.objects.create(
             title='Test Edition', remote_id='http://book.com/book')
-        update_data = activitypub.Note(**status.to_activity())
-        update_data.tag = [
-            {
-                'type': 'Mention',
-                'name': 'gerald',
-                'href': 'http://example.com/a/b'
-            },
-            {
-                'type': 'Edition',
-                'name': 'gerald j. books',
-                'href': 'http://book.com/book'
-            },
-        ]
+        update_data = activitypub.Note(
+            id=status.remote_id,
+            content=status.content,
+            attributedTo=self.user.remote_id,
+            published='hi',
+            to=[],
+            cc=[],
+            tag=[
+                {
+                    'type': 'Mention',
+                    'name': 'gerald',
+                    'href': 'http://example.com/a/b'
+                },
+                {
+                    'type': 'Edition',
+                    'name': 'gerald j. books',
+                    'href': 'http://book.com/book'
+                },
+            ]
+        )
         update_data.to_model(models.Status, instance=status)
         self.assertEqual(status.mention_users.first(), self.user)
         self.assertEqual(status.mention_books.first(), book)
@@ -171,12 +212,19 @@ class BaseActivity(TestCase):
             content='test status',
             user=self.user,
         )
-        update_data = activitypub.Note(**status.to_activity())
-        update_data.attachment = [{
-            'url': 'http://www.example.com/image.jpg',
-            'name': 'alt text',
-            'type': 'Image',
-        }]
+        update_data = activitypub.Note(
+            id=status.remote_id,
+            content=status.content,
+            attributedTo=self.user.remote_id,
+            published='hi',
+            to=[],
+            cc=[],
+            attachment=[{
+                'url': 'http://www.example.com/image.jpg',
+                'name': 'alt text',
+                'type': 'Image',
+            }],
+        )
 
         responses.add(
             responses.GET,

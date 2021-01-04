@@ -1,5 +1,7 @@
 ''' testing models '''
+from dateutil.parser import parse
 from django.test import TestCase
+from django.utils import timezone
 
 from bookwyrm import models, settings
 from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
@@ -8,6 +10,7 @@ from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
 class Book(TestCase):
     ''' not too much going on in the books model but here we are '''
     def setUp(self):
+        ''' we'll need some books '''
         self.work = models.Work.objects.create(
             title='Example Work',
             remote_id='https://example.com/book/1'
@@ -22,6 +25,7 @@ class Book(TestCase):
         )
 
     def test_remote_id(self):
+        ''' fanciness with remote/origin ids '''
         remote_id = 'https://%s/book/%d' % (settings.DOMAIN, self.work.id)
         self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, remote_id)
@@ -56,15 +60,25 @@ class Book(TestCase):
         self.assertEqual(isbn_10, '178816167X')
 
 
-class Shelf(TestCase):
-    def setUp(self):
-        user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
-        models.Shelf.objects.create(
-            name='Test Shelf', identifier='test-shelf', user=user)
+    def test_get_edition_info(self):
+        ''' text slug about an edition '''
+        book = models.Edition.objects.create(title='Test Edition')
+        self.assertEqual(book.edition_info, '')
 
-    def test_remote_id(self):
-        ''' editions and works use the same absolute id syntax '''
-        shelf = models.Shelf.objects.get(identifier='test-shelf')
-        expected_id = 'https://%s/user/mouse/shelf/test-shelf' % settings.DOMAIN
-        self.assertEqual(shelf.get_remote_id(), expected_id)
+        book.physical_format = 'worm'
+        book.save()
+        self.assertEqual(book.edition_info, 'worm')
+
+        book.languages = ['English']
+        book.save()
+        self.assertEqual(book.edition_info, 'worm')
+
+        book.languages = ['Glorbish', 'English']
+        book.save()
+        self.assertEqual(book.edition_info, 'worm, Glorbish language')
+
+        book.published_date = timezone.make_aware(parse('2020'))
+        book.save()
+        self.assertEqual(book.edition_info, 'worm, Glorbish language, 2020')
+        self.assertEqual(
+            book.alt_text, 'Test Edition cover (worm, Glorbish language, 2020)')

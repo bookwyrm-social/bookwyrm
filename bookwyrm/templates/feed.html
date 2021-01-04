@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% block content %}
 
 <div class="columns">
@@ -44,16 +44,28 @@
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if shelf_counter == 1 and forloop.first %}checked{% endif %}>
             <div class="toggle-content hidden" role="tabpanel" id="book-{{ book.id }}-panel">
-                <div class="block">
-                    {% include 'snippets/book_titleby.html' with book=book %}
-                    {% include 'snippets/shelve_button.html' with book=book %}
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">
+                        <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
+                        </>
+                        <div class="card-header-icon is-hidden-tablet">
+                            <label class="delete" for="no-book" aria-label="close" role="button"></label>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                            {% include 'snippets/shelve_button.html' with book=book %}
+                        {% include 'snippets/create_status.html' with book=book %}
+                    </div>
                 </div>
-                {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
         {% endfor %}
         {% endwith %}
         {% endfor %}
+        <div>
+            <input class="toggle-control" type="radio" name="recent-books" id="no-book">
+        </div>
         {% endif %}
     </div>
 

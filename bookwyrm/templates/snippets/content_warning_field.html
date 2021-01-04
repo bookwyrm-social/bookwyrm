@@ -1,0 +1,20 @@
+{% load bookwyrm_tags %}
+{% with 0|uuid as uuid %}
+<div class="control">
+    <div>
+        <input type="radio" class="toggle-control" name="sensitive" value="false" id="hide-spoilers-{{ uuid }}" {% if not parent_status.content_warning %}checked{% endif %}>
+        <div class="toggle-content hidden">
+            <label class="button is-small" role="button" tabindex="0" for="include-spoilers-{{ uuid }}">Add spoilers/content warning</label>
+        </div>
+    </div>
+
+    <div>
+        <input type="radio" class="toggle-control" id="include-spoilers-{{ uuid }}" name="sensitive" value="true" {% if parent_status.content_warning %}checked{% endif %}>
+        <div class="toggle-content hidden">
+            <label class="button is-small" role="button" tabindex="0" for="hide-spoilers-{{ uuid }}">Remove spoilers/content warning</label>
+            <label class="is-sr-only" for="id_content_warning_{{ uuid }}">Spoilers/content warning:</label>
+            <input type="text" name="content_warning" maxlength="255" class="input" id="id_content_warning_{{ uuid }}" placeholder="Spoilers ahead!"{% if parent_status.content_warning %} value="{{ parent_status.content_warning }}"{% endif %}>
+        </div>
+    </div>
+</div>
+{% endwith %}
