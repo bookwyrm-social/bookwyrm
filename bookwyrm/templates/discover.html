@@ -3,7 +3,7 @@
 
 {% if not request.user.is_authenticated %}
 <div class="block">
-    <h1 class="title has-text-centered">{{ site.name }}: Social Reading and Reviewing</h1>
+    <h1 class="title has-text-centered">{{ site.name }}: {{ site.instance_tagline }}</h1>
 </div>
 
 <section class="tile is-ancestor">
@@ -21,7 +21,7 @@
             </form>
             {% else %}
             <h2 class="title">This instance is closed</h2>
-            <p>Contact an administrator to get an invite</p>
+            <p>{{ site.registration_closed_text }}</p>
             {% endif %}
         </div>
     </div>
