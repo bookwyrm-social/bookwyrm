@@ -21,14 +21,14 @@ class Outgoing(TestCase):
         self.factory = RequestFactory()
         with patch('bookwyrm.models.user.set_remote_server'):
             self.remote_user = models.User.objects.create_user(
-                'rat', 'rat@rat.com', 'ratword',
+                'rat', 'rat@email.com', 'ratword',
                 local=False,
                 remote_id='https://example.com/users/rat',
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword',
+            'mouse@local.com', 'mouse@mouse.com', 'mouseword',
             local=True, localname='mouse',
             remote_id='https://example.com/users/mouse',
         )
@@ -399,7 +399,8 @@ class Outgoing(TestCase):
     def test_handle_status_mentions(self):
         ''' @mention a user in a post '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat@local.com', 'rat@rat.com', 'password',
+            local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat',
             'user': self.local_user.id,
@@ -419,7 +420,8 @@ class Outgoing(TestCase):
     def test_handle_status_reply_with_mentions(self):
         ''' reply to a post with an @mention'ed user '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat@local.com', 'rat@rat.com', 'password',
+            local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat@example.com',
             'user': self.local_user.id,

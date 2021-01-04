@@ -19,7 +19,7 @@ class Incoming(TestCase):
     def setUp(self):
         ''' we need basic things, like users '''
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword',
+            'mouse@example.com', 'mouse@mouse.com', 'mouseword',
             local=True, localname='mouse')
         self.local_user.remote_id = 'https://example.com/user/mouse'
         self.local_user.save()
@@ -495,6 +495,8 @@ class Incoming(TestCase):
         incoming.handle_update_user({'object': userdata})
         user = models.User.objects.get(id=self.local_user.id)
         self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
+        self.assertEqual(user.username, 'mouse@example.com')
+        self.assertEqual(user.localname, 'mouse')
 
 
     def test_handle_update_edition(self):
