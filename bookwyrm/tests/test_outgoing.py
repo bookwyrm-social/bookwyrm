@@ -21,15 +21,16 @@ class Outgoing(TestCase):
         self.factory = RequestFactory()
         with patch('bookwyrm.models.user.set_remote_server'):
             self.remote_user = models.User.objects.create_user(
-                'rat', 'rat@rat.com', 'ratword',
+                'rat', 'rat@email.com', 'ratword',
                 local=False,
                 remote_id='https://example.com/users/rat',
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword', local=True,
-            localname='mouse', remote_id='https://example.com/users/mouse',
+            'mouse@local.com', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse',
+            remote_id='https://example.com/users/mouse',
         )
 
         datafile = pathlib.Path(__file__).parent.joinpath(
@@ -175,10 +176,10 @@ class Outgoing(TestCase):
 
     def test_existing_user(self):
         ''' simple database lookup by username '''
-        result = outgoing.handle_remote_webfinger('@mouse@%s' % DOMAIN)
+        result = outgoing.handle_remote_webfinger('@mouse@local.com')
         self.assertEqual(result, self.local_user)
 
-        result = outgoing.handle_remote_webfinger('mouse@%s' % DOMAIN)
+        result = outgoing.handle_remote_webfinger('mouse@local.com')
         self.assertEqual(result, self.local_user)
 
 
@@ -398,7 +399,8 @@ class Outgoing(TestCase):
     def test_handle_status_mentions(self):
         ''' @mention a user in a post '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat@%s' % DOMAIN, 'rat@rat.com', 'password',
+            local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat',
             'user': self.local_user.id,
@@ -409,16 +411,17 @@ class Outgoing(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             outgoing.handle_status(self.local_user, form)
         status = models.Status.objects.get()
+        self.assertEqual(list(status.mention_users.all()), [user])
+        self.assertEqual(models.Notification.objects.get().user, user)
         self.assertEqual(
             status.content,
             '<p>hi <a href="%s">@rat</a></p>' % user.remote_id)
-        self.assertEqual(list(status.mention_users.all()), [user])
-        self.assertEqual(models.Notification.objects.get().user, user)
 
     def test_handle_status_reply_with_mentions(self):
         ''' reply to a post with an @mention'ed user '''
         user = models.User.objects.create_user(
-            'rat', 'rat@rat.com', 'password', local=True)
+            'rat', 'rat@rat.com', 'password',
+            local=True, localname='rat')
         form = forms.CommentForm({
             'content': 'hi @rat@example.com',
             'user': self.local_user.id,

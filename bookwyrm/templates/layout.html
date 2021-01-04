@@ -119,15 +119,15 @@
             </div>
             {% else %}
             <div class="navbar-item">
-                {% if request.path != '/login' and request.path != '/login/' %}
+                {% if request.path != '/login' and request.path != '/login/' and request.path != '/user-login' %}
                 <div class="columns">
                     <div class="column">
                         <form name="login" method="post" action="/user-login">
                             {% csrf_token %}
                             <div class="field is-grouped">
                                 <div class="control">
-                                    <label class="is-sr-only" for="id_username">Username:</label>
-                                    <input type="text" name="username" maxlength="150" class="input" required="" id="id_username" placeholder="username">
+                                    <label class="is-sr-only" for="id_localname">Username:</label>
+                                    <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="username">
                                 </div>
                                 <div class="control">
                                     <label class="is-sr-only" for="id_password">Username:</label>

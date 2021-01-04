@@ -9,6 +9,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import DOMAIN, USER_AGENT
 
@@ -28,7 +29,8 @@ class Views(TestCase):
             local=True
         )
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'password', local=True)
+            'mouse@local.com', 'mouse@mouse.mouse', 'password',
+            local=True, localname='mouse')
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
                 'rat', 'rat@rat.com', 'ratword',
@@ -52,7 +54,7 @@ class Views(TestCase):
         self.assertEqual(
             views.get_user_from_username('mouse'), self.local_user)
         self.assertEqual(
-            views.get_user_from_username('mouse@%s' % DOMAIN), self.local_user)
+            views.get_user_from_username('mouse@local.com'), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
             views.get_user_from_username('mojfse@example.com')
 
@@ -343,7 +345,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.user_page(request, 'mouse')
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -361,7 +363,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.followers_page(request, 'mouse')
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -379,7 +381,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.following_page(request, 'mouse')
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -399,7 +401,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.status_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -419,7 +421,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.replies_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -448,7 +450,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.book_page(request, self.book.id)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -489,7 +491,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.editions_page(request, self.work.id)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -508,7 +510,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.author_page(request, author.id)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -529,7 +531,7 @@ class Views(TestCase):
         with patch('bookwyrm.views.is_api_request') as is_api:
             is_api.return_value = True
             result = views.tag_page(request, tag.identifier)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
@@ -550,18 +552,22 @@ class Views(TestCase):
             is_api.return_value = True
             result = views.shelf_page(
                 request, self.local_user.username, shelf.identifier)
-        self.assertIsInstance(result, JsonResponse)
+        self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
 
     def test_is_bookwyrm_request(self):
-        ''' tests the function that checks if a request came from a bookwyrm instance '''
+        ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
         self.assertFalse(views.is_bookworm_request(request))
 
-        request = self.factory.get('', {'q': 'Test Book'},
-                HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)")
+        request = self.factory.get(
+            '', {'q': 'Test Book'},
+            HTTP_USER_AGENT=\
+                "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)"
+        )
         self.assertFalse(views.is_bookworm_request(request))
 
-        request = self.factory.get('', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
+        request = self.factory.get(
+            '', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
         self.assertTrue(views.is_bookworm_request(request))
