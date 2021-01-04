@@ -35,7 +35,7 @@ class CustomForm(ModelForm):
 class LoginForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ['username', 'password']
+        fields = ['localname', 'password']
         help_texts = {f: None for f in fields}
         widgets = {
             'password': PasswordInput(),

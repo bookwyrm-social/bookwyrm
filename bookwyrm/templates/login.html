@@ -11,9 +11,9 @@
             <form name="login" method="post" action="/user-login">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="id_username">Username:</label>
+                    <label class="label" for="id_localname">Username:</label>
                     <div class="control">
-                        {{ login_form.username }}
+                        {{ login_form.localname }}
                     </div>
                 </div>
                 <div class="field">

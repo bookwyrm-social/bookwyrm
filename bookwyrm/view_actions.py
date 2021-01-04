@@ -30,8 +30,9 @@ def user_login(request):
     ''' authenticate user login '''
     login_form = forms.LoginForm(request.POST)
 
-    username = login_form.data['username']
-    username = '%s@%s' % (username, DOMAIN)
+    print(login_form.data)
+    localname = login_form.data['localname']
+    username = '%s@%s' % (localname, DOMAIN)
     password = login_form.data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
