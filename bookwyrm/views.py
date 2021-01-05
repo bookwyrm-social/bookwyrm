@@ -466,9 +466,9 @@ def user_page(request, username):
 
     # user's posts
     activities = get_activity_feed(
-        user,
+        request.user,
         ['public', 'unlisted', 'followers'],
-        queryset=models.Status.objects.filter(user=request.user)
+        queryset=models.Status.objects.filter(user=user)
     )
     paginated = Paginator(activities, PAGE_LENGTH)
     activity_page = paginated.page(page)
