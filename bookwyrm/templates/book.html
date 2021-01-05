@@ -10,9 +10,14 @@
                 {{ book.title }}{% if book.subtitle %}:
                 <small>{{ book.subtitle }}</small>{% endif %}
             </h1>
-            {% if book.authors %}
+            {% if book.series or book.author %}
             <h2 class="subtitle">
+                {% if book.series %}
+                <small class="has-text-grey-dark">({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})</small><br>
+                {% endif %}
+                {% if book.authors %}
                 by {% include 'snippets/authors.html' with book=book %}
+                {% endif %}
             </h2>
             {% endif %}
         </div>
