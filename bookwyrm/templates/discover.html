@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="tile is-5 is-parent">
-        <div class="tile is-child box has-background-primary-light">
+        <div class="tile is-child box has-background-primary-light content">
             {% if site.allow_registration %}
             <h2 class="title">Join {{ site.name }}</h2>
             <form name="register" method="post" action="/user-register">
@@ -21,7 +21,7 @@
             </form>
             {% else %}
             <h2 class="title">This instance is closed</h2>
-            <p>{{ site.registration_closed_text }}</p>
+            <p>{{ site.registration_closed_text | safe}}</p>
             {% endif %}
         </div>
     </div>
