@@ -399,7 +399,8 @@ def manage_invites(request):
     ''' invite management page '''
     data = {
         'title': 'Invitations',
-        'invites': models.SiteInvite.objects.filter(user=request.user),
+        'invites': models.SiteInvite.objects.filter(
+            user=request.user).order_by('-created_date'),
         'form': forms.CreateInviteForm(),
     }
     return TemplateResponse(request, 'manage_invites.html', data)
