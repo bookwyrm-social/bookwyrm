@@ -74,7 +74,7 @@ services:
         restart: on-failure
     flower:
         build: .
-        command: flower --port=8888
+        command: flower --port=8888 --basic_auth=${FLOWER_USER}:${FLOWER_PASSWORD}
         env_file: .env
         environment:
             - CELERY_BROKER_URL=${CELERY_BROKER}
