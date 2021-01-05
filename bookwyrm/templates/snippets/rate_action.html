@@ -3,7 +3,7 @@
 <span class="is-sr-only">Leave a rating</span>
 <div class="field is-grouped stars rate-stars">
     {% for i in '12345'|make_list %}
-    <form name="rate" action="/rate/" method="POST" onsubmit="return rate_stars(event)">
+    <form name="rate" action="/rate/" method="POST">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="book" value="{{ book.id }}">

@@ -199,13 +199,6 @@
     </div>
 </div>
 
-
-{% if not reviews %}
-<div class="block">
-    <p>No reviews yet!</p>
-</div>
-{% endif %}
-
 <div class="block">
     {% for review in reviews %}
     <div class="block">
@@ -213,9 +206,9 @@
     </div>
     {% endfor %}
 
-    <div class="block columns">
+    <div class="block is-flex is-flex-wrap-wrap">
     {% for rating in ratings %}
-    <div class="column">
+    <div class="block mr-5">
         <div class="media">
             <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
             <div class="media-content">
@@ -235,7 +228,6 @@
     {% endfor %}
     </div>
 </div>
-
 
 {% endblock %}
 

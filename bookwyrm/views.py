@@ -632,7 +632,9 @@ def book_page(request, book_id):
     reviews = get_activity_feed(request.user, 'federated', model=reviews)
 
     # the reviews to show
-    paginated = Paginator(reviews.filter(content__isnull=False), PAGE_LENGTH)
+    paginated = Paginator(reviews.exclude(
+        Q(content__isnull=True) | Q(content='')
+    ), PAGE_LENGTH)
     reviews_page = paginated.page(page)
 
     prev_page = next_page = None
@@ -668,7 +670,7 @@ def book_page(request, book_id):
         'title': book.title,
         'book': book,
         'reviews': reviews_page,
-        'ratings': reviews.filter(content__isnull=True),
+        'ratings': reviews.filter(Q(content__isnull=True) | Q(content='')),
         'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
         'tags':  models.UserTag.objects.filter(book=book),
         'user_tags': user_tags,
