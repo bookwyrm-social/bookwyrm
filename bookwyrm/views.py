@@ -676,14 +676,6 @@ def book_page(request, book_id):
         'other_edition_shelves': other_edition_shelves,
         'readthroughs': readthroughs,
         'path': '/book/%s' % book_id,
-        'info_fields': [
-            {'name': 'ISBN', 'value': book.isbn_13},
-            {'name': 'OCLC number', 'value': book.oclc_number},
-            {'name': 'OpenLibrary ID', 'value': book.openlibrary_key},
-            {'name': 'Goodreads ID', 'value': book.goodreads_key},
-            {'name': 'Format', 'value': book.physical_format},
-            {'name': 'Pages', 'value': book.pages},
-        ],
         'next': next_page,
         'prev': prev_page,
     }
