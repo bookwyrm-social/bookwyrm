@@ -8,20 +8,23 @@
     <link type="text/css" rel="stylesheet" href="/static/css/format.css">
     <link type="text/css" rel="stylesheet" href="/static/css/icons.css">
 
-    <link rel="shortcut icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{{ site.name }}">
-    <meta name="og:title" content="{{ site.name }}">
-    <meta name="twitter:description" content="Federated Social Reading">
-    <meta name="og:description" content="Federated Social Reading">
+    <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
+    <meta name="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
+    <meta name="twitter:description" content="{{ site.instance_tagline }}">
+    <meta name="og:description" content="{{ site.instance_tagline }}">
+
+    <meta name="twitter:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
+    <meta name="og:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
+    <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>
-
 <nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img class="image logo" src="/static/images/logo-small.png" alt="Home page">
+            <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
         </a>
         <form class="navbar-item column" action="/search/">
             <div class="field has-addons">
@@ -119,15 +122,15 @@
             </div>
             {% else %}
             <div class="navbar-item">
-                {% if request.path != '/login' and request.path != '/login/' %}
+                {% if request.path != '/login' and request.path != '/login/' and request.path != '/user-login' %}
                 <div class="columns">
                     <div class="column">
                         <form name="login" method="post" action="/user-login">
                             {% csrf_token %}
                             <div class="field is-grouped">
                                 <div class="control">
-                                    <label class="is-sr-only" for="id_username">Username:</label>
-                                    <input type="text" name="username" maxlength="150" class="input" required="" id="id_username" placeholder="username">
+                                    <label class="is-sr-only" for="id_localname">Username:</label>
+                                    <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="username">
                                 </div>
                                 <div class="control">
                                     <label class="is-sr-only" for="id_password">Username:</label>

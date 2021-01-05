@@ -9,6 +9,9 @@
             <h1 class="title">
                 {{ book.title }}{% if book.subtitle %}:
                 <small>{{ book.subtitle }}</small>{% endif %}
+                {% if book.series %}
+                <small class="has-text-grey-dark">({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})</small><br>
+                {% endif %}
             </h1>
             {% if book.authors %}
             <h2 class="subtitle">
@@ -49,19 +52,44 @@
             </div>
             {% endif %}
 
-            <dl class="content">
-            {% for field in info_fields %}
-                {% if field.value %}
-                <dt>{{ field.name }}:</dt>
-                <dd>{{ field.value }}</dd>
+            <section class="content">
+                <dl>
+                    {% if book.isbn_13 %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ISBN:</dt>
+                        <dd>{{ book.isbn_13 }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.oclc_number %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>OCLC Number:</dt>
+                        <dd>{{ book.oclc_number }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.asin %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ASIN:</dt>
+                        <dd>{{ book.asin }}</dd>
+                    </div>
+                    {% endif %}
+                </dl>
+
+                <p>
+                {% if book.physical_format %}{{ book.physical_format | title }}{% if book.pages %},<br>{% endif %}{% endif %}
+                {% if book.pages %}{{ book.pages }} pages{% endif %}
+                </p>
+
+                {% if book.openlibrary_key %}
+                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">View on OpenLibrary</a></p>
                 {% endif %}
-            {% endfor %}
-            </dl>
+            </section>
         </div>
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ reviews|length|pluralize }})</h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
@@ -145,15 +173,31 @@
             </div>
 
         </div>
+        <div class="column is-narrow">
+            {% if book.subjects %}
+            <section class="content block">
+                <h2 class="title is-5">Subjects</h2>
+                <ul>
+                {% for subject in book.subjects %}
+                    <li>{{ subject }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+
+            {% if book.subject_places %}
+            <section class="content block">
+                <h2 class="title is-5">Places</h2>
+                <ul>
+                {% for place in book.subject_placess %}
+                    <li>{{ place }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </div>
     </div>
 </div>
-
-
-{% if not reviews %}
-<div class="block">
-    <p>No reviews yet!</p>
-</div>
-{% endif %}
 
 <div class="block">
     {% for review in reviews %}
@@ -162,9 +206,9 @@
     </div>
     {% endfor %}
 
-    <div class="block columns">
+    <div class="block is-flex is-flex-wrap-wrap">
     {% for rating in ratings %}
-    <div class="column">
+    <div class="block mr-5">
         <div class="media">
             <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
             <div class="media-content">
@@ -184,7 +228,6 @@
     {% endfor %}
     </div>
 </div>
-
 
 {% endblock %}
 

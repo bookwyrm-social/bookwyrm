@@ -20,7 +20,8 @@ class BaseActivity(TestCase):
     def setUp(self):
         ''' we're probably going to re-use this so why copy/paste '''
         self.user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.mouse', 'mouseword', local=True)
+            'mouse', 'mouse@mouse.mouse', 'mouseword',
+            local=True, localname='mouse')
         self.user.remote_id = 'http://example.com/a/b'
         self.user.save()
 

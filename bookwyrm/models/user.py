@@ -1,4 +1,5 @@
 ''' database schema for user data '''
+import re
 from urllib.parse import urlparse
 
 from django.apps import apps
@@ -13,6 +14,7 @@ from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
+from bookwyrm.utils import regex
 from .base_model import OrderedCollectionPageMixin
 from .base_model import ActivitypubMixin, BookWyrmModel
 from .federated_server import FederatedServer
@@ -49,7 +51,8 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     localname = models.CharField(
         max_length=255,
         null=True,
-        unique=True
+        unique=True,
+        validators=[fields.validate_localname],
     )
     # name is your display name, which you can change at will
     name = fields.CharField(max_length=100, null=True, blank=True)
@@ -167,20 +170,17 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         ''' populate fields for new local users '''
         # this user already exists, no need to populate fields
-        if self.id:
-            return super().save(*args, **kwargs)
-
-        if not self.local:
+        if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = '%s@%s' % (self.username, actor_parts.netloc)
             return super().save(*args, **kwargs)
 
+        if self.id or not self.local:
+            return super().save(*args, **kwargs)
+
         # populate fields for local users
-        self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.username)
-        self.localname = self.username
-        self.username = '%s@%s' % (self.username, DOMAIN)
-        self.actor = self.remote_id
+        self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.localname)
         self.inbox = '%s/inbox' % self.remote_id
         self.shared_inbox = 'https://%s/inbox' % DOMAIN
         self.outbox = '%s/outbox' % self.remote_id
