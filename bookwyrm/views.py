@@ -399,7 +399,8 @@ def manage_invites(request):
     ''' invite management page '''
     data = {
         'title': 'Invitations',
-        'invites': models.SiteInvite.objects.filter(user=request.user),
+        'invites': models.SiteInvite.objects.filter(
+            user=request.user).order_by('-created_date'),
         'form': forms.CreateInviteForm(),
     }
     return TemplateResponse(request, 'manage_invites.html', data)
@@ -466,9 +467,9 @@ def user_page(request, username):
 
     # user's posts
     activities = get_activity_feed(
-        user,
+        request.user,
         ['public', 'unlisted', 'followers'],
-        queryset=models.Status.objects.filter(user=request.user)
+        queryset=models.Status.objects.filter(user=user)
     )
     paginated = Paginator(activities, PAGE_LENGTH)
     activity_page = paginated.page(page)

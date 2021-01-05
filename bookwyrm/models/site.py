@@ -50,6 +50,7 @@ def new_access_code():
 
 class SiteInvite(models.Model):
     ''' gives someone access to create an account on the instance '''
+    created_date = models.DateTimeField(auto_now_add=True)
     code = models.CharField(max_length=32, default=new_access_code)
     expiry = models.DateTimeField(blank=True, null=True)
     use_limit = models.IntegerField(blank=True, null=True)
