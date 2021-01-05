@@ -116,17 +116,20 @@ class Views(TestCase):
             content='blah blah blah', user=rat, privacy='followers')
         rat_mention.mention_users.set([self.local_user])
 
-        statuses = views.get_activity_feed(self.local_user, 'home')
-        self.assertEqual(len(statuses), 2)
-        self.assertEqual(statuses[1], public_status)
-        self.assertEqual(statuses[0], rat_mention)
-
         statuses = views.get_activity_feed(
-            self.local_user, 'home', model=models.Comment)
+            self.local_user,
+            ['public', 'unlisted', 'followers'],
+            following_only=True,
+            queryset=models.Comment.objects
+        )
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], public_status)
 
-        statuses = views.get_activity_feed(self.local_user, 'local')
+        statuses = views.get_activity_feed(
+            self.local_user,
+            ['public', 'followers'],
+            local_only=True
+        )
         self.assertEqual(len(statuses), 2)
         self.assertEqual(statuses[1], public_status)
         self.assertEqual(statuses[0], rat_public)
@@ -135,19 +138,30 @@ class Views(TestCase):
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], direct_status)
 
-        statuses = views.get_activity_feed(self.local_user, 'federated')
+        statuses = views.get_activity_feed(
+            self.local_user,
+            ['public', 'followers'],
+        )
         self.assertEqual(len(statuses), 3)
         self.assertEqual(statuses[2], public_status)
         self.assertEqual(statuses[1], rat_public)
         self.assertEqual(statuses[0], remote_status)
 
-        statuses = views.get_activity_feed(self.local_user, 'friends')
+        statuses = views.get_activity_feed(
+            self.local_user,
+            ['public', 'unlisted', 'followers'],
+            following_only=True
+        )
         self.assertEqual(len(statuses), 2)
         self.assertEqual(statuses[1], public_status)
         self.assertEqual(statuses[0], rat_mention)
 
         rat.followers.add(self.local_user)
-        statuses = views.get_activity_feed(self.local_user, 'friends')
+        statuses = views.get_activity_feed(
+            self.local_user,
+            ['public', 'unlisted', 'followers'],
+            following_only=True
+        )
         self.assertEqual(len(statuses), 5)
         self.assertEqual(statuses[4], public_status)
         self.assertEqual(statuses[3], rat_public)

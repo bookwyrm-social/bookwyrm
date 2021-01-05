@@ -83,7 +83,16 @@ def home_tab(request, tab):
 
     suggested_books = get_suggested_books(request.user)
 
-    activities = get_activity_feed(request.user, tab)
+    if tab == 'home':
+        activities = get_activity_feed(
+            request.user, ['public', 'unlisted', 'followers'],
+            following_only=True)
+    elif tab == 'local':
+        activities = get_activity_feed(
+            request.user, ['public', 'followers'], local_only=True)
+    else:
+        activities = get_activity_feed(
+            request.user, ['public', 'followers'])
     paginated = Paginator(activities, PAGE_LENGTH)
     activity_page = paginated.page(page)
 
@@ -151,7 +160,7 @@ def discover_page(request):
             book__in=book.parent_work.editions.all()
         )
         reviews = get_activity_feed(
-            request.user, 'federated', model=reviews)
+            request.user, ['public', 'unlisted'], queryset=reviews)
         ratings[book.id] = reviews.aggregate(Avg('rating'))['rating__avg']
     data = {
         'title': 'Discover',
@@ -187,68 +196,58 @@ def direct_messages_page(request, page=1):
     return TemplateResponse(request, 'direct_messages.html', data)
 
 
-def get_activity_feed(user, filter_level, model=models.Status):
+def get_activity_feed(
+        user, privacy, local_only=False, following_only=False,
+        queryset=models.Status.objects):
     ''' get a filtered queryset of statuses '''
-    if user.is_anonymous:
-        user = None
+    privacy = privacy if isinstance(privacy, list) else [privacy]
+    # if we're looking at Status, we need this. We don't if it's Comment
+    if hasattr(queryset, 'select_subclasses'):
+        queryset = queryset.select_subclasses()
 
-    if user:
-        following = models.User.objects.filter(
-            Q(followers=user) | Q(id=user.id)
+    # exclude deleted
+    queryset = queryset.exclude(deleted=True).order_by('-published_date')
+
+    # filter to only privided privacy levels
+    queryset = queryset.filter(privacy__in=privacy)
+
+    # only include statuses the user follows
+    if following_only:
+        queryset = queryset.exclude(
+            ~Q(# remove everythign except
+                Q(user__in=user.following.all()) | # user follwoing
+                Q(user=user) |# is self
+                Q(mention_users=user)# mentions user
+            ),
         )
-    else:
-        following = []
-
-    activities = model
-    if hasattr(model, 'objects'):
-        activities = model.objects
-
-    activities = activities.filter(
-        deleted=False,
-    ).order_by(
-        '-published_date'
-    )
-
-    if filter_level == 'direct':
-        return activities.filter(
-            Q(user=user) | Q(mention_users=user),
-            privacy='direct'
-        ).distinct()
-
-    # never show DMs in the regular feed
-    activities = activities.filter(~Q(privacy='direct'))
-
-
-    if hasattr(activities, 'select_subclasses'):
-        activities = activities.select_subclasses()
-
-    if filter_level in ['friends', 'home']:
-        # people you follow and direct mentions
-        activities = activities.filter(
-            Q(user__in=following, privacy__in=[
-                'public', 'unlisted', 'followers'
-            ]) | Q(mention_users=user) | Q(user=user)
-        ).distinct()
-    elif filter_level == 'self':
-        activities = activities.filter(user=user, privacy='public')
-    elif filter_level == 'local':
-        # everyone on this instance except unlisted
-        activities = activities.filter(
-            Q(user__in=following, privacy='followers') | Q(privacy='public'),
-            user__local=True
-        )
-    else:
-        # all activities from everyone you federate with
-        activities = activities.filter(
-            Q(user__in=following, privacy='followers') | Q(privacy='public')
+    # exclude followers-only statuses the user doesn't follow
+    elif 'followers' in privacy:
+        queryset = queryset.exclude(
+            ~Q(# user isn't following and it isn't their own status
+                Q(user__in=user.following.all()) | Q(user=user)
+            ),
+            privacy='followers' # and the status is followers only
         )
 
+    # exclude direct messages not intended for the user
+    if 'direct' in privacy:
+        queryset = queryset.exclude(
+            ~Q(
+                Q(user=user) | Q(mention_users=user)
+            ), privacy='direct'
+        )
+
+    # filter for only local status
+    if local_only:
+        queryset = queryset.filter(user__local=True)
+
+    # remove statuses that have boosts in the same queryset
     try:
-        activities = activities.filter(~Q(boosters__in=activities))
+        queryset = queryset.filter(~Q(boosters__in=queryset))
     except ValueError:
         pass
 
-    return activities
+    return queryset
 
 
 @require_GET
@@ -462,7 +461,11 @@ def user_page(request, username):
             break
 
     # user's posts
-    activities = get_activity_feed(user, 'self')
+    activities = get_activity_feed(
+        user,
+        ['public', 'unlisted', 'followers'],
+        queryset=models.Status.objects.filter(user=request.user)
+    )
     paginated = Paginator(activities, PAGE_LENGTH)
     activity_page = paginated.page(page)
 
@@ -629,7 +632,11 @@ def book_page(request, book_id):
         book__in=work.editions.all(),
     )
     # all reviews for the book
-    reviews = get_activity_feed(request.user, 'federated', model=reviews)
+    reviews = get_activity_feed(
+        request.user,
+        ['public', 'unlisted', 'followers', 'direct'],
+        queryset=reviews
+    )
 
     # the reviews to show
     paginated = Paginator(reviews.exclude(
