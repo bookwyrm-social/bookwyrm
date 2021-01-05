@@ -208,6 +208,10 @@ def get_activity_feed(
     # exclude deleted
     queryset = queryset.exclude(deleted=True).order_by('-published_date')
 
+    # you can't see followers only or direct messages if you're not logged in
+    if user.is_anonymous:
+        privacy = [p for p in privacy if not p in ['followers', 'direct']]
+
     # filter to only privided privacy levels
     queryset = queryset.filter(privacy__in=privacy)
 
