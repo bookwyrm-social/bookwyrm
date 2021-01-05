@@ -670,6 +670,7 @@ def book_page(request, book_id):
         'title': book.title,
         'book': book,
         'reviews': reviews_page,
+        'review_count': reviews.count(),
         'ratings': reviews.filter(Q(content__isnull=True) | Q(content='')),
         'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
         'tags':  models.UserTag.objects.filter(book=book),
