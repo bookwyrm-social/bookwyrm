@@ -447,3 +447,59 @@ class Outgoing(TestCase):
         self.assertEqual(reply.user, user)
         self.assertTrue(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
+
+    def test_find_mentions(self):
+        ''' detect and look up @ mentions of users '''
+        user = models.User.objects.create_user(
+            'nutria@%s' % DOMAIN, 'nutria@nutria.com', 'password',
+            local=True, localname='nutria')
+        self.assertEqual(user.username, 'nutria@%s' % DOMAIN)
+
+        self.assertEqual(
+            list(outgoing.find_mentions('@nutria'))[0],
+            ('@nutria', user)
+        )
+        self.assertEqual(
+            list(outgoing.find_mentions('leading text @nutria'))[0],
+            ('@nutria', user)
+        )
+        self.assertEqual(
+            list(outgoing.find_mentions('leading @nutria trailing text'))[0],
+            ('@nutria', user)
+        )
+        self.assertEqual(
+            list(outgoing.find_mentions('@rat@example.com'))[0],
+            ('@rat@example.com', self.remote_user)
+        )
+
+        multiple = list(outgoing.find_mentions('@nutria and @rat@example.com'))
+        self.assertEqual(multiple[0], ('@nutria', user))
+        self.assertEqual(multiple[1], ('@rat@example.com', self.remote_user))
+
+        with patch('bookwyrm.outgoing.handle_remote_webfinger') as rw:
+            rw.return_value = self.local_user
+            self.assertEqual(
+                list(outgoing.find_mentions('@beep@beep.com'))[0],
+                ('@beep@beep.com', self.local_user)
+            )
+        with patch('bookwyrm.outgoing.handle_remote_webfinger') as rw:
+            rw.return_value = None
+            self.assertEqual(list(outgoing.find_mentions('@beep@beep.com')), [])
+
+        self.assertEqual(
+            list(outgoing.find_mentions('@nutria@%s' % DOMAIN))[0],
+            ('@nutria@%s' % DOMAIN, user)
+        )
+
+    def test_format_links(self):
+        ''' find and format urls into a tags '''
+        url = 'http://www.fish.com/'
+        self.assertEqual(
+            outgoing.format_links(url),
+            '<a href="%s">www.fish.com/</a>' % url)
+        url = 'https://archive.org/details/dli.granth.72113/page/n25/mode/2up'
+        self.assertEqual(
+            outgoing.format_links(url),
+            '<a href="%s">' \
+                'archive.org/details/dli.granth.72113/page/n25/mode/2up</a>' \
+                % url)
