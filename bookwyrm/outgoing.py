@@ -293,12 +293,15 @@ def find_mentions(content):
         yield (match.group(), mention_user)
 
 
-def to_markdown(content):
-    ''' catch links and convert to markdown '''
-    content = re.sub(
+def format_links(content):
+    return re.sub(
         r'([^(href=")]|^)(https?:\/\/([\w\.\-_]+\.[a-z]{2,}(\/[\w\.\-_\/]+)?))',
         r'\g<1><a href="\g<2>">\g<3></a>',
         content)
+
+def to_markdown(content):
+    ''' catch links and convert to markdown '''
+    content = format_links(content)
     content = markdown(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
