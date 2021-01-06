@@ -490,3 +490,16 @@ class Outgoing(TestCase):
             list(outgoing.find_mentions('@nutria@%s' % DOMAIN))[0],
             ('@nutria@%s' % DOMAIN, user)
         )
+
+    def test_format_links(self):
+        ''' find and format urls into a tags '''
+        url = 'http://www.fish.com/'
+        self.assertEqual(
+            outgoing.format_links(url),
+            '<a href="%s">www.fish.com/</a>' % url)
+        url = 'https://archive.org/details/dli.granth.72113/page/n25/mode/2up'
+        self.assertEqual(
+            outgoing.format_links(url),
+            '<a href="%s">' \
+                'archive.org/details/dli.granth.72113/page/n25/mode/2up</a>' \
+                % url)
