@@ -503,3 +503,9 @@ class Outgoing(TestCase):
             '<a href="%s">' \
                 'archive.org/details/dli.granth.72113/page/n25/mode/2up</a>' \
                 % url)
+        url = 'https://openlibrary.org/search' \
+               '?q=arkady+strugatsky&mode=everything'
+        self.assertEqual(
+            outgoing.format_links(url),
+            '<a href="%s">openlibrary.org/search' \
+                '?q=arkady+strugatsky&mode=everything</a>' % url)
