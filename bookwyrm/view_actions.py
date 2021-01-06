@@ -81,8 +81,12 @@ def register(request):
     if errors:
         data = {
             'login_form': forms.LoginForm(),
-            'register_form': form
+            'register_form': form,
+            'invite': invite,
+            'valid': invite.valid() if invite else True,
         }
+        if invite:
+            return TemplateResponse(request, 'invite.html', data)
         return TemplateResponse(request, 'login.html', data)
 
     username = '%s@%s' % (localname, DOMAIN)
