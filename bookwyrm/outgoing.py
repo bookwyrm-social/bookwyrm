@@ -296,8 +296,7 @@ def find_mentions(content):
 def to_markdown(content):
     ''' catch links and convert to markdown '''
     content = re.sub(
-        r'([^(href=")])(https?:\/\/([A-Za-z\.\-_\/]+' \
-            r'\.[A-Za-z]{2,}[A-Za-z\.\-_\/]+))',
+        r'([^(href=")]|^)(https?:\/\/([\w\.\-_]+\.[a-z]{2,}(\/[\w\.\-_\/]+)?))',
         r'\g<1><a href="\g<2>">\g<3></a>',
         content)
     content = markdown(content)
