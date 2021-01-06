@@ -296,7 +296,8 @@ def find_mentions(content):
 def format_links(content):
     ''' detect and format links '''
     return re.sub(
-        r'([^(href=")]|^)(https?:\/\/(%s([\w\.\-_\/])*))' % regex.domain,
+        r'([^(href=")]|^)(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % \
+                regex.domain,
         r'\g<1><a href="\g<2>">\g<3></a>',
         content)
 
