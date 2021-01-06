@@ -377,17 +377,13 @@ def invite_page(request, code):
     ''' endpoint for sending invites '''
     if request.user.is_authenticated:
         return redirect('/')
-    try:
-        invite = models.SiteInvite.objects.get(code=code)
-        if not invite.valid():
-            raise PermissionDenied
-    except models.SiteInvite.DoesNotExist:
-        raise PermissionDenied
+    invite = get_object_or_404(models.SiteInvite, code=code)
 
     data = {
         'title': 'Join',
         'register_form': forms.RegisterForm(),
         'invite': invite,
+        'valid': invite.valid() if invite else True,
     }
     return TemplateResponse(request, 'invite.html', data)
 
