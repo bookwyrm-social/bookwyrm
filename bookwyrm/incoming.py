@@ -251,6 +251,9 @@ def handle_delete_status(activity):
 def handle_favorite(activity):
     ''' approval of your good good post '''
     fav = activitypub.Like(**activity)
+    # we dont know this status, we don't care about this status
+    if not models.Status.objects.filter(remote_id=fav.object).exists():
+        return
 
     fav = fav.to_model(models.Favorite)
     if fav.user.local:
