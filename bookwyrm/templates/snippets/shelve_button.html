@@ -44,7 +44,7 @@
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li role="menuitem">
-                    {% if active_shelf.shelf.identifier == 'to-read' and shelf.identifier == 'reading' %}
+                    {% if active_shelf.shelf.identifier != 'reading' and shelf.identifier == 'reading' %}
                     <div class="dropdown-item pt-0 pb-0">
                         <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
                             Start reading
