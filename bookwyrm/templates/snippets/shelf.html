@@ -34,7 +34,7 @@
     </th>
     {% endif %}
 </tr>
-{% for book in books %}
+{% for book in books.reverse %}
 <tr class="book-preview">
     <td>
         {% include 'snippets/book_cover.html' with book=book size="small" %}
