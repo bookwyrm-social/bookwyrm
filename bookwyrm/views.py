@@ -258,10 +258,12 @@ def get_activity_feed(
 def search(request):
     ''' that search bar up top '''
     query = request.GET.get('q')
+    min_confidence = request.GET.get('min_confidence', 0.1)
 
     if is_api_request(request):
         # only return local book results via json so we don't cause a cascade
-        book_results = connector_manager.local_search(query)
+        book_results = connector_manager.local_search(
+            query, min_confidence=min_confidence)
         return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
@@ -278,7 +280,8 @@ def search(request):
         similarity__gt=0.5,
     ).order_by('-similarity')[:10]
 
-    book_results = connector_manager.search(query)
+    book_results = connector_manager.search(
+        query, min_confidence=min_confidence)
     data = {
         'title': 'Search Results',
         'book_results': book_results,

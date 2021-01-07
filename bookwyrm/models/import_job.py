@@ -42,6 +42,7 @@ class ImportJob(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
     include_reviews = models.BooleanField(default=True)
+    complete = models.BooleanField(default=False)
     privacy = models.CharField(
         max_length=255,
         default='public',

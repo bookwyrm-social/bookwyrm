@@ -69,3 +69,5 @@ def import_data(job_id):
                 item.save()
     finally:
         create_notification(job.user, 'IMPORT', related_import=job)
+        job.complete = True
+        job.save()

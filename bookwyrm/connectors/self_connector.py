@@ -13,6 +13,8 @@ class Connector(AbstractConnector):
     ''' instantiate a connector  '''
     def search(self, query, min_confidence=0.1):
         ''' search your local database '''
+        if not query:
+            return []
         # first, try searching unqiue identifiers
         results = search_identifiers(query)
         if not results:

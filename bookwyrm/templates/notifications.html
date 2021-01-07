@@ -27,6 +27,8 @@
                 <span class="icon icon-boost"></span>
                 {% elif notification.notification_type == 'FAVORITE' %}
                 <span class="icon icon-heart"></span>
+                {% elif notification.notification_type == 'IMPORT' %}
+                <span class="icon icon-list"></span>
                 {% endif %}
             </div>
             <div class="column">
@@ -50,6 +52,7 @@
                             <a href="{{ related_status.reply_parent.local_path }}">{{ related_status | status_preview_name|safe }}</a>
                         {% elif notification.notification_type == 'FOLLOW' %}
                             followed you
+                            {% include 'snippets/follow_button.html' with user=notification.related_user %}
                         {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
                             sent you a follow request
                             <div class="row shrink">

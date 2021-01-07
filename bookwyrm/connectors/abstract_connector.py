@@ -34,10 +34,15 @@ class AbstractMinimalConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-    def search(self, query, min_confidence=None):# pylint: disable=unused-argument
+    def search(self, query, min_confidence=None):
         ''' free text search '''
+        params = {}
+        if min_confidence:
+            params['min_confidence'] = min_confidence
+
         resp = requests.get(
             '%s%s' % (self.search_url, query),
+            params=params,
             headers={
                 'Accept': 'application/json; charset=utf-8',
                 'User-Agent': settings.USER_AGENT,
