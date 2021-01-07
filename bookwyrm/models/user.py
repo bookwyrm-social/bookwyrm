@@ -170,6 +170,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         ''' populate fields for new local users '''
         # this user already exists, no need to populate fields
+        print(self.username)
         if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
