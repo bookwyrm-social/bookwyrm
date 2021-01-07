@@ -265,7 +265,7 @@ def search(request):
         return JsonResponse([r.json() for r in book_results], safe=False)
 
     # use webfinger for mastodon style account@domain.com username
-    if re.match(regex.full_username, query):
+    if re.match(r'\B%s' % regex.full_username, query):
         outgoing.handle_remote_webfinger(query)
 
     # do a local user search

@@ -147,6 +147,30 @@ def get_mentions(status, user):
     return ' '.join(
         '@' + get_user_identifier(m) for m in mentions if not m == user)
 
+@register.filter(name='status_preview_name')
+def get_status_preview_name(obj):
+    name = obj.__class__.__name__.lower()
+    if name == 'review':
+        return '%s of <em>%s</em>' % (name, obj.book.title)
+    if name == 'comment':
+        return '%s on <em>%s</em>' % (name, obj.book.title)
+    if name == 'quotation':
+        return '%s from <em>%s</em>' % (name, obj.book.title)
+    return name
+
+@register.simple_tag(takes_context=False)
+def related_status(notification):
+    ''' for notifications '''
+    if not notification.related_status:
+        return None
+    if hasattr(notification.related_status, 'quotation'):
+        return notification.related_status.quotation
+    if hasattr(notification.related_status, 'review'):
+        return notification.related_status.review
+    if hasattr(notification.related_status, 'comment'):
+        return notification.related_status.comment
+    return notification.related_status
+
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     ''' check what shelf a user has a book on, if any '''
