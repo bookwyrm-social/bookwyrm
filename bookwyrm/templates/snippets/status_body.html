@@ -4,7 +4,7 @@
 {% if not status.deleted %}
 <div class="card">
     <header class="card-header">
-        <div class="card-header-title">
+        <div class="card-header-title has-background-white-ter">
             <div class="columns">
                 <div class="column is-narrow">
                     {% include 'snippets/status_header.html' with status=status %}
@@ -18,7 +18,7 @@
     </div>
 
     <footer>
-        <div class="card-footer">
+        <div class="card-footer has-background-white-bis">
             <div class="card-footer-item">
                 {% if request.user.is_authenticated %}
                 <label class="button is-small" for="show-comment-{{ status.id }}">
