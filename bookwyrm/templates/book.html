@@ -128,25 +128,29 @@
             </div>
 
             {# user's relationship to the book #}
-            <div>
+            <div class="block">
                 {% for shelf in user_shelves %}
                 <p>
                     This edition is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
                 </p>
                 {% endfor %}
-
                 {% for shelf in other_edition_shelves %}
                 <p>
                     A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}
+            </div>
 
+            {% if readthroughs.exists %}
+            <div>
+                <h2 class="title is-5">Your reading activity</h2>
                 {% for readthrough in readthroughs %}
                     {% include 'snippets/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
             </div>
+            {% endif %}
 
             {% if request.user.is_authenticated %}
             <div class="box">
