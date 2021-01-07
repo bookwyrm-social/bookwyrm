@@ -2,7 +2,7 @@
 {% load humanize %}
 
 {% if not status.deleted %}
-<div class="card">
+<article class="card">
     <header class="card-header">
         <div class="card-header-title has-background-white-ter">
             <div class="columns">
@@ -13,9 +13,9 @@
         </div>
     </header>
 
-    <div class="card-content">
+    <section class="card-content">
         {% include 'snippets/status_content.html' with status=status %}
-    </div>
+    </section>
 
     <footer>
         <div class="card-footer has-background-white-bis">
@@ -95,9 +95,9 @@
         </div>
         {% endif %}
     </footer>
-</div>
+</article>
 {% else %}
-<div class="card">
+<article class="card">
     <header class="card-header">
         <p>
         {% include 'snippets/avatar.html' with user=status.user %}
@@ -105,5 +105,5 @@
         deleted this status
         </p>
     </header>
-</div>
+</article>
 {% endif %}
