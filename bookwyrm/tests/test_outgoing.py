@@ -497,6 +497,9 @@ class Outgoing(TestCase):
         self.assertEqual(
             outgoing.format_links(url),
             '<a href="%s">www.fish.com/</a>' % url)
+        self.assertEqual(
+            outgoing.format_links('(%s)' % url),
+            '(<a href="%s">www.fish.com/</a>)' % url)
         url = 'https://archive.org/details/dli.granth.72113/page/n25/mode/2up'
         self.assertEqual(
             outgoing.format_links(url),
