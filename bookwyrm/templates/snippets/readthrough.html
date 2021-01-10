@@ -36,20 +36,7 @@
     <div class="toggle-content hidden">
         <div class="box">
             <form name="edit-readthrough" action="/edit-readthrough" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="id" value="{{ readthrough.id }}">
-                <div class="field">
-                    <label class="label">
-                        Started reading
-                        <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-                    </label>
-                </div>
-                <div class="field">
-                    <label class="label">
-                        Finished reading
-                        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
-                    </label>
-                </div>
+                {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
                 <div class="field is-grouped">
                     <button class="button is-primary" type="submit">Save</button>
                     <label class="button" for="show-readthrough-{{ readthrough.id }}" role="button" tabindex="0">Cancel</label>
