@@ -570,6 +570,16 @@ class Views(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
+        request = self.factory.get('/?page=1')
+        request.user = self.local_user
+        with patch('bookwyrm.views.is_api_request') as is_api:
+            is_api.return_value = True
+            result = views.shelf_page(
+                request, self.local_user.username, shelf.identifier)
+        self.assertIsInstance(result, ActivitypubResponse)
+        self.assertEqual(result.status_code, 200)
+
+
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})

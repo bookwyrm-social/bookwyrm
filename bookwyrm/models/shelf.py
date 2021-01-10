@@ -39,7 +39,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     @property
     def collection_queryset(self):
         ''' list of books for this shelf, overrides OrderedCollectionMixin  '''
-        return self.books
+        return self.books.all()
 
     def get_remote_id(self):
         ''' shelf identifier instead of id '''
