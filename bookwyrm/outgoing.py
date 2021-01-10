@@ -180,6 +180,13 @@ def handle_imported_book(user, item, include_reviews, privacy):
         broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
     for read in item.reads:
+        # check for an existing readthrough with the same dates
+        if models.ReadThrough.objects.filter(
+                user=user, book=item.book,
+                start_date=read.start_date,
+                finish_date=read.finish_date
+            ).exists():
+            continue
         read.book = item.book
         read.user = user
         read.save()

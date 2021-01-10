@@ -323,6 +323,37 @@ class Outgoing(TestCase):
         self.assertEqual(readthrough.finish_date.day, 25)
 
 
+    def test_handle_import_twice(self):
+        ''' re-importing books '''
+        shelf = self.local_user.shelf_set.filter(identifier='read').first()
+        import_job = models.ImportJob.objects.create(user=self.local_user)
+        datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
+        csv_file = open(datafile, 'r')
+        for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            import_item = models.ImportItem.objects.create(
+                job_id=import_job.id, index=index, data=entry, book=self.book)
+            break
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+            outgoing.handle_imported_book(
+                self.local_user, import_item, False, 'public')
+
+        shelf.refresh_from_db()
+        self.assertEqual(shelf.books.first(), self.book)
+
+        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+        # I can't remember how to create dates and I don't want to look it up.
+        self.assertEqual(readthrough.start_date.year, 2020)
+        self.assertEqual(readthrough.start_date.month, 10)
+        self.assertEqual(readthrough.start_date.day, 21)
+        self.assertEqual(readthrough.finish_date.year, 2020)
+        self.assertEqual(readthrough.finish_date.month, 10)
+        self.assertEqual(readthrough.finish_date.day, 25)
+
+
     def test_handle_imported_book_review(self):
         ''' goodreads review import '''
         import_job = models.ImportJob.objects.create(user=self.local_user)
