@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, view_actions as actions
 from bookwyrm.settings import DOMAIN
@@ -361,7 +362,7 @@ class ViewActions(TestCase):
 
     def test_edit_readthrough(self):
         ''' adding dates to an ongoing readthrough '''
-        start = dateutil.parser.parse('2021-01-03')
+        start = timezone.make_aware(dateutil.parser.parse('2021-01-03'))
         readthrough = models.ReadThrough.objects.create(
             book=self.book, user=self.local_user, start_date=start)
         request = self.factory.post(
