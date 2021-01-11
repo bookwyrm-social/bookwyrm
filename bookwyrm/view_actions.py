@@ -402,7 +402,7 @@ def shelve(request):
             request.user,
             desired_shelf,
             book,
-            privacy='public'
+            privacy=desired_shelf.privacy
         )
 
     return redirect('/')
