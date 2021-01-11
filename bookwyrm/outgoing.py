@@ -360,7 +360,7 @@ def handle_unfavorite(user, status):
     if status.user.local:
         models.Notification.objects.filter(
             user=status.user, related_user=user,
-            status=status, notification_type='FAVORITE'
+            related_status=status, notification_type='FAVORITE'
         ).first().delete()
 
 

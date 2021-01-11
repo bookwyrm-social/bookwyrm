@@ -638,3 +638,53 @@ class Outgoing(TestCase):
             outgoing.handle_unfavorite(self.remote_user, status)
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
+
+
+    def test_handle_boost(self):
+        ''' boost a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_boost(self.remote_user, status)
+
+        boost = models.Boost.objects.get()
+        self.assertEqual(boost.boosted_status, status)
+        self.assertEqual(boost.user, self.remote_user)
+        self.assertEqual(boost.privacy, 'public')
+
+        notification = models.Notification.objects.get()
+        self.assertEqual(notification.notification_type, 'BOOST')
+        self.assertEqual(notification.user, self.local_user)
+        self.assertEqual(notification.related_user, self.remote_user)
+        self.assertEqual(notification.related_status, status)
+
+    def test_handle_boost_unlisted(self):
+        ''' boost a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi', privacy='unlisted')
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_boost(self.remote_user, status)
+
+        boost = models.Boost.objects.get()
+        self.assertEqual(boost.privacy, 'unlisted')
+
+    def test_handle_boost_private(self):
+        ''' boost a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi', privacy='followers')
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_boost(self.remote_user, status)
+        self.assertFalse(models.Boost.objects.exists())
+
+    def test_handle_boost_twice(self):
+        ''' boost a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_boost(self.remote_user, status)
+            outgoing.handle_boost(self.remote_user, status)
+        self.assertEqual(models.Boost.objects.count(), 1)
