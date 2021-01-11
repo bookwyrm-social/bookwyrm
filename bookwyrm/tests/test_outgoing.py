@@ -260,6 +260,47 @@ class Outgoing(TestCase):
         self.assertEqual(self.shelf.books.count(), 0)
 
 
+    def test_handle_reading_status_to_read(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='to-read')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'wants to read')
+
+    def test_handle_reading_status_reading(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='reading')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'started reading')
+
+    def test_handle_reading_status_read(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='read')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'finished reading')
+
+    def test_handle_reading_status_other(self):
+        ''' posts shelve activities '''
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_reading_status(
+                self.local_user, self.shelf, self.book, 'public')
+        self.assertFalse(models.GeneratedNote.objects.exists())
+
+
     def test_handle_imported_book(self):
         ''' goodreads import added a book, this adds related connections '''
         shelf = self.local_user.shelf_set.filter(identifier='read').first()
@@ -390,6 +431,17 @@ class Outgoing(TestCase):
         self.assertFalse(models.Review.objects.filter(
             book=self.book, user=self.local_user
         ).exists())
+
+
+    def test_handle_delete_status(self):
+        ''' marks a status as deleted '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+        self.assertFalse(status.deleted)
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_delete_status(self.local_user, status)
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
 
 
     def test_handle_status(self):
@@ -543,3 +595,46 @@ class Outgoing(TestCase):
             outgoing.format_links(url),
             '<a href="%s">openlibrary.org/search' \
                 '?q=arkady+strugatsky&mode=everything</a>' % url)
+
+
+    def test_to_markdown(self):
+        ''' this is mostly handled in other places, but nonetheless '''
+        text = '_hi_ and http://fish.com is <marquee>rad</marquee>'
+        result = outgoing.to_markdown(text)
+        self.assertEqual(
+            result,
+            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' \
+                    'is rad</p>')
+
+
+    def test_handle_favorite(self):
+        ''' create and broadcast faving a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_favorite(self.remote_user, status)
+        fav = models.Favorite.objects.get()
+        self.assertEqual(fav.status, status)
+        self.assertEqual(fav.user, self.remote_user)
+
+        notification = models.Notification.objects.get()
+        self.assertEqual(notification.notification_type, 'FAVORITE')
+        self.assertEqual(notification.user, self.local_user)
+        self.assertEqual(notification.related_user, self.remote_user)
+
+
+    def test_handle_unfavorite(self):
+        ''' unfav a status '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_favorite(self.remote_user, status)
+
+        self.assertEqual(models.Favorite.objects.count(), 1)
+        self.assertEqual(models.Notification.objects.count(), 1)
+
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_unfavorite(self.remote_user, status)
+        self.assertEqual(models.Favorite.objects.count(), 0)
+        self.assertEqual(models.Notification.objects.count(), 0)

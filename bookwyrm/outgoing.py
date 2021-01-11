@@ -332,12 +332,13 @@ def handle_favorite(user, status):
     fav_activity = favorite.to_activity()
     broadcast(
         user, fav_activity, privacy='direct', direct_recipients=[status.user])
-    create_notification(
-        status.user,
-        'FAVORITE',
-        related_user=user,
-        related_status=status
-    )
+    if status.user.local:
+        create_notification(
+            status.user,
+            'FAVORITE',
+            related_user=user,
+            related_status=status
+        )
 
 
 def handle_unfavorite(user, status):
@@ -354,6 +355,13 @@ def handle_unfavorite(user, status):
     fav_activity = favorite.to_undo_activity(user)
     favorite.delete()
     broadcast(user, fav_activity, direct_recipients=[status.user])
+
+    # check for notification
+    if status.user.local:
+        models.Notification.objects.filter(
+            user=status.user, related_user=user,
+            status=status, notification_type='FAVORITE'
+        ).first().delete()
 
 
 def handle_boost(user, status):
