@@ -358,10 +358,12 @@ def handle_unfavorite(user, status):
 
     # check for notification
     if status.user.local:
-        models.Notification.objects.filter(
+        notification = models.Notification.objects.filter(
             user=status.user, related_user=user,
             related_status=status, notification_type='FAVORITE'
-        ).first().delete()
+        ).first()
+        if notification:
+            notification.delete()
 
 
 def handle_boost(user, status):
@@ -383,12 +385,13 @@ def handle_boost(user, status):
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
 
-    create_notification(
-        status.user,
-        'BOOST',
-        related_user=user,
-        related_status=status
-    )
+    if status.user.local:
+        create_notification(
+            status.user,
+            'BOOST',
+            related_user=user,
+            related_status=status
+        )
 
 
 def handle_unboost(user, status):
@@ -401,12 +404,11 @@ def handle_unboost(user, status):
     boost.delete()
     broadcast(user, activity)
 
-
-def handle_update_book_data(user, item):
-    ''' broadcast the news about our book '''
-    broadcast(user, item.to_update_activity(user))
-
-
-def handle_update_user(user):
-    ''' broadcast editing a user's profile '''
-    broadcast(user, user.to_update_activity(user))
+    # delete related notification
+    if status.user.local:
+        notification = models.Notification.objects.filter(
+            user=status.user, related_user=user,
+            related_status=status, notification_type='BOOST'
+        ).first()
+        if notification:
+            notification.delete()

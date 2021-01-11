@@ -688,3 +688,18 @@ class Outgoing(TestCase):
             outgoing.handle_boost(self.remote_user, status)
             outgoing.handle_boost(self.remote_user, status)
         self.assertEqual(models.Boost.objects.count(), 1)
+
+
+    def test_handle_unboost(self):
+        ''' undo a boost '''
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_boost(self.remote_user, status)
+
+        self.assertEqual(models.Boost.objects.count(), 1)
+        self.assertEqual(models.Notification.objects.count(), 1)
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            outgoing.handle_unboost(self.remote_user, status)
+        self.assertEqual(models.Boost.objects.count(), 0)
+        self.assertEqual(models.Notification.objects.count(), 0)
