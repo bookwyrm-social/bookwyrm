@@ -145,9 +145,11 @@ class ActivitypubMixin:
 
         if hasattr(self, 'serialize_reverse_fields'):
             # for example, editions of a work
-            for model_field_name, activity_field_name in \
+            for model_field_name, activity_field_name, sort_field in \
                     self.serialize_reverse_fields:
-                related_field = getattr(self, model_field_name)
+                related_field = getattr(
+                    self, model_field_name
+                ).order_by(sort_field)
                 activity[activity_field_name] = \
                         unfurl_related_field(related_field)
 

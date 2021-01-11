@@ -144,7 +144,7 @@ class Work(OrderedCollectionPageMixin, Book):
         )
 
     activity_serializer = activitypub.Work
-    serialize_reverse_fields = [('editions', 'editions')]
+    serialize_reverse_fields = [('editions', 'editions', '-edition_rank')]
     deserialize_reverse_fields = [('editions', 'editions')]
 
 
