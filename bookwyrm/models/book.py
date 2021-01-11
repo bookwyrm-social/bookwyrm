@@ -122,20 +122,29 @@ class Work(OrderedCollectionPageMixin, Book):
         load_remote=False
     )
 
+    def save(self, *args, **kwargs):
+        ''' set some fields on the edition object '''
+        # set rank
+        for edition in self.editions.all():
+            edition.save()
+        return super().save(*args, **kwargs)
+
     def get_default_edition(self):
         ''' in case the default edition is not set '''
-        return self.default_edition or self.editions.first()
+        return self.default_edition or self.editions.order_by(
+            '-edition_rank'
+        ).first()
 
     def to_edition_list(self, **kwargs):
         ''' an ordered collection of editions '''
         return self.to_ordered_collection(
-            self.editions.order_by('-updated_date').all(),
+            self.editions.order_by('-edition_rank').all(),
             remote_id='%s/editions' % self.remote_id,
             **kwargs
         )
 
     activity_serializer = activitypub.Work
-    serialize_reverse_fields = [('editions', 'editions')]
+    serialize_reverse_fields = [('editions', 'editions', '-edition_rank')]
     deserialize_reverse_fields = [('editions', 'editions')]
 
 
@@ -164,16 +173,38 @@ class Edition(Book):
     parent_work = fields.ForeignKey(
         'Work', on_delete=models.PROTECT, null=True,
         related_name='editions', activitypub_field='work')
+    edition_rank = fields.IntegerField(default=0)
 
     activity_serializer = activitypub.Edition
     name_field = 'title'
 
+    @property
+    def get_rank(self):
+        ''' calculate how complete the data is on this edition '''
+        if self.parent_work and self.parent_work.default_edition == self:
+            # default edition has the highest rank
+            return 20
+        rank = 0
+        rank += int(bool(self.cover)) * 3
+        rank += int(bool(self.isbn_13))
+        rank += int(bool(self.isbn_10))
+        rank += int(bool(self.oclc_number))
+        rank += int(bool(self.pages))
+        rank += int(bool(self.physical_format))
+        rank += int(bool(self.description))
+        # max rank is 9
+        return rank
+
     def save(self, *args, **kwargs):
-        ''' calculate isbn 10/13 '''
+        ''' set some fields on the edition object '''
+        # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == '978' and not self.isbn_10:
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        # set rank
+        self.edition_rank = self.get_rank
 
         return super().save(*args, **kwargs)
 

@@ -82,3 +82,19 @@ class Book(TestCase):
         self.assertEqual(book.edition_info, 'worm, Glorbish language, 2020')
         self.assertEqual(
             book.alt_text, 'Test Edition cover (worm, Glorbish language, 2020)')
+
+
+    def test_get_rank(self):
+        ''' sets the data quality index for the book '''
+        # basic rank
+        self.assertEqual(self.first_edition.edition_rank, 0)
+
+        self.first_edition.description = 'hi'
+        self.first_edition.save()
+        self.assertEqual(self.first_edition.edition_rank, 1)
+
+        # default edition
+        self.work.default_edition = self.first_edition
+        self.work.save()
+        self.first_edition.refresh_from_db()
+        self.assertEqual(self.first_edition.edition_rank, 20)
