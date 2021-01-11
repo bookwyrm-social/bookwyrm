@@ -106,6 +106,8 @@
                 <label class="label" for="id_name">Name:</label>
                 <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
             </div>
+            {% else %}
+            <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
             {% endif %}
 
             <label class="label">

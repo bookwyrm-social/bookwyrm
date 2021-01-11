@@ -352,13 +352,14 @@ def edit_shelf(request, shelf_id):
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
     if request.user != shelf.user:
         return HttpResponseBadRequest()
+    if not shelf.editable and request.POST.get('name') != shelf.name:
+        return HttpResponseBadRequest()
 
     form = forms.ShelfForm(request.POST, instance=shelf)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        return redirect(shelf.local_path)
     shelf = form.save()
-    return redirect('/user/%s/shelf/%s' % \
-            (request.user.localname, shelf.identifier))
+    return redirect(shelf.local_path)
 
 
 @login_required
