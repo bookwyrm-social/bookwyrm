@@ -1,12 +1,14 @@
 ''' test for app action functionality '''
 from unittest.mock import patch
 
+import dateutil
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, view_actions as actions
 from bookwyrm.settings import DOMAIN
@@ -356,6 +358,126 @@ class ViewActions(TestCase):
         author.refresh_from_db()
         self.assertEqual(author.name, 'Test Author')
         self.assertEqual(resp.template_name, 'edit_author.html')
+
+
+    def test_edit_shelf_privacy(self):
+        ''' set name or privacy on shelf '''
+        shelf = self.local_user.shelf_set.get(identifier='to-read')
+        self.assertEqual(shelf.privacy, 'public')
+
+        request = self.factory.post(
+            '', {
+                'privacy': 'unlisted',
+                'user': self.local_user.id,
+                'name': 'To Read',
+            })
+        request.user = self.local_user
+        actions.edit_shelf(request, shelf.id)
+        shelf.refresh_from_db()
+
+        self.assertEqual(shelf.privacy, 'unlisted')
+
+
+    def test_edit_shelf_name(self):
+        ''' change the name of an editable shelf '''
+        shelf = models.Shelf.objects.create(
+            name='Test Shelf', user=self.local_user)
+        self.assertEqual(shelf.privacy, 'public')
+
+        request = self.factory.post(
+            '', {
+                'privacy': 'public',
+                'user': self.local_user.id,
+                'name': 'cool name'
+            })
+        request.user = self.local_user
+        actions.edit_shelf(request, shelf.id)
+        shelf.refresh_from_db()
+
+        self.assertEqual(shelf.name, 'cool name')
+        self.assertEqual(shelf.identifier, 'testshelf-%d' % shelf.id)
+
+
+    def test_edit_shelf_name_not_editable(self):
+        ''' can't change the name of an non-editable shelf '''
+        shelf = self.local_user.shelf_set.get(identifier='to-read')
+        self.assertEqual(shelf.privacy, 'public')
+
+        request = self.factory.post(
+            '', {
+                'privacy': 'public',
+                'user': self.local_user.id,
+                'name': 'cool name'
+            })
+        request.user = self.local_user
+        actions.edit_shelf(request, shelf.id)
+
+        self.assertEqual(shelf.name, 'To Read')
+
+
+    def test_edit_readthrough(self):
+        ''' adding dates to an ongoing readthrough '''
+        start = timezone.make_aware(dateutil.parser.parse('2021-01-03'))
+        readthrough = models.ReadThrough.objects.create(
+            book=self.book, user=self.local_user, start_date=start)
+        request = self.factory.post(
+            '', {
+                'start_date': '2017-01-01',
+                'finish_date': '2018-03-07',
+                'book': '',
+                'id': readthrough.id,
+            })
+        request.user = self.local_user
+
+        actions.edit_readthrough(request)
+        readthrough.refresh_from_db()
+        self.assertEqual(readthrough.start_date.year, 2017)
+        self.assertEqual(readthrough.start_date.month, 1)
+        self.assertEqual(readthrough.start_date.day, 1)
+        self.assertEqual(readthrough.finish_date.year, 2018)
+        self.assertEqual(readthrough.finish_date.month, 3)
+        self.assertEqual(readthrough.finish_date.day, 7)
+        self.assertEqual(readthrough.book, self.book)
+
+
+    def test_delete_readthrough(self):
+        ''' remove a readthrough '''
+        readthrough = models.ReadThrough.objects.create(
+            book=self.book, user=self.local_user)
+        models.ReadThrough.objects.create(
+            book=self.book, user=self.local_user)
+        request = self.factory.post(
+            '', {
+                'id': readthrough.id,
+            })
+        request.user = self.local_user
+
+        actions.delete_readthrough(request)
+        self.assertFalse(
+            models.ReadThrough.objects.filter(id=readthrough.id).exists())
+
+
+    def test_create_readthrough(self):
+        ''' adding new read dates '''
+        request = self.factory.post(
+            '', {
+                'start_date': '2017-01-01',
+                'finish_date': '2018-03-07',
+                'book': self.book.id,
+                'id': '',
+            })
+        request.user = self.local_user
+
+        actions.create_readthrough(request)
+        readthrough = models.ReadThrough.objects.get()
+        self.assertEqual(readthrough.start_date.year, 2017)
+        self.assertEqual(readthrough.start_date.month, 1)
+        self.assertEqual(readthrough.start_date.day, 1)
+        self.assertEqual(readthrough.finish_date.year, 2018)
+        self.assertEqual(readthrough.finish_date.month, 3)
+        self.assertEqual(readthrough.finish_date.day, 7)
+        self.assertEqual(readthrough.book, self.book)
+        self.assertEqual(readthrough.user, self.local_user)
 
 
     def test_tag(self):

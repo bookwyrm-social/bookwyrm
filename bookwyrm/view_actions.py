@@ -210,7 +210,7 @@ def edit_profile(request):
         user.avatar.save(filename, ContentFile(output.getvalue()))
     user.save()
 
-    outgoing.handle_update_user(user)
+    broadcast(user, user.to_update_activity(user))
     return redirect('/user/%s' % request.user.localname)
 
 
@@ -241,7 +241,7 @@ def edit_book(request, book_id):
         return TemplateResponse(request, 'edit_book.html', data)
     book = form.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -288,7 +288,7 @@ def upload_cover(request, book_id):
     book.cover = form.files['cover']
     book.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -307,7 +307,7 @@ def add_description(request, book_id):
     book.description = description
     book.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -328,7 +328,7 @@ def edit_author(request, author_id):
         return TemplateResponse(request, 'edit_author.html', data)
     author = form.save()
 
-    outgoing.handle_update_book_data(request.user, author)
+    broadcast(request.user, author.to_update_activity(request.user))
     return redirect('/author/%s' % author.id)
 
 
@@ -352,13 +352,14 @@ def edit_shelf(request, shelf_id):
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
     if request.user != shelf.user:
         return HttpResponseBadRequest()
+    if not shelf.editable and request.POST.get('name') != shelf.name:
+        return HttpResponseBadRequest()
 
     form = forms.ShelfForm(request.POST, instance=shelf)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        return redirect(shelf.local_path)
     shelf = form.save()
-    return redirect('/user/%s/shelf/%s' % \
-            (request.user.localname, shelf.identifier))
+    return redirect(shelf.local_path)
 
 
 @login_required
@@ -402,7 +403,7 @@ def shelve(request):
             request.user,
             desired_shelf,
             book,
-            privacy='public'
+            privacy=desired_shelf.privacy
         )
 
     return redirect('/')
@@ -519,6 +520,18 @@ def delete_readthrough(request):
         return HttpResponseBadRequest()
 
     readthrough.delete()
+    return redirect(request.headers.get('Referer', '/'))
+
+
+@login_required
+@require_POST
+def create_readthrough(request):
+    ''' can't use the form because the dates are too finnicky '''
+    book = get_object_or_404(models.Edition, id=request.POST.get('book'))
+    readthrough = update_readthrough(request, create=True, book=book)
+    if not readthrough:
+        return redirect(book.local_path)
+    readthrough.save()
     return redirect(request.headers.get('Referer', '/'))
 
 
@@ -824,7 +837,7 @@ def update_readthrough(request, book=None, create=True):
     start_date = request.POST.get('start_date')
     if start_date:
         try:
-            start_date = dateutil.parser.parse(start_date)
+            start_date = timezone.make_aware(dateutil.parser.parse(start_date))
             readthrough.start_date = start_date
         except ParserError:
             pass
@@ -832,9 +845,13 @@ def update_readthrough(request, book=None, create=True):
     finish_date = request.POST.get('finish_date')
     if finish_date:
         try:
-            finish_date = dateutil.parser.parse(finish_date)
+            finish_date = timezone.make_aware(
+                dateutil.parser.parse(finish_date))
             readthrough.finish_date = finish_date
         except ParserError:
             pass
+
+    if not readthrough.start_date and not readthrough.finish_date:
+        return None
 
     return readthrough

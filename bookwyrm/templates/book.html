@@ -151,6 +151,26 @@
                 {% endfor %}
             </div>
             {% endif %}
+            <div class="block">
+                <div>
+                    <input type="radio" class="toggle-control" name="add-readthrough-form" id="hide-create-readthrough" checked>
+                    <div class="toggle-content hidden">
+                        <label class="button" for="add-readthrough" class="button" role="button" tabindex="0">Add read dates</label>
+                    </div>
+                </div>
+                <div>
+                    <input type="radio" class="toggle-control" id="add-readthrough" name="add-readthrough-form">
+                    <div class="toggle-content hidden box">
+                        <form name="add-readthrough" action="/create-readthrough" method="post">
+                            {% include 'snippets/readthrough_form.html' with readthrough=None %}
+                            <div class="field is-grouped">
+                                <button class="button is-primary" type="submit">Create</button>
+                                <label class="button" for="hide-create-readthrough" role="button" tabindex="0">Cancel</label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             {% if request.user.is_authenticated %}
             <div class="box">

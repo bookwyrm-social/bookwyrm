@@ -736,7 +736,7 @@ def editions_page(request, book_id):
 
     data = {
         'title': 'Editions of %s' % work.title,
-        'editions': work.editions.all(),
+        'editions': work.editions.order_by('-edition_rank').all(),
         'work': work,
     }
     return TemplateResponse(request, 'editions.html', data)

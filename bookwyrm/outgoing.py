@@ -180,6 +180,13 @@ def handle_imported_book(user, item, include_reviews, privacy):
         broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
 
     for read in item.reads:
+        # check for an existing readthrough with the same dates
+        if models.ReadThrough.objects.filter(
+                user=user, book=item.book,
+                start_date=read.start_date,
+                finish_date=read.finish_date
+            ).exists():
+            continue
         read.book = item.book
         read.user = user
         read.save()
@@ -296,7 +303,7 @@ def find_mentions(content):
 def format_links(content):
     ''' detect and format links '''
     return re.sub(
-        r'([^(href=")]|^)(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % \
+        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % \
                 regex.domain,
         r'\g<1><a href="\g<2>">\g<3></a>',
         content)
@@ -325,12 +332,13 @@ def handle_favorite(user, status):
     fav_activity = favorite.to_activity()
     broadcast(
         user, fav_activity, privacy='direct', direct_recipients=[status.user])
-    create_notification(
-        status.user,
-        'FAVORITE',
-        related_user=user,
-        related_status=status
-    )
+    if status.user.local:
+        create_notification(
+            status.user,
+            'FAVORITE',
+            related_user=user,
+            related_status=status
+        )
 
 
 def handle_unfavorite(user, status):
@@ -347,6 +355,15 @@ def handle_unfavorite(user, status):
     fav_activity = favorite.to_undo_activity(user)
     favorite.delete()
     broadcast(user, fav_activity, direct_recipients=[status.user])
+
+    # check for notification
+    if status.user.local:
+        notification = models.Notification.objects.filter(
+            user=status.user, related_user=user,
+            related_status=status, notification_type='FAVORITE'
+        ).first()
+        if notification:
+            notification.delete()
 
 
 def handle_boost(user, status):
@@ -368,12 +385,13 @@ def handle_boost(user, status):
     boost_activity = boost.to_activity()
     broadcast(user, boost_activity)
 
-    create_notification(
-        status.user,
-        'BOOST',
-        related_user=user,
-        related_status=status
-    )
+    if status.user.local:
+        create_notification(
+            status.user,
+            'BOOST',
+            related_user=user,
+            related_status=status
+        )
 
 
 def handle_unboost(user, status):
@@ -386,12 +404,11 @@ def handle_unboost(user, status):
     boost.delete()
     broadcast(user, activity)
 
-
-def handle_update_book_data(user, item):
-    ''' broadcast the news about our book '''
-    broadcast(user, item.to_update_activity(user))
-
-
-def handle_update_user(user):
-    ''' broadcast editing a user's profile '''
-    broadcast(user, user.to_update_activity(user))
+    # delete related notification
+    if status.user.local:
+        notification = models.Notification.objects.filter(
+            user=status.user, related_user=user,
+            related_status=status, notification_type='BOOST'
+        ).first()
+        if notification:
+            notification.delete()

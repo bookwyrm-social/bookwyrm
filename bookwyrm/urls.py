@@ -110,6 +110,7 @@ urlpatterns = [
     re_path(r'^switch-edition/?$', actions.switch_edition),
     re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
+    re_path(r'^create-readthrough/?$', actions.create_readthrough),
 
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),
