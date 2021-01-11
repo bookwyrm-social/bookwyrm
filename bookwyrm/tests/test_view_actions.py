@@ -360,6 +360,22 @@ class ViewActions(TestCase):
         self.assertEqual(resp.template_name, 'edit_author.html')
 
 
+    def test_edit_shelf(self):
+        ''' set name or privacy on shelf '''
+        shelf = self.local_user.shelf_set.get(identifier='to-read')
+        self.assertEqual(shelf.privacy, 'public')
+
+        request = self.factory.post(
+            '', {
+                'privacy': 'unlisted',
+                'user': self.local_user.id,
+            })
+        request.user = self.local_user
+        actions.edit_shelf(request, shelf.id)
+
+        self.assertEqual(shelf.privacy, 'unlisted')
+
+
     def test_edit_readthrough(self):
         ''' adding dates to an ongoing readthrough '''
         start = timezone.make_aware(dateutil.parser.parse('2021-01-03'))

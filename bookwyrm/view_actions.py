@@ -355,10 +355,9 @@ def edit_shelf(request, shelf_id):
 
     form = forms.ShelfForm(request.POST, instance=shelf)
     if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+        return redirect(shelf.local_path)
     shelf = form.save()
-    return redirect('/user/%s/shelf/%s' % \
-            (request.user.localname, shelf.identifier))
+    return redirect(shelf.local_path)
 
 
 @login_required
