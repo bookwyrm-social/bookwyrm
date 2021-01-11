@@ -11,9 +11,9 @@ Follow request already sent.
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ user.username }}">
     {% if user.manually_approves_followers %}
-        <button class="button is-small is-primary" type="submit">Send follow request</button>
+        <button class="button is-small is-link" type="submit">Send follow request</button>
     {% else %}
-        <button class="button is-small is-primary" type="submit">Follow</button>
+        <button class="button is-small is-link" type="submit">Follow</button>
     {% endif %}
 </form>
 <form action="/unfollow/" method="POST" onsubmit="interact(event)" class="follow-{{ user.id }} {% if not request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">

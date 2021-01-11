@@ -524,6 +524,18 @@ def delete_readthrough(request):
 
 @login_required
 @require_POST
+def create_readthrough(request):
+    ''' can't use the form because the dates are too finnicky '''
+    book = get_object_or_404(models.Edition, id=request.POST.get('book'))
+    readthrough = update_readthrough(request, create=True, book=book)
+    if not readthrough:
+        return redirect(book.local_path)
+    readthrough.save()
+    return redirect(request.headers.get('Referer', '/'))
+
+
+@login_required
+@require_POST
 def rate(request):
     ''' just a star rating for a book '''
     form = forms.RatingForm(request.POST)
@@ -824,7 +836,7 @@ def update_readthrough(request, book=None, create=True):
     start_date = request.POST.get('start_date')
     if start_date:
         try:
-            start_date = dateutil.parser.parse(start_date)
+            start_date = timezone.make_aware(dateutil.parser.parse(start_date))
             readthrough.start_date = start_date
         except ParserError:
             pass
@@ -832,9 +844,13 @@ def update_readthrough(request, book=None, create=True):
     finish_date = request.POST.get('finish_date')
     if finish_date:
         try:
-            finish_date = dateutil.parser.parse(finish_date)
+            finish_date = timezone.make_aware(
+                dateutil.parser.parse(finish_date))
             readthrough.finish_date = finish_date
         except ParserError:
             pass
+
+    if not readthrough.start_date and not readthrough.finish_date:
+        return None
 
     return readthrough
