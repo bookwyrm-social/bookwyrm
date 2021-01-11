@@ -169,12 +169,33 @@ class Edition(Book):
     activity_serializer = activitypub.Edition
     name_field = 'title'
 
+    @property
+    def get_rank(self):
+        ''' calculate how complete the data is on this edition '''
+        if self.parent_work.default_edition == self:
+            # default edition has the highest rank
+            return 20
+        rank = 0
+        rank += int(bool(self.cover)) * 3
+        rank += int(bool(self.isbn_13))
+        rank += int(bool(self.isbn_10))
+        rank += int(bool(self.oclc_number))
+        rank += int(bool(self.pages))
+        rank += int(bool(self.physical_format))
+        rank += int(bool(self.description))
+        # max rank is 9
+        return rank
+
     def save(self, *args, **kwargs):
-        ''' calculate isbn 10/13 '''
+        ''' set some fields on the edition object '''
+        # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == '978' and not self.isbn_10:
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        # set rank
+        self.edition_rank = self.get_rank
 
         return super().save(*args, **kwargs)
 
