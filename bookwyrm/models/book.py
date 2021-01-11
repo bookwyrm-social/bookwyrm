@@ -122,6 +122,13 @@ class Work(OrderedCollectionPageMixin, Book):
         load_remote=False
     )
 
+    def save(self, *args, **kwargs):
+        ''' set some fields on the edition object '''
+        # set rank
+        for edition in self.editions.all():
+            edition.save()
+        return super().save(*args, **kwargs)
+
     def get_default_edition(self):
         ''' in case the default edition is not set '''
         return self.default_edition or self.editions.first()
@@ -172,7 +179,7 @@ class Edition(Book):
     @property
     def get_rank(self):
         ''' calculate how complete the data is on this edition '''
-        if self.parent_work.default_edition == self:
+        if self.parent_work and self.parent_work.default_edition == self:
             # default edition has the highest rank
             return 20
         rank = 0
