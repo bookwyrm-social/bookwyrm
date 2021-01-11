@@ -164,6 +164,7 @@ class Edition(Book):
     parent_work = fields.ForeignKey(
         'Work', on_delete=models.PROTECT, null=True,
         related_name='editions', activitypub_field='work')
+    edition_rank = fields.IntegerField(default=0)
 
     activity_serializer = activitypub.Edition
     name_field = 'title'
