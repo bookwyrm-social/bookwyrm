@@ -210,7 +210,7 @@ def edit_profile(request):
         user.avatar.save(filename, ContentFile(output.getvalue()))
     user.save()
 
-    outgoing.handle_update_user(user)
+    broadcast(user, user.to_update_activity(user))
     return redirect('/user/%s' % request.user.localname)
 
 
@@ -241,7 +241,7 @@ def edit_book(request, book_id):
         return TemplateResponse(request, 'edit_book.html', data)
     book = form.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -288,7 +288,7 @@ def upload_cover(request, book_id):
     book.cover = form.files['cover']
     book.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -307,7 +307,7 @@ def add_description(request, book_id):
     book.description = description
     book.save()
 
-    outgoing.handle_update_book_data(request.user, book)
+    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -328,7 +328,7 @@ def edit_author(request, author_id):
         return TemplateResponse(request, 'edit_author.html', data)
     author = form.save()
 
-    outgoing.handle_update_book_data(request.user, author)
+    broadcast(request.user, author.to_update_activity(request.user))
     return redirect('/author/%s' % author.id)
 
 
