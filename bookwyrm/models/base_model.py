@@ -52,10 +52,11 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         instance.save()
 
 
-def unfurl_related_field(related_field):
+def unfurl_related_field(related_field, sort_field=None):
     ''' load reverse lookups (like public key owner or Status attachment '''
     if hasattr(related_field, 'all'):
-        return [unfurl_related_field(i) for i in related_field.all()]
+        return [unfurl_related_field(i) for i in related_field.order_by(
+            sort_field).all()]
     if related_field.reverse_unfurl:
         return related_field.field_to_activity()
     return related_field.remote_id
@@ -147,11 +148,9 @@ class ActivitypubMixin:
             # for example, editions of a work
             for model_field_name, activity_field_name, sort_field in \
                     self.serialize_reverse_fields:
-                related_field = getattr(
-                    self, model_field_name
-                ).order_by(sort_field)
+                related_field = getattr(self, model_field_name)
                 activity[activity_field_name] = \
-                        unfurl_related_field(related_field)
+                        unfurl_related_field(related_field, sort_field)
 
         if not activity.get('id'):
             activity['id'] = self.get_remote_id()
