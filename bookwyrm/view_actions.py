@@ -560,13 +560,6 @@ def unfollow(request):
 
 
 @login_required
-def clear_notifications(request):
-    ''' permanently delete notification for user '''
-    request.user.notification_set.filter(read=True).delete()
-    return redirect('/notifications')
-
-
-@login_required
 @require_POST
 def accept_follow_request(request):
     ''' a user accepts a follow request '''

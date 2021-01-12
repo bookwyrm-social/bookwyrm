@@ -61,11 +61,16 @@ urlpatterns = [
     re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^discover/?$', views.Discover.as_view()),
 
-    re_path(r'^notifications/?$', vviews.notifications_page),
-    re_path(r'^direct-messages/?$', vviews.direct_messages_page),
+    re_path(r'^notifications/?$', views.Notifications.as_view()),
 
-    re_path(r'^import/?$', vviews.import_page),
+    re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
+
+    re_path(r'^import/?$', views.Import.as_view()),
+    re_path(r'^import/?$', actions.import_data),
+    re_path(r'^retry-import/?$', actions.retry_import),
     re_path(r'^import-status/(\d+)/?$', vviews.import_status),
+
+
     re_path(r'^user-edit/?$', vviews.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested
@@ -101,8 +106,6 @@ urlpatterns = [
     # internal action endpoints
     re_path(r'^edit-profile/?$', actions.edit_profile),
 
-    re_path(r'^import-data/?$', actions.import_data),
-    re_path(r'^retry-import/?$', actions.retry_import),
     re_path(r'^resolve-book/?$', actions.resolve_book),
     re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
     re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
@@ -142,7 +145,6 @@ urlpatterns = [
     re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
     re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
 
-    re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,7 +5,7 @@
 <div class="block">
     <h1 class="title">Notifications</h1>
 
-    <form name="clear" action="/clear-notifications" method="POST">
+    <form name="clear" action="/notifications" method="POST">
         {% csrf_token %}
         <button class="button is-danger is-light" type="submit" class="secondary">Delete notifications</button>
     </form>

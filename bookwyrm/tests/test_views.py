@@ -75,26 +75,6 @@ class Views(TestCase):
         self.assertFalse(views.is_api_request(request))
 
 
-    def test_home_tab(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.home_tab(request, 'local')
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_direct_messages_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.direct_messages_page(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'direct_messages.html')
-        self.assertEqual(result.status_code, 200)
-
-
     def test_get_activity_feed(self):
         ''' loads statuses '''
         rat = models.User.objects.create_user(
@@ -261,26 +241,6 @@ class Views(TestCase):
             result = views.import_status(request, import_job.id)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.template_name, 'import_status.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_about_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.about_page(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'about.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_notifications_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.notifications_page(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'notifications.html')
         self.assertEqual(result.status_code, 200)
 
 
