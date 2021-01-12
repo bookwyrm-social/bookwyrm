@@ -54,9 +54,11 @@ class CreateStatus(View):
     ''' get posting '''
     def post(self, request, status_type):
         ''' create  status of whatever type '''
-        if status_type not in models.status_models:
+        status_type = status_type[0].upper() + status_type[1:]
+        try:
+            form = getattr(forms, '%sForm' % status_type)(request.POST)
+        except AttributeError:
             return HttpResponseBadRequest()
-        form = forms.get_attr(status_type)(request.POST)
         if not form.is_valid():
             return redirect(request.headers.get('Referer', '/'))
 
