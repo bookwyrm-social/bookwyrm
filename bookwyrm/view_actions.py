@@ -653,23 +653,6 @@ def retry_import(request):
     goodreads_import.start_import(job)
     return redirect('/import-status/%d' % job.id)
 
-
-@login_required
-@require_POST
-@permission_required('bookwyrm.create_invites', raise_exception=True)
-def create_invite(request):
-    ''' creates a user invite database entry '''
-    form = forms.CreateInviteForm(request.POST)
-    if not form.is_valid():
-        return HttpResponseBadRequest("ERRORS : %s" % (form.errors,))
-
-    invite = form.save(commit=False)
-    invite.user = request.user
-    invite.save()
-
-    return redirect('/invite')
-
-
 def update_readthrough(request, book=None, create=True):
     ''' updates but does not save dates on a readthrough '''
     try:

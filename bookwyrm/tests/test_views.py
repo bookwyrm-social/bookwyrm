@@ -274,32 +274,6 @@ class Views(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_invite_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        models.SiteInvite.objects.create(code='hi', user=self.local_user)
-        request = self.factory.get('')
-        request.user = AnonymousUser
-        # why?? this is annoying.
-        request.user.is_authenticated = False
-        with patch('bookwyrm.models.site.SiteInvite.valid') as invite:
-            invite.return_value = True
-            result = views.invite_page(request, 'hi')
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'invite.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_manage_invites(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        request.user.is_superuser = True
-        result = views.manage_invites(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'manage_invites.html')
-        self.assertEqual(result.status_code, 200)
-
-
     def test_notifications_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         request = self.factory.get('')

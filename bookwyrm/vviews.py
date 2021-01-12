@@ -8,7 +8,7 @@ from django.db.models import Avg, Q, Max
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
@@ -330,57 +330,6 @@ def about_page(request):
         'title': 'About',
     }
     return TemplateResponse(request, 'about.html', data)
-
-
-
-
-@require_GET
-def password_reset(request, code):
-    ''' endpoint for sending invites '''
-    if request.user.is_authenticated:
-        return redirect('/')
-    try:
-        reset_code = models.PasswordReset.objects.get(code=code)
-        if not reset_code.valid():
-            raise PermissionDenied
-    except models.PasswordReset.DoesNotExist:
-        raise PermissionDenied
-
-    return TemplateResponse(
-        request,
-        'password_reset.html',
-        {'title': 'Reset Password', 'code': reset_code.code}
-    )
-
-
-@require_GET
-def invite_page(request, code):
-    ''' endpoint for sending invites '''
-    if request.user.is_authenticated:
-        return redirect('/')
-    invite = get_object_or_404(models.SiteInvite, code=code)
-
-    data = {
-        'title': 'Join',
-        'register_form': forms.RegisterForm(),
-        'invite': invite,
-        'valid': invite.valid() if invite else True,
-    }
-    return TemplateResponse(request, 'invite.html', data)
-
-
-@login_required
-@permission_required('bookwyrm.create_invites', raise_exception=True)
-@require_GET
-def manage_invites(request):
-    ''' invite management page '''
-    data = {
-        'title': 'Invitations',
-        'invites': models.SiteInvite.objects.filter(
-            user=request.user).order_by('-created_date'),
-        'form': forms.CreateInviteForm(),
-    }
-    return TemplateResponse(request, 'manage_invites.html', data)
 
 
 @login_required

@@ -51,11 +51,11 @@ urlpatterns = [
             views.PasswordReset.as_view()),
     re_path(r'^change-password/?$', views.ChangePassword),
 
+    #invites
+    re_path(r'^invite/?$', views.ManageInvites.as_view()),
+    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
     re_path(r'^about/?$', vviews.about_page),
-    re_path(r'^invite/?$', vviews.manage_invites),
-    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', vviews.invite_page),
-
     path('', vviews.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', vviews.home_tab),
     re_path(r'^discover/?$', vviews.discover_page),
@@ -141,6 +141,5 @@ urlpatterns = [
 
     re_path(r'^clear-notifications/?$', actions.clear_notifications),
 
-    re_path(r'^create-invite/?$', actions.create_invite),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
