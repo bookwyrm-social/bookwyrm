@@ -43,12 +43,16 @@ urlpatterns = [
     # TODO: robots.txt
 
     # authentication
-    re_path(r'^login/?$', views.LoginView.as_view()),
-    re_path(r'^register/?$', views.RegisterView.as_view()),
+    re_path(r'^login/?$', views.Login.as_view()),
+    re_path(r'^register/?$', views.Register.as_view()),
+    re_path(r'^logout/?$', views.Logout.as_view()),
+    re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
+    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
+            views.PasswordReset.as_view()),
+    re_path(r'^change-password/?$', views.ChangePassword),
+
 
     re_path(r'^about/?$', vviews.about_page),
-    re_path(r'^password-reset/?$', vviews.password_reset_request),
-    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', vviews.password_reset),
     re_path(r'^invite/?$', vviews.manage_invites),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', vviews.invite_page),
 
@@ -92,11 +96,6 @@ urlpatterns = [
     re_path(r'^search/?$', vviews.search),
 
     # internal action endpoints
-    re_path(r'^logout/?$', actions.user_logout),
-    re_path(r'^reset-password-request/?$', actions.password_reset_request),
-    re_path(r'^reset-password/?$', actions.password_reset),
-    re_path(r'^change-password/?$', actions.password_change),
-
     re_path(r'^edit-profile/?$', actions.edit_profile),
 
     re_path(r'^import-data/?$', actions.import_data),

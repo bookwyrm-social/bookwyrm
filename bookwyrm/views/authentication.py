@@ -1,9 +1,11 @@
-''' class views for login/register/password management views '''
-from django.contrib.auth import authenticate, login
+''' class views for login/register views '''
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
@@ -11,7 +13,7 @@ from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable= no-self-use
-class LoginView(View):
+class Login(View):
     ''' authenticate an existing user '''
     def get(self, request):
         ''' login page '''
@@ -49,7 +51,7 @@ class LoginView(View):
         return TemplateResponse(request, 'login.html', data)
 
 
-class RegisterView(View):
+class Register(View):
     ''' register a user '''
     def post(self, request):
         ''' join the server '''
@@ -99,4 +101,13 @@ class RegisterView(View):
             invite.save()
 
         login(request, user)
+        return redirect('/')
+
+
+@method_decorator(login_required, name='dispatch')
+class Logout(View):
+    ''' log out '''
+    def get(self, request):
+        ''' done with this place! outa here! '''
+        logout(request)
         return redirect('/')

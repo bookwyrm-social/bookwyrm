@@ -332,14 +332,6 @@ def about_page(request):
     return TemplateResponse(request, 'about.html', data)
 
 
-@require_GET
-def password_reset_request(request):
-    ''' invite management page '''
-    return TemplateResponse(
-        request,
-        'password_reset_request.html',
-        {'title': 'Reset Password'}
-    )
 
 
 @require_GET

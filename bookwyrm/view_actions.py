@@ -6,93 +6,19 @@ from PIL import Image
 import dateutil.parser
 from dateutil.parser import ParserError
 
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models, outgoing, goodreads_import
 from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
-from bookwyrm.emailing import password_reset_email
-from bookwyrm.settings import DOMAIN
 from bookwyrm.vviews import get_user_from_username, get_edition
-
-
-@login_required
-@require_GET
-def user_logout(request):
-    ''' done with this place! outa here! '''
-    logout(request)
-    return redirect('/')
-
-
-@require_POST
-def password_reset_request(request):
-    ''' create a password reset token '''
-    email = request.POST.get('email')
-    try:
-        user = models.User.objects.get(email=email)
-    except models.User.DoesNotExist:
-        return redirect('/password-reset')
-
-    # remove any existing password reset cods for this user
-    models.PasswordReset.objects.filter(user=user).all().delete()
-
-    # create a new reset code
-    code = models.PasswordReset.objects.create(user=user)
-    password_reset_email(code)
-    data = {'message': 'Password reset link sent to %s' % email}
-    return TemplateResponse(request, 'password_reset_request.html', data)
-
-
-@require_POST
-def password_reset(request):
-    ''' allow a user to change their password through an emailed token '''
-    try:
-        reset_code = models.PasswordReset.objects.get(
-            code=request.POST.get('reset-code')
-        )
-    except models.PasswordReset.DoesNotExist:
-        data = {'errors': ['Invalid password reset link']}
-        return TemplateResponse(request, 'password_reset.html', data)
-
-    user = reset_code.user
-
-    new_password = request.POST.get('password')
-    confirm_password = request.POST.get('confirm-password')
-
-    if new_password != confirm_password:
-        data = {'errors': ['Passwords do not match']}
-        return TemplateResponse(request, 'password_reset.html', data)
-
-    user.set_password(new_password)
-    user.save()
-    login(request, user)
-    reset_code.delete()
-    return redirect('/')
-
-
-@login_required
-@require_POST
-def password_change(request):
-    ''' allow a user to change their password '''
-    new_password = request.POST.get('password')
-    confirm_password = request.POST.get('confirm-password')
-
-    if new_password != confirm_password:
-        return redirect('/user-edit')
-
-    request.user.set_password(new_password)
-    request.user.save()
-    login(request, request.user)
-    return redirect('/user/%s' % request.user.localname)
 
 
 @login_required

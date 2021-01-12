@@ -1,2 +1,3 @@
 ''' make sure all our nice views are available '''
-from .authentication import LoginView, RegisterView
+from .authentication import Login, Register, Logout
+from .password import PasswordResetRequest, PasswordReset, ChangePassword
