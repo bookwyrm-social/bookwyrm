@@ -22,31 +22,7 @@ from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.emailing import password_reset_email
 from bookwyrm.settings import DOMAIN
-from bookwyrm.views import get_user_from_username, get_edition
-
-
-@require_POST
-def user_login(request):
-    ''' authenticate user login '''
-    login_form = forms.LoginForm(request.POST)
-
-    localname = login_form.data['localname']
-    username = '%s@%s' % (localname, DOMAIN)
-    password = login_form.data['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        # successful login
-        login(request, user)
-        user.last_active_date = timezone.now()
-        return redirect(request.GET.get('next', '/'))
-
-    login_form.non_field_errors = 'Username or password are incorrect'
-    register_form = forms.RegisterForm()
-    data = {
-        'login_form': login_form,
-        'register_form': register_form
-    }
-    return TemplateResponse(request, 'login.html', data)
+from bookwyrm.vviews import get_user_from_username, get_edition
 
 
 @require_POST

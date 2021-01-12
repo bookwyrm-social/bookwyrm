@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
-from bookwyrm import incoming, outgoing, views, settings, wellknown
+from bookwyrm import incoming, outgoing, settings, vviews, views, wellknown
 from bookwyrm import view_actions as actions
 from bookwyrm.utils import regex
 
@@ -23,8 +23,8 @@ status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
 
 book_path = r'^book/(?P<book_id>\d+)'
 
-handler404 = 'bookwyrm.views.not_found_page'
-handler500 = 'bookwyrm.views.server_error_page'
+handler404 = 'bookwyrm.vviews.not_found_page'
+handler500 = 'bookwyrm.vviews.server_error_page'
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -42,56 +42,55 @@ urlpatterns = [
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
     # TODO: robots.txt
 
-    # ui views
-    re_path(r'^login/?$', views.login_page),
-    re_path(r'^about/?$', views.about_page),
-    re_path(r'^password-reset/?$', views.password_reset_request),
-    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', views.password_reset),
-    re_path(r'^invite/?$', views.manage_invites),
-    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
+    # ui vviews
+    re_path(r'^login/?$', views.LoginView.as_view()),
+    re_path(r'^about/?$', vviews.about_page),
+    re_path(r'^password-reset/?$', vviews.password_reset_request),
+    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', vviews.password_reset),
+    re_path(r'^invite/?$', vviews.manage_invites),
+    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', vviews.invite_page),
 
-    path('', views.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
-    re_path(r'^discover/?$', views.discover_page),
-    re_path(r'^notifications/?$', views.notifications_page),
-    re_path(r'^direct-messages/?$', views.direct_messages_page),
-    re_path(r'^import/?$', views.import_page),
-    re_path(r'^import-status/(\d+)/?$', views.import_status),
-    re_path(r'^user-edit/?$', views.edit_profile_page),
+    path('', vviews.home),
+    re_path(r'^(?P<tab>home|local|federated)/?$', vviews.home_tab),
+    re_path(r'^discover/?$', vviews.discover_page),
+    re_path(r'^notifications/?$', vviews.notifications_page),
+    re_path(r'^direct-messages/?$', vviews.direct_messages_page),
+    re_path(r'^import/?$', vviews.import_page),
+    re_path(r'^import-status/(\d+)/?$', vviews.import_status),
+    re_path(r'^user-edit/?$', vviews.edit_profile_page),
 
     # should return a ui view or activitypub json blob as requested
     # users
-    re_path(r'%s/?$' % user_path, views.user_page),
-    re_path(r'%s\.json$' % local_user_path, views.user_page),
-    re_path(r'%s/?$' % local_user_path, views.user_page),
-    re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
-    re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
-    re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
+    re_path(r'%s/?$' % user_path, vviews.user_page),
+    re_path(r'%s\.json$' % local_user_path, vviews.user_page),
+    re_path(r'%s/?$' % local_user_path, vviews.user_page),
+    re_path(r'%s/shelves/?$' % local_user_path, vviews.user_shelves_page),
+    re_path(r'%s/followers(.json)?/?$' % local_user_path, vviews.followers_page),
+    re_path(r'%s/following(.json)?/?$' % local_user_path, vviews.following_page),
 
     # statuses
-    re_path(r'%s(.json)?/?$' % status_path, views.status_page),
-    re_path(r'%s/activity/?$' % status_path, views.status_page),
-    re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
+    re_path(r'%s(.json)?/?$' % status_path, vviews.status_page),
+    re_path(r'%s/activity/?$' % status_path, vviews.status_page),
+    re_path(r'%s/replies(.json)?/?$' % status_path, vviews.replies_page),
 
     # books
-    re_path(r'%s(.json)?/?$' % book_path, views.book_page),
-    re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
-    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', views.edit_author_page),
-    re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
+    re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
+    re_path(r'%s/edit/?$' % book_path, vviews.edit_book_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
+    re_path(r'%s/editions(.json)?/?$' % book_path, vviews.editions_page),
 
-    re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
-    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.tag_page),
-    re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', vviews.author_page),
+    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', vviews.tag_page),
+    re_path(r'^tag/(?P<tag_id>.+)/?$', vviews.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            user_path, views.shelf_page),
+            user_path, vviews.shelf_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            local_user_path, views.shelf_page),
+            local_user_path, vviews.shelf_page),
 
-    re_path(r'^search/?$', views.search),
+    re_path(r'^search/?$', vviews.search),
 
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
-    re_path(r'^user-login/?$', actions.user_login),
     re_path(r'^user-register/?$', actions.register),
     re_path(r'^reset-password-request/?$', actions.password_reset_request),
     re_path(r'^reset-password/?$', actions.password_reset),

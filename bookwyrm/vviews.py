@@ -324,20 +324,6 @@ def import_status(request, job_id):
 
 
 @require_GET
-def login_page(request):
-    ''' authentication '''
-    if request.user.is_authenticated:
-        return redirect('/')
-    # send user to the login page
-    data = {
-        'title': 'Login',
-        'login_form': forms.LoginForm(),
-        'register_form': forms.RegisterForm(),
-    }
-    return TemplateResponse(request, 'login.html', data)
-
-
-@require_GET
 def about_page(request):
     ''' more information about the instance '''
     data = {
