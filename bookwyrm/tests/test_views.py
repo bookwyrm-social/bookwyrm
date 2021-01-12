@@ -8,7 +8,8 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views
+from bookwyrm import models
+from bookwyrm import vviews as views
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import DOMAIN, USER_AGENT
@@ -263,21 +264,6 @@ class Views(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_login_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = AnonymousUser
-        result = views.login_page(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'login.html')
-        self.assertEqual(result.status_code, 200)
-
-        request.user = self.local_user
-        result = views.login_page(request)
-        self.assertEqual(result.url, '/')
-        self.assertEqual(result.status_code, 302)
-
-
     def test_about_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         request = self.factory.get('')
@@ -285,27 +271,6 @@ class Views(TestCase):
         result = views.about_page(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.template_name, 'about.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_password_reset_request(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.password_reset_request(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'password_reset_request.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_password_reset(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        code = models.PasswordReset.objects.create(user=self.local_user)
-        request = self.factory.get('')
-        request.user = AnonymousUser
-        result = views.password_reset(request, code.code)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'password_reset.html')
         self.assertEqual(result.status_code, 200)
 
 
