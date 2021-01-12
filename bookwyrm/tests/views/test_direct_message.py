@@ -19,7 +19,7 @@ class DirectMessageViews(TestCase):
 
     def test_direct_messages_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
-        view = views.DirectMessages.as_view()
+        view = views.DirectMessage.as_view()
         request = self.factory.get('')
         request.user = self.local_user
         result = view(request)

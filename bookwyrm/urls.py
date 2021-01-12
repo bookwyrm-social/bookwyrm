@@ -65,11 +65,9 @@ urlpatterns = [
 
     re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
 
+    # imports
     re_path(r'^import/?$', views.Import.as_view()),
-    re_path(r'^import/?$', actions.import_data),
-    re_path(r'^retry-import/?$', actions.retry_import),
-    re_path(r'^import-status/(\d+)/?$', vviews.import_status),
-
+    re_path(r'^import/(\d+)/?$', views.ImportStatus.as_view()),
 
     re_path(r'^user-edit/?$', vviews.edit_profile_page),
 

@@ -7,7 +7,6 @@ from django.core.paginator import Paginator
 from django.db.models import Avg, Q
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,7 +17,6 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
-from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 
 
@@ -157,38 +155,6 @@ def search(request):
         'query': query,
     }
     return TemplateResponse(request, 'search_results.html', data)
-
-
-@login_required
-@require_GET
-def import_page(request):
-    ''' import history from goodreads '''
-    return TemplateResponse(request, 'import.html', {
-        'title': 'Import Books',
-        'import_form': forms.ImportForm(),
-        'jobs': models.ImportJob.
-                objects.filter(user=request.user).order_by('-created_date'),
-    })
-
-
-@login_required
-@require_GET
-def import_status(request, job_id):
-    ''' status of an import job '''
-    job = models.ImportJob.objects.get(id=job_id)
-    if job.user != request.user:
-        raise PermissionDenied
-    task = app.AsyncResult(job.task_id)
-    items = job.items.order_by('index').all()
-    failed_items = [i for i in items if i.fail_reason]
-    items = [i for i in items if not i.fail_reason]
-    return TemplateResponse(request, 'import_status.html', {
-        'title': 'Import Status',
-        'job': job,
-        'items': items,
-        'failed_items': failed_items,
-        'task': task
-    })
 
 
 @csrf_exempt

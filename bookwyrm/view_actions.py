@@ -1,5 +1,5 @@
 ''' views for actions you can take in the application '''
-from io import BytesIO, TextIOWrapper
+from io import BytesIO
 from uuid import uuid4
 from PIL import Image
 
@@ -15,7 +15,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models, outgoing, goodreads_import
+from bookwyrm import forms, models, outgoing
 from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.vviews import get_user_from_username, get_edition
@@ -604,47 +604,6 @@ def delete_follow_request(request):
     outgoing.handle_reject(follow_request)
     return redirect('/user/%s' % request.user.localname)
 
-
-@login_required
-@require_POST
-def import_data(request):
-    ''' ingest a goodreads csv '''
-    form = forms.ImportForm(request.POST, request.FILES)
-    if form.is_valid():
-        include_reviews = request.POST.get('include_reviews') == 'on'
-        privacy = request.POST.get('privacy')
-        try:
-            job = goodreads_import.create_job(
-                request.user,
-                TextIOWrapper(
-                    request.FILES['csv_file'],
-                    encoding=request.encoding),
-                include_reviews,
-                privacy,
-            )
-        except (UnicodeDecodeError, ValueError):
-            return HttpResponseBadRequest('Not a valid csv file')
-        goodreads_import.start_import(job)
-        return redirect('/import-status/%d' % job.id)
-    return HttpResponseBadRequest()
-
-
-@login_required
-@require_POST
-def retry_import(request):
-    ''' ingest a goodreads csv '''
-    job = get_object_or_404(models.ImportJob, id=request.POST.get('import_job'))
-    items = []
-    for item in request.POST.getlist('import_item'):
-        items.append(get_object_or_404(models.ImportItem, id=item))
-
-    job = goodreads_import.create_retry_job(
-        request.user,
-        job,
-        items,
-    )
-    goodreads_import.start_import(job)
-    return redirect('/import-status/%d' % job.id)
 
 def update_readthrough(request, book=None, create=True):
     ''' updates but does not save dates on a readthrough '''
