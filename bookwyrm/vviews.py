@@ -4,7 +4,7 @@ import re
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.paginator import Paginator
-from django.db.models import Avg, Q, Max
+from django.db.models import Avg, Q
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
 from django.core.exceptions import PermissionDenied
@@ -62,113 +62,6 @@ def not_found_page(request, _):
     ''' 404s '''
     return TemplateResponse(
         request, 'notfound.html', {'title': 'Not found'}, status=404)
-
-
-@require_GET
-def home(request):
-    ''' this is the same as the feed on the home tab '''
-    if request.user.is_authenticated:
-        return home_tab(request, 'home')
-    return discover_page(request)
-
-
-@login_required
-@require_GET
-def home_tab(request, tab):
-    ''' user's homepage with activity feed '''
-    try:
-        page = int(request.GET.get('page', 1))
-    except ValueError:
-        page = 1
-
-    suggested_books = get_suggested_books(request.user)
-
-    if tab == 'home':
-        activities = get_activity_feed(
-            request.user, ['public', 'unlisted', 'followers'],
-            following_only=True)
-    elif tab == 'local':
-        activities = get_activity_feed(
-            request.user, ['public', 'followers'], local_only=True)
-    else:
-        activities = get_activity_feed(
-            request.user, ['public', 'followers'])
-    paginated = Paginator(activities, PAGE_LENGTH)
-    activity_page = paginated.page(page)
-
-    prev_page = next_page = None
-    if activity_page.has_next():
-        next_page = '/%s/?page=%d#feed' % \
-                (tab, activity_page.next_page_number())
-    if activity_page.has_previous():
-        prev_page = '/%s/?page=%d#feed' % \
-                (tab, activity_page.previous_page_number())
-    data = {
-        'title': 'Updates Feed',
-        'user': request.user,
-        'suggested_books': suggested_books,
-        'activities': activity_page.object_list,
-        'tab': tab,
-        'next': next_page,
-        'prev': prev_page,
-    }
-    return TemplateResponse(request, 'feed.html', data)
-
-
-def get_suggested_books(user, max_books=5):
-    ''' helper to get a user's recent books '''
-    book_count = 0
-    preset_shelves = [
-        ('reading', max_books), ('read', 2), ('to-read', max_books)
-    ]
-    suggested_books = []
-    for (preset, shelf_max) in preset_shelves:
-        limit = shelf_max if shelf_max < (max_books - book_count) \
-                else max_books - book_count
-        shelf = user.shelf_set.get(identifier=preset)
-
-        shelf_books = shelf.shelfbook_set.order_by(
-            '-updated_date'
-        ).all()[:limit]
-        if not shelf_books:
-            continue
-        shelf_preview = {
-            'name': shelf.name,
-            'books': [s.book for s in shelf_books]
-        }
-        suggested_books.append(shelf_preview)
-        book_count += len(shelf_preview['books'])
-    return suggested_books
-
-
-@require_GET
-def discover_page(request):
-    ''' tiled book activity page '''
-    books = models.Edition.objects.filter(
-        review__published_date__isnull=False,
-        review__user__local=True,
-        review__privacy__in=['public', 'unlisted'],
-    ).exclude(
-        cover__exact=''
-    ).annotate(
-        Max('review__published_date')
-    ).order_by('-review__published_date__max')[:6]
-
-    ratings = {}
-    for book in books:
-        reviews = models.Review.objects.filter(
-            book__in=book.parent_work.editions.all()
-        )
-        reviews = get_activity_feed(
-            request.user, ['public', 'unlisted'], queryset=reviews)
-        ratings[book.id] = reviews.aggregate(Avg('rating'))['rating__avg']
-    data = {
-        'title': 'Discover',
-        'register_form': forms.RegisterForm(),
-        'books': list(set(books)),
-        'ratings': ratings
-    }
-    return TemplateResponse(request, 'discover.html', data)
 
 
 @login_required
@@ -321,15 +214,6 @@ def import_status(request, job_id):
         'failed_items': failed_items,
         'task': task
     })
-
-
-@require_GET
-def about_page(request):
-    ''' more information about the instance '''
-    data = {
-        'title': 'About',
-    }
-    return TemplateResponse(request, 'about.html', data)
 
 
 @login_required

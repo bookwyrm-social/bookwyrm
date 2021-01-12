@@ -2,3 +2,4 @@
 from .authentication import Login, Register, Logout
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .invite import ManageInvites, Invite
+from .landing import About, Home, Feed, Discover

@@ -55,12 +55,15 @@ urlpatterns = [
     re_path(r'^invite/?$', views.ManageInvites.as_view()),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
-    re_path(r'^about/?$', vviews.about_page),
-    path('', vviews.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', vviews.home_tab),
-    re_path(r'^discover/?$', vviews.discover_page),
+    #landing pages
+    re_path(r'^about/?$', views.About.as_view()),
+    path('', views.Home.as_view()),
+    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
+    re_path(r'^discover/?$', views.Discover.as_view()),
+
     re_path(r'^notifications/?$', vviews.notifications_page),
     re_path(r'^direct-messages/?$', vviews.direct_messages_page),
+
     re_path(r'^import/?$', vviews.import_page),
     re_path(r'^import-status/(\d+)/?$', vviews.import_status),
     re_path(r'^user-edit/?$', vviews.edit_profile_page),
