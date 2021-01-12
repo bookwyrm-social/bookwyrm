@@ -25,57 +25,6 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.vviews import get_user_from_username, get_edition
 
 
-@require_POST
-def register(request):
-    ''' join the server '''
-    if not models.SiteSettings.get().allow_registration:
-        invite_code = request.POST.get('invite_code')
-
-        if not invite_code:
-            raise PermissionDenied
-
-        invite = get_object_or_404(models.SiteInvite, code=invite_code)
-        if not invite.valid():
-            raise PermissionDenied
-    else:
-        invite = None
-
-    form = forms.RegisterForm(request.POST)
-    errors = False
-    if not form.is_valid():
-        errors = True
-
-    localname = form.data['localname'].strip()
-    email = form.data['email']
-    password = form.data['password']
-
-    # check localname and email uniqueness
-    if models.User.objects.filter(localname=localname).first():
-        form.errors['localname'] = ['User with this username already exists']
-        errors = True
-
-    if errors:
-        data = {
-            'login_form': forms.LoginForm(),
-            'register_form': form,
-            'invite': invite,
-            'valid': invite.valid() if invite else True,
-        }
-        if invite:
-            return TemplateResponse(request, 'invite.html', data)
-        return TemplateResponse(request, 'login.html', data)
-
-    username = '%s@%s' % (localname, DOMAIN)
-    user = models.User.objects.create_user(
-        username, email, password, localname=localname, local=True)
-    if invite:
-        invite.times_used += 1
-        invite.save()
-
-    login(request, user)
-    return redirect('/')
-
-
 @login_required
 @require_GET
 def user_logout(request):

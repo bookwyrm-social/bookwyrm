@@ -42,8 +42,10 @@ urlpatterns = [
     # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
     # TODO: robots.txt
 
-    # ui vviews
+    # authentication
     re_path(r'^login/?$', views.LoginView.as_view()),
+    re_path(r'^register/?$', views.RegisterView.as_view()),
+
     re_path(r'^about/?$', vviews.about_page),
     re_path(r'^password-reset/?$', vviews.password_reset_request),
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', vviews.password_reset),
@@ -91,7 +93,6 @@ urlpatterns = [
 
     # internal action endpoints
     re_path(r'^logout/?$', actions.user_logout),
-    re_path(r'^user-register/?$', actions.register),
     re_path(r'^reset-password-request/?$', actions.password_reset_request),
     re_path(r'^reset-password/?$', actions.password_reset),
     re_path(r'^change-password/?$', actions.password_change),
