@@ -17,6 +17,27 @@ def is_api_request(request):
             request.path[-5:] == '.json'
 
 
+def is_bookworm_request(request):
+    ''' check if the request is coming from another bookworm instance '''
+    user_agent = request.headers.get('User-Agent')
+    if user_agent is None or \
+            re.search(regex.bookwyrm_user_agent, user_agent) is None:
+        return False
+    return True
+
+
+def status_visible_to_user(viewer, status):
+    ''' is a user authorized to view a status? '''
+    if viewer == status.user or status.privacy in ['public', 'unlisted']:
+        return True
+    if status.privacy == 'followers' and \
+            status.user.followers.filter(id=viewer.id).first():
+        return True
+    if status.privacy == 'direct' and \
+            status.mention_users.filter(id=viewer.id).first():
+        return True
+    return False
+
 def get_activity_feed(
         user, privacy, local_only=False, following_only=False,
         queryset=models.Status.objects):
@@ -73,3 +94,40 @@ def get_activity_feed(
         pass
 
     return queryset
+
+
+def handle_remote_webfinger(query):
+    ''' webfingerin' other servers '''
+    user = None
+
+    # usernames could be @user@domain or user@domain
+    if not query:
+        return None
+
+    if query[0] == '@':
+        query = query[1:]
+
+    try:
+        domain = query.split('@')[1]
+    except IndexError:
+        return None
+
+    try:
+        user = models.User.objects.get(username=query)
+    except models.User.DoesNotExist:
+        url = 'https://%s/.well-known/webfinger?resource=acct:%s' % \
+            (domain, query)
+        try:
+            data = get_data(url)
+        except (ConnectorException, HTTPError):
+            return None
+
+        for link in data.get('links'):
+            if link.get('rel') == 'self':
+                try:
+                    user = activitypub.resolve_remote_id(
+                        models.User, link['href']
+                    )
+                except KeyError:
+                    return None
+    return user

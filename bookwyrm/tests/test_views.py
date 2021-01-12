@@ -220,57 +220,6 @@ class Views(TestCase):
         self.assertEqual(
             response.context_data['user_results'][0], self.local_user)
 
-
-    def test_status_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.status_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
-        self.assertEqual(result.status_code, 200)
-
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.status_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_replies_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.replies_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
-        self.assertEqual(result.status_code, 200)
-
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.replies_page(request, 'mouse', status.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_edit_profile_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        result = views.edit_profile_page(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_user.html')
-        self.assertEqual(result.status_code, 200)
-
-
     def test_book_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         request = self.factory.get('')

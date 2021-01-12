@@ -39,8 +39,6 @@ urlpatterns = [
     re_path(r'^nodeinfo/2\.0/?$', wellknown.nodeinfo),
     re_path(r'^api/v1/instance/?$', wellknown.instance_info),
     re_path(r'^api/v1/instance/peers/?$', wellknown.peers),
-    # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
-    # TODO: robots.txt
 
     # authentication
     re_path(r'^login/?$', views.Login.as_view()),
@@ -60,15 +58,12 @@ urlpatterns = [
     path('', views.Home.as_view()),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^discover/?$', views.Discover.as_view()),
-
     re_path(r'^notifications/?$', views.Notifications.as_view()),
-
     re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
 
     # imports
     re_path(r'^import/?$', views.Import.as_view()),
     re_path(r'^import/(\d+)/?$', views.ImportStatus.as_view()),
-
 
     # users
     re_path(r'%s/?$' % user_path, views.User.as_view()),
@@ -79,15 +74,28 @@ urlpatterns = [
     re_path(r'^edit-profile/?$', views.EditUser.as_view()),
 
     # statuses
-    re_path(r'%s(.json)?/?$' % status_path, vviews.status_page),
-    re_path(r'%s/activity/?$' % status_path, vviews.status_page),
-    re_path(r'%s/replies(.json)?/?$' % status_path, vviews.replies_page),
+    re_path(r'%s(.json)?/?$' % status_path, views.Status.as_view()),
+    re_path(r'%s/activity/?$' % status_path, views.Status.as_view()),
+    re_path(r'%s/replies(.json)?/?$' % status_path, views.Replies.as_view()),
+    re_path(r'^post/(?P<status_type>\w+)/?$', views.CreateStatus.as_view()),
+    re_path(r'^delete-status/(?P<status_id>\d+)/?$',
+            views.DeleteStatus.as_view()),
 
+
+    re_path(r'^tag/?$', actions.tag),
+    re_path(r'^untag/?$', actions.untag),
     # books
     re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
     re_path(r'%s/edit/?$' % book_path, vviews.edit_book_page),
     re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
     re_path(r'%s/editions(.json)?/?$' % book_path, vviews.editions_page),
+
+    # interact
+    re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
+    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
+    re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
+    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
+
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', vviews.author_page),
     re_path(r'^tag/(?P<tag_id>.+)\.json/?$', vviews.tag_page),
@@ -112,21 +120,6 @@ urlpatterns = [
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
     re_path(r'^create-readthrough/?$', actions.create_readthrough),
 
-    re_path(r'^rate/?$', actions.rate),
-    re_path(r'^review/?$', actions.review),
-    re_path(r'^quote/?$', actions.quotate),
-    re_path(r'^comment/?$', actions.comment),
-    re_path(r'^tag/?$', actions.tag),
-    re_path(r'^untag/?$', actions.untag),
-    re_path(r'^reply/?$', actions.reply),
-
-    re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
-    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
-    re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
-    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
-
-    re_path(r'^delete-status/(?P<status_id>\d+)/?$', actions.delete_status),
-
     re_path(r'^create-shelf/?$', actions.create_shelf),
     re_path(r'^edit-shelf/(?P<shelf_id>\d+)?$', actions.edit_shelf),
     re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', actions.delete_shelf),
@@ -139,7 +132,4 @@ urlpatterns = [
     re_path(r'^unfollow/?$', actions.unfollow),
     re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
     re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
-
-
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

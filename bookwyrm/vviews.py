@@ -157,61 +157,6 @@ def search(request):
     return TemplateResponse(request, 'search_results.html', data)
 
 
-@csrf_exempt
-@require_GET
-def status_page(request, username, status_id):
-    ''' display a particular status (and replies, etc) '''
-    try:
-        user = get_user_from_username(username)
-        status = models.Status.objects.select_subclasses().get(id=status_id)
-    except ValueError:
-        return HttpResponseNotFound()
-
-    # the url should have the poster's username in it
-    if user != status.user:
-        return HttpResponseNotFound()
-
-    # make sure the user is authorized to see the status
-    if not status_visible_to_user(request.user, status):
-        return HttpResponseNotFound()
-
-    if is_api_request(request):
-        return ActivitypubResponse(
-            status.to_activity(pure=not is_bookworm_request(request)))
-
-    data = {
-        'title': 'Status by %s' % user.username,
-        'status': status,
-    }
-    return TemplateResponse(request, 'status.html', data)
-
-
-def status_visible_to_user(viewer, status):
-    ''' is a user authorized to view a status? '''
-    if viewer == status.user or status.privacy in ['public', 'unlisted']:
-        return True
-    if status.privacy == 'followers' and \
-            status.user.followers.filter(id=viewer.id).first():
-        return True
-    if status.privacy == 'direct' and \
-            status.mention_users.filter(id=viewer.id).first():
-        return True
-    return False
-
-
-@csrf_exempt
-@require_GET
-def replies_page(request, username, status_id):
-    ''' ordered collection of replies to a status '''
-    if not is_api_request(request):
-        return status_page(request, username, status_id)
-
-    status = models.Status.objects.get(id=status_id)
-    if status.user.localname != username:
-        return HttpResponseNotFound()
-
-    return ActivitypubResponse(status.to_replies(**request.GET))
-
 @require_GET
 def book_page(request, book_id):
     ''' info about a book '''

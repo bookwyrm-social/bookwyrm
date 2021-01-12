@@ -49,18 +49,6 @@ class ViewActions(TestCase):
         self.factory = RequestFactory()
 
 
-    def test_edit_user(self):
-        ''' use a form to update a user '''
-        form = forms.EditUserForm(instance=self.local_user)
-        form.data['name'] = 'New Name'
-        request = self.factory.post('', form.data)
-        request.user = self.local_user
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            actions.edit_profile(request)
-        self.assertEqual(self.local_user.name, 'New Name')
-
-
     def test_edit_book(self):
         ''' lets a user edit a book '''
         self.local_user.groups.add(self.group)

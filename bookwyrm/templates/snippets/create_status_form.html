@@ -1,4 +1,4 @@
-<form class="toggle-content hidden tab-option-{{ book.id }}" name="{{ type }}" action="/{{ type }}" method="post" id="tab-{{ type }}-{{ book.id }}">
+<form class="toggle-content hidden tab-option-{{ book.id }}" name="{{ type }}" action="/post/{{ type }}" method="post" id="tab-{{ type }}-{{ book.id }}">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">

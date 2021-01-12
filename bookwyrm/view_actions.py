@@ -339,55 +339,6 @@ def create_readthrough(request):
 
 @login_required
 @require_POST
-def rate(request):
-    ''' just a star rating for a book '''
-    form = forms.RatingForm(request.POST)
-    return handle_status(request, form)
-
-
-@login_required
-@require_POST
-def review(request):
-    ''' create a book review '''
-    form = forms.ReviewForm(request.POST)
-    return handle_status(request, form)
-
-
-@login_required
-@require_POST
-def quotate(request):
-    ''' create a book quotation '''
-    form = forms.QuotationForm(request.POST)
-    return handle_status(request, form)
-
-
-@login_required
-@require_POST
-def comment(request):
-    ''' create a book comment '''
-    form = forms.CommentForm(request.POST)
-    return handle_status(request, form)
-
-
-@login_required
-@require_POST
-def reply(request):
-    ''' respond to a book review '''
-    form = forms.ReplyForm(request.POST)
-    return handle_status(request, form)
-
-
-def handle_status(request, form):
-    ''' all the "create a status" functions are the same '''
-    if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
-
-    outgoing.handle_status(request.user, form)
-    return redirect(request.headers.get('Referer', '/'))
-
-
-@login_required
-@require_POST
 def tag(request):
     ''' tag a book '''
     # I'm not using a form here because sometimes "name" is sent as a hidden
@@ -460,21 +411,6 @@ def unboost(request, status_id):
     ''' boost a status '''
     status = models.Status.objects.get(id=status_id)
     outgoing.handle_unboost(request.user, status)
-    return redirect(request.headers.get('Referer', '/'))
-
-
-@login_required
-@require_POST
-def delete_status(request, status_id):
-    ''' delete and tombstone a status '''
-    status = get_object_or_404(models.Status, id=status_id)
-
-    # don't let people delete other people's statuses
-    if status.user != request.user:
-        return HttpResponseBadRequest()
-
-    # perform deletion
-    outgoing.handle_delete_status(request.user, status)
     return redirect(request.headers.get('Referer', '/'))
 
 
