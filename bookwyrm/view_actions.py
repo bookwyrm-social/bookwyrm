@@ -1,13 +1,8 @@
 ''' views for actions you can take in the application '''
-from io import BytesIO
-from uuid import uuid4
-from PIL import Image
-
 import dateutil.parser
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.files.base import ContentFile
 from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
@@ -19,50 +14,6 @@ from bookwyrm import forms, models, outgoing
 from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.vviews import get_user_from_username, get_edition
-
-
-@login_required
-@require_POST
-def edit_profile(request):
-    ''' les get fancy with images '''
-    form = forms.EditUserForm(
-        request.POST, request.FILES, instance=request.user)
-    if not form.is_valid():
-        data = {'form': form, 'user': request.user}
-        return TemplateResponse(request, 'edit_user.html', data)
-
-    user = form.save(commit=False)
-
-    if 'avatar' in form.files:
-        # crop and resize avatar upload
-        image = Image.open(form.files['avatar'])
-        target_size = 120
-        width, height = image.size
-        thumbnail_scale = height / (width / target_size) if height > width \
-            else width / (height / target_size)
-        image.thumbnail([thumbnail_scale, thumbnail_scale])
-        width, height = image.size
-
-        width_diff = width - target_size
-        height_diff = height - target_size
-        cropped = image.crop((
-            int(width_diff / 2),
-            int(height_diff / 2),
-            int(width - (width_diff / 2)),
-            int(height - (height_diff / 2))
-        ))
-        output = BytesIO()
-        cropped.save(output, format=image.format)
-        ContentFile(output.getvalue())
-
-        # set the name to a hash
-        extension = form.files['avatar'].name.split('.')[-1]
-        filename = '%s.%s' % (uuid4(), extension)
-        user.avatar.save(filename, ContentFile(output.getvalue()))
-    user.save()
-
-    broadcast(user, user.to_update_activity(user))
-    return redirect('/user/%s' % request.user.localname)
 
 
 @require_POST

@@ -69,16 +69,14 @@ urlpatterns = [
     re_path(r'^import/?$', views.Import.as_view()),
     re_path(r'^import/(\d+)/?$', views.ImportStatus.as_view()),
 
-    re_path(r'^user-edit/?$', vviews.edit_profile_page),
 
-    # should return a ui view or activitypub json blob as requested
     # users
-    re_path(r'%s/?$' % user_path, vviews.user_page),
-    re_path(r'%s\.json$' % local_user_path, vviews.user_page),
-    re_path(r'%s/?$' % local_user_path, vviews.user_page),
-    re_path(r'%s/shelves/?$' % local_user_path, vviews.user_shelves_page),
-    re_path(r'%s/followers(.json)?/?$' % local_user_path, vviews.followers_page),
-    re_path(r'%s/following(.json)?/?$' % local_user_path, vviews.following_page),
+    re_path(r'%s/?$' % user_path, views.User.as_view()),
+    re_path(r'%s\.json$' % user_path, views.User.as_view()),
+    re_path(r'%s/shelves/?$' % user_path, vviews.user_shelves_page),
+    re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
+    re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
+    re_path(r'^edit-profile/?$', views.EditUser.as_view()),
 
     # statuses
     re_path(r'%s(.json)?/?$' % status_path, vviews.status_page),
@@ -102,7 +100,6 @@ urlpatterns = [
     re_path(r'^search/?$', vviews.search),
 
     # internal action endpoints
-    re_path(r'^edit-profile/?$', actions.edit_profile),
 
     re_path(r'^resolve-book/?$', actions.resolve_book),
     re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),

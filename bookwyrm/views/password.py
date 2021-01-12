@@ -94,7 +94,7 @@ class ChangePassword(View):
         confirm_password = request.POST.get('confirm-password')
 
         if new_password != confirm_password:
-            return redirect('/user-edit')
+            return redirect('/edit-profile')
 
         request.user.set_password(new_password)
         request.user.save()

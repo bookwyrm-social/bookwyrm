@@ -2,6 +2,21 @@
 from django.db.models import Q
 from bookwyrm import models
 
+def get_user_from_username(username):
+    ''' helper function to resolve a localname or a username to a user '''
+    # raises DoesNotExist if user is now found
+    try:
+        return models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return models.User.objects.get(username=username)
+
+
+def is_api_request(request):
+    ''' check whether a request is asking for html or data '''
+    return 'json' in request.headers.get('Accept') or \
+            request.path[-5:] == '.json'
+
+
 def get_activity_feed(
         user, privacy, local_only=False, following_only=False,
         queryset=models.Status.objects):
