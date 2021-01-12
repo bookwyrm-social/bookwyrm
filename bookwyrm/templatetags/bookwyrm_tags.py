@@ -149,6 +149,7 @@ def get_mentions(status, user):
 
 @register.filter(name='status_preview_name')
 def get_status_preview_name(obj):
+    ''' text snippet with book context for a status '''
     name = obj.__class__.__name__.lower()
     if name == 'review':
         return '%s of <em>%s</em>' % (name, obj.book.title)

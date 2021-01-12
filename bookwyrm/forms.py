@@ -125,6 +125,7 @@ class EditionForm(CustomForm):
             'origin_id',
             'created_date',
             'updated_date',
+            'edition_rank',
 
             'authors',# TODO
             'parent_work',
