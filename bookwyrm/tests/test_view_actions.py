@@ -291,6 +291,20 @@ class ViewActions(TestCase):
         self.assertEqual(self.local_user.name, 'New Name')
 
 
+    def test_edit_book(self):
+        ''' lets a user edit a book '''
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data['title'] = 'New Title'
+        form.data['last_edited_by'] = self.local_user.id
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            actions.edit_book(request, self.book.id)
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, 'New Title')
+
+
     def test_switch_edition(self):
         ''' updates user's relationships to a book '''
         work = models.Work.objects.create(title='test work')
