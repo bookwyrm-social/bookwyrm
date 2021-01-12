@@ -1,6 +1,12 @@
 ''' helper functions used in various views '''
+import re
+from requests import HTTPError
 from django.db.models import Q
-from bookwyrm import models
+
+from bookwyrm import activitypub, models
+from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.utils import regex
+
 
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''

@@ -2,7 +2,6 @@
 import json
 from unittest.mock import patch
 
-from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.test import TestCase

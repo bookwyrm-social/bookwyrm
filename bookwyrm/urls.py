@@ -81,21 +81,19 @@ urlpatterns = [
     re_path(r'^delete-status/(?P<status_id>\d+)/?$',
             views.DeleteStatus.as_view()),
 
-
-    re_path(r'^tag/?$', actions.tag),
-    re_path(r'^untag/?$', actions.untag),
-    # books
-    re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
-    re_path(r'%s/edit/?$' % book_path, vviews.edit_book_page),
-    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
-    re_path(r'%s/editions(.json)?/?$' % book_path, vviews.editions_page),
-
     # interact
     re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
     re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
     re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
     re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
 
+    # books
+    re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
+    re_path(r'%s/edit/?$' % book_path, vviews.edit_book_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
+    re_path(r'%s/editions(.json)?/?$' % book_path, vviews.editions_page),
+    re_path(r'^tag/?$', actions.tag),
+    re_path(r'^untag/?$', actions.untag),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', vviews.author_page),
     re_path(r'^tag/(?P<tag_id>.+)\.json/?$', vviews.tag_page),

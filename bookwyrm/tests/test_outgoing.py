@@ -9,8 +9,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 import responses
 
-from bookwyrm import forms, models, outgoing
-from bookwyrm.settings import DOMAIN
+from bookwyrm import models, outgoing
 
 
 # pylint: disable=too-many-public-methods

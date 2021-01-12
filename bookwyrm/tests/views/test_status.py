@@ -15,8 +15,25 @@ class StatusViews(TestCase):
         ''' we need basic test data and mocks '''
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
-            'mouse@local.com', 'mouse@mouse.mouse', 'password',
-            local=True, localname='mouse')
+            'mouse@local.com', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse',
+            remote_id='https://example.com/users/mouse',
+        )
+        with patch('bookwyrm.models.user.set_remote_server'):
+            self.remote_user = models.User.objects.create_user(
+                'rat', 'rat@email.com', 'ratword',
+                local=False,
+                remote_id='https://example.com/users/rat',
+                inbox='https://example.com/users/rat/inbox',
+                outbox='https://example.com/users/rat/outbox',
+            )
+
+        work = models.Work.objects.create(title='Test Work')
+        self.book = models.Edition.objects.create(
+            title='Example Edition',
+            remote_id='https://example.com/book/1',
+            parent_work=work
+        )
 
 
     def test_status_page(self):
@@ -70,7 +87,7 @@ class StatusViews(TestCase):
             'book': self.book.id,
             'privacy': 'public',
         })
-        request = self.factory.get('', form.data)
+        request = self.factory.post('', form.data)
         request.user = self.local_user
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, 'comment')
@@ -92,8 +109,8 @@ class StatusViews(TestCase):
             'reply_parent': parent.id,
             'privacy': 'public',
         })
-        request = self.factory.get('', form.data)
-        request.user = self.local_user
+        request = self.factory.post('', form.data)
+        request.user = user
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, 'reply')
         status = models.Status.objects.get(user=user)
@@ -114,7 +131,7 @@ class StatusViews(TestCase):
             'book': self.book.id,
             'privacy': 'public',
         })
-        request = self.factory.get('', form.data)
+        request = self.factory.post('', form.data)
         request.user = self.local_user
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
@@ -138,7 +155,7 @@ class StatusViews(TestCase):
             'book': self.book.id,
             'privacy': 'public',
         })
-        request = self.factory.get('', form.data)
+        request = self.factory.post('', form.data)
         request.user = self.local_user
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
@@ -147,14 +164,14 @@ class StatusViews(TestCase):
 
         form = forms.ReplyForm({
             'content': 'right',
-            'user': user,
+            'user': user.id,
             'privacy': 'public',
             'reply_parent': status.id
         })
-        request = self.factory.get('', form.data)
-        request.user = self.local_user
+        request = self.factory.post('', form.data)
+        request.user = user
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, 'comment')
+            view(request, 'reply')
 
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, '<p>right</p>')
