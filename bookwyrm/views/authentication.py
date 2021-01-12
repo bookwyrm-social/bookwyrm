@@ -19,7 +19,7 @@ class Login(View):
         ''' login page '''
         if request.user.is_authenticated:
             return redirect('/')
-        # send user to the login page
+        # sene user to the login page
         data = {
             'title': 'Login',
             'login_form': forms.LoginForm(),
