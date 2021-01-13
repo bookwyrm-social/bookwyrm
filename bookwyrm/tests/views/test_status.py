@@ -43,14 +43,14 @@ class StatusViews(TestCase):
             content='hi', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
+        with patch('bookwyrm.views.status.is_api_request') as is_api:
             is_api.return_value = False
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.template_name, 'status.html')
         self.assertEqual(result.status_code, 200)
 
-        with patch('bookwyrm.views.is_api_request') as is_api:
+        with patch('bookwyrm.views.status.is_api_request') as is_api:
             is_api.return_value = True
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -71,7 +71,7 @@ class StatusViews(TestCase):
         self.assertEqual(result.template_name, 'status.html')
         self.assertEqual(result.status_code, 200)
 
-        with patch('bookwyrm.views.is_api_request') as is_api:
+        with patch('bookwyrm.views.status.is_api_request') as is_api:
             is_api.return_value = True
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, ActivitypubResponse)
@@ -257,3 +257,17 @@ class StatusViews(TestCase):
             result,
             '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' \
                     'is rad</p>')
+
+
+    def test_handle_delete_status(self):
+        ''' marks a status as deleted '''
+        view = views.DeleteStatus.as_view()
+        status = models.Status.objects.create(
+            user=self.local_user, content='hi')
+        self.assertFalse(status.deleted)
+        request = self.factory.post('')
+        request.user = self.local_user
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            view(request, status.id)
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
