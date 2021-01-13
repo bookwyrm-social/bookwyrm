@@ -10,7 +10,8 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.broadcast import broadcast
-from .helpers import get_edition, handle_reading_status, handle_unshelve
+from .helpers import get_edition, handle_reading_status
+from .shelf import handle_unshelve
 
 
 # pylint: disable= no-self-use

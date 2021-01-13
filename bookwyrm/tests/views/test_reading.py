@@ -1,32 +1,27 @@
 ''' test for app action functionality '''
 from unittest.mock import patch
-
 import dateutil
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
 
-from bookwyrm import models, view_actions as actions
+from bookwyrm import models, views
 
-
-#pylint: disable=too-many-public-methods
-class ViewActions(TestCase):
-    ''' a lot here: all handlers for receiving activitypub requests '''
+class ReadingViews(TestCase):
+    ''' viewing and creating statuses '''
     def setUp(self):
-        ''' we need basic things, like users '''
+        ''' we need basic test data and mocks '''
+        self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
-            'mouse', 'mouse@mouse.com', 'mouseword',
-            local=True, localname='mouse')
-        self.local_user.remote_id = 'https://example.com/user/mouse'
-        self.local_user.save()
-        self.group = Group.objects.create(name='editor')
-        self.group.permissions.add(
-            Permission.objects.create(
-                name='edit_book',
-                codename='edit_book',
-                content_type=ContentType.objects.get_for_model(models.User)).id
+            'mouse@local.com', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse',
+            remote_id='https://example.com/users/mouse',
+        )
+        self.work = models.Work.objects.create(title='Test Work')
+        self.book = models.Edition.objects.create(
+            title='Test Book',
+            remote_id='https://example.com/book/1',
+            parent_work=self.work
         )
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
@@ -36,17 +31,6 @@ class ViewActions(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
-        self.status = models.Status.objects.create(
-            user=self.local_user,
-            content='Test status',
-            remote_id='https://example.com/status/1',
-        )
-        self.work = models.Work.objects.create(title='Test Work')
-        self.book = models.Edition.objects.create(
-            title='Test Book', parent_work=self.work)
-        self.settings = models.SiteSettings.objects.create(id=1)
-        self.factory = RequestFactory()
-
 
     def test_edit_readthrough(self):
         ''' adding dates to an ongoing readthrough '''
@@ -62,7 +46,7 @@ class ViewActions(TestCase):
             })
         request.user = self.local_user
 
-        actions.edit_readthrough(request)
+        views.edit_readthrough(request)
         readthrough.refresh_from_db()
         self.assertEqual(readthrough.start_date.year, 2017)
         self.assertEqual(readthrough.start_date.month, 1)
@@ -85,7 +69,7 @@ class ViewActions(TestCase):
             })
         request.user = self.local_user
 
-        actions.delete_readthrough(request)
+        views.delete_readthrough(request)
         self.assertFalse(
             models.ReadThrough.objects.filter(id=readthrough.id).exists())
 
@@ -101,7 +85,7 @@ class ViewActions(TestCase):
             })
         request.user = self.local_user
 
-        actions.create_readthrough(request)
+        views.create_readthrough(request)
         readthrough = models.ReadThrough.objects.get()
         self.assertEqual(readthrough.start_date.year, 2017)
         self.assertEqual(readthrough.start_date.month, 1)

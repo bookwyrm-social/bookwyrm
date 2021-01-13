@@ -112,66 +112,6 @@ class Outgoing(TestCase):
         self.assertEqual(data['totalItems'], 1)
 
 
-    def test_handle_follow(self):
-        ''' send a follow request '''
-        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_follow(self.local_user, self.remote_user)
-
-        rel = models.UserFollowRequest.objects.get()
-
-        self.assertEqual(rel.user_subject, self.local_user)
-        self.assertEqual(rel.user_object, self.remote_user)
-        self.assertEqual(rel.status, 'follow_request')
-
-
-    def test_handle_unfollow(self):
-        ''' send an unfollow '''
-        self.remote_user.followers.add(self.local_user)
-        self.assertEqual(self.remote_user.followers.count(), 1)
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_unfollow(self.local_user, self.remote_user)
-
-        self.assertEqual(self.remote_user.followers.count(), 0)
-
-
-    def test_handle_accept(self):
-        ''' accept a follow request '''
-        rel = models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
-        rel_id = rel.id
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_accept(rel)
-        # request should be deleted
-        self.assertEqual(
-            models.UserFollowRequest.objects.filter(id=rel_id).count(), 0
-        )
-        # follow relationship should exist
-        self.assertEqual(self.remote_user.followers.first(), self.local_user)
-
-
-    def test_handle_reject(self):
-        ''' reject a follow request '''
-        rel = models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
-        rel_id = rel.id
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_reject(rel)
-        # request should be deleted
-        self.assertEqual(
-            models.UserFollowRequest.objects.filter(id=rel_id).count(), 0
-        )
-        # follow relationship should not exist
-        self.assertEqual(
-            models.UserFollows.objects.filter(id=rel_id).count(), 0
-        )
 
     def test_existing_user(self):
         ''' simple database lookup by username '''

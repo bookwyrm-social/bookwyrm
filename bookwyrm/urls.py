@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 from bookwyrm import incoming, outgoing, settings, views, wellknown
-from bookwyrm import view_actions as actions
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -128,8 +127,8 @@ urlpatterns = [
     re_path(r'^finish-reading/(?P<book_id>\d+)/?$', views.finish_reading),
 
     # following
-    re_path(r'^follow/?$', actions.follow),
-    re_path(r'^unfollow/?$', actions.unfollow),
-    re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
-    re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
+    re_path(r'^follow/?$', views.follow),
+    re_path(r'^unfollow/?$', views.unfollow),
+    re_path(r'^accept-follow-request/?$', views.accept_follow_request),
+    re_path(r'^delete-follow-request/?$', views.delete_follow_request),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
