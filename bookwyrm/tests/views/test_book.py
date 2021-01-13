@@ -10,8 +10,8 @@ from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
-class InteractionViews(TestCase):
-    ''' viewing and creating statuses '''
+class BookViews(TestCase):
+    ''' books books books '''
     def setUp(self):
         ''' we need basic test data and mocks '''
         self.factory = RequestFactory()

@@ -41,14 +41,6 @@ class Views(TestCase):
             )
 
 
-    def test_get_edition(self):
-        ''' given an edition or a work, returns an edition '''
-        self.assertEqual(
-            views.get_edition(self.book.id), self.book)
-        self.assertEqual(
-            views.get_edition(self.work.id), self.book)
-
-
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
@@ -218,84 +210,6 @@ class Views(TestCase):
         self.assertEqual(response.template_name, 'search_results.html')
         self.assertEqual(
             response.context_data['user_results'][0], self.local_user)
-
-    def test_book_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.book_page(request, self.book.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'book.html')
-        self.assertEqual(result.status_code, 200)
-
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.book_page(request, self.book.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_edit_book_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        request.user = self.local_user
-        request.user.is_superuser = True
-        result = views.edit_book_page(request, self.book.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_book.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_edit_author_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        author = models.Author.objects.create(name='Test Author')
-        request = self.factory.get('')
-        request.user = self.local_user
-        request.user.is_superuser = True
-        result = views.edit_author_page(request, author.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_author.html')
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_editions_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.editions_page(request, self.work.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'editions.html')
-        self.assertEqual(result.status_code, 200)
-
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.editions_page(request, self.work.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_author_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        author = models.Author.objects.create(name='Jessica')
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.author_page(request, author.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'author.html')
-        self.assertEqual(result.status_code, 200)
-
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.author_page(request, author.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
 
 
     def test_tag_page(self):

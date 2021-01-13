@@ -2,14 +2,13 @@
 from unittest.mock import patch
 
 import dateutil
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.utils import timezone
 
-from bookwyrm import forms, models, view_actions as actions
+from bookwyrm import models, view_actions as actions
 
 
 #pylint: disable=too-many-public-methods
@@ -49,87 +48,6 @@ class ViewActions(TestCase):
         self.factory = RequestFactory()
 
 
-    def test_edit_book(self):
-        ''' lets a user edit a book '''
-        self.local_user.groups.add(self.group)
-        form = forms.EditionForm(instance=self.book)
-        form.data['title'] = 'New Title'
-        form.data['last_edited_by'] = self.local_user.id
-        request = self.factory.post('', form.data)
-        request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            actions.edit_book(request, self.book.id)
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, 'New Title')
-
-
-    def test_switch_edition(self):
-        ''' updates user's relationships to a book '''
-        work = models.Work.objects.create(title='test work')
-        edition1 = models.Edition.objects.create(
-            title='first ed', parent_work=work)
-        edition2 = models.Edition.objects.create(
-            title='second ed', parent_work=work)
-        shelf = models.Shelf.objects.create(
-            name='Test Shelf', user=self.local_user)
-        shelf.books.add(edition1)
-        models.ReadThrough.objects.create(
-            user=self.local_user, book=edition1)
-
-        self.assertEqual(models.ShelfBook.objects.get().book, edition1)
-        self.assertEqual(models.ReadThrough.objects.get().book, edition1)
-        request = self.factory.post('', {
-            'edition': edition2.id
-        })
-        request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            actions.switch_edition(request)
-
-        self.assertEqual(models.ShelfBook.objects.get().book, edition2)
-        self.assertEqual(models.ReadThrough.objects.get().book, edition2)
-
-
-    def test_edit_author(self):
-        ''' edit an author '''
-        author = models.Author.objects.create(name='Test Author')
-        self.local_user.groups.add(self.group)
-        form = forms.AuthorForm(instance=author)
-        form.data['name'] = 'New Name'
-        form.data['last_edited_by'] = self.local_user.id
-        request = self.factory.post('', form.data)
-        request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            actions.edit_author(request, author.id)
-        author.refresh_from_db()
-        self.assertEqual(author.name, 'New Name')
-        self.assertEqual(author.last_edited_by, self.local_user)
-
-    def test_edit_author_non_editor(self):
-        ''' edit an author with invalid post data'''
-        author = models.Author.objects.create(name='Test Author')
-        form = forms.AuthorForm(instance=author)
-        form.data['name'] = 'New Name'
-        form.data['last_edited_by'] = self.local_user.id
-        request = self.factory.post('', form.data)
-        request.user = self.local_user
-        with self.assertRaises(PermissionDenied):
-            actions.edit_author(request, author.id)
-        author.refresh_from_db()
-        self.assertEqual(author.name, 'Test Author')
-
-    def test_edit_author_invalid_form(self):
-        ''' edit an author with invalid post data'''
-        author = models.Author.objects.create(name='Test Author')
-        self.local_user.groups.add(self.group)
-        form = forms.AuthorForm(instance=author)
-        form.data['name'] = ''
-        form.data['last_edited_by'] = self.local_user.id
-        request = self.factory.post('', form.data)
-        request.user = self.local_user
-        resp = actions.edit_author(request, author.id)
-        author.refresh_from_db()
-        self.assertEqual(author.name, 'Test Author')
-        self.assertEqual(resp.template_name, 'edit_author.html')
 
 
     def test_edit_shelf_privacy(self):
