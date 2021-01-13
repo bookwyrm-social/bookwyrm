@@ -31,6 +31,12 @@ class GoodreadsImport(TestCase):
             search_url='https://%s/search?q=' % DOMAIN,
             priority=1,
         )
+        work = models.Work.objects.create(title='Test Work')
+        self.book = models.Edition.objects.create(
+            title='Example Edition',
+            remote_id='https://example.com/book/1',
+            parent_work=work
+        )
 
 
     def test_create_job(self):
@@ -107,10 +113,10 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book(self):
         ''' goodreads import added a book, this adds related connections '''
-        shelf = self.local_user.shelf_set.filter(identifier='read').first()
+        shelf = self.user.shelf_set.filter(identifier='read').first()
         self.assertIsNone(shelf.books.first())
 
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
@@ -120,12 +126,12 @@ class GoodreadsImport(TestCase):
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, False, 'public')
+                self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
 
-        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
         # I can't remember how to create dates and I don't want to look it up.
         self.assertEqual(readthrough.start_date.year, 2020)
@@ -138,11 +144,11 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book_already_shelved(self):
         ''' goodreads import added a book, this adds related connections '''
-        shelf = self.local_user.shelf_set.filter(identifier='to-read').first()
+        shelf = self.user.shelf_set.filter(identifier='to-read').first()
         models.ShelfBook.objects.create(
-            shelf=shelf, added_by=self.local_user, book=self.book)
+            shelf=shelf, added_by=self.user, book=self.book)
 
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
@@ -152,13 +158,13 @@ class GoodreadsImport(TestCase):
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, False, 'public')
+                self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
         self.assertIsNone(
-            self.local_user.shelf_set.get(identifier='read').books.first())
-        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+            self.user.shelf_set.get(identifier='read').books.first())
+        readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
         self.assertEqual(readthrough.start_date.year, 2020)
         self.assertEqual(readthrough.start_date.month, 10)
@@ -170,8 +176,8 @@ class GoodreadsImport(TestCase):
 
     def test_handle_import_twice(self):
         ''' re-importing books '''
-        shelf = self.local_user.shelf_set.filter(identifier='read').first()
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        shelf = self.user.shelf_set.filter(identifier='read').first()
+        import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
@@ -181,14 +187,14 @@ class GoodreadsImport(TestCase):
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, False, 'public')
+                self.user, import_item, False, 'public')
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, False, 'public')
+                self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
 
-        readthrough = models.ReadThrough.objects.get(user=self.local_user)
+        readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
         # I can't remember how to create dates and I don't want to look it up.
         self.assertEqual(readthrough.start_date.year, 2020)
@@ -201,7 +207,7 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book_review(self):
         ''' goodreads review import '''
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         entry = list(csv.DictReader(csv_file))[2]
@@ -210,8 +216,8 @@ class GoodreadsImport(TestCase):
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, True, 'unlisted')
-        review = models.Review.objects.get(book=self.book, user=self.local_user)
+                self.user, import_item, True, 'unlisted')
+        review = models.Review.objects.get(book=self.book, user=self.user)
         self.assertEqual(review.content, 'mixed feelings')
         self.assertEqual(review.rating, 2)
         self.assertEqual(review.published_date.year, 2019)
@@ -222,7 +228,7 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book_reviews_disabled(self):
         ''' goodreads review import '''
-        import_job = models.ImportJob.objects.create(user=self.local_user)
+        import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         entry = list(csv.DictReader(csv_file))[2]
@@ -231,7 +237,7 @@ class GoodreadsImport(TestCase):
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
-                self.local_user, import_item, False, 'unlisted')
+                self.user, import_item, False, 'unlisted')
         self.assertFalse(models.Review.objects.filter(
-            book=self.book, user=self.local_user
+            book=self.book, user=self.user
         ).exists())
