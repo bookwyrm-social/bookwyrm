@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
-from bookwyrm import incoming, outgoing, settings, views, wellknown
+from bookwyrm import incoming, settings, views, wellknown
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -30,7 +30,7 @@ urlpatterns = [
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),
     re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
-    re_path(r'%s/outbox/?$' % local_user_path, outgoing.outbox),
+    re_path(r'%s/outbox/?$' % local_user_path, views.Outbox.as_view()),
 
     # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),

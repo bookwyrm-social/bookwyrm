@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import requests
 
-from bookwyrm import activitypub, models, outgoing
+from bookwyrm import activitypub, models, views
 from bookwyrm import status as status_builder
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
@@ -133,7 +133,7 @@ def handle_follow(activity):
         related_user=relationship.user_subject
     )
     if not manually_approves:
-        outgoing.handle_accept(relationship)
+        views.handle_accept(relationship)
 
 
 @app.task

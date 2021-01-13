@@ -6,12 +6,13 @@ from .books import upload_cover, add_description, switch_edition, resolve_book
 from .direct_message import DirectMessage
 from .error import not_found_page, server_error_page
 from .follow import follow, unfollow
-from .follow import accept_follow_request, delete_follow_request
+from .follow import accept_follow_request, delete_follow_request, handle_accept
 from .import_data import Import, ImportStatus
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .invite import ManageInvites, Invite
 from .landing import About, Home, Feed, Discover
 from .notifications import Notifications
+from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
 from .reading import start_reading, finish_reading
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
