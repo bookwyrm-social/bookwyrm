@@ -86,23 +86,12 @@ class Feed(View):
             activities = get_activity_feed(
                 request.user, ['public', 'followers'])
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.page(page)
-
-        prev_page = next_page = None
-        if activity_page.has_next():
-            next_page = '/%s/?page=%d#feed' % \
-                    (tab, activity_page.next_page_number())
-        if activity_page.has_previous():
-            prev_page = '/%s/?page=%d#feed' % \
-                    (tab, activity_page.previous_page_number())
         data = {
             'title': 'Updates Feed',
             'user': request.user,
             'suggested_books': suggested_books,
-            'activities': activity_page.object_list,
+            'activities': paginated.page(page),
             'tab': tab,
-            'next': next_page,
-            'prev': prev_page,
         }
         return TemplateResponse(request, 'feed.html', data)
 

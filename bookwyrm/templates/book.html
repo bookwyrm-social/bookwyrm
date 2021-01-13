@@ -223,7 +223,7 @@
     </div>
 </div>
 
-<div class="block">
+<div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
         {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
@@ -231,25 +231,28 @@
     {% endfor %}
 
     <div class="block is-flex is-flex-wrap-wrap">
-    {% for rating in ratings %}
-    <div class="block mr-5">
-        <div class="media">
-            <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
-            <div class="media-content">
-                <div>
-                    {% include 'snippets/username.html' with user=rating.user %}
-                </div>
-                <div class="field is-grouped mb-0">
-                    <div>rated it</div>
-                    {% include 'snippets/stars.html' with rating=rating.rating %}
-                </div>
-                <div>
-                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+        {% for rating in ratings %}
+        <div class="block mr-5">
+            <div class="media">
+                <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
+                <div class="media-content">
+                    <div>
+                        {% include 'snippets/username.html' with user=rating.user %}
+                    </div>
+                    <div class="field is-grouped mb-0">
+                        <div>rated it</div>
+                        {% include 'snippets/stars.html' with rating=rating.rating %}
+                    </div>
+                    <div>
+                        <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    <div class="block">
+        {% include 'snippets/pagination.html' with page=reviews path=book.local_path anchor="#reviews" %}
     </div>
 </div>
 

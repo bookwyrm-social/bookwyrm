@@ -3,7 +3,6 @@ import dateutil.parser
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -11,107 +10,8 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models, outgoing
-from bookwyrm.connectors import connector_manager
 from bookwyrm.broadcast import broadcast
 from bookwyrm.vviews import get_user_from_username, get_edition
-
-
-@require_POST
-def resolve_book(request):
-    ''' figure out the local path to a book from a remote_id '''
-    remote_id = request.POST.get('remote_id')
-    connector = connector_manager.get_or_create_connector(remote_id)
-    book = connector.get_or_create_book(remote_id)
-
-    return redirect('/book/%d' % book.id)
-
-
-@login_required
-@permission_required('bookwyrm.edit_book', raise_exception=True)
-@require_POST
-def edit_book(request, book_id):
-    ''' edit a book cool '''
-    book = get_object_or_404(models.Edition, id=book_id)
-
-    form = forms.EditionForm(request.POST, request.FILES, instance=book)
-    if not form.is_valid():
-        data = {
-            'title': 'Edit Book',
-            'book': book,
-            'form': form
-        }
-        return TemplateResponse(request, 'edit_book.html', data)
-    book = form.save()
-
-    broadcast(request.user, book.to_update_activity(request.user))
-    return redirect('/book/%s' % book.id)
-
-
-@login_required
-@require_POST
-@transaction.atomic
-def switch_edition(request):
-    ''' switch your copy of a book to a different edition '''
-    edition_id = request.POST.get('edition')
-    new_edition = get_object_or_404(models.Edition, id=edition_id)
-    shelfbooks = models.ShelfBook.objects.filter(
-        book__parent_work=new_edition.parent_work,
-        shelf__user=request.user
-    )
-    for shelfbook in shelfbooks.all():
-        broadcast(request.user, shelfbook.to_remove_activity(request.user))
-
-        shelfbook.book = new_edition
-        shelfbook.save()
-
-        broadcast(request.user, shelfbook.to_add_activity(request.user))
-
-    readthroughs = models.ReadThrough.objects.filter(
-        book__parent_work=new_edition.parent_work,
-        user=request.user
-    )
-    for readthrough in readthroughs.all():
-        readthrough.book = new_edition
-        readthrough.save()
-
-    return redirect('/book/%d' % new_edition.id)
-
-
-@login_required
-@require_POST
-def upload_cover(request, book_id):
-    ''' upload a new cover '''
-    book = get_object_or_404(models.Edition, id=book_id)
-
-    form = forms.CoverForm(request.POST, request.FILES, instance=book)
-    if not form.is_valid():
-        return redirect('/book/%d' % book.id)
-
-    book.cover = form.files['cover']
-    book.save()
-
-    broadcast(request.user, book.to_update_activity(request.user))
-    return redirect('/book/%s' % book.id)
-
-
-@login_required
-@require_POST
-@permission_required('bookwyrm.edit_book', raise_exception=True)
-def add_description(request, book_id):
-    ''' upload a new cover '''
-    if not request.method == 'POST':
-        return redirect('/')
-
-    book = get_object_or_404(models.Edition, id=book_id)
-
-    description = request.POST.get('description')
-
-    book.description = description
-    book.save()
-
-    broadcast(request.user, book.to_update_activity(request.user))
-    return redirect('/book/%s' % book.id)
-
 
 @login_required
 @permission_required('bookwyrm.edit_book', raise_exception=True)
@@ -376,33 +276,6 @@ def untag(request):
 
     broadcast(request.user, tag_activity)
     return redirect('/book/%s' % book_id)
-
-
-@login_required
-@require_POST
-def unfavorite(request, status_id):
-    ''' like a status '''
-    status = models.Status.objects.get(id=status_id)
-    outgoing.handle_unfavorite(request.user, status)
-    return redirect(request.headers.get('Referer', '/'))
-
-
-@login_required
-@require_POST
-def boost(request, status_id):
-    ''' boost a status '''
-    status = models.Status.objects.get(id=status_id)
-    outgoing.handle_boost(request.user, status)
-    return redirect(request.headers.get('Referer', '/'))
-
-
-@login_required
-@require_POST
-def unboost(request, status_id):
-    ''' boost a status '''
-    status = models.Status.objects.get(id=status_id)
-    outgoing.handle_unboost(request.user, status)
-    return redirect(request.headers.get('Referer', '/'))
 
 
 @login_required

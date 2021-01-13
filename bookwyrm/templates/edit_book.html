@@ -27,7 +27,7 @@
 </div>
 {% endif %}
 
-<form class="block" name="edit-book" action="/edit-book/{{ book.id }}" method="post" enctype="multipart/form-data">
+<form class="block" name="edit-book" action="{{ book.local_path }}/edit" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
     <div class="columns">

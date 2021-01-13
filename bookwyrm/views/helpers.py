@@ -137,3 +137,13 @@ def handle_remote_webfinger(query):
                 except KeyError:
                     return None
     return user
+
+
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.get_default_edition()
+    return book
+
+

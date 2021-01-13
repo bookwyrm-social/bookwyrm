@@ -105,7 +105,6 @@ class Boost(View):
         return redirect(request.headers.get('Referer', '/'))
 
 
-
 @method_decorator(login_required, name='dispatch')
 class Unboost(View):
     ''' boost a status '''

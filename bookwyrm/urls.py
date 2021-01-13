@@ -88,10 +88,16 @@ urlpatterns = [
     re_path(r'^unboost/(?P<status_id>\d+)/?$', views.Unboost.as_view()),
 
     # books
-    re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
-    re_path(r'%s/edit/?$' % book_path, vviews.edit_book_page),
+    re_path(r'%s(.json)?/?$' % book_path, views.Book.as_view()),
+    re_path(r'%s/edit/?$' % book_path, views.EditBook.as_view()),
+    re_path(r'%s/editions(.json)?/?$' % book_path, views.Editions.as_view()),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', views.upload_cover),
+    re_path(r'^add-description/(?P<book_id>\d+)/?$', views.add_description),
+    re_path(r'^resolve-book/?$', views.resolve_book),
+    re_path(r'^switch-edition/?$', views.switch_edition),
+
     re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
-    re_path(r'%s/editions(.json)?/?$' % book_path, vviews.editions_page),
+
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),
 
@@ -105,15 +111,8 @@ urlpatterns = [
 
     re_path(r'^search/?$', vviews.search),
 
-    # internal action endpoints
-
-    re_path(r'^resolve-book/?$', actions.resolve_book),
-    re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
-    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
-    re_path(r'^add-description/(?P<book_id>\d+)/?$', actions.add_description),
     re_path(r'^edit-author/(?P<author_id>\d+)/?$', actions.edit_author),
 
-    re_path(r'^switch-edition/?$', actions.switch_edition),
     re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
     re_path(r'^create-readthrough/?$', actions.create_readthrough),

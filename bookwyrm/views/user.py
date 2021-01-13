@@ -70,24 +70,13 @@ class User(View):
             queryset=models.Status.objects.filter(user=user)
         )
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.page(page)
-
-        prev_page = next_page = None
-        if activity_page.has_next():
-            next_page = '/user/%s/?page=%d' % \
-                    (username, activity_page.next_page_number())
-        if activity_page.has_previous():
-            prev_page = '/user/%s/?page=%d' % \
-                    (username, activity_page.previous_page_number())
         data = {
             'title': user.name,
             'user': user,
             'is_self': is_self,
             'shelves': shelf_preview,
             'shelf_count': shelves.count(),
-            'activities': activity_page.object_list,
-            'next': next_page,
-            'prev': prev_page,
+            'activities': paginated.page(page),
         }
 
         return TemplateResponse(request, 'user.html', data)

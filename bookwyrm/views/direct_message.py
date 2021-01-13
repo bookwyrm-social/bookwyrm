@@ -18,19 +18,9 @@ class DirectMessage(View):
         activities = get_activity_feed(request.user, 'direct')
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)
-
-        prev_page = next_page = None
-        if activity_page.has_next():
-            next_page = '/direct-message/?page=%d#feed' % \
-                    activity_page.next_page_number()
-        if activity_page.has_previous():
-            prev_page = '/direct-messages/?page=%d#feed' % \
-                    activity_page.previous_page_number()
         data = {
             'title': 'Direct Messages',
             'user': request.user,
-            'activities': activity_page.object_list,
-            'next': next_page,
-            'prev': prev_page,
+            'activities': activity_page,
         }
         return TemplateResponse(request, 'direct_messages.html', data)
