@@ -1,31 +1,27 @@
 ''' test for app action functionality '''
 from unittest.mock import patch
-
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import vviews as views
+from bookwyrm import models, views
 from bookwyrm.settings import USER_AGENT
 
-
-# pylint: disable=too-many-public-methods
-class Views(TestCase):
-    ''' every response to a get request, html or json '''
+class ViewsHelpers(TestCase):
+    ''' viewing and creating statuses '''
     def setUp(self):
         ''' we need basic test data and mocks '''
         self.factory = RequestFactory()
+        self.local_user = models.User.objects.create_user(
+            'mouse@local.com', 'mouse@mouse.com', 'mouseword',
+            local=True, localname='mouse',
+            remote_id='https://example.com/users/mouse',
+        )
         self.work = models.Work.objects.create(title='Test Work')
         self.book = models.Edition.objects.create(
-            title='Test Book', parent_work=self.work)
-        models.Connector.objects.create(
-            identifier='self',
-            connector_file='self_connector',
-            local=True
+            title='Test Book',
+            remote_id='https://example.com/book/1',
+            parent_work=self.work
         )
-        self.local_user = models.User.objects.create_user(
-            'mouse@local.com', 'mouse@mouse.mouse', 'password',
-            local=True, localname='mouse')
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
                 'rat', 'rat@rat.com', 'ratword',
@@ -35,30 +31,37 @@ class Views(TestCase):
                 outbox='https://example.com/users/rat/outbox',
             )
 
+    def test_get_edition(self):
+        ''' given an edition or a work, returns an edition '''
+        self.assertEqual(
+            views.helpers.get_edition(self.book.id), self.book)
+        self.assertEqual(
+            views.helpers.get_edition(self.work.id), self.book)
 
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
-            views.get_user_from_username('mouse'), self.local_user)
+            views.helpers.get_user_from_username('mouse'), self.local_user)
         self.assertEqual(
-            views.get_user_from_username('mouse@local.com'), self.local_user)
+            views.helpers.get_user_from_username(
+                'mouse@local.com'), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
-            views.get_user_from_username('mojfse@example.com')
+            views.helpers.get_user_from_username('mojfse@example.com')
 
 
     def test_is_api_request(self):
         ''' should it return html or json '''
         request = self.factory.get('/path')
         request.headers = {'Accept': 'application/json'}
-        self.assertTrue(views.is_api_request(request))
+        self.assertTrue(views.helpers.is_api_request(request))
 
         request = self.factory.get('/path.json')
         request.headers = {'Accept': 'Praise'}
-        self.assertTrue(views.is_api_request(request))
+        self.assertTrue(views.helpers.is_api_request(request))
 
         request = self.factory.get('/path')
         request.headers = {'Accept': 'Praise'}
-        self.assertFalse(views.is_api_request(request))
+        self.assertFalse(views.helpers.is_api_request(request))
 
 
     def test_get_activity_feed(self):
@@ -83,7 +86,7 @@ class Views(TestCase):
             content='blah blah blah', user=rat, privacy='followers')
         rat_mention.mention_users.set([self.local_user])
 
-        statuses = views.get_activity_feed(
+        statuses = views.helpers.get_activity_feed(
             self.local_user,
             ['public', 'unlisted', 'followers'],
             following_only=True,
@@ -92,7 +95,7 @@ class Views(TestCase):
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], public_status)
 
-        statuses = views.get_activity_feed(
+        statuses = views.helpers.get_activity_feed(
             self.local_user,
             ['public', 'followers'],
             local_only=True
@@ -101,11 +104,11 @@ class Views(TestCase):
         self.assertEqual(statuses[1], public_status)
         self.assertEqual(statuses[0], rat_public)
 
-        statuses = views.get_activity_feed(self.local_user, 'direct')
+        statuses = views.helpers.get_activity_feed(self.local_user, 'direct')
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], direct_status)
 
-        statuses = views.get_activity_feed(
+        statuses = views.helpers.get_activity_feed(
             self.local_user,
             ['public', 'followers'],
         )
@@ -114,7 +117,7 @@ class Views(TestCase):
         self.assertEqual(statuses[1], rat_public)
         self.assertEqual(statuses[0], remote_status)
 
-        statuses = views.get_activity_feed(
+        statuses = views.helpers.get_activity_feed(
             self.local_user,
             ['public', 'unlisted', 'followers'],
             following_only=True
@@ -124,7 +127,7 @@ class Views(TestCase):
         self.assertEqual(statuses[0], rat_mention)
 
         rat.followers.add(self.local_user)
-        statuses = views.get_activity_feed(
+        statuses = views.helpers.get_activity_feed(
             self.local_user,
             ['public', 'unlisted', 'followers'],
             following_only=True
@@ -140,15 +143,15 @@ class Views(TestCase):
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
-        self.assertFalse(views.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookworm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'},
             HTTP_USER_AGENT=\
                 "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)"
         )
-        self.assertFalse(views.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookworm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
-        self.assertTrue(views.is_bookworm_request(request))
+        self.assertTrue(views.helpers.is_bookworm_request(request))

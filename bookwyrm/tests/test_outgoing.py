@@ -211,54 +211,6 @@ class Outgoing(TestCase):
             self.assertEqual(result.username, 'mouse@example.com')
 
 
-    def test_handle_shelve(self):
-        ''' shelve a book '''
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.local_user, self.book, self.shelf)
-        # make sure the book is on the shelf
-        self.assertEqual(self.shelf.books.get(), self.book)
-
-
-    def test_handle_shelve_to_read(self):
-        ''' special behavior for the to-read shelf '''
-        shelf = models.Shelf.objects.get(identifier='to-read')
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.local_user, self.book, shelf)
-        # make sure the book is on the shelf
-        self.assertEqual(shelf.books.get(), self.book)
-
-
-    def test_handle_shelve_reading(self):
-        ''' special behavior for the reading shelf '''
-        shelf = models.Shelf.objects.get(identifier='reading')
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.local_user, self.book, shelf)
-        # make sure the book is on the shelf
-        self.assertEqual(shelf.books.get(), self.book)
-
-
-    def test_handle_shelve_read(self):
-        ''' special behavior for the read shelf '''
-        shelf = models.Shelf.objects.get(identifier='read')
-
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_shelve(self.local_user, self.book, shelf)
-        # make sure the book is on the shelf
-        self.assertEqual(shelf.books.get(), self.book)
-
-
-    def test_handle_unshelve(self):
-        ''' remove a book from a shelf '''
-        self.shelf.books.add(self.book)
-        self.shelf.save()
-        self.assertEqual(self.shelf.books.count(), 1)
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            outgoing.handle_unshelve(self.local_user, self.book, self.shelf)
-        self.assertEqual(self.shelf.books.count(), 0)
-
-
     def test_handle_reading_status_to_read(self):
         ''' posts shelve activities '''
         shelf = self.local_user.shelf_set.get(identifier='to-read')
