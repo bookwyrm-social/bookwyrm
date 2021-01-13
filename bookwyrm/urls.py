@@ -68,7 +68,7 @@ urlpatterns = [
     # users
     re_path(r'%s/?$' % user_path, views.User.as_view()),
     re_path(r'%s\.json$' % user_path, views.User.as_view()),
-    re_path(r'%s/shelves/?$' % user_path, vviews.user_shelves_page),
+    re_path(r'%s/shelves/?$' % user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
     re_path(r'^edit-profile/?$', views.EditUser.as_view()),
@@ -106,10 +106,15 @@ urlpatterns = [
     re_path(r'^tag/?$', views.AddTag.as_view()),
     re_path(r'^untag/?$', views.RemoveTag.as_view()),
 
+    # shelf
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            user_path, vviews.shelf_page),
+            user_path, views.Shelf.as_view()),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            local_user_path, vviews.shelf_page),
+            local_user_path, views.Shelf.as_view()),
+    re_path(r'^create-shelf/?$', views.create_shelf),
+    re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', views.delete_shelf),
+    re_path(r'^shelve/?$', views.shelve),
+    re_path(r'^unshelve/?$', views.unshelve),
 
     re_path(r'^search/?$', vviews.search),
 
@@ -117,11 +122,6 @@ urlpatterns = [
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
     re_path(r'^create-readthrough/?$', actions.create_readthrough),
 
-    re_path(r'^create-shelf/?$', actions.create_shelf),
-    re_path(r'^edit-shelf/(?P<shelf_id>\d+)?$', actions.edit_shelf),
-    re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', actions.delete_shelf),
-    re_path(r'^shelve/?$', actions.shelve),
-    re_path(r'^unshelve/?$', actions.unshelve),
     re_path(r'^start-reading/(?P<book_id>\d+)/?$', actions.start_reading),
     re_path(r'^finish-reading/(?P<book_id>\d+)/?$', actions.finish_reading),
 

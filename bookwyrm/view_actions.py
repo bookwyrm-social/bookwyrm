@@ -8,95 +8,22 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models, outgoing
-from bookwyrm.vviews import get_user_from_username, get_edition
+from bookwyrm import models, outgoing
 
-@login_required
-@require_POST
-def create_shelf(request):
-    ''' user generated shelves '''
-    form = forms.ShelfForm(request.POST)
-    if not form.is_valid():
-        return redirect(request.headers.get('Referer', '/'))
+def get_edition(book_id):
+    ''' look up a book in the db and return an edition '''
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if isinstance(book, models.Work):
+        book = book.get_default_edition()
+    return book
 
-    shelf = form.save()
-    return redirect('/user/%s/shelf/%s' % \
-            (request.user.localname, shelf.identifier))
-
-
-@login_required
-@require_POST
-def edit_shelf(request, shelf_id):
-    ''' user generated shelves '''
-    shelf = get_object_or_404(models.Shelf, id=shelf_id)
-    if request.user != shelf.user:
-        return HttpResponseBadRequest()
-    if not shelf.editable and request.POST.get('name') != shelf.name:
-        return HttpResponseBadRequest()
-
-    form = forms.ShelfForm(request.POST, instance=shelf)
-    if not form.is_valid():
-        return redirect(shelf.local_path)
-    shelf = form.save()
-    return redirect(shelf.local_path)
-
-
-@login_required
-@require_POST
-def delete_shelf(request, shelf_id):
-    ''' user generated shelves '''
-    shelf = get_object_or_404(models.Shelf, id=shelf_id)
-    if request.user != shelf.user or not shelf.editable:
-        return HttpResponseBadRequest()
-
-    shelf.delete()
-    return redirect('/user/%s/shelves' % request.user.localname)
-
-
-@login_required
-@require_POST
-def shelve(request):
-    ''' put a  on a user's shelf '''
-    book = get_edition(request.POST['book'])
-
-    desired_shelf = models.Shelf.objects.filter(
-        identifier=request.POST['shelf'],
-        user=request.user
-    ).first()
-
-    if request.POST.get('reshelve', True):
-        try:
-            current_shelf = models.Shelf.objects.get(
-                user=request.user,
-                edition=book
-            )
-            outgoing.handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
-            pass
-    outgoing.handle_shelve(request.user, book, desired_shelf)
-
-    # post about "want to read" shelves
-    if desired_shelf.identifier == 'to-read':
-        outgoing.handle_reading_status(
-            request.user,
-            desired_shelf,
-            book,
-            privacy=desired_shelf.privacy
-        )
-
-    return redirect('/')
-
-
-@login_required
-@require_POST
-def unshelve(request):
-    ''' put a  on a user's shelf '''
-    book = models.Edition.objects.get(id=request.POST['book'])
-    current_shelf = models.Shelf.objects.get(id=request.POST['shelf'])
-
-    outgoing.handle_unshelve(request.user, book, current_shelf)
-    return redirect(request.headers.get('Referer', '/'))
+def get_user_from_username(username):
+    ''' helper function to resolve a localname or a username to a user '''
+    # raises DoesNotExist if user is now found
+    try:
+        return models.User.objects.get(localname=username)
+    except models.User.DoesNotExist:
+        return models.User.objects.get(username=username)
 
 
 @login_required

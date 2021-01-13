@@ -13,3 +13,6 @@ from .books import Book, EditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .author import Author, EditAuthor
 from .tag import Tag, AddTag, RemoveTag
+from .shelf import Shelf
+from .shelf import user_shelves_page, create_shelf, delete_shelf
+from .shelf import shelve, unshelve

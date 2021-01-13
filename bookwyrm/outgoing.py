@@ -115,49 +115,6 @@ def handle_reject(follow_request):
     broadcast(to_follow, activity, privacy='direct', direct_recipients=[user])
 
 
-def handle_shelve(user, book, shelf):
-    ''' a local user is getting a book put on their shelf '''
-    # update the database
-    shelve = models.ShelfBook(book=book, shelf=shelf, added_by=user)
-    shelve.save()
-
-    broadcast(user, shelve.to_add_activity(user))
-
-
-def handle_unshelve(user, book, shelf):
-    ''' a local user is getting a book put on their shelf '''
-    # update the database
-    row = models.ShelfBook.objects.get(book=book, shelf=shelf)
-    activity = row.to_remove_activity(user)
-    row.delete()
-
-    broadcast(user, activity)
-
-
-def handle_reading_status(user, shelf, book, privacy):
-    ''' post about a user reading a book '''
-    # tell the world about this cool thing that happened
-    try:
-        message = {
-            'to-read': 'wants to read',
-            'reading': 'started reading',
-            'read': 'finished reading'
-        }[shelf.identifier]
-    except KeyError:
-        # it's a non-standard shelf, don't worry about it
-        return
-
-    status = create_generated_note(
-        user,
-        message,
-        mention_books=[book],
-        privacy=privacy
-    )
-    status.save()
-
-    broadcast(user, status.to_create_activity(user))
-
-
 def handle_imported_book(user, item, include_reviews, privacy):
     ''' process a goodreads csv and then post about it '''
     if isinstance(item.book, models.Work):

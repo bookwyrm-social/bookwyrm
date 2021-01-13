@@ -4,7 +4,9 @@ from requests import HTTPError
 from django.db.models import Q
 
 from bookwyrm import activitypub, models
+from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import ConnectorException, get_data
+from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
 
 
@@ -147,3 +149,25 @@ def get_edition(book_id):
     return book
 
 
+def handle_reading_status(user, shelf, book, privacy):
+    ''' post about a user reading a book '''
+    # tell the world about this cool thing that happened
+    try:
+        message = {
+            'to-read': 'wants to read',
+            'reading': 'started reading',
+            'read': 'finished reading'
+        }[shelf.identifier]
+    except KeyError:
+        # it's a non-standard shelf, don't worry about it
+        return
+
+    status = create_generated_note(
+        user,
+        message,
+        mention_books=[book],
+        privacy=privacy
+    )
+    status.save()
+
+    broadcast(user, status.to_create_activity(user))
