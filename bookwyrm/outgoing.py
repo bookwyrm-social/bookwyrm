@@ -1,23 +1,15 @@
 ''' handles all the activity coming out of the server '''
-import re
-
-from django.db import IntegrityError, transaction
+from django.db import  transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
-from markdown import markdown
 from requests import HTTPError
 
 from bookwyrm import activitypub
 from bookwyrm import models
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.broadcast import broadcast
-from bookwyrm.sanitize_html import InputHtmlParser
-from bookwyrm.status import create_notification
-from bookwyrm.status import create_generated_note
-from bookwyrm.settings import DOMAIN
-from bookwyrm.utils import regex
 
 
 @csrf_exempt

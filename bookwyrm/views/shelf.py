@@ -134,10 +134,8 @@ def shelve(request):
         except models.Shelf.DoesNotExist:
             # this just means it isn't currently on the user's shelves
             pass
-    shelfbook = models.ShelfBook(
+    shelfbook = models.ShelfBook.objects.create(
         book=book, shelf=desired_shelf, added_by=request.user)
-    shelfbook.save()
-
     broadcast(request.user, shelfbook.to_add_activity(request.user))
 
     # post about "want to read" shelves

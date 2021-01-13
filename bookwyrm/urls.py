@@ -119,13 +119,15 @@ urlpatterns = [
     re_path(r'^shelve/?$', views.shelve),
     re_path(r'^unshelve/?$', views.unshelve),
 
-    re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
-    re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
-    re_path(r'^create-readthrough/?$', actions.create_readthrough),
+    # reading progress
+    re_path(r'^edit-readthrough/?$', views.edit_readthrough),
+    re_path(r'^delete-readthrough/?$', views.delete_readthrough),
+    re_path(r'^create-readthrough/?$', views.create_readthrough),
 
-    re_path(r'^start-reading/(?P<book_id>\d+)/?$', actions.start_reading),
-    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', actions.finish_reading),
+    re_path(r'^start-reading/(?P<book_id>\d+)/?$', views.start_reading),
+    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', views.finish_reading),
 
+    # following
     re_path(r'^follow/?$', actions.follow),
     re_path(r'^unfollow/?$', actions.unfollow),
     re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
