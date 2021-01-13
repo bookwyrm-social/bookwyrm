@@ -12,3 +12,4 @@ from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .books import Book, EditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .author import Author, EditAuthor
+from .tag import Tag, AddTag, RemoveTag

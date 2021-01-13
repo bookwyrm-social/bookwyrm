@@ -100,11 +100,12 @@ urlpatterns = [
     re_path(r'^author/(?P<author_id>\d+)(.json)?/?$', views.Author.as_view()),
     re_path(r'^author/(?P<author_id>\d+)/edit/?$', views.EditAuthor.as_view()),
 
-    re_path(r'^tag/?$', actions.tag),
-    re_path(r'^untag/?$', actions.untag),
+    # tags
+    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.Tag.as_view()),
+    re_path(r'^tag/(?P<tag_id>.+)/?$', views.Tag.as_view()),
+    re_path(r'^tag/?$', views.AddTag.as_view()),
+    re_path(r'^untag/?$', views.RemoveTag.as_view()),
 
-    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', vviews.tag_page),
-    re_path(r'^tag/(?P<tag_id>.+)/?$', vviews.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
             user_path, vviews.shelf_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \

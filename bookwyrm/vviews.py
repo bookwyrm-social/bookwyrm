@@ -22,7 +22,6 @@ def get_edition(book_id):
     return book
 
 
-
 def get_user_from_username(username):
     ''' helper function to resolve a localname or a username to a user '''
     # raises DoesNotExist if user is now found
@@ -85,27 +84,6 @@ def search(request):
         'query': query,
     }
     return TemplateResponse(request, 'search_results.html', data)
-
-
-@require_GET
-def tag_page(request, tag_id):
-    ''' books related to a tag '''
-    tag_obj = models.Tag.objects.filter(identifier=tag_id).first()
-    if not tag_obj:
-        return HttpResponseNotFound()
-
-    if is_api_request(request):
-        return ActivitypubResponse(tag_obj.to_activity(**request.GET))
-
-    books = models.Edition.objects.filter(
-        usertag__tag__identifier=tag_id
-    ).distinct()
-    data = {
-        'title': tag_obj.name,
-        'books': books,
-        'tag': tag_obj,
-    }
-    return TemplateResponse(request, 'tag.html', data)
 
 
 @csrf_exempt
