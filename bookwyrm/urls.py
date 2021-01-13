@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
-from bookwyrm import incoming, outgoing, settings, vviews, views, wellknown
+from bookwyrm import incoming, outgoing, settings, views, wellknown
 from bookwyrm import view_actions as actions
 from bookwyrm.utils import regex
 
@@ -49,17 +49,20 @@ urlpatterns = [
             views.PasswordReset.as_view()),
     re_path(r'^change-password/?$', views.ChangePassword),
 
-    #invites
+    # invites
     re_path(r'^invite/?$', views.ManageInvites.as_view()),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
-    #landing pages
+    # landing pages
     re_path(r'^about/?$', views.About.as_view()),
     path('', views.Home.as_view()),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^discover/?$', views.Discover.as_view()),
     re_path(r'^notifications/?$', views.Notifications.as_view()),
     re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
+
+    # search
+    re_path(r'^search/?$', views.Search.as_view()),
 
     # imports
     re_path(r'^import/?$', views.Import.as_view()),
@@ -115,8 +118,6 @@ urlpatterns = [
     re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', views.delete_shelf),
     re_path(r'^shelve/?$', views.shelve),
     re_path(r'^unshelve/?$', views.unshelve),
-
-    re_path(r'^search/?$', vviews.search),
 
     re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),

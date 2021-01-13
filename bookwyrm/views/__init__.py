@@ -16,3 +16,4 @@ from .tag import Tag, AddTag, RemoveTag
 from .shelf import Shelf
 from .shelf import user_shelves_page, create_shelf, delete_shelf
 from .shelf import shelve, unshelve
+from .search import Search

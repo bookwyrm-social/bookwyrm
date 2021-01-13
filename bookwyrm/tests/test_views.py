@@ -1,17 +1,12 @@
 ''' test for app action functionality '''
-import json
 from unittest.mock import patch
 
-from django.http import JsonResponse
-from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models
 from bookwyrm import vviews as views
-from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.connectors import abstract_connector
-from bookwyrm.settings import DOMAIN, USER_AGENT
+from bookwyrm.settings import USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
@@ -140,128 +135,6 @@ class Views(TestCase):
         self.assertEqual(statuses[2], rat_unlisted)
         self.assertEqual(statuses[1], followers_status)
         self.assertEqual(statuses[0], rat_mention)
-
-
-    def test_search_json_response(self):
-        ''' searches local data only and returns book data in json format '''
-        # we need a connector for this, sorry
-        request = self.factory.get('', {'q': 'Test Book'})
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            response = views.search(request)
-        self.assertIsInstance(response, JsonResponse)
-
-        data = json.loads(response.content)
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['title'], 'Test Book')
-        self.assertEqual(
-            data[0]['key'], 'https://%s/book/%d' % (DOMAIN, self.book.id))
-
-
-    def test_search_html_response(self):
-        ''' searches remote connectors '''
-        class TestConnector(abstract_connector.AbstractMinimalConnector):
-            ''' nothing added here '''
-            def format_search_result(self, search_result):
-                pass
-            def get_or_create_book(self, remote_id):
-                pass
-            def parse_search_data(self, data):
-                pass
-        models.Connector.objects.create(
-            identifier='example.com',
-            connector_file='openlibrary',
-            base_url='https://example.com',
-            books_url='https://example.com/books',
-            covers_url='https://example.com/covers',
-            search_url='https://example.com/search?q=',
-        )
-        connector = TestConnector('example.com')
-
-        search_result = abstract_connector.SearchResult(
-            key='http://www.example.com/book/1',
-            title='Gideon the Ninth',
-            author='Tamsyn Muir',
-            year='2019',
-            connector=connector
-        )
-
-        request = self.factory.get('', {'q': 'Test Book'})
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            with patch(
-                    'bookwyrm.connectors.connector_manager.search') as manager:
-                manager.return_value = [search_result]
-                response = views.search(request)
-        self.assertIsInstance(response, TemplateResponse)
-        self.assertEqual(response.template_name, 'search_results.html')
-        self.assertEqual(
-            response.context_data['book_results'][0].title, 'Gideon the Ninth')
-
-
-    def test_search_html_response_users(self):
-        ''' searches remote connectors '''
-        request = self.factory.get('', {'q': 'mouse'})
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            with patch('bookwyrm.connectors.connector_manager.search'):
-                response = views.search(request)
-        self.assertIsInstance(response, TemplateResponse)
-        self.assertEqual(response.template_name, 'search_results.html')
-        self.assertEqual(
-            response.context_data['user_results'][0], self.local_user)
-
-
-    def test_tag_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        tag = models.Tag.objects.create(name='hi there')
-        models.UserTag.objects.create(
-            tag=tag, user=self.local_user, book=self.book)
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.tag_page(request, tag.identifier)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'tag.html')
-        self.assertEqual(result.status_code, 200)
-
-        request = self.factory.get('')
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.tag_page(request, tag.identifier)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_shelf_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        shelf = self.local_user.shelf_set.first()
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = False
-            result = views.shelf_page(
-                request, self.local_user.username, shelf.identifier)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'shelf.html')
-        self.assertEqual(result.status_code, 200)
-
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.shelf_page(
-                request, self.local_user.username, shelf.identifier)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-        request = self.factory.get('/?page=1')
-        request.user = self.local_user
-        with patch('bookwyrm.views.is_api_request') as is_api:
-            is_api.return_value = True
-            result = views.shelf_page(
-                request, self.local_user.username, shelf.identifier)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
 
 
     def test_is_bookwyrm_request(self):
