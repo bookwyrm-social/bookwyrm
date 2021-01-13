@@ -1,18 +1,15 @@
 ''' views for pages you can go to in the application '''
 import re
 
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Q
 from django.db.models.functions import Greatest
 from django.http import HttpResponseNotFound, JsonResponse
-from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 from bookwyrm import outgoing
-from bookwyrm import forms, models
+from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.utils import regex
@@ -88,38 +85,6 @@ def search(request):
         'query': query,
     }
     return TemplateResponse(request, 'search_results.html', data)
-
-
-@login_required
-@permission_required('bookwyrm.edit_book', raise_exception=True)
-@require_GET
-def edit_author_page(request, author_id):
-    ''' info about a book '''
-    author = get_object_or_404(models.Author, id=author_id)
-    data = {
-        'title': 'Edit Author',
-        'author': author,
-        'form': forms.AuthorForm(instance=author)
-    }
-    return TemplateResponse(request, 'edit_author.html', data)
-
-
-@require_GET
-def author_page(request, author_id):
-    ''' landing page for an author '''
-    author = get_object_or_404(models.Author, id=author_id)
-
-    if is_api_request(request):
-        return ActivitypubResponse(author.to_activity())
-
-    books = models.Work.objects.filter(
-        Q(authors=author) | Q(editions__authors=author)).distinct()
-    data = {
-        'title': author.name,
-        'author': author,
-        'books': [b.get_default_edition() for b in books],
-    }
-    return TemplateResponse(request, 'author.html', data)
 
 
 @require_GET

@@ -96,12 +96,13 @@ urlpatterns = [
     re_path(r'^resolve-book/?$', views.resolve_book),
     re_path(r'^switch-edition/?$', views.switch_edition),
 
-    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', vviews.edit_author_page),
+    # author
+    re_path(r'^author/(?P<author_id>\d+)(.json)?/?$', views.Author.as_view()),
+    re_path(r'^author/(?P<author_id>\d+)/edit/?$', views.EditAuthor.as_view()),
 
     re_path(r'^tag/?$', actions.tag),
     re_path(r'^untag/?$', actions.untag),
 
-    re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', vviews.author_page),
     re_path(r'^tag/(?P<tag_id>.+)\.json/?$', vviews.tag_page),
     re_path(r'^tag/(?P<tag_id>.+)/?$', vviews.tag_page),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
@@ -110,8 +111,6 @@ urlpatterns = [
             local_user_path, vviews.shelf_page),
 
     re_path(r'^search/?$', vviews.search),
-
-    re_path(r'^edit-author/(?P<author_id>\d+)/?$', actions.edit_author),
 
     re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
     re_path(r'^delete-readthrough/?$', actions.delete_readthrough),

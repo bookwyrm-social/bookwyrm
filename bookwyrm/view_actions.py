@@ -2,37 +2,15 @@
 import dateutil.parser
 from dateutil.parser import ParserError
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
-from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models, outgoing
 from bookwyrm.broadcast import broadcast
 from bookwyrm.vviews import get_user_from_username, get_edition
-
-@login_required
-@permission_required('bookwyrm.edit_book', raise_exception=True)
-@require_POST
-def edit_author(request, author_id):
-    ''' edit a author cool '''
-    author = get_object_or_404(models.Author, id=author_id)
-
-    form = forms.AuthorForm(request.POST, request.FILES, instance=author)
-    if not form.is_valid():
-        data = {
-            'title': 'Edit Author',
-            'author': author,
-            'form': form
-        }
-        return TemplateResponse(request, 'edit_author.html', data)
-    author = form.save()
-
-    broadcast(request.user, author.to_update_activity(request.user))
-    return redirect('/author/%s' % author.id)
-
 
 @login_required
 @require_POST
