@@ -1,4 +1,4 @@
-''' non-interactive pages '''
+''' what are we here for if not for posting '''
 import re
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound

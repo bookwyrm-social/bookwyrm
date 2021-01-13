@@ -380,15 +380,6 @@ def untag(request):
 
 @login_required
 @require_POST
-def favorite(request, status_id):
-    ''' like a status '''
-    status = models.Status.objects.get(id=status_id)
-    outgoing.handle_favorite(request.user, status)
-    return redirect(request.headers.get('Referer', '/'))
-
-
-@login_required
-@require_POST
 def unfavorite(request, status_id):
     ''' like a status '''
     status = models.Status.objects.get(id=status_id)

@@ -16,7 +16,6 @@ from bookwyrm.broadcast import broadcast
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.status import create_notification
 from bookwyrm.status import create_generated_note
-from bookwyrm.status import delete_status
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
 
@@ -211,99 +210,3 @@ def handle_imported_book(user, item, include_reviews, privacy):
         # we don't need to send out pure activities because non-bookwyrm
         # instances don't need this data
         broadcast(user, review.to_create_activity(user), privacy=privacy)
-
-
-def handle_favorite(user, status):
-    ''' a user likes a status '''
-    try:
-        favorite = models.Favorite.objects.create(
-            status=status,
-            user=user
-        )
-    except IntegrityError:
-        # you already fav'ed that
-        return
-
-    fav_activity = favorite.to_activity()
-    broadcast(
-        user, fav_activity, privacy='direct', direct_recipients=[status.user])
-    if status.user.local:
-        create_notification(
-            status.user,
-            'FAVORITE',
-            related_user=user,
-            related_status=status
-        )
-
-
-def handle_unfavorite(user, status):
-    ''' a user likes a status '''
-    try:
-        favorite = models.Favorite.objects.get(
-            status=status,
-            user=user
-        )
-    except models.Favorite.DoesNotExist:
-        # can't find that status, idk
-        return
-
-    fav_activity = favorite.to_undo_activity(user)
-    favorite.delete()
-    broadcast(user, fav_activity, direct_recipients=[status.user])
-
-    # check for notification
-    if status.user.local:
-        notification = models.Notification.objects.filter(
-            user=status.user, related_user=user,
-            related_status=status, notification_type='FAVORITE'
-        ).first()
-        if notification:
-            notification.delete()
-
-
-def handle_boost(user, status):
-    ''' a user wishes to boost a status '''
-    # is it boostable?
-    if not status.boostable:
-        return
-
-    if models.Boost.objects.filter(
-            boosted_status=status, user=user).exists():
-        # you already boosted that.
-        return
-    boost = models.Boost.objects.create(
-        boosted_status=status,
-        privacy=status.privacy,
-        user=user,
-    )
-
-    boost_activity = boost.to_activity()
-    broadcast(user, boost_activity)
-
-    if status.user.local:
-        create_notification(
-            status.user,
-            'BOOST',
-            related_user=user,
-            related_status=status
-        )
-
-
-def handle_unboost(user, status):
-    ''' a user regrets boosting a status '''
-    boost = models.Boost.objects.filter(
-        boosted_status=status, user=user
-    ).first()
-    activity = boost.to_undo_activity(user)
-
-    boost.delete()
-    broadcast(user, activity)
-
-    # delete related notification
-    if status.user.local:
-        notification = models.Notification.objects.filter(
-            user=status.user, related_user=user,
-            related_status=status, notification_type='BOOST'
-        ).first()
-        if notification:
-            notification.delete()

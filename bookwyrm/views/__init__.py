@@ -8,3 +8,4 @@ from .direct_message import DirectMessage
 from .import_data import Import, ImportStatus
 from .user import User, EditUser, Followers, Following
 from .status import Status, Replies, CreateStatus, DeleteStatus
+from .interaction import Favorite, Unfavorite, Boost, Unboost

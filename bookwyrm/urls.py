@@ -82,10 +82,10 @@ urlpatterns = [
             views.DeleteStatus.as_view()),
 
     # interact
-    re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
-    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
-    re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
-    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
+    re_path(r'^favorite/(?P<status_id>\d+)/?$', views.Favorite.as_view()),
+    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', views.Unfavorite.as_view()),
+    re_path(r'^boost/(?P<status_id>\d+)/?$', views.Boost.as_view()),
+    re_path(r'^unboost/(?P<status_id>\d+)/?$', views.Unboost.as_view()),
 
     # books
     re_path(r'%s(.json)?/?$' % book_path, vviews.book_page),
