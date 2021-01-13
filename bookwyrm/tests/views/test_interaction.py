@@ -37,12 +37,12 @@ class InteractionViews(TestCase):
         ''' create and broadcast faving a status '''
         view = views.Favorite.as_view()
         request = self.factory.post('')
-        request.user = self.local_user
+        request.user = self.remote_user
         status = models.Status.objects.create(
             user=self.local_user, content='hi')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
         fav = models.Favorite.objects.get()
         self.assertEqual(fav.status, status)
         self.assertEqual(fav.user, self.remote_user)
@@ -57,17 +57,17 @@ class InteractionViews(TestCase):
         ''' unfav a status '''
         view = views.Unfavorite.as_view()
         request = self.factory.post('')
-        request.user = self.local_user
+        request.user = self.remote_user
         status = models.Status.objects.create(
             user=self.local_user, content='hi')
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            views.Favorite.as_view()(request, status.id)
 
         self.assertEqual(models.Favorite.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
 
@@ -76,12 +76,12 @@ class InteractionViews(TestCase):
         ''' boost a status '''
         view = views.Boost.as_view()
         request = self.factory.post('')
-        request.user = self.local_user
+        request.user = self.remote_user
         status = models.Status.objects.create(
             user=self.local_user, content='hi')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
 
         boost = models.Boost.objects.get()
         self.assertEqual(boost.boosted_status, status)
@@ -103,7 +103,7 @@ class InteractionViews(TestCase):
             user=self.local_user, content='hi', privacy='unlisted')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
 
         boost = models.Boost.objects.get()
         self.assertEqual(boost.privacy, 'unlisted')
@@ -117,7 +117,7 @@ class InteractionViews(TestCase):
             user=self.local_user, content='hi', privacy='followers')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
         self.assertFalse(models.Boost.objects.exists())
 
     def test_handle_boost_twice(self):
@@ -129,8 +129,8 @@ class InteractionViews(TestCase):
             user=self.local_user, content='hi')
 
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
-            view(request, status)
+            view(request, status.id)
+            view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
 
 
@@ -138,15 +138,15 @@ class InteractionViews(TestCase):
         ''' undo a boost '''
         view = views.Unboost.as_view()
         request = self.factory.post('')
-        request.user = self.local_user
+        request.user = self.remote_user
         status = models.Status.objects.create(
             user=self.local_user, content='hi')
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            view(request, status)
+            view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
