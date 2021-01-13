@@ -1,7 +1,10 @@
 ''' test for app action functionality '''
+import json
 from unittest.mock import patch
+import pathlib
 from django.test import TestCase
 from django.test.client import RequestFactory
+import responses
 
 from bookwyrm import models, views
 from bookwyrm.settings import USER_AGENT
@@ -30,6 +33,17 @@ class ViewsHelpers(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ap_user.json'
+        )
+        self.userdata = json.loads(datafile.read_bytes())
+        del self.userdata['icon']
+        self.shelf = models.Shelf.objects.create(
+            name='Test Shelf',
+            identifier='test-shelf',
+            user=self.local_user
+        )
+
 
     def test_get_edition(self):
         ''' given an edition or a work, returns an edition '''
@@ -155,3 +169,82 @@ class ViewsHelpers(TestCase):
         request = self.factory.get(
             '', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
         self.assertTrue(views.helpers.is_bookworm_request(request))
+
+
+    def test_existing_user(self):
+        ''' simple database lookup by username '''
+        result = views.helpers.handle_remote_webfinger('@mouse@local.com')
+        self.assertEqual(result, self.local_user)
+
+        result = views.helpers.handle_remote_webfinger('mouse@local.com')
+        self.assertEqual(result, self.local_user)
+
+
+    @responses.activate
+    def test_load_user(self):
+        ''' find a remote user using webfinger '''
+        username = 'mouse@example.com'
+        wellknown = {
+            "subject": "acct:mouse@example.com",
+            "links": [{
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": "https://example.com/user/mouse"
+            }]
+        }
+        responses.add(
+            responses.GET,
+            'https://example.com/.well-known/webfinger?resource=acct:%s' \
+                    % username,
+            json=wellknown,
+            status=200)
+        responses.add(
+            responses.GET,
+            'https://example.com/user/mouse',
+            json=self.userdata,
+            status=200)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            result = views.helpers.handle_remote_webfinger('@mouse@example.com')
+            self.assertIsInstance(result, models.User)
+            self.assertEqual(result.username, 'mouse@example.com')
+
+
+    def test_handle_reading_status_to_read(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='to-read')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            views.helpers.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'wants to read')
+
+    def test_handle_reading_status_reading(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='reading')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            views.helpers.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'started reading')
+
+    def test_handle_reading_status_read(self):
+        ''' posts shelve activities '''
+        shelf = self.local_user.shelf_set.get(identifier='read')
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            views.helpers.handle_reading_status(
+                self.local_user, shelf, self.book, 'public')
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.first(), self.book)
+        self.assertEqual(status.content, 'finished reading')
+
+    def test_handle_reading_status_other(self):
+        ''' posts shelve activities '''
+        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+            views.helpers.handle_reading_status(
+                self.local_user, self.shelf, self.book, 'public')
+        self.assertFalse(models.GeneratedNote.objects.exists())
