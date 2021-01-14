@@ -3,7 +3,7 @@
 <form name="favorite" action="/favorite/{{ status.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-small" type="submit">
-        <span class="icon icon-heart">
+        <span class="icon icon-heart" title="Like status">
             <span class="is-sr-only">Like status</span>
         </span>
     </button>
@@ -11,7 +11,7 @@
 <form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" onsubmit="return interact(event)" class="fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-success is-small" type="submit">
-        <span class="icon icon-heart">
+        <span class="icon icon-heart" title="Un-like status">
             <span class="is-sr-only">Un-like status</span>
         </span>
     </button>
