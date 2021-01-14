@@ -43,7 +43,7 @@ set -x
 
 case "$CMD" in
     up)
-        docker-compose up --build
+        docker-compose up --build "$@"
         ;;
     run)
         docker-compose run --rm --service-ports web

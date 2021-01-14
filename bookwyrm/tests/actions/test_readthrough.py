@@ -19,7 +19,9 @@ class ReadThrough(TestCase):
         self.work.default_edition = self.edition
         self.work.save()
 
-        self.user = models.User.objects.create()
+        self.user = models.User.objects.create_user(
+            'cinco', 'cinco@example.com', 'seissiete',
+            local=True, localname='cinco')
 
         self.client.force_login(self.user)
 
