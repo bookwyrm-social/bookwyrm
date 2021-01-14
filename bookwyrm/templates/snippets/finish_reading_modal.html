@@ -6,7 +6,7 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title">Finish "{{ book.title }}"</p>
-                <label class="delete" for="finish-reading-{{ uuid }}" aria-label="close" role="button"></label>
+                {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="finish-reading" controls_uid=uuid class="delete" %}
             </header>
             {% active_read_through book user as readthrough %}
             <form name="finish-reading" action="/finish-reading/{{ book.id }}" method="post">

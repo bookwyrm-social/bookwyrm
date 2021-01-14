@@ -5,7 +5,7 @@
         <div class="modal-card">
             <header class="modal-card-head">
                 <p class="modal-card-title">Start "{{ book.title }}"</p>
-                <label class="delete" for="start-reading-{{ uuid }}" aria-label="close" role="button" tabindex="0"></label>
+                {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="start-reading" controls_uid=uuid class="delete" %}
             </header>
             <form name="start-reading" action="/start-reading/{{ book.id }}" method="post">
                 <section class="modal-card-body">
