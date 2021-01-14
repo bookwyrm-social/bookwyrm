@@ -281,4 +281,6 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
+        if not self.collection_queryset.ordered:
+            raise RuntimeError('collection_queryset must be ordered')
         return self.to_ordered_collection(self.collection_queryset, **kwargs)
