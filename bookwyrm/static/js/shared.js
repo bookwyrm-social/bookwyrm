@@ -1,9 +1,12 @@
+// set up javascript listeners
 window.onload = function() {
-    var toggles = document.getElementsByClassName('toggle-control');
-    //    .forEach(t => t.onclick = toggle_action);
-    for (var i=0; i<toggles.length; i++) {
-        toggles[i].onclick = toggle_action;
-    }
+    // let buttons set keyboard focus
+    Array.from(document.getElementsByClassName('toggle-control'))
+        .forEach(t => t.onclick = toggle_action);
+
+    // javascript interactions
+    Array.from(document.getElementsByClassName('interaction'))
+        .forEach(t => t.onsubmit = interact);
 };
 
 function toggle_action(e) {
