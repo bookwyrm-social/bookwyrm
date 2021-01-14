@@ -27,14 +27,13 @@
         </fieldset>
         {% endif %}
 
-        {% include 'snippets/content_warning_field.html' %}
-
         {% if type == 'quote' %}
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% else %}
         <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% endif %}
 
+        {% include 'snippets/content_warning_field.html' %}
     </div>
     {% if type == 'quote' %}
     <div class="control">

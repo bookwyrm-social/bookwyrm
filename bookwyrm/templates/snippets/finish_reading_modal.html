@@ -37,7 +37,7 @@
                         </div>
                         <div class="column">
                             <button type="submit" class="button is-success">Save</button>
-                            <label for="finish-reading-{{ uuid }}" class="button" role="button">Cancel</button>
+                            {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="finish-reading" controls_uid=uuid %}
                         </div>
                     </div>
                 </footer>
