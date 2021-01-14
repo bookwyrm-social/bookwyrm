@@ -1,3 +1,20 @@
+window.onload = function() {
+    var toggles = document.getElementsByClassName('toggle-control');
+    //    .forEach(t => t.onclick = toggle_action);
+    for (var i=0; i<toggles.length; i++) {
+        toggles[i].onclick = toggle_action;
+    }
+};
+
+function toggle_action(e) {
+    // set hover, if appropriate
+    var hover = e.target.getAttribute('data-hover-target')
+    if (hover) {
+        document.getElementById(hover).focus();
+    }
+}
+
+
 function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
