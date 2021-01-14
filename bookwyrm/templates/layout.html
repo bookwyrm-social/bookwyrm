@@ -41,7 +41,7 @@
             </div>
         </form>
 
-        <label for="main-nav" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="mainNav" onclick="toggleMenu(this)" tabindex="0">
+        <label for="main-nav" role="button" class="navbar-burger pulldown-menu" aria-label="menu" aria-expanded="false" data-target="mainNav" tabindex="0">
             <div class="navbar-item mt-3">
                 <div class="icon icon-dots-three-vertical" title="Main navigation menu">
                     <span class="is-sr-only">Main navigation menu</span>
@@ -66,7 +66,7 @@
         <div class="navbar-end">
 	    {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
-                <div class="navbar-link" role="button" aria-expanded=false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
+                <div class="navbar-link pulldown-menu" role="button" aria-expanded="false" tabindex="0" aria-haspopup="true" aria-controls="navbar-dropdown"><p>
                     {% include 'snippets/avatar.html' with user=request.user %}
                     {% include 'snippets/username.html' with user=request.user %}
                 </p></div>

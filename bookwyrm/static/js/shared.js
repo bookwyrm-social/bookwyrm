@@ -17,6 +17,10 @@ window.onload = function() {
         .forEach(t => t.onclick = tabChangeNested);
     Array.from(document.getElementsByClassName('tab-change'))
         .forEach(t => t.onclick = tabChange);
+
+    // handle aria settings on menus
+    Array.from(document.getElementsByClassName('pulldown-menu'))
+        .forEach(t => t.onclick = toggleMenu);
 };
 
 function toggleAction(e) {
@@ -71,7 +75,8 @@ function handleTabChange(target, parentElement) {
     target.className = 'is-active';
 }
 
-function toggleMenu(el) {
+function toggleMenu(e) {
+    var el = e.target.closest('.pulldown-menu');
     el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
 }
 
