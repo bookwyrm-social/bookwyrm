@@ -1,6 +1,6 @@
 {% load humanize %}
-{% load fr_display %}
-{% if shelf.books.all|length > 0 %}
+{% load bookwyrm_tags %}
+{% if books|length > 0 %}
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">
@@ -34,7 +34,7 @@
     </th>
     {% endif %}
 </tr>
-{% for book in shelf.books.all %}
+{% for book in books %}
 <tr class="book-preview">
     <td>
         {% include 'snippets/book_cover.html' with book=book size="small" %}
@@ -43,7 +43,7 @@
         <a href="/book/{{ book.id }}">{{ book.title }}</a>
     </td>
     <td>
-        {{ book.authors.first.display_name }}
+        {{ book.authors.first.name }}
     </td>
     <td>
         {% if book.first_published_date %}{{ book.first_published_date }}{% endif %}

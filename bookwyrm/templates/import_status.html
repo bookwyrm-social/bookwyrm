@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% load humanize %}
 {% block content %}
 <div class="block">
@@ -8,7 +8,7 @@
     <p>
         Import started: {{ job.created_date | naturaltime }}
     </p>
-    {% if task.successful %}
+    {% if job.complete %}
     <p>
         Import completed: {{ task.date_done | naturaltime }}
     </p>
@@ -18,7 +18,7 @@
 </div>
 
 <div class="block">
-    {% if not task.ready %}
+    {% if not job.complete %}
     Import still in progress.
     <p>
         (Hit reload to update!)

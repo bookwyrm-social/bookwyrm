@@ -82,7 +82,7 @@ case "$CMD" in
         execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        execweb pytest "$@"
+        execweb pytest --no-cov-on-fail "$@"
         ;;
     test_report)
         execweb coverage report

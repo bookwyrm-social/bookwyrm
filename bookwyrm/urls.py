@@ -5,11 +5,10 @@ from django.urls import path, re_path
 
 from bookwyrm import incoming, outgoing, views, settings, wellknown
 from bookwyrm import view_actions as actions
+from bookwyrm.utils import regex
 
-username_regex = r'(?P<username>[\w\-_]+@[\w\-\_\.]+)'
-localname_regex = r'(?P<username>[\w\-_]+)'
-user_path = r'^user/%s' % username_regex
-local_user_path = r'^user/%s' % localname_regex
+user_path = r'^user/(?P<username>%s)' % regex.username
+local_user_path = r'^user/(?P<username>%s)' % regex.localname
 
 status_types = [
     'status',
@@ -20,7 +19,7 @@ status_types = [
     'generatednote'
 ]
 status_path = r'%s/(%s)/(?P<status_id>\d+)' % \
-        (local_user_path, '|'.join(status_types))
+        (user_path, '|'.join(status_types))
 
 book_path = r'^book/(?P<book_id>\d+)'
 
@@ -53,7 +52,9 @@ urlpatterns = [
 
     path('', views.home),
     re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
-    re_path(r'^notifications/?', views.notifications_page),
+    re_path(r'^discover/?$', views.discover_page),
+    re_path(r'^notifications/?$', views.notifications_page),
+    re_path(r'^direct-messages/?$', views.direct_messages_page),
     re_path(r'^import/?$', views.import_page),
     re_path(r'^import-status/(\d+)/?$', views.import_status),
     re_path(r'^user-edit/?$', views.edit_profile_page),
@@ -61,8 +62,8 @@ urlpatterns = [
     # should return a ui view or activitypub json blob as requested
     # users
     re_path(r'%s/?$' % user_path, views.user_page),
-    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s\.json$' % local_user_path, views.user_page),
+    re_path(r'%s/?$' % local_user_path, views.user_page),
     re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
     re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
@@ -75,6 +76,7 @@ urlpatterns = [
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.book_page),
     re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
+    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', views.edit_author_page),
     re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
 
     re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
@@ -97,15 +99,18 @@ urlpatterns = [
 
     re_path(r'^edit-profile/?$', actions.edit_profile),
 
-    re_path(r'^import-data/?', actions.import_data),
-    re_path(r'^retry-import/?', actions.retry_import),
-    re_path(r'^resolve-book/?', actions.resolve_book),
-    re_path(r'^edit-book/(?P<book_id>\d+)/?', actions.edit_book),
-    re_path(r'^upload-cover/(?P<book_id>\d+)/?', actions.upload_cover),
-    re_path(r'^add-description/(?P<book_id>\d+)/?', actions.add_description),
+    re_path(r'^import-data/?$', actions.import_data),
+    re_path(r'^retry-import/?$', actions.retry_import),
+    re_path(r'^resolve-book/?$', actions.resolve_book),
+    re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
+    re_path(r'^add-description/(?P<book_id>\d+)/?$', actions.add_description),
+    re_path(r'^edit-author/(?P<author_id>\d+)/?$', actions.edit_author),
 
-    re_path(r'^edit-readthrough/?', actions.edit_readthrough),
-    re_path(r'^delete-readthrough/?', actions.delete_readthrough),
+    re_path(r'^switch-edition/?$', actions.switch_edition),
+    re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
+    re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
+    re_path(r'^create-readthrough/?$', actions.create_readthrough),
 
     re_path(r'^rate/?$', actions.rate),
     re_path(r'^review/?$', actions.review),

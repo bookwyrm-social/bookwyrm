@@ -1,13 +1,10 @@
 ''' openlibrary data connector '''
 import re
-import requests
-
-from django.core.files.base import ContentFile
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
-from .abstract_connector import ConnectorException
-from .abstract_connector import get_date, get_data
+from .abstract_connector import get_data
+from .connector_manager import ConnectorException
 from .openlibrary_languages import languages
 
 
@@ -17,66 +14,62 @@ class Connector(AbstractConnector):
         super().__init__(identifier)
 
         get_first = lambda a: a[0]
-        self.key_mappings = [
-            Mapping('isbn_13', model=models.Edition, formatter=get_first),
-            Mapping('isbn_10', model=models.Edition, formatter=get_first),
-            Mapping('lccn', model=models.Work, formatter=get_first),
+        get_remote_id = lambda a: self.base_url + a
+        self.book_mappings = [
+            Mapping('title'),
+            Mapping('id', remote_field='key', formatter=get_remote_id),
             Mapping(
-                'oclc_number',
-                remote_field='oclc_numbers',
-                model=models.Edition,
-                formatter=get_first
-            ),
-            Mapping(
-                'openlibrary_key',
-                remote_field='key',
-                formatter=get_openlibrary_key
-            ),
-            Mapping('goodreads_key'),
-            Mapping('asin'),
-        ]
-
-        self.book_mappings = self.key_mappings + [
-            Mapping('sort_title'),
+                'cover', remote_field='covers', formatter=self.get_cover_url),
+            Mapping('sortTitle', remote_field='sort_title'),
             Mapping('subtitle'),
             Mapping('description', formatter=get_description),
             Mapping('languages', formatter=get_languages),
             Mapping('series', formatter=get_first),
-            Mapping('series_number'),
+            Mapping('seriesNumber', remote_field='series_number'),
             Mapping('subjects'),
-            Mapping('subject_places'),
+            Mapping('subjectPlaces'),
+            Mapping('isbn13', formatter=get_first),
+            Mapping('isbn10', formatter=get_first),
+            Mapping('lccn', formatter=get_first),
             Mapping(
-                'first_published_date',
-                remote_field='first_publish_date',
-                formatter=get_date
+                'oclcNumber', remote_field='oclc_numbers',
+                formatter=get_first
             ),
             Mapping(
-                'published_date',
-                remote_field='publish_date',
-                formatter=get_date
+                'openlibraryKey', remote_field='key',
+                formatter=get_openlibrary_key
             ),
+            Mapping('goodreadsKey', remote_field='goodreads_key'),
+            Mapping('asin'),
             Mapping(
-                'pages',
-                model=models.Edition,
-                remote_field='number_of_pages'
+                'firstPublishedDate', remote_field='first_publish_date',
             ),
-            Mapping('physical_format', model=models.Edition),
+            Mapping('publishedDate', remote_field='publish_date'),
+            Mapping('pages', remote_field='number_of_pages'),
+            Mapping('physicalFormat', remote_field='physical_format'),
             Mapping('publishers'),
         ]
 
         self.author_mappings = [
-            Mapping('born', remote_field='birth_date', formatter=get_date),
-            Mapping('died', remote_field='death_date', formatter=get_date),
+            Mapping('id', remote_field='key', formatter=get_remote_id),
+            Mapping('name'),
+            Mapping(
+                'openlibraryKey', remote_field='key',
+                formatter=get_openlibrary_key
+            ),
+            Mapping('born', remote_field='birth_date'),
+            Mapping('died', remote_field='death_date'),
             Mapping('bio', formatter=get_description),
         ]
 
 
     def get_remote_id_from_data(self, data):
+        ''' format a url from an openlibrary id field '''
         try:
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        return '%s/%s' % (self.books_url, key)
+        return '%s%s' % (self.books_url, key)
 
 
     def is_work_data(self, data):
@@ -88,17 +81,17 @@ class Connector(AbstractConnector):
             key = data['key']
         except KeyError:
             raise ConnectorException('Invalid book data')
-        url = '%s/%s/editions' % (self.books_url, key)
+        url = '%s%s/editions' % (self.books_url, key)
         data = get_data(url)
         return pick_default_edition(data['entries'])
 
 
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         try:
             key = data['works'][0]['key']
         except (IndexError, KeyError):
             raise ConnectorException('No work found for edition')
-        url = '%s/%s' % (self.books_url, key)
+        url = '%s%s' % (self.books_url, key)
         return get_data(url)
 
 
@@ -106,24 +99,17 @@ class Connector(AbstractConnector):
         ''' parse author json and load or create authors '''
         for author_blob in data.get('authors', []):
             author_blob = author_blob.get('author', author_blob)
-            # this id is "/authors/OL1234567A" and we want just "OL1234567A"
-            author_id = author_blob['key'].split('/')[-1]
-            yield self.get_or_create_author(author_id)
+            # this id is "/authors/OL1234567A"
+            author_id = author_blob['key']
+            url = '%s%s' % (self.base_url, author_id)
+            yield self.get_or_create_author(url)
 
 
-    def get_cover_from_data(self, data):
+    def get_cover_url(self, cover_blob):
         ''' ask openlibrary for the cover '''
-        if not data.get('covers'):
-            return None
-
-        cover_id = data.get('covers')[0]
-        image_name = '%s-M.jpg' % cover_id
-        url = '%s/b/id/%s' % (self.covers_url, image_name)
-        response = requests.get(url)
-        if not response.ok:
-            response.raise_for_status()
-        image_content = ContentFile(response.content)
-        return [image_name, image_content]
+        cover_id = cover_blob[0]
+        image_name = '%s-L.jpg' % cover_id
+        return '%s/b/id/%s' % (self.covers_url, image_name)
 
 
     def parse_search_data(self, data):
@@ -138,13 +124,14 @@ class Connector(AbstractConnector):
             title=search_result.get('title'),
             key=key,
             author=', '.join(author),
+            connector=self,
             year=search_result.get('first_publish_year'),
         )
 
 
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
-        url = '%s/works/%s/editions.json' % (self.books_url, olkey)
+        url = '%s/works/%s/editions' % (self.books_url, olkey)
         return get_data(url)
 
 
@@ -157,49 +144,14 @@ class Connector(AbstractConnector):
         # we can mass download edition data from OL to avoid repeatedly querying
         edition_options = self.load_edition_data(work.openlibrary_key)
         for edition_data in edition_options.get('entries'):
-            olkey = edition_data.get('key').split('/')[-1]
-            # make sure the edition isn't already in the database
-            if models.Edition.objects.filter(openlibrary_key=olkey).count():
-                continue
-
-            # creates and populates the book from the data
-            edition = self.create_book(olkey, edition_data, models.Edition)
-            # ensures that the edition is associated with the work
-            edition.parent_work = work
-            edition.save()
-            # get author data from the work if it's missing from the edition
-            if not edition.authors and work.authors:
-                edition.authors.set(work.authors.all())
-
-
-    def get_or_create_author(self, olkey):
-        ''' load that author '''
-        if not re.match(r'^OL\d+A$', olkey):
-            raise ValueError('Invalid OpenLibrary author ID')
-        author = models.Author.objects.filter(openlibrary_key=olkey).first()
-        if author:
-            return author
-
-        url = '%s/authors/%s.json' % (self.base_url, olkey)
-        data = get_data(url)
-
-        author = models.Author(openlibrary_key=olkey)
-        author = self.update_from_mappings(author, data, self.author_mappings)
-        name = data.get('name')
-        # TODO this is making some BOLD assumption
-        if name:
-            author.last_name = name.split(' ')[-1]
-            author.first_name = ' '.join(name.split(' ')[:-1])
-        author.save()
-
-        return author
+            self.create_edition_from_data(work, edition_data)
 
 
 def get_description(description_blob):
     ''' descriptions can be a string or a dict '''
     if isinstance(description_blob, dict):
         return description_blob.get('value')
-    return  description_blob
+    return description_blob
 
 
 def get_openlibrary_key(key):
@@ -224,7 +176,7 @@ def pick_default_edition(options):
     if len(options) == 1:
         return options[0]
 
-    options = [e for e in options if e.get('cover')] or options
+    options = [e for e in options if e.get('covers')] or options
     options = [e for e in options if \
         '/languages/eng' in str(e.get('languages'))] or options
     formats = ['paperback', 'hardcover', 'mass market paperback']

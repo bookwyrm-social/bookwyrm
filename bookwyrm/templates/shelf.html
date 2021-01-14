@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% block content %}
 
 <div class="columns">
@@ -106,6 +106,8 @@
                 <label class="label" for="id_name">Name:</label>
                 <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
             </div>
+            {% else %}
+            <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
             {% endif %}
 
             <label class="label">
@@ -122,7 +124,7 @@
 
 <div class="block">
     <div>
-        {% include 'snippets/shelf.html' with shelf=shelf ratings=ratings %}
+        {% include 'snippets/shelf.html' with shelf=shelf books=books ratings=ratings %}
     </div>
 </div>
 {% endblock %}

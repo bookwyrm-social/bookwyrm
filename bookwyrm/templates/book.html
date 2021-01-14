@@ -1,16 +1,27 @@
 {% extends 'layout.html' %}
-{% load fr_display %}
+{% load bookwyrm_tags %}
 {% load humanize %}
 {% block content %}
 
 <div class="block">
-    <div class="level">
-        <h1 class="title level-left">
-            <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-        </h1>
+    <div class="columns">
+        <div class="column">
+            <h1 class="title">
+                {{ book.title }}{% if book.subtitle %}:
+                <small>{{ book.subtitle }}</small>{% endif %}
+                {% if book.series %}
+                <small class="has-text-grey-dark">({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})</small><br>
+                {% endif %}
+            </h1>
+            {% if book.authors %}
+            <h2 class="subtitle">
+                by {% include 'snippets/authors.html' with book=book %}
+            </h2>
+            {% endif %}
+        </div>
 
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
-        <div class="level-right">
+        <div class="column is-narrow">
             <a href="{{ book.id }}/edit">
                 <span class="icon icon-pencil">
                     <span class="is-sr-only">Edit Book</span>
@@ -41,19 +52,44 @@
             </div>
             {% endif %}
 
-            <dl class="content">
-            {% for field in info_fields %}
-                {% if field.value %}
-                <dt>{{ field.name }}:</dt>
-                <dd>{{ field.value }}</dd>
+            <section class="content">
+                <dl>
+                    {% if book.isbn_13 %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ISBN:</dt>
+                        <dd>{{ book.isbn_13 }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.oclc_number %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>OCLC Number:</dt>
+                        <dd>{{ book.oclc_number }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.asin %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ASIN:</dt>
+                        <dd>{{ book.asin }}</dd>
+                    </div>
+                    {% endif %}
+                </dl>
+
+                <p>
+                {% if book.physical_format %}{{ book.physical_format | title }}{% if book.pages %},<br>{% endif %}{% endif %}
+                {% if book.pages %}{{ book.pages }} pages{% endif %}
+                </p>
+
+                {% if book.openlibrary_key %}
+                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">View on OpenLibrary</a></p>
                 {% endif %}
-            {% endfor %}
-            </dl>
+            </section>
         </div>
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ reviews|length|pluralize }})</h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
@@ -86,142 +122,55 @@
                 {% endif %}
 
 
-                {% if book.parent_work.edition_set.count > 1 %}
-                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.edition_set.count }} editions</a></p>
+                {% if book.parent_work.editions.count > 1 %}
+                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.editions.count }} editions</a></p>
                 {% endif %}
             </div>
 
-            {% for readthrough in readthroughs %}
-            <div class="content block">
-                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="show-readthrough-{{ readthrough.id }}" checked>
-                <div class="toggle-content hidden">
-                    <dl>
-                        {% if readthrough.start_date %}
-                        <dt>Started reading:</dt>
-                        <dd>{{ readthrough.start_date | naturalday }}</dd>
-                        {% endif %}
-                        {% if readthrough.finish_date %}
-                        <dt>Finished reading:</dt>
-                        <dd>{{ readthrough.finish_date | naturalday }}</dd>
-                        {% elif readthrough.progress %}
-                        <dt>Progress:</dt>
-                        {% if readthrough.progress_mode == 'PG' %}
-                        <dd>on page {{ readthrough.progress }} of {{ book.pages }}</dd>
-                        {% else %}
-                        <dd>{{ readthrough.progress }}%</dd>
-                        {% endif %}
-                        {% endif %}
-                    </dl>
-                    <div class="field is-grouped">
-                        <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
-                            <span class="icon icon-pencil">
-                                <span class="is-sr-only">Edit read-through dates</span>
-                            </span>
-                        </label>
-                        <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
-                            <span class="icon icon-x">
-                                <span class="is-sr-only">Delete this read-through</span>
-                            </span>
-                        </label>
-                    </div>
-                    {% if show_progress %}
-                    Progress Updates:
-                    <ul>
-                        {% if readthrough.finish_date %}
-                        <li>{{ readthrough.start_date | naturalday }}: finished</li>
-                        {% endif %}
-                        {% for progress_update in readthrough.progress_updates %}
-                        <li>
-                            {{ progress_update.created_date | naturalday }}:
-                            {% if progress_update.mode == 'PG' %}
-                            page {{ progress_update.progress }} of {{ book.pages }}
-                            {% else %}
-                            {{ progress_update.progress }}%
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                        <li>{{ readthrough.start_date | naturalday }}: started</li>
-                    </ul>
-                    {% elif readthrough.progress_updates|length %}
-                    <a href="?showprogress">Show {{ readthrough.progress_updates|length }} Progress Updates</a>
-                    {% endif %}
-                </div>
+            {# user's relationship to the book #}
+            <div class="block">
+                {% for shelf in user_shelves %}
+                <p>
+                    This edition is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                    {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
+                </p>
+                {% endfor %}
+                {% for shelf in other_edition_shelves %}
+                <p>
+                    A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                    {% include 'snippets/switch_edition_button.html' with edition=book %}
+                </p>
+                {% endfor %}
             </div>
 
+            {% if readthroughs.exists %}
+            <div>
+                <h2 class="title is-5">Your reading activity</h2>
+                {% for readthrough in readthroughs %}
+                    {% include 'snippets/readthrough.html' with readthrough=readthrough %}
+                {% endfor %}
+            </div>
+            {% endif %}
             <div class="block">
-                <input class="toggle-control" type="radio" name="show-edit-readthrough" id="edit-readthrough-{{ readthrough.id }}">
-                <div class="toggle-content hidden">
-                    <div class="box">
-                        <form name="edit-readthrough" action="/edit-readthrough" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ readthrough.id }}">
-                            <div class="field">
-                                <label class="label">
-                                    Started reading
-                                    <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-                                </label>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <div class="field">
-                                        <label class="label">
-                                            Progress
-                                            <input type="number" name="progress" class="input" id="id_progress-{{ readthrough.id }}" value="{{ readthrough.progress }}">
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="column">
-                                    <div class="control mt-5">
-                                        <label class="radio">
-                                            <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PG" {% if readthrough.progress_mode == 'PG' %}checked{% endif %}>
-                                            pages
-                                        </label>
-                                        <label class="radio">
-                                            <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PCT" {% if readthrough.progress_mode == 'PCT' %}checked{% endif %}>
-                                            percent
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label class="label">
-                                    Finished reading
-                                    <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
-                                </label>
-                            </div>
+                <div>
+                    <input type="radio" class="toggle-control" name="add-readthrough-form" id="hide-create-readthrough" checked>
+                    <div class="toggle-content hidden">
+                        <label class="button" for="add-readthrough" class="button" role="button" tabindex="0">Add read dates</label>
+                    </div>
+                </div>
+                <div>
+                    <input type="radio" class="toggle-control" id="add-readthrough" name="add-readthrough-form">
+                    <div class="toggle-content hidden box">
+                        <form name="add-readthrough" action="/create-readthrough" method="post">
+                            {% include 'snippets/readthrough_form.html' with readthrough=None %}
                             <div class="field is-grouped">
-                                <button class="button is-primary" type="submit">Save</button>
-                                <label class="button" for="show-readthrough-{{ readthrough.id }}" role="button" tabindex="0">Cancel</label>
+                                <button class="button is-primary" type="submit">Create</button>
+                                <label class="button" for="hide-create-readthrough" role="button" tabindex="0">Cancel</label>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-            <div>
-                <input class="toggle-control" type="checkbox" name="delete-readthrough-{{ readthrough.id }}" id="delete-readthrough-{{ readthrough.id }}">
-                <div class="modal toggle-content hidden">
-                    <div class="modal-background"></div>
-                    <div class="modal-card">
-                        <header class="modal-card-head">
-                            <p class="modal-card-title">Delete this read-though?</p>
-                            <label class="delete" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
-                        </header>
-                        <footer class="modal-card-foot">
-			    <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
-				{% csrf_token %}
-				<input type="hidden" name="id" value="{{ readthrough.id }}">
-				<button class="button is-danger is-light" type="submit">
-				    Delete
-				</button>
-				<label for="delete-readthrough-{{ readthrough.id }}" class="button" role="button" tabindex="0">Cancel</button>
-			    </form>
-                        </footer>
-                    </div>
-                    <label class="modal-close is-large" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
-                </div>
-            </div>
-            {% endfor %}
 
             {% if request.user.is_authenticated %}
             <div class="box">
@@ -248,15 +197,31 @@
             </div>
 
         </div>
+        <div class="column is-narrow">
+            {% if book.subjects %}
+            <section class="content block">
+                <h2 class="title is-5">Subjects</h2>
+                <ul>
+                {% for subject in book.subjects %}
+                    <li>{{ subject }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+
+            {% if book.subject_places %}
+            <section class="content block">
+                <h2 class="title is-5">Places</h2>
+                <ul>
+                {% for place in book.subject_placess %}
+                    <li>{{ place }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </div>
     </div>
 </div>
-
-
-{% if not reviews %}
-<div class="block">
-    <p>No reviews yet!</p>
-</div>
-{% endif %}
 
 <div class="block">
     {% for review in reviews %}
@@ -265,14 +230,14 @@
     </div>
     {% endfor %}
 
-    <div class="block columns">
+    <div class="block is-flex is-flex-wrap-wrap">
     {% for rating in ratings %}
-    <div class="column">
+    <div class="block mr-5">
         <div class="media">
-            <div class="media-left">{% include 'snippets/avatar.html' %}</div>
+            <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
             <div class="media-content">
                 <div>
-                    {% include 'snippets/username.html' %}
+                    {% include 'snippets/username.html' with user=rating.user %}
                 </div>
                 <div class="field is-grouped mb-0">
                     <div>rated it</div>
@@ -287,7 +252,6 @@
     {% endfor %}
     </div>
 </div>
-
 
 {% endblock %}
 

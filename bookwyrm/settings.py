@@ -3,8 +3,11 @@ import os
 
 from environs import Env
 
+import requests
+
 env = Env()
 DOMAIN = env('DOMAIN')
+VERSION = '0.0.1'
 
 PAGE_LENGTH = env('PAGE_LENGTH', 15)
 
@@ -14,6 +17,13 @@ CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+# email
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT', 587)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS', True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -68,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'bookwyrm.context_processors.site_settings',
             ],
         },
     },
@@ -91,10 +102,6 @@ BOOKWYRM_DBS = {
         'HOST': env('POSTGRES_HOST', ''),
         'PORT': 5432
     },
-    'sqlite': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'fedireads.db')
-    }
 }
 
 DATABASES = {
@@ -146,3 +153,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, env('STATIC_ROOT', 'static'))
 MEDIA_URL = '/images/'
 MEDIA_ROOT = os.path.join(BASE_DIR, env('MEDIA_ROOT', 'images'))
+
+USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
+    requests.utils.default_user_agent(), VERSION, DOMAIN)

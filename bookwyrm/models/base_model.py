@@ -1,34 +1,27 @@
 ''' base model with default fields '''
-from datetime import datetime
 from base64 import b64encode
-from dataclasses import dataclass
-from typing import Callable
+from functools import reduce
+import operator
 from uuid import uuid4
-from urllib.parse import urlencode
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
+from django.core.paginator import Paginator
 from django.db import models
-from django.db.models.fields.files import ImageFieldFile
+from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, PAGE_LENGTH
+from .fields import ImageField, ManyToManyField, RemoteIdField
 
-
-PrivacyLevels = models.TextChoices('Privacy', [
-    'public',
-    'unlisted',
-    'followers',
-    'direct'
-])
 
 class BookWyrmModel(models.Model):
     ''' shared fields '''
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    remote_id = models.CharField(max_length=255, null=True)
+    remote_id = RemoteIdField(null=True, activitypub_field='id')
 
     def get_remote_id(self):
         ''' generate a url that resolves to the local object '''
@@ -42,8 +35,14 @@ class BookWyrmModel(models.Model):
         ''' this is just here to provide default fields for other models '''
         abstract = True
 
+    @property
+    def local_path(self):
+        ''' how to link to this object in the local app '''
+        return self.get_remote_id().replace('https://%s' % DOMAIN, '')
+
 
 @receiver(models.signals.post_save)
+#pylint: disable=unused-argument
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' set the remote_id after save (when the id is available) '''
     if not created or not hasattr(instance, 'get_remote_id'):
@@ -53,58 +52,116 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         instance.save()
 
 
+def unfurl_related_field(related_field, sort_field=None):
+    ''' load reverse lookups (like public key owner or Status attachment '''
+    if hasattr(related_field, 'all'):
+        return [unfurl_related_field(i) for i in related_field.order_by(
+            sort_field).all()]
+    if related_field.reverse_unfurl:
+        return related_field.field_to_activity()
+    return related_field.remote_id
+
+
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
+    reverse_unfurl = False
 
-    def to_activity(self, pure=False):
-        ''' convert from a model to an activity '''
-        if pure:
-            # works around bookwyrm-specific fields for vanilla AP services
-            mappings = self.pure_activity_mappings
-        else:
-            # may include custom fields that bookwyrm instances will understand
-            mappings = self.activity_mappings
-
-        fields = {}
-        for mapping in mappings:
-            if not hasattr(self, mapping.model_key) or not mapping.activity_key:
-                # this field on the model isn't serialized
+    def __init__(self, *args, **kwargs):
+        ''' collect some info on model fields '''
+        self.image_fields = []
+        self.many_to_many_fields = []
+        self.simple_fields = [] # "simple"
+        for field in self._meta.get_fields():
+            if not hasattr(field, 'field_to_activity'):
                 continue
-            value = getattr(self, mapping.model_key)
-            if hasattr(value, 'remote_id'):
-                # this is probably a foreign key field, which we want to
-                # serialize as just the remote_id url reference
-                value = value.remote_id
-            elif isinstance(value, datetime):
-                value = value.isoformat()
-            elif isinstance(value, ImageFieldFile):
-                value = image_formatter(value)
 
-            # run the custom formatter function set in the model
-            formatted_value = mapping.activity_formatter(value)
-            if mapping.activity_key in fields and \
-                    isinstance(fields[mapping.activity_key], list):
-                # there can be two database fields that map to the same AP list
-                # this happens in status tags, which combines user and book tags
-                fields[mapping.activity_key] += formatted_value
+            if isinstance(field, ImageField):
+                self.image_fields.append(field)
+            elif isinstance(field, ManyToManyField):
+                self.many_to_many_fields.append(field)
             else:
-                fields[mapping.activity_key] = formatted_value
+                self.simple_fields.append(field)
 
-        if pure:
-            return self.pure_activity_serializer(
-                **fields
-            ).serialize()
-        return self.activity_serializer(
-            **fields
-        ).serialize()
+        self.activity_fields = self.image_fields + \
+                self.many_to_many_fields + self.simple_fields
+
+        self.deserialize_reverse_fields = self.deserialize_reverse_fields \
+                if hasattr(self, 'deserialize_reverse_fields') else []
+        self.serialize_reverse_fields = self.serialize_reverse_fields \
+                if hasattr(self, 'serialize_reverse_fields') else []
+
+        super().__init__(*args, **kwargs)
 
 
-    def to_create_activity(self, user, pure=False):
+    @classmethod
+    def find_existing_by_remote_id(cls, remote_id):
+        ''' look up a remote id in the db '''
+        return cls.find_existing({'id': remote_id})
+
+    @classmethod
+    def find_existing(cls, data):
+        ''' compare data to fields that can be used for deduplation.
+        This always includes remote_id, but can also be unique identifiers
+        like an isbn for an edition '''
+        filters = []
+        for field in cls._meta.get_fields():
+            if not hasattr(field, 'deduplication_field') or \
+                    not field.deduplication_field:
+                continue
+
+            value = data.get(field.get_activitypub_field())
+            if not value:
+                continue
+            filters.append({field.name: value})
+
+        if hasattr(cls, 'origin_id') and 'id' in data:
+            # kinda janky, but this handles special case for books
+            filters.append({'origin_id': data['id']})
+
+        if not filters:
+            # if there are no deduplication fields, it will match the first
+            # item no matter what. this shouldn't happen but just in case.
+            return None
+
+        objects = cls.objects
+        if hasattr(objects, 'select_subclasses'):
+            objects = objects.select_subclasses()
+
+        # an OR operation on all the match fields
+        match = objects.filter(
+            reduce(
+                operator.or_, (Q(**f) for f in filters)
+            )
+        )
+        # there OUGHT to be only one match
+        return match.first()
+
+
+    def to_activity(self):
+        ''' convert from a model to an activity '''
+        activity = {}
+        for field in self.activity_fields:
+            field.set_activity_from_field(activity, self)
+
+        if hasattr(self, 'serialize_reverse_fields'):
+            # for example, editions of a work
+            for model_field_name, activity_field_name, sort_field in \
+                    self.serialize_reverse_fields:
+                related_field = getattr(self, model_field_name)
+                activity[activity_field_name] = \
+                        unfurl_related_field(related_field, sort_field)
+
+        if not activity.get('id'):
+            activity['id'] = self.get_remote_id()
+        return self.activity_serializer(**activity).serialize()
+
+
+    def to_create_activity(self, user, **kwargs):
         ''' returns the object wrapped in a Create activity '''
-        activity_object = self.to_activity(pure=pure)
+        activity_object = self.to_activity(**kwargs)
 
-        signer = pkcs1_15.new(RSA.import_key(user.private_key))
+        signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
         content = activity_object['content']
         signed_message = signer.sign(SHA256.new(content.encode('utf8')))
         create_id = self.remote_id + '/activity'
@@ -118,8 +175,8 @@ class ActivitypubMixin:
         return activitypub.Create(
             id=create_id,
             actor=user.remote_id,
-            to=['%s/followers' % user.remote_id],
-            cc=['https://www.w3.org/ns/activitystreams#Public'],
+            to=activity_object['to'],
+            cc=activity_object['cc'],
             object=activity_object,
             signature=signature,
         ).serialize()
@@ -127,21 +184,18 @@ class ActivitypubMixin:
 
     def to_delete_activity(self, user):
         ''' notice of deletion '''
-        # this should be a tombstone
-        activity_object = self.to_activity()
-
         return activitypub.Delete(
             id=self.remote_id + '/activity',
             actor=user.remote_id,
             to=['%s/followers' % user.remote_id],
             cc=['https://www.w3.org/ns/activitystreams#Public'],
-            object=activity_object,
+            object=self.to_activity(),
         ).serialize()
 
 
     def to_update_activity(self, user):
         ''' wrapper for Updates to an activity '''
-        activity_id = '%s#update/%s' % (user.remote_id, uuid4())
+        activity_id = '%s#update/%s' % (self.remote_id, uuid4())
         return activitypub.Update(
             id=activity_id,
             actor=user.remote_id,
@@ -153,10 +207,10 @@ class ActivitypubMixin:
     def to_undo_activity(self, user):
         ''' undo an action '''
         return activitypub.Undo(
-            id='%s#undo' % user.remote_id,
+            id='%s#undo' % self.remote_id,
             actor=user.remote_id,
             object=self.to_activity()
-        )
+        ).serialize()
 
 
 class OrderedCollectionPageMixin(ActivitypubMixin):
@@ -167,75 +221,53 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
         ''' this can be overriden if there's a special remote id, ie outbox '''
         return self.remote_id
 
-    def page(self, min_id=None, max_id=None):
-        ''' helper function to create the pagination url '''
-        params = {'page': 'true'}
-        if min_id:
-            params['min_id'] = min_id
-        if max_id:
-            params['max_id'] = max_id
-        return '?%s' % urlencode(params)
-
-    def next_page(self, items):
-        ''' use the max id of the last item '''
-        if not items.count():
-            return ''
-        return self.page(max_id=items[items.count() - 1].id)
-
-    def prev_page(self, items):
-        ''' use the min id of the first item '''
-        if not items.count():
-            return ''
-        return self.page(min_id=items[0].id)
-
-    def to_ordered_collection_page(self, queryset, remote_id, \
-            id_only=False, min_id=None, max_id=None):
-        ''' serialize and pagiante a queryset '''
-        # TODO: weird place to define this
-        limit = 20
-        # filters for use in the django queryset min/max
-        filters = {}
-        if min_id is not None:
-            filters['id__gt'] = min_id
-        if max_id is not None:
-            filters['id__lte'] = max_id
-        page_id = self.page(min_id=min_id, max_id=max_id)
-
-        items = queryset.filter(
-            **filters
-        ).all()[:limit]
-
-        if id_only:
-            page = [s.remote_id for s in items]
-        else:
-            page = [s.to_activity() for s in items]
-        return activitypub.OrderedCollectionPage(
-            id='%s%s' % (remote_id, page_id),
-            partOf=remote_id,
-            orderedItems=page,
-            next='%s%s' % (remote_id, self.next_page(items)),
-            prev='%s%s' % (remote_id, self.prev_page(items))
-        ).serialize()
 
     def to_ordered_collection(self, queryset, \
             remote_id=None, page=False, **kwargs):
         ''' an ordered collection of whatevers '''
         remote_id = remote_id or self.remote_id
         if page:
-            return self.to_ordered_collection_page(
+            return to_ordered_collection_page(
                 queryset, remote_id, **kwargs)
-        name = ''
-        if hasattr(self, 'name'):
-            name = self.name
+        name = self.name if hasattr(self, 'name') else None
+        owner = self.user.remote_id if hasattr(self, 'user') else ''
 
-        size = queryset.count()
+        paginated = Paginator(queryset, PAGE_LENGTH)
         return activitypub.OrderedCollection(
             id=remote_id,
-            totalItems=size,
+            totalItems=paginated.count,
             name=name,
-            first='%s%s' % (remote_id, self.page()),
-            last='%s%s' % (remote_id, self.page(min_id=0))
+            owner=owner,
+            first='%s?page=1' % remote_id,
+            last='%s?page=%d' % (remote_id, paginated.num_pages)
         ).serialize()
+
+
+# pylint: disable=unused-argument
+def to_ordered_collection_page(
+        queryset, remote_id, id_only=False, page=1, **kwargs):
+    ''' serialize and pagiante a queryset '''
+    paginated = Paginator(queryset, PAGE_LENGTH)
+
+    activity_page = paginated.page(page)
+    if id_only:
+        items = [s.remote_id for s in activity_page.object_list]
+    else:
+        items = [s.to_activity() for s in activity_page.object_list]
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '%s?page=%d' % (remote_id, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '%s?page=%d' % \
+                (remote_id, activity_page.previous_page_number())
+    return activitypub.OrderedCollectionPage(
+        id='%s?page=%s' % (remote_id, page),
+        partOf=remote_id,
+        orderedItems=items,
+        next=next_page,
+        prev=prev_page
+    ).serialize()
 
 
 class OrderedCollectionMixin(OrderedCollectionPageMixin):
@@ -250,39 +282,3 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
         return self.to_ordered_collection(self.collection_queryset, **kwargs)
-
-
-@dataclass(frozen=True)
-class ActivityMapping:
-    ''' translate between an activitypub json field and a model field '''
-    activity_key: str
-    model_key: str
-    activity_formatter: Callable = lambda x: x
-    model_formatter: Callable = lambda x: x
-
-
-def tag_formatter(items, name_field, activity_type):
-    ''' helper function to format lists of foreign keys into Tags '''
-    tags = []
-    for item in items.all():
-        tags.append(activitypub.Link(
-            href=item.remote_id,
-            name=getattr(item, name_field),
-            type=activity_type
-        ))
-    return tags
-
-
-def image_formatter(image):
-    ''' convert images into activitypub json '''
-    if image and hasattr(image, 'url'):
-        url = image.url
-    else:
-        return None
-    url = 'https://%s%s' % (DOMAIN, url)
-    return activitypub.Image(url=url)
-
-
-def image_attachments_formatter(images):
-    ''' create a list of image attachments '''
-    return [image_formatter(i) for i in images]

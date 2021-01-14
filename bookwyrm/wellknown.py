@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 
 from bookwyrm import models
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, VERSION
 
 
 def webfinger(request):
@@ -76,7 +76,7 @@ def nodeinfo(request):
         'version': '2.0',
         'software': {
             'name': 'bookwyrm',
-            'version': '0.0.1'
+            'version': VERSION
         },
         'protocols': [
             'activitypub'

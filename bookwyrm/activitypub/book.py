@@ -12,13 +12,13 @@ class Book(ActivityObject):
     sortTitle: str = ''
     subtitle: str = ''
     description: str = ''
-    languages: List[str]
+    languages: List[str] = field(default_factory=lambda: [])
     series: str = ''
     seriesNumber: str = ''
-    subjects: List[str]
-    subjectPlaces: List[str]
+    subjects: List[str] = field(default_factory=lambda: [])
+    subjectPlaces: List[str] = field(default_factory=lambda: [])
 
-    authors: List[str]
+    authors: List[str] = field(default_factory=lambda: [])
     firstPublishedDate: str = ''
     publishedDate: str = ''
 
@@ -33,23 +33,25 @@ class Book(ActivityObject):
 @dataclass(init=False)
 class Edition(Book):
     ''' Edition instance of a book object '''
-    isbn10: str
-    isbn13: str
-    oclcNumber: str
-    asin: str
-    pages: str
-    physicalFormat: str
-    publishers: List[str]
-
     work: str
+    isbn10: str = ''
+    isbn13: str = ''
+    oclcNumber: str = ''
+    asin: str = ''
+    pages: int = None
+    physicalFormat: str = ''
+    publishers: List[str] = field(default_factory=lambda: [])
+    editionRank: int = 0
+
     type: str = 'Edition'
 
 
 @dataclass(init=False)
 class Work(Book):
     ''' work instance of a book object '''
-    lccn: str
-    editions: List[str]
+    lccn: str = ''
+    defaultEdition: str = ''
+    editions: List[str] = field(default_factory=lambda: [])
     type: str = 'Work'
 
 
@@ -57,10 +59,12 @@ class Work(Book):
 class Author(ActivityObject):
     ''' author of a book '''
     name: str
-    born: str = ''
-    died: str = ''
-    aliases: str = ''
+    born: str = None
+    died: str = None
+    aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ''
     openlibraryKey: str = ''
+    librarythingKey: str = ''
+    goodreadsKey: str = ''
     wikipediaLink: str = ''
     type: str = 'Person'

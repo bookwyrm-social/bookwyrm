@@ -2,111 +2,104 @@
 import re
 
 from django.db import models
-from django.db.models import Q
-from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from bookwyrm.utils.fields import ArrayField
 
-from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import BookWyrmModel
 from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from . import fields
 
-class Book(ActivitypubMixin, BookWyrmModel):
-    ''' a generic book, which can mean either an edition or a work '''
+class BookDataModel(ActivitypubMixin, BookWyrmModel):
+    ''' fields shared between editable book data (books, works, authors) '''
     origin_id = models.CharField(max_length=255, null=True, blank=True)
-    # these identifiers apply to both works and editions
-    openlibrary_key = models.CharField(max_length=255, blank=True, null=True)
-    librarything_key = models.CharField(max_length=255, blank=True, null=True)
-    goodreads_key = models.CharField(max_length=255, blank=True, null=True)
+    openlibrary_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    librarything_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    goodreads_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
 
-    # info about where the data comes from and where/if to sync
-    sync = models.BooleanField(default=True)
-    sync_cover = models.BooleanField(default=True)
-    last_sync_date = models.DateTimeField(default=timezone.now)
+    last_edited_by = models.ForeignKey(
+        'User', on_delete=models.PROTECT, null=True)
+
+    class Meta:
+        ''' can't initialize this model, that wouldn't make sense '''
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        ''' ensure that the remote_id is within this instance '''
+        if self.id:
+            self.remote_id = self.get_remote_id()
+        else:
+            self.origin_id = self.remote_id
+            self.remote_id = None
+        return super().save(*args, **kwargs)
+
+
+class Book(BookDataModel):
+    ''' a generic book, which can mean either an edition or a work '''
     connector = models.ForeignKey(
         'Connector', on_delete=models.PROTECT, null=True)
 
-    # TODO: edit history
-
     # book/work metadata
-    title = models.CharField(max_length=255)
-    sort_title = models.CharField(max_length=255, blank=True, null=True)
-    subtitle = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    languages = ArrayField(
+    title = fields.CharField(max_length=255)
+    sort_title = fields.CharField(max_length=255, blank=True, null=True)
+    subtitle = fields.CharField(max_length=255, blank=True, null=True)
+    description = fields.HtmlField(blank=True, null=True)
+    languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    series = models.CharField(max_length=255, blank=True, null=True)
-    series_number = models.CharField(max_length=255, blank=True, null=True)
-    subjects = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
+    series = fields.CharField(max_length=255, blank=True, null=True)
+    series_number = fields.CharField(max_length=255, blank=True, null=True)
+    subjects = fields.ArrayField(
+        models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    subject_places = ArrayField(
-        models.CharField(max_length=255), blank=True, default=list
+    subject_places = fields.ArrayField(
+        models.CharField(max_length=255), blank=True, null=True, default=list
     )
-    # TODO: include an annotation about the type of authorship (ie, translator)
-    authors = models.ManyToManyField('Author')
-    # preformatted authorship string for search and easier display
-    author_text = models.CharField(max_length=255, blank=True, null=True)
-    cover = models.ImageField(upload_to='covers/', blank=True, null=True)
-    first_published_date = models.DateTimeField(blank=True, null=True)
-    published_date = models.DateTimeField(blank=True, null=True)
+    authors = fields.ManyToManyField('Author')
+    cover = fields.ImageField(
+        upload_to='covers/', blank=True, null=True, alt_field='alt_text')
+    first_published_date = fields.DateTimeField(blank=True, null=True)
+    published_date = fields.DateTimeField(blank=True, null=True)
+
     objects = InheritanceManager()
 
     @property
-    def ap_authors(self):
-        ''' the activitypub serialization should be a list of author ids '''
-        return [a.remote_id for a in self.authors.all()]
+    def author_text(self):
+        ''' format a list of authors '''
+        return ', '.join(a.name for a in self.authors.all())
 
     @property
     def latest_readthrough(self):
         return self.readthrough_set.order_by('-updated_date').first()
 
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
+    @property
+    def edition_info(self):
+        ''' properties of this edition, as a string '''
+        items = [
+            self.physical_format if hasattr(self, 'physical_format') else None,
+            self.languages[0] + ' language' if self.languages and \
+                    self.languages[0] != 'English' else None,
+            str(self.published_date.year) if self.published_date else None,
+        ]
+        return ', '.join(i for i in items if i)
 
-        ActivityMapping('authors', 'ap_authors'),
-        ActivityMapping('firstPublishedDate', 'firstpublished_date'),
-        ActivityMapping('publishedDate', 'published_date'),
-
-        ActivityMapping('title', 'title'),
-        ActivityMapping('sortTitle', 'sort_title'),
-        ActivityMapping('subtitle', 'subtitle'),
-        ActivityMapping('description', 'description'),
-        ActivityMapping('languages', 'languages'),
-        ActivityMapping('series', 'series'),
-        ActivityMapping('seriesNumber', 'series_number'),
-        ActivityMapping('subjects', 'subjects'),
-        ActivityMapping('subjectPlaces', 'subject_places'),
-
-        ActivityMapping('openlibraryKey', 'openlibrary_key'),
-        ActivityMapping('librarythingKey', 'librarything_key'),
-        ActivityMapping('goodreadsKey', 'goodreads_key'),
-
-        ActivityMapping('work', 'parent_work'),
-        ActivityMapping('isbn10', 'isbn_10'),
-        ActivityMapping('isbn13', 'isbn_13'),
-        ActivityMapping('oclcNumber', 'oclc_number'),
-        ActivityMapping('asin', 'asin'),
-        ActivityMapping('pages', 'pages'),
-        ActivityMapping('physicalFormat', 'physical_format'),
-        ActivityMapping('publishers', 'publishers'),
-
-        ActivityMapping('lccn', 'lccn'),
-        ActivityMapping('editions', 'editions_path'),
-        ActivityMapping('cover', 'cover'),
-    ]
+    @property
+    def alt_text(self):
+        ''' image alt test '''
+        text = '%s cover' % self.title
+        if self.edition_info:
+            text += ' (%s)' % self.edition_info
+        return text
 
     def save(self, *args, **kwargs):
         ''' can't be abstract for query reasons, but you shouldn't USE it '''
         if not isinstance(self, Edition) and not isinstance(self, Work):
             raise ValueError('Books should be added as Editions or Works')
-        if self.id and not self.remote_id:
-            self.remote_id = self.get_remote_id()
-
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def get_remote_id(self):
         ''' editions and works both use "book" instead of model_name '''
@@ -123,47 +116,56 @@ class Book(ActivitypubMixin, BookWyrmModel):
 class Work(OrderedCollectionPageMixin, Book):
     ''' a work (an abstract concept of a book that manifests in an edition) '''
     # library of congress catalog control number
-    lccn = models.CharField(max_length=255, blank=True, null=True)
+    lccn = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
     # this has to be nullable but should never be null
-    default_edition = models.ForeignKey(
+    default_edition = fields.ForeignKey(
         'Edition',
         on_delete=models.PROTECT,
-        null=True
+        null=True,
+        load_remote=False
     )
 
-    @property
-    def editions_path(self):
-        ''' it'd be nice to serialize the edition instead but, recursion '''
-        default = self.default_edition
-        ed_list = [
-            e.remote_id for e in self.edition_set.filter(~Q(id=default.id)).all()
-        ]
-        return [default.remote_id] + ed_list
+    def save(self, *args, **kwargs):
+        ''' set some fields on the edition object '''
+        # set rank
+        for edition in self.editions.all():
+            edition.save()
+        return super().save(*args, **kwargs)
 
+    def get_default_edition(self):
+        ''' in case the default edition is not set '''
+        return self.default_edition or self.editions.order_by(
+            '-edition_rank'
+        ).first()
 
     def to_edition_list(self, **kwargs):
-        ''' activitypub serialization for this work's editions '''
-        remote_id = self.remote_id + '/editions'
+        ''' an ordered collection of editions '''
         return self.to_ordered_collection(
-            self.edition_set,
-            remote_id=remote_id,
+            self.editions.order_by('-edition_rank').all(),
+            remote_id='%s/editions' % self.remote_id,
             **kwargs
         )
 
-
     activity_serializer = activitypub.Work
+    serialize_reverse_fields = [('editions', 'editions', '-edition_rank')]
+    deserialize_reverse_fields = [('editions', 'editions')]
 
 
 class Edition(Book):
     ''' an edition of a book '''
     # these identifiers only apply to editions, not works
-    isbn_10 = models.CharField(max_length=255, blank=True, null=True)
-    isbn_13 = models.CharField(max_length=255, blank=True, null=True)
-    oclc_number = models.CharField(max_length=255, blank=True, null=True)
-    asin = models.CharField(max_length=255, blank=True, null=True)
-    pages = models.IntegerField(blank=True, null=True)
-    physical_format = models.CharField(max_length=255, blank=True, null=True)
-    publishers = ArrayField(
+    isbn_10 = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    isbn_13 = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    oclc_number = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    asin = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True)
+    pages = fields.IntegerField(blank=True, null=True)
+    physical_format = fields.CharField(max_length=255, blank=True, null=True)
+    publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
     shelves = models.ManyToManyField(
@@ -172,16 +174,41 @@ class Edition(Book):
         through='ShelfBook',
         through_fields=('book', 'shelf')
     )
-    parent_work = models.ForeignKey('Work', on_delete=models.PROTECT, null=True)
+    parent_work = fields.ForeignKey(
+        'Work', on_delete=models.PROTECT, null=True,
+        related_name='editions', activitypub_field='work')
+    edition_rank = fields.IntegerField(default=0)
 
     activity_serializer = activitypub.Edition
+    name_field = 'title'
+
+    @property
+    def get_rank(self):
+        ''' calculate how complete the data is on this edition '''
+        if self.parent_work and self.parent_work.default_edition == self:
+            # default edition has the highest rank
+            return 20
+        rank = 0
+        rank += int(bool(self.cover)) * 3
+        rank += int(bool(self.isbn_13))
+        rank += int(bool(self.isbn_10))
+        rank += int(bool(self.oclc_number))
+        rank += int(bool(self.pages))
+        rank += int(bool(self.physical_format))
+        rank += int(bool(self.description))
+        # max rank is 9
+        return rank
 
     def save(self, *args, **kwargs):
-        ''' calculate isbn 10/13 '''
+        ''' set some fields on the edition object '''
+        # calculate isbn 10/13
         if self.isbn_13 and self.isbn_13[:3] == '978' and not self.isbn_10:
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        # set rank
+        self.edition_rank = self.get_rank
 
         return super().save(*args, **kwargs)
 

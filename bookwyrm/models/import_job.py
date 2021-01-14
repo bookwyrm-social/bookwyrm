@@ -2,14 +2,13 @@
 import re
 import dateutil.parser
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 
-from bookwyrm import books_manager
-from bookwyrm.connectors import ConnectorException
+from bookwyrm.connectors import connector_manager
 from bookwyrm.models import ReadThrough, User, Book
-from bookwyrm.utils.fields import JSONField
-from .base_model import PrivacyLevels
+from .fields import PrivacyLevels
 
 
 # Mapping goodreads -> bookwyrm shelf titles.
@@ -43,6 +42,7 @@ class ImportJob(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     task_id = models.CharField(max_length=100, null=True)
     include_reviews = models.BooleanField(default=True)
+    complete = models.BooleanField(default=False)
     privacy = models.CharField(
         max_length=255,
         default='public',
@@ -72,12 +72,12 @@ class ImportItem(models.Model):
 
     def get_book_from_isbn(self):
         ''' search by isbn '''
-        search_result = books_manager.first_search_result(
+        search_result = connector_manager.first_search_result(
             self.isbn, min_confidence=0.999
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 
@@ -87,12 +87,12 @@ class ImportItem(models.Model):
             self.data['Title'],
             self.data['Author']
         )
-        search_result = books_manager.first_search_result(
+        search_result = connector_manager.first_search_result(
             search_term, min_confidence=0.999
         )
         if search_result:
             # raises ConnectorException
-            return books_manager.get_or_create_book(search_result.key)
+            return search_result.connector.get_or_create_book(search_result.key)
         return None
 
 

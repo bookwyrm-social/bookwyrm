@@ -1,6 +1,9 @@
 ''' using a bookwyrm instance as a source of book data '''
+from functools import reduce
+import operator
+
 from django.contrib.postgres.search import SearchRank, SearchVector
-from django.db.models import F
+from django.db.models import Count, F, Q
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -9,38 +12,20 @@ from .abstract_connector import AbstractConnector, SearchResult
 class Connector(AbstractConnector):
     ''' instantiate a connector  '''
     def search(self, query, min_confidence=0.1):
-        ''' right now you can't search bookwyrm sorry, but when
-        that gets implemented it will totally rule '''
-        vector = SearchVector('title', weight='A') +\
-            SearchVector('subtitle', weight='B') +\
-            SearchVector('author_text', weight='C') +\
-            SearchVector('isbn_13', weight='A') +\
-            SearchVector('isbn_10', weight='A') +\
-            SearchVector('openlibrary_key', weight='C') +\
-            SearchVector('goodreads_key', weight='C') +\
-            SearchVector('asin', weight='C') +\
-            SearchVector('oclc_number', weight='C') +\
-            SearchVector('remote_id', weight='C') +\
-            SearchVector('description', weight='D') +\
-            SearchVector('series', weight='D')
-
-        results = models.Edition.objects.annotate(
-            search=vector
-        ).annotate(
-            rank=SearchRank(vector, query)
-        ).filter(
-            rank__gt=min_confidence
-        ).order_by('-rank')
-
-        # remove non-default editions, if possible
-        results = results.filter(parent_work__default_edition__id=F('id')) \
-                    or results
-
+        ''' search your local database '''
+        if not query:
+            return []
+        # first, try searching unqiue identifiers
+        results = search_identifiers(query)
+        if not results:
+            # then try searching title/author
+            results = search_title_author(query, min_confidence)
         search_results = []
-        for book in results[:10]:
-            search_results.append(
-                self.format_search_result(book)
-            )
+        for result in results:
+            search_results.append(self.format_search_result(result))
+            if len(search_results) >= 10:
+                break
+        search_results.sort(key=lambda r: r.confidence, reverse=True)
         return search_results
 
 
@@ -51,12 +36,11 @@ class Connector(AbstractConnector):
             author=search_result.author_text,
             year=search_result.published_date.year if \
                     search_result.published_date else None,
-            confidence=search_result.rank,
+            connector=self,
+            confidence=search_result.rank if \
+                    hasattr(search_result, 'rank') else 1,
         )
 
-
-    def get_remote_id_from_data(self, data):
-        pass
 
     def is_work_data(self, data):
         pass
@@ -64,13 +48,10 @@ class Connector(AbstractConnector):
     def get_edition_from_work_data(self, data):
         pass
 
-    def get_work_from_edition_date(self, data):
+    def get_work_from_edition_data(self, data):
         pass
 
     def get_authors_from_data(self, data):
-        return None
-
-    def get_cover_from_data(self, data):
         return None
 
     def parse_search_data(self, data):
@@ -79,3 +60,50 @@ class Connector(AbstractConnector):
 
     def expand_book_data(self, book):
         pass
+
+
+def search_identifiers(query):
+    ''' tries remote_id, isbn; defined as dedupe fields on the model '''
+    filters = [{f.name: query} for f in models.Edition._meta.get_fields() \
+        if hasattr(f, 'deduplication_field') and f.deduplication_field]
+    results = models.Edition.objects.filter(
+        reduce(operator.or_, (Q(**f) for f in filters))
+    ).distinct()
+
+    # when there are multiple editions of the same work, pick the default.
+    # it would be odd for this to happen.
+    return results.filter(parent_work__default_edition__id=F('id')) \
+            or results
+
+
+def search_title_author(query, min_confidence):
+    ''' searches for title and author '''
+    vector = SearchVector('title', weight='A') +\
+        SearchVector('subtitle', weight='B') +\
+        SearchVector('authors__name', weight='C') +\
+        SearchVector('series', weight='D')
+
+    results = models.Edition.objects.annotate(
+        search=vector
+    ).annotate(
+        rank=SearchRank(vector, query)
+    ).filter(
+        rank__gt=min_confidence
+    ).order_by('-rank')
+
+    # when there are multiple editions of the same work, pick the closest
+    editions_of_work = results.values(
+        'parent_work'
+    ).annotate(
+        Count('parent_work')
+    ).values_list('parent_work')
+
+    for work_id in set(editions_of_work):
+        editions = results.filter(parent_work=work_id)
+        default = editions.filter(parent_work__default_edition=F('id'))
+        default_rank = default.first().rank if default.exists() else 0
+        # if mutliple books have the top rank, pick the default edition
+        if default_rank == editions.first().rank:
+            yield default.first()
+        else:
+            yield editions.first()

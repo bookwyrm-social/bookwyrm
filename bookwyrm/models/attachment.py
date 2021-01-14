@@ -3,7 +3,8 @@ from django.db import models
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin
-from .base_model import ActivityMapping, BookWyrmModel
+from .base_model import BookWyrmModel
+from . import fields
 
 
 class Attachment(ActivitypubMixin, BookWyrmModel):
@@ -14,19 +15,16 @@ class Attachment(ActivitypubMixin, BookWyrmModel):
         related_name='attachments',
         null=True
     )
+    reverse_unfurl = True
     class Meta:
         ''' one day we'll have other types of attachments besides images '''
         abstract = True
 
-    activity_mappings = [
-        ActivityMapping('id', 'remote_id'),
-        ActivityMapping('url', 'image'),
-        ActivityMapping('name', 'caption'),
-    ]
 
 class Image(Attachment):
     ''' an image attachment '''
-    image = models.ImageField(upload_to='status/', null=True, blank=True)
-    caption = models.TextField(null=True, blank=True)
+    image = fields.ImageField(
+        upload_to='status/', null=True, blank=True, activitypub_field='url')
+    caption = fields.TextField(null=True, blank=True, activitypub_field='name')
 
     activity_serializer = activitypub.Image

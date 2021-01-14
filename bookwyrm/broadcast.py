@@ -3,7 +3,7 @@ import json
 from django.utils.http import http_date
 import requests
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.activitypub import ActivityEncoder
 from bookwyrm.tasks import app
 from bookwyrm.signatures import make_signature, make_digest
@@ -65,7 +65,7 @@ def sign_and_send(sender, data, destination):
     ''' crpyto whatever and http junk '''
     now = http_date()
 
-    if not sender.private_key:
+    if not sender.key_pair.private_key:
         # this shouldn't happen. it would be bad if it happened.
         raise ValueError('No private key found for sender')
 
@@ -79,6 +79,7 @@ def sign_and_send(sender, data, destination):
             'Digest': digest,
             'Signature': make_signature(sender, destination, now, digest),
             'Content-Type': 'application/activity+json; charset=utf-8',
+            'User-Agent': settings.USER_AGENT,
         },
     )
     if not response.ok:

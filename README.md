@@ -8,6 +8,7 @@ Social reading and reviewing, decentralized with ActivityPub
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
  - [Setting up the developer environment](#setting-up-the-developer-environment)
+ - [Installing in Production](#installing-in-production)
  - [Project structure](#project-structure)
  - [Book data](#book-data)
  - [Contributing](#contributing)
@@ -59,8 +60,6 @@ cp .env.example .env
 
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
 
-
-#### With Docker
 You'll have to install the Docker and docker-compose. When you're ready, run:
 
 ```bash
@@ -69,33 +68,7 @@ docker-compose run --rm web python manage.py migrate
 docker-compose run --rm web python manage.py initdb
 ```
 
-### Without Docker
-You will need postgres installed and running on your computer.
-
-``` bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-createdb bookwyrm
-```
-
-Create the psql user in `psql bookwyrm`:
-``` psql
-CREATE ROLE bookwyrm WITH LOGIN PASSWORD 'bookwyrm';
-GRANT ALL PRIVILEGES ON DATABASE bookwyrm TO bookwyrm;
-```
-
-Initialize the database (or, more specifically, delete the existing database, run migrations, and start fresh):
-``` bash
-./rebuilddb.sh
-```
-This creates two users, `mouse` with password `password123` and `rat` with password `ratword`.
-
-The application uses Celery and Redis for task management, which must also be installed and configured.
-
-And go to the app at `localhost:8000`
-
-
+Once the build is complete, you can access the instance at `localhost:1333`
 
 ## Installing in Production
 
@@ -114,7 +87,7 @@ This project is still young and isn't, at the momoment, very stable, so please p
   `cp .env.example .env`
    - Add your domain, email address, mailgun credentials
    - Set a secure redis password and secret key
- - Update your nginx configuration in `nginx/defautl.conf`
+ - Update your nginx configuration in `nginx/default.conf`
    - Replace `your-domain.com` with your domain name
  - Run the application (this should also set up a Certbot ssl cert for your domain)
   `docker-compose up --build`
@@ -124,13 +97,13 @@ This project is still young and isn't, at the momoment, very stable, so please p
  - Run docker-compose in the background
   `docker-compose up -d`
  - Initialize the database
-  `./fr-dev initdb`
+  `./bw-dev initdb`
  - Congrats! You did it, go to your domain and enjoy the fruits of your labors
 ### Configure your instance
  - Register a user account in the applcation UI
  - Make your account a superuser (warning: do *not* use django's `createsuperuser` command)
    - On your server, open the django shell
-    `./fr-dev shell`
+    `./bw-dev shell`
    - Load your user and make it a superuser
     ```python
     from bookwyrm import models
