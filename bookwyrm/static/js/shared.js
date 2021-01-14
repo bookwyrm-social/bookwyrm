@@ -2,14 +2,18 @@
 window.onload = function() {
     // let buttons set keyboard focus
     Array.from(document.getElementsByClassName('toggle-control'))
-        .forEach(t => t.onclick = toggle_action);
+        .forEach(t => t.onclick = toggleAction);
 
-    // javascript interactions
+    // javascript interactions (boost/fav)
     Array.from(document.getElementsByClassName('interaction'))
         .forEach(t => t.onsubmit = interact);
+
+    // select all
+    Array.from(document.getElementsByClassName('select-all'))
+        .forEach(t => t.onclick = selectAll);
 };
 
-function toggle_action(e) {
+function toggleAction(e) {
     // set hover, if appropriate
     var hover = e.target.getAttribute('data-hover-target')
     if (hover) {
@@ -33,15 +37,8 @@ function interact(e) {
     return true;
 }
 
-function reply(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    // TODO: display comment
-    return true;
-}
-
-function selectAll(el) {
-    el.parentElement.querySelectorAll('[type="checkbox"]')
+function selectAll(e) {
+    e.target.parentElement.parentElement.querySelectorAll('[type="checkbox"]')
         .forEach(t => t.checked=true);
 }
 

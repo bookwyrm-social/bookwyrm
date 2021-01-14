@@ -1,5 +1,5 @@
 {% load bookwyrm_tags %}
-<form class="is-flex-grow-1" name="reply" action="/reply" method="post" onsubmit="return reply(event)">
+<form class="is-flex-grow-1" name="reply" action="/reply" method="post">
     <div class="columns is-align-items-flex-end">
         {% csrf_token %}
         <input type="hidden" name="reply_parent" value="{{ status.id }}">
