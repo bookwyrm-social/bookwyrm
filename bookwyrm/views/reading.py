@@ -27,7 +27,7 @@ def start_reading(request, book_id):
 
     # create a readthrough
     readthrough = update_readthrough(request, book=book)
-    if readthrough.start_date:
+    if readthrough:
         readthrough.save()
 
     # shelve the book
@@ -65,7 +65,7 @@ def finish_reading(request, book_id):
 
     # update or create a readthrough
     readthrough = update_readthrough(request, book=book)
-    if readthrough.start_date or readthrough.finish_date:
+    if readthrough:
         readthrough.save()
 
     # shelve the book

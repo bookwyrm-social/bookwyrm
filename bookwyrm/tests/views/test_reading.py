@@ -32,6 +32,85 @@ class ReadingViews(TestCase):
                 outbox='https://example.com/users/rat/outbox',
             )
 
+
+    def test_start_reading(self):
+        ''' begin a book '''
+        shelf = self.local_user.shelf_set.get(identifier='reading')
+        self.assertFalse(shelf.books.exists())
+        self.assertFalse(models.Status.objects.exists())
+
+        request = self.factory.post('', {
+            'post-status': True,
+            'privacy': 'followers',
+            'start_date': '2020-01-05',
+        })
+        request.user = self.local_user
+        views.start_reading(request, self.book.id)
+
+        self.assertEqual(shelf.books.get(), self.book)
+
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.get(), self.book)
+        self.assertEqual(status.privacy, 'followers')
+
+        readthrough = models.ReadThrough.objects.get()
+        self.assertIsNotNone(readthrough.start_date)
+        self.assertIsNone(readthrough.finish_date)
+        self.assertEqual(readthrough.user, self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+
+
+    def test_start_reading_reshelf(self):
+        ''' begin a book '''
+        to_read_shelf = self.local_user.shelf_set.get(identifier='to-read')
+        models.ShelfBook.objects.create(
+            shelf=to_read_shelf, book=self.book, added_by=self.local_user)
+        shelf = self.local_user.shelf_set.get(identifier='reading')
+        self.assertEqual(to_read_shelf.books.get(), self.book)
+        self.assertFalse(shelf.books.exists())
+        self.assertFalse(models.Status.objects.exists())
+
+        request = self.factory.post('')
+        request.user = self.local_user
+        views.start_reading(request, self.book.id)
+
+        self.assertFalse(to_read_shelf.books.exists())
+        self.assertEqual(shelf.books.get(), self.book)
+
+    def test_finish_reading(self):
+        ''' begin a book '''
+        shelf = self.local_user.shelf_set.get(identifier='read')
+        self.assertFalse(shelf.books.exists())
+        self.assertFalse(models.Status.objects.exists())
+        readthrough = models.ReadThrough.objects.create(
+            user=self.local_user,
+            start_date=timezone.now(),
+            book=self.book)
+
+        request = self.factory.post('', {
+            'post-status': True,
+            'privacy': 'followers',
+            'finish_date': '2020-01-07',
+            'id': readthrough.id,
+        })
+        request.user = self.local_user
+        views.finish_reading(request, self.book.id)
+
+        self.assertEqual(shelf.books.get(), self.book)
+
+        status = models.GeneratedNote.objects.get()
+        self.assertEqual(status.user, self.local_user)
+        self.assertEqual(status.mention_books.get(), self.book)
+        self.assertEqual(status.privacy, 'followers')
+
+        readthrough = models.ReadThrough.objects.get()
+        self.assertIsNotNone(readthrough.start_date)
+        self.assertIsNotNone(readthrough.finish_date)
+        self.assertEqual(readthrough.user, self.local_user)
+        self.assertEqual(readthrough.book, self.book)
+
+
     def test_edit_readthrough(self):
         ''' adding dates to an ongoing readthrough '''
         start = timezone.make_aware(dateutil.parser.parse('2021-01-03'))
