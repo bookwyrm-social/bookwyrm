@@ -11,6 +11,12 @@ window.onload = function() {
     // select all
     Array.from(document.getElementsByClassName('select-all'))
         .forEach(t => t.onclick = selectAll);
+
+    // toggle between tabs
+    Array.from(document.getElementsByClassName('tab-change-nested'))
+        .forEach(t => t.onclick = tabChangeNested);
+    Array.from(document.getElementsByClassName('tab-change'))
+        .forEach(t => t.onclick = tabChange);
 };
 
 function toggleAction(e) {
@@ -42,32 +48,25 @@ function selectAll(e) {
         .forEach(t => t.checked=true);
 }
 
-function rate_stars(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    rating = e.target.rating.value;
-    var stars = e.target.parentElement.getElementsByClassName('icon');
-    for (var i = 0; i < stars.length ; i++) {
-        stars[i].className = rating > i ? 'icon icon-star-full' : 'icon icon-star-empty';
-    }
-    return true;
+function tabChangeNested(e) {
+    var target = e.target.closest('li')
+    var parentElement = target.parentElement.closest('li').parentElement;
+    handleTabChange(target, parentElement)
 }
 
-function tabChange(e, nested) {
+function tabChange(e) {
     var target = e.target.closest('li')
-    var identifier = target.getAttribute('data-id');
+    var parentElement = target.parentElement;
+    handleTabChange(target, parentElement)
+}
 
-    if (nested) {
-        var parent_element = target.parentElement.closest('li').parentElement;
-    } else {
-        var parent_element = target.parentElement;
-    }
 
-    parent_element.querySelectorAll('[aria-selected="true"]')
+function handleTabChange(target, parentElement) {
+    parentElement.querySelectorAll('[aria-selected="true"]')
         .forEach(t => t.setAttribute("aria-selected", false));
     target.querySelector('[role="tab"]').setAttribute("aria-selected", true);
 
-    parent_element.querySelectorAll('li')
+    parentElement.querySelectorAll('li')
         .forEach(t => t.className='');
     target.className = 'is-active';
 }

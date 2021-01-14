@@ -21,7 +21,7 @@
                         <ul>
                             {% for book in shelf.books %}
                             <li class="{% if shelf_counter == 1 and forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
-                                <label for="book-{{ book.id }}" onclick="tabChange(event, nested=true)">
+                                <label for="book-{{ book.id }}" class="tab-change-nested">
                                     <div role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}-panel">
                                         <a>
                                             {% include 'snippets/book_cover.html' with book=book size="medium" %}
