@@ -10,6 +10,7 @@
     {% endif %}
     <div class="control">
         <label class="label" for="id_{% if type == 'quote' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        {% include 'snippets/content_warning_field.html' %}
 
         {% if type == 'review' %}
         <fieldset>
@@ -32,8 +33,6 @@
         {% else %}
         <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% endif %}
-
-        {% include 'snippets/content_warning_field.html' %}
     </div>
     {% if type == 'quote' %}
     <div class="control">
