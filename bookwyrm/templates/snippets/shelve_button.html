@@ -49,7 +49,6 @@
                         <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
                             Start reading
                         </label>
-                        {% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
                     </div>
                     {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
