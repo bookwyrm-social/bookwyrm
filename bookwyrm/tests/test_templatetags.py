@@ -2,7 +2,6 @@
 import re
 from unittest.mock import patch
 
-from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 from django.test import TestCase
 from django.utils import timezone
@@ -213,3 +212,53 @@ class TemplateTags(TestCase):
             r'[A-Z][a-z]{2} \d?\d \d{4}',
             bookwyrm_tags.time_since(years_ago)
         ))
+
+
+    def test_get_markdown(self):
+        ''' mardown format data '''
+        result = bookwyrm_tags.get_markdown('_hi_')
+        self.assertEqual(result, '<p><em>hi</em></p>')
+
+        result = bookwyrm_tags.get_markdown('<marquee>_hi_</marquee>')
+        self.assertEqual(result, '<p><em>hi</em></p>')
+
+
+    def test_get_mentions(self):
+        ''' list of people mentioned '''
+        status = models.Status.objects.create(
+            content='hi', user=self.remote_user)
+        result = bookwyrm_tags.get_mentions(status, self.user)
+        self.assertEqual(result, '@rat@example.com')
+
+
+    def test_get_status_preview_name(self):
+        ''' status context string '''
+        status = models.Status.objects.create(content='hi', user=self.user)
+        result = bookwyrm_tags.get_status_preview_name(status)
+        self.assertEqual(result, 'status')
+
+        status = models.Review.objects.create(
+            content='hi', user=self.user, book=self.book)
+        result = bookwyrm_tags.get_status_preview_name(status)
+        self.assertEqual(result, 'review of <em>Test Book</em>')
+
+        status = models.Comment.objects.create(
+            content='hi', user=self.user, book=self.book)
+        result = bookwyrm_tags.get_status_preview_name(status)
+        self.assertEqual(result, 'comment on <em>Test Book</em>')
+
+        status = models.Quotation.objects.create(
+            content='hi', user=self.user, book=self.book)
+        result = bookwyrm_tags.get_status_preview_name(status)
+        self.assertEqual(result, 'quotation from <em>Test Book</em>')
+
+
+    def test_related_status(self):
+        ''' gets the subclass model for a notification status '''
+        status = models.Status.objects.create(content='hi', user=self.user)
+        notification = models.Notification.objects.create(
+            user=self.user, notification_type='MENTION',
+            related_status=status)
+
+        result = bookwyrm_tags.related_status(notification)
+        self.assertIsInstance(result, models.Status)
