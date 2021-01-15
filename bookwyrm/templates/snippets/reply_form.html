@@ -1,5 +1,4 @@
 {% load bookwyrm_tags %}
-{% with status.id|uuid as uuid %}
 <form class="is-flex-grow-1" name="reply" action="/post/reply" method="post">
     <div class="columns is-align-items-flex-end">
         {% csrf_token %}
