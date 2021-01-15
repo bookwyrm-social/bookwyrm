@@ -94,25 +94,7 @@
         </div>
         {% endfor %}
 
-        <nav class="pagination" role="navigation" aria-label="pagination">
-            {% if prev %}
-            <p class="pagination-previous">
-                <a href="{{ prev }}">
-                    <span class="icon icon-arrow-left"></span>
-                    Previous
-                </a>
-            </p>
-            {% endif %}
-
-            {% if next %}
-            <p class="pagination-next">
-                <a href="{{ next }}">
-                    Next
-                    <span class="icon icon-arrow-right"></span>
-                </a>
-            </p>
-            {% endif %}
-        </nav>
+        {% include 'snippets/pagination.html' with page=activities path='/'|add:tab anchor="#feed" %}
     </div>
 </div>
 {% endblock %}

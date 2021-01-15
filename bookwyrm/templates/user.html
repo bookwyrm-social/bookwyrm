@@ -7,7 +7,7 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        <a href="/user-edit/">
+        <a href="/edit-profile">
             <span class="icon icon-pencil" title="Edit profile">
                 <span class="is-sr-only">Edit profile</span>
             </span>
@@ -45,7 +45,7 @@
         <h2 class="title">User Activity</h2>
     </div>
     {% for activity in activities %}
-    <div class="block">
+    <div class="block" id="feed">
         {% include 'snippets/status.html' with status=activity %}
     </div>
     {% endfor %}
@@ -55,25 +55,7 @@
     </div>
     {% endif %}
 
-    <nav class="pagination" role="navigation" aria-label="pagination">
-        {% if prev %}
-        <p class="pagination-previous">
-            <a href="{{ prev }}">
-                <span class="icon icon-arrow-left"></span>
-                Previous
-            </a>
-        </p>
-        {% endif %}
-
-        {% if next %}
-        <p class="pagination-next">
-            <a href="{{ next }}">
-                Next
-                <span class="icon icon-arrow-right"></span>
-            </a>
-        </p>
-        {% endif %}
-    </nav>
+    {% include 'snippets/pagination.html' with page=activities path=user.local_path anchor="#feed" %}
 </div>
 
 {% endblock %}

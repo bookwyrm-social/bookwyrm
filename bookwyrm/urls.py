@@ -3,8 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
-from bookwyrm import incoming, outgoing, views, settings, wellknown
-from bookwyrm import view_actions as actions
+from bookwyrm import incoming, settings, views, wellknown
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -31,7 +30,7 @@ urlpatterns = [
     # federation endpoints
     re_path(r'^inbox/?$', incoming.shared_inbox),
     re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
-    re_path(r'%s/outbox/?$' % local_user_path, outgoing.outbox),
+    re_path(r'%s/outbox/?$' % local_user_path, views.Outbox.as_view()),
 
     # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
@@ -39,109 +38,97 @@ urlpatterns = [
     re_path(r'^nodeinfo/2\.0/?$', wellknown.nodeinfo),
     re_path(r'^api/v1/instance/?$', wellknown.instance_info),
     re_path(r'^api/v1/instance/peers/?$', wellknown.peers),
-    # TODO: re_path(r'^.well-known/host-meta/?$', incoming.host_meta),
-    # TODO: robots.txt
 
-    # ui views
-    re_path(r'^login/?$', views.login_page),
-    re_path(r'^about/?$', views.about_page),
-    re_path(r'^password-reset/?$', views.password_reset_request),
-    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$', views.password_reset),
-    re_path(r'^invite/?$', views.manage_invites),
-    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.invite_page),
+    # authentication
+    re_path(r'^login/?$', views.Login.as_view()),
+    re_path(r'^register/?$', views.Register.as_view()),
+    re_path(r'^logout/?$', views.Logout.as_view()),
+    re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
+    re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
+            views.PasswordReset.as_view()),
+    re_path(r'^change-password/?$', views.ChangePassword),
 
-    path('', views.home),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.home_tab),
-    re_path(r'^discover/?$', views.discover_page),
-    re_path(r'^notifications/?$', views.notifications_page),
-    re_path(r'^direct-messages/?$', views.direct_messages_page),
-    re_path(r'^import/?$', views.import_page),
-    re_path(r'^import-status/(\d+)/?$', views.import_status),
-    re_path(r'^user-edit/?$', views.edit_profile_page),
+    # invites
+    re_path(r'^invite/?$', views.ManageInvites.as_view()),
+    re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
-    # should return a ui view or activitypub json blob as requested
+    # landing pages
+    re_path(r'^about/?$', views.About.as_view()),
+    path('', views.Home.as_view()),
+    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
+    re_path(r'^discover/?$', views.Discover.as_view()),
+    re_path(r'^notifications/?$', views.Notifications.as_view()),
+    re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
+
+    # search
+    re_path(r'^search/?$', views.Search.as_view()),
+
+    # imports
+    re_path(r'^import/?$', views.Import.as_view()),
+    re_path(r'^import/(\d+)/?$', views.ImportStatus.as_view()),
+
     # users
-    re_path(r'%s/?$' % user_path, views.user_page),
-    re_path(r'%s\.json$' % local_user_path, views.user_page),
-    re_path(r'%s/?$' % local_user_path, views.user_page),
-    re_path(r'%s/shelves/?$' % local_user_path, views.user_shelves_page),
-    re_path(r'%s/followers(.json)?/?$' % local_user_path, views.followers_page),
-    re_path(r'%s/following(.json)?/?$' % local_user_path, views.following_page),
+    re_path(r'%s/?$' % user_path, views.User.as_view()),
+    re_path(r'%s\.json$' % user_path, views.User.as_view()),
+    re_path(r'%s/shelves/?$' % user_path, views.user_shelves_page),
+    re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
+    re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
+    re_path(r'^edit-profile/?$', views.EditUser.as_view()),
 
     # statuses
-    re_path(r'%s(.json)?/?$' % status_path, views.status_page),
-    re_path(r'%s/activity/?$' % status_path, views.status_page),
-    re_path(r'%s/replies(.json)?/?$' % status_path, views.replies_page),
+    re_path(r'%s(.json)?/?$' % status_path, views.Status.as_view()),
+    re_path(r'%s/activity/?$' % status_path, views.Status.as_view()),
+    re_path(r'%s/replies(.json)?/?$' % status_path, views.Replies.as_view()),
+    re_path(r'^post/(?P<status_type>\w+)/?$', views.CreateStatus.as_view()),
+    re_path(r'^delete-status/(?P<status_id>\d+)/?$',
+            views.DeleteStatus.as_view()),
+
+    # interact
+    re_path(r'^favorite/(?P<status_id>\d+)/?$', views.Favorite.as_view()),
+    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', views.Unfavorite.as_view()),
+    re_path(r'^boost/(?P<status_id>\d+)/?$', views.Boost.as_view()),
+    re_path(r'^unboost/(?P<status_id>\d+)/?$', views.Unboost.as_view()),
 
     # books
-    re_path(r'%s(.json)?/?$' % book_path, views.book_page),
-    re_path(r'%s/edit/?$' % book_path, views.edit_book_page),
-    re_path(r'^author/(?P<author_id>[\w\-]+)/edit/?$', views.edit_author_page),
-    re_path(r'%s/editions(.json)?/?$' % book_path, views.editions_page),
+    re_path(r'%s(.json)?/?$' % book_path, views.Book.as_view()),
+    re_path(r'%s/edit/?$' % book_path, views.EditBook.as_view()),
+    re_path(r'%s/editions(.json)?/?$' % book_path, views.Editions.as_view()),
+    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', views.upload_cover),
+    re_path(r'^add-description/(?P<book_id>\d+)/?$', views.add_description),
+    re_path(r'^resolve-book/?$', views.resolve_book),
+    re_path(r'^switch-edition/?$', views.switch_edition),
 
-    re_path(r'^author/(?P<author_id>[\w\-]+)(.json)?/?$', views.author_page),
-    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.tag_page),
-    re_path(r'^tag/(?P<tag_id>.+)/?$', views.tag_page),
+    # author
+    re_path(r'^author/(?P<author_id>\d+)(.json)?/?$', views.Author.as_view()),
+    re_path(r'^author/(?P<author_id>\d+)/edit/?$', views.EditAuthor.as_view()),
+
+    # tags
+    re_path(r'^tag/(?P<tag_id>.+)\.json/?$', views.Tag.as_view()),
+    re_path(r'^tag/(?P<tag_id>.+)/?$', views.Tag.as_view()),
+    re_path(r'^tag/?$', views.AddTag.as_view()),
+    re_path(r'^untag/?$', views.RemoveTag.as_view()),
+
+    # shelf
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            user_path, views.shelf_page),
+            user_path, views.Shelf.as_view()),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            local_user_path, views.shelf_page),
+            local_user_path, views.Shelf.as_view()),
+    re_path(r'^create-shelf/?$', views.create_shelf),
+    re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', views.delete_shelf),
+    re_path(r'^shelve/?$', views.shelve),
+    re_path(r'^unshelve/?$', views.unshelve),
 
-    re_path(r'^search/?$', views.search),
+    # reading progress
+    re_path(r'^edit-readthrough/?$', views.edit_readthrough),
+    re_path(r'^delete-readthrough/?$', views.delete_readthrough),
+    re_path(r'^create-readthrough/?$', views.create_readthrough),
 
-    # internal action endpoints
-    re_path(r'^logout/?$', actions.user_logout),
-    re_path(r'^user-login/?$', actions.user_login),
-    re_path(r'^user-register/?$', actions.register),
-    re_path(r'^reset-password-request/?$', actions.password_reset_request),
-    re_path(r'^reset-password/?$', actions.password_reset),
-    re_path(r'^change-password/?$', actions.password_change),
+    re_path(r'^start-reading/(?P<book_id>\d+)/?$', views.start_reading),
+    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', views.finish_reading),
 
-    re_path(r'^edit-profile/?$', actions.edit_profile),
-
-    re_path(r'^import-data/?$', actions.import_data),
-    re_path(r'^retry-import/?$', actions.retry_import),
-    re_path(r'^resolve-book/?$', actions.resolve_book),
-    re_path(r'^edit-book/(?P<book_id>\d+)/?$', actions.edit_book),
-    re_path(r'^upload-cover/(?P<book_id>\d+)/?$', actions.upload_cover),
-    re_path(r'^add-description/(?P<book_id>\d+)/?$', actions.add_description),
-    re_path(r'^edit-author/(?P<author_id>\d+)/?$', actions.edit_author),
-
-    re_path(r'^switch-edition/?$', actions.switch_edition),
-    re_path(r'^edit-readthrough/?$', actions.edit_readthrough),
-    re_path(r'^delete-readthrough/?$', actions.delete_readthrough),
-    re_path(r'^create-readthrough/?$', actions.create_readthrough),
-
-    re_path(r'^rate/?$', actions.rate),
-    re_path(r'^review/?$', actions.review),
-    re_path(r'^quote/?$', actions.quotate),
-    re_path(r'^comment/?$', actions.comment),
-    re_path(r'^tag/?$', actions.tag),
-    re_path(r'^untag/?$', actions.untag),
-    re_path(r'^reply/?$', actions.reply),
-
-    re_path(r'^favorite/(?P<status_id>\d+)/?$', actions.favorite),
-    re_path(r'^unfavorite/(?P<status_id>\d+)/?$', actions.unfavorite),
-    re_path(r'^boost/(?P<status_id>\d+)/?$', actions.boost),
-    re_path(r'^unboost/(?P<status_id>\d+)/?$', actions.unboost),
-
-    re_path(r'^delete-status/(?P<status_id>\d+)/?$', actions.delete_status),
-
-    re_path(r'^create-shelf/?$', actions.create_shelf),
-    re_path(r'^edit-shelf/(?P<shelf_id>\d+)?$', actions.edit_shelf),
-    re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', actions.delete_shelf),
-    re_path(r'^shelve/?$', actions.shelve),
-    re_path(r'^unshelve/?$', actions.unshelve),
-    re_path(r'^start-reading/(?P<book_id>\d+)/?$', actions.start_reading),
-    re_path(r'^finish-reading/(?P<book_id>\d+)/?$', actions.finish_reading),
-
-    re_path(r'^follow/?$', actions.follow),
-    re_path(r'^unfollow/?$', actions.unfollow),
-    re_path(r'^accept-follow-request/?$', actions.accept_follow_request),
-    re_path(r'^delete-follow-request/?$', actions.delete_follow_request),
-
-    re_path(r'^clear-notifications/?$', actions.clear_notifications),
-
-    re_path(r'^create-invite/?$', actions.create_invite),
-
+    # following
+    re_path(r'^follow/?$', views.follow),
+    re_path(r'^unfollow/?$', views.unfollow),
+    re_path(r'^accept-follow-request/?$', views.accept_follow_request),
+    re_path(r'^delete-follow-request/?$', views.delete_follow_request),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -18,7 +18,7 @@
 </div>
 {% endif %}
 
-<form class="block" name="edit-author" action="/edit-author/{{ author.id }}" method="post">
+<form class="block" name="edit-author" action="{{ author.local_path }}/edit" method="post">
     {% csrf_token %}
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
 

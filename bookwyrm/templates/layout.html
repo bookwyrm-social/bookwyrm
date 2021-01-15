@@ -82,7 +82,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/user-edit" class="navbar-item">
+                        <a href="/edit-profile" class="navbar-item">
                             Settings
                         </a>
                     </li>
@@ -122,10 +122,10 @@
             </div>
             {% else %}
             <div class="navbar-item">
-                {% if request.path != '/login' and request.path != '/login/' and request.path != '/user-login' %}
+                {% if request.path != '/login' and request.path != '/login/' %}
                 <div class="columns">
                     <div class="column">
-                        <form name="login" method="post" action="/user-login">
+                        <form name="login" method="post" action="/login">
                             {% csrf_token %}
                             <div class="columns is-variable is-1">
                                 <div class="column">
