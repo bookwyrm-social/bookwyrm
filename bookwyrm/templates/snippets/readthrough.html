@@ -17,16 +17,8 @@
             {% endif %}
         </dl>
         <div class="field is-grouped">
-            <label class="button is-small" for="edit-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
-                <span class="icon icon-pencil">
-                    <span class="is-sr-only">Edit read-through dates</span>
-                </span>
-            </label>
-            <label class="button is-small" for="delete-readthrough-{{ readthrough.id }}" role="button" tabindex="0">
-                <span class="icon icon-x">
-                    <span class="is-sr-only">Delete this read-through</span>
-                </span>
-            </label>
+            {% include 'snippets/toggle/toggle_button.html' with small=True text="Edit read dates" icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id %}
+            {% include 'snippets/toggle/toggle_button.html' with small=True text="Delete these read dates" icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id %}
         </div>
     </div>
 </div>
@@ -39,7 +31,7 @@
                 {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
                 <div class="field is-grouped">
                     <button class="button is-primary" type="submit">Save</button>
-                    <label class="button" for="show-readthrough-{{ readthrough.id }}" role="button" tabindex="0">Cancel</label>
+                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="show-readthrough" controls_uid=readthrough.id %}
                 </div>
             </form>
         </div>
@@ -62,7 +54,7 @@
                     <button class="button is-danger is-light" type="submit">
                         Delete
                     </button>
-                    <label for="delete-readthrough-{{ readthrough.id }}" class="button" role="button" tabindex="0">Cancel</button>
+                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="delete-readthrough" controls_uid=readthrough.id %}
                 </form>
             </footer>
         </div>

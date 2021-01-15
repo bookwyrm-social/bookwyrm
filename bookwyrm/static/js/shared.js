@@ -1,3 +1,37 @@
+// set up javascript listeners
+window.onload = function() {
+    // let buttons set keyboard focus
+    Array.from(document.getElementsByClassName('toggle-control'))
+        .forEach(t => t.onclick = toggleAction);
+
+    // javascript interactions (boost/fav)
+    Array.from(document.getElementsByClassName('interaction'))
+        .forEach(t => t.onsubmit = interact);
+
+    // select all
+    Array.from(document.getElementsByClassName('select-all'))
+        .forEach(t => t.onclick = selectAll);
+
+    // toggle between tabs
+    Array.from(document.getElementsByClassName('tab-change-nested'))
+        .forEach(t => t.onclick = tabChangeNested);
+    Array.from(document.getElementsByClassName('tab-change'))
+        .forEach(t => t.onclick = tabChange);
+
+    // handle aria settings on menus
+    Array.from(document.getElementsByClassName('pulldown-menu'))
+        .forEach(t => t.onclick = toggleMenu);
+};
+
+function toggleAction(e) {
+    // set hover, if appropriate
+    var hover = e.target.getAttribute('data-hover-target')
+    if (hover) {
+        document.getElementById(hover).focus();
+    }
+}
+
+
 function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
@@ -13,49 +47,36 @@ function interact(e) {
     return true;
 }
 
-function reply(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    // TODO: display comment
-    return true;
-}
-
-function selectAll(el) {
-    el.parentElement.querySelectorAll('[type="checkbox"]')
+function selectAll(e) {
+    e.target.parentElement.parentElement.querySelectorAll('[type="checkbox"]')
         .forEach(t => t.checked=true);
 }
 
-function rate_stars(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    rating = e.target.rating.value;
-    var stars = e.target.parentElement.getElementsByClassName('icon');
-    for (var i = 0; i < stars.length ; i++) {
-        stars[i].className = rating > i ? 'icon icon-star-full' : 'icon icon-star-empty';
-    }
-    return true;
+function tabChangeNested(e) {
+    var target = e.target.closest('li')
+    var parentElement = target.parentElement.closest('li').parentElement;
+    handleTabChange(target, parentElement)
 }
 
-function tabChange(e, nested) {
+function tabChange(e) {
     var target = e.target.closest('li')
-    var identifier = target.getAttribute('data-id');
+    var parentElement = target.parentElement;
+    handleTabChange(target, parentElement)
+}
 
-    if (nested) {
-        var parent_element = target.parentElement.closest('li').parentElement;
-    } else {
-        var parent_element = target.parentElement;
-    }
 
-    parent_element.querySelectorAll('[aria-selected="true"]')
+function handleTabChange(target, parentElement) {
+    parentElement.querySelectorAll('[aria-selected="true"]')
         .forEach(t => t.setAttribute("aria-selected", false));
     target.querySelector('[role="tab"]').setAttribute("aria-selected", true);
 
-    parent_element.querySelectorAll('li')
+    parentElement.querySelectorAll('li')
         .forEach(t => t.className='');
     target.className = 'is-active';
 }
 
-function toggleMenu(el) {
+function toggleMenu(e) {
+    var el = e.target.closest('.pulldown-menu');
     el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
 }
 
