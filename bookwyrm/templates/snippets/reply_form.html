@@ -1,6 +1,6 @@
 {% load bookwyrm_tags %}
 {% with status.id|uuid as uuid %}
-<form class="is-flex-grow-1" name="reply" action="/reply" method="post" onsubmit="return reply(event)">
+<form class="is-flex-grow-1" name="reply" action="/post/reply" method="post" onsubmit="return reply(event)">
     <div class="columns">
         {% csrf_token %}
         <input type="hidden" name="reply_parent" value="{{ status.id }}">
