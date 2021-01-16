@@ -6,6 +6,7 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.dispatch import receiver
+from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data
@@ -219,6 +220,35 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         del activity_object['@context']
         del activity_object['type']
         return activity_object
+
+
+class AnnualGoal(BookWyrmModel):
+    ''' set a goal for how many books you read in a year '''
+    user = fields.ForeignKey('User', on_delete=models.PROTECT)
+    goal = fields.IntegerField()
+    year = models.IntegerField(default=timezone.now().year)
+
+    class Meta:
+        ''' unqiueness constraint '''
+        unique_together = ('user', 'year')
+
+    def get_remote_id(self):
+        ''' put the year in the path '''
+        return '%s/goal/%d' % (self.user.remote_id, self.year)
+
+    @property
+    def books(self):
+        ''' the books you've read this year '''
+        return self.user.readthrough_set.filter(
+            finish_date__year__gte=self.year
+        ).order_by('finish_date').all()
+
+    @property
+    def book_count(self):
+        ''' how many books you've read this year '''
+        return self.user.readthrough_set.filter(
+            finish_date__year__gte=self.year).count()
+
 
 
 @receiver(models.signals.post_save, sender=User)
