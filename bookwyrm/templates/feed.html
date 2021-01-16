@@ -47,8 +47,8 @@
                 <div class="card">
                     <div class="card-header">
                         <p class="card-header-title">
-                        <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-                        </>
+                            <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
+                        </p>
                         <div class="card-header-icon is-hidden-tablet">
                             {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="no-book" class="delete" %}
                         </div>
@@ -66,6 +66,15 @@
         <div>
             <input class="toggle-control" type="radio" name="recent-books" id="no-book">
         </div>
+        {% endif %}
+
+        {% if goal %}
+        <section class="section">
+            <div class="block">
+                <h3 class="title is-4">{{ goal.year }} Reading Goal</h3>
+                {% include 'snippets/goal_progress.html' with goal=goal %}
+            </div>
+        </section>
         {% endif %}
     </div>
 
@@ -85,6 +94,33 @@
             </ul>
         </div>
 
+        {# announcements and system messages #}
+        {% if not goal and tab == 'home' %}
+        {% now 'Y' as year %}
+        <section class="block hidden" aria-title="Announcements" data-hide="hide-{{ year }}-reading-goal">
+            <article class="card">
+                <header class="card-header">
+                    <h3 class="card-header-title has-background-primary has-text-white">
+                        <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                    </h3>
+                </header>
+                <section class="card-content content">
+                    <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+
+                    {% include 'snippets/goal_form.html' %}
+                </section>
+                <footer class="card-footer has-background-white-bis">
+                    <div class="card-footer-item is-flex-direction-column">
+                        <button class="button is-danger is-light is-block set-display" data-id="hide-{{ year }}-reading-goal" data-value="true">Dismiss message</button>
+                        <p class="help">You can set or change your reading goal any time from your <a href="{{ request.user.local_path }}">profile page</a></p>
+                    </div>
+                </footer>
+            </article>
+            <hr>
+        </section>
+        {% endif %}
+
+        {# activity feed #}
         {% if not activities %}
         <p>There aren't any activities right now! Try following a user to get started</p>
         {% endif %}

@@ -34,16 +34,17 @@ def is_bookworm_request(request):
     return True
 
 
-def status_visible_to_user(viewer, status):
-    ''' is a user authorized to view a status? '''
-    if viewer == status.user or status.privacy in ['public', 'unlisted']:
+def object_visible_to_user(viewer, obj):
+    ''' is a user authorized to view an object? '''
+    if viewer == obj.user or obj.privacy in ['public', 'unlisted']:
         return True
-    if status.privacy == 'followers' and \
-            status.user.followers.filter(id=viewer.id).first():
+    if obj.privacy == 'followers' and \
+            obj.user.followers.filter(id=viewer.id).first():
         return True
-    if status.privacy == 'direct' and \
-            status.mention_users.filter(id=viewer.id).first():
-        return True
+    if isinstance(obj, models.Status):
+        if obj.privacy == 'direct' and \
+                obj.mention_users.filter(id=viewer.id).first():
+            return True
     return False
 
 def get_activity_feed(

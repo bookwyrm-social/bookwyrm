@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -17,6 +18,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.broadcast import broadcast
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_activity_feed, get_user_from_username, is_api_request
+from .helpers import object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -70,6 +72,10 @@ class User(View):
             queryset=models.Status.objects.filter(user=user)
         )
         paginated = Paginator(activities, PAGE_LENGTH)
+        goal = models.AnnualGoal.objects.filter(
+            user=user, year=timezone.now().year).first()
+        if not object_visible_to_user(request.user, goal):
+            goal = None
         data = {
             'title': user.name,
             'user': user,
@@ -77,6 +83,7 @@ class User(View):
             'shelves': shelf_preview,
             'shelf_count': shelves.count(),
             'activities': paginated.page(page),
+            'goal': goal,
         }
 
         return TemplateResponse(request, 'user.html', data)

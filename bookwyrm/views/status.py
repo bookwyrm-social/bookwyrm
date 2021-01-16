@@ -16,7 +16,7 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.status import create_notification, delete_status
 from bookwyrm.utils import regex
 from .helpers import get_user_from_username, handle_remote_webfinger
-from .helpers import is_api_request, is_bookworm_request, status_visible_to_user
+from .helpers import is_api_request, is_bookworm_request, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -35,7 +35,7 @@ class Status(View):
             return HttpResponseNotFound()
 
         # make sure the user is authorized to see the status
-        if not status_visible_to_user(request.user, status):
+        if not object_visible_to_user(request.user, status):
             return HttpResponseNotFound()
 
         if is_api_request(request):

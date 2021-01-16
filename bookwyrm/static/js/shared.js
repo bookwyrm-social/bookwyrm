@@ -21,11 +21,38 @@ window.onload = function() {
     // handle aria settings on menus
     Array.from(document.getElementsByClassName('pulldown-menu'))
         .forEach(t => t.onclick = toggleMenu);
+
+    // display based on localstorage vars
+    document.querySelectorAll('[data-hide]')
+        .forEach(t => setDisplay(t));
+
+    // update localstorage
+    Array.from(document.getElementsByClassName('set-display'))
+        .forEach(t => t.onclick = updateDisplay);
 };
+
+function updateDisplay(e) {
+    var key = e.target.getAttribute('data-id');
+    var value = e.target.getAttribute('data-value');
+    window.localStorage.setItem(key, value);
+
+    document.querySelectorAll('[data-hide="' + key + '"]')
+        .forEach(t => setDisplay(t));
+}
+
+function setDisplay(el) {
+    var key = el.getAttribute('data-hide');
+    var value = window.localStorage.getItem(key)
+    if (!value) {
+        el.className = el.className.replace('hidden', '');
+    } else if (value != null && !!value) {
+        el.className += ' hidden';
+    }
+}
 
 function toggleAction(e) {
     // set hover, if appropriate
-    var hover = e.target.getAttribute('data-hover-target')
+    var hover = e.target.getAttribute('data-hover-target');
     if (hover) {
         document.getElementById(hover).focus();
     }
