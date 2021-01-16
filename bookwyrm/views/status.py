@@ -26,7 +26,8 @@ class Status(View):
         ''' display a particular status (and replies, etc) '''
         try:
             user = get_user_from_username(username)
-            status = models.Status.objects.select_subclasses().get(id=status_id)
+            status = models.Status.objects.select_subclasses().get(
+                id=status_id, deleted=False)
         except ValueError:
             return HttpResponseNotFound()
 
