@@ -6,5 +6,5 @@
     {% endif %}
     {% if goal.user == request.user %}You've{% else %}{{ goal.user.display_name }} has{% endif %} read {% if request.path != goal.local_path %}<a href="{{ goal.local_path }}">{% endif %}{{ goal.book_count }} of {{ goal.goal }} books{% if request.path != goal.local_path %}</a>{% endif %}.
 </p>
-<progress class="progress is-large" value="{{ goal.book_count }}" max="{{ goal.goal }}">{{ goal.progress_percent }}%</progress>
+<progress class="progress is-large" value="{{ goal.book_count }}" max="{{ goal.goal }}" aria-hidden="true">{{ goal.progress_percent }}%</progress>
 

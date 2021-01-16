@@ -13,12 +13,12 @@
         {% endif %}
     </div>
     <div class="block">
-        <input type="radio" class="toggle-control" name="edit-goal" id="show-edit-goal">
+        <input type="radio" class="toggle-control" name="edit-goal" id="show-edit-goal" data-hover-target="edit-form-header">
         <div class="toggle-content{% if goal %} hidden{% endif %}">
             {% now 'Y' as year %}
-            <article class="card">
+            <section class="card">
                 <header class="card-header">
-                    <h2 class="card-header-title has-background-primary has-text-white">
+                    <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
                         <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
                     </h2>
                 </header>
@@ -27,7 +27,7 @@
 
                     {% include 'snippets/goal_form.html' with goal=goal year=year %}
                 </section>
-            </article>
+            </section>
         </div>
     </div>
     {% endif %}
