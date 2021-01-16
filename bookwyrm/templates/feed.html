@@ -95,8 +95,8 @@
 
         {# announcements and system messages #}
         {% if not goal and tab == 'home' %}
-        <section class="block" aria-title="Announcements">
-            {% now 'Y' as year %}
+        {% now 'Y' as year %}
+        <section class="block hidden" aria-title="Announcements" data-hide="hide-{{ year }}-reading-goal">
             <article class="card">
                 <header class="card-header">
                     <h3 class="card-header-title has-background-primary has-text-white">
@@ -110,14 +110,14 @@
                 </section>
                 <footer class="card-footer has-background-white-bis">
                     <div class="card-footer-item is-flex-direction-column">
-                        <button class="button is-danger is-light is-block">Dismiss message</button>
+                        <button class="button is-danger is-light is-block set-display" data-id="hide-{{ year }}-reading-goal" data-value="true">Dismiss message</button>
                         <p class="help">You can set or change your reading goal any time from your <a href="{{ request.user.local_path }}">profile page</a></p>
                     </div>
                 </footer>
             </article>
+            <hr>
         </section>
         {% endif %}
-        <hr>
 
         {# activity feed #}
         {% if not activities %}
