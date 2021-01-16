@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg, Max
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -86,12 +87,18 @@ class Feed(View):
             activities = get_activity_feed(
                 request.user, ['public', 'followers'])
         paginated = Paginator(activities, PAGE_LENGTH)
+
+        goal = models.AnnualGoal.objects.filter(
+            user=request.user, year=timezone.now().year
+        ).first()
         data = {
             'title': 'Updates Feed',
             'user': request.user,
             'suggested_books': suggested_books,
             'activities': paginated.page(page),
             'tab': tab,
+            'goal': goal,
+            'goal_form': forms.GoalForm(),
         }
         return TemplateResponse(request, 'feed.html', data)
 

@@ -1,0 +1,32 @@
+<form method="post" name="goal" action="/goal/{{ year }}">
+    {% csrf_token %}
+    <input type="hidden" name="year" value="{{ year }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+
+    <div class="columns">
+        <div class="column">
+            <label class="label" for="id_goal">Reading goal:</label>
+            <div class="field has-addons">
+                <div class="control">
+                    <input type="number" class="input" name="goal" id="id_goal" value="12">
+                </div>
+                <p class="button is-static">books</p>
+            </div>
+        </div>
+
+        <div class="column">
+            <label for="post_status" class="label">
+                <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
+                Post to feed
+            </label>
+
+            <div class="field">
+                {% include 'snippets/privacy_select.html' %}
+            </div>
+        </div>
+    </div>
+
+    <p>
+        <button type="submit" class="button is-link">Set goal</button>
+    </p>
+</form>
