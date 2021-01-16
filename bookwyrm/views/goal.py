@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from .helpers import get_user_from_username
+from .helpers import get_user_from_username, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -24,10 +24,8 @@ class Goal(View):
         if not goal and user != request.user:
             return redirect('/')
 
-        if goal and user != request.user:
-            if goal.privacy == 'direct' or \
-                    (goal.privacy == 'followers' and not follower):
-                return HttpResponseNotFound()
+        if goal and not object_visible_to_user(request.user, goal):
+            return HttpResponseNotFound()
 
         data = {
             'title': '%s\'s %d Reading' % (user.display_name, year),

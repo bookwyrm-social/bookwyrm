@@ -3,23 +3,40 @@
 
 <section class="block">
     <h1 class="title">{{ year }} Reading Progress</h1>
-    {% if not goal and user == request.user %}
-    {% now 'Y' as year %}
-    <article class="card">
-        <header class="card-header">
-            <h2 class="card-header-title has-background-primary has-text-white">
-                <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
-            </h2>
-        </header>
-        <section class="card-content content">
-            <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+    {% if user == request.user %}
+    <div class="block">
+        {% if goal %}
+        <input type="radio" class="toggle-control" name="edit-goal" id="hide-edit-goal" checked>
+        <div class="toggle-content hidden">
+            {% include 'snippets/toggle/toggle_button.html' with text="Edit goal" controls_text="show-edit-goal" %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="block">
+        <input type="radio" class="toggle-control" name="edit-goal" id="show-edit-goal">
+        <div class="toggle-content{% if goal %} hidden{% endif %}">
+            {% now 'Y' as year %}
+            <article class="card">
+                <header class="card-header">
+                    <h2 class="card-header-title has-background-primary has-text-white">
+                        <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                    </h2>
+                </header>
+                <section class="card-content content">
+                    <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
 
-            {% include 'snippets/goal_form.html' %}
-        </section>
-    </article>
-    {% elif not goal and user != request.user %}
+                    {% include 'snippets/goal_form.html' with goal=goal year=year %}
+                </section>
+            </article>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not goal and user != request.user %}
     <p>{{ user.display_name }} hasn't set a reading goal for {{ year }}.</p>
-    {% else %}
+    {% endif %}
+
+    {% if goal %}
     {% include 'snippets/goal_progress.html' with goal=goal %}
     {% endif %}
 </section>

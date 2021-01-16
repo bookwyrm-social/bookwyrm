@@ -1,6 +1,6 @@
 <form method="post" name="goal" action="{{ request.user.local_path }}/goal/{{ year }}">
     {% csrf_token %}
-    <input type="hidden" name="year" value="{{ year }}">
+    <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
 
     <div class="columns">
@@ -8,7 +8,7 @@
             <label class="label" for="id_goal">Reading goal:</label>
             <div class="field has-addons">
                 <div class="control">
-                    <input type="number" class="input" name="goal" id="id_goal" value="12">
+                    <input type="number" class="input" name="goal" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
                 </div>
                 <p class="button is-static">books</p>
             </div>
@@ -16,7 +16,7 @@
 
         <div class="column">
             <label class="label"><p class="mb-2">Goal privacy:</p>
-                {% include 'snippets/privacy_select.html' with no_label=True %}
+                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy %}
             </label>
         </div>
     </div>
@@ -27,5 +27,8 @@
 
     <p>
         <button type="submit" class="button is-link">Set goal</button>
+        {% if goal %}
+        {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="hide-edit-goal" %}
+        {% endif %}
     </p>
 </form>
