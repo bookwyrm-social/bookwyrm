@@ -24,7 +24,7 @@ class Goal(View):
             year=year, user=user
         ).first()
         if not goal and user != request.user:
-            return redirect('/')
+            return HttpResponseNotFound()
 
         if goal and not object_visible_to_user(request.user, goal):
             return HttpResponseNotFound()
@@ -58,7 +58,7 @@ class Goal(View):
                 'year': year,
             }
             return TemplateResponse(request, 'goal.html', data)
-        form.save()
+        goal = form.save()
 
         if request.POST.get('post-status'):
             # create status, if appropraite
