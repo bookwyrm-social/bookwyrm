@@ -71,7 +71,8 @@
         {% if goal %}
         <section class="section">
             <div class="block">
-                {{ goal }} hi
+                <h3 class="title is-4">{{ goal.year }} Reading Goal</h3>
+                {% include 'snippets/goal_progress.html' with goal=goal %}
             </div>
         </section>
         {% endif %}

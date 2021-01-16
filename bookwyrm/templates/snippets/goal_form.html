@@ -1,4 +1,4 @@
-<form method="post" name="goal" action="/goal/{{ year }}">
+<form method="post" name="goal" action="{{ request.user.local_path }}/goal/{{ year }}">
     {% csrf_token %}
     <input type="hidden" name="year" value="{{ year }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
@@ -15,16 +15,15 @@
         </div>
 
         <div class="column">
-            <label for="post_status" class="label">
-                <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
-                Post to feed
+            <label class="label"><p class="mb-2">Goal privacy:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True %}
             </label>
-
-            <div class="field">
-                {% include 'snippets/privacy_select.html' %}
-            </div>
         </div>
     </div>
+    <label for="post_status" class="label">
+        <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
+        Post to feed
+    </label>
 
     <p>
         <button type="submit" class="button is-link">Set goal</button>

@@ -192,4 +192,4 @@ class ShelfForm(CustomForm):
 class GoalForm(CustomForm):
     class Meta:
         model = models.AnnualGoal
-        fields = ['user', 'year', 'goal']
+        fields = ['user', 'year', 'goal', 'privacy']

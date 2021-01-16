@@ -19,7 +19,7 @@ from bookwyrm.utils import regex
 from .base_model import OrderedCollectionPageMixin
 from .base_model import ActivitypubMixin, BookWyrmModel
 from .federated_server import FederatedServer
-from . import fields
+from . import fields, Review
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
@@ -224,9 +224,14 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 class AnnualGoal(BookWyrmModel):
     ''' set a goal for how many books you read in a year '''
-    user = fields.ForeignKey('User', on_delete=models.PROTECT)
-    goal = fields.IntegerField()
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    goal = models.IntegerField()
     year = models.IntegerField(default=timezone.now().year)
+    privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=fields.PrivacyLevels.choices
+    )
 
     class Meta:
         ''' unqiueness constraint '''
@@ -242,6 +247,23 @@ class AnnualGoal(BookWyrmModel):
         return self.user.readthrough_set.filter(
             finish_date__year__gte=self.year
         ).order_by('finish_date').all()
+
+
+    @property
+    def ratings(self):
+        ''' ratings for books read this year '''
+        book_ids = [r.book.id for r in self.books]
+        reviews = Review.objects.filter(
+            user=self.user,
+            book__in=book_ids,
+        )
+        return {r.book.id: r.rating for r in reviews}
+
+
+    @property
+    def progress_percent(self):
+        return int(float(self.book_count / self.goal) * 100)
+
 
     @property
     def book_count(self):

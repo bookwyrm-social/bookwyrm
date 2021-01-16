@@ -75,6 +75,9 @@ urlpatterns = [
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
     re_path(r'^edit-profile/?$', views.EditUser.as_view()),
 
+    # reading goals
+    re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path, views.Goal.as_view()),
+
     # statuses
     re_path(r'%s(.json)?/?$' % status_path, views.Status.as_view()),
     re_path(r'%s/activity/?$' % status_path, views.Status.as_view()),
