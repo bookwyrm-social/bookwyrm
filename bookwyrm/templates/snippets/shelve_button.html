@@ -27,7 +27,7 @@
         {% endif %}
     </div>
 
-    <div class="dropdown control">
+    <div class="dropdown control is-hoverable">
         <div class="dropdown-trigger">
             <label for="shelf-select-dropdown-{{ uuid }}-toggle" role="button" aria-expanded="false" class="pulldown-menu" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ uuid }}">
                 <div class="button is-small">
@@ -35,8 +35,7 @@
                 </div>
             </label>
         </div>
-        <input type="checkbox" class="toggle-control" id="shelf-select-dropdown-{{ uuid }}-toggle">
-        <div class="dropdown-menu toggle-content hidden" id="shelf-select-{{ uuid }}" role="menu">
+        <div class="dropdown-menu" id="shelf-select-{{ uuid }}" role="menu">
             <ul class="dropdown-content">
                 {% for shelf in request.user.shelf_set.all %}
                 <li role="menuitem">

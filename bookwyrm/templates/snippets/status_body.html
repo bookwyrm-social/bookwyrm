@@ -56,7 +56,7 @@
 </div>
 {% if status.user == request.user %}
 <div class="card-footer-item">
-    {% include 'snippets/toggle/toggle_button.html' with controls_text="more-info" controls_uid=status.id text="More options" icon="dots-three" class="is-small" %}
+    {% include 'snippets/status_options.html' with class="is-small" right=True %}
 </div>
 {% endif %}
 {% endblock %}
@@ -73,23 +73,5 @@
     </div>
 </section>
 {% endwith %}
-{% endif %}
-
-{% if status.user == request.user %}
-<section>
-    <input class="toggle-control" type="checkbox" name="more-info-{{ status.id }}" id="more-info-{{ status.id }}">
-    <div class="toggle-content hidden card-footer">
-        {% if status.user == request.user %}
-        <div class="card-footer-item">
-            <form name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
-                {% csrf_token %}
-                <button class="button is-danger is-light" type="submit">
-                    Delete post
-                </button>
-            </form>
-        </div>
-        {% endif %}
-    </div>
-</section>
 {% endif %}
 {% endblock %}

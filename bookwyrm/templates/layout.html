@@ -51,7 +51,7 @@
     </div>
 
     <input class="toggle-control" type="checkbox" id="main-nav">
-    <div id="mainNav" class="navbar-menu toggle-content">
+    <div id="mainNav" class="navbar-menu">
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
             <a href="/user/{{ request.user.localname }}/shelves" class="navbar-item">

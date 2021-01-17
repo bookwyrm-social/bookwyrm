@@ -1,0 +1,13 @@
+<div class="dropdown is-hoverable {% if right %}is-right{% endif %}">
+    <div class="dropdown-trigger">
+        <button type="button" class="button pulldown-menu {{ class }}" aria-expanded="false" class="pulldown-menu" aria-haspopup="true" aria-controls="shelf-select-{{ book.id }}">
+            {% block dropdown-trigger %}{% endblock %}
+        </button>
+    </div>
+    <div class="dropdown-menu" id="shelf-select-{{ book.id }}" role="menu">
+        <ul class="dropdown-content">
+            {% block dropdown-list %}{% endblock %}
+        </ul>
+    </div>
+</div>
+
