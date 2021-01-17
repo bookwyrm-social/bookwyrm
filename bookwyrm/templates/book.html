@@ -143,7 +143,7 @@
             {% endif %}
             <div class="block">
                 {% include 'snippets/toggle/open_button.html' with text="Add read dates" controls_text="add-readthrough" %}
-                <div class="toggle-content hidden box" id="add-readthrough">
+                <div class="hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
                         <div class="field is-grouped">
