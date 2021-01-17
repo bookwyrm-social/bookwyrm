@@ -39,7 +39,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     @property
     def collection_queryset(self):
         ''' list of books for this shelf, overrides OrderedCollectionMixin  '''
-        return self.books.all()
+        return self.books.all().order_by('shelfbook')
 
     def get_remote_id(self):
         ''' shelf identifier instead of id '''
@@ -90,3 +90,4 @@ class ShelfBook(ActivitypubMixin, BookWyrmModel):
         ''' an opinionated constraint!
             you can't put a book on shelf twice '''
         unique_together = ('book', 'shelf')
+        ordering = ('-created_date',)

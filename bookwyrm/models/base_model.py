@@ -225,6 +225,9 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
     def to_ordered_collection(self, queryset, \
             remote_id=None, page=False, **kwargs):
         ''' an ordered collection of whatevers '''
+        if not queryset.ordered:
+            raise RuntimeError('queryset must be ordered')
+
         remote_id = remote_id or self.remote_id
         if page:
             return to_ordered_collection_page(
