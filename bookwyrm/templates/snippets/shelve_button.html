@@ -13,15 +13,9 @@
         <span>Read</span> <span class="icon icon-check"></span>
     </button>
     {% elif active_shelf.shelf.identifier == 'reading' %}
-    <label class="button is-small" for="finish-reading-{{ uuid }}" role="button" tabindex="0">
-        I'm done!
-    </label>
-    {% include 'snippets/finish_reading_modal.html' with book=active_shelf.book %}
+    {% include 'snippets/toggle/toggle_button.html' with small=True text="I'm done!" controls_text="finish-reading" controls_uid=uuid %}
     {% elif active_shelf.shelf.identifier == 'to-read' %}
-    <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
-        Start reading
-    </label>
-    {% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
+    {% include 'snippets/toggle/toggle_button.html' with small=True text="Start reading" controls_text="start-reading" controls_uid=uuid %}
     {% else %}
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
@@ -33,7 +27,7 @@
 
     <div class="dropdown">
         <div class="dropdown-trigger">
-            <label for="shelf-select-dropdown-{{ uuid }}-toggle" role="button" aria-expanded="false" onclick="toggleMenu(this)" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ uuid }}">
+            <label for="shelf-select-dropdown-{{ uuid }}-toggle" role="button" aria-expanded="false" class="pulldown-menu" tabindex="0" aria-haspopup="true" aria-controls="shelf-select-{{ uuid }}">
                 <div class="button is-small">
                     <span class="icon icon-arrow-down"><span class="is-sr-only">More shelves</span></span>
                 </div>
@@ -46,10 +40,7 @@
                 <li role="menuitem">
                     {% if active_shelf.shelf.identifier != 'reading' and shelf.identifier == 'reading' %}
                     <div class="dropdown-item pt-0 pb-0">
-                        <label class="button is-small" for="start-reading-{{ uuid }}" role="button" tabindex="0">
-                            Start reading
-                        </label>
-                        {% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
+                        {% include 'snippets/toggle/toggle_button.html' with small=True text="Start reading" controls_text="start-reading" controls_uid=uuid %}
                     </div>
                     {% else %}
                     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
@@ -68,5 +59,7 @@
     </div>
     {% endif %}
 </div>
+{% include 'snippets/start_reading_modal.html' with book=active_shelf.book %}
+{% include 'snippets/finish_reading_modal.html' with book=active_shelf.book %}
 {% endwith %}
 {% endif %}

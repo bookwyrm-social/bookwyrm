@@ -23,7 +23,7 @@
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="column is-narrow">
             <a href="{{ book.id }}/edit">
-                <span class="icon icon-pencil">
+                <span class="icon icon-pencil" title="Edit Book">
                     <span class="is-sr-only">Edit Book</span>
                 </span>
             </a>
@@ -95,14 +95,14 @@
 
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
                 <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="hide-description" checked>
+                    <input class="toggle-control" type="radio" name="add-description" id="hide-description-{{ book.id }}" checked>
                     <div class="toggle-content hidden">
-                        <label class="button" for="add-description" tabindex="0" role="button">Add description</label>
+                        {% include 'snippets/toggle/toggle_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id %}
                     </div>
                 </div>
 
                 <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="add-description">
+                    <input class="toggle-control" type="radio" name="add-description" id="add-description-{{ book.id }}" data-hover-target="id_description">
                     <div class="toggle-content hidden">
                         <div class="box">
                             <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
@@ -113,7 +113,7 @@
                                 </p>
                                 <div class="field">
                                     <button class="button is-primary" type="submit">Save</button>
-                                    <label class="button" for="hide-description" tabindex="0" role="button">Cancel</label>
+                                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="hide-description" controls_uid=book.id %}
                                 </div>
                             </form>
                         </div>
@@ -155,7 +155,7 @@
                 <div>
                     <input type="radio" class="toggle-control" name="add-readthrough-form" id="hide-create-readthrough" checked>
                     <div class="toggle-content hidden">
-                        <label class="button" for="add-readthrough" class="button" role="button" tabindex="0">Add read dates</label>
+                        {% include 'snippets/toggle/toggle_button.html' with text="Add read dates" controls_text="add-readthrough" %}
                     </div>
                 </div>
                 <div>
@@ -165,7 +165,7 @@
                             {% include 'snippets/readthrough_form.html' with readthrough=None %}
                             <div class="field is-grouped">
                                 <button class="button is-primary" type="submit">Create</button>
-                                <label class="button" for="hide-create-readthrough" role="button" tabindex="0">Cancel</label>
+                                {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="hide-create-readthrough" %}
                             </div>
                         </form>
                     </div>
@@ -223,7 +223,7 @@
     </div>
 </div>
 
-<div class="block">
+<div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
         {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
@@ -231,25 +231,28 @@
     {% endfor %}
 
     <div class="block is-flex is-flex-wrap-wrap">
-    {% for rating in ratings %}
-    <div class="block mr-5">
-        <div class="media">
-            <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
-            <div class="media-content">
-                <div>
-                    {% include 'snippets/username.html' with user=rating.user %}
-                </div>
-                <div class="field is-grouped mb-0">
-                    <div>rated it</div>
-                    {% include 'snippets/stars.html' with rating=rating.rating %}
-                </div>
-                <div>
-                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+        {% for rating in ratings %}
+        <div class="block mr-5">
+            <div class="media">
+                <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
+                <div class="media-content">
+                    <div>
+                        {% include 'snippets/username.html' with user=rating.user %}
+                    </div>
+                    <div class="field is-grouped mb-0">
+                        <div>rated it</div>
+                        {% include 'snippets/stars.html' with rating=rating.rating %}
+                    </div>
+                    <div>
+                        <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    <div class="block">
+        {% include 'snippets/pagination.html' with page=reviews path=book.local_path anchor="#reviews" %}
     </div>
 </div>
 

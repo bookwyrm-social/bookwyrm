@@ -21,7 +21,7 @@
                         <ul>
                             {% for book in shelf.books %}
                             <li class="{% if shelf_counter == 1 and forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
-                                <label for="book-{{ book.id }}" onclick="tabChange(event, nested=true)">
+                                <label for="book-{{ book.id }}" class="tab-change-nested">
                                     <div role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}-panel">
                                         <a>
                                             {% include 'snippets/book_cover.html' with book=book size="medium" %}
@@ -47,10 +47,10 @@
                 <div class="card">
                     <div class="card-header">
                         <p class="card-header-title">
-                        <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-                        </>
+                            <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
+                        </p>
                         <div class="card-header-icon is-hidden-tablet">
-                            <label class="delete" for="no-book" aria-label="close" role="button"></label>
+                            {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="no-book" class="delete" %}
                         </div>
                     </div>
                     <div class="card-content">
@@ -77,6 +77,15 @@
             <input class="toggle-control" type="radio" name="recent-books" id="no-book">
         </div>
         {% endif %}
+
+        {% if goal %}
+        <section class="section">
+            <div class="block">
+                <h3 class="title is-4">{{ goal.year }} Reading Goal</h3>
+                {% include 'snippets/goal_progress.html' with goal=goal %}
+            </div>
+        </section>
+        {% endif %}
     </div>
 
     <div class="column is-two-thirds" id="feed">
@@ -95,6 +104,33 @@
             </ul>
         </div>
 
+        {# announcements and system messages #}
+        {% if not goal and tab == 'home' %}
+        {% now 'Y' as year %}
+        <section class="block hidden" aria-title="Announcements" data-hide="hide-{{ year }}-reading-goal">
+            <article class="card">
+                <header class="card-header">
+                    <h3 class="card-header-title has-background-primary has-text-white">
+                        <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                    </h3>
+                </header>
+                <section class="card-content content">
+                    <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+
+                    {% include 'snippets/goal_form.html' %}
+                </section>
+                <footer class="card-footer has-background-white-bis">
+                    <div class="card-footer-item is-flex-direction-column">
+                        <button class="button is-danger is-light is-block set-display" data-id="hide-{{ year }}-reading-goal" data-value="true">Dismiss message</button>
+                        <p class="help">You can set or change your reading goal any time from your <a href="{{ request.user.local_path }}">profile page</a></p>
+                    </div>
+                </footer>
+            </article>
+            <hr>
+        </section>
+        {% endif %}
+
+        {# activity feed #}
         {% if not activities %}
         <p>There aren't any activities right now! Try following a user to get started</p>
         {% endif %}
@@ -104,25 +140,7 @@
         </div>
         {% endfor %}
 
-        <nav class="pagination" role="navigation" aria-label="pagination">
-            {% if prev %}
-            <p class="pagination-previous">
-                <a href="{{ prev }}">
-                    <span class="icon icon-arrow-left"></span>
-                    Previous
-                </a>
-            </p>
-            {% endif %}
-
-            {% if next %}
-            <p class="pagination-next">
-                <a href="{{ next }}">
-                    Next
-                    <span class="icon icon-arrow-right"></span>
-                </a>
-            </p>
-            {% endif %}
-        </nav>
+        {% include 'snippets/pagination.html' with page=activities path='/'|add:tab anchor="#feed" %}
     </div>
 </div>
 {% endblock %}

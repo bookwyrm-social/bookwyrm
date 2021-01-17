@@ -30,9 +30,8 @@
 <div class="block">
     <h2 class="title is-4">Failed to load</h2>
     {% if not job.retry %}
-    <form name="retry" action="/retry-import/" method="post">
+    <form name="retry" action="/import/{{ job.id }}" method="post">
         {% csrf_token %}
-        <input type="hidden" name="import_job" value="{{ job.id }}">
         <ul>
             <fieldset>
             {% for item in failed_items %}
@@ -50,7 +49,7 @@
             {% endfor %}
             </fieldset>
         </ul>
-        <div class="block pt-1" onclick="selectAll(this)">
+        <div class="block pt-1 select-all">
             <label class="label">
                 <input type="checkbox" class="checkbox">
                 Select all

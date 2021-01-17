@@ -16,7 +16,7 @@
         <div class="tile is-child box has-background-primary-light content">
             {% if site.allow_registration %}
             <h2 class="title">Join {{ site.name }}</h2>
-            <form name="register" method="post" action="/user-register">
+            <form name="register" method="post" action="/register">
                 {% include 'snippets/register_form.html' %}
             </form>
             {% else %}

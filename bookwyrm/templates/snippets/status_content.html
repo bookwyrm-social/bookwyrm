@@ -14,7 +14,7 @@
         <p>{{ status.content_warning }}</p>
         <input class="toggle-control" type="radio" name="toggle-status-cw-{{ status.id }}" id="hide-status-cw-{{ status.id }}" checked>
         <div class="toggle-content hidden">
-            <label class="button is-small" for="show-status-cw-{{ status.id }}" tabindex="0" role="button">Show More</label>
+            {% include 'snippets/toggle/toggle_button.html' with text="Show More" small=True controls_text="show-status-cw" controls_uid=status.id %}
         </div>
     </div>
 
@@ -22,7 +22,7 @@
     {% endif %}
     <div{% if status.content_warning %} class="toggle-content hidden"{% endif %}>
         {% if status.content_warning %}
-        <label class="button is-small" for="hide-status-cw-{{ status.id }}" tabindex="0" role="button">Show Less</label>
+        {% include 'snippets/toggle/toggle_button.html' with text="Show Less" small=True controls_text="hide-status-cw" controls_uid=status.id %}
         {% endif %}
 
         {% if status.quote %}
