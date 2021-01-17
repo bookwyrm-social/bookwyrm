@@ -60,13 +60,14 @@ function toggleAction(e) {
 
     if (targetId) {
         var target = document.getElementById(targetId);
-        if (pressed) {
-            removeClass(target, 'hidden');
-            addClass(target, 'is-active');
-        } else {
-            addClass(target, 'hidden');
-            removeClass(target, 'is-active');
-        }
+        addRemoveClass(target, 'hidden', !pressed);
+        addRemoveClass(target, 'is-active', pressed);
+    }
+
+    // show/hide container
+    var container = document.getElementById('hide-' + targetId);
+    if (!!container) {
+        addRemoveClass(container, 'hidden', pressed);
     }
 
     // set checkbox, if appropriate
@@ -82,13 +83,23 @@ function toggleAction(e) {
     }
 }
 
+function addRemoveClass(el, classname, bool) {
+    if (bool) {
+        addClass(el, classname)
+    } else {
+        removeClass(el, classname)
+    }
+}
 
 function addClass(el, classname) {
     el.className = el.className.split(' ').concat(classname).join(' ');
 }
 
 function removeClass(el, className) {
-    var classes = el.className.split(' ');
+    var classes = []
+    if (el.className) {
+        var classes = el.className.split(' ');
+    }
     const idx = classes.indexOf(className);
     if (idx > -1) {
         classes.splice(idx, 1);

@@ -1,6 +1,6 @@
 <button
     type="button"
-    class="toggle-control button {{ class }} {% if button_type %}{{ button_type }}{% endif %}"
+    class="toggle-control {% if not nonbutton %}button{% endif %} {{ class }} {% if button_type %}{{ button_type }}{% endif %}"
     data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
     {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
     {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}

@@ -1,7 +1,6 @@
 {% load humanize %}
 <div class="content block">
-    <input class="toggle-control" type="radio" name="show-edit-readthrough-{{ readthrough.id }}" id="show-readthrough-{{ readthrough.id }}" checked>
-    <div class="toggle-content hidden">
+    <div id="hide-edit-readthrough-{{ readthrough.id }}">
         <dl class="mb-1">
             {% if readthrough.start_date %}
             <div class="is-flex">
@@ -16,48 +15,24 @@
             </div>
             {% endif %}
         </dl>
+        <div class="field has-addons">
+            <div class="control">
+                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Edit read dates" icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id %}
+            </div>
+            <div class="control">
+                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Delete these read dates" icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box hidden" id="edit-readthrough-{{ readthrough.id }}">
+    <form name="edit-readthrough" action="/edit-readthrough" method="post">
+        {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
         <div class="field is-grouped">
-            {% include 'snippets/toggle/toggle_button.html' with small=True text="Edit read dates" icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id %}
-            {% include 'snippets/toggle/toggle_button.html' with small=True text="Delete these read dates" icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id %}
+            <button class="button is-primary" type="submit">Save</button>
+            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="edit-readthrough" controls_uid=readthrough.id %}
         </div>
-    </div>
+    </form>
 </div>
-
-<div class="block">
-    <input class="toggle-control" type="radio" name="show-edit-readthrough-{{ readthrough.id }}" id="edit-readthrough-{{ readthrough.id }}">
-    <div class="toggle-content hidden">
-        <div class="box">
-            <form name="edit-readthrough" action="/edit-readthrough" method="post">
-                {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
-                <div class="field is-grouped">
-                    <button class="button is-primary" type="submit">Save</button>
-                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="show-readthrough" controls_uid=readthrough.id %}
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div>
-    <input class="toggle-control" type="checkbox" name="delete-readthrough-{{ readthrough.id }}" id="delete-readthrough-{{ readthrough.id }}">
-    <div class="modal toggle-content hidden">
-        <div class="modal-background"></div>
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Delete this read-though?</p>
-                <label class="delete" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
-            </header>
-            <footer class="modal-card-foot">
-                <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="id" value="{{ readthrough.id }}">
-                    <button class="button is-danger is-light" type="submit">
-                        Delete
-                    </button>
-                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="delete-readthrough" controls_uid=readthrough.id %}
-                </form>
-            </footer>
-        </div>
-        <label class="modal-close is-large" for="delete-readthrough-{{ readthrough.id }}" aria-label="close"></label>
-    </div>
-</div>
+{% include 'snippets/delete_readthrough_modal.html' with controls_text="delete-readthrough" controls_uid=readthrough.id %}

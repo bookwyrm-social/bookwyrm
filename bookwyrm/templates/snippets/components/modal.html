@@ -1,0 +1,23 @@
+<div class="modal hidden" id="{{ controls_text }}-{{ controls_uid }}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <h2 class="modal-card-title">
+                {% block modal-title %}{% endblock %}
+            </h2>
+            {% include 'snippets/toggle/toggle_button.html' with label="close" class="delete" nonbutton=True %}
+        </header>
+
+        {% block modal-form-open %}{% endblock %}
+
+        {% block modal-body %}{% endblock %}
+
+        <footer class="modal-card-foot">
+            {% block modal-footer %}{% endblock %}
+        </footer>
+        {% block modal-form-close %}{% endblock %}
+    </div>
+    <label class="modal-close is-large" for="{{ controls_text }}-{{ readthrough.id }}" aria-label="close"></label>
+    {% include 'snippets/toggle/toggle_button.html' with label="close" class="modal-close is-large" nonbutton=True %}
+</div>
+

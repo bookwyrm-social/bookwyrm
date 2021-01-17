@@ -1,0 +1,13 @@
+{% extends 'snippets/components/modal.html' %}
+{% block modal-title %}Delete this read-though?{% endblock %}
+
+{% block modal-footer %}
+<form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ readthrough.id }}">
+    <button class="button is-danger" type="submit">
+        Delete
+    </button>
+    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="delete-readthrough" controls_uid=readthrough.id %}
+</form>
+{% endblock %}
