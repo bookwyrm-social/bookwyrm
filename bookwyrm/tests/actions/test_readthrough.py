@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 
-from bookwyrm import view_actions as actions, models
+from bookwyrm import models
 
 class ReadThrough(TestCase):
     def setUp(self):
