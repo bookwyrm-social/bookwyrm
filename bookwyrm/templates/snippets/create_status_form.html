@@ -44,7 +44,7 @@
         <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
     </div>
     {% endif %}
-    <input type="checkbox" class="hidden" name="sensitive" id="show-spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %}>
+    <input type="checkbox" class="hidden" name="sensitive" id="show-spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
     {# bottom bar #}
     <div class="columns pt-1">
         <div class="field has-addons column">
