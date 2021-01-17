@@ -29,6 +29,10 @@ window.onload = function() {
     // update localstorage
     Array.from(document.getElementsByClassName('set-display'))
         .forEach(t => t.onclick = updateDisplay);
+
+    // toggle display
+    Array.from(document.getElementsByClassName('toggle-button'))
+        .forEach(t => t.onclick = toggleDisplay);
 };
 
 function updateDisplay(e) {
@@ -51,10 +55,30 @@ function setDisplay(el) {
 }
 
 function toggleAction(e) {
+    var pressed = e.currentTarget.getAttribute('aria-pressed') == 'false';
+    e.currentTarget.setAttribute('aria-pressed', pressed);
+
+    var targetId = e.currentTarget.getAttribute('data-controls');
+    if (targetId) {
+        var target = document.getElementById(targetId);
+        if (pressed) {
+            target.className = target.className.replace('hidden', '');
+        } else {
+            target.className += ' hidden';
+        }
+
+    }
+
     // set hover, if appropriate
-    var hover = e.target.getAttribute('data-hover-target');
+    var hover = e.currentTarget.getAttribute('data-hover-target');
     if (hover) {
         document.getElementById(hover).focus();
+    }
+
+    // set checkbox, if appropriate
+    var checkbox = e.currentTarget.getAttribute('data-controls-checkbox');
+    if (checkbox) {
+        document.getElementById(checkbox).checked = !!pressed;
     }
 }
 

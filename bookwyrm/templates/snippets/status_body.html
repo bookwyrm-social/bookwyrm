@@ -57,11 +57,11 @@
 {% block card-bonus %}
 {% if request.user.is_authenticated %}
 {% with status.id|uuid as uuid %}
-<input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}" data-hover-target="id_content_{{ status.id }}-{{ uuid }}">
+<input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}" data-hover-target="id_content_{{ status.id }}{{ uuid }}_reply">
 <section class="toggle-content hidden">
     <div class="card-footer">
         <div class="card-footer-item">
-            {% include 'snippets/reply_form.html' with status=status %}
+            {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}
         </div>
     </div>
 </section>
