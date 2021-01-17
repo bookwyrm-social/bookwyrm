@@ -1,40 +1,25 @@
 <form class="field is-grouped is-small pl-2" action="/edit-readthrough" method="POST">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}"/>
-
-    <div>
-        <input class="toggle-control" type="radio" name="progress-mode" id="progress-mode-page" {% if readthrough.progress_mode == 'PG' %}checked{% endif %}>
-        <div class="toggle-content hidden" role="tabpanel" id="progress-mode-page-panel">
-            <div class="control">
-                <label for="progress-mode-percent">on page</label>
-            </div>
-            <div class="control">
-                <input
-                 aria-label="Current page"
-                 class="input is-small" type="text"
-                 name="progress" size="3" value="{{ readthrough.progress|default:'' }}">
-            </div>
-            {% if book.pages %}
-            <div class="control">
-                of {{ book.pages }}
-            </div>
-            {% endif %}
-        </div>
+    <div class="control">
+        {% if readthrough.progress_mode == 'PG' %}
+        on page
+        {% else %}
+        currently at
+        {% endif %}
     </div>
-    <div>
-        <input class="toggle-control" type="radio" name="progress-mode" id="progress-mode-percent" {% if readthrough.progress_mode == 'PCT' %}checked{% endif %}>
-        <div class="toggle-content hidden" role="tabpanel" id="progress-mode-percent-panel">
-            <div class="control">
-                <label for="progress-mode-page">currently at</label>
-            </div>
-            <div class="control">
-                <input
-                 aria-label="Percent read"
-                 class="input is-small" type="text"
-                 name="progress" size="3" value="{{ readthrough.progress|default:'' }}">
-                %
-            </div>
-        </div>
+    <div class="control">
+        <input
+         aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Perent read{% endif%}"
+         class="input is-small" type="text"
+         name="progress" size="3" value="{{ readthrough.progress|default:"" }}">
+    </div>
+    <div class="control">
+        {% if readthrough.progress_mode == 'PG' and book.pages %}
+        of {{ book.pages }}
+        {% else %}
+        %
+        {% endif %}
     </div>
     <div class="control">
         <button class="button is-small px-2" type="submit">Go</button>
