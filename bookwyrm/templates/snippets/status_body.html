@@ -18,7 +18,7 @@
 {% block card-footer %}
 <div class="card-footer-item">
     {% if request.user.is_authenticated %}
-    {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text="Reply" icon='comment' small=True %}
+    {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text="Reply" icon="comment" class="is-small" focus="id_content_reply" %}
     {% include 'snippets/boost_button.html' with status=status %}
     {% include 'snippets/fav_button.html' with status=status %}
 
@@ -57,8 +57,7 @@
 {% block card-bonus %}
 {% if request.user.is_authenticated %}
 {% with status.id|uuid as uuid %}
-<input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}" data-focus-target="id_content_{{ status.id }}{{ uuid }}_reply">
-<section class="toggle-content hidden">
+<section class="hidden" id="show-comment-{{ status.id }}">
     <div class="card-footer">
         <div class="card-footer-item">
             {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}

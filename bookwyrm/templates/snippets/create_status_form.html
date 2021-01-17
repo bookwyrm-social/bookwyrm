@@ -34,14 +34,14 @@
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% else %}
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea" id="id_content_{{ book.id }}{{reply_parent.id}}{{ uuid }}_{{ type }}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required></textarea>
+        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required></textarea>
         {% endif %}
     </div>
     {% if type == 'quotation' %}
     <div class="control">
-        <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
+        <label class="label" for="id_content_quote-{{ book.id }}">Comment:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
+        <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
     </div>
     {% endif %}
     <input type="checkbox" class="hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="column is-narrow">
-            <button class="button is-link" type="submit">post</button>
+            <button class="button is-link" type="submit">Post</button>
         </div>
     </div>
 </form>
