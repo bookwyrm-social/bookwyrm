@@ -45,12 +45,21 @@
             {% endif %}
             {% for progress_update in readthrough.progress_updates %}
             <li>
-                {{ progress_update.created_date | naturalday }}:
-                {% if progress_update.mode == 'PG' %}
-                page {{ progress_update.progress }} of {{ book.pages }}
-                {% else %}
-                {{ progress_update.progress }}%
-                {% endif %}
+                <form name="delete-update" action="/delete-progressupdate" method="POST">
+                    {% csrf_token %}
+                    {{ progress_update.created_date | naturalday }}:
+                    {% if progress_update.mode == 'PG' %}
+                    page {{ progress_update.progress }} of {{ book.pages }}
+                    {% else %}
+                    {{ progress_update.progress }}%
+                    {% endif %}
+                    <input type="hidden" name="id" value="{{ progress_update.id }}"/>
+                    <button type="submit" class="button is-small" for="delete-progressupdate-{{ progress_update.id }}" role="button" tabindex="0">
+                        <span class="icon icon-x">
+                            <span class="is-sr-only">Delete this progress update</span>
+                        </span>
+                    </button>
+                </form>
             </li>
             {% endfor %}
             <li>{{ readthrough.start_date | naturalday }}: started</li>

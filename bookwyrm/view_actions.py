@@ -541,6 +541,18 @@ def create_readthrough(request):
     readthrough.save()
     return redirect(request.headers.get('Referer', '/'))
 
+@login_required
+@require_POST
+def delete_progressupdate(request):
+    ''' remove a progress update '''
+    update = get_object_or_404(models.ProgressUpdate, id=request.POST.get('id'))
+
+    # don't let people edit other people's data
+    if request.user != update.user:
+        return HttpResponseBadRequest()
+
+    update.delete()
+    return redirect(request.headers.get('Referer', '/'))
 
 @login_required
 @require_POST
