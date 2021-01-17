@@ -29,10 +29,6 @@ window.onload = function() {
     // update localstorage
     Array.from(document.getElementsByClassName('set-display'))
         .forEach(t => t.onclick = updateDisplay);
-
-    // toggle display
-    Array.from(document.getElementsByClassName('toggle-button'))
-        .forEach(t => t.onclick = toggleDisplay);
 };
 
 function updateDisplay(e) {
