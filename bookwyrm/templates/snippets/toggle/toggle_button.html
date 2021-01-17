@@ -1,10 +1,11 @@
 <button
     type="button"
-    class="toggle-control button {{ class }} {% if button_type %}{{ button_type }}{% else %}toggle-button{% endif %}"
+    class="toggle-control button {{ class }} {% if button_type %}{{ button_type }}{% endif %}"
     data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
-    {% if hover %}data-hover-target="{{ hover }}"{% endif %}
+    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
+    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
     {% if label %}aria-label="label"{% endif %}
-    aria-pressed="false"
+    aria-pressed="{% if pressed %}true{% else %}false{% endif %}"
     >
 
     {% if icon %}

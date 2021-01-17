@@ -6,7 +6,7 @@
     {% if user == request.user %}
     <div class="block">
         {% if goal %}
-        {% include 'snippets/toggle/open_button.html' with text="Edit goal" controls_text="show-edit-goal" hover="edit-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text="Edit goal" controls_text="show-edit-goal" focus="edit-form-header" %}
         {% endif %}
         {% now 'Y' as year %}
         <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">

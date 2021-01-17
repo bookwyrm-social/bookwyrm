@@ -44,16 +44,12 @@
         <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
     </div>
     {% endif %}
-    <input type="checkbox" class="hidden" name="sensitive" id="show-spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
+    <input type="checkbox" class="hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
     {# bottom bar #}
     <div class="columns pt-1">
         <div class="field has-addons column">
             <div class="control">
-                <button type="button" class="button toggle-control" for="show-spoilers-{{ uuid }}" data-controls="spoilers-{{ uuid }}" data-hover-target="id_content_warning_{{ uuid }}" aria-pressed="{% if status.content_warning %}true{% else %}false{% endif %}" data-controls-checkbox="show-spoilers-{{ uuid }}">
-                    <span class="icon icon-warning is-size-4" title="include spoiler alert">
-                        <span class="is-sr-only">include spoiler alert</span>
-                    </span>
-                </button>
+                {% include 'snippets/toggle/toggle_button.html' with text="Include spoiler alert" icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=status.content_warning %}
             </div>
             <div class="control">
                 {% include 'snippets/privacy_select.html' %}

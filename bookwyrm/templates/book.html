@@ -94,7 +94,7 @@
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
-                {% include 'snippets/toggle/open_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id hover="id_description" hide_active=True id="hide-description" %}
+                {% include 'snippets/toggle/open_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
 
                 <div class="box hidden" id="add-description-{{ book.id }}">
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">

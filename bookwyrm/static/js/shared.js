@@ -1,7 +1,7 @@
 // set up javascript listeners
 window.onload = function() {
     // let buttons set keyboard focus
-    Array.from(document.getElementsByClassName('toggle-control'))
+    document.querySelectorAll('[data-controls]')
         .forEach(t => t.onclick = toggleAction);
 
     // javascript interactions (boost/fav)
@@ -51,8 +51,8 @@ function setDisplay(el) {
 }
 
 function toggleAction(e) {
-    var pressed = e.currentTarget.getAttribute('aria-pressed') == 'false';
     var el = e.currentTarget;
+    var pressed = el.getAttribute('aria-pressed') == 'false';
 
     var targetId = el.getAttribute('data-controls');
     document.querySelectorAll('[data-controls="' + targetId + '"]')
@@ -69,16 +69,16 @@ function toggleAction(e) {
         }
     }
 
-    // set hover, if appropriate
-    var hover = el.getAttribute('data-hover-target');
-    if (hover) {
-        document.getElementById(hover).focus();
-    }
-
     // set checkbox, if appropriate
     var checkbox = el.getAttribute('data-controls-checkbox');
     if (checkbox) {
         document.getElementById(checkbox).checked = !!pressed;
+    }
+
+    // set focus, if appropriate
+    var focus = el.getAttribute('data-focus-target');
+    if (focus) {
+        document.getElementById(focus).focus();
     }
 }
 
