@@ -94,30 +94,20 @@
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
-                <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="hide-description-{{ book.id }}" checked>
-                    <div class="toggle-content hidden">
-                        {% include 'snippets/toggle/toggle_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id %}
-                    </div>
-                </div>
+                {% include 'snippets/toggle/open_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id hover="id_description" hide_active=True id="hide-description" %}
 
-                <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="add-description-{{ book.id }}" data-hover-target="id_description">
-                    <div class="toggle-content hidden">
-                        <div class="box">
-                            <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
-                                {% csrf_token %}
-                                <p class="fields is-grouped">
-                                    <label class="label"for="id_description">Description:</label>
-                                    <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
-                                </p>
-                                <div class="field">
-                                    <button class="button is-primary" type="submit">Save</button>
-                                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="hide-description" controls_uid=book.id %}
-                                </div>
-                            </form>
+                <div class="box hidden" id="add-description-{{ book.id }}">
+                    <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
+                        {% csrf_token %}
+                        <p class="fields is-grouped">
+                            <label class="label"for="id_description">Description:</label>
+                            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
+                        </p>
+                        <div class="field">
+                            <button class="button is-primary" type="submit">Save</button>
+                            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-description" controls_uid=book.id hide_inactive=True %}
                         </div>
-                    </div>
+                    </form>
                 </div>
                 {% endif %}
 
@@ -152,23 +142,15 @@
             </div>
             {% endif %}
             <div class="block">
-                <div>
-                    <input type="radio" class="toggle-control" name="add-readthrough-form" id="hide-create-readthrough" checked>
-                    <div class="toggle-content hidden">
-                        {% include 'snippets/toggle/toggle_button.html' with text="Add read dates" controls_text="add-readthrough" %}
-                    </div>
-                </div>
-                <div>
-                    <input type="radio" class="toggle-control" id="add-readthrough" name="add-readthrough-form">
-                    <div class="toggle-content hidden box">
-                        <form name="add-readthrough" action="/create-readthrough" method="post">
-                            {% include 'snippets/readthrough_form.html' with readthrough=None %}
-                            <div class="field is-grouped">
-                                <button class="button is-primary" type="submit">Create</button>
-                                {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="hide-create-readthrough" %}
-                            </div>
-                        </form>
-                    </div>
+                {% include 'snippets/toggle/open_button.html' with text="Add read dates" controls_text="add-readthrough" %}
+                <div class="toggle-content hidden box" id="add-readthrough">
+                    <form name="add-readthrough" action="/create-readthrough" method="post">
+                        {% include 'snippets/readthrough_form.html' with readthrough=None %}
+                        <div class="field is-grouped">
+                            <button class="button is-primary" type="submit">Create</button>
+                            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-readthrough" %}
+                        </div>
+                    </form>
                 </div>
             </div>
 

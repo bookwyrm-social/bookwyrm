@@ -52,30 +52,48 @@ function setDisplay(el) {
 
 function toggleAction(e) {
     var pressed = e.currentTarget.getAttribute('aria-pressed') == 'false';
-    e.currentTarget.setAttribute('aria-pressed', pressed);
+    var el = e.currentTarget;
 
-    var targetId = e.currentTarget.getAttribute('data-controls');
+    var targetId = el.getAttribute('data-controls');
+    document.querySelectorAll('[data-controls="' + targetId + '"]')
+        .forEach(t => t.setAttribute('aria-pressed', !!(t.getAttribute('aria-pressed') == 'false')));
+
     if (targetId) {
         var target = document.getElementById(targetId);
         if (pressed) {
-            target.className = target.className.replace('hidden', '');
+            removeClass(target, 'hidden');
+            addClass(target, 'is-active');
         } else {
-            target.className += ' hidden';
+            addClass(target, 'hidden');
+            removeClass(target, 'is-active');
         }
-
     }
 
     // set hover, if appropriate
-    var hover = e.currentTarget.getAttribute('data-hover-target');
+    var hover = el.getAttribute('data-hover-target');
     if (hover) {
         document.getElementById(hover).focus();
     }
 
     // set checkbox, if appropriate
-    var checkbox = e.currentTarget.getAttribute('data-controls-checkbox');
+    var checkbox = el.getAttribute('data-controls-checkbox');
     if (checkbox) {
         document.getElementById(checkbox).checked = !!pressed;
     }
+}
+
+
+function addClass(el, classname) {
+    el.className = el.className.split(' ').concat(classname).join(' ');
+}
+
+function removeClass(el, className) {
+    var classes = el.className.split(' ');
+    const idx = classes.indexOf(className);
+    if (idx > -1) {
+        classes.splice(idx, 1);
+    }
+    el.className = classes.join(' ');
 }
 
 
