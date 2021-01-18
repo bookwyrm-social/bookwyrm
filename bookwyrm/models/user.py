@@ -25,7 +25,7 @@ from . import fields, Review
 class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     username = fields.UsernameField()
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, null=True)
 
     key_pair = fields.OneToOneField(
         'KeyPair',
