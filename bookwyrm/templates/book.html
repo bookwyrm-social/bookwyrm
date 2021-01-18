@@ -39,14 +39,28 @@
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="box p-2">
+                <h3 class="title is-6 mb-1">Add cover</h3>
                 <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="field">
-                        <label class="label" for="id_cover">Cover:</label>
-                        <input type="file" name="cover" accept="image/*" class="" id="id_cover">
-                    </div>
-                    <div class="field">
-                        <button class="button is-small" type="submit">Add cover</button>
+                    <div class="field has-addons">
+                        <div class="control">
+                        <div class="file is-small mb-1">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Choose file...
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                        </div>
+                        <div class="control">
+                            <button class="button is-small is-primary" type="submit">Add</button>
+                        </div>
                     </div>
                 </form>
             </div>
