@@ -1,5 +1,5 @@
 {% extends 'snippets/components/modal.html' %}
-{% block modal-title %}Delete this read-though?{% endblock %}
+{% block modal-title %}Delete these read dates?{% endblock %}
 
 {% block modal-footer %}
 <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">

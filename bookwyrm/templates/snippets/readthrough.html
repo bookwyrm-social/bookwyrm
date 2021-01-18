@@ -17,16 +17,17 @@
         </dl>
         <div class="field has-addons">
             <div class="control">
-                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Edit read dates" icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id %}
+                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Edit read dates" icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id focus="edit-readthrough" %}
             </div>
             <div class="control">
-                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Delete these read dates" icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id %}
+                {% include 'snippets/toggle/toggle_button.html' with class="is-small" text="Delete these read dates" icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id focus="modal-title-delete-readthrough" %}
             </div>
         </div>
     </div>
 </div>
 
-<div class="box hidden" id="edit-readthrough-{{ readthrough.id }}">
+<div class="box hidden" id="edit-readthrough-{{ readthrough.id }}" tabindex="0">
+    <h3 class="title is-5">Edit read dates</h3>
     <form name="edit-readthrough" action="/edit-readthrough" method="post">
         {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
         <div class="field is-grouped">
