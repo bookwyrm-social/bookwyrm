@@ -185,4 +185,4 @@ class EditUser(View):
         user.save()
 
         broadcast(user, user.to_update_activity(user))
-        return redirect('/user/%s' % request.user.localname)
+        return redirect(user.local_path)
