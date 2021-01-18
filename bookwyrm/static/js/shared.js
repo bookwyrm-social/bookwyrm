@@ -27,7 +27,19 @@ window.onload = function() {
     // update localstorage
     Array.from(document.getElementsByClassName('set-display'))
         .forEach(t => t.onclick = updateDisplay);
+
+    // hidden submit button in a form
+    document.querySelectorAll('.hidden-form input')
+        .forEach(t => t.onchange = revealForm);
 };
+
+function revealForm(e) {
+    var hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
+    if (hidden) {
+        removeClass(hidden, 'hidden');
+    }
+}
+
 
 function updateDisplay(e) {
     // used in set reading goal
