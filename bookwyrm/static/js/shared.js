@@ -152,8 +152,11 @@ function handleTabChange(target, parentElement) {
 }
 
 function toggleMenu(e) {
-    var el = e.target.closest('.pulldown-menu');
-    el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
+    var el = e.currentTarget;
+    var expanded = el.getAttribute('aria-expanded') == 'false';
+    el.setAttribute('aria-expanded', expanded);
+    var target = document.getElementById(el.getAttribute('data-controls'));
+    addRemoveClass(target, 'is-active', expanded);
 }
 
 function ajaxPost(form) {

@@ -1,13 +1,13 @@
-<div class="dropdown is-hoverable {% if right %}is-right{% endif %}">
-    <div class="dropdown-trigger">
-        <button type="button" class="button pulldown-menu {{ class }}" aria-expanded="false" class="pulldown-menu" aria-haspopup="true" aria-controls="shelf-select-{{ book.id }}">
-            {% block dropdown-trigger %}{% endblock %}
-        </button>
-    </div>
-    <div class="dropdown-menu" id="shelf-select-{{ book.id }}" role="menu">
-        <ul class="dropdown-content">
+{% load bookwyrm_tags %}
+{% with 0|uuid as uuid %}
+<div class="dropdown {% if right %}is-right{% endif %}" id="menu-{{ uuid }}">
+    <button type="button" class="button dropdown-trigger pulldown-menu {{ class }}" aria-expanded="false" class="pulldown-menu" aria-haspopup="true" aria-controls="menu-options-{{ uuid }}" data-controls="menu-{{ uuid }}">
+        {% block dropdown-trigger %}{% endblock %}
+    </button>
+    <div class="dropdown-menu">
+        <ul class="dropdown-content" role="menu" id="menu-options-{{ book.id }}">
             {% block dropdown-list %}{% endblock %}
         </ul>
     </div>
 </div>
-
+{% endwith %}
