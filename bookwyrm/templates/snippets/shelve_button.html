@@ -25,9 +25,9 @@
             <button class="button is-small" type="submit">Want to read</button>
         </form>
         {% endif %}
-    </div>
     {% include 'snippets/shelve_button_dropdown.html' with class="is-small" button_uuid=uuid%}
     {% endif %}
+    </div>
 </div>
 
 {% include 'snippets/start_reading_modal.html' with book=active_shelf.book controls_text="start-reading" controls_uid=uuid %}
