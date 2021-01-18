@@ -1,6 +1,6 @@
 // set up javascript listeners
 window.onload = function() {
-    // let buttons set keyboard focus
+    // buttons that display or hide content
     document.querySelectorAll('[data-controls]')
         .forEach(t => t.onclick = toggleAction);
 
@@ -30,6 +30,7 @@ window.onload = function() {
 };
 
 function updateDisplay(e) {
+    // used in set reading goal
     var key = e.target.getAttribute('data-id');
     var value = e.target.getAttribute('data-value');
     window.localStorage.setItem(key, value);
@@ -39,13 +40,10 @@ function updateDisplay(e) {
 }
 
 function setDisplay(el) {
+    // used in set reading goal
     var key = el.getAttribute('data-hide');
-    var value = window.localStorage.getItem(key)
-    if (!value) {
-        el.className = el.className.replace('hidden', '');
-    } else if (value != null && !!value) {
-        el.className += ' hidden';
-    }
+    var value = window.localStorage.getItem(key);
+    addRemoveClass(el, 'hidden', value);
 }
 
 
@@ -55,7 +53,7 @@ function toggleAction(e) {
 
     var targetId = el.getAttribute('data-controls');
     document.querySelectorAll('[data-controls="' + targetId + '"]')
-        .forEach(t => t.setAttribute('aria-pressed', !!(t.getAttribute('aria-pressed') == 'false')));
+        .forEach(t => t.setAttribute('aria-pressed', (t.getAttribute('aria-pressed') == 'false')));
 
     if (targetId) {
         var target = document.getElementById(targetId);
@@ -82,48 +80,12 @@ function toggleAction(e) {
     }
 }
 
-function addRemoveClass(el, classname, bool) {
-    if (bool) {
-        addClass(el, classname)
-    } else {
-        removeClass(el, classname)
-    }
-}
-
-function addClass(el, classname) {
-    var classes = el.className.split(' ');
-    if (classes.indexOf(classname) > -1) {
-        return
-    }
-    el.className = classes.concat(classname).join(' ');
-}
-
-function removeClass(el, className) {
-    var classes = []
-    if (el.className) {
-        var classes = el.className.split(' ');
-    }
-    const idx = classes.indexOf(className);
-    if (idx > -1) {
-        classes.splice(idx, 1);
-    }
-    el.className = classes.join(' ');
-}
-
-
 function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
     var identifier = e.target.getAttribute('data-id');
-    var elements = document.getElementsByClassName(identifier);
-    for (var i = 0; i < elements.length; i++) {
-        if (elements[i].className.includes('hidden')) {
-            elements[i].className = elements[i].className.replace('hidden', '');
-        } else {
-            elements[i].className += ' hidden';
-        }
-    }
-    return true;
+    Array.from(document.getElementsByClassName(identifier))
+        .forEach(t => addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
 }
 
 function selectAll(e) {
@@ -145,7 +107,7 @@ function tabChange(e) {
 
     var tabId = el.getAttribute('data-tab');
     Array.from(document.getElementsByClassName(el.getAttribute('data-category')))
-        .forEach(t => addRemoveClass(t, 'hidden', t.id != tabId))
+        .forEach(t => addRemoveClass(t, 'hidden', t.id != tabId));
 }
 
 function toggleMenu(e) {
@@ -164,4 +126,32 @@ function ajaxPost(form) {
         method : "POST",
         body: new FormData(form)
     });
+}
+
+function addRemoveClass(el, classname, bool) {
+    if (bool) {
+        addClass(el, classname);
+    } else {
+        removeClass(el, classname);
+    }
+}
+
+function addClass(el, classname) {
+    var classes = el.className.split(' ');
+    if (classes.indexOf(classname) > -1) {
+        return;
+    }
+    el.className = classes.concat(classname).join(' ');
+}
+
+function removeClass(el, className) {
+    var classes = [];
+    if (el.className) {
+        classes = el.className.split(' ');
+    }
+    const idx = classes.indexOf(className);
+    if (idx > -1) {
+        classes.splice(idx, 1);
+    }
+    el.className = classes.join(' ');
 }
