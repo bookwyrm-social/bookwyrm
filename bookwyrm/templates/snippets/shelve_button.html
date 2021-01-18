@@ -4,11 +4,12 @@
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
 <div class="field has-addons">
+    {% if switch_mode and active_shelf.book != book %}
     <div class="control">
-        {% if switch_mode and active_shelf.book != book %}
         {% include 'snippets/switch_edition_button.html' with edition=book size='is-small' %}
-        {% else %}
-
+    </div>
+    {% else %}
+    <div class="control">
         {% if active_shelf.shelf.identifier == 'read' %}
         <button class="button is-small" disabled>
             <span>Read</span> <span class="icon icon-check"></span>
@@ -25,9 +26,9 @@
             <button class="button is-small" type="submit">Want to read</button>
         </form>
         {% endif %}
+    </div>
     {% include 'snippets/shelve_button_dropdown.html' with class="is-small" button_uuid=uuid%}
     {% endif %}
-    </div>
 </div>
 
 {% include 'snippets/start_reading_modal.html' with book=active_shelf.book controls_text="start-reading" controls_uid=uuid %}
