@@ -1,62 +1,136 @@
+// set up javascript listeners
+window.onload = function() {
+    // buttons that display or hide content
+    document.querySelectorAll('[data-controls]')
+        .forEach(t => t.onclick = toggleAction);
+
+    // javascript interactions (boost/fav)
+    Array.from(document.getElementsByClassName('interaction'))
+        .forEach(t => t.onsubmit = interact);
+
+    // select all
+    Array.from(document.getElementsByClassName('select-all'))
+        .forEach(t => t.onclick = selectAll);
+
+    // toggle between tabs
+    Array.from(document.getElementsByClassName('tab-change'))
+        .forEach(t => t.onclick = tabChange);
+
+    // handle aria settings on menus
+    Array.from(document.getElementsByClassName('pulldown-menu'))
+        .forEach(t => t.onclick = toggleMenu);
+
+    // display based on localstorage vars
+    document.querySelectorAll('[data-hide]')
+        .forEach(t => setDisplay(t));
+
+    // update localstorage
+    Array.from(document.getElementsByClassName('set-display'))
+        .forEach(t => t.onclick = updateDisplay);
+
+    // hidden submit button in a form
+    document.querySelectorAll('.hidden-form input')
+        .forEach(t => t.onchange = revealForm);
+};
+
+function revealForm(e) {
+    var hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
+    if (hidden) {
+        removeClass(hidden, 'hidden');
+    }
+}
+
+
+function updateDisplay(e) {
+    // used in set reading goal
+    var key = e.target.getAttribute('data-id');
+    var value = e.target.getAttribute('data-value');
+    window.localStorage.setItem(key, value);
+
+    document.querySelectorAll('[data-hide="' + key + '"]')
+        .forEach(t => setDisplay(t));
+}
+
+function setDisplay(el) {
+    // used in set reading goal
+    var key = el.getAttribute('data-hide');
+    var value = window.localStorage.getItem(key);
+    addRemoveClass(el, 'hidden', value);
+}
+
+
+function toggleAction(e) {
+    var el = e.currentTarget;
+    var pressed = el.getAttribute('aria-pressed') == 'false';
+
+    var targetId = el.getAttribute('data-controls');
+    document.querySelectorAll('[data-controls="' + targetId + '"]')
+        .forEach(t => t.setAttribute('aria-pressed', (t.getAttribute('aria-pressed') == 'false')));
+
+    if (targetId) {
+        var target = document.getElementById(targetId);
+        addRemoveClass(target, 'hidden', !pressed);
+        addRemoveClass(target, 'is-active', pressed);
+    }
+
+    // show/hide container
+    var container = document.getElementById('hide-' + targetId);
+    if (!!container) {
+        addRemoveClass(container, 'hidden', pressed);
+    }
+
+    // set checkbox, if appropriate
+    var checkbox = el.getAttribute('data-controls-checkbox');
+    if (checkbox) {
+        document.getElementById(checkbox).checked = !!pressed;
+    }
+
+    // set focus, if appropriate
+    var focus = el.getAttribute('data-focus-target');
+    if (focus) {
+        document.getElementById(focus).focus();
+    }
+}
+
 function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
     var identifier = e.target.getAttribute('data-id');
-    var elements = document.getElementsByClassName(identifier);
-    for (var i = 0; i < elements.length; i++) {
-        if (elements[i].className.includes('hidden')) {
-            elements[i].className = elements[i].className.replace('hidden', '');
-        } else {
-            elements[i].className += ' hidden';
-        }
-    }
-    return true;
+    Array.from(document.getElementsByClassName(identifier))
+        .forEach(t => addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
 }
 
-function reply(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    // TODO: display comment
-    return true;
-}
-
-function selectAll(el) {
-    el.parentElement.querySelectorAll('[type="checkbox"]')
+function selectAll(e) {
+    e.target.parentElement.parentElement.querySelectorAll('[type="checkbox"]')
         .forEach(t => t.checked=true);
 }
 
-function rate_stars(e) {
-    e.preventDefault();
-    ajaxPost(e.target);
-    rating = e.target.rating.value;
-    var stars = e.target.parentElement.getElementsByClassName('icon');
-    for (var i = 0; i < stars.length ; i++) {
-        stars[i].className = rating > i ? 'icon icon-star-full' : 'icon icon-star-empty';
-    }
-    return true;
-}
+function tabChange(e) {
+    var el = e.currentTarget;
+    var parentElement = el.closest('[role="tablist"]');
 
-function tabChange(e, nested) {
-    var target = e.target.closest('li')
-    var identifier = target.getAttribute('data-id');
-
-    if (nested) {
-        var parent_element = target.parentElement.closest('li').parentElement;
-    } else {
-        var parent_element = target.parentElement;
-    }
-
-    parent_element.querySelectorAll('[aria-selected="true"]')
+    parentElement.querySelectorAll('[aria-selected="true"]')
         .forEach(t => t.setAttribute("aria-selected", false));
-    target.querySelector('[role="tab"]').setAttribute("aria-selected", true);
+    el.setAttribute("aria-selected", true);
 
-    parent_element.querySelectorAll('li')
-        .forEach(t => t.className='');
-    target.className = 'is-active';
+    parentElement.querySelectorAll('li')
+        .forEach(t => removeClass(t, 'is-active'));
+    addClass(el, 'is-active');
+
+    var tabId = el.getAttribute('data-tab');
+    Array.from(document.getElementsByClassName(el.getAttribute('data-category')))
+        .forEach(t => addRemoveClass(t, 'hidden', t.id != tabId));
 }
 
-function toggleMenu(el) {
-    el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') == 'false');
+function toggleMenu(e) {
+    var el = e.currentTarget;
+    var expanded = el.getAttribute('aria-expanded') == 'false';
+    el.setAttribute('aria-expanded', expanded);
+    var targetId = el.getAttribute('data-controls');
+    if (targetId) {
+        var target = document.getElementById(targetId);
+        addRemoveClass(target, 'is-active', expanded);
+    }
 }
 
 function ajaxPost(form) {
@@ -64,4 +138,32 @@ function ajaxPost(form) {
         method : "POST",
         body: new FormData(form)
     });
+}
+
+function addRemoveClass(el, classname, bool) {
+    if (bool) {
+        addClass(el, classname);
+    } else {
+        removeClass(el, classname);
+    }
+}
+
+function addClass(el, classname) {
+    var classes = el.className.split(' ');
+    if (classes.indexOf(classname) > -1) {
+        return;
+    }
+    el.className = classes.concat(classname).join(' ');
+}
+
+function removeClass(el, className) {
+    var classes = [];
+    if (el.className) {
+        classes = el.className.split(' ');
+    }
+    const idx = classes.indexOf(className);
+    if (idx > -1) {
+        classes.splice(idx, 1);
+    }
+    el.className = classes.join(' ');
 }

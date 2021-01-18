@@ -10,19 +10,15 @@
     {% endif %}
 
     {% if status.content_warning %}
-    <div class="toggle-content">
+    <div>
         <p>{{ status.content_warning }}</p>
-        <input class="toggle-control" type="radio" name="toggle-status-cw-{{ status.id }}" id="hide-status-cw-{{ status.id }}" checked>
-        <div class="toggle-content hidden">
-            <label class="button is-small" for="show-status-cw-{{ status.id }}" tabindex="0" role="button">Show More</label>
-        </div>
+        {% include 'snippets/toggle/open_button.html' with text="show more" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
     </div>
-
-    <input class="toggle-control" type="radio" name="toggle-status-cw-{{ status.id }}" id="show-status-cw-{{ status.id }}">
     {% endif %}
-    <div{% if status.content_warning %} class="toggle-content hidden"{% endif %}>
+
+    <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
         {% if status.content_warning %}
-        <label class="button is-small" for="hide-status-cw-{{ status.id }}" tabindex="0" role="button">Show Less</label>
+        {% include 'snippets/toggle/close_button.html' with text="show less" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
         {% endif %}
 
         {% if status.quote %}

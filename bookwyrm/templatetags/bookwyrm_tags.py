@@ -7,7 +7,7 @@ from django import template
 from django.utils import timezone
 
 from bookwyrm import models
-from bookwyrm.outgoing import to_markdown
+from bookwyrm.views.status import to_markdown
 
 
 register = template.Library()

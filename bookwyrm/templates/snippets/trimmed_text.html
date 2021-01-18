@@ -4,16 +4,14 @@
 
 {% with full|truncatewords_html:60 as trimmed %}
 {% if trimmed != full %}
-<div>
-    <input type="radio" name="show-hide-{{ uuid }}" id="show-{{ uuid }}" class="toggle-control" checked>
-    <blockquote class="content toggle-content hidden"><span dir="auto">{{ trimmed | to_markdown | safe }}</span>
-        <label class="button is-small" for="hide-{{ uuid }}"><div role="button" tabindex="0">show more</div></label>
+<div id="hide-full-{{ uuid }}">
+    <blockquote class="content" id="trimmed-{{ uuid }}"><span dir="auto">{{ trimmed | to_markdown | safe }}</span>
+        {% include 'snippets/toggle/open_button.html' with text="show more" controls_text="full" controls_uid=uuid class="is-small" %}
     </blockquote>
 </div>
-<div>
-    <input type="radio" name="show-hide-{{ uuid }}" id="hide-{{ uuid }}" class="toggle-control">
-    <blockquote class="content toggle-content hidden"><span dir="auto">{{ full | to_markdown | safe }}</span>
-        <label class="button is-small" for="show-{{ uuid }}"><div role="button" tabindex="0">show less</div></label>
+<div id="full-{{ uuid }}" class="hidden">
+    <blockquote class="content"><span dir="auto">{{ full | to_markdown | safe }}</span>
+        {% include 'snippets/toggle/close_button.html' with text="show less" controls_text="full" controls_uid=uuid class="is-small" %}
     </blockquote>
 </div>
 {% else %}

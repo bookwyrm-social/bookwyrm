@@ -5,7 +5,7 @@
 <div class="block">
     <h1 class="title">Notifications</h1>
 
-    <form name="clear" action="/clear-notifications" method="POST">
+    <form name="clear" action="/notifications" method="POST">
         {% csrf_token %}
         <button class="button is-danger is-light" type="submit" class="secondary">Delete notifications</button>
     </form>
@@ -63,7 +63,7 @@
                             boosted your <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
                         {% endif %}
                         {% else %}
-                            your <a href="/import-status/{{ notification.related_import.id }}">import</a> completed.
+                            your <a href="/import/{{ notification.related_import.id }}">import</a> completed.
                         {% endif %}
                     </p>
                 </div>

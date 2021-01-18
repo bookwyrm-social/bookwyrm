@@ -8,7 +8,6 @@ def set_rank(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
     books = app_registry.get_model('bookwyrm', 'Edition')
     for book in books.objects.using(db_alias):
-        book.edition_rank = book.get_rank
         book.save()
 
 class Migration(migrations.Migration):

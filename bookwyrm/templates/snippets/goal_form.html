@@ -1,0 +1,34 @@
+<form method="post" name="goal" action="{{ request.user.local_path }}/goal/{{ year }}">
+    {% csrf_token %}
+    <input type="hidden" name="year" value="{% if goal %}{{ goal.year }}{% else %}{{ year }}{% endif %}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+
+    <div class="columns">
+        <div class="column">
+            <label class="label" for="id_goal">Reading goal:</label>
+            <div class="field has-addons">
+                <div class="control">
+                    <input type="number" class="input" name="goal" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
+                </div>
+                <p class="button is-static" aria-hidden="true">books</p>
+            </div>
+        </div>
+
+        <div class="column">
+            <label class="label"><p class="mb-2">Goal privacy:</p>
+                {% include 'snippets/privacy_select.html' with no_label=True current=goal.privacy %}
+            </label>
+        </div>
+    </div>
+    <label for="post_status" class="label">
+        <input type="checkbox" name="post-status" id="post_status" class="checkbox" checked>
+        Post to feed
+    </label>
+
+    <p>
+        <button type="submit" class="button is-link">Set goal</button>
+        {% if goal %}
+        {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="show-edit-goal" %}
+        {% endif %}
+    </p>
+</form>

@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<section class="block">
+    <h1 class="title">{{ year }} Reading Progress</h1>
+    {% if user == request.user %}
+    <div class="block">
+        {% if goal %}
+        {% include 'snippets/toggle/open_button.html' with text="Edit goal" controls_text="show-edit-goal" focus="edit-form-header" %}
+        {% endif %}
+        {% now 'Y' as year %}
+        <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
+            <header class="card-header">
+                <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
+                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                </h2>
+            </header>
+            <section class="card-content content">
+                <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+
+                {% include 'snippets/goal_form.html' with goal=goal year=year %}
+            </section>
+        </section>
+    </div>
+    {% endif %}
+
+    {% if not goal and user != request.user %}
+    <p>{{ user.display_name }} hasn't set a reading goal for {{ year }}.</p>
+    {% endif %}
+
+    {% if goal %}
+    {% include 'snippets/goal_progress.html' with goal=goal %}
+    {% endif %}
+</section>
+
+{% if goal.books %}
+<section>
+    <h2 class="title">{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
+    <div class="columns is-multiline">
+        {% for book in goal.books %}
+        <div class="column is-narrow">
+            <div class="box">
+                <a href="{{ book.book.local_path }}">
+                    {% include 'snippets/discover/small-book.html' with book=book.book rating=goal.ratings %}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}
