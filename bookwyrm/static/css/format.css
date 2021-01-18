@@ -14,20 +14,16 @@
 }
 
 /* --- TOGGLES --- */
-input.toggle-control {
+.toggle-button[aria-pressed=true], .toggle-button[aria-pressed=true]:hover {
+    background-color: hsl(171, 100%, 41%);
+    color: white;
+}
+.hide-active[aria-pressed=true], .hide-inactive[aria-pressed=false] {
     display: none;
 }
 
 .hidden {
-    display: none;
-}
-
-input.toggle-control:checked ~ .toggle-content {
-    display: block;
-}
-
-input.toggle-control:checked ~ .modal.toggle-content {
-    display: flex;
+    display: none !important;
 }
 
 /* --- STARS --- */

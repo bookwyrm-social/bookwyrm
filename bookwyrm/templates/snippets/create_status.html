@@ -3,41 +3,32 @@
 
 <div class="tabs is-boxed">
     <ul role="tablist">
-        <li class="is-active" data-id="tab-review-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="review-{{ book.id }}">
-                <div class="tab-change" role="tab" aria-selected="true" tabindex="0">
-                    <a>Review</a>
-                </div>
-            </label>
+        <li class="tab-change is-active" data-category="tab-option-{{ book.id }}" role="tab" aria-selected="true" tabindex="0" data-tab="review-{{ book.id }}">
+            <a>Review</a>
         </li>
-        <li data-id="tab-comment-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="comment-{{ book.id}}">
-                <div class="tab-change" role="tab" tabindex="0">
-                    <a>Comment</a>
-                </div>
-            </label>
+        <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="comment-{{ book.id}}">
+            <a>Comment</a>
         </li>
-        <li data-id="tab-quotation-{{ book.id }}" data-category="tab-option-{{ book.id }}">
-            <label for="quote-{{ book.id }}">
-                <div class="tab-change" role="tab" tabindex="0">
-                    <a>Quote</a>
-                </div>
-            </label>
+        <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="quote-{{ book.id }}">
+            <a>Quote</a>
         </li>
     </ul>
 </div>
 
-<div>
-    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="review-{{ book.id }}" checked>
+<div class="tab-option-{{ book.id }}" id="review-{{ book.id }}">
+    {% with 0|uuid as uuid %}
     {% include 'snippets/create_status_form.html' with type='review' %}
+    {% endwith %}
 </div>
 
-<div>
-    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="comment-{{ book.id }}">
+<div class="hidden tab-option-{{ book.id }}" id="comment-{{ book.id }}">
+    {% with 0|uuid as uuid %}
     {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
+    {% endwith %}
 </div>
 
-<div>
-    <input class="toggle-control" type="radio" name="status-tabs-{{ book.id }}" id="quote-{{ book.id }}">
+<div class="hidden tab-option-{{ book.id }}" id="quote-{{ book.id }}">
+    {% with 0|uuid as uuid %}
     {% include 'snippets/create_status_form.html' with type="quotation" placeholder="An excerpt from '"|add:book.title|add:"'" %}
+    {% endwith %}
 </div>

@@ -1,101 +1,77 @@
+{% extends 'snippets/components/card.html' %}
+
 {% load bookwyrm_tags %}
 {% load humanize %}
 
-{% if not status.deleted %}
-<article class="card">
-    <header class="card-header">
-        <div class="card-header-title has-background-white-ter">
-            <div class="columns">
-                <div class="column is-narrow">
-                    {% include 'snippets/status_header.html' with status=status %}
-                </div>
-            </div>
+{% block card-header %}
+    <h3 class="card-header-title has-background-white-ter is-block">
+        {% include 'snippets/status_header.html' with status=status %}
+    </h3>
+{% endblock %}
+
+
+{% block card-content %}
+    {% include 'snippets/status_content.html' with status=status %}
+{% endblock %}
+
+
+{% block card-footer %}
+<div class="card-footer-item">
+    {% if request.user.is_authenticated %}
+    <div class="field has-addons">
+        <div class="control">
+            {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text="Reply" icon="comment" class="is-small" focus="id_content_reply" %}
         </div>
-    </header>
-
-    <section class="card-content">
-        {% include 'snippets/status_content.html' with status=status %}
-    </section>
-
-    <footer>
-        <div class="card-footer has-background-white-bis">
-            <div class="card-footer-item">
-                {% if request.user.is_authenticated %}
-                {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text="Reply" icon='comment' small=True %}
-                {% include 'snippets/boost_button.html' with status=status %}
-                {% include 'snippets/fav_button.html' with status=status %}
-
-                {% else %}
-                <a href="/login">
-                    <span class="icon icon-comment" title="Reply">
-                        <span class="is-sr-only">Reply</span>
-                    </span>
-
-                    <span class="icon icon-boost" title="Boost status">
-                        <span class="is-sr-only">Boost status</span>
-                    </span>
-
-                    <span class="icon icon-heart" title="Like status">
-                        <span class="is-sr-only">Like status</span>
-                    </span>
-                </a>
-                {% endif %}
-            </div>
-
-            <div class="card-footer-item">
-                {% include 'snippets/privacy-icons.html' with item=status %}
-            </div>
-
-            <div class="card-footer-item">
-                <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
-            </div>
-            {% if status.user == request.user %}
-            <div class="card-footer-item">
-                {% include 'snippets/toggle/toggle_button.html' with controls_text="more-info" controls_uid=status.id text="More options" icon="dots-three" small=True %}
-            </div>
-            {% endif %}
+        <div class="control">
+            {% include 'snippets/boost_button.html' with status=status %}
         </div>
-
-        {% if request.user.is_authenticated %}
-        {% with status.id|uuid as uuid %}
-        <input class="toggle-control" type="checkbox" name="show-comment-{{ status.id }}" id="show-comment-{{ status.id }}" data-hover-target="id_content_{{ status.id }}-{{ uuid }}">
-        <div class="toggle-content hidden">
-            <div class="card-footer">
-                <div class="card-footer-item">
-                    {% include 'snippets/reply_form.html' with status=status %}
-                </div>
-            </div>
+        <div class="control">
+            {% include 'snippets/fav_button.html' with status=status %}
         </div>
-        {% endwith %}
-        {% endif %}
+    </div>
 
-        {% if status.user == request.user %}
-        <div>
-            <input class="toggle-control" type="checkbox" name="more-info-{{ status.id }}" id="more-info-{{ status.id }}">
-            <div class="toggle-content hidden card-footer">
-                {% if status.user == request.user %}
-                <div class="card-footer-item">
-                    <form name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
-                        {% csrf_token %}
-                        <button class="button is-danger is-light" type="submit">
-                            Delete post
-                        </button>
-                    </form>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-    </footer>
-</article>
-{% else %}
-<article class="card">
-    <header class="card-header">
-        <p>
-        {% include 'snippets/avatar.html' with user=status.user %}
-        {% include 'snippets/username.html' with user=status.user %}
-        deleted this status
-        </p>
-    </header>
-</article>
+    {% else %}
+    <a href="/login">
+        <span class="icon icon-comment" title="Reply">
+            <span class="is-sr-only">Reply</span>
+        </span>
+
+        <span class="icon icon-boost" title="Boost status">
+            <span class="is-sr-only">Boost status</span>
+        </span>
+
+        <span class="icon icon-heart" title="Like status">
+            <span class="is-sr-only">Like status</span>
+        </span>
+    </a>
+    {% endif %}
+</div>
+
+<div class="card-footer-item">
+    {% include 'snippets/privacy-icons.html' with item=status %}
+</div>
+
+<div class="card-footer-item">
+    <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
+</div>
+{% if status.user == request.user %}
+<div class="card-footer-item">
+    {% include 'snippets/status_options.html' with class="is-small" right=True %}
+</div>
 {% endif %}
+{% endblock %}
+
+
+{% block card-bonus %}
+{% if request.user.is_authenticated %}
+{% with status.id|uuid as uuid %}
+<section class="hidden" id="show-comment-{{ status.id }}">
+    <div class="card-footer">
+        <div class="card-footer-item">
+            {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}
+        </div>
+    </div>
+</section>
+{% endwith %}
+{% endif %}
+{% endblock %}

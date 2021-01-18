@@ -31,38 +31,30 @@
 
     {% if is_self %}
     <div class="column is-narrow">
-        <input type="radio" id="create-shelf-form-hide" name="create-shelf-form" class="toggle-control" checked>
-        <div class="toggle-content hidden">
-            {% include 'snippets/toggle/toggle_button.html' with text="Create shelf" icon="plus" class="is-clickable" controls_text="create-shelf-form-show" %}
-        </div>
+        {% include 'snippets/toggle/open_button.html' with text="Create shelf" icon="plus" class="is-clickable" controls_text="create-shelf-form" %}
     </div>
     {% endif %}
 </div>
 
-<div>
-    <input type="radio" id="create-shelf-form-show" name="create-shelf-form" class="toggle-control">
-    <div class="toggle-content hidden">
-        <div class="box mb-5">
-            <h2 class="title is-4">Create new shelf</h2>
-            <form name="create-shelf" action="/create-shelf/" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="user" value="{{ request.user.id }}">
-                <div class="field">
-                    <label class="label" for="id_name_create">Name:</label>
-                    <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
-                </div>
-
-                <label class="label">
-                    <p>Shelf privacy:</p>
-                    {% include 'snippets/privacy_select.html' with no_label=True %}
-                </label>
-                <div class="field is-grouped">
-                    <button class="button is-primary" type="submit">Create shelf</button>
-                    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="create-shelf-form-hide" %}
-                </div>
-            </form>
+<div class="hidden box mb-5" id="create-shelf-form">
+    <h2 class="title is-4">Create new shelf</h2>
+    <form name="create-shelf" action="/create-shelf/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        <div class="field">
+            <label class="label" for="id_name_create">Name:</label>
+            <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
         </div>
-    </div>
+
+        <label class="label">
+            <p>Shelf privacy:</p>
+            {% include 'snippets/privacy_select.html' with no_label=True %}
+        </label>
+        <div class="field is-grouped">
+            <button class="button is-primary" type="submit">Create shelf</button>
+            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="create-shelf-form" %}
+        </div>
+    </form>
 </div>
 
 <div class="block columns">
@@ -76,40 +68,34 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        <input type="radio" id="edit-shelf-form-hide" name="edit-shelf-form" class="toggle-control" checked>
-        <div class="toggle-content hidden">
-            {% include 'snippets/toggle/toggle_button.html' with text="Edit shelf" icon="pencil" class="is-clickable" controls_text="edit-shelf-form-show" %}
-        </div>
+        {% include 'snippets/toggle/open_button.html' with text="Edit shelf" icon="pencil" class="is-clickable" controls_text="edit-shelf-form" %}
     </div>
     {% endif %}
 </div>
 
-<input type="radio" id="edit-shelf-form-show" name="edit-shelf-form" class="toggle-control">
-<div class="toggle-content hidden">
-    <div class="box mb-5">
-        <h2 class="title is-4">Edit shelf</h2>
-        <form name="create-shelf" action="/edit-shelf/{{ shelf.id }}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="user" value="{{ request.user.id }}">
-            {% if shelf.editable %}
-            <div class="field">
-                <label class="label" for="id_name">Name:</label>
-                <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
-            </div>
-            {% else %}
-            <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
-            {% endif %}
+<div class="hidden box mb-5" id="edit-shelf-form">
+    <h2 class="title is-4">Edit shelf</h2>
+    <form name="create-shelf" action="/edit-shelf/{{ shelf.id }}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="user" value="{{ request.user.id }}">
+        {% if shelf.editable %}
+        <div class="field">
+            <label class="label" for="id_name">Name:</label>
+            <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
+        </div>
+        {% else %}
+        <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
+        {% endif %}
 
-            <label class="label">
-                <p>Shelf privacy:</p>
-                {% include 'snippets/privacy_select.html' with no_label=True current=shelf.privacy %}
-            </label>
-            <div class="field is-grouped">
-                <button class="button is-primary" type="submit">Update shelf</button>
-                {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="edit-shelf-form-hide" %}
-            </div>
-        </form>
-    </div>
+        <label class="label">
+            <p>Shelf privacy:</p>
+            {% include 'snippets/privacy_select.html' with no_label=True current=shelf.privacy %}
+        </label>
+        <div class="field is-grouped">
+            <button class="button is-primary" type="submit">Update shelf</button>
+            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="edit-shelf-form" %}
+        </div>
+    </form>
 </div>
 
 <div class="block">

@@ -1,4 +1,13 @@
-<label class="{% if class %}{{ class }}{% else %}button{% endif %}{% if small %} is-small{% endif %}" for="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}" tabindex="0" role="button"{% if label %} aria-label="{{ label }}"{% endif %}>
+<button
+    type="button"
+    class="{% if not nonbutton %}button {% endif %}{{ class }}{% if button_type %} {{ button_type }}{% endif %}"
+    data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
+    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
+    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
+    {% if label %}aria-label="{{ label }}"{% endif %}
+    aria-pressed="{% if pressed %}true{% else %}false{% endif %}"
+    >
+
     {% if icon %}
     <span class="icon icon-{{ icon }}" title="{{ text }}">
         <span class="is-sr-only">{{ text }}</span>
@@ -6,4 +15,4 @@
     {% else %}
     {{ text }}
     {% endif %}
-</label>
+</button>
