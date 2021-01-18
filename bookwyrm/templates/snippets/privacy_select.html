@@ -1,5 +1,5 @@
 {% load bookwyrm_tags %}
-<div class="select">
+<div class="select {{ class }}">
     {% with 0|uuid as uuid %}
     {% if not no_label %}
     <label class="is-sr-only" for="privacy-{{ uuid }}">Post privacy</label>
