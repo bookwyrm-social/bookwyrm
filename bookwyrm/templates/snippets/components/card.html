@@ -4,10 +4,12 @@
         {% endblock %}
     </header>
 
+    {% if not status or status.status_type != 'GeneratedNote' or status.book or status.mention_books.exists or status.mention_users.exists %}
     <section class="card-content">
         {% block card-content %}
         {% endblock %}
     </section>
+    {% endif %}
 
     <footer class="card-footer has-background-white-bis">
         {% block card-footer %}
