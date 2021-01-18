@@ -1,7 +1,7 @@
 <div class="modal hidden" id="{{ controls_text }}-{{ controls_uid }}">
     <div class="modal-background"></div>
     <div class="modal-card">
-        <header class="modal-card-head">
+        <header class="modal-card-head" tabindex="0" id="modal-title-{{ controls_text }}-{{ controls_uid }}">
             <h2 class="modal-card-title">
                 {% block modal-title %}{% endblock %}
             </h2>
