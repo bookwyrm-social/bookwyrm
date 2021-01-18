@@ -36,6 +36,8 @@ def is_bookworm_request(request):
 
 def object_visible_to_user(viewer, obj):
     ''' is a user authorized to view an object? '''
+    if not obj:
+        return False
     if viewer == obj.user or obj.privacy in ['public', 'unlisted']:
         return True
     if obj.privacy == 'followers' and \
