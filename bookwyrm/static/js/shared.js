@@ -13,8 +13,6 @@ window.onload = function() {
         .forEach(t => t.onclick = selectAll);
 
     // toggle between tabs
-    Array.from(document.getElementsByClassName('tab-change-nested'))
-        .forEach(t => t.onclick = tabChangeNested);
     Array.from(document.getElementsByClassName('tab-change'))
         .forEach(t => t.onclick = tabChange);
 
@@ -49,6 +47,7 @@ function setDisplay(el) {
         el.className += ' hidden';
     }
 }
+
 
 function toggleAction(e) {
     var el = e.currentTarget;
@@ -92,7 +91,11 @@ function addRemoveClass(el, classname, bool) {
 }
 
 function addClass(el, classname) {
-    el.className = el.className.split(' ').concat(classname).join(' ');
+    var classes = el.className.split(' ');
+    if (classes.indexOf(classname) > -1) {
+        return
+    }
+    el.className = classes.concat(classname).join(' ');
 }
 
 function removeClass(el, className) {
@@ -128,35 +131,32 @@ function selectAll(e) {
         .forEach(t => t.checked=true);
 }
 
-function tabChangeNested(e) {
-    var target = e.target.closest('li')
-    var parentElement = target.parentElement.closest('li').parentElement;
-    handleTabChange(target, parentElement)
-}
-
 function tabChange(e) {
-    var target = e.target.closest('li')
-    var parentElement = target.parentElement;
-    handleTabChange(target, parentElement)
-}
+    var el = e.currentTarget;
+    var parentElement = el.closest('[role="tablist"]');
 
-
-function handleTabChange(target, parentElement) {
     parentElement.querySelectorAll('[aria-selected="true"]')
         .forEach(t => t.setAttribute("aria-selected", false));
-    target.querySelector('[role="tab"]').setAttribute("aria-selected", true);
+    el.setAttribute("aria-selected", true);
 
     parentElement.querySelectorAll('li')
-        .forEach(t => t.className='');
-    target.className = 'is-active';
+        .forEach(t => removeClass(t, 'is-active'));
+    addClass(el, 'is-active');
+
+    var tabId = el.getAttribute('data-tab');
+    Array.from(document.getElementsByClassName(el.getAttribute('data-category')))
+        .forEach(t => addRemoveClass(t, 'hidden', t.id != tabId))
 }
 
 function toggleMenu(e) {
     var el = e.currentTarget;
     var expanded = el.getAttribute('aria-expanded') == 'false';
     el.setAttribute('aria-expanded', expanded);
-    var target = document.getElementById(el.getAttribute('data-controls'));
-    addRemoveClass(target, 'is-active', expanded);
+    var targetId = el.getAttribute('data-controls');
+    if (targetId) {
+        var target = document.getElementById(targetId);
+        addRemoveClass(target, 'is-active', expanded);
+    }
 }
 
 function ajaxPost(form) {

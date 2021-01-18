@@ -1,5 +1,5 @@
 {% load humanize %}
-<section class="content block">
+<div class="content block">
     <div id="hide-edit-readthrough-{{ readthrough.id }}">
         <dl class="mb-1">
             {% if readthrough.start_date %}
@@ -34,5 +34,5 @@
             {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="edit-readthrough" controls_uid=readthrough.id %}
         </div>
     </form>
-</section>
+</div>
 {% include 'snippets/delete_readthrough_modal.html' with controls_text="delete-readthrough" controls_uid=readthrough.id %}

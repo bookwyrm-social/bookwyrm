@@ -175,11 +175,11 @@
             {% endif %}
 
             {% if request.user.is_authenticated %}
-            <div class="box">
+            <section class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
-            </div>
+            </section>
 
-            <div class="block">
+            <section class="block">
                 <form name="tag" action="/tag/" method="post">
                     <label for="tags" class="is-3">Tags</label>
                     {% csrf_token %}
@@ -187,7 +187,7 @@
                     <input id="tags" class="input" type="text" name="name">
                     <button class="button" type="submit">Add tag</button>
                 </form>
-            </div>
+            </section>
             {% endif %}
 
             <div class="block">

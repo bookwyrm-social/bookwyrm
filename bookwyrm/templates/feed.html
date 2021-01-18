@@ -9,7 +9,7 @@
         <p>There are no books here right now! Try searching for a book to get started</p>
         {% else %}
         <div class="tabs is-small">
-            <ul>
+            <ul role="tablist">
             {% for shelf in suggested_books %}
             {% if shelf.books %}
             {% with shelf_counter=forloop.counter %}
@@ -17,17 +17,13 @@
                     <p>
                         {{ shelf.name }}
                     </p>
-                    <div class="tabs is-small is-toggle" role="tablist">
+                    <div class="tabs is-small is-toggle">
                         <ul>
                             {% for book in shelf.books %}
-                            <li class="{% if shelf_counter == 1 and forloop.first %}is-active{% endif %}" data-id="tab-book-{{ book.id }}">
-                                <label for="book-{{ book.id }}" class="tab-change-nested">
-                                    <div role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}-panel">
-                                        <a>
-                                            {% include 'snippets/book_cover.html' with book=book size="medium" %}
-                                        </a>
-                                    </div>
-                                </label>
+                            <li class="tab-change{% if shelf_counter == 1 and forloop.first %} is-active{% endif %}" data-tab="book-{{ book.id }}" data-tab="book-{{ book.id }}" role="tab" tabindex="0" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}" data-category="suggested-tabs">
+                                <a>
+                                    {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                                </a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -41,23 +37,18 @@
         {% for shelf in suggested_books %}
         {% with shelf_counter=forloop.counter %}
         {% for book in shelf.books %}
-        <div>
-            <input class="toggle-control" type="radio" name="recent-books" id="book-{{ book.id }}" {% if shelf_counter == 1 and forloop.first %}checked{% endif %}>
-            <div class="toggle-content hidden" role="tabpanel" id="book-{{ book.id }}-panel">
-                <div class="card">
-                    <div class="card-header">
-                        <p class="card-header-title">
-                            <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-                        </p>
-                        <div class="card-header-icon is-hidden-tablet">
-                            {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="no-book" class="delete" %}
-                        </div>
-                    </div>
-                    <div class="card-content">
-                            {% include 'snippets/shelve_button.html' with book=book %}
-                        {% include 'snippets/create_status.html' with book=book %}
-                    </div>
+        <div class="suggested-tabs card{% if shelf_counter != 1 or not forloop.first %} hidden{% endif %}" role="tabpanel" id="book-{{ book.id }}">
+            <div class="card-header">
+                <p class="card-header-title">
+                    <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
+                </p>
+                <div class="card-header-icon is-hidden-tablet">
+                    {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="no-book" class="delete" %}
                 </div>
+            </div>
+            <div class="card-content">
+                {% include 'snippets/shelve_button.html' with book=book %}
+                {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
         {% endfor %}
