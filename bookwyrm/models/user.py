@@ -247,7 +247,7 @@ class AnnualGoal(BookWyrmModel):
         ''' the books you've read this year '''
         return self.user.readthrough_set.filter(
             finish_date__year__gte=self.year
-        ).order_by('finish_date').all()
+        ).order_by('-finish_date').all()
 
 
     @property
