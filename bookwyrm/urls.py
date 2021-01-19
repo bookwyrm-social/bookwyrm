@@ -31,13 +31,14 @@ urlpatterns = [
     re_path(r'^inbox/?$', incoming.shared_inbox),
     re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
     re_path(r'%s/outbox/?$' % local_user_path, views.Outbox.as_view()),
-
-    # .well-known endpoints
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
     re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo_pointer),
     re_path(r'^nodeinfo/2\.0/?$', wellknown.nodeinfo),
     re_path(r'^api/v1/instance/?$', wellknown.instance_info),
     re_path(r'^api/v1/instance/peers/?$', wellknown.peers),
+
+    # polling updates
+    re_path('^api/updates/notifications/?$', views.Updates.as_view()),
 
     # authentication
     re_path(r'^login/?$', views.Login.as_view()),

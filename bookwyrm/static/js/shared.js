@@ -31,7 +31,31 @@ window.onload = function() {
     // hidden submit button in a form
     document.querySelectorAll('.hidden-form input')
         .forEach(t => t.onchange = revealForm);
+
+    // polling
+    document.querySelectorAll('[data-poll]')
+        .forEach(el => polling(el));
 };
+
+function polling(el) {
+    let delay = 10000 + (Math.random() * 1000);
+    setTimeout(function() {
+        fetch('/api/updates/' + el.getAttribute('data-poll'))
+            .then(response => response.json())
+            .then(data => updateCountElement(el, data));
+        polling(el);
+    }, delay, el);
+}
+
+function updateCountElement(el, data) {
+    const currentCount = el.innerText;
+    const count = data[el.getAttribute('data-poll')];
+    if (count != currentCount) {
+        addRemoveClass(el, 'hidden', count < 1);
+        el.innerText = count;
+    }
+}
+
 
 function revealForm(e) {
     var hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];

@@ -106,17 +106,15 @@
                 </ul>
             </div>
             <div class="navbar-item">
-                <a href="/notifications">
-                    <div class="tags has-addons">
-                        <span class="tag is-medium">
-                            <span class="icon icon-bell" title="Notifications">
-                                <span class="is-sr-only">Notifications</span>
-                            </span>
+                <a href="/notifications" class="tags has-addons">
+                    <span class="tag is-medium">
+                        <span class="icon icon-bell" title="Notifications">
+                            <span class="is-sr-only">Notifications</span>
                         </span>
-                        {% if request.user|notification_count %}
-                        <span class="tag is-danger is-medium">{{ request.user | notification_count }}</span>
-                        {% endif %}
-                    </div>
+                    </span>
+                    <span class="{% if not request.user|notification_count %}hidden {% endif %}tag is-danger is-medium" data-poll="notifications">
+                        {{ request.user | notification_count }}
+                    </span>
                 </a>
             </div>
             {% else %}
