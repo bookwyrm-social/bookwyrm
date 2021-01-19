@@ -25,6 +25,7 @@ from . import fields, Review
 class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     username = fields.UsernameField()
+    email = models.EmailField(unique=True, null=True)
 
     key_pair = fields.OneToOneField(
         'KeyPair',
@@ -246,7 +247,7 @@ class AnnualGoal(BookWyrmModel):
         ''' the books you've read this year '''
         return self.user.readthrough_set.filter(
             finish_date__year__gte=self.year
-        ).order_by('finish_date').all()
+        ).order_by('-finish_date').all()
 
 
     @property

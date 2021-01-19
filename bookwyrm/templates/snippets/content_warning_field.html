@@ -1,20 +1,4 @@
-{% load bookwyrm_tags %}
-{% with 0|uuid as uuid %}
-<div class="control">
-    <div>
-        <input type="radio" class="toggle-control" id="include-spoilers-{{ uuid }}" name="sensitive" value="true" {% if parent_status.content_warning %}checked{% endif %} data-hover-target="id_content_warning_{{ uuid }}">
-        <div class="toggle-content hidden">
-            <label class="is-sr-only" for="id_content_warning_{{ uuid }}">Spoilers/content warning:</label>
-            <input type="text" name="content_warning" maxlength="255" class="input" id="id_content_warning_{{ uuid }}" placeholder="Spoilers ahead!"{% if parent_status.content_warning %} value="{{ parent_status.content_warning }}"{% endif %}>
-            {% include 'snippets/toggle/toggle_button.html' with controls_text="hide-spoilers" controls_uid=uuid text="Remove spoilers/content warning" small=True %}
-        </div>
-    </div>
-
-    <div>
-        <input type="radio" class="toggle-control" name="sensitive" value="false" id="hide-spoilers-{{ uuid }}" {% if not parent_status.content_warning %}checked{% endif %}>
-        <div class="toggle-content hidden">
-            {% include 'snippets/toggle/toggle_button.html' with controls_text="include-spoilers" controls_uid=uuid text="Add spoilers/content warning" small=True %}
-        </div>
-    </div>
+<div class="control{% if not parent_status.content_warning %} hidden{% endif %}" id="spoilers-{{ uuid }}">
+    <label class="is-sr-only" for="id_content_warning-{{ uuid }}">Spoiler alert:</label>
+    <input type="text" name="content_warning" maxlength="255" class="input" id="id_content_warning-{{ uuid }}" placeholder="Spoilers ahead!"{% if parent_status.content_warning %} value="{{ parent_status.content_warning }}"{% endif %}>
 </div>
-{% endwith %}

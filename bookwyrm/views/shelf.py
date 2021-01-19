@@ -65,12 +65,13 @@ class Shelf(View):
         return TemplateResponse(request, 'shelf.html', data)
 
     @method_decorator(login_required, name='dispatch')
-    def post(self, request, username, shelf_id):
-        ''' user generated shelves '''
-        if not request.user.username == username:
-            return HttpResponseBadRequest()
+    def post(self, request, username, shelf_identifier):
+        ''' edit a shelf '''
+        try:
+            shelf = request.user.shelf_set.get(identifier=shelf_identifier)
+        except models.Shelf.DoesNotExist:
+            return HttpResponseNotFound()
 
-        shelf = get_object_or_404(models.Shelf, id=shelf_id)
         if request.user != shelf.user:
             return HttpResponseBadRequest()
         if not shelf.editable and request.POST.get('name') != shelf.name:

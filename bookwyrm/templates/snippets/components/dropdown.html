@@ -1,0 +1,13 @@
+{% load bookwyrm_tags %}
+{% with 0|uuid as uuid %}
+<div class="dropdown control{% if right %} is-right{% endif %}" id="menu-{{ uuid }}">
+    <button type="button" class="button dropdown-trigger pulldown-menu {{ class }}" aria-expanded="false" class="pulldown-menu" aria-haspopup="true" aria-controls="menu-options-{{ uuid }}" data-controls="menu-{{ uuid }}">
+        {% block dropdown-trigger %}{% endblock %}
+    </button>
+    <div class="dropdown-menu">
+        <ul class="dropdown-content" role="menu" id="menu-options-{{ book.id }}">
+            {% block dropdown-list %}{% endblock %}
+        </ul>
+    </div>
+</div>
+{% endwith %}

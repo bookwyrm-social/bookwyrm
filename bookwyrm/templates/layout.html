@@ -41,17 +41,16 @@
             </div>
         </form>
 
-        <label for="main-nav" role="button" class="navbar-burger pulldown-menu" aria-label="menu" aria-expanded="false" data-target="mainNav" tabindex="0">
+        <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main-nav" aria-expanded="false">
             <div class="navbar-item mt-3">
                 <div class="icon icon-dots-three-vertical" title="Main navigation menu">
                     <span class="is-sr-only">Main navigation menu</span>
                 </div>
             </div>
-        </label>
+        </div>
     </div>
 
-    <input class="toggle-control" type="checkbox" id="main-nav">
-    <div id="mainNav" class="navbar-menu toggle-content">
+    <div class="navbar-menu" id="main-nav">
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
             <a href="/user/{{ request.user.localname }}/shelves" class="navbar-item">

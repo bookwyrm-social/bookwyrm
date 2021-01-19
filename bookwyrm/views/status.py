@@ -21,12 +21,13 @@ from .helpers import is_api_request, is_bookworm_request, object_visible_to_user
 
 # pylint: disable= no-self-use
 class Status(View):
-    ''' the view for *posting* '''
+    ''' get posting '''
     def get(self, request, username, status_id):
         ''' display a particular status (and replies, etc) '''
         try:
             user = get_user_from_username(username)
-            status = models.Status.objects.select_subclasses().get(id=status_id)
+            status = models.Status.objects.select_subclasses().get(
+                id=status_id, deleted=False)
         except ValueError:
             return HttpResponseNotFound()
 
@@ -51,10 +52,11 @@ class Status(View):
 
 @method_decorator(login_required, name='dispatch')
 class CreateStatus(View):
-    ''' get posting '''
+    ''' the view for *posting* '''
     def post(self, request, status_type):
         ''' create  status of whatever type '''
         status_type = status_type[0].upper() + status_type[1:]
+
         try:
             form = getattr(forms, '%sForm' % status_type)(request.POST)
         except AttributeError:

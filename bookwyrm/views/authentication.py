@@ -32,7 +32,14 @@ class Login(View):
         login_form = forms.LoginForm(request.POST)
 
         localname = login_form.data['localname']
-        username = '%s@%s' % (localname, DOMAIN)
+        if '@' in localname: # looks like an email address to me
+            email = localname
+            try:
+                username = models.User.objects.get(email=email)
+            except models.User.DoesNotExist: # maybe it's a full username?
+                username = localname
+        else:
+            username = '%s@%s' % (localname, DOMAIN)
         password = login_form.data['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:

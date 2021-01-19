@@ -1,18 +1,33 @@
 {% load bookwyrm_tags %}
 {% if request.user.is_authenticated %}
 <span class="is-sr-only">Leave a rating</span>
-<div class="field is-grouped stars rate-stars">
-    {% for i in '12345'|make_list %}
-    <form name="rate" action="/rate/" method="POST">
+<div class="block">
+    <form class="hidden-form" name="rate" action="/post/rating" method="POST">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="privacy" value="public">
         <input type="hidden" name="rating" value="{{ forloop.counter }}">
-        <button type="submit" class="icon icon-star-{% if book|rating:user < forloop.counter %}empty{% else %}full{% endif %}">
-            <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
-        </button>
+
+        <div class="field is-grouped stars form-rate-stars mb-1">
+            <label class="is-sr-only" for="no-rating-{{ book.id }}">No rating</label>
+            <input class="is-sr-only" type="radio" name="rating" value="" id="no-rating-{{ book.id }}" checked>
+            {% for i in '12345'|make_list %}
+            <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}" {% if book|rating:user == forloop.counter %}checked{% endif %}>
+            <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
+                <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
+            </label>
+            {% endfor %}
+        </div>
+
+        <div class="field has-addons hidden">
+            <div class="control">
+                {% include 'snippets/privacy_select.html' with class="is-small" %}
+            </div>
+            <div class="control">
+                <button class="button is-small is-primary" type="submit">Rate</button>
+            </div>
+        </div>
     </form>
-    {% endfor %}
 </div>
 {% endif %}
