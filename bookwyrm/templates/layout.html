@@ -113,9 +113,9 @@
                                 <span class="is-sr-only">Notifications</span>
                             </span>
                         </span>
-                        {% if request.user|notification_count %}
-                        <span class="tag is-danger is-medium">{{ request.user | notification_count }}</span>
-                        {% endif %}
+                        <span class="{% if not request.user|notification_count %}hidden {% endif %}tag is-danger is-medium" data-poll="notifications">
+                            {{ request.user | notification_count }}
+                        </span>
                     </div>
                 </a>
             </div>

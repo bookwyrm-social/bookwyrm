@@ -23,4 +23,5 @@ from .shelf import Shelf
 from .shelf import user_shelves_page, create_shelf, delete_shelf
 from .shelf import shelve, unshelve
 from .status import Status, Replies, CreateStatus, DeleteStatus
+from .updates import Updates
 from .user import User, EditUser, Followers, Following
