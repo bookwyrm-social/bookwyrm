@@ -75,7 +75,7 @@
 
 <div class="hidden box mb-5" id="edit-shelf-form">
     <h2 class="title is-4">Edit shelf</h2>
-    <form name="create-shelf" action="/edit-shelf/{{ shelf.id }}" method="post">
+    <form name="create-shelf" action="{{ shelf.local_path }}" method="post">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
         {% if shelf.editable %}
