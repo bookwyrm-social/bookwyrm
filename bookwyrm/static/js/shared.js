@@ -48,8 +48,8 @@ function polling(el) {
 function updateCountElement(el, data) {
     const currentCount = el.innerHTML;
     const count = data[el.getAttribute('data-poll')];
-    if (count && count != currentCount) {
-        removeClass(el, 'hidden');
+    if (count != currentCount) {
+        addRemoveClass(el, 'hidden', count < 1);
         el.innerHTML = count;
     }
 }
