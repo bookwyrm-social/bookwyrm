@@ -52,7 +52,7 @@ class Goal(View):
         form = forms.GoalForm(request.POST, instance=goal)
         if not form.is_valid():
             data = {
-                'title': '%s\'s %d Reading' % (goal.user.display_name, year),
+                'title': '%s\'s %d Reading' % (request.user.display_name, year),
                 'goal_form': form,
                 'goal': goal,
                 'year': year,
