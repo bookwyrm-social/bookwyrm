@@ -2,10 +2,10 @@
 {% with 0|uuid as uuid %}
 {% if full %}
 
-{% with full|truncatewords_html:60 as trimmed %}
+{% with full|to_markdown|safe|truncatewords_html:60 as trimmed %}
 {% if trimmed != full %}
 <div id="hide-full-{{ uuid }}">
-    <blockquote class="content" id="trimmed-{{ uuid }}"><span dir="auto">{{ trimmed | to_markdown | safe }}</span>
+    <blockquote class="content" id="trimmed-{{ uuid }}"><span dir="auto">{{ trimmed }}</span>
         {% include 'snippets/toggle/open_button.html' with text="show more" controls_text="full" controls_uid=uuid class="is-small" %}
     </blockquote>
 </div>

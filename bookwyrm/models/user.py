@@ -263,6 +263,7 @@ class AnnualGoal(BookWyrmModel):
 
     @property
     def progress_percent(self):
+        ''' progress in an annual goal in percent form '''
         return int(float(self.book_count / self.goal) * 100)
 
 
