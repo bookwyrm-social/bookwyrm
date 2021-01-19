@@ -1,9 +1,11 @@
+from unittest.mock import patch
 from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 
 from bookwyrm import models
 
+@patch('bookwyrm.broadcast.broadcast_task.delay')
 class ReadThrough(TestCase):
     def setUp(self):
         self.client = Client()
@@ -25,7 +27,7 @@ class ReadThrough(TestCase):
 
         self.client.force_login(self.user)
 
-    def test_create_basic_readthrough(self):
+    def test_create_basic_readthrough(self, delay_mock):
         """A basic readthrough doesn't create a progress update"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -40,8 +42,9 @@ class ReadThrough(TestCase):
             datetime(2020, 11, 27, tzinfo=timezone.utc))
         self.assertEqual(readthroughs[0].progress, None)
         self.assertEqual(readthroughs[0].finish_date, None)
+        self.assertEqual(delay_mock.call_count, 1)
 
-    def test_create_progress_readthrough(self):
+    def test_create_progress_readthrough(self, delay_mock):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post('/start-reading/{}'.format(self.edition.id), {
@@ -60,6 +63,7 @@ class ReadThrough(TestCase):
         self.assertEqual(len(progress_updates), 1)
         self.assertEqual(progress_updates[0].mode, models.ProgressMode.PAGE)
         self.assertEqual(progress_updates[0].progress, 50)
+        self.assertEqual(delay_mock.call_count, 1)
 
         # Update progress
         self.client.post('/edit-readthrough', {
@@ -72,3 +76,4 @@ class ReadThrough(TestCase):
         self.assertEqual(len(progress_updates), 2)
         self.assertEqual(progress_updates[1].mode, models.ProgressMode.PAGE)
         self.assertEqual(progress_updates[1].progress, 100)
+        self.assertEqual(delay_mock.call_count, 1) # Edit doesn't publish anything
