@@ -34,7 +34,7 @@ window.onload = function() {
 
     // polling
     document.querySelectorAll('[data-poll]')
-        .forEach(t => setInterval(function () { polling(t) }, 10000));
+        .forEach(t => setInterval(function () { polling(t); }, 10000));
 };
 
 
@@ -46,8 +46,9 @@ function polling(el) {
         .then(data => updateCountElement(el, data));
 }
 function updateCountElement(el, data) {
+    const currentCount = el.innerHTML;
     const count = data[el.getAttribute('data-poll')];
-    if (count) {
+    if (count && count != currentCount) {
         removeClass(el, 'hidden');
         el.innerHTML = count;
     }
