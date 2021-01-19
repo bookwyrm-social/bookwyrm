@@ -34,23 +34,25 @@ window.onload = function() {
 
     // polling
     document.querySelectorAll('[data-poll]')
-        .forEach(t => setInterval(function () { polling(t); }, 10000));
+        .forEach(el => polling(el));
 };
 
-
 function polling(el) {
-    // poll the endpoint
-    fetch('/api/updates/' + el.getAttribute('data-poll'), {
-        method : "GET",
-    }).then(response => response.json())
-        .then(data => updateCountElement(el, data));
+    let delay = 10000 + (Math.random() * 1000);
+    setTimeout(function() {
+        fetch('/api/updates/' + el.getAttribute('data-poll'))
+            .then(response => response.json())
+            .then(data => updateCountElement(el, data));
+        polling(el);
+    }, delay, el);
 }
+
 function updateCountElement(el, data) {
-    const currentCount = el.innerHTML;
+    const currentCount = el.innerText;
     const count = data[el.getAttribute('data-poll')];
     if (count != currentCount) {
         addRemoveClass(el, 'hidden', count < 1);
-        el.innerHTML = count;
+        el.innerText = count;
     }
 }
 
