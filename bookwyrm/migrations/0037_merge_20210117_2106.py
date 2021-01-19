@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('bookwyrm', '0015_auto_20201128_0734'),
-        ('bookwyrm', '0036_annualgoal'),
+        ('bookwyrm', '0037_auto_20210118_1954'),
     ]
 
     operations = [
