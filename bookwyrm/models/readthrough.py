@@ -1,6 +1,7 @@
 ''' progress in a book '''
 from django.db import models
 from django.utils import timezone
+from django.core import validators
 
 from .base_model import BookWyrmModel
 
@@ -13,6 +14,7 @@ class ReadThrough(BookWyrmModel):
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     book = models.ForeignKey('Edition', on_delete=models.PROTECT)
     progress = models.IntegerField(
+        validators=[validators.MinValueValidator(0)],
         null=True,
         blank=True)
     progress_mode = models.CharField(
@@ -43,7 +45,7 @@ class ProgressUpdate(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     readthrough = models.ForeignKey('ReadThrough', on_delete=models.CASCADE)
-    progress = models.IntegerField()
+    progress = models.IntegerField(validators=[validators.MinValueValidator(0)])
     mode = models.CharField(
         max_length=3,
         choices=ProgressMode.choices,
