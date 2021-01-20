@@ -42,7 +42,7 @@ class ReadThrough(BookWyrmModel):
 class ProgressUpdate(BookWyrmModel):
     ''' Store progress through a book in the database. '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    readthrough = models.ForeignKey('ReadThrough', on_delete=models.PROTECT)
+    readthrough = models.ForeignKey('ReadThrough', on_delete=models.CASCADE)
     progress = models.IntegerField()
     mode = models.CharField(
         max_length=3,

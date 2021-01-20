@@ -77,3 +77,12 @@ class ReadThrough(TestCase):
         self.assertEqual(progress_updates[1].mode, models.ProgressMode.PAGE)
         self.assertEqual(progress_updates[1].progress, 100)
         self.assertEqual(delay_mock.call_count, 1) # Edit doesn't publish anything
+
+        self.client.post('/delete-readthrough', {
+            'id': readthroughs[0].id,
+        })
+
+        readthroughs = self.edition.readthrough_set.all()
+        updates = self.user.progressupdate_set.all()
+        self.assertEqual(len(readthroughs), 0)
+        self.assertEqual(len(updates), 0)
