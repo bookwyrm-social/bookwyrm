@@ -8,7 +8,7 @@
             <label class="label" for="id_goal">Reading goal:</label>
             <div class="field has-addons">
                 <div class="control">
-                    <input type="number" class="input" name="goal" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
+                    <input type="number" class="input" name="goal" min="1" id="id_goal" value="{% if goal %}{{ goal.goal }}{% else %}12{% endif %}">
                 </div>
                 <p class="button is-static" aria-hidden="true">books</p>
             </div>

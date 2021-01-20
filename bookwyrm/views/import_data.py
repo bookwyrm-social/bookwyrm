@@ -43,7 +43,7 @@ class Import(View):
             except (UnicodeDecodeError, ValueError):
                 return HttpResponseBadRequest('Not a valid csv file')
             goodreads_import.start_import(job)
-            return redirect('/import-status/%d' % job.id)
+            return redirect('/import/%d' % job.id)
         return HttpResponseBadRequest()
 
 
@@ -80,4 +80,4 @@ class ImportStatus(View):
             items,
         )
         goodreads_import.start_import(job)
-        return redirect('/import-status/%d' % job.id)
+        return redirect('/import/%d' % job.id)

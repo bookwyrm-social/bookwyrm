@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
@@ -226,7 +227,9 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 class AnnualGoal(BookWyrmModel):
     ''' set a goal for how many books you read in a year '''
     user = models.ForeignKey('User', on_delete=models.PROTECT)
-    goal = models.IntegerField()
+    goal = models.IntegerField(
+        validators=[MinValueValidator(1)]
+    )
     year = models.IntegerField(default=timezone.now().year)
     privacy = models.CharField(
         max_length=255,
