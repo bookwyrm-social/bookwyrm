@@ -1,25 +1,27 @@
-<form class="field is-grouped is-small pl-2" action="/edit-readthrough" method="POST">
+<form class="field is-grouped is-small" action="/edit-readthrough" method="POST">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}"/>
+    <label class="label is-align-self-center mb-0 pr-2" for="progress">Currently at</label>
     <div class="control">
-        {% if readthrough.progress_mode == 'PG' %}
-        on page
-        {% else %}
-        currently at
-        {% endif %}
+        <div class="field has-addons">
+            <div class="control">
+                <input
+                 aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
+                 class="input is-small" type="number"
+                 name="progress" size="3" value="{{ readthrough.progress|default:'' }}">
+            </div>
+            <div class="control">
+                <a class="button is-small is-static">
+                    {% if readthrough.progress_mode == 'PG' %}
+                    pages
+                    {% else %}
+                    %
+                    {% endif %}
+                </a>
+            </div>
+        </div>
     </div>
     <div class="control">
-        <input
-         aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
-         class="input is-small" type="text"
-         name="progress" size="3" value="{{ readthrough.progress|default:'' }}">
-    </div>
-    <div class="control">
-        {% if readthrough.progress_mode == 'PG' %}
-            {% if book.pages %} of {{ book.pages }} {% endif %}
-        {% else %} % {% endif %}
-    </div>
-    <div class="control">
-        <button class="button is-small px-2" type="submit">Go</button>
+        <button class="button is-small px-2" type="submit">Save</button>
     </div>
 </form>
