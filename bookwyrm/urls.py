@@ -3,7 +3,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
+
 from bookwyrm import incoming, settings, views, wellknown
+from bookwyrm.views.rss_feed import RssFeed
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -75,6 +77,7 @@ urlpatterns = [
     re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
     re_path(r'^edit-profile/?$', views.EditUser.as_view()),
+    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
 
     # reading goals
     re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path, views.Goal.as_view()),
