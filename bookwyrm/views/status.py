@@ -86,8 +86,6 @@ class CreateStatus(View):
         # add reply parent to mentions and notify
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
-            for mention_user in status.reply_parent.mention_users.all():
-                status.mention_users.add(mention_user)
 
             if status.reply_parent.user.local:
                 create_notification(

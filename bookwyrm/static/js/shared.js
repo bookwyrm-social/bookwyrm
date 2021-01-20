@@ -112,7 +112,9 @@ function toggleAction(e) {
     // set focus, if appropriate
     var focus = el.getAttribute('data-focus-target');
     if (focus) {
-        document.getElementById(focus).focus();
+        var focusEl = document.getElementById(focus);
+        focusEl.focus();
+        setTimeout(function(){ focusEl.selectionStart = focusEl.selectionEnd = 10000; }, 0);
     }
 }
 

@@ -228,7 +228,7 @@ class TemplateTags(TestCase):
         status = models.Status.objects.create(
             content='hi', user=self.remote_user)
         result = bookwyrm_tags.get_mentions(status, self.user)
-        self.assertEqual(result, '@rat@example.com')
+        self.assertEqual(result, '@rat@example.com ')
 
 
     def test_get_status_preview_name(self):

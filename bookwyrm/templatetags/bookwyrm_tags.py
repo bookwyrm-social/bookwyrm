@@ -142,10 +142,10 @@ def get_markdown(content):
 
 @register.filter(name='mentions')
 def get_mentions(status, user):
-    ''' anyone tagged or replied to in this status '''
+    ''' people to @ in a reply: the parent and all mentions '''
     mentions = set([status.user] + list(status.mention_users.all()))
     return ' '.join(
-        '@' + get_user_identifier(m) for m in mentions if not m == user)
+        '@' + get_user_identifier(m) for m in mentions if not m == user) + ' '
 
 @register.filter(name='status_preview_name')
 def get_status_preview_name(obj):
