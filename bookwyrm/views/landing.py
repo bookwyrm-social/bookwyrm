@@ -13,7 +13,6 @@ from .helpers import get_activity_feed
 
 
 # pylint: disable= no-self-use
-@method_decorator(login_required, name='dispatch')
 class About(View):
     ''' create invites '''
     def get(self, request):

@@ -66,6 +66,7 @@ You'll have to install the Docker and docker-compose. When you're ready, run:
 docker-compose build
 docker-compose run --rm web python manage.py migrate
 docker-compose run --rm web python manage.py initdb
+docker-compose up
 ```
 
 Once the build is complete, you can access the instance at `localhost:1333`
