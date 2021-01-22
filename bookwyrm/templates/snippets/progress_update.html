@@ -1,27 +1,27 @@
 <form class="field is-grouped is-small" action="/edit-readthrough" method="POST">
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}"/>
-    <label class="label is-align-self-center mb-0 pr-2" for="progress">Currently at</label>
-    <div class="control">
-        <div class="field has-addons">
+    <div class="field">
+        <label class="label is-align-self-center mb-0 pr-2" for="progress">Progress:</label>
+        <div class="field has-addons mb-0">
             <div class="control">
                 <input
                  aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
                  class="input is-small" type="number"
                  name="progress" size="3" value="{{ readthrough.progress|default:'' }}">
             </div>
+            <div class="control select is-small">
+                <select name="progress_mode" aria-label="Progress mode">
+                    <option value="PG" {% if readthrough.progress_mode == 'PG' %}selected{% endif %}>pages</option>
+                    <option value="PCT" {% if readthrough.progress_mode == 'PCT' %}selected{% endif %}>percent</option>
+                </select>
+            </div>
             <div class="control">
-                <a class="button is-small is-static">
-                    {% if readthrough.progress_mode == 'PG' %}
-                    pages
-                    {% else %}
-                    %
-                    {% endif %}
-                </a>
+                <button class="button is-small px-2 is-primary" type="submit">Save</button>
             </div>
         </div>
-    </div>
-    <div class="control">
-        <button class="button is-small px-2" type="submit">Save</button>
+        {% if readthrough.progress_mode == 'PG' and book.pages %}
+        <p class="help">of {{ book.pages }} pages</p>
+        {% endif %}
     </div>
 </form>
