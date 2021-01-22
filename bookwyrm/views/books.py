@@ -74,7 +74,8 @@ class Book(View):
 
             for readthrough in readthroughs:
                 readthrough.progress_updates = \
-                    readthrough.progressupdate_set.all().order_by('-updated_date')
+                    readthrough.progressupdate_set.all() \
+                    .order_by('-updated_date')
 
             user_shelves = models.ShelfBook.objects.filter(
                 added_by=request.user, book=book
@@ -98,7 +99,6 @@ class Book(View):
             'user_shelves': user_shelves,
             'other_edition_shelves': other_edition_shelves,
             'readthroughs': readthroughs,
-            'show_progress': ('showprogress' in request.GET),
             'path': '/book/%s' % book_id,
         }
         return TemplateResponse(request, 'book.html', data)
