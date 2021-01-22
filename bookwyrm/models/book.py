@@ -73,6 +73,10 @@ class Book(BookDataModel):
         return ', '.join(a.name for a in self.authors.all())
 
     @property
+    def latest_readthrough(self):
+        return self.readthrough_set.order_by('-updated_date').first()
+
+    @property
     def edition_info(self):
         ''' properties of this edition, as a string '''
         items = [

@@ -1,6 +1,10 @@
 {% extends 'snippets/components/modal.html' %}
 {% block modal-title %}Delete these read dates?{% endblock %}
-
+{% block modal-body %}
+{% if readthrough.progress_updates|length > 0 %}
+You are deleting this readthrough and its {{ readthrough.progress_updates|length }} associated progress updates.
+{% endif %}
+{% endblock %}
 {% block modal-footer %}
 <form name="delete-readthrough-{{ readthrough.id }}" action="/delete-readthrough" method="POST">
     {% csrf_token %}

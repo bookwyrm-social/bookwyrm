@@ -12,9 +12,6 @@ trap showerr EXIT
 source .env
 trap - EXIT
 
-# show commands as they're executed
-set -x
-
 function clean {
     docker-compose stop
     docker-compose rm -f
@@ -38,9 +35,15 @@ function initdb {
     execweb python manage.py initdb
 }
 
-case "$1" in
+CMD=$1
+shift
+
+# show commands as they're executed
+set -x
+
+case "$CMD" in
     up)
-        docker-compose up --build
+        docker-compose up --build "$@"
         ;;
     run)
         docker-compose run --rm --service-ports web
@@ -57,12 +60,10 @@ case "$1" in
         clean
         ;;
     makemigrations)
-        shift 1
         execweb python manage.py makemigrations "$@"
         ;;
     migrate)
         execweb python manage.py rename_app fedireads bookwyrm
-        shift 1
         execweb python manage.py migrate "$@"
         ;;
     bash)
@@ -78,11 +79,9 @@ case "$1" in
         docker-compose restart celery_worker
         ;;
     test)
-        shift 1
         execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        shift 1
         execweb pytest --no-cov-on-fail "$@"
         ;;
     test_report)

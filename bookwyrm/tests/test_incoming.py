@@ -506,7 +506,7 @@ class Incoming(TestCase):
     def test_handle_update_edition(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_edition.json')
+            'data/bw_edition.json')
         bookdata = json.loads(datafile.read_bytes())
 
         models.Work.objects.create(
@@ -527,7 +527,7 @@ class Incoming(TestCase):
     def test_handle_update_work(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_work.json')
+            'data/bw_work.json')
         bookdata = json.loads(datafile.read_bytes())
 
         book = models.Work.objects.create(

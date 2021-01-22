@@ -15,7 +15,7 @@ from .landing import About, Home, Feed, Discover
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
-from .reading import start_reading, finish_reading
+from .reading import start_reading, finish_reading, delete_progressupdate
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .tag import Tag, AddTag, RemoveTag
 from .search import Search

@@ -126,6 +126,7 @@ urlpatterns = [
     re_path(r'^edit-readthrough/?$', views.edit_readthrough),
     re_path(r'^delete-readthrough/?$', views.delete_readthrough),
     re_path(r'^create-readthrough/?$', views.create_readthrough),
+    re_path(r'^delete-progressupdate/?$', views.delete_progressupdate),
 
     re_path(r'^start-reading/(?P<book_id>\d+)/?$', views.start_reading),
     re_path(r'^finish-reading/(?P<book_id>\d+)/?$', views.finish_reading),

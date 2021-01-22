@@ -30,6 +30,9 @@ def start_reading(request, book_id):
     if readthrough:
         readthrough.save()
 
+    # create a progress update if we have a page
+    readthrough.create_update()
+
     # shelve the book
     if request.POST.get('reshelve', True):
         try:
@@ -104,6 +107,10 @@ def edit_readthrough(request):
         return HttpResponseBadRequest()
     readthrough.save()
 
+    # record the progress update individually
+    # use default now for date field
+    readthrough.create_update()
+
     return redirect(request.headers.get('Referer', '/'))
 
 
@@ -166,7 +173,36 @@ def update_readthrough(request, book=None, create=True):
         except ParserError:
             pass
 
+    progress = request.POST.get('progress')
+    if progress:
+        try:
+            progress = int(progress)
+            readthrough.progress = progress
+        except ValueError:
+            pass
+
+    progress_mode = request.POST.get('progress_mode')
+    if progress_mode:
+        try:
+            progress_mode = models.ProgressMode(progress_mode)
+            readthrough.progress_mode = progress_mode
+        except ValueError:
+            pass
+
     if not readthrough.start_date and not readthrough.finish_date:
         return None
 
     return readthrough
+
+@login_required
+@require_POST
+def delete_progressupdate(request):
+    ''' remove a progress update '''
+    update = get_object_or_404(models.ProgressUpdate, id=request.POST.get('id'))
+
+    # don't let people edit other people's data
+    if request.user != update.user:
+        return HttpResponseBadRequest()
+
+    update.delete()
+    return redirect(request.headers.get('Referer', '/'))

@@ -7,6 +7,31 @@
         <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </label>
 </div>
+{# Only show progress for editing existing readthroughs #}
+{% if readthrough.id and not readthrough.finish_date %}
+<div class="columns">
+    <div class="column">
+        <div class="field">
+            <label class="label">
+                Progress
+                <input type="number" name="progress" class="input" id="id_progress-{{ readthrough.id }}" value="{{ readthrough.progress }}">
+            </label>
+        </div>
+    </div>
+    <div class="column">
+        <div class="control mt-5">
+            <label class="radio">
+                <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PG" {% if readthrough.progress_mode == 'PG' %}checked{% endif %}>
+                pages
+            </label>
+            <label class="radio">
+                <input type="radio" name="progress_mode" id="id_progress_mode-{{ readthrough.id }}" value="PCT" {% if readthrough.progress_mode == 'PCT' %}checked{% endif %}>
+                percent
+            </label>
+        </div>
+    </div>
+</div>
+{% endif %}
 <div class="field">
     <label class="label">
         Finished reading

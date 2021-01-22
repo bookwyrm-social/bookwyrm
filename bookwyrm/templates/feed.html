@@ -48,6 +48,10 @@
             </div>
             <div class="card-content">
                 {% include 'snippets/shelve_button.html' with book=book %}
+                {% active_shelf book as active_shelf %}
+                {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
+                {% include 'snippets/progress_update.html' with readthrough=book.latest_readthrough %}
+                {% endif %}
                 {% include 'snippets/create_status.html' with book=book %}
             </div>
         </div>
