@@ -1,4 +1,5 @@
 {% extends 'snippets/components/dropdown.html' %}
+{% load bookwyrm_tags %}
 
 {% block dropdown-trigger %}
 <span class="icon icon-dots-three">
@@ -7,11 +8,22 @@
 {% endblock %}
 
 {% block dropdown-list %}
+{% if status.user == request.user %}
 <li role="menuitem">
     <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
         <button class="button is-danger is-light is-fullwidth is-small" type="submit">
             Delete post
+        </button>
+    </form>
+</li>
+<li><hr class="navbar-divider"></li>
+{% endif %}
+<li role="menuitem">
+    <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
+        {% csrf_token %}
+        <button class="button is-danger is-light is-fullwidth is-small" type="submit">
+            Block @{{ status.user|username }}
         </button>
     </form>
 </li>
