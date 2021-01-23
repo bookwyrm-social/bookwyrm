@@ -1,4 +1,4 @@
-{{ obj.user.username }}{% if obj.status_type == 'GeneratedNote' %}
+{{ obj.user.display_name }}{% if obj.status_type == 'GeneratedNote' %}
     {{ obj.content | safe }}
 {% elif obj.status_type == 'Review' and not obj.name and not obj.content%}
     rated

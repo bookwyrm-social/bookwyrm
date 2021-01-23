@@ -17,11 +17,11 @@ class RssFeed(Feed):
         return obj.local_path
 
     def title(self, obj):
-        return f"Status updates from {obj.username}"
+        return f"Status updates from {obj.display_name}"
 
 
     def items(self, obj):
-        return get_activity_feed(obj, ['public', 'unlisted', 'followers'])
+        return get_activity_feed(obj, ['public', 'unlisted'])
 
     
     def item_link(self, item):
