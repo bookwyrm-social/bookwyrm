@@ -38,11 +38,21 @@ def object_visible_to_user(viewer, obj):
     ''' is a user authorized to view an object? '''
     if not obj:
         return False
+
+    # viewer can't see it if the object's owner blocked them
+    if viewer in obj.user.blocks.all():
+        return False
+
+    # you can see your own posts and any public or unlisted posts
     if viewer == obj.user or obj.privacy in ['public', 'unlisted']:
         return True
+
+    # you can see the followers only posts of people you follow
     if obj.privacy == 'followers' and \
             obj.user.followers.filter(id=viewer.id).first():
         return True
+
+    # you can see dms you are tagged in
     if isinstance(obj, models.Status):
         if obj.privacy == 'direct' and \
                 obj.mention_users.filter(id=viewer.id).first():

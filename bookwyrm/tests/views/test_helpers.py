@@ -248,3 +248,63 @@ class ViewsHelpers(TestCase):
             views.helpers.handle_reading_status(
                 self.local_user, self.shelf, self.book, 'public')
         self.assertFalse(models.GeneratedNote.objects.exists())
+
+    def test_object_visible_to_user(self):
+        ''' does a user have permission to view an object '''
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='public')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Shelf.objects.create(
+            name='test', user=self.remote_user, privacy='unlisted')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='followers')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+    def test_object_visible_to_user_follower(self):
+        ''' what you can see if you follow a user '''
+        self.remote_user.followers.add(self.local_user)
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='followers')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+    def test_object_visible_to_user_blocked(self):
+        ''' you can't see it if they block you '''
+        self.remote_user.blocks.add(self.local_user)
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='public')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Shelf.objects.create(
+            name='test', user=self.remote_user, privacy='unlisted')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
