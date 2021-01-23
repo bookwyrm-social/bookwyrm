@@ -3,6 +3,7 @@ import json
 from urllib.parse import urldefrag
 
 import django.db.utils
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
@@ -51,6 +52,7 @@ def shared_inbox(request):
         'Follow': handle_follow,
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
+        'Block': handle_block,
         'Create': handle_create,
         'Delete': handle_delete_status,
         'Like': handle_favorite,
@@ -178,6 +180,22 @@ def handle_follow_reject(activity):
     )
     request.delete()
     #raises models.UserFollowRequest.DoesNotExist
+
+@app.task
+def handle_block(activity):
+    ''' blocking a user '''
+    # create "block" databse entry
+    block = activitypub.Block(**activity).to_model(models.UserBlocks)
+
+    # remove follow relationships
+    models.UserFollows.objects.filter(
+        Q(user_subject=block.user_subject, user_object=block.user_object) | \
+            Q(user_subject=block.user_object, user_object=block.user_subject)
+    ).delete()
+    models.UserFollowRequest.objects.filter(
+        Q(user_subject=block.user_subject, user_object=block.user_object) | \
+            Q(user_subject=block.user_object, user_object=block.user_subject)
+    ).delete()
 
 
 @app.task

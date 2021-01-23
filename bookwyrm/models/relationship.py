@@ -94,5 +94,5 @@ class UserFollowRequest(UserRelationship):
 
 class UserBlocks(UserRelationship):
     ''' prevent another user from following you and seeing your posts '''
-    # TODO: not implemented
     status = 'blocks'
+    activity_serializer = activitypub.Block

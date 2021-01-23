@@ -48,6 +48,10 @@ class Follow(Verb):
     ''' Follow activity '''
     type: str = 'Follow'
 
+@dataclass(init=False)
+class Block(Verb):
+    ''' Block activity '''
+    type: str = 'Block'
 
 @dataclass(init=False)
 class Accept(Verb):

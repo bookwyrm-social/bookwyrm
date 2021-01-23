@@ -540,3 +540,29 @@ class Incoming(TestCase):
             incoming.handle_update_work({'object': bookdata})
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, 'Piranesi')
+
+
+    def test_handle_blocks(self):
+        ''' create a "block" database entry from an activity '''
+        self.local_user.followers.add(self.remote_user)
+        models.UserFollowRequest.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user)
+        self.assertTrue(models.UserFollows.objects.exists())
+        self.assertTrue(models.UserFollowRequest.objects.exists())
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/9e1f41ac-9ddd-4159-aede-9f43c6b9314f",
+            "type": "Block",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse"
+        }
+
+        incoming.handle_block(activity)
+        block = models.UserBlocks.objects.get()
+        self.assertEqual(block.user_subject, self.remote_user)
+        self.assertEqual(block.user_object, self.local_user)
+
+        self.assertFalse(models.UserFollows.objects.exists())
+        self.assertFalse(models.UserFollowRequest.objects.exists())
