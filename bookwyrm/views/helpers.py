@@ -71,6 +71,11 @@ def get_activity_feed(
     # exclude deleted
     queryset = queryset.exclude(deleted=True).order_by('-published_date')
 
+    # exclude blocks from both directions
+    blocked = models.User.objects.filter(id__in=user.blocks.all()).all()
+    queryset = queryset.exclude(
+        Q(user__in=blocked) | Q(user__blocks=user))
+
     # you can't see followers only or direct messages if you're not logged in
     if user.is_anonymous:
         privacy = [p for p in privacy if not p in ['followers', 'direct']]

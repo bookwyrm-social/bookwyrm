@@ -154,6 +154,34 @@ class ViewsHelpers(TestCase):
         self.assertEqual(statuses[0], rat_mention)
 
 
+    def test_get_activity_feed_blocks(self):
+        ''' feed generation with blocked users '''
+        rat = models.User.objects.create_user(
+            'rat', 'rat@rat.rat', 'password', local=True)
+
+        public_status = models.Comment.objects.create(
+            content='public status', book=self.book, user=self.local_user)
+        rat_public = models.Status.objects.create(
+            content='blah blah', user=rat)
+
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, ['public'])
+        self.assertEqual(len(statuses), 2)
+
+        # block relationship
+        rat.blocks.add(self.local_user)
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, ['public'])
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], public_status)
+
+        statuses = views.helpers.get_activity_feed(
+            rat, ['public'])
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], rat_public)
+
+
+
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
