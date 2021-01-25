@@ -17,14 +17,9 @@
         </button>
     </form>
 </li>
-<li><hr class="navbar-divider"></li>
-{% endif %}
+{% else %}
 <li role="menuitem">
-    <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
-        {% csrf_token %}
-        <button class="button is-danger is-light is-fullwidth is-small" type="submit">
-            Block @{{ status.user|username }}
-        </button>
-    </form>
+    {% include 'snippets/block_button.html' with user=status.user %}
 </li>
+{% endif %}
 {% endblock %}

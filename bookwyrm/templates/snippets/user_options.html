@@ -1,0 +1,14 @@
+{% extends 'snippets/components/dropdown.html' %}
+{% load bookwyrm_tags %}
+
+{% block dropdown-trigger %}
+<span class="icon icon-dots-three">
+    <span class="is-sr-only">More options</span>
+</span>
+{% endblock %}
+
+{% block dropdown-list %}
+<li role="menuitem">
+    {% include 'snippets/block_button.html' with user=user %}
+</li>
+{% endblock %}

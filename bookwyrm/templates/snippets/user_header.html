@@ -35,11 +35,14 @@
         </div>
     </div>
     {% if not is_self %}
-    {% include 'snippets/follow_button.html' with user=user %}
-    <form name="blocks" method="post" action="/block/{{ user.id }}">
-        {% csrf_token %}
-        <button type="submit">Block</button>
-    </form>
+    <div class="field has-addons">
+        <div class="control">
+            {% include 'snippets/follow_button.html' with user=user %}
+        </div>
+        <div class="control">
+            {% include 'snippets/user_options.html' with user=user class="is-small" %}
+        </div>
+    </div>
     {% endif %}
 
     {% if is_self and user.follower_requests.all %}
