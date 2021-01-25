@@ -186,16 +186,7 @@ def handle_block(activity):
     ''' blocking a user '''
     # create "block" databse entry
     block = activitypub.Block(**activity).to_model(models.UserBlocks)
-
-    # remove follow relationships
-    models.UserFollows.objects.filter(
-        Q(user_subject=block.user_subject, user_object=block.user_object) | \
-            Q(user_subject=block.user_object, user_object=block.user_subject)
-    ).delete()
-    models.UserFollowRequest.objects.filter(
-        Q(user_subject=block.user_subject, user_object=block.user_object) | \
-            Q(user_subject=block.user_object, user_object=block.user_subject)
-    ).delete()
+    # the removing relationships is handled in post-save hook in model
 
 
 @app.task
