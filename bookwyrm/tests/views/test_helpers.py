@@ -154,6 +154,34 @@ class ViewsHelpers(TestCase):
         self.assertEqual(statuses[0], rat_mention)
 
 
+    def test_get_activity_feed_blocks(self):
+        ''' feed generation with blocked users '''
+        rat = models.User.objects.create_user(
+            'rat', 'rat@rat.rat', 'password', local=True)
+
+        public_status = models.Comment.objects.create(
+            content='public status', book=self.book, user=self.local_user)
+        rat_public = models.Status.objects.create(
+            content='blah blah', user=rat)
+
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, ['public'])
+        self.assertEqual(len(statuses), 2)
+
+        # block relationship
+        rat.blocks.add(self.local_user)
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, ['public'])
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], public_status)
+
+        statuses = views.helpers.get_activity_feed(
+            rat, ['public'])
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(statuses[0], rat_public)
+
+
+
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
@@ -248,3 +276,63 @@ class ViewsHelpers(TestCase):
             views.helpers.handle_reading_status(
                 self.local_user, self.shelf, self.book, 'public')
         self.assertFalse(models.GeneratedNote.objects.exists())
+
+    def test_object_visible_to_user(self):
+        ''' does a user have permission to view an object '''
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='public')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Shelf.objects.create(
+            name='test', user=self.remote_user, privacy='unlisted')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='followers')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+    def test_object_visible_to_user_follower(self):
+        ''' what you can see if you follow a user '''
+        self.remote_user.followers.add(self.local_user)
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='followers')
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='direct')
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+    def test_object_visible_to_user_blocked(self):
+        ''' you can't see it if they block you '''
+        self.remote_user.blocks.add(self.local_user)
+        obj = models.Status.objects.create(
+            content='hi', user=self.remote_user, privacy='public')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))
+
+        obj = models.Shelf.objects.create(
+            name='test', user=self.remote_user, privacy='unlisted')
+        self.assertFalse(
+            views.helpers.object_visible_to_user(self.local_user, obj))

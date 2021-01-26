@@ -1,4 +1,5 @@
 {% extends 'snippets/components/dropdown.html' %}
+{% load bookwyrm_tags %}
 
 {% block dropdown-trigger %}
 <span class="icon icon-dots-three">
@@ -7,6 +8,7 @@
 {% endblock %}
 
 {% block dropdown-list %}
+{% if status.user == request.user %}
 <li role="menuitem">
     <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
@@ -15,4 +17,9 @@
         </button>
     </form>
 </li>
+{% else %}
+<li role="menuitem">
+    {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" %}
+</li>
+{% endif %}
 {% endblock %}

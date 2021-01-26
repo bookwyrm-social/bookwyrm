@@ -14,7 +14,7 @@ from .person import Person, PublicKey
 from .response import ActivitypubResponse
 from .book import Edition, Work, Author
 from .verbs import Create, Delete, Undo, Update
-from .verbs import Follow, Accept, Reject
+from .verbs import Follow, Accept, Reject, Block
 from .verbs import Add, AddBook, Remove
 
 # this creates a list of all the Activity types that we can serialize,

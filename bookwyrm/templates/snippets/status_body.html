@@ -54,11 +54,9 @@
 <div class="card-footer-item">
     <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
 </div>
-{% if status.user == request.user %}
 <div class="card-footer-item">
     {% include 'snippets/status_options.html' with class="is-small" right=True %}
 </div>
-{% endif %}
 {% endblock %}
 
 

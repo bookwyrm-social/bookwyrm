@@ -20,6 +20,9 @@ class UserViews(TestCase):
         self.local_user = models.User.objects.create_user(
             'mouse@local.com', 'mouse@mouse.mouse', 'password',
             local=True, localname='mouse')
+        self.rat = models.User.objects.create_user(
+            'rat@local.com', 'rat@rat.rat', 'password',
+            local=True, localname='rat')
 
 
     def test_user_page(self):
@@ -41,6 +44,18 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
+    def test_user_page_blocked(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        view = views.User.as_view()
+        request = self.factory.get('')
+        request.user = self.local_user
+        self.rat.blocks.add(self.local_user)
+        with patch('bookwyrm.views.user.is_api_request') as is_api:
+            is_api.return_value = False
+            result = view(request, 'rat')
+        self.assertEqual(result.status_code, 404)
+
+
     def test_followers_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Followers.as_view()
@@ -60,6 +75,18 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
+    def test_followers_page_blocked(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        view = views.Followers.as_view()
+        request = self.factory.get('')
+        request.user = self.local_user
+        self.rat.blocks.add(self.local_user)
+        with patch('bookwyrm.views.user.is_api_request') as is_api:
+            is_api.return_value = False
+            result = view(request, 'rat')
+        self.assertEqual(result.status_code, 404)
+
+
     def test_following_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Following.as_view()
@@ -77,6 +104,18 @@ class UserViews(TestCase):
             result = view(request, 'mouse')
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
+
+
+    def test_following_page_blocked(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        view = views.Following.as_view()
+        request = self.factory.get('')
+        request.user = self.local_user
+        self.rat.blocks.add(self.local_user)
+        with patch('bookwyrm.views.user.is_api_request') as is_api:
+            is_api.return_value = False
+            result = view(request, 'rat')
+        self.assertEqual(result.status_code, 404)
 
 
     def test_edit_profile_page(self):

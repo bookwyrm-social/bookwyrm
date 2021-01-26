@@ -18,7 +18,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.broadcast import broadcast
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_activity_feed, get_user_from_username, is_api_request
-from .helpers import object_visible_to_user
+from .helpers import is_blocked, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -29,6 +29,10 @@ class User(View):
         try:
             user = get_user_from_username(username)
         except models.User.DoesNotExist:
+            return HttpResponseNotFound()
+
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -97,6 +101,10 @@ class Followers(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
+            return HttpResponseNotFound()
+
         if is_api_request(request):
             return ActivitypubResponse(
                 user.to_followers_activity(**request.GET))
@@ -118,6 +126,10 @@ class Following(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
+            return HttpResponseNotFound()
+
         if is_api_request(request):
             return ActivitypubResponse(
                 user.to_following_activity(**request.GET))
@@ -135,14 +147,11 @@ class Following(View):
 class EditUser(View):
     ''' edit user view '''
     def get(self, request):
-        ''' profile page for a user '''
-        user = request.user
-
-        form = forms.EditUserForm(instance=request.user)
+        ''' edit profile page for a user '''
         data = {
             'title': 'Edit profile',
-            'form': form,
-            'user': user,
+            'form': forms.EditUserForm(instance=request.user),
+            'user': request.user,
         }
         return TemplateResponse(request, 'edit_user.html', data)
 

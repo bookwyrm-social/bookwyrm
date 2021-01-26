@@ -540,3 +540,46 @@ class Incoming(TestCase):
             incoming.handle_update_work({'object': bookdata})
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, 'Piranesi')
+
+
+    def test_handle_blocks(self):
+        ''' create a "block" database entry from an activity '''
+        self.local_user.followers.add(self.remote_user)
+        models.UserFollowRequest.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user)
+        self.assertTrue(models.UserFollows.objects.exists())
+        self.assertTrue(models.UserFollowRequest.objects.exists())
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/9e1f41ac-9ddd-4159-aede-9f43c6b9314f",
+            "type": "Block",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse"
+        }
+
+        incoming.handle_block(activity)
+        block = models.UserBlocks.objects.get()
+        self.assertEqual(block.user_subject, self.remote_user)
+        self.assertEqual(block.user_object, self.local_user)
+
+        self.assertFalse(models.UserFollows.objects.exists())
+        self.assertFalse(models.UserFollowRequest.objects.exists())
+
+    def test_handle_unblock(self):
+        ''' undoing a block '''
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://friend.camp/users/tripofmice#blocks/1155/undo",
+            "type": "Undo",
+            "actor": "https://friend.camp/users/tripofmice",
+            "object": {
+                "id": "https://friend.camp/0a7d85f7-6359-4c03-8ab6-74e61a8fb678",
+                "type": "Block",
+                "actor": "https://friend.camp/users/tripofmice",
+            "object": "https://1b1a78582461.ngrok.io/user/mouse"
+            }
+        }
+
+        self.remote_user.blocks.add(self.local_user)
