@@ -31,6 +31,11 @@ class User(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
+        # make sure we're not blocked
+        if request.user.is_authenticated:
+            if request.user in user.blocks.all():
+                return HttpResponseNotFound()
+
         if is_api_request(request):
             # we have a json request
             return ActivitypubResponse(user.to_activity())
