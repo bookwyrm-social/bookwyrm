@@ -1,5 +1,9 @@
 ''' test for app action functionality '''
+import pathlib
 from unittest.mock import patch
+from PIL import Image
+
+from django.core.files.base import ContentFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -97,3 +101,15 @@ class UserViews(TestCase):
         with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request)
         self.assertEqual(self.local_user.name, 'New Name')
+
+
+    def test_crop_avatar(self):
+        ''' reduce that image size '''
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            '../../static/images/no_cover.jpg')
+        image = Image.open(image_file)
+
+        result = views.user.crop_avatar(image)
+        self.assertIsInstance(result, ContentFile)
+        image_result = Image.open(result)
+        self.assertEqual(image_result.size, (120, 120))
