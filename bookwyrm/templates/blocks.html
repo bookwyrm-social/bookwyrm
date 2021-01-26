@@ -5,6 +5,9 @@ Blocked Users
 {% endblock %}
 
 {% block panel %}
+{% if not request.user.blocks.exists %}
+<p>No users currently blocked.</p>
+{% else %}
 <ul>
 {% for user in request.user.blocks.all %}
     <li class="is-flex">
@@ -15,7 +18,7 @@ Blocked Users
             {% include 'snippets/block_button.html' with user=user %}
         </p>
     </li>
-{% endfor %}    
+{% endfor %}
 </ul>
+{% endif %}
 {% endblock %}
-
