@@ -190,3 +190,9 @@ def handle_reading_status(user, shelf, book, privacy):
     status.save()
 
     broadcast(user, status.to_create_activity(user))
+
+def is_blocked(viewer, user):
+    ''' is this viewer blocked by the user? '''
+    if viewer.is_authenticated and viewer in user.blocks.all():
+        return True
+    return False
