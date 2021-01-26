@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<header class="block column is-offset-one-quarter pl-1">
+    <h1 class="title">{% block header %}{% endblock %}</h1>
+</header>
+
+<div class="block columns">
+    <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">Account</h2>
+        <ul class="menu-list">
+            <li>
+                <a href="/edit-profile"{% if '/edit-profile' in request.path %} class="is-active" aria-selected="true"{% endif %}>Profile</a>
+            </li>
+            <li>
+                <a href="/change-password"{% if '/change-password' in request.path %} class="is-active" aria-selected="true"{% endif %}>Change password</a>
+            </li>
+        </ul>
+        <h2 class="menu-label">Relationships</h2>
+        <ul class="menu-list">
+            <li>
+                <a href="/block"{% if '/block' in request.path %} class="is-active" aria-selected="true"{% endif %}>Blocked users</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="column content">
+        {% block panel %}{% endblock %}
+    </div>
+</div>
+
+{% endblock %}

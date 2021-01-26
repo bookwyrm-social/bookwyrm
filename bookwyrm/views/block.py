@@ -1,6 +1,7 @@
 ''' views for actions you can take in the application '''
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -13,6 +14,8 @@ class Block(View):
     ''' blocking users '''
     def get(self, request):
         ''' list of blocked users? '''
+        return TemplateResponse(
+            request, 'blocks.html', {'title': 'Blocked Users'})
 
     def post(self, request, user_id):
         ''' block a user '''
@@ -26,4 +29,4 @@ class Block(View):
                 privacy='direct',
                 direct_recipients=[to_block]
             )
-        return redirect('/blocks')
+        return redirect('/block')

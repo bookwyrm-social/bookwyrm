@@ -47,7 +47,7 @@ urlpatterns = [
     re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
             views.PasswordReset.as_view()),
-    re_path(r'^change-password/?$', views.ChangePassword),
+    re_path(r'^change-password/?$', views.ChangePassword.as_view()),
 
     # invites
     re_path(r'^invite/?$', views.ManageInvites.as_view()),
@@ -137,5 +137,6 @@ urlpatterns = [
     re_path(r'^accept-follow-request/?$', views.accept_follow_request),
     re_path(r'^delete-follow-request/?$', views.delete_follow_request),
 
+    re_path(r'^block/?$', views.Block.as_view()),
     re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

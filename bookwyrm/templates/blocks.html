@@ -1,0 +1,21 @@
+{% extends 'preferences_layout.html' %}
+
+{% block header %}
+Blocked Users
+{% endblock %}
+
+{% block panel %}
+<ul>
+{% for user in request.user.blocks.all %}
+    <li class="is-flex">
+        <p>
+            {% include 'snippets/avatar.html' with user=user %} {% include 'snippets/username.html' with user=user %}
+        </p>
+        <p class="mr-2">
+            {% include 'snippets/block_button.html' with user=user %}
+        </p>
+    </li>
+{% endfor %}    
+</ul>
+{% endblock %}
+

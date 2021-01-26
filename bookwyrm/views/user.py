@@ -147,14 +147,11 @@ class Following(View):
 class EditUser(View):
     ''' edit user view '''
     def get(self, request):
-        ''' profile page for a user '''
-        user = request.user
-
-        form = forms.EditUserForm(instance=request.user)
+        ''' edit profile page for a user '''
         data = {
             'title': 'Edit profile',
-            'form': form,
-            'user': user,
+            'form': forms.EditUserForm(instance=request.user),
+            'user': request.user,
         }
         return TemplateResponse(request, 'edit_user.html', data)
 
