@@ -1,9 +1,11 @@
 ''' views for actions you can take in the application '''
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from bookwyrm.broadcast import broadcast
@@ -30,3 +32,27 @@ class Block(View):
                 direct_recipients=[to_block]
             )
         return redirect('/block')
+
+
+@require_POST
+@login_required
+def unblock(request, user_id):
+    ''' undo a block '''
+    to_unblock = get_object_or_404(models.User, id=user_id)
+    try:
+        block = models.UserBlocks.objects.get(
+            user_subject=request.user,
+            user_object=to_unblock,
+        )
+    except models.UserBlocks.DoesNotExist:
+        return HttpResponseNotFound()
+
+    if not to_unblock.local:
+        broadcast(
+            request.user,
+            block.to_undo_activity(request.user),
+            privacy='direct',
+            direct_recipients=[to_unblock]
+        )
+    block.delete()
+    return redirect('/block')

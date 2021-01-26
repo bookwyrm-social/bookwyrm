@@ -1,7 +1,7 @@
 ''' make sure all our nice views are available '''
 from .authentication import Login, Register, Logout
 from .author import Author, EditAuthor
-from .block import Block
+from .block import Block, unblock
 from .books import Book, EditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .direct_message import DirectMessage

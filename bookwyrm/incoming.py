@@ -3,7 +3,6 @@ import json
 from urllib.parse import urldefrag
 
 import django.db.utils
-from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
@@ -64,6 +63,7 @@ def shared_inbox(request):
             'Follow': handle_unfollow,
             'Like': handle_unfavorite,
             'Announce': handle_unboost,
+            'Block': handle_unblock,
         },
         'Update': {
             'Person': handle_update_user,
@@ -185,8 +185,22 @@ def handle_follow_reject(activity):
 def handle_block(activity):
     ''' blocking a user '''
     # create "block" databse entry
-    block = activitypub.Block(**activity).to_model(models.UserBlocks)
+    activitypub.Block(**activity).to_model(models.UserBlocks)
     # the removing relationships is handled in post-save hook in model
+
+
+@app.task
+def handle_unblock(activity):
+    ''' undoing a block '''
+    try:
+        block_id = activity['object']['id']
+    except KeyError:
+        return
+    try:
+        block = models.UserBlocks.objects.get(remote_id=block_id)
+    except models.UserBlocks.DoesNotExist:
+        return
+    block.delete()
 
 
 @app.task

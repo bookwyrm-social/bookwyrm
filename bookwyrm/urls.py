@@ -139,4 +139,5 @@ urlpatterns = [
 
     re_path(r'^block/?$', views.Block.as_view()),
     re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
+    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

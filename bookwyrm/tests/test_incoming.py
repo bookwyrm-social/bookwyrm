@@ -566,3 +566,20 @@ class Incoming(TestCase):
 
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
+
+    def test_handle_unblock(self):
+        ''' undoing a block '''
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://friend.camp/users/tripofmice#blocks/1155/undo",
+            "type": "Undo",
+            "actor": "https://friend.camp/users/tripofmice",
+            "object": {
+                "id": "https://friend.camp/0a7d85f7-6359-4c03-8ab6-74e61a8fb678",
+                "type": "Block",
+                "actor": "https://friend.camp/users/tripofmice",
+            "object": "https://1b1a78582461.ngrok.io/user/mouse"
+            }
+        }
+
+        self.remote_user.blocks.add(self.local_user)
