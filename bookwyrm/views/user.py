@@ -159,30 +159,35 @@ class EditUser(View):
         if 'avatar' in form.files:
             # crop and resize avatar upload
             image = Image.open(form.files['avatar'])
-            target_size = 120
-            width, height = image.size
-            thumbnail_scale = height / (width / target_size) if height > width \
-                else width / (height / target_size)
-            image.thumbnail([thumbnail_scale, thumbnail_scale])
-            width, height = image.size
-
-            width_diff = width - target_size
-            height_diff = height - target_size
-            cropped = image.crop((
-                int(width_diff / 2),
-                int(height_diff / 2),
-                int(width - (width_diff / 2)),
-                int(height - (height_diff / 2))
-            ))
-            output = BytesIO()
-            cropped.save(output, format=image.format)
-            ContentFile(output.getvalue())
+            image = crop_avatar(image)
 
             # set the name to a hash
             extension = form.files['avatar'].name.split('.')[-1]
             filename = '%s.%s' % (uuid4(), extension)
-            user.avatar.save(filename, ContentFile(output.getvalue()))
+            user.avatar.save(filename, image)
         user.save()
 
         broadcast(user, user.to_update_activity(user))
         return redirect(user.local_path)
+
+
+def crop_avatar(image):
+    ''' reduce the size and make an avatar square '''
+    target_size = 120
+    width, height = image.size
+    thumbnail_scale = height / (width / target_size) if height > width \
+        else width / (height / target_size)
+    image.thumbnail([thumbnail_scale, thumbnail_scale])
+    width, height = image.size
+
+    width_diff = width - target_size
+    height_diff = height - target_size
+    cropped = image.crop((
+        int(width_diff / 2),
+        int(height_diff / 2),
+        int(width - (width_diff / 2)),
+        int(height - (height_diff / 2))
+    ))
+    output = BytesIO()
+    cropped.save(output, format=image.format)
+    return ContentFile(output.getvalue())
