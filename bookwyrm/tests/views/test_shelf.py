@@ -74,7 +74,7 @@ class ShelfViews(TestCase):
                 'name': 'To Read',
             })
         request.user = self.local_user
-        view(request, self.local_user.username, shelf.id)
+        view(request, self.local_user.username, shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.privacy, 'unlisted')
@@ -94,7 +94,7 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.id)
+        view(request, request.user.username, shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, 'cool name')
@@ -114,7 +114,7 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.id)
+        view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, 'To Read')
 
