@@ -30,8 +30,8 @@ def start_reading(request, book_id):
     if readthrough:
         readthrough.save()
 
-    # create a progress update if we have a page
-    readthrough.create_update()
+        # create a progress update if we have a page
+        readthrough.create_update()
 
     # shelve the book
     if request.POST.get('reshelve', True):

@@ -65,6 +65,7 @@ class Shelf(View):
         return TemplateResponse(request, 'shelf.html', data)
 
     @method_decorator(login_required, name='dispatch')
+    # pylint: disable=unused-argument
     def post(self, request, username, shelf_identifier):
         ''' edit a shelf '''
         try:

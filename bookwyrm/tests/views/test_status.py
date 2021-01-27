@@ -176,7 +176,8 @@ class StatusViews(TestCase):
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, '<p>right</p>')
         self.assertEqual(reply.user, user)
-        self.assertTrue(self.remote_user in reply.mention_users.all())
+        # the mentioned user in the parent post is only included if @'ed
+        self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
     def test_find_mentions(self):
