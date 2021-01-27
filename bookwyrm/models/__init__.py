@@ -13,7 +13,7 @@ from .status import Boost
 from .attachment import Image
 from .favorite import Favorite
 from .notification import Notification
-from .readthrough import ReadThrough
+from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
 from .tag import Tag, UserTag
 

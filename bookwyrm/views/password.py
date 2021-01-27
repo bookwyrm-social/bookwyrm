@@ -88,6 +88,14 @@ class PasswordReset(View):
 @method_decorator(login_required, name='dispatch')
 class ChangePassword(View):
     ''' change password as logged in user '''
+    def get(self, request):
+        ''' change password page '''
+        data = {
+            'title': 'Change Password',
+            'user': request.user,
+        }
+        return TemplateResponse(request, 'change_password.html', data)
+
     def post(self, request):
         ''' allow a user to change their password '''
         new_password = request.POST.get('password')

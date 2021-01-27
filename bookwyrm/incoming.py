@@ -51,6 +51,7 @@ def shared_inbox(request):
         'Follow': handle_follow,
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
+        'Block': handle_block,
         'Create': handle_create,
         'Delete': handle_delete_status,
         'Like': handle_favorite,
@@ -62,6 +63,7 @@ def shared_inbox(request):
             'Follow': handle_unfollow,
             'Like': handle_unfavorite,
             'Announce': handle_unboost,
+            'Block': handle_unblock,
         },
         'Update': {
             'Person': handle_update_user,
@@ -178,6 +180,27 @@ def handle_follow_reject(activity):
     )
     request.delete()
     #raises models.UserFollowRequest.DoesNotExist
+
+@app.task
+def handle_block(activity):
+    ''' blocking a user '''
+    # create "block" databse entry
+    activitypub.Block(**activity).to_model(models.UserBlocks)
+    # the removing relationships is handled in post-save hook in model
+
+
+@app.task
+def handle_unblock(activity):
+    ''' undoing a block '''
+    try:
+        block_id = activity['object']['id']
+    except KeyError:
+        return
+    try:
+        block = models.UserBlocks.objects.get(remote_id=block_id)
+    except models.UserBlocks.DoesNotExist:
+        return
+    block.delete()
 
 
 @app.task

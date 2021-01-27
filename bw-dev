@@ -28,9 +28,15 @@ function initdb {
     execweb python manage.py initdb
 }
 
-case "$1" in
+CMD=$1
+shift
+
+# show commands as they're executed
+set -x
+
+case "$CMD" in
     up)
-        docker-compose up --build
+        docker-compose up --build "$@"
         ;;
     run)
         docker-compose run --rm --service-ports web
@@ -39,12 +45,10 @@ case "$1" in
         initdb
         ;;
     makemigrations)
-        shift 1
         execweb python manage.py makemigrations "$@"
         ;;
     migrate)
         execweb python manage.py rename_app fedireads bookwyrm
-        shift 1
         execweb python manage.py migrate "$@"
         ;;
     bash)

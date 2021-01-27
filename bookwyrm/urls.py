@@ -47,7 +47,7 @@ urlpatterns = [
     re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
             views.PasswordReset.as_view()),
-    re_path(r'^change-password/?$', views.ChangePassword),
+    re_path(r'^change-password/?$', views.ChangePassword.as_view()),
 
     # invites
     re_path(r'^invite/?$', views.ManageInvites.as_view()),
@@ -126,6 +126,7 @@ urlpatterns = [
     re_path(r'^edit-readthrough/?$', views.edit_readthrough),
     re_path(r'^delete-readthrough/?$', views.delete_readthrough),
     re_path(r'^create-readthrough/?$', views.create_readthrough),
+    re_path(r'^delete-progressupdate/?$', views.delete_progressupdate),
 
     re_path(r'^start-reading/(?P<book_id>\d+)/?$', views.start_reading),
     re_path(r'^finish-reading/(?P<book_id>\d+)/?$', views.finish_reading),
@@ -135,4 +136,8 @@ urlpatterns = [
     re_path(r'^unfollow/?$', views.unfollow),
     re_path(r'^accept-follow-request/?$', views.accept_follow_request),
     re_path(r'^delete-follow-request/?$', views.delete_follow_request),
+
+    re_path(r'^block/?$', views.Block.as_view()),
+    re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
+    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

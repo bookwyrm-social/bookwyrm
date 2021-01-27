@@ -7,6 +7,23 @@
         <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </label>
 </div>
+{# Only show progress for editing existing readthroughs #}
+{% if readthrough.id and not readthrough.finish_date %}
+<label class="label" for="id_progress-{{ readthrough.id }}">
+    Progress
+</label>
+<div class="field has-addons">
+    <div class="control">
+        <input type="number" name="progress" class="input" id="id_progress-{{ readthrough.id }}" value="{{ readthrough.progress }}">
+    </div>
+    <div class="control select">
+        <select name="progress_mode" aria-label="Progress mode">
+            <option value="PG" {% if readthrough.progress_mode == 'PG' %}selected{% endif %}>pages</option>
+            <option value="PCT" {% if readthrough.progress_mode == 'PCT' %}selected{% endif %}>percent</option>
+        </select>
+    </div>
+</div>
+{% endif %}
 <div class="field">
     <label class="label">
         Finished reading

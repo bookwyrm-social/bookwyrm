@@ -1,5 +1,7 @@
 ''' defines relationships between users '''
 from django.db import models
+from django.db.models import Q
+from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from .base_model import ActivitypubMixin, BookWyrmModel
@@ -94,5 +96,23 @@ class UserFollowRequest(UserRelationship):
 
 class UserBlocks(UserRelationship):
     ''' prevent another user from following you and seeing your posts '''
-    # TODO: not implemented
     status = 'blocks'
+    activity_serializer = activitypub.Block
+
+
+@receiver(models.signals.post_save, sender=UserBlocks)
+#pylint: disable=unused-argument
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    ''' remove follow or follow request rels after a block is created '''
+    UserFollows.objects.filter(
+        Q(user_subject=instance.user_subject,
+          user_object=instance.user_object) | \
+        Q(user_subject=instance.user_object,
+          user_object=instance.user_subject)
+    ).delete()
+    UserFollowRequest.objects.filter(
+        Q(user_subject=instance.user_subject,
+          user_object=instance.user_object) | \
+        Q(user_subject=instance.user_object,
+          user_object=instance.user_subject)
+    ).delete()

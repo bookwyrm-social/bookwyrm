@@ -1,6 +1,7 @@
 ''' make sure all our nice views are available '''
 from .authentication import Login, Register, Logout
 from .author import Author, EditAuthor
+from .block import Block, unblock
 from .books import Book, EditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .direct_message import DirectMessage
@@ -15,7 +16,7 @@ from .landing import About, Home, Feed, Discover
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
-from .reading import start_reading, finish_reading
+from .reading import start_reading, finish_reading, delete_progressupdate
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .tag import Tag, AddTag, RemoveTag
 from .search import Search

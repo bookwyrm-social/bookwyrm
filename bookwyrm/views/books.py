@@ -72,6 +72,11 @@ class Book(View):
                 book=book,
             ).order_by('start_date')
 
+            for readthrough in readthroughs:
+                readthrough.progress_updates = \
+                    readthrough.progressupdate_set.all() \
+                    .order_by('-updated_date')
+
             user_shelves = models.ShelfBook.objects.filter(
                 added_by=request.user, book=book
             )

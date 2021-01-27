@@ -17,7 +17,7 @@
 </div>
 
 {% include 'snippets/user_header.html' with user=user %}
-
+{% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">Shelves</h2>
     <div class="columns">
@@ -39,6 +39,7 @@
     </div>
     <small><a href="{{ user.local_path }}/shelves">See all {{ shelf_count }} shelves</a></small>
 </div>
+{% endif %}
 
 {% if goal %}
 <div class="block">
