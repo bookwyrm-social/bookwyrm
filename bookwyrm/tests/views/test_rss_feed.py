@@ -9,7 +9,7 @@ from bookwyrm import models
 from bookwyrm.views import rss_feed
 from bookwyrm.settings import DOMAIN
 
-class RssFeed(TestCase):
+class RssFeedView(TestCase):
     ''' rss feed behaves as expected '''
     def setUp(self):
         self.user = models.User.objects.create_user(
@@ -37,8 +37,9 @@ class RssFeed(TestCase):
         
 
     def test_rss_feed(self):
+        view = rss_feed.RssFeed()
         request = self.factory.get('/user/rss_user/rss')
-        response = RssFeed(request)
-        self.assertEqual(response.status_code, 200)
+        result = view(request, username=self.user.username)
+        self.assertEqual(result.status_code, 200)
         self.assertEqual(False, True)
 

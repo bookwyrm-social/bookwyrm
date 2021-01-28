@@ -21,7 +21,7 @@ class RssFeed(Feed):
 
 
     def items(self, obj):
-        return get_activity_feed(obj, ['public', 'unlisted'])
+        return get_activity_feed(obj, ['public', 'unlisted'], queryset=obj.status_set)
 
     
     def item_link(self, item):
