@@ -1,7 +1,6 @@
 ''' testing import '''
 
 from unittest.mock import patch
-
 from django.test import RequestFactory, TestCase
 import responses
 
@@ -12,6 +11,9 @@ from bookwyrm.settings import DOMAIN
 class RssFeedView(TestCase):
     ''' rss feed behaves as expected '''
     def setUp(self):
+
+        self.site = models.SiteSettings.objects.create()
+
         self.user = models.User.objects.create_user(
             'rss_user', 'rss@test.rss', 'password', local=True)
 
@@ -39,7 +41,12 @@ class RssFeedView(TestCase):
     def test_rss_feed(self):
         view = rss_feed.RssFeed()
         request = self.factory.get('/user/rss_user/rss')
-        result = view(request, username=self.user.username)
+        with patch("bookwyrm.models.SiteSettings.objects.get") as site:
+            site.return_value = self.site
+            result = view(request, username=self.user.username)
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(False, True)
+
+        self.assertIn(b"Status updates from rss_user", result.content)
+        self.assertIn( b"a sickening sense", result.content)
+        self.assertIn(b"Example Edition", result.content)
 
