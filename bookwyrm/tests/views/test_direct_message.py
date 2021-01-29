@@ -24,5 +24,5 @@ class DirectMessageViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'direct_messages.html')
+        self.assertEqual(result.template_name, 'feed/direct_messages.html')
         self.assertEqual(result.status_code, 200)

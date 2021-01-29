@@ -47,7 +47,7 @@ class StatusViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
+        self.assertEqual(result.template_name, 'feed/status.html')
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.status.is_api_request') as is_api:
@@ -68,7 +68,7 @@ class StatusViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
+        self.assertEqual(result.template_name, 'feed/status.html')
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.status.is_api_request') as is_api:

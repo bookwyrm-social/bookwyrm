@@ -31,7 +31,7 @@ class LandingViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.template_name, 'feed.html')
+        self.assertEqual(result.template_name, 'feed/feed.html')
 
         request.user = self.anonymous_user
         result = view(request)
@@ -58,7 +58,7 @@ class LandingViews(TestCase):
         request.user = self.local_user
         result = view(request, 'local')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed.html')
+        self.assertEqual(result.template_name, 'feed/feed.html')
         self.assertEqual(result.status_code, 200)
 
 
