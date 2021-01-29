@@ -1,6 +1,7 @@
 ''' non-interactive pages '''
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -52,19 +53,33 @@ class Feed(View):
 @method_decorator(login_required, name='dispatch')
 class DirectMessage(View):
     ''' dm view '''
-    def get(self, request):
+    def get(self, request, username=None):
         ''' like a feed but for dms only '''
         try:
             page = int(request.GET.get('page', 1))
         except ValueError:
             page = 1
 
-        activities = get_activity_feed(request.user, 'direct')
+        queryset = models.Status.objects
+
+        user = None
+        if username:
+            try:
+                user = get_user_from_username(username)
+            except models.User.DoesNotExist:
+                pass
+        if user:
+            queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
+
+        activities = get_activity_feed(
+            request.user, 'direct', queryset=queryset)
+
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)
         data = {**feed_page_data(request.user), **{
             'title': 'Direct Messages',
             'user': request.user,
+            'partner': user,
             'activities': activity_page,
             'path': '/direct-messages',
         }}

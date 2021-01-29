@@ -9,6 +9,9 @@
 
 {% block dropdown-list %}
 <li role="menuitem">
+    <a href="/direct-messages/{{ user|username }}" class="button is-fullwidth is-small">Send direct message</a>
+</li>
+<li role="menuitem">
     {% include 'snippets/block_button.html' with user=user class="is-fullwidth" %}
 </li>
 {% endblock %}

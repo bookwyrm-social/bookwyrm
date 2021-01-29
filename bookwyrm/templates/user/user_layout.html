@@ -42,7 +42,7 @@
             {% endif %}
         </div>
     </div>
-    {% if not is_self %}
+    {% if not is_self and request.user.is_authenticated %}
     <div class="field has-addons">
         <div class="control">
             {% include 'snippets/follow_button.html' with user=user %}

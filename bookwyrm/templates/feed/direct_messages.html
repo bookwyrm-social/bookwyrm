@@ -1,25 +1,26 @@
 {% extends 'feed/feed_layout.html' %}
 {% block panel %}
 
-<div class="block">
-    <h1 class="title">Direct Messages</h1>
+<header class="block">
+    <h1 class="title">Direct Messages{% if partner %} with {% include 'snippets/username.html' with user=partner %}{% endif %}</h1>
+    {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> All messages</a></p>{% endif %}
+</header>
 
-    <div class="box">
-        {% include 'snippets/create_status_form.html' with type="direct" uuid=1 %}
-    </div>
-
-    <section class="block">
-        {% if not activities %}
-        <p>You have no messages right now.</p>
-        {% endif %}
-        {% for activity in activities %}
-        <div class="block">
-        {% include 'snippets/status.html' with status=activity %}
-        </div>
-        {% endfor %}
-
-        {% include 'snippets/pagination.html' with page=activities path="direct-messages" %}
-    </section>
+<div class="box">
+    {% include 'snippets/create_status_form.html' with type="direct" uuid=1 mentions=partner %}
 </div>
+
+<section class="block">
+    {% if not activities %}
+    <p>You have no messages right now.</p>
+    {% endif %}
+    {% for activity in activities %}
+    <div class="block">
+    {% include 'snippets/status.html' with status=activity %}
+    </div>
+    {% endfor %}
+
+    {% include 'snippets/pagination.html' with page=activities path="direct-messages" %}
+</section>
 
 {% endblock %}

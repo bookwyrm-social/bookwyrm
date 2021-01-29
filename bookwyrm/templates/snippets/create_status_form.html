@@ -35,7 +35,7 @@
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% else %}
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}</textarea>
+        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}</textarea>
         {% endif %}
     </div>
     {% if type == 'quotation' %}
