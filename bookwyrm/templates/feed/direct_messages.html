@@ -4,16 +4,22 @@
 <div class="block">
     <h1 class="title">Direct Messages</h1>
 
-    {% if not activities %}
-    <p>You have no messages right now.</p>
-    {% endif %}
-    {% for activity in activities %}
-    <div class="block">
-    {% include 'snippets/status.html' with status=activity %}
+    <div class="box">
+        {% include 'snippets/create_status_form.html' with type="direct" uuid=1 %}
     </div>
-    {% endfor %}
 
-    {% include 'snippets/pagination.html' with page=activities path="direct-messages" %}
+    <section class="block">
+        {% if not activities %}
+        <p>You have no messages right now.</p>
+        {% endif %}
+        {% for activity in activities %}
+        <div class="block">
+        {% include 'snippets/status.html' with status=activity %}
+        </div>
+        {% endfor %}
+
+        {% include 'snippets/pagination.html' with page=activities path="direct-messages" %}
+    </section>
 </div>
 
 {% endblock %}

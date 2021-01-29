@@ -44,6 +44,7 @@ class Feed(View):
             'activities': paginated.page(page),
             'tab': tab,
             'goal_form': forms.GoalForm(),
+            'path': '/%s' % tab,
         }}
         return TemplateResponse(request, 'feed/feed.html', data)
 
@@ -65,6 +66,7 @@ class DirectMessage(View):
             'title': 'Direct Messages',
             'user': request.user,
             'activities': activity_page,
+            'path': '/direct-messages',
         }}
         return TemplateResponse(request, 'feed/direct_messages.html', data)
 
