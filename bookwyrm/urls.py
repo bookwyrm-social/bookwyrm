@@ -56,9 +56,11 @@ urlpatterns = [
     # landing pages
     re_path(r'^about/?$', views.About.as_view()),
     path('', views.Home.as_view()),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^discover/?$', views.Discover.as_view()),
     re_path(r'^notifications/?$', views.Notifications.as_view()),
+
+    # feeds
+    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
 
     # search

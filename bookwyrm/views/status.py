@@ -1,55 +1,22 @@
 ''' what are we here for if not for posting '''
 import re
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
-from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from markdown import markdown
 
 from bookwyrm import forms, models
-from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.broadcast import broadcast
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.status import create_notification, delete_status
 from bookwyrm.utils import regex
-from .helpers import get_user_from_username, handle_remote_webfinger
-from .helpers import is_api_request, is_bookworm_request, object_visible_to_user
+from .helpers import handle_remote_webfinger
 
 
 # pylint: disable= no-self-use
-class Status(View):
-    ''' get posting '''
-    def get(self, request, username, status_id):
-        ''' display a particular status (and replies, etc) '''
-        try:
-            user = get_user_from_username(username)
-            status = models.Status.objects.select_subclasses().get(
-                id=status_id, deleted=False)
-        except ValueError:
-            return HttpResponseNotFound()
-
-        # the url should have the poster's username in it
-        if user != status.user:
-            return HttpResponseNotFound()
-
-        # make sure the user is authorized to see the status
-        if not object_visible_to_user(request.user, status):
-            return HttpResponseNotFound()
-
-        if is_api_request(request):
-            return ActivitypubResponse(
-                status.to_activity(pure=not is_bookworm_request(request)))
-
-        data = {
-            'title': 'Status by %s' % user.username,
-            'status': status,
-        }
-        return TemplateResponse(request, 'status.html', data)
-
-
 @method_decorator(login_required, name='dispatch')
 class CreateStatus(View):
     ''' the view for *posting* '''
@@ -143,23 +110,6 @@ class DeleteStatus(View):
         delete_status(status)
         broadcast(request.user, status.to_delete_activity(request.user))
         return redirect(request.headers.get('Referer', '/'))
-
-
-class Replies(View):
-    ''' replies page (a json view of status) '''
-    def get(self, request, username, status_id):
-        ''' ordered collection of replies to a status '''
-        # the html view is the same as Status
-        if not is_api_request(request):
-            status_view = Status.as_view()
-            return status_view(request, username, status_id)
-
-        # the json view is different than Status
-        status = models.Status.objects.get(id=status_id)
-        if status.user.localname != username:
-            return HttpResponseNotFound()
-
-        return ActivitypubResponse(status.to_replies(**request.GET))
 
 def find_mentions(content):
     ''' detect @mentions in raw status content '''
