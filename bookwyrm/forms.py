@@ -92,6 +92,12 @@ class ReplyForm(CustomForm):
             'user', 'content', 'content_warning', 'sensitive',
             'reply_parent', 'privacy']
 
+class StatusForm(CustomForm):
+    class Meta:
+        model = models.Status
+        fields = [
+            'user', 'content', 'content_warning', 'sensitive', 'privacy']
+
 
 class EditUserForm(CustomForm):
     class Meta:

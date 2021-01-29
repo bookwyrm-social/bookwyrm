@@ -76,7 +76,7 @@
         {% block panel %}{% endblock %}
 
         {% if activities %}
-        {% include 'snippets/pagination.html' with page=activities path='/'|add:tab anchor="#feed" %}
+        {% include 'snippets/pagination.html' with page=activities path=path anchor="#feed" %}
         {% endif %}
     </div>
 </div>
