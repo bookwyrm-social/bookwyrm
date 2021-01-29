@@ -1,6 +1,6 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'user/user_layout.html' %}
 
+{% block header %}
 <div class="columns">
     <div class="column">
         <h1 class="title">User profile</h1>
@@ -15,8 +15,9 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
-{% include 'snippets/user_header.html' with user=user %}
+{% block panel %}
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">Shelves</h2>

@@ -90,7 +90,7 @@ class User(View):
             'goal': goal,
         }
 
-        return TemplateResponse(request, 'user.html', data)
+        return TemplateResponse(request, 'user/user.html', data)
 
 class Followers(View):
     ''' list of followers view '''
@@ -115,7 +115,7 @@ class Followers(View):
             'is_self': request.user.id == user.id,
             'followers': user.followers.all(),
         }
-        return TemplateResponse(request, 'followers.html', data)
+        return TemplateResponse(request, 'user/followers.html', data)
 
 class Following(View):
     ''' list of following view '''
@@ -140,7 +140,7 @@ class Following(View):
             'is_self': request.user.id == user.id,
             'following': user.following.all(),
         }
-        return TemplateResponse(request, 'following.html', data)
+        return TemplateResponse(request, 'user/following.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -153,7 +153,7 @@ class EditUser(View):
             'form': forms.EditUserForm(instance=request.user),
             'user': request.user,
         }
-        return TemplateResponse(request, 'edit_user.html', data)
+        return TemplateResponse(request, 'settings/edit_user.html', data)
 
     def post(self, request):
         ''' les get fancy with images '''
@@ -161,7 +161,7 @@ class EditUser(View):
             request.POST, request.FILES, instance=request.user)
         if not form.is_valid():
             data = {'form': form, 'user': request.user}
-            return TemplateResponse(request, 'edit_user.html', data)
+            return TemplateResponse(request, 'settings/edit_user.html', data)
 
         user = form.save(commit=False)
 
