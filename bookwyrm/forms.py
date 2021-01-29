@@ -195,7 +195,14 @@ class ShelfForm(CustomForm):
         model = models.Shelf
         fields = ['user', 'name', 'privacy']
 
+
 class GoalForm(CustomForm):
     class Meta:
         model = models.AnnualGoal
         fields = ['user', 'year', 'goal', 'privacy']
+
+
+class SiteForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        exclude = []

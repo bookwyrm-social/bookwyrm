@@ -24,6 +24,7 @@ from .search import Search
 from .shelf import Shelf
 from .shelf import user_shelves_page, create_shelf, delete_shelf
 from .shelf import shelve, unshelve
+from .site import Site
 from .status import CreateStatus, DeleteStatus
 from .updates import Updates
 from .user import User, EditUser, Followers, Following

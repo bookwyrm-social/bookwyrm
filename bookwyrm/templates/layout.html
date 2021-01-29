@@ -92,7 +92,7 @@
                     </li>
                     {% if perms.bookwyrm.create_invites %}
                     <li>
-                        <a href="/invite" class="navbar-item">
+                        <a href="{% url 'settings-invites' %}" class="navbar-item">
                             Invites
                         </a>
                     </li>
