@@ -27,5 +27,14 @@ class Site(View):
 
     def post(self, request):
         ''' edit the site settings '''
+        site = models.SiteSettings.objects.get()
+        form = forms.SiteForm(request.POST, instance=site)
+        if not form.is_valid():
+            data = {
+                'title': 'Site Settings',
+                'site_form': form
+            }
+            return TemplateResponse(request, 'settings/site.html', data)
+        form.save()
 
-        return redirect('/settings/site-settings')
+        return redirect('settings-site')

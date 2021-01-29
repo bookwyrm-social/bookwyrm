@@ -51,11 +51,11 @@
         <h2 class="title is-4">Footer Content</h2>
         <div class="control">
             <label class="label" for="id_support_link">Support link:</label>
-            <input type="text" name="support_link" maxlength="255" class="input" id="id_support_link" placeholder="https://www.patreon.com/bookwyrm" value="{{ site.support_link }}">
+            <input type="text" name="support_link" maxlength="255" class="input" id="id_support_link" placeholder="https://www.patreon.com/bookwyrm"{% if site.support_link %} value="{{ site.support_link  }}"{% endif %}>
         </div>
         <div class="control">
             <label class="label" for="id_support_title">Support title:</label>
-            <input type="text" name="support_title" maxlength="100" class="input" id="id_support_title" placeholder="Patreon" value="{{ site.support_title }}">
+            <input type="text" name="support_title" maxlength="100" class="input" id="id_support_title" placeholder="Patreon"{% if site.support_title %} value="{{ site.support_title }}"{% endif %}>
         </div>
         <div class="control">
             <label class="label" for="id_admin_email">Admin email:</label>

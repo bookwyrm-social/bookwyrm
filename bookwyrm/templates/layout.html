@@ -90,10 +90,20 @@
                             Import books
                         </a>
                     </li>
+                    {% if perms.bookwyrm.create_invites or perms.bookwyrm.edit_instance_settings%}
+                    <hr class="navbar-divider">
+                    {% endif %}
                     {% if perms.bookwyrm.create_invites %}
                     <li>
                         <a href="{% url 'settings-invites' %}" class="navbar-item">
                             Invites
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if perms.bookwyrm.edit_instance_settings %}
+                    <li>
+                        <a href="{% url 'settings-site' %}" class="navbar-item">
+                            Site Configuration
                         </a>
                     </li>
                     {% endif %}
