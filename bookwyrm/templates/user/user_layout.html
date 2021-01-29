@@ -1,5 +1,13 @@
+{% extends 'layout.html' %}
 {% load humanize %}
 {% load bookwyrm_tags %}
+
+{% block content %}
+<header class="block">
+    {% block header %}{% endblock %}
+</header>
+
+{# user bio #}
 <div class="block">
     <div class="columns">
         <div class="column is-narrow">
@@ -60,3 +68,6 @@
     {% endif %}
 </div>
 
+{% block panel %}{% endblock %}
+
+{% endblock %}

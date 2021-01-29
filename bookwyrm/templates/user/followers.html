@@ -1,18 +1,17 @@
-{% extends 'layout.html' %}
+{% extends 'user/user_layout.html' %}
 {% load bookwyrm_tags %}
-{% block content %}
-<div class="block">
-    <h1 class="title">
-        {% if is_self %}Your
-        {% else %}
-        {% include 'snippets/username.html' with user=user possessive=True %}
-        {% endif %}
-        followers
-    </h1>
-</div>
 
-{% include 'snippets/user_header.html' with user=user %}
+{% block header %}
+<h1 class="title">
+    {% if is_self %}Your
+    {% else %}
+    {% include 'snippets/username.html' with user=user possessive=True %}
+    {% endif %}
+    followers
+</h1>
+{% endblock %}
 
+{% block panel %}
 <div class="block">
     <h2 class="title">Followers</h2>
     {% for followers in followers %}
@@ -34,5 +33,4 @@
     <div>{{ user|username }} has no followers</div>
     {% endif %}
 </div>
-
 {% endblock %}

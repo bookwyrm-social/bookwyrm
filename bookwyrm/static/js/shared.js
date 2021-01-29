@@ -35,7 +35,16 @@ window.onload = function() {
     // polling
     document.querySelectorAll('[data-poll]')
         .forEach(el => polling(el));
+
+    // browser back behavior
+    document.querySelectorAll('[data-back]')
+        .forEach(t => t.onclick = back);
 };
+
+function back(e) {
+    e.preventDefault();
+    history.back();
+}
 
 function polling(el) {
     let delay = 10000 + (Math.random() * 1000);

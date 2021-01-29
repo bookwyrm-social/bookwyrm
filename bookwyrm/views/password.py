@@ -94,7 +94,8 @@ class ChangePassword(View):
             'title': 'Change Password',
             'user': request.user,
         }
-        return TemplateResponse(request, 'change_password.html', data)
+        return TemplateResponse(
+            request, 'preferences/change_password.html', data)
 
     def post(self, request):
         ''' allow a user to change their password '''
@@ -102,9 +103,9 @@ class ChangePassword(View):
         confirm_password = request.POST.get('confirm-password')
 
         if new_password != confirm_password:
-            return redirect('/edit-profile')
+            return redirect('preferences/password')
 
         request.user.set_password(new_password)
         request.user.save()
         login(request, request.user)
-        return redirect('/user/%s' % request.user.localname)
+        return redirect(request.user.local_path)
