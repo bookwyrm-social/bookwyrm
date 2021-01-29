@@ -17,6 +17,7 @@ from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
 from .reading import start_reading, finish_reading, delete_progressupdate
+from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .tag import Tag, AddTag, RemoveTag
 from .search import Search

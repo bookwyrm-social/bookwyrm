@@ -153,7 +153,7 @@ class EditUser(View):
             'form': forms.EditUserForm(instance=request.user),
             'user': request.user,
         }
-        return TemplateResponse(request, 'settings/edit_user.html', data)
+        return TemplateResponse(request, 'preferences/edit_user.html', data)
 
     def post(self, request):
         ''' les get fancy with images '''
@@ -161,7 +161,7 @@ class EditUser(View):
             request.POST, request.FILES, instance=request.user)
         if not form.is_valid():
             data = {'form': form, 'user': request.user}
-            return TemplateResponse(request, 'settings/edit_user.html', data)
+            return TemplateResponse(request, 'preferences/edit_user.html', data)
 
         user = form.save(commit=False)
 

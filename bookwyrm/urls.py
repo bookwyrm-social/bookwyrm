@@ -5,7 +5,6 @@ from django.urls import path, re_path
 
 
 from bookwyrm import incoming, settings, views, wellknown
-from bookwyrm.views.rss_feed import RssFeed
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -49,7 +48,6 @@ urlpatterns = [
     re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
             views.PasswordReset.as_view()),
-    re_path(r'^change-password/?$', views.ChangePassword.as_view()),
 
     # invites
     re_path(r'^invite/?$', views.ManageInvites.as_view()),
@@ -76,8 +74,14 @@ urlpatterns = [
     re_path(r'%s/shelves/?$' % user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
-    re_path(r'^edit-profile/?$', views.EditUser.as_view()),
     re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
+
+    # preferences
+    re_path(r'^preferences/profile/?$', views.EditUser.as_view()),
+    re_path(r'^preferences/password/?$', views.ChangePassword.as_view()),
+    re_path(r'^preferences/block/?$', views.Block.as_view()),
+    re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
+    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 
     # reading goals
     re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path, views.Goal.as_view()),
@@ -140,7 +144,4 @@ urlpatterns = [
     re_path(r'^accept-follow-request/?$', views.accept_follow_request),
     re_path(r'^delete-follow-request/?$', views.delete_follow_request),
 
-    re_path(r'^block/?$', views.Block.as_view()),
-    re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
-    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

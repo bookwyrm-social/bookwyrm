@@ -17,7 +17,7 @@ class Block(View):
     def get(self, request):
         ''' list of blocked users? '''
         return TemplateResponse(
-            request, 'blocks.html', {'title': 'Blocked Users'})
+            request, 'preferences/blocks.html', {'title': 'Blocked Users'})
 
     def post(self, request, user_id):
         ''' block a user '''
@@ -31,7 +31,7 @@ class Block(View):
                 privacy='direct',
                 direct_recipients=[to_block]
             )
-        return redirect('/block')
+        return redirect('/preferences/block')
 
 
 @require_POST
@@ -55,4 +55,4 @@ def unblock(request, user_id):
             direct_recipients=[to_unblock]
         )
     block.delete()
-    return redirect('/block')
+    return redirect('/preferences/block')
