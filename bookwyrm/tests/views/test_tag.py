@@ -33,6 +33,7 @@ class TagViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=self.work
         )
+        models.SiteSettings.objects.create()
 
 
     def test_tag_page(self):
@@ -46,7 +47,7 @@ class TagViews(TestCase):
             is_api.return_value = False
             result = view(request, tag.identifier)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'tag.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get('')
