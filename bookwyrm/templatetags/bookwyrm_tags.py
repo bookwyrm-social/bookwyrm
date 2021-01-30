@@ -161,9 +161,12 @@ def get_status_preview_name(obj):
 
 @register.filter(name='next_shelf')
 def get_next_shelf(current_shelf):
+    ''' shelf you'd use to update reading progress '''
     if current_shelf == 'to-read':
         return 'reading'
     if current_shelf == 'reading':
+        return 'read'
+    if current_shelf == 'read':
         return 'read'
     return 'to-read'
 
@@ -211,4 +214,5 @@ def active_read_through(book, user):
 
 @register.simple_tag(takes_context=False)
 def comparison_bool(str1, str2):
+    ''' idk why I need to write a tag for this, it reutrns a bool '''
     return str1 == str2

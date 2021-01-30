@@ -5,10 +5,12 @@
     <div class="{% if dropdown %}dropdown-item pt-0 pb-0{% elif active_shelf.shelf.identifier|next_shelf != shelf.identifier %}hidden{% endif %}">
     {% if shelf.identifier == 'reading' %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text="Start reading" controls_text="start-reading" controls_uid=button_uuid focus="modal-title-start-reading" disabled=is_current %}
+    {% elif shelf.identifier == 'read' and active_shelf.shelf.identifier == 'read' %}
+    <button type="button" class="button {{ class }}" disabled><span>Read</span>
     {% elif shelf.identifier == 'read' %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text="Finish reading" controls_text="finish-reading" controls_uid=button_uuid focus="modal-title-finish-reading" disabled=is_current %}
     {% elif shelf.identifier == 'to-read' %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text="Want to read" controls_text="finish-reading" controls_uid=button_uuid focus="modal-title-finish-reading" disabled=is_current %}
+        {% include 'snippets/toggle/toggle_button.html' with class=class text="Want to read" controls_text="want-to-read" controls_uid=button_uuid focus="modal-title-want-to-read" disabled=is_current %}
     {% else %}
         <form name="shelve" action="/shelve/" method="post">
             {% csrf_token %}

@@ -10,11 +10,13 @@
     </div>
     {% else %}
     <div class="control">
-        {% include 'snippets/shelve_button_options.html' with class="shelf-option is-small" shelves=request.user.shelf_set.all active_shelf=active_shelf %}
+        {% include 'snippets/shelve_button_options.html' with class="shelf-option is-small" shelves=request.user.shelf_set.all active_shelf=active_shelf button_uuid=uuid %}
     </div>
     {% include 'snippets/shelve_button_dropdown.html' with class="is-small" button_uuid=uuid%}
     {% endif %}
 </div>
+
+{% include 'snippets/want_to_read_modal.html' with book=active_shelf.book controls_text="want-to-read" controls_uid=uuid no_body=True %}
 
 {% include 'snippets/start_reading_modal.html' with book=active_shelf.book controls_text="start-reading" controls_uid=uuid %}
 
