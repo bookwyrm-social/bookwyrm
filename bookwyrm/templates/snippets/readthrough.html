@@ -6,10 +6,11 @@
                 Progress Updates:
                 </dl>
                 <ul>
-                    {% if readthrough.progress %}
+                    {% if readthrough.finish_date or readthrough.progress %}
                     <li>{% if readthrough.finish_date %} {{ readthrough.finish_date | naturalday }}: finished {% else %}{% if readthrough.progress_mode == 'PG' %}on page {{ readthrough.progress }}{% if book.pages %} of {{ book.pages }}{% endif %}
                         {% else %}{{ readthrough.progress }}%{% endif %}{% endif %}
-                    {% include 'snippets/toggle/toggle_button.html' with text="Show all updates" controls_text="updates" controls_uid=readthrough.id class="is-small" %}
+                        {% if readthrough.progress %}
+                        {% include 'snippets/toggle/toggle_button.html' with text="Show all updates" controls_text="updates" controls_uid=readthrough.id class="is-small" %}
                         <ul id="updates-{{ readthrough.id }}" class="hidden">
                             {% for progress_update in readthrough.progress_updates %}
                             <li>
@@ -31,6 +32,7 @@
                             </li>
                             {% endfor %}
                         </ul>
+                        {% endif %}
                     </li>
                     {% endif %}
                     <li>{{ readthrough.start_date | naturalday }}: started</li>
