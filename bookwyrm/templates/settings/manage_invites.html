@@ -1,8 +1,8 @@
-{% extends 'layout.html' %}
+{% extends 'settings/admin_layout.html' %}
+{% block header %}Invites{% endblock %}
 {% load humanize %}
-{% block content %}
-<div class="block">
-    <h1 class="title">Invites</h1>
+{% block panel %}
+<section class="block">
     <table class="table is-striped">
         <tr>
             <th>Link</th>
@@ -22,12 +22,12 @@
         </tr>
         {% endfor %}
     </table>
-</div>
+</section>
 
-<div class="block">
+<section class="block">
     <h2 class="title is-4">Generate New Invite</h2>
 
-    <form name="invite" action="/invite/" method="post">
+    <form name="invite" action="{% url 'settings-invites' %}" method="post">
         {% csrf_token %}
         <div class="field is-grouped">
             <div class="control">
@@ -46,5 +46,5 @@
 
         <button class="button is-primary" type="submit">Create Invite</button>
     </form>
-</div>
+</section>
 {% endblock %}

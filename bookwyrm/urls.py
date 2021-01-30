@@ -49,8 +49,13 @@ urlpatterns = [
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
             views.PasswordReset.as_view()),
 
-    # invites
-    re_path(r'^invite/?$', views.ManageInvites.as_view()),
+    # admin
+    re_path(r'^settings/site-settings',
+            views.Site.as_view(), name='settings-site'),
+    re_path(r'^settings/federation',
+            views.Federation.as_view(), name='settings-federation'),
+    re_path(r'^settings/invites/?$',
+            views.ManageInvites.as_view(), name='settings-invites'),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
     # landing pages
