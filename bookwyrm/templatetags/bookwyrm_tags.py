@@ -159,6 +159,14 @@ def get_status_preview_name(obj):
         return '%s from <em>%s</em>' % (name, obj.book.title)
     return name
 
+@register.filter(name='next_shelf')
+def get_next_shelf(current_shelf):
+    if current_shelf == 'to-read':
+        return 'reading'
+    if current_shelf == 'reading':
+        return 'read'
+    return 'to-read'
+
 @register.simple_tag(takes_context=False)
 def related_status(notification):
     ''' for notifications '''
@@ -199,3 +207,8 @@ def active_read_through(book, user):
         book=book,
         finish_date__isnull=True
     ).order_by('-start_date').first()
+
+
+@register.simple_tag(takes_context=False)
+def comparison_bool(str1, str2):
+    return str1 == str2
