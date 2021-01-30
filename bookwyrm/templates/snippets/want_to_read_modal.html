@@ -8,6 +8,7 @@ Want to Read "<em>{{ book.title }}</em>"
 <form name="shelve" action="/shelve/" method="post">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
+    <input type="hidden" name="shelf" value="to-read">
 {% endblock %}
 
 {% block modal-footer %}
@@ -20,7 +21,7 @@ Want to Read "<em>{{ book.title }}</em>"
         {% include 'snippets/privacy_select.html' %}
     </div>
     <div class="column">
-        <button class="button is-success" name="shelf" type="submit" value="{{ shelf.identifier }}" {% if shelf in book.shelf_set.all %} disabled {% endif %}>
+        <button class="button is-success" type="submit">
             <span>Want to read</span>
         </button>
         {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="want-to-read" controls_uid=uuid %}
