@@ -62,7 +62,7 @@ class Shelf(View):
             'books': [b.book for b in books],
         }
 
-        return TemplateResponse(request, 'shelf.html', data)
+        return TemplateResponse(request, 'user/shelf.html', data)
 
     @method_decorator(login_required, name='dispatch')
     # pylint: disable=unused-argument
