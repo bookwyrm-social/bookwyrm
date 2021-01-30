@@ -125,8 +125,8 @@ def shelve(request):
         identifier=request.POST.get('shelf'),
         user=request.user
     ).first()
-    #if not desired_shelf:
-    #    return HttpResponseNotFound()
+    if not desired_shelf:
+        return HttpResponseNotFound()
 
     if request.POST.get('reshelve', True):
         try:
