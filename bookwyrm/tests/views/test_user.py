@@ -23,6 +23,7 @@ class UserViews(TestCase):
         self.rat = models.User.objects.create_user(
             'rat@local.com', 'rat@rat.rat', 'password',
             local=True, localname='rat')
+        models.SiteSettings.objects.create()
 
 
     def test_user_page(self):
@@ -34,7 +35,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'user/user.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -65,7 +66,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'user/followers.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -96,7 +97,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'user/following.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -125,7 +126,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'preferences/edit_user.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 

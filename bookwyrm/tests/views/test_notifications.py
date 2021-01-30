@@ -15,6 +15,7 @@ class NotificationViews(TestCase):
         self.local_user = models.User.objects.create_user(
             'mouse@local.com', 'mouse@mouse.mouse', 'password',
             local=True, localname='mouse')
+        models.SiteSettings.objects.create()
 
     def test_notifications_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
@@ -23,7 +24,7 @@ class NotificationViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'notifications.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
     def test_clear_notifications(self):
