@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
 
+
 from bookwyrm import incoming, settings, views, wellknown
 from bookwyrm.utils import regex
 
@@ -47,19 +48,27 @@ urlpatterns = [
     re_path(r'^password-reset/?$', views.PasswordResetRequest.as_view()),
     re_path(r'^password-reset/(?P<code>[A-Za-z0-9]+)/?$',
             views.PasswordReset.as_view()),
-    re_path(r'^change-password/?$', views.ChangePassword.as_view()),
 
-    # invites
-    re_path(r'^invite/?$', views.ManageInvites.as_view()),
+    # admin
+    re_path(r'^settings/site-settings',
+            views.Site.as_view(), name='settings-site'),
+    re_path(r'^settings/federation',
+            views.Federation.as_view(), name='settings-federation'),
+    re_path(r'^settings/invites/?$',
+            views.ManageInvites.as_view(), name='settings-invites'),
     re_path(r'^invite/(?P<code>[A-Za-z0-9]+)/?$', views.Invite.as_view()),
 
     # landing pages
     re_path(r'^about/?$', views.About.as_view()),
     path('', views.Home.as_view()),
-    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^discover/?$', views.Discover.as_view()),
     re_path(r'^notifications/?$', views.Notifications.as_view()),
+
+    # feeds
+    re_path(r'^(?P<tab>home|local|federated)/?$', views.Feed.as_view()),
     re_path(r'^direct-messages/?$', views.DirectMessage.as_view()),
+    re_path(r'^direct-messages/(?P<username>%s)?$' % regex.username,
+            views.DirectMessage.as_view()),
 
     # search
     re_path(r'^search/?$', views.Search.as_view()),
@@ -74,7 +83,14 @@ urlpatterns = [
     re_path(r'%s/shelves/?$' % user_path, views.user_shelves_page),
     re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
-    re_path(r'^edit-profile/?$', views.EditUser.as_view()),
+    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
+
+    # preferences
+    re_path(r'^preferences/profile/?$', views.EditUser.as_view()),
+    re_path(r'^preferences/password/?$', views.ChangePassword.as_view()),
+    re_path(r'^preferences/block/?$', views.Block.as_view()),
+    re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
+    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 
     # reading goals
     re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path, views.Goal.as_view()),
@@ -137,7 +153,4 @@ urlpatterns = [
     re_path(r'^accept-follow-request/?$', views.accept_follow_request),
     re_path(r'^delete-follow-request/?$', views.delete_follow_request),
 
-    re_path(r'^block/?$', views.Block.as_view()),
-    re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
-    re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

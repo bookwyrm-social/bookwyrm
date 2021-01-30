@@ -7,8 +7,8 @@ from bookwyrm import models
 from bookwyrm import views
 
 
-class DirectMessageViews(TestCase):
-    ''' dms '''
+class FederationViews(TestCase):
+    ''' every response to a get request, html or json '''
     def setUp(self):
         ''' we need basic test data and mocks '''
         self.factory = RequestFactory()
@@ -17,12 +17,13 @@ class DirectMessageViews(TestCase):
             local=True, localname='mouse')
 
 
-    def test_direct_messages_page(self):
+    def test_federation_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
-        view = views.DirectMessage.as_view()
+        view = views.Federation.as_view()
         request = self.factory.get('')
         request.user = self.local_user
+        request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'direct_messages.html')
+        self.assertEqual(result.template_name, 'settings/federation.html')
         self.assertEqual(result.status_code, 200)

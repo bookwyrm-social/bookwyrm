@@ -24,7 +24,7 @@ class ManageInvites(View):
                 user=request.user).order_by('-created_date'),
             'form': forms.CreateInviteForm(),
         }
-        return TemplateResponse(request, 'manage_invites.html', data)
+        return TemplateResponse(request, 'settings/manage_invites.html', data)
 
     def post(self, request):
         ''' creates an invite database entry '''
@@ -36,7 +36,7 @@ class ManageInvites(View):
         invite.user = request.user
         invite.save()
 
-        return redirect('/invite')
+        return redirect('/settings/invites')
 
 
 class Invite(View):

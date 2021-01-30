@@ -1,13 +1,13 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'user/user_layout.html' %}
 
+{% block header %}
 <div class="columns">
     <div class="column">
         <h1 class="title">User profile</h1>
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        <a href="/edit-profile">
+        <a href="/preferences/profile">
             <span class="icon icon-pencil" title="Edit profile">
                 <span class="is-sr-only">Edit profile</span>
             </span>
@@ -15,8 +15,9 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
-{% include 'snippets/user_header.html' with user=user %}
+{% block panel %}
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">Shelves</h2>

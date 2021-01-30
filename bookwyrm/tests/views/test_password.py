@@ -106,7 +106,7 @@ class PasswordViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'change_password.html')
+        self.assertEqual(result.template_name, 'preferences/change_password.html')
         self.assertEqual(result.status_code, 200)
 
 

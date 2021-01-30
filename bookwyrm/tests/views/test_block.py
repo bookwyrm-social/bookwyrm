@@ -32,7 +32,7 @@ class BlockViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'blocks.html')
+        self.assertEqual(result.template_name, 'preferences/blocks.html')
         self.assertEqual(result.status_code, 200)
 
     def test_block_post(self):

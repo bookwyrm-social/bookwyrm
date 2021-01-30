@@ -7,7 +7,7 @@ class InputHtmlParser(HTMLParser):#pylint: disable=abstract-method
     def __init__(self):
         HTMLParser.__init__(self)
         self.allowed_tags = [
-            'p', 'br',
+            'p', 'blockquote', 'br',
             'b', 'i', 'strong', 'em', 'pre',
             'a', 'span', 'ul', 'ol', 'li'
         ]

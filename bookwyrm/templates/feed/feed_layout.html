@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="columns">
+    {% if user.is_authenticated %}
     <div class="column is-one-third">
         <h2 class="title is-5">Your books</h2>
         {% if not suggested_books %}
@@ -69,43 +70,15 @@
         </section>
         {% endif %}
     </div>
+    {% endif %}
 
     <div class="column is-two-thirds" id="feed">
-        <h1 class="title">{{ tab | title }} Timeline</h1>
-        <div class="tabs">
-            <ul>
-                <li class="{% if tab == 'home' %}is-active{% endif %}">
-                    <a href="/#feed">Home</a>
-                </li>
-                <li class="{% if tab == 'local' %}is-active{% endif %}">
-                    <a href="/local#feed">Local</a>
-                </li>
-                <li class="{% if tab == 'federated' %}is-active{% endif %}">
-                    <a href="/federated#feed">Federated</a>
-                </li>
-            </ul>
-        </div>
+        {% block panel %}{% endblock %}
 
-        {# announcements and system messages #}
-        {% if not goal and tab == 'home' %}
-        {% now 'Y' as year %}
-        <section class="block hidden" aria-title="Announcements" data-hide="hide-{{ year }}-reading-goal">
-            {% include 'snippets/goal_card.html' with year=year %}
-            <hr>
-        </section>
+        {% if activities %}
+        {% include 'snippets/pagination.html' with page=activities path=path anchor="#feed" %}
         {% endif %}
-
-        {# activity feed #}
-        {% if not activities %}
-        <p>There aren't any activities right now! Try following a user to get started</p>
-        {% endif %}
-        {% for activity in activities %}
-        <div class="block">
-        {% include 'snippets/status.html' with status=activity %}
-        </div>
-        {% endfor %}
-
-        {% include 'snippets/pagination.html' with page=activities path='/'|add:tab anchor="#feed" %}
     </div>
 </div>
 {% endblock %}
+

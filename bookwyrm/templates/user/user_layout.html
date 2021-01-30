@@ -1,5 +1,13 @@
+{% extends 'layout.html' %}
 {% load humanize %}
 {% load bookwyrm_tags %}
+
+{% block content %}
+<header class="block">
+    {% block header %}{% endblock %}
+</header>
+
+{# user bio #}
 <div class="block">
     <div class="columns">
         <div class="column is-narrow">
@@ -34,7 +42,7 @@
             {% endif %}
         </div>
     </div>
-    {% if not is_self %}
+    {% if not is_self and request.user.is_authenticated %}
     <div class="field has-addons">
         <div class="control">
             {% include 'snippets/follow_button.html' with user=user %}
@@ -60,3 +68,6 @@
     {% endif %}
 </div>
 
+{% block panel %}{% endblock %}
+
+{% endblock %}

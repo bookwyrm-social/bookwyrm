@@ -36,48 +36,6 @@ class StatusViews(TestCase):
         )
 
 
-    def test_status_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        view = views.Status.as_view()
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.status.is_api_request') as is_api:
-            is_api.return_value = False
-            result = view(request, 'mouse', status.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
-        self.assertEqual(result.status_code, 200)
-
-        with patch('bookwyrm.views.status.is_api_request') as is_api:
-            is_api.return_value = True
-            result = view(request, 'mouse', status.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
-    def test_replies_page(self):
-        ''' there are so many views, this just makes sure it LOADS '''
-        view = views.Replies.as_view()
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
-        request = self.factory.get('')
-        request.user = self.local_user
-        with patch('bookwyrm.views.status.is_api_request') as is_api:
-            is_api.return_value = False
-            result = view(request, 'mouse', status.id)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'status.html')
-        self.assertEqual(result.status_code, 200)
-
-        with patch('bookwyrm.views.status.is_api_request') as is_api:
-            is_api.return_value = True
-            result = view(request, 'mouse', status.id)
-        self.assertIsInstance(result, ActivitypubResponse)
-        self.assertEqual(result.status_code, 200)
-
-
     def test_handle_status(self):
         ''' create a status '''
         view = views.CreateStatus.as_view()
@@ -176,7 +134,8 @@ class StatusViews(TestCase):
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, '<p>right</p>')
         self.assertEqual(reply.user, user)
-        self.assertTrue(self.remote_user in reply.mention_users.all())
+        # the mentioned user in the parent post is only included if @'ed
+        self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
     def test_find_mentions(self):

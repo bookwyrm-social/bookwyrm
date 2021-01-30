@@ -1,18 +1,17 @@
-{% extends 'layout.html' %}
+{% extends 'user/user_layout.html' %}
 {% load bookwyrm_tags %}
-{% block content %}
-<div class="block">
-    <h1 class="title">
-        Users following
-        {% if is_self %}you
-        {% else %}
-        {% include 'snippets/username.html' with user=user %}
-        {% endif %}
-    </h1>
-</div>
 
-{% include 'snippets/user_header.html' with user=user %}
+{% block header %}
+<h1 class="title">
+    Users following
+    {% if is_self %}you
+    {% else %}
+    {% include 'snippets/username.html' with user=user %}
+    {% endif %}
+</h1>
+{% endblock %}
 
+{% block panel %}
 <div class="block">
     <h2 class="title">Following</h2>
     {% for follower in user.following.all %}
@@ -34,5 +33,4 @@
     <div>{{ user|username }} isn't following any users</div>
     {% endif %}
 </div>
-
 {% endblock %}

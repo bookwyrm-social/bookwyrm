@@ -34,7 +34,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'user.html')
+        self.assertEqual(result.template_name, 'user/user.html')
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -65,7 +65,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'followers.html')
+        self.assertEqual(result.template_name, 'user/followers.html')
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -96,7 +96,7 @@ class UserViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'following.html')
+        self.assertEqual(result.template_name, 'user/following.html')
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.user.is_api_request') as is_api:
@@ -125,7 +125,7 @@ class UserViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_user.html')
+        self.assertEqual(result.template_name, 'preferences/edit_user.html')
         self.assertEqual(result.status_code, 200)
 
 

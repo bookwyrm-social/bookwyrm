@@ -44,5 +44,5 @@ class InviteViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'manage_invites.html')
+        self.assertEqual(result.template_name, 'settings/manage_invites.html')
         self.assertEqual(result.status_code, 200)
