@@ -9,7 +9,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from .helpers import is_api_request, object_visible_to_user
+from .helpers import is_api_request, object_visible_to_user, privacy_filter
 
 
 # pylint: disable=no-self-use
@@ -18,7 +18,10 @@ class Lists(View):
     def get(self, request):
         ''' display a book list '''
         user = request.user if request.user.is_authenticated else None
-        lists = models.List.objects.filter(~Q(user=user)).all()
+        lists = models.List.objects.filter(
+            ~Q(user=user),
+        ).all()
+        lists = privacy_filter(request.user, lists, ['public', 'followers'])
         data = {
             'title': 'Lists',
             'lists': lists,
@@ -30,7 +33,11 @@ class Lists(View):
     # pylint: disable=unused-argument
     def post(self, request):
         ''' create a book_list '''
-        book_list = None
+        form = forms.ListForm(request.POST)
+        if not form.is_valid():
+            print(form.errors)
+            return redirect('lists')
+        book_list = form.save()
         return redirect(book_list.local_path)
 
 

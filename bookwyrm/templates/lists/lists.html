@@ -6,18 +6,18 @@
 </header>
 
 {% if request.user.is_authenticated %}
-<section class="block">
+<section class="block content">
     <header class="columns">
         <div class="column">
-            <h2 class="title is-3">Your lists</h2>
+            <h2 class="title">Your lists</h2>
         </div>
         <div class="column is-narrow">
             {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" %}
         </div>
     </header>
 
-    <form name="create-list" method="post" action="{% url 'lists' %}" class="box hiddenx" id="create-list">
-        <h3 class="title is-4">Create list</h3>
+    <form name="create-list" method="post" action="{% url 'lists' %}" class="box hidden" id="create-list">
+        <h3 class="title">Create list</h3>
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
 
@@ -68,7 +68,7 @@
     <ul>
     {% for list in request.user.list_set.all %}
         <li>
-            <a href="{{ list.local_path }}">{{ list.name }}</a>
+            {% include 'lists/list-item.html' with list=list %}
         </li>
     {% endfor %}
     </ul>
@@ -77,12 +77,12 @@
 {% endif %}
 
 {% if lists.exists %}
-<section class="block">
-    <h2 class="title is-2">Recent Lists</h2>
+<section class="block content">
+    <h2 class="title">Recent Lists</h2>
     <ul>
     {% for list in lists %}
         <li>
-            <a href="{{ list.local_path }}">{{ list.name }}</a>
+            {% include 'lists/list-item.html' with list=list %}
         </li>
     {% endfor %}
     </ul>

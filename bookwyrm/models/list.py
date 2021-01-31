@@ -11,7 +11,7 @@ from . import fields
 CurationType = models.TextChoices('Curation', [
     'closed',
     'open',
-    'moderated',
+    'curated',
 ])
 
 class List(OrderedCollectionMixin, BookWyrmModel):
