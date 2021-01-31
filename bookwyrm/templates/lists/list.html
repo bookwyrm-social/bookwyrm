@@ -65,6 +65,23 @@
     {% if not list.curation == 'closed' or request.user == list.user %}
     <section class="column is-one-quarter">
         <h2>{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Suggest{% endif %} Books</h2>
+        <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
+            <div class="field has-addons">
+                <div class="control">
+                    <input aria-label="Search for a book" class="input" type="text" name="q" placeholder="Search for a book" value="{{ query }}">
+                </div>
+                <div class="control">
+                    <button class="button" type="submit">
+                        <span class="icon icon-search" title="Search">
+                            <span class="is-sr-only">search</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            {% if query %}
+            <p class="help"><a href="{% url 'list' list.id %}">Clear search</a></p>
+            {% endif %}
+        </form>
         {% for book in suggested_books %}
         <div class="block columns">
             <div class="column is-narrow">

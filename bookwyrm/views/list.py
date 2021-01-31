@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.connectors import connector_manager
 from .helpers import is_api_request, object_visible_to_user, privacy_filter
 
 
@@ -52,16 +53,22 @@ class List(View):
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity())
 
-        suggestions = request.user.shelfbook_set.filter(
-            ~Q(book__in=book_list.books.all())
-        )
-        suggestions = [s.book for s in suggestions[:5]]
-        if len(suggestions) < 5:
-            suggestions += [s.default_edition for s in \
-                models.Work.objects.filter(
-                    ~Q(editions__in=book_list.books.all()),
-                ).order_by('-updated_date')
-            ][:5 - len(suggestions)]
+        query = request.GET.get('q')
+        if query:
+            # search for books
+            suggestions = connector_manager.local_search(query, raw=True)
+        else:
+            # just suggest whatever books are nearby
+            suggestions = request.user.shelfbook_set.filter(
+                ~Q(book__in=book_list.books.all())
+            )
+            suggestions = [s.book for s in suggestions[:5]]
+            if len(suggestions) < 5:
+                suggestions += [s.default_edition for s in \
+                    models.Work.objects.filter(
+                        ~Q(editions__in=book_list.books.all()),
+                    ).order_by('-updated_date')
+                ][:5 - len(suggestions)]
 
 
         data = {
@@ -69,6 +76,7 @@ class List(View):
             'list': book_list,
             'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
+            'query': query or ''
         }
         return TemplateResponse(request, 'lists/list.html', data)
 
