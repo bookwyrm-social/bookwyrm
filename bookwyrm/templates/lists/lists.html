@@ -17,7 +17,12 @@
     </header>
 
     <form name="create-list" method="post" action="{% url 'lists' %}" class="box hidden" id="create-list">
-        <h3 class="title">Create list</h3>
+        <header class="columns">
+            <h3 class="title column">Create list</h3>
+            <div class="column is-narrow">
+                {% include 'snippets/toggle/toggle_button.html' with controls_text="create-list" label="close" class="delete" nonbutton=True %}
+            </div>
+        </header>
         {% include 'lists/form.html' %}
     </form>
 

@@ -28,7 +28,7 @@
 
             <label class="field">
                 <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> Open
-                <p class="help mb-2">Anyone can add books to this list, but only you can remove them</p>
+                <p class="help mb-2">Anyone can add books to this list</p>
             </label>
         </fieldset>
     </div>
@@ -39,7 +39,6 @@
     </div>
     <div class="control">
         <button type="submit" class="button is-primary">Save</button>
-        {% include 'snippets/toggle/close_button.html' with controls_text='create-list' text="Cancel" %}
     </div>
 </div>
 
