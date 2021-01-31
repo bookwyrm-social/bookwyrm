@@ -29,6 +29,7 @@ class ShelfViews(TestCase):
             identifier='test-shelf',
             user=self.local_user
         )
+        models.SiteSettings.objects.create()
 
 
     def test_shelf_page(self):
@@ -41,7 +42,7 @@ class ShelfViews(TestCase):
             is_api.return_value = False
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'user/shelf.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.shelf.is_api_request') as is_api:

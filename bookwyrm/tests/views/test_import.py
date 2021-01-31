@@ -16,6 +16,7 @@ class ImportViews(TestCase):
         self.local_user = models.User.objects.create_user(
             'mouse@local.com', 'mouse@mouse.mouse', 'password',
             local=True, localname='mouse')
+        models.SiteSettings.objects.create()
 
 
     def test_import_page(self):
@@ -25,7 +26,7 @@ class ImportViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'import.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -39,5 +40,5 @@ class ImportViews(TestCase):
             async_result.return_value = []
             result = view(request, import_job.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'import_status.html')
+        result.render()
         self.assertEqual(result.status_code, 200)

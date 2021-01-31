@@ -33,7 +33,7 @@ class AuthenticationViews(TestCase):
 
         result = login(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'login.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         request.user = self.local_user
@@ -94,7 +94,7 @@ class AuthenticationViews(TestCase):
             })
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        self.assertEqual(response.template_name, 'login.html')
+        response.render()
 
     def test_register_invalid_username(self):
         ''' gotta have an email '''
@@ -109,7 +109,7 @@ class AuthenticationViews(TestCase):
             })
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        self.assertEqual(response.template_name, 'login.html')
+        response.render()
 
         request = self.factory.post(
             'register/',
@@ -120,7 +120,7 @@ class AuthenticationViews(TestCase):
             })
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        self.assertEqual(response.template_name, 'login.html')
+        response.render()
 
         request = self.factory.post(
             'register/',
@@ -131,7 +131,7 @@ class AuthenticationViews(TestCase):
             })
         response = view(request)
         self.assertEqual(models.User.objects.count(), 1)
-        self.assertEqual(response.template_name, 'login.html')
+        response.render()
 
 
     def test_register_closed_instance(self):
