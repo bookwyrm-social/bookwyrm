@@ -76,6 +76,7 @@ class List(View):
             'title': '%s | Lists' % book_list.name,
             'list': book_list,
             'items': book_list.listitem_set.filter(approved=True),
+            'pending': book_list.listitem_set.filter(approved=False),
             'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
             'query': query or ''
