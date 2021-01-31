@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h1>lists</h1>
+{% if request.user.is_authenticated %}
+<h2>Your lists</h2>
+{% for list in request.user.list_set.all %}
+{{ list }}
+{% endfor %}
+{% endif %}
+
+{% for list in lists %}
+{{ list }}
+{% endfor %}
+
+{% endblock %}

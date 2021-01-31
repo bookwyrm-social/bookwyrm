@@ -80,10 +80,15 @@ urlpatterns = [
     # users
     re_path(r'%s/?$' % user_path, views.User.as_view()),
     re_path(r'%s\.json$' % user_path, views.User.as_view()),
-    re_path(r'%s/shelves/?$' % user_path, views.user_shelves_page),
+    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
     re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
     re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
-    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
+    re_path(r'%s/shelves/?$' % user_path,
+            views.user_shelves_page, name='user-shelves'),
+
+    # lists
+    re_path(r'^list/?$', views.Lists.as_view(), name='lists'),
+    re_path(r'^list/(?P<list_id>\d+)(.json)?/?$', views.List.as_view(), name='list'),
 
     # preferences
     re_path(r'^preferences/profile/?$', views.EditUser.as_view()),
