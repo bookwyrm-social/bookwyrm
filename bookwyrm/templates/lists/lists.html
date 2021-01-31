@@ -27,13 +27,7 @@
     </form>
 
     {% if request.user.list_set.exists %}
-    <ul>
-    {% for list in request.user.list_set.all %}
-        <li class="block">
-            {% include 'lists/list-item.html' with list=list %}
-        </li>
-    {% endfor %}
-    </ul>
+    {% include 'lists/list_items.html' with lists=request.user.list_set.all %}
     {% endif %}
 </section>
 {% endif %}
@@ -41,13 +35,9 @@
 {% if lists.exists %}
 <section class="block content">
     <h2 class="title">Recent Lists</h2>
-    <ul>
-    {% for list in lists %}
-        <li class="block">
-            {% include 'lists/list-item.html' with list=list %}
-        </li>
-    {% endfor %}
-    </ul>
+    {% if request.user.list_set.exists %}
+    {% include 'lists/list_items.html' with lists=lists %}
+    {% endif %}
 </section>
 {% endif %}
 
