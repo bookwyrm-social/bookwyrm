@@ -54,10 +54,11 @@ class List(View):
             return ActivitypubResponse(book_list.to_activity())
 
         query = request.GET.get('q')
-        if query:
+        suggestions = None
+        if query and request.user.is_authenticated:
             # search for books
             suggestions = connector_manager.local_search(query, raw=True)
-        else:
+        elif request.user.is_authenticated:
             # just suggest whatever books are nearby
             suggestions = request.user.shelfbook_set.filter(
                 ~Q(book__in=book_list.books.all())

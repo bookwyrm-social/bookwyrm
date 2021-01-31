@@ -90,6 +90,14 @@ class ListViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+        request.user = self.anonymous_user
+        with patch('bookwyrm.views.list.is_api_request') as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
         with patch('bookwyrm.views.list.is_api_request') as is_api:
             is_api.return_value = True
             result = view(request, self.list.id)
