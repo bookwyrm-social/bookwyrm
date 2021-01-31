@@ -5,7 +5,7 @@
 <header class="columns content">
     <div class="column">
         <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
-        <p class="subtitle help">Created by {% include 'snippets/username.html' with user=list.user %}</p>
+        <p class="subtitle help">Created {% if list.curation != 'open' %} and curated{% endif %} by {% include 'snippets/username.html' with user=list.user %}</p>
         {% include 'snippets/trimmed_text.html' with full=list.description %}
     </div>
     {% if request.user == list.user %}
@@ -64,7 +64,7 @@
 
     {% if not list.curation == 'closed' or request.user == list.user %}
     <section class="column is-one-quarter">
-        <h2>Add Books</h2>
+        <h2>{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Suggest{% endif %} Books</h2>
         {% for book in suggested_books %}
         <div class="block columns">
             <div class="column is-narrow">
@@ -75,7 +75,7 @@
                 <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
-                    <button type="submit" class="button is-small is-link">Add</button>
+                    <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Submit{% endif %}</button>
                 </form>
             </div>
         </div>

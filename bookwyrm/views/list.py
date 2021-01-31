@@ -55,11 +55,19 @@ class List(View):
         suggestions = request.user.shelfbook_set.filter(
             ~Q(book__in=book_list.books.all())
         )
+        suggestions = [s.book for s in suggestions[:5]]
+        if len(suggestions) < 5:
+            suggestions += [s.default_edition for s in \
+                models.Work.objects.filter(
+                    ~Q(editions__in=book_list.books.all()),
+                ).order_by('-updated_date')
+            ][:5 - len(suggestions)]
+
 
         data = {
             'title': '%s | Lists' % book_list.name,
             'list': book_list,
-            'suggested_books': [s.book for s in suggestions[:5]],
+            'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
         }
         return TemplateResponse(request, 'lists/list.html', data)
