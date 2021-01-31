@@ -80,7 +80,7 @@ class ListItem(ActivitypubMixin, BookWyrmModel):
             id='%s#remove' % self.remote_id,
             actor=user.remote_id,
             object=self.book.to_activity(),
-            target=self.book_list.to_activity()
+            target=self.book_list.remote_id
         ).serialize()
 
     class Meta:

@@ -30,3 +30,25 @@ class List(TestCase):
         self.assertEqual(activity_json['type'], 'OrderedCollection')
         self.assertEqual(activity_json['name'], 'Test List')
         self.assertEqual(activity_json['owner'], self.user.remote_id)
+
+    def test_list_item(self):
+        ''' a list entry '''
+        work = models.Work.objects.create(title='hello')
+        book = models.Edition.objects.create(title='hi', parent_work=work)
+        item = models.ListItem.objects.create(
+            book_list=self.list,
+            book=book,
+            added_by=self.user,
+        )
+
+        self.assertTrue(item.approved)
+
+        add_activity = item.to_add_activity(self.user)
+        self.assertEqual(add_activity['actor'], self.user.remote_id)
+        self.assertEqual(add_activity['object']['id'], book.remote_id)
+        self.assertEqual(add_activity['target'], self.list.remote_id)
+
+        remove_activity = item.to_remove_activity(self.user)
+        self.assertEqual(remove_activity['actor'], self.user.remote_id)
+        self.assertEqual(remove_activity['object']['id'], book.remote_id)
+        self.assertEqual(remove_activity['target'], self.list.remote_id)
