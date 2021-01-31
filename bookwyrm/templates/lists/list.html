@@ -82,6 +82,9 @@
             <p class="help"><a href="{% url 'list' list.id %}">Clear search</a></p>
             {% endif %}
         </form>
+        {% if not suggested_books %}
+        <p>No books found{% if query %} matching the query "{{ query }}"{% endif %}</p>
+        {% endif %}
         {% for book in suggested_books %}
         <div class="block columns">
             <div class="column is-narrow">
