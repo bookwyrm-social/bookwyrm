@@ -161,3 +161,16 @@ def add_book(request, list_id):
         return HttpResponseBadRequest()
 
     return redirect('list', list_id)
+
+
+@require_POST
+def remove_book(request, list_id):
+    ''' put a book on a list '''
+    book_list = get_object_or_404(models.List, id=list_id)
+    item = get_object_or_404(models.ListItem, id=request.POST.get('item'))
+
+    if not book_list.user == request.user and not item.user == request.user:
+        return HttpResponseNotFound()
+
+    item.delete()
+    return redirect('list', list_id)
