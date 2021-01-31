@@ -47,11 +47,13 @@
                         <div class="card-footer-item">
                             <p>Added by {% include 'snippets/username.html' with user=item.added_by %}</p>
                         </div>
+                        {% if list.user == request.user or list.curation == 'open' and item.added_by == request.user %}
                         <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="book" value="{{ book.id }}">
                             <button type="submit" class="button is-small is-danger">Remove</button>
                         </form>
+                        {% endif %}
                     </div>
                 </div>
             </li>
