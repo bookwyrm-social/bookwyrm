@@ -23,11 +23,11 @@
 
 <div class="columns content">
     <section class="column is-three-quarters">
-        {% if not list.books.exists %}
+        {% if not items.exists %}
         <p>This list is currently empty</p>
         {% else %}
         <ol>
-        {% for item in list.listitem_set.all %}
+        {% for item in items %}
             <li class="block">
                 <div class="card">
                     <header class="card-header">

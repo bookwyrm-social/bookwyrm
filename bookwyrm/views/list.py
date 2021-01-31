@@ -64,16 +64,18 @@ class List(View):
             )
             suggestions = [s.book for s in suggestions[:5]]
             if len(suggestions) < 5:
-                suggestions += [s.default_edition for s in \
-                    models.Work.objects.filter(
-                        ~Q(editions__in=book_list.books.all()),
-                    ).order_by('-updated_date')
+                suggestions += [
+                    s.default_edition for s in \
+                        models.Work.objects.filter(
+                            ~Q(editions__in=book_list.books.all()),
+                        ).order_by('-updated_date')
                 ][:5 - len(suggestions)]
 
 
         data = {
             'title': '%s | Lists' % book_list.name,
             'list': book_list,
+            'items': book_list.listitem_set.filter(approved=True),
             'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
             'query': query or ''
