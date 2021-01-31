@@ -3,35 +3,32 @@
 {% block panel %}
 
 {% if request.user == list.user and pending_count %}
-<div class="block">
+<div class="block content">
     <p>
         <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count | pluralize }} awaiting your approval</a>
     </p>
 </div>
 {% endif %}
 
-<div class="columns content">
+<div class="columns mt-3">
     <section class="column is-three-quarters">
         {% if not items.exists %}
         <p>This list is currently empty</p>
         {% else %}
         <ol>
         {% for item in items %}
-            <li class="block">
+            <li class="block pb-3">
                 <div class="card">
-                    <header class="card-header">
-                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
-                        <div class="card-header-title is-flex-direction-column is-align-items-self-start">
+                    <div class="card-content columns p-0 mb-0">
+                        <div class="column is-narrow pt-0 pb-0">
+                            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
+                        </div>
+                        <div class="column is-flex-direction-column is-align-items-self-start">
                             <span>{% include 'snippets/book_titleby.html' with book=item.book %}</span>
                             {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
                             {% include 'snippets/shelve_button.html' with book=item.book %}
                         </div>
-                    </header>
-                    {% if item.note %}
-                    <div class="card-content">
-                        {% include 'snippets/trimmed_text.html' with full=item.note %}
                     </div>
-                    {% endif %}
                     <div class="card-footer has-background-white-bis">
                         <div class="card-footer-item">
                             <p>Added by {% include 'snippets/username.html' with user=item.added_by %}</p>
