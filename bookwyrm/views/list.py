@@ -169,7 +169,7 @@ def remove_book(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
     item = get_object_or_404(models.ListItem, id=request.POST.get('item'))
 
-    if not book_list.user == request.user and not item.user == request.user:
+    if not book_list.user == request.user and not item.added_by == request.user:
         return HttpResponseNotFound()
 
     item.delete()
