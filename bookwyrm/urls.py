@@ -91,7 +91,7 @@ urlpatterns = [
     re_path(r'^list/(?P<list_id>\d+)(.json)?/?$',
             views.List.as_view(), name='list'),
     re_path(r'^list/(?P<list_id>\d+)/add/?$',
-            views.List.as_view(), name='list-add-book'),
+            views.list.add_book, name='list-add-book'),
 
     # preferences
     re_path(r'^preferences/profile/?$', views.EditUser.as_view()),

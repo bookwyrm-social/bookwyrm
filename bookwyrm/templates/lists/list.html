@@ -1,28 +1,66 @@
 {% extends 'layout.html' %}
+{% load bookwyrm_tags %}
 {% block content %}
 
 <header class="columns content">
     <div class="column">
         <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
+        <p class="subtitle help">Created by {% include 'snippets/username.html' with user=list.user %}</p>
         {% include 'snippets/trimmed_text.html' with full=list.description %}
     </div>
+    {% if request.user == list.user %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="edit-list" %}
+        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="create-list" %}
     </div>
+    {% endif %}
 </header>
 
+<form name="create-list" method="post" action="{% url 'list' list.id %}" class="box hidden" id="create-list">
+    <h3 class="title">Edit list</h3>
+    {% include 'lists/form.html' %}
+</form>
+
+
 <div class="columns content">
-    <section class="column">
-        <h2>Books</h2>
+    <section class="column is-three-quarters">
         {% if not list.books.exists %}
         <p>This list is currently empty</p>
         {% else %}
-        {% for book in list.books.all %}
-        {{ book }}
+        <ol>
+        {% for item in list.listitem_set.all %}
+            <li class="block">
+                <div class="card">
+                    <header class="card-header">
+                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
+                        <div class="card-header-title is-flex-direction-column is-align-items-self-start">
+                            <span>{% include 'snippets/book_titleby.html' with book=item.book %}</span>
+                            {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                            {% include 'snippets/shelve_button.html' with book=item.book %}
+                        </div>
+                    </header>
+                    {% if item.note %}
+                    <div class="card-content">
+                        {% include 'snippets/trimmed_text.html' with full=item.note %}
+                    </div>
+                    {% endif %}
+                    <div class="card-footer has-background-white-bis">
+                        <div class="card-footer-item">
+                            <p>Added by {% include 'snippets/username.html' with user=item.added_by %}</p>
+                        </div>
+                        <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}" class="card-footer-item">
+                            {% csrf_token %}
+                            <input type="hidden" name="book" value="{{ book.id }}">
+                            <button type="submit" class="button is-small is-danger">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
         {% endfor %}
+        </ol>
         {% endif %}
     </section>
 
+    {% if not list.curation == 'closed' or request.user == list.user %}
     <section class="column is-one-quarter">
         <h2>Add Books</h2>
         {% for book in suggested_books %}
@@ -34,11 +72,13 @@
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
                 <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
                     {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
                     <button type="submit" class="button is-small is-link">Add</button>
                 </form>
             </div>
         </div>
         {% endfor %}
     </section>
+    {% endif %}
 </div>
 {% endblock %}

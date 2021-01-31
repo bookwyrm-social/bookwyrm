@@ -1,11 +1,12 @@
 ''' book list views'''
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
@@ -35,7 +36,6 @@ class Lists(View):
         ''' create a book_list '''
         form = forms.ListForm(request.POST)
         if not form.is_valid():
-            print(form.errors)
             return redirect('lists')
         book_list = form.save()
         return redirect(book_list.local_path)
@@ -52,14 +52,15 @@ class List(View):
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity())
 
-        suggestions = request.user.shelfbook_set.all().filter(
-            ~Q(book__in=book_list.books)
+        suggestions = request.user.shelfbook_set.filter(
+            ~Q(book__in=book_list.books.all())
         )
 
         data = {
             'title': '%s | Lists' % book_list.name,
             'list': book_list,
             'suggested_books': [s.book for s in suggestions[:5]],
+            'list_form': forms.ListForm(instance=book_list),
         }
         return TemplateResponse(request, 'lists/list.html', data)
 
@@ -69,4 +70,39 @@ class List(View):
     def post(self, request, list_id):
         ''' edit a book_list '''
         book_list = get_object_or_404(models.List, id=list_id)
+        form = forms.ListForm(request.POST, instance=book_list)
+        if not form.is_valid():
+            return redirect('list', book_list.id)
+        book_list = form.save()
         return redirect(book_list.local_path)
+
+
+@require_POST
+def add_book(request, list_id):
+    ''' put a book on a list '''
+    book_list = get_object_or_404(models.List, id=list_id)
+    if not object_visible_to_user(request.user, book_list):
+        return HttpResponseNotFound()
+
+    book = get_object_or_404(models.Edition, id=request.POST.get('book'))
+    # do you have permission to add to the list?
+    if request.user == book_list.user or book_list.curation == 'open':
+        # go ahead and add it
+        models.ListItem.objects.create(
+            book=book,
+            book_list=book_list,
+            added_by=request.user,
+        )
+    elif book_list.curation == 'curated':
+        # make a pending entry
+        models.ListItem.objects.create(
+            approved=False,
+            book=book,
+            book_list=book_list,
+            added_by=request.user,
+        )
+    else:
+        # you can't add to this list, what were you THINKING
+        return HttpResponseBadRequest()
+
+    return redirect('list', list_id)

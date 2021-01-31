@@ -1,0 +1,45 @@
+{% csrf_token %}
+<input type="hidden" name="user" value="{{ request.user.id }}">
+
+<div class="columns">
+    <div class="column">
+        <div class="field">
+            <label class="label" for="id_name">Name:</label>
+            {{ list_form.name }}
+        </div>
+        <div class="field">
+            <label class="label" for="id_description">Description:</label>
+            {{ list_form.description }}
+        </div>
+    </div>
+    <div class="column">
+        <fieldset class="field">
+            <legend class="label">List curation:</legend>
+
+            <label class="field">
+                <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> Closed
+                <p class="help mb-2">Only you can add and remove books to this list</p>
+            </label>
+
+            <label class="field">
+                <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> Curated
+                <p class="help mb-2">Anyone can suggest books, subject to your approval</p>
+            </label>
+
+            <label class="field">
+                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> Open
+                <p class="help mb-2">Anyone can add books to this list, but only you can remove them</p>
+            </label>
+        </fieldset>
+    </div>
+</div>
+<div class="field has-addons">
+    <div class="control">
+        {% include 'snippets/privacy_select.html' with current=list.privacy %}
+    </div>
+    <div class="control">
+        <button type="submit" class="button is-primary">Save</button>
+        {% include 'snippets/toggle/close_button.html' with controls_text='create-list' text="Cancel" %}
+    </div>
+</div>
+
