@@ -49,7 +49,7 @@
     </section>
 
     {% if not list.curation == 'closed' or request.user == list.user %}
-    <section class="column is-one-quarter">
+    <section class="column is-one-quarter content">
         <h2>{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Suggest{% endif %} Books</h2>
         <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field has-addons">
