@@ -9,7 +9,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
-from .helpers import is_api_request
+from .helpers import is_api_request, object_visible_to_user
 
 
 # pylint: disable=no-self-use
