@@ -55,7 +55,6 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-
     def test_list_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.List.as_view()

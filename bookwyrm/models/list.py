@@ -2,6 +2,7 @@
 from django.db import models
 
 from bookwyrm import activitypub
+from bookwyrm.settings import DOMAIN
 from .base_model import ActivitypubMixin, BookWyrmModel
 from .base_model import OrderedCollectionMixin
 from . import fields
@@ -35,6 +36,11 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         through='ListItem',
         through_fields=('book_list', 'book'),
     )
+
+    def get_remote_id(self):
+        ''' don't want the user to be in there in this case '''
+        return 'https://%s/list/%d' % (DOMAIN, self.id)
+
     @property
     def collection_queryset(self):
         ''' list of books for this shelf, overrides OrderedCollectionMixin  '''

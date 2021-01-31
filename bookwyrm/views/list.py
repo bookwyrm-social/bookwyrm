@@ -7,7 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from .helpers import is_api_request, object_visible_to_user
 
@@ -19,7 +19,12 @@ class Lists(View):
         ''' display a book list '''
         user = request.user if request.user.is_authenticated else None
         lists = models.List.objects.filter(~Q(user=user)).all()
-        return TemplateResponse(request, 'lists/lists.html', {'lists': lists})
+        data = {
+            'title': 'Lists',
+            'lists': lists,
+            'list_form': forms.ListForm()
+        }
+        return TemplateResponse(request, 'lists/lists.html', data)
 
     @method_decorator(login_required, name='dispatch')
     # pylint: disable=unused-argument
