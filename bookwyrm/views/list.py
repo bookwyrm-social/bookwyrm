@@ -51,8 +51,15 @@ class List(View):
 
         if is_api_request(request):
             return ActivitypubResponse(book_list.to_activity())
+
+        suggestions = request.user.shelfbook_set.all().filter(
+            ~Q(book__in=book_list.books)
+        )
+
         data = {
-            'list': book_list
+            'title': '%s | Lists' % book_list.name,
+            'list': book_list,
+            'suggested_books': [s.book for s in suggestions[:5]],
         }
         return TemplateResponse(request, 'lists/list.html', data)
 
@@ -60,6 +67,6 @@ class List(View):
     @method_decorator(login_required, name='dispatch')
     # pylint: disable=unused-argument
     def post(self, request, list_id):
-        ''' create a book_list '''
+        ''' edit a book_list '''
         book_list = get_object_or_404(models.List, id=list_id)
         return redirect(book_list.local_path)

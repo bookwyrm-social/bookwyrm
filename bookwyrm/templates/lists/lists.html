@@ -67,7 +67,7 @@
     {% if request.user.list_set.exists %}
     <ul>
     {% for list in request.user.list_set.all %}
-        <li>
+        <li class="block">
             {% include 'lists/list-item.html' with list=list %}
         </li>
     {% endfor %}
@@ -81,7 +81,7 @@
     <h2 class="title">Recent Lists</h2>
     <ul>
     {% for list in lists %}
-        <li>
+        <li class="block">
             {% include 'lists/list-item.html' with list=list %}
         </li>
     {% endfor %}

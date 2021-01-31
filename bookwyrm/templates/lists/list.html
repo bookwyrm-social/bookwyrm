@@ -1,7 +1,44 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>{{ list.name }}</h1>
 
-{{ list }}
+<header class="columns content">
+    <div class="column">
+        <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
+        {% include 'snippets/trimmed_text.html' with full=list.description %}
+    </div>
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="edit-list" %}
+    </div>
+</header>
 
+<div class="columns content">
+    <section class="column">
+        <h2>Books</h2>
+        {% if not list.books.exists %}
+        <p>This list is currently empty</p>
+        {% else %}
+        {% for book in list.books.all %}
+        {{ book }}
+        {% endfor %}
+        {% endif %}
+    </section>
+
+    <section class="column is-one-quarter">
+        <h2>Add Books</h2>
+        {% for book in suggested_books %}
+        <div class="block columns">
+            <div class="column is-narrow">
+                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
+            </div>
+            <div class="column">
+                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
+                <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button is-small is-link">Add</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</div>
 {% endblock %}

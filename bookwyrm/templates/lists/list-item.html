@@ -1,2 +1,2 @@
-<h4><a href="{{ list.local_path }}">{{ list.name }}</a> {% include 'snippets/privacy-icons.html' with item=list %}</h4>
+<h4><a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h4>
 {% include 'snippets/trimmed_text.html' with full=list.description %}

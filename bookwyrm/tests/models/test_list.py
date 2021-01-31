@@ -16,7 +16,7 @@ class List(TestCase):
 
     def test_remote_id(self):
         ''' shelves use custom remote ids '''
-        expected_id = 'https://%s/user/mouse/list/%d' % \
+        expected_id = 'https://%s/list/%d' % \
             (settings.DOMAIN, self.list.id)
         self.assertEqual(self.list.get_remote_id(), expected_id)
 
