@@ -27,9 +27,9 @@ class Connector(AbstractConnector):
             Mapping('series', formatter=get_first),
             Mapping('seriesNumber', remote_field='series_number'),
             Mapping('subjects'),
-            Mapping('subjectPlaces'),
-            Mapping('isbn13', formatter=get_first),
-            Mapping('isbn10', formatter=get_first),
+            Mapping('subjectPlaces', remote_field='subject_places'),
+            Mapping('isbn13', remote_field='isbn_13', formatter=get_first),
+            Mapping('isbn10', remote_field='isbn_10', formatter=get_first),
             Mapping('lccn', formatter=get_first),
             Mapping(
                 'oclcNumber', remote_field='oclc_numbers',
@@ -144,7 +144,32 @@ class Connector(AbstractConnector):
         # we can mass download edition data from OL to avoid repeatedly querying
         edition_options = self.load_edition_data(work.openlibrary_key)
         for edition_data in edition_options.get('entries'):
+            # does this edition have ANY interesting data?
+            if ignore_edition(edition_data):
+                continue
             self.create_edition_from_data(work, edition_data)
+
+
+def ignore_edition(edition_data):
+    ''' don't load a million editions that have no metadata '''
+    # an isbn, we love to see it
+    if edition_data.get('isbn_13') or edition_data.get('isbn_10'):
+        print(edition_data.get('isbn_10'))
+        return False
+    # grudgingly, oclc can stay
+    if edition_data.get('oclc_numbers'):
+        print(edition_data.get('oclc_numbers'))
+        return False
+    # if it has a cover it can stay
+    if edition_data.get('covers'):
+        print(edition_data.get('covers'))
+        return False
+    # keep non-english editions
+    if edition_data.get('languages') and \
+            'languages/eng' not in str(edition_data.get('languages')):
+        print(edition_data.get('languages'))
+        return False
+    return True
 
 
 def get_description(description_blob):
