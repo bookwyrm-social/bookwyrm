@@ -92,6 +92,8 @@ urlpatterns = [
             views.List.as_view(), name='list'),
     re_path(r'^list/(?P<list_id>\d+)/add/?$',
             views.list.add_book, name='list-add-book'),
+    re_path(r'^list/(?P<list_id>\d+)/curate/?$',
+            views.Curate.as_view(), name='list-curate'),
 
     # preferences
     re_path(r'^preferences/profile/?$', views.EditUser.as_view()),

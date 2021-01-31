@@ -1,68 +1,12 @@
-{% extends 'layout.html' %}
+{% extends 'lists/list_layout.html' %}
 {% load bookwyrm_tags %}
-{% block content %}
+{% block panel %}
 
-<header class="columns content">
-    <div class="column">
-        <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
-        <p class="subtitle help">Created {% if list.curation != 'open' %} and curated{% endif %} by {% include 'snippets/username.html' with user=list.user %}</p>
-        {% include 'snippets/trimmed_text.html' with full=list.description %}
-    </div>
-    {% if request.user == list.user %}
-    <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="create-list" %}
-    </div>
-    {% endif %}
-</header>
-
-<form name="create-list" method="post" action="{% url 'list' list.id %}" class="box hidden" id="create-list">
-    <h3 class="title">Edit list</h3>
-    {% include 'lists/form.html' %}
-</form>
-
-{% if pending.exists %}
+{% if request.user == list.user and pending_count %}
 <div class="block">
-    <div>
-        <p>{{ pending.count }} book{{pending.count | pluralize }} awaiting your approval</p>
-        {% include 'snippets/toggle/open_button.html' with text="Curate suggestions" controls_text="pending-books" class="is-small" %}
-    </div>
-    <div class="box content hidden" id="pending-books">
-        <header class="columns is-mobile">
-            <h2 class="column">Pending Books</h2>
-            <div class="column is-narrow">
-                {% include 'snippets/toggle/toggle_button.html' with label="close" class="delete" nonbutton=True controls_text="pending-books" %}
-            </div>
-        </header>
-        <table class="table is-striped">
-            <tr>
-                <th></th>
-                <th>Book</th>
-                <th>Suggested by</th>
-                <th></th>
-            </tr>
-            {% for item in pending %}
-            <tr>
-                <td>
-                    <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="small" %}</a>
-                </td>
-                <td>
-                    {% include 'snippets/book_titleby.html' with book=item.book %}
-                </td>
-                <td>
-                    {% include 'snippets/username.html' with user=item.added_by %}
-                </td>
-                <td class="field has-addons">
-                    <div class="control">
-                        <button class="button">Approve</button>
-                    </div>
-                    <div class="control">
-                        <button class="button is-danger is-light">Reject</button>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <p>
+        <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count | pluralize }} awaiting your approval</a>
+    </p>
 </div>
 {% endif %}
 

@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% load bookwyrm_tags %}
+{% block content %}
+
+<header class="columns content">
+    <div class="column">
+        <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
+        <p class="subtitle help">Created {% if list.curation != 'open' %} and curated{% endif %} by {% include 'snippets/username.html' with user=list.user %}</p>
+        {% include 'snippets/trimmed_text.html' with full=list.description %}
+    </div>
+    {% if request.user == list.user %}
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="create-list" %}
+    </div>
+    {% endif %}
+</header>
+
+<form name="create-list" method="post" action="{% url 'list' list.id %}" class="box hidden" id="create-list">
+    <h3 class="title">Edit list</h3>
+    {% include 'lists/form.html' %}
+</form>
+
+{% block panel %}{% endblock %}
+
+{% endblock %}

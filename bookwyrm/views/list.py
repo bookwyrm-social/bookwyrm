@@ -76,7 +76,8 @@ class List(View):
             'title': '%s | Lists' % book_list.name,
             'list': book_list,
             'items': book_list.listitem_set.filter(approved=True),
-            'pending': book_list.listitem_set.filter(approved=False),
+            'pending_count': book_list.listitem_set.filter(
+                approved=False).count(),
             'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
             'query': query or ''
@@ -94,6 +95,41 @@ class List(View):
             return redirect('list', book_list.id)
         book_list = form.save()
         return redirect(book_list.local_path)
+
+
+class Curate(View):
+    ''' approve or discard list suggestsions '''
+    @method_decorator(login_required, name='dispatch')
+    def get(self, request, list_id):
+        ''' display a pending list '''
+        book_list = get_object_or_404(models.List, id=list_id)
+        if not book_list.user == request.user:
+            # only the creater can curate the list
+            return HttpResponseNotFound()
+
+        data = {
+            'title': 'Curate "%s" | Lists' % book_list.name,
+            'list': book_list,
+            'pending': book_list.listitem_set.filter(approved=False),
+            'list_form': forms.ListForm(instance=book_list),
+        }
+        return TemplateResponse(request, 'lists/curate.html', data)
+
+
+    @method_decorator(login_required, name='dispatch')
+    # pylint: disable=unused-argument
+    def post(self, request, list_id):
+        ''' edit a book_list '''
+        book_list = get_object_or_404(models.List, id=list_id)
+        suggestion = get_object_or_404(
+            models.ListItem, id=request.POST.get('item'))
+        approved = request.POST.get('approved') == 'true'
+        if approved:
+            suggestion.approved = True
+            suggestion.save()
+        else:
+            suggestion.delete()
+        return redirect('list-curate', book_list.id)
 
 
 @require_POST
