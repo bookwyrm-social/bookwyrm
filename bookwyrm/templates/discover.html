@@ -2,9 +2,30 @@
 {% block content %}
 
 {% if not request.user.is_authenticated %}
-<div class="block">
+<header class="block">
     <h1 class="title has-text-centered">{{ site.name }}: {{ site.instance_tagline }}</h1>
-</div>
+</header>
+
+<section class="level is-mobile">
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Ad-Free</p>
+            <p class="title"><span class="icon icon-book"></span></p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Anti-Corporate</p>
+            <p class="title"><span class="icon icon-book"></span></p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="heading">Decentralized</p>
+            <p class="title"><span class="icon icon-book"></span></p>
+        </div>
+    </div>
+</section>
 
 <section class="tile is-ancestor">
     <div class="tile is-7 is-parent">
@@ -26,6 +47,7 @@
         </div>
     </div>
 </section>
+
 {% else %}
 <div class="block">
     <h1 class="title has-text-centered">Discover</h1>
