@@ -18,11 +18,11 @@
     <div class="column">
         <div class="tabs" role="tablist">
             <ul>
-            {% for shelf_tab in shelves %}
-            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                {% for shelf_tab in shelves %}
+                <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
                     <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}" role="tab" aria-selected="{% if shelf_tab.identifier == shelf.identifier %}true{% else %}false{% endif %}">{{ shelf_tab.name }}</a>
                 </li>
-            {% endfor %}
+                {% endfor %}
             </ul>
         </div>
     </div>

@@ -35,6 +35,7 @@ class Goal(View):
             'goal': goal,
             'user': user,
             'year': year,
+            'is_self': request.user == user,
         }
         return TemplateResponse(request, 'goal.html', data)
 

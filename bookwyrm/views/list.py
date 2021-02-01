@@ -13,7 +13,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from .helpers import is_api_request, object_visible_to_user, privacy_filter
-
+from .helpers import get_user_from_username
 
 # pylint: disable=no-self-use
 class Lists(View):
@@ -49,6 +49,30 @@ class Lists(View):
             return redirect('lists')
         book_list = form.save()
         return redirect(book_list.local_path)
+
+class UserLists(View):
+    ''' a user's book list page '''
+    def get(self, request, username):
+        ''' display a book list '''
+        try:
+            page = int(request.GET.get('page', 1))
+        except ValueError:
+            page = 1
+        user = get_user_from_username(username)
+        lists = models.List.objects.filter(user=user).all()
+        lists = privacy_filter(
+            request.user, lists, ['public', 'followers', 'unlisted'])
+        paginated = Paginator(lists, 12)
+
+        data = {
+            'title': '%s: Lists' % user.name,
+            'user': user,
+            'is_self': request.user.id == user.id,
+            'lists': paginated.page(page),
+            'list_form': forms.ListForm(),
+            'path': user.local_path + '/lists',
+        }
+        return TemplateResponse(request, 'user/lists.html', data)
 
 
 class List(View):

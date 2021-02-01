@@ -30,7 +30,7 @@
     {% endif %}
 
     {% if request.user.list_set.count > 4 %}
-    <a href="{{ request.user.local_path }}/lists">See all {{ request.user.list_set.count}} lists</a>
+    <a href="{% url 'user-lists' request.user.localname %}">See all {{ request.user.list_set.count}} lists</a>
     {% endif %}
 </section>
 {% endif %}

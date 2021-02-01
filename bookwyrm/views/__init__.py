@@ -14,7 +14,7 @@ from .import_data import Import, ImportStatus
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .invite import ManageInvites, Invite
 from .landing import About, Home, Discover
-from .list import Lists, List, Curate
+from .list import Lists, List, Curate, UserLists
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough

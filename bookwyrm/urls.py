@@ -78,13 +78,20 @@ urlpatterns = [
     re_path(r'^import/(\d+)/?$', views.ImportStatus.as_view()),
 
     # users
-    re_path(r'%s/?$' % user_path, views.User.as_view()),
+    re_path(r'%s/?$' % user_path, views.User.as_view(), name='user-feed'),
     re_path(r'%s\.json$' % user_path, views.User.as_view()),
-    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed()),
-    re_path(r'%s/followers(.json)?/?$' % user_path, views.Followers.as_view()),
-    re_path(r'%s/following(.json)?/?$' % user_path, views.Following.as_view()),
+    re_path(r'%s/rss' % user_path, views.rss_feed.RssFeed(), name='user-rss'),
+    re_path(r'%s/followers(.json)?/?$' % user_path,
+            views.Followers.as_view(), name='user-followers'),
+    re_path(r'%s/following(.json)?/?$' % user_path,
+            views.Following.as_view(), name='user-following'),
     re_path(r'%s/shelves/?$' % user_path,
             views.user_shelves_page, name='user-shelves'),
+    re_path(r'%s/lists/?$' % user_path,
+            views.UserLists.as_view(), name='user-lists'),
+    re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path,
+            views.Goal.as_view(), name='user-goal'),
+
 
     # lists
     re_path(r'^list/?$', views.Lists.as_view(), name='lists'),
@@ -98,14 +105,12 @@ urlpatterns = [
             views.Curate.as_view(), name='list-curate'),
 
     # preferences
-    re_path(r'^preferences/profile/?$', views.EditUser.as_view()),
+    re_path(r'^preferences/profile/?$',
+            views.EditUser.as_view(), name='prefs-profile'),
     re_path(r'^preferences/password/?$', views.ChangePassword.as_view()),
     re_path(r'^preferences/block/?$', views.Block.as_view()),
     re_path(r'^block/(?P<user_id>\d+)/?$', views.Block.as_view()),
     re_path(r'^unblock/(?P<user_id>\d+)/?$', views.unblock),
-
-    # reading goals
-    re_path(r'%s/goal/(?P<year>\d{4})/?$' % user_path, views.Goal.as_view()),
 
     # statuses
     re_path(r'%s(.json)?/?$' % status_path, views.Status.as_view()),
@@ -142,7 +147,7 @@ urlpatterns = [
 
     # shelf
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
-            user_path, views.Shelf.as_view()),
+            user_path, views.Shelf.as_view(), name='shelf'),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
             local_user_path, views.Shelf.as_view()),
     re_path(r'^create-shelf/?$', views.create_shelf),
