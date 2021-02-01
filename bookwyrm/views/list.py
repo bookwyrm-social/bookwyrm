@@ -84,7 +84,7 @@ class List(View):
             return HttpResponseNotFound()
 
         if is_api_request(request):
-            return ActivitypubResponse(book_list.to_activity())
+            return ActivitypubResponse(book_list.to_activity(**request.GET))
 
         query = request.GET.get('q')
         suggestions = None
