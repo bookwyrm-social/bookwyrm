@@ -46,6 +46,10 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         ''' list of books for this shelf, overrides OrderedCollectionMixin  '''
         return self.books.all().order_by('listitem')
 
+    class Meta:
+        ''' default sorting '''
+        ordering = ('-updated_date',)
+
 
 class ListItem(ActivitypubMixin, BookWyrmModel):
     ''' ok '''

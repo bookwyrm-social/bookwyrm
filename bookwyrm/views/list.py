@@ -1,5 +1,6 @@
 ''' book list views'''
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -19,15 +20,23 @@ class Lists(View):
     ''' book list page '''
     def get(self, request):
         ''' display a book list '''
+        try:
+            page = int(request.GET.get('page', 1))
+        except ValueError:
+            page = 1
+
         user = request.user if request.user.is_authenticated else None
         lists = models.List.objects.filter(
             ~Q(user=user),
         ).all()
         lists = privacy_filter(request.user, lists, ['public', 'followers'])
+
+        paginated = Paginator(lists, 12)
         data = {
             'title': 'Lists',
-            'lists': lists,
-            'list_form': forms.ListForm()
+            'lists': paginated.page(page),
+            'list_form': forms.ListForm(),
+            'path': '/list',
         }
         return TemplateResponse(request, 'lists/lists.html', data)
 
