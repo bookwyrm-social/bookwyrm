@@ -151,6 +151,7 @@ def shelve(request):
             request.user,
             desired_shelf,
             book,
+            privacy=desired_shelf.privacy,
         )
 
     return redirect('/')
