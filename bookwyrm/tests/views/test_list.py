@@ -26,9 +26,11 @@ class ListViews(TestCase):
             local=True, localname='rat',
             remote_id='https://example.com/users/rat',
         )
+        work = models.Work.objects.create(title='Work')
         self.book = models.Edition.objects.create(
             title='Example Edition',
             remote_id='https://example.com/book/1',
+            parent_work=work,
         )
         self.list = models.List.objects.create(
             name='Test List', user=self.local_user)
@@ -37,7 +39,7 @@ class ListViews(TestCase):
         models.SiteSettings.objects.create()
 
 
-    def test_lists_page(self):
+    def test_lists_page(self, _):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Lists.as_view()
         models.List.objects.create(name='Public list', user=self.local_user)
@@ -59,7 +61,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_lists_create(self):
+    def test_lists_create(self, _):
         ''' create list view '''
         view = views.Lists.as_view()
         request = self.factory.post('', {
@@ -78,7 +80,7 @@ class ListViews(TestCase):
         self.assertEqual(new_list.curation, 'open')
 
 
-    def test_list_page(self):
+    def test_list_page(self, _):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.List.as_view()
         request = self.factory.get('')
@@ -114,7 +116,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_list_edit(self):
+    def test_list_edit(self, _):
         ''' edit a list '''
         view = views.List.as_view()
         request = self.factory.post('', {
@@ -136,7 +138,7 @@ class ListViews(TestCase):
         self.assertEqual(self.list.curation, 'curated')
 
 
-    def test_curate_page(self):
+    def test_curate_page(self, _):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Curate.as_view()
         models.List.objects.create(name='Public list', user=self.local_user)
@@ -155,7 +157,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
 
-    def test_curate_approve(self):
+    def test_curate_approve(self, _):
         ''' approve a pending item '''
         view = views.Curate.as_view()
         pending = models.ListItem.objects.create(
@@ -178,7 +180,7 @@ class ListViews(TestCase):
         self.assertTrue(pending.approved)
 
 
-    def test_curate_reject(self):
+    def test_curate_reject(self, _):
         ''' approve a pending item '''
         view = views.Curate.as_view()
         pending = models.ListItem.objects.create(
@@ -199,7 +201,7 @@ class ListViews(TestCase):
         self.assertFalse(models.ListItem.objects.exists())
 
 
-    def test_add_book(self):
+    def test_add_book(self, _):
         ''' put a book on a list '''
         request = self.factory.post('', {
             'book': self.book.id,
@@ -213,7 +215,7 @@ class ListViews(TestCase):
         self.assertTrue(item.approved)
 
 
-    def test_add_book_outsider(self):
+    def test_add_book_outsider(self, _):
         ''' put a book on a list '''
         self.list.curation = 'open'
         self.list.save()
@@ -229,7 +231,7 @@ class ListViews(TestCase):
         self.assertTrue(item.approved)
 
 
-    def test_add_book_pending(self):
+    def test_add_book_pending(self, _):
         ''' put a book on a list '''
         self.list.curation = 'curated'
         self.list.save()
@@ -245,7 +247,7 @@ class ListViews(TestCase):
         self.assertFalse(item.approved)
 
 
-    def test_add_book_self_curated(self):
+    def test_add_book_self_curated(self, _):
         ''' put a book on a list '''
         self.list.curation = 'curated'
         self.list.save()
@@ -261,7 +263,7 @@ class ListViews(TestCase):
         self.assertTrue(item.approved)
 
 
-    def test_remove_book(self):
+    def test_remove_book(self, _):
         ''' take an item off a list '''
         item = models.ListItem.objects.create(
             book_list=self.list,
@@ -279,7 +281,7 @@ class ListViews(TestCase):
         self.assertFalse(self.list.listitem_set.exists())
 
 
-    def test_remove_book_unauthorized(self):
+    def test_remove_book_unauthorized(self, _):
         ''' take an item off a list '''
         item = models.ListItem.objects.create(
             book_list=self.list,
