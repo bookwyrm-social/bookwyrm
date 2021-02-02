@@ -19,12 +19,9 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     name = fields.CharField(max_length=100)
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='owner')
-    description = fields.TextField(blank=True, null=True)
-    privacy = fields.CharField(
-        max_length=255,
-        default='public',
-        choices=fields.PrivacyLevels.choices
-    )
+    description = fields.TextField(
+        blank=True, null=True, activitypub_field='summary')
+    privacy = fields.PrivacyField()
     curation = fields.CharField(
         max_length=255,
         default='closed',

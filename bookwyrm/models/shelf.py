@@ -15,11 +15,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='owner')
     editable = models.BooleanField(default=True)
-    privacy = fields.CharField(
-        max_length=255,
-        default='public',
-        choices=fields.PrivacyLevels.choices
-    )
+    privacy = fields.PrivacyField()
     books = models.ManyToManyField(
         'Edition',
         symmetrical=False,

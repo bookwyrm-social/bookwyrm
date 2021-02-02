@@ -161,16 +161,18 @@ class ActivitypubMixin:
         ''' returns the object wrapped in a Create activity '''
         activity_object = self.to_activity(**kwargs)
 
-        signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
-        content = activity_object['content']
-        signed_message = signer.sign(SHA256.new(content.encode('utf8')))
+        signature = None
         create_id = self.remote_id + '/activity'
+        if 'content' in activity_object:
+            signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
+            content = activity_object['content']
+            signed_message = signer.sign(SHA256.new(content.encode('utf8')))
 
-        signature = activitypub.Signature(
-            creator='%s#main-key' % user.remote_id,
-            created=activity_object['published'],
-            signatureValue=b64encode(signed_message).decode('utf8')
-        )
+            signature = activitypub.Signature(
+                creator='%s#main-key' % user.remote_id,
+                created=activity_object['published'],
+                signatureValue=b64encode(signed_message).decode('utf8')
+            )
 
         return activitypub.Create(
             id=create_id,

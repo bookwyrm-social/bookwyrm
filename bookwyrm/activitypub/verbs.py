@@ -18,7 +18,7 @@ class Create(Verb):
     ''' Create activity '''
     to: List
     cc: List
-    signature: Signature
+    signature: Signature = None
     type: str = 'Create'
 
 
