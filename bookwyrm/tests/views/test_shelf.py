@@ -8,6 +8,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
+@patch('bookwyrm.broadcast.broadcast_task.delay')
 class ShelfViews(TestCase):
     ''' tag views'''
     def setUp(self):
@@ -127,8 +128,7 @@ class ShelfViews(TestCase):
             'shelf': self.shelf.identifier
         })
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            views.shelve(request)
+        views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
@@ -142,8 +142,7 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            views.shelve(request)
+        views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -157,8 +156,7 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
-            views.shelve(request)
+        views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 

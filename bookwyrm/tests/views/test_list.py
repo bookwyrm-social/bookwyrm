@@ -10,6 +10,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
+@patch('bookwyrm.broadcast.broadcast_task.delay')
 class ListViews(TestCase):
     ''' tag views'''
     def setUp(self):
