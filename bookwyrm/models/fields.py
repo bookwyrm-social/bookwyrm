@@ -213,7 +213,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             setattr(instance, self.name, 'followers')
 
     def set_activity_from_field(self, activity, instance):
-        mentions = [u.remote_id for u in instance.mention_users.all()]
+        # explicitly to anyone mentioned (statuses only)
+        mentions = []
+        if hasattr(instance, 'mention_users'):
+            mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         followers = instance.user.__class__._meta.get_field('followers')\
                 .field_to_activity(instance.user.followers)

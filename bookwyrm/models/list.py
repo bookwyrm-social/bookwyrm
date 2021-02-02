@@ -33,6 +33,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         through='ListItem',
         through_fields=('book_list', 'book'),
     )
+    activity_serializer = activitypub.BookList
 
     def get_remote_id(self):
         ''' don't want the user to be in there in this case '''
