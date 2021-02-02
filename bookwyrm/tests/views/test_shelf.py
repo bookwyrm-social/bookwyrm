@@ -33,7 +33,7 @@ class ShelfViews(TestCase):
         models.SiteSettings.objects.create()
 
 
-    def test_shelf_page(self):
+    def test_shelf_page(self, _):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -63,7 +63,7 @@ class ShelfViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_edit_shelf_privacy(self):
+    def test_edit_shelf_privacy(self, _):
         ''' set name or privacy on shelf '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier='to-read')
@@ -82,7 +82,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.privacy, 'unlisted')
 
 
-    def test_edit_shelf_name(self):
+    def test_edit_shelf_name(self, _):
         ''' change the name of an editable shelf '''
         view = views.Shelf.as_view()
         shelf = models.Shelf.objects.create(
@@ -103,7 +103,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.identifier, 'testshelf-%d' % shelf.id)
 
 
-    def test_edit_shelf_name_not_editable(self):
+    def test_edit_shelf_name_not_editable(self, _):
         ''' can't change the name of an non-editable shelf '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier='to-read')
@@ -121,7 +121,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.name, 'To Read')
 
 
-    def test_handle_shelve(self):
+    def test_handle_shelve(self, _):
         ''' shelve a book '''
         request = self.factory.post('', {
             'book': self.book.id,
@@ -133,7 +133,7 @@ class ShelfViews(TestCase):
         self.assertEqual(self.shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_to_read(self):
+    def test_handle_shelve_to_read(self, _):
         ''' special behavior for the to-read shelf '''
         shelf = models.Shelf.objects.get(identifier='to-read')
         request = self.factory.post('', {
@@ -147,7 +147,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_reading(self):
+    def test_handle_shelve_reading(self, _):
         ''' special behavior for the reading shelf '''
         shelf = models.Shelf.objects.get(identifier='reading')
         request = self.factory.post('', {
@@ -161,7 +161,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_read(self):
+    def test_handle_shelve_read(self, _):
         ''' special behavior for the read shelf '''
         shelf = models.Shelf.objects.get(identifier='read')
         request = self.factory.post('', {
@@ -176,7 +176,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_unshelve(self):
+    def test_handle_unshelve(self, _):
         ''' remove a book from a shelf '''
         self.shelf.books.add(self.book)
         self.shelf.save()
