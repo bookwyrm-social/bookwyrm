@@ -2,27 +2,28 @@
 {% block content %}
 
 {% if not request.user.is_authenticated %}
-<header class="block">
-    <h1 class="title has-text-centered">{{ site.name }}: {{ site.instance_tagline }}</h1>
+<header class="block has-text-centered">
+    <h1 class="title">{{ site.name }}</h1>
+    <h2 class="subtitle">{{ site.instance_tagline }}</h2>
 </header>
 
 <section class="level is-mobile">
     <div class="level-item has-text-centered">
         <div>
-            <p class="heading">Ad-Free</p>
-            <p class="title"><span class="icon icon-book"></span></p>
-        </div>
-    </div>
-    <div class="level-item has-text-centered">
-        <div>
-            <p class="heading">Anti-Corporate</p>
-            <p class="title"><span class="icon icon-book"></span></p>
-        </div>
-    </div>
-    <div class="level-item has-text-centered">
-        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-paperplane"></span></p>
             <p class="heading">Decentralized</p>
-            <p class="title"><span class="icon icon-book"></span></p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-heart"></span></p>
+            <p class="heading">Friendly</p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-banknote"></span></p>
+            <p class="heading">Anti-Corporate</p>
         </div>
     </div>
 </section>
