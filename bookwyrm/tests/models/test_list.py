@@ -27,7 +27,7 @@ class List(TestCase):
         self.assertIsInstance(activity_json, dict)
         self.assertEqual(activity_json['id'], self.list.remote_id)
         self.assertEqual(activity_json['totalItems'], 0)
-        self.assertEqual(activity_json['type'], 'OrderedCollection')
+        self.assertEqual(activity_json['type'], 'BookList')
         self.assertEqual(activity_json['name'], 'Test List')
         self.assertEqual(activity_json['owner'], self.user.remote_id)
 

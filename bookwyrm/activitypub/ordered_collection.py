@@ -30,7 +30,7 @@ class BookList(OrderedCollectionPrivate):
     ''' structure of an ordered collection activity '''
     summary: str = None
     curation: str = 'closed'
-    type: str = 'List'
+    type: str = 'BookList'
 
 
 @dataclass(init=False)
