@@ -229,6 +229,7 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
             serializer = self.activity_serializer
             # a dict from the model fields
             activity = generate_activity(self)
+
         if remote_id:
             activity['id'] = remote_id
 

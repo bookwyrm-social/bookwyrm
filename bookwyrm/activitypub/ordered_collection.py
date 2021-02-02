@@ -13,13 +13,20 @@ class OrderedCollection(ActivityObject):
     last: str = None
     name: str = None
     owner: str = None
-    to: List[str] = field(default_factory=lambda: [])
-    cc: List[str] = field(default_factory=lambda: [])
     type: str = 'OrderedCollection'
 
+@dataclass(init=False)
+class OrderedCollectionPrivate(OrderedCollection):
+    to: List[str] = field(default_factory=lambda: [])
+    cc: List[str] = field(default_factory=lambda: [])
 
 @dataclass(init=False)
-class BookList(OrderedCollection):
+class Shelf(OrderedCollectionPrivate):
+    ''' structure of an ordered collection activity '''
+    type: str = 'Shelf'
+
+@dataclass(init=False)
+class BookList(OrderedCollectionPrivate):
     ''' structure of an ordered collection activity '''
     summary: str = None
     curation: str = 'closed'

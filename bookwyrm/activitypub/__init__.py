@@ -10,7 +10,7 @@ from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
 from .note import Tombstone
 from .interaction import Boost, Like
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
-from .ordered_collection import BookList
+from .ordered_collection import BookList, Shelf
 from .person import Person, PublicKey
 from .response import ActivitypubResponse
 from .book import Edition, Work, Author

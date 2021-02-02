@@ -23,6 +23,8 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         through_fields=('shelf', 'book')
     )
 
+    activity_serializer = activitypub.Shelf
+
     def save(self, *args, **kwargs):
         ''' set the identifier '''
         saved = super().save(*args, **kwargs)
