@@ -29,30 +29,13 @@
 
     {% if is_self %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Create shelf" icon="plus" class="is-clickable" controls_text="create-shelf-form" %}
+        {% include 'snippets/toggle/open_button.html' with text="Create shelf" icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
 
-<div class="hidden box mb-5" id="create-shelf-form">
-    <h2 class="title is-4">Create new shelf</h2>
-    <form name="create-shelf" action="/create-shelf/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="user" value="{{ request.user.id }}">
-        <div class="field">
-            <label class="label" for="id_name_create">Name:</label>
-            <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
-        </div>
-
-        <label class="label">
-            <p>Shelf privacy:</p>
-            {% include 'snippets/privacy_select.html' with no_label=True %}
-        </label>
-        <div class="field is-grouped">
-            <button class="button is-primary" type="submit">Create shelf</button>
-            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="create-shelf-form" %}
-        </div>
-    </form>
+<div class="block">
+    {% include 'user/create_shelf_form.html' with controls_text='create-shelf-form' %}
 </div>
 
 <div class="block columns">
