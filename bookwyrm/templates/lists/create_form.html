@@ -1,0 +1,11 @@
+{% extends 'components/inline_form.html' %}
+
+{% block header %}
+Create List
+{% endblock %}
+
+{% block form %}
+    <form name="create-list" method="post" action="{% url 'lists' %}">
+    {% include 'lists/form.html' %}
+</form>
+{% endblock %}

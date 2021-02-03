@@ -1,0 +1,11 @@
+{% extends 'components/inline_form.html' %}
+
+{% block header %}
+Edit List
+{% endblock %}
+
+{% block form %}
+<form name="edit-list" method="post" action="{% url 'list' list.id %}">
+    {% include 'lists/form.html' %}
+</form>
+{% endblock %}
