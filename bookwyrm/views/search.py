@@ -10,7 +10,7 @@ from django.views import View
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
 from bookwyrm.utils import regex
-from .helpers import is_api_request
+from .helpers import is_api_request, privacy_filter
 from .helpers import handle_remote_webfinger
 
 
@@ -32,7 +32,7 @@ class Search(View):
         if re.match(r'\B%s' % regex.full_username, query):
             handle_remote_webfinger(query)
 
-        # do a local user search
+        # do a  user search
         user_results = models.User.objects.annotate(
             similarity=Greatest(
                 TrigramSimilarity('username', query),
@@ -42,12 +42,25 @@ class Search(View):
             similarity__gt=0.5,
         ).order_by('-similarity')[:10]
 
+        # any relevent lists?
+        list_results = privacy_filter(
+            request.user, models.List.objects, ['public', 'followers']
+        ).annotate(
+            similarity=Greatest(
+                TrigramSimilarity('name', query),
+                TrigramSimilarity('description', query),
+            )
+        ).filter(
+            similarity__gt=0.1,
+        ).order_by('-similarity')[:10]
+
         book_results = connector_manager.search(
             query, min_confidence=min_confidence)
         data = {
             'title': 'Search Results',
             'book_results': book_results,
             'user_results': user_results,
+            'list_results': list_results,
             'query': query,
         }
         return TemplateResponse(request, 'search_results.html', data)

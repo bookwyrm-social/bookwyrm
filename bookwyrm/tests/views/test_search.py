@@ -83,6 +83,7 @@ class ShelfViews(TestCase):
         )
 
         request = self.factory.get('', {'q': 'Test Book'})
+        request.user = self.local_user
         with patch('bookwyrm.views.search.is_api_request') as is_api:
             is_api.return_value = False
             with patch(
@@ -99,6 +100,7 @@ class ShelfViews(TestCase):
         ''' searches remote connectors '''
         view = views.Search.as_view()
         request = self.factory.get('', {'q': 'mouse'})
+        request.user = self.local_user
         with patch('bookwyrm.views.search.is_api_request') as is_api:
             is_api.return_value = False
             with patch('bookwyrm.connectors.connector_manager.search'):

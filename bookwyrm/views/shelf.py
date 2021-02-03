@@ -138,7 +138,12 @@ def shelve(request):
             pass
     shelfbook = models.ShelfBook.objects.create(
         book=book, shelf=desired_shelf, added_by=request.user)
-    broadcast(request.user, shelfbook.to_add_activity(request.user))
+    broadcast(
+        request.user,
+        shelfbook.to_add_activity(request.user),
+        privacy=shelfbook.shelf.privacy,
+        software='bookwyrm'
+    )
 
     # post about "want to read" shelves
     if desired_shelf.identifier == 'to-read':
@@ -146,7 +151,7 @@ def shelve(request):
             request.user,
             desired_shelf,
             book,
-            privacy=desired_shelf.privacy
+            privacy=desired_shelf.privacy,
         )
 
     return redirect('/')
@@ -169,4 +174,4 @@ def handle_unshelve(user, book, shelf):
     activity = row.to_remove_activity(user)
     row.delete()
 
-    broadcast(user, activity)
+    broadcast(user, activity, privacy=shelf.privacy, software='bookwyrm')

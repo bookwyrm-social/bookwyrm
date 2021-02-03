@@ -4,9 +4,10 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from django import template
+from django.db.models import Avg
 from django.utils import timezone
 
-from bookwyrm import models
+from bookwyrm import models, views
 from bookwyrm.views.status import to_markdown
 
 
@@ -20,6 +21,17 @@ def dict_key(d, k):
 
 @register.filter(name='rating')
 def get_rating(book, user):
+    ''' get the overall rating of a book '''
+    queryset = views.helpers.get_activity_feed(
+        user,
+        ['public', 'followers', 'unlisted', 'direct'],
+        queryset=models.Review.objects.filter(book=book),
+    )
+    return queryset.aggregate(Avg('rating'))['rating__avg']
+
+
+@register.filter(name='user_rating')
+def get_user_rating(book, user):
     ''' get a user's rating of a book '''
     rating = models.Review.objects.filter(
         user=user,

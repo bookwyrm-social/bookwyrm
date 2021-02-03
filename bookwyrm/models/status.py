@@ -94,6 +94,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return self.to_ordered_collection(
             self.replies(self),
             remote_id='%s/replies' % self.remote_id,
+            collection_only=True,
             **kwargs
         )
 

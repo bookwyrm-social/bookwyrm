@@ -7,6 +7,7 @@ from .author import Author
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
+from .list import List, ListItem
 
 from .status import Status, GeneratedNote, Review, Comment, Quotation
 from .status import Boost

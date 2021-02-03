@@ -59,11 +59,55 @@ def object_visible_to_user(viewer, obj):
             return True
     return False
 
+
+def privacy_filter(viewer, queryset, privacy_levels, following_only=False):
+    ''' filter objects that have "user" and "privacy" fields '''
+    # exclude blocks from both directions
+    if not viewer.is_anonymous:
+        blocked = models.User.objects.filter(id__in=viewer.blocks.all()).all()
+        queryset = queryset.exclude(
+            Q(user__in=blocked) | Q(user__blocks=viewer))
+
+    # you can't see followers only or direct messages if you're not logged in
+    if viewer.is_anonymous:
+        privacy_levels = [p for p in privacy_levels if \
+            not p in ['followers', 'direct']]
+
+    # filter to only privided privacy levels
+    queryset = queryset.filter(privacy__in=privacy_levels)
+
+    # only include statuses the user follows
+    if following_only:
+        queryset = queryset.exclude(
+            ~Q(# remove everythign except
+                Q(user__in=viewer.following.all()) | # user following
+                Q(user=viewer) |# is self
+                Q(mention_users=viewer)# mentions user
+            ),
+        )
+    # exclude followers-only statuses the user doesn't follow
+    elif 'followers' in privacy_levels:
+        queryset = queryset.exclude(
+            ~Q(# user isn't following and it isn't their own status
+                Q(user__in=viewer.following.all()) | Q(user=viewer)
+            ),
+            privacy='followers' # and the status is followers only
+        )
+
+    # exclude direct messages not intended for the user
+    if 'direct' in privacy_levels:
+        queryset = queryset.exclude(
+            ~Q(
+                Q(user=viewer) | Q(mention_users=viewer)
+            ), privacy='direct'
+        )
+    return queryset
+
+
 def get_activity_feed(
         user, privacy, local_only=False, following_only=False,
         queryset=models.Status.objects):
     ''' get a filtered queryset of statuses '''
-    privacy = privacy if isinstance(privacy, list) else [privacy]
     # if we're looking at Status, we need this. We don't if it's Comment
     if hasattr(queryset, 'select_subclasses'):
         queryset = queryset.select_subclasses()
@@ -71,44 +115,10 @@ def get_activity_feed(
     # exclude deleted
     queryset = queryset.exclude(deleted=True).order_by('-published_date')
 
-    # exclude blocks from both directions
-    if not user.is_anonymous:
-        blocked = models.User.objects.filter(id__in=user.blocks.all()).all()
-        queryset = queryset.exclude(
-            Q(user__in=blocked) | Q(user__blocks=user))
-
-    # you can't see followers only or direct messages if you're not logged in
-    if user.is_anonymous:
-        privacy = [p for p in privacy if not p in ['followers', 'direct']]
-
-    # filter to only privided privacy levels
-    queryset = queryset.filter(privacy__in=privacy)
-
-    # only include statuses the user follows
-    if following_only:
-        queryset = queryset.exclude(
-            ~Q(# remove everythign except
-                Q(user__in=user.following.all()) | # user follwoing
-                Q(user=user) |# is self
-                Q(mention_users=user)# mentions user
-            ),
-        )
-    # exclude followers-only statuses the user doesn't follow
-    elif 'followers' in privacy:
-        queryset = queryset.exclude(
-            ~Q(# user isn't following and it isn't their own status
-                Q(user__in=user.following.all()) | Q(user=user)
-            ),
-            privacy='followers' # and the status is followers only
-        )
-
-    # exclude direct messages not intended for the user
-    if 'direct' in privacy:
-        queryset = queryset.exclude(
-            ~Q(
-                Q(user=user) | Q(mention_users=user)
-            ), privacy='direct'
-        )
+    # apply privacy filters
+    privacy = privacy if isinstance(privacy, list) else [privacy]
+    queryset = privacy_filter(
+        user, queryset, privacy, following_only=following_only)
 
     # filter for only local status
     if local_only:

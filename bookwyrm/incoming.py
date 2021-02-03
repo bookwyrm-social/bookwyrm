@@ -47,12 +47,20 @@ def shared_inbox(request):
             return HttpResponse()
         return HttpResponse(status=401)
 
+    # if this isn't a file ripe for refactor, I don't know what is.
     handlers = {
         'Follow': handle_follow,
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
         'Block': handle_block,
-        'Create': handle_create,
+        'Create': {
+            'BookList': handle_create_list,
+            'Note': handle_create_status,
+            'Article': handle_create_status,
+            'Review': handle_create_status,
+            'Comment': handle_create_status,
+            'Quotation': handle_create_status,
+        },
         'Delete': handle_delete_status,
         'Like': handle_favorite,
         'Announce': handle_boost,
@@ -69,6 +77,7 @@ def shared_inbox(request):
             'Person': handle_update_user,
             'Edition': handle_update_edition,
             'Work': handle_update_work,
+            'BookList': handle_update_list,
         },
     }
     activity_type = activity['type']
@@ -204,7 +213,25 @@ def handle_unblock(activity):
 
 
 @app.task
-def handle_create(activity):
+def handle_create_list(activity):
+    ''' a new list '''
+    activity = activity['object']
+    activitypub.BookList(**activity).to_model(models.List)
+
+
+@app.task
+def handle_update_list(activity):
+    ''' update a list '''
+    try:
+        book_list = models.List.objects.get(id=activity['object']['id'])
+    except models.List.DoesNotExist:
+        return
+    activitypub.BookList(
+        **activity['object']).to_model(models.List, instance=book_list)
+
+
+@app.task
+def handle_create_status(activity):
     ''' someone did something, good on them '''
     # deduplicate incoming activities
     activity = activity['object']
