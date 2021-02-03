@@ -5,26 +5,20 @@
     <h1 class="title">Lists</h1>
 </header>
 {% if request.user.is_authenticated and not lists.has_previous %}
-<section class="block content">
-    <header class="columns">
-        <div class="column">
-            <h2 class="title">Your lists</h2>
-        </div>
-        <div class="column is-narrow">
-            {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" focus="create-list-header" %}
-        </div>
-    </header>
+<header class="block columns">
+    <div class="column">
+        <h2 class="title">Your lists</h2>
+    </div>
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" focus="create-list-header" %}
+    </div>
+</header>
 
-    <form name="create-list" method="post" action="{% url 'lists' %}" class="box hidden" id="create-list">
-        <header class="columns">
-            <h3 class="title column" tabindex="0" id="create-list-header">Create list</h3>
-            <div class="column is-narrow">
-                {% include 'snippets/toggle/toggle_button.html' with controls_text="create-list" label="Close" class="delete" nonbutton=True %}
-            </div>
-        </header>
-        {% include 'lists/form.html' %}
-    </form>
+<div class="block">
+    {% include 'lists/create_form.html' with controls_text="create-list" %}
+</div>
 
+<div class="block content">
     {% if request.user.list_set.exists %}
     {% include 'lists/list_items.html' with lists=request.user.list_set.all|slice:4 %}
     {% endif %}

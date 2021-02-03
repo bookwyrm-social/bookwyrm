@@ -150,7 +150,7 @@ urlpatterns = [
             user_path, views.Shelf.as_view(), name='shelf'),
     re_path(r'^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$' % \
             local_user_path, views.Shelf.as_view()),
-    re_path(r'^create-shelf/?$', views.create_shelf),
+    re_path(r'^create-shelf/?$', views.create_shelf, name='shelf-create'),
     re_path(r'^delete-shelf/(?P<shelf_id>\d+)?$', views.delete_shelf),
     re_path(r'^shelve/?$', views.shelve),
     re_path(r'^unshelve/?$', views.unshelve),

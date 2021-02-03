@@ -192,9 +192,15 @@ class Openlibrary(TestCase):
         self.assertEqual(edition['key'], '/books/OL9788823M')
 
 
+    @responses.activate
     def test_create_edition_from_data(self):
         ''' okay but can it actually create an edition with proper metadata '''
         work = models.Work.objects.create(title='Hello')
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/authors/OL382982A',
+            json={'hi': 'there'},
+            status=200)
         result = self.connector.create_edition_from_data(
             work, self.edition_data)
         self.assertEqual(result.parent_work, work)

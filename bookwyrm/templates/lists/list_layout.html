@@ -15,15 +15,9 @@
     {% endif %}
 </header>
 
-<form name="edit-list" method="post" action="{% url 'list' list.id %}" class="box hidden" id="edit-list">
-    <header class="columns">
-        <h3 class="title column" tabindex="0" id="edit-list-header">Edit list</h3>
-        <div class="column is-narrow">
-            {% include 'snippets/toggle/toggle_button.html' with controls_text="edit-list" label="close" class="delete" nonbutton=True %}
-        </div>
-    </header>
-    {% include 'lists/form.html' %}
-</form>
+<div class="block">
+    {% include 'lists/edit_form.html' with controls_text="edit-list" %}
+</div>
 
 {% block panel %}{% endblock %}
 
