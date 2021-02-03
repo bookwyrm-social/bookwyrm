@@ -67,6 +67,31 @@
     </div>
     {% endif %}
 </div>
+{% with user|username as username %}
+{% if 'user/'|add:username|add:'/shelf' not in request.path  and 'user/'|add:username|add:'/shelves' not in request.path %}
+<nav class="tabs">
+    <ul>
+        {% url 'user-feed' request.user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">Activity</a>
+        </li>
+        {% now 'Y' as year %}
+        {% url 'user-goal' request.user|username year as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">Reading Goal</a>
+        </li>
+        {% url 'user-lists' request.user|username as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">Lists</a>
+        </li>
+        {% url 'user-shelves' request.user|username as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">Shelves</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endwith %}
 
 {% block panel %}{% endblock %}
 

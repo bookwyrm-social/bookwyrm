@@ -131,7 +131,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             privacy__in=['public', 'unlisted'],
         ).select_subclasses().order_by('-published_date')
         return self.to_ordered_collection(queryset, \
-                remote_id=self.outbox, **kwargs)
+            collection_only=True, remote_id=self.outbox, **kwargs)
 
     def to_following_activity(self, **kwargs):
         ''' activitypub following list '''
@@ -266,6 +266,7 @@ class AnnualGoal(BookWyrmModel):
 
     @property
     def progress_percent(self):
+        ''' how close to your goal, in percent form '''
         return int(float(self.book_count / self.goal) * 100)
 
 

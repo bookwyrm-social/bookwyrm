@@ -206,3 +206,9 @@ class SiteForm(CustomForm):
     class Meta:
         model = models.SiteSettings
         exclude = []
+
+
+class ListForm(CustomForm):
+    class Meta:
+        model = models.List
+        fields = ['user', 'name', 'description', 'curation', 'privacy']

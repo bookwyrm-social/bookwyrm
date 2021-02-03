@@ -26,6 +26,6 @@ class Shelf(TestCase):
         self.assertIsInstance(activity_json, dict)
         self.assertEqual(activity_json['id'], self.shelf.remote_id)
         self.assertEqual(activity_json['totalItems'], 0)
-        self.assertEqual(activity_json['type'], 'OrderedCollection')
+        self.assertEqual(activity_json['type'], 'Shelf')
         self.assertEqual(activity_json['name'], 'Test Shelf')
         self.assertEqual(activity_json['owner'], self.user.remote_id)

@@ -33,18 +33,18 @@ class TemplateTags(TestCase):
             bookwyrm_tags.dict_key(test_dict, 'c'), 0)
 
 
-    def test_get_rating(self):
+    def test_get_user_rating(self):
         ''' get a user's most recent rating of a book '''
         models.Review.objects.create(
             user=self.user, book=self.book, rating=3)
         self.assertEqual(
-            bookwyrm_tags.get_rating(self.book, self.user), 3)
+            bookwyrm_tags.get_user_rating(self.book, self.user), 3)
 
 
-    def test_get_rating_doesnt_exist(self):
+    def test_get_user_rating_doesnt_exist(self):
         ''' there is no rating available '''
         self.assertEqual(
-            bookwyrm_tags.get_rating(self.book, self.user), 0)
+            bookwyrm_tags.get_user_rating(self.book, self.user), 0)
 
 
     def test_get_user_identifer_local(self):

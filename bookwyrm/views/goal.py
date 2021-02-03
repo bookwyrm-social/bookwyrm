@@ -35,6 +35,7 @@ class Goal(View):
             'goal': goal,
             'user': user,
             'year': year,
+            'is_self': request.user == user,
         }
         return TemplateResponse(request, 'goal.html', data)
 
@@ -70,10 +71,15 @@ class Goal(View):
             broadcast(
                 request.user,
                 status.to_create_activity(request.user),
+                privacy=status.privacy,
                 software='bookwyrm')
 
             # re-format the activity for non-bookwyrm servers
             remote_activity = status.to_create_activity(request.user, pure=True)
-            broadcast(request.user, remote_activity, software='other')
+            broadcast(
+                request.user,
+                remote_activity,
+                privacy=status.privacy,
+                software='other')
 
         return redirect(request.headers.get('Referer', '/'))

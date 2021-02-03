@@ -1,13 +1,22 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'user/user_layout.html' %}
 
+{% block header %}
+<div class="columns is-mobile">
+    <div class="column">
+        <h1 class="title">{{ year }} Reading Progress</h1>
+    </div>
+    {% if is_self and goal %}
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with text="Edit goal" icon="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block panel %}
 <section class="block">
-    <h1 class="title">{{ year }} Reading Progress</h1>
     {% if user == request.user %}
     <div class="block">
-        {% if goal %}
-        {% include 'snippets/toggle/open_button.html' with text="Edit goal" controls_text="show-edit-goal" focus="edit-form-header" %}
-        {% endif %}
         {% now 'Y' as year %}
         <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
@@ -34,8 +43,8 @@
 </section>
 
 {% if goal.books %}
-<section>
-    <h2 class="title">{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
+<section class="content">
+    <h2>{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
     <div class="columns is-multiline">
         {% for book in goal.books %}
         <div class="column is-narrow">
