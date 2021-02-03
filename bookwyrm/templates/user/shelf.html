@@ -49,34 +49,13 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit shelf" icon="pencil" class="is-clickable" controls_text="edit-shelf-form" %}
+        {% include 'snippets/toggle/open_button.html' with text="Edit shelf" icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
 
-<div class="hidden box mb-5" id="edit-shelf-form">
-    <h2 class="title is-4">Edit shelf</h2>
-    <form name="create-shelf" action="{{ shelf.local_path }}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="user" value="{{ request.user.id }}">
-        {% if shelf.editable %}
-        <div class="field">
-            <label class="label" for="id_name">Name:</label>
-            <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
-        </div>
-        {% else %}
-        <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
-        {% endif %}
-
-        <label class="label">
-            <p>Shelf privacy:</p>
-            {% include 'snippets/privacy_select.html' with no_label=True current=shelf.privacy %}
-        </label>
-        <div class="field is-grouped">
-            <button class="button is-primary" type="submit">Update shelf</button>
-            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="edit-shelf-form" %}
-        </div>
-    </form>
+<div class="block">
+    {% include 'user/edit_shelf_form.html' with controls_text="edit-shelf-form" %}
 </div>
 
 <div class="block">
