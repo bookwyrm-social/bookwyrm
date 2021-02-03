@@ -281,7 +281,8 @@ class Incoming(TestCase):
     def test_handle_update_list(self):
         ''' a new list '''
         book_list = models.List.objects.create(
-            name='hi', remote_id='https://example.com/list/22', user=self.local_user)
+            name='hi', remote_id='https://example.com/list/22',
+            user=self.local_user)
         activity = {
             'object': {
                 "id": "https://example.com/list/22",
