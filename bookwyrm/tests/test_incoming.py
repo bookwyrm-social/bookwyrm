@@ -248,7 +248,69 @@ class Incoming(TestCase):
         self.assertEqual(follows.count(), 0)
 
 
-    def test_handle_create(self):
+    def test_handle_create_list(self):
+        ''' a new list '''
+        activity = {
+            'object': {
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        }
+        incoming.handle_create_list(activity)
+        book_list = models.List.objects.get()
+        self.assertEqual(book_list.name, 'Test List')
+        self.assertEqual(book_list.curation, 'curated')
+        self.assertEqual(book_list.description, 'summary text')
+        self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
+
+
+    def test_handle_update_list(self):
+        ''' a new list '''
+        book_list = models.List.objects.create(
+            name='hi', remote_id='https://example.com/list/22', user=self.local_user)
+        activity = {
+            'object': {
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        }
+        incoming.handle_create_list(activity)
+        book_list.refresh_from_db()
+        self.assertEqual(book_list.name, 'Test List')
+        self.assertEqual(book_list.curation, 'curated')
+        self.assertEqual(book_list.description, 'summary text')
+        self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
+
+
+    def test_handle_create_status(self):
         ''' the "it justs works" mode '''
         self.assertEqual(models.Status.objects.count(), 1)
 
@@ -259,7 +321,7 @@ class Incoming(TestCase):
             title='Test Book', remote_id='https://example.com/book/1')
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
 
         status = models.Quotation.objects.get()
         self.assertEqual(
@@ -270,16 +332,16 @@ class Incoming(TestCase):
         self.assertEqual(models.Status.objects.count(), 2)
 
         # while we're here, lets ensure we avoid dupes
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         self.assertEqual(models.Status.objects.count(), 2)
 
-    def test_handle_create_unknown_type(self):
+    def test_handle_create_status_unknown_type(self):
         ''' folks send you all kinds of things '''
         activity = {'object': {'id': 'hi'}, 'type': 'Fish'}
-        result = incoming.handle_create(activity)
+        result = incoming.handle_create_status(activity)
         self.assertIsNone(result)
 
-    def test_handle_create_remote_note_with_mention(self):
+    def test_handle_create_status_remote_note_with_mention(self):
         ''' should only create it under the right circumstances '''
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -290,7 +352,7 @@ class Incoming(TestCase):
         status_data = json.loads(datafile.read_bytes())
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         status = models.Status.objects.last()
         self.assertEqual(status.content, 'test content in note')
         self.assertEqual(status.mention_users.first(), self.local_user)
@@ -299,7 +361,7 @@ class Incoming(TestCase):
         self.assertEqual(
             models.Notification.objects.get().notification_type, 'MENTION')
 
-    def test_handle_create_remote_note_with_reply(self):
+    def test_handle_create_status_remote_note_with_reply(self):
         ''' should only create it under the right circumstances '''
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -312,7 +374,7 @@ class Incoming(TestCase):
         status_data['inReplyTo'] = self.status.remote_id
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         status = models.Status.objects.last()
         self.assertEqual(status.content, 'test content in note')
         self.assertEqual(status.reply_parent, self.status)
@@ -566,20 +628,3 @@ class Incoming(TestCase):
 
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
-
-    def test_handle_unblock(self):
-        ''' undoing a block '''
-        activity = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": "https://friend.camp/users/tripofmice#blocks/1155/undo",
-            "type": "Undo",
-            "actor": "https://friend.camp/users/tripofmice",
-            "object": {
-                "id": "https://friend.camp/0a7d85f7-6359-4c03-8ab6-74e61a8fb678",
-                "type": "Block",
-                "actor": "https://friend.camp/users/tripofmice",
-            "object": "https://1b1a78582461.ngrok.io/user/mouse"
-            }
-        }
-
-        self.remote_user.blocks.add(self.local_user)
