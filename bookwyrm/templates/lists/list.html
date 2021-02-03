@@ -2,6 +2,15 @@
 {% load bookwyrm_tags %}
 {% block panel %}
 
+{% if items.exists and list.user == request.user %}
+<section class="block">
+    <h2 class="title is-4">Post list to feed</h2>
+    <div class="block column is-three-quarters">
+        {% include 'lists/list_status.html' %}
+    </div>
+</section>
+{% endif %}
+
 {% if request.user == list.user and pending_count %}
 <div class="block content">
     <p>

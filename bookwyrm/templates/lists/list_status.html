@@ -1,0 +1,30 @@
+{% extends 'components/card.html' %}
+
+{% load bookwyrm_tags %}
+{% load humanize %}
+
+{% block card-header %}
+    <h3 class="card-header-title has-background-white-ter is-block">
+        {% include 'snippets/avatar.html' with user=request.user %}
+        {% include 'snippets/username.html' with user=request.user %}
+        created a list
+    </h3>
+{% endblock %}
+
+{% block card-footer %}
+<form name="list-status" action="" method="post" class="card-footer-item">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <input type="hidden" name="list" value="{{ list.id  }}">
+
+    <div class="field has-addons">
+        <div class="control">
+            {% include 'snippets/privacy_select.html' with current=list.privacy %}
+        </div>
+        <div class="control">
+            <button type="submit" class="button is-primary">Post status</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
