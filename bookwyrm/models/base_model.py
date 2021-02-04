@@ -27,7 +27,7 @@ class BookWyrmModel(models.Model):
         ''' generate a url that resolves to the local object '''
         base_path = 'https://%s' % DOMAIN
         if hasattr(self, 'user'):
-            base_path = self.user.local_path
+            base_path = '%s/%s' % (base_path, self.user.local_path)
         model_name = type(self).__name__.lower()
         return '%s/%s/%d' % (base_path, model_name, self.id)
 
