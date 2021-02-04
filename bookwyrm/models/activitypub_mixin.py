@@ -1,17 +1,25 @@
 ''' base model with default fields '''
 from base64 import b64encode
 from functools import reduce
+import json
 import operator
 from uuid import uuid4
+import requests
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
+from django.apps import apps
 from django.core.paginator import Paginator
+from django.db import models
 from django.db.models import Q
+from django.dispatch import receiver
+from django.utils.http import http_date
 
 from bookwyrm import activitypub
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, USER_AGENT
+from bookwyrm.signatures import make_signature, make_digest
+from bookwyrm.tasks import app
 from .fields import ImageField, ManyToManyField
 
 
@@ -91,8 +99,54 @@ class ActivitypubMixin:
         return match.first()
 
 
-    def broadcast(self):
+    def broadcast(self, activity, sender, software=None):
         ''' send out an activity '''
+        broadcast_task.delay(
+            sender.id,
+            json.dumps(activity, cls=activitypub.ActivityEncoder),
+            self.get_recipients(software=software)
+        )
+
+
+    def get_recipients(self, software=None):
+        ''' figure out which inbox urls to post to '''
+        # first we have to figure out who should receive this activity
+        privacy = self.privacy if hasattr(self, 'privacy') else 'public'
+        # is this activity owned by a user (statuses, lists, shelves), or is it
+        # general to the instance (like books)
+        user = self.user if hasattr(self, 'user') else None
+        if not user and self.__model__ == 'user':
+            # or maybe the thing itself is a user
+            user = self
+        # find anyone who's tagged in a status, for example
+        mentions = self.mention_users if hasattr(self, 'mention_users') else []
+
+        # we always send activities to explicitly mentioned users' inboxes
+        recipients = [u.inbox for u in mentions or []]
+
+        # unless it's a dm, all the followers should receive the activity
+        if privacy != 'direct':
+            user_model = apps.get_model('bookwyrm.User', require_ready=True)
+            # filter users first by whether they're using the desired software
+            # this lets us send book updates only to other bw servers
+            queryset = user_model.objects.filter(
+                bookwyrm_user=(software == 'bookwyrm')
+            )
+            # if there's a user, we only want to send to the user's followers
+            if user:
+                queryset = queryset.filter(following=user)
+
+            # ideally, we will send to shared inboxes for efficiency
+            shared_inboxes = queryset.filter(
+                shared_inbox__isnull=False
+            ).values_list('shared_inbox', flat=True).distinct()
+            # but not everyone has a shared inbox
+            inboxes = queryset.filter(
+                shared_inboxes__isnull=True
+            ).values_list('inbox', flat=True)
+            recipients += list(shared_inboxes) + list(inboxes)
+        return recipients
+
 
     def to_activity(self):
         ''' convert from a model to an activity '''
@@ -266,3 +320,66 @@ def unfurl_related_field(related_field, sort_field=None):
     if related_field.reverse_unfurl:
         return related_field.field_to_activity()
     return related_field.remote_id
+
+
+@app.task
+def broadcast_task(sender_id, activity, recipients):
+    ''' the celery task for broadcast '''
+    user_model = apps.get_model('bookwyrm.User', require_ready=True)
+    sender = user_model.objects.get(id=sender_id)
+    errors = []
+    for recipient in recipients:
+        try:
+            sign_and_send(sender, activity, recipient)
+        except requests.exceptions.HTTPError as e:
+            errors.append({
+                'error': str(e),
+                'recipient': recipient,
+                'activity': activity,
+            })
+    return errors
+
+
+def sign_and_send(sender, data, destination):
+    ''' crpyto whatever and http junk '''
+    now = http_date()
+
+    if not sender.key_pair.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError('No private key found for sender')
+
+    digest = make_digest(data)
+
+    response = requests.post(
+        destination,
+        data=data,
+        headers={
+            'Date': now,
+            'Digest': digest,
+            'Signature': make_signature(sender, destination, now, digest),
+            'Content-Type': 'application/activity+json; charset=utf-8',
+            'User-Agent': USER_AGENT,
+        },
+    )
+    if not response.ok:
+        response.raise_for_status()
+    return response
+
+
+@receiver(models.signals.post_save)
+#pylint: disable=unused-argument
+def execute_after_save(sender, instance, created, *args, **kwargs):
+    ''' broadcast when a model instance is created or updated '''
+    # user content like statuses, lists, and shelves, have a "user" field
+    if created:
+        if not hasattr(instance, 'user'):
+            # book data and users don't need to broadcast on creation
+            return
+        # we don't want to broadcast when we save remote activities
+        if not instance.user.local:
+            return
+        activity = instance.to_create_activity(instance.user)
+        instance.broadcast(activity, instance.user)
+        return
+
+    # now, handle updates
