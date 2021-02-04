@@ -7,7 +7,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_notification
 
 
@@ -19,7 +18,7 @@ class Favorite(View):
         ''' create a like '''
         status = models.Status.objects.get(id=status_id)
         try:
-            favorite = models.Favorite.objects.create(
+            models.Favorite.objects.create(
                 status=status,
                 user=request.user
             )
@@ -27,10 +26,6 @@ class Favorite(View):
             # you already fav'ed that
             return HttpResponseBadRequest()
 
-        fav_activity = favorite.to_activity()
-        broadcast(
-            request.user, fav_activity, privacy='direct',
-            direct_recipients=[status.user])
         if status.user.local:
             create_notification(
                 status.user,
@@ -56,9 +51,7 @@ class Unfavorite(View):
             # can't find that status, idk
             return HttpResponseNotFound()
 
-        fav_activity = favorite.to_undo_activity(request.user)
         favorite.delete()
-        broadcast(request.user, fav_activity, direct_recipients=[status.user])
 
         # check for notification
         if status.user.local:
@@ -86,14 +79,11 @@ class Boost(View):
             # you already boosted that.
             return redirect(request.headers.get('Referer', '/'))
 
-        boost = models.Boost.objects.create(
+        models.Boost.objects.create(
             boosted_status=status,
             privacy=status.privacy,
             user=request.user,
         )
-
-        boost_activity = boost.to_activity()
-        broadcast(request.user, boost_activity)
 
         if status.user.local:
             create_notification(
@@ -114,10 +104,8 @@ class Unboost(View):
         boost = models.Boost.objects.filter(
             boosted_status=status, user=request.user
         ).first()
-        activity = boost.to_undo_activity(request.user)
 
         boost.delete()
-        broadcast(request.user, activity)
 
         # delete related notification
         if status.user.local:

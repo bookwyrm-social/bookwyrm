@@ -1,14 +1,9 @@
-''' base model with default fields '''
-from base64 import b64encode
+''' activitypub model functionality '''
 from functools import reduce
 import json
 import operator
-from uuid import uuid4
 import requests
 
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
-from Crypto.Hash import SHA256
 from django.apps import apps
 from django.db import models
 from django.db.models import Q
@@ -53,10 +48,6 @@ class ActivitypubMixin:
                 if hasattr(self, 'serialize_reverse_fields') else []
 
         super().__init__(*args, **kwargs)
-
-
-    def delete(self, *args, **kwargs):
-        ''' broadcast suitable delete activities '''
 
 
     @classmethod
@@ -158,66 +149,6 @@ class ActivitypubMixin:
         return self.activity_serializer(**activity).serialize()
 
 
-    def to_create_activity(self, user, **kwargs):
-        ''' returns the object wrapped in a Create activity '''
-        activity_object = self.to_activity(**kwargs)
-
-        signature = None
-        create_id = self.remote_id + '/activity'
-        if 'content' in activity_object:
-            signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
-            content = activity_object['content']
-            signed_message = signer.sign(SHA256.new(content.encode('utf8')))
-
-            signature = activitypub.Signature(
-                creator='%s#main-key' % user.remote_id,
-                created=activity_object['published'],
-                signatureValue=b64encode(signed_message).decode('utf8')
-            )
-
-        return activitypub.Create(
-            id=create_id,
-            actor=user.remote_id,
-            to=activity_object['to'],
-            cc=activity_object['cc'],
-            object=activity_object,
-            signature=signature,
-        ).serialize()
-
-
-    def to_delete_activity(self, user):
-        ''' notice of deletion '''
-        return activitypub.Delete(
-            id=self.remote_id + '/activity',
-            actor=user.remote_id,
-            to=['%s/followers' % user.remote_id],
-            cc=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity(),
-        ).serialize()
-
-
-    def to_update_activity(self, user):
-        ''' wrapper for Updates to an activity '''
-        activity_id = '%s#update/%s' % (self.remote_id, uuid4())
-        return activitypub.Update(
-            id=activity_id,
-            actor=user.remote_id,
-            to=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity()
-        ).serialize()
-
-
-    def to_undo_activity(self, user):
-        ''' undo an action '''
-        return activitypub.Undo(
-            id='%s#undo' % self.remote_id,
-            actor=user.remote_id,
-            object=self.to_activity()
-        ).serialize()
-
-
-
-
 def generate_activity(obj):
     ''' go through the fields on an object '''
     activity = {}
@@ -297,13 +228,14 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' broadcast when a model instance is created or updated '''
     # user content like statuses, lists, and shelves, have a "user" field
     user = instance.user if hasattr(instance, 'user') else None
+
+    # we don't want to broadcast when we save remote activities
     if user and not user.local:
-        # we don't want to broadcast when we save remote activities
         return
 
     if created:
+        # book data and users don't need to broadcast on creation
         if not user:
-            # book data and users don't need to broadcast on creation
             return
 
         # ordered collection items get "Add"ed
@@ -312,19 +244,6 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         else:
             # everything else gets "Create"d
             activity = instance.to_create_activity(user)
-    else:
-        # now, handle updates
-        if not user:
-            # users don't have associated users, they ARE users
-            if sender.__class__ == 'User':
-                user = instance
-            # book data trakcs last editor
-            elif hasattr(instance, 'last_edited_by'):
-                user = instance.last_edited_by
-        # again, if we don't know the user or they're remote, don't bother
-        if not user or not user.local:
-            return
-        activity = instance.to_update_activity(user)
 
     if activity and user and user.local:
         instance.broadcast(activity, user)

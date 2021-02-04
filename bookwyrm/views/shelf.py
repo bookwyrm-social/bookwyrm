@@ -9,7 +9,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from .helpers import is_api_request, get_edition, get_user_from_username
 from .helpers import handle_reading_status
 
@@ -136,14 +135,8 @@ def shelve(request):
         except models.Shelf.DoesNotExist:
             # this just means it isn't currently on the user's shelves
             pass
-    shelfbook = models.ShelfBook.objects.create(
+    models.ShelfBook.objects.create(
         book=book, shelf=desired_shelf, added_by=request.user)
-    broadcast(
-        request.user,
-        shelfbook.to_add_activity(request.user),
-        privacy=shelfbook.shelf.privacy,
-        software='bookwyrm'
-    )
 
     # post about "want to read" shelves
     if desired_shelf.identifier == 'to-read':
@@ -168,10 +161,8 @@ def unshelve(request):
     return redirect(request.headers.get('Referer', '/'))
 
 
+#pylint: disable=unused-argument
 def handle_unshelve(user, book, shelf):
     ''' unshelve a book '''
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
-    activity = row.to_remove_activity(user)
     row.delete()
-
-    broadcast(user, activity, privacy=shelf.privacy, software='bookwyrm')

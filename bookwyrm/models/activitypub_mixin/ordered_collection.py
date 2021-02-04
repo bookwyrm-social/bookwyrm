@@ -3,12 +3,12 @@ from django.core.paginator import Paginator
 
 from bookwyrm import activitypub
 from bookwyrm.settings import PAGE_LENGTH
-from . import ActivitypubMixin, generate_activity
+from . import ActivitypubMixin, ObjectMixin, generate_activity
 
 
-class OrderedCollectionPageMixin(ActivitypubMixin):
+class OrderedCollectionPageMixin(ObjectMixin):
     ''' just the paginator utilities, so you don't HAVE to
-        override ActivitypubMixin's to_activity (ie, for outbox '''
+        override ActivitypubMixin's to_activity (ie, for outbox) '''
     @property
     def collection_remote_id(self):
         ''' this can be overriden if there's a special remote id, ie outbox '''

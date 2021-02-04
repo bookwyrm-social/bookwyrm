@@ -7,11 +7,11 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 
-from .activitypub_mixin import ActivitypubMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import ObjectMixin, OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
 from . import fields
 
-class BookDataModel(ActivitypubMixin, BookWyrmModel):
+class BookDataModel(ObjectMixin, BookWyrmModel):
     ''' fields shared between editable book data (books, works, authors) '''
     origin_id = models.CharField(max_length=255, null=True, blank=True)
     openlibrary_key = fields.CharField(

@@ -11,7 +11,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import connector_manager
 from .helpers import is_api_request, object_visible_to_user, privacy_filter
 from .helpers import get_user_from_username
@@ -51,13 +50,6 @@ class Lists(View):
             return redirect('lists')
         book_list = form.save()
 
-        # let the world know
-        broadcast(
-            request.user,
-            book_list.to_create_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
-        )
         return redirect(book_list.local_path)
 
 class UserLists(View):
@@ -138,13 +130,6 @@ class List(View):
         if not form.is_valid():
             return redirect('list', book_list.id)
         book_list = form.save()
-        # let the world know
-        broadcast(
-            request.user,
-            book_list.to_update_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
-        )
         return redirect(book_list.local_path)
 
 
@@ -178,13 +163,6 @@ class Curate(View):
         if approved:
             suggestion.approved = True
             suggestion.save()
-            # let the world know
-            broadcast(
-                request.user,
-                suggestion.to_add_activity(request.user),
-                privacy=book_list.privacy,
-                software='bookwyrm'
-            )
         else:
             suggestion.delete()
         return redirect('list-curate', book_list.id)
@@ -201,17 +179,10 @@ def add_book(request, list_id):
     # do you have permission to add to the list?
     if request.user == book_list.user or book_list.curation == 'open':
         # go ahead and add it
-        item = models.ListItem.objects.create(
+        models.ListItem.objects.create(
             book=book,
             book_list=book_list,
             added_by=request.user,
-        )
-        # let the world know
-        broadcast(
-            request.user,
-            item.to_add_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
         )
     elif book_list.curation == 'curated':
         # make a pending entry
@@ -237,13 +208,5 @@ def remove_book(request, list_id):
     if not book_list.user == request.user and not item.added_by == request.user:
         return HttpResponseNotFound()
 
-    activity = item.to_remove_activity(request.user)
     item.delete()
-    # let the world know
-    broadcast(
-        request.user,
-        activity,
-        privacy=book_list.privacy,
-        software='bookwyrm'
-    )
     return redirect('list', list_id)
