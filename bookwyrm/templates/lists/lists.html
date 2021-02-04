@@ -18,7 +18,7 @@
     {% include 'lists/create_form.html' with controls_text="create-list" %}
 </div>
 
-<div class="block content">
+<section class="block content">
     {% if request.user.list_set.exists %}
     {% include 'lists/list_items.html' with lists=request.user.list_set.all|slice:4 %}
     {% endif %}
