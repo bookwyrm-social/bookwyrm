@@ -146,7 +146,7 @@ class GoodreadsImport(TestCase):
         ''' goodreads import added a book, this adds related connections '''
         shelf = self.user.shelf_set.filter(identifier='to-read').first()
         models.ShelfBook.objects.create(
-            shelf=shelf, added_by=self.user, book=self.book)
+            shelf=shelf, user=self.user, book=self.book)
 
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')

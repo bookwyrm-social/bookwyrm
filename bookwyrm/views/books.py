@@ -77,12 +77,12 @@ class Book(View):
                     .order_by('-updated_date')
 
             user_shelves = models.ShelfBook.objects.filter(
-                added_by=request.user, book=book
+                user=request.user, book=book
             )
 
             other_edition_shelves = models.ShelfBook.objects.filter(
                 ~Q(book=book),
-                added_by=request.user,
+                user=request.user,
                 book__parent_work=book.parent_work,
             )
 

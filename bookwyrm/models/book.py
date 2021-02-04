@@ -7,7 +7,7 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 
-from .activitypub_mixin import ObjectMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
 from . import fields
 

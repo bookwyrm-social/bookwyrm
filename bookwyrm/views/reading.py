@@ -44,7 +44,7 @@ def start_reading(request, book_id):
             # this just means it isn't currently on the user's shelves
             pass
     models.ShelfBook.objects.create(
-        book=book, shelf=shelf, added_by=request.user)
+        book=book, shelf=shelf, user=request.user)
 
     # post about it (if you want)
     if request.POST.get('post-status'):
@@ -81,7 +81,7 @@ def finish_reading(request, book_id):
             # this just means it isn't currently on the user's shelves
             pass
     models.ShelfBook.objects.create(
-        book=book, shelf=shelf, added_by=request.user)
+        book=book, shelf=shelf, user=request.user)
 
     # post about it (if you want)
     if request.POST.get('post-status'):

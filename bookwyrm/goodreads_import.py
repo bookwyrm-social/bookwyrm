@@ -81,7 +81,7 @@ def handle_imported_book(user, item, include_reviews, privacy):
         return
 
     existing_shelf = models.ShelfBook.objects.filter(
-        book=item.book, added_by=user).exists()
+        book=item.book, user=user).exists()
 
     # shelve the book if it hasn't been shelved already
     if item.shelf and not existing_shelf:
@@ -90,7 +90,7 @@ def handle_imported_book(user, item, include_reviews, privacy):
             user=user
         )
         models.ShelfBook.objects.create(
-            book=item.book, shelf=desired_shelf, added_by=user)
+            book=item.book, shelf=desired_shelf, user=user)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates

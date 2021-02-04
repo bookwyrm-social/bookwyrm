@@ -49,7 +49,7 @@ class Shelf(View):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         books = models.ShelfBook.objects.filter(
-            added_by=user, shelf=shelf
+            user=user, shelf=shelf
         ).order_by('-updated_date').all()
 
         data = {
@@ -136,7 +136,7 @@ def shelve(request):
             # this just means it isn't currently on the user's shelves
             pass
     models.ShelfBook.objects.create(
-        book=book, shelf=desired_shelf, added_by=request.user)
+        book=book, shelf=desired_shelf, user=request.user)
 
     # post about "want to read" shelves
     if desired_shelf.identifier == 'to-read':

@@ -92,7 +92,7 @@ class FeedMessageViews(TestCase):
         ''' gets books the ~*~ algorithm ~*~ thinks you want to post about '''
         models.ShelfBook.objects.create(
             book=self.book,
-            added_by=self.local_user,
+            user=self.local_user,
             shelf=self.local_user.shelf_set.get(identifier='reading')
         )
         suggestions = views.feed.get_suggested_books(self.local_user)

@@ -162,7 +162,7 @@ class ListViews(TestCase):
         view = views.Curate.as_view()
         pending = models.ListItem.objects.create(
             book_list=self.list,
-            added_by=self.local_user,
+            user=self.local_user,
             book=self.book,
             approved=False
         )
@@ -185,7 +185,7 @@ class ListViews(TestCase):
         view = views.Curate.as_view()
         pending = models.ListItem.objects.create(
             book_list=self.list,
-            added_by=self.local_user,
+            user=self.local_user,
             book=self.book,
             approved=False
         )
@@ -211,7 +211,7 @@ class ListViews(TestCase):
         views.list.add_book(request, self.list.id)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
-        self.assertEqual(item.added_by, self.local_user)
+        self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
 
 
@@ -227,7 +227,7 @@ class ListViews(TestCase):
         views.list.add_book(request, self.list.id)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
-        self.assertEqual(item.added_by, self.rat)
+        self.assertEqual(item.user, self.rat)
         self.assertTrue(item.approved)
 
 
@@ -243,7 +243,7 @@ class ListViews(TestCase):
         views.list.add_book(request, self.list.id)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
-        self.assertEqual(item.added_by, self.rat)
+        self.assertEqual(item.user, self.rat)
         self.assertFalse(item.approved)
 
 
@@ -259,7 +259,7 @@ class ListViews(TestCase):
         views.list.add_book(request, self.list.id)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
-        self.assertEqual(item.added_by, self.local_user)
+        self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
 
 
@@ -267,7 +267,7 @@ class ListViews(TestCase):
         ''' take an item off a list '''
         item = models.ListItem.objects.create(
             book_list=self.list,
-            added_by=self.local_user,
+            user=self.local_user,
             book=self.book,
         )
         self.assertTrue(self.list.listitem_set.exists())
@@ -285,7 +285,7 @@ class ListViews(TestCase):
         ''' take an item off a list '''
         item = models.ListItem.objects.create(
             book_list=self.list,
-            added_by=self.local_user,
+            user=self.local_user,
             book=self.book,
         )
         self.assertTrue(self.list.listitem_set.exists())

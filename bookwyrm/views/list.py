@@ -182,7 +182,7 @@ def add_book(request, list_id):
         models.ListItem.objects.create(
             book=book,
             book_list=book_list,
-            added_by=request.user,
+            user=request.user,
         )
     elif book_list.curation == 'curated':
         # make a pending entry
@@ -190,7 +190,7 @@ def add_book(request, list_id):
             approved=False,
             book=book,
             book_list=book_list,
-            added_by=request.user,
+            user=request.user,
         )
     else:
         # you can't add to this list, what were you THINKING
@@ -205,7 +205,7 @@ def remove_book(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
     item = get_object_or_404(models.ListItem, id=request.POST.get('item'))
 
-    if not book_list.user == request.user and not item.added_by == request.user:
+    if not book_list.user == request.user and not item.user == request.user:
         return HttpResponseNotFound()
 
     item.delete()

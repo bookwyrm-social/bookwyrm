@@ -66,7 +66,7 @@ class ReadingViews(TestCase):
         ''' begin a book '''
         to_read_shelf = self.local_user.shelf_set.get(identifier='to-read')
         models.ShelfBook.objects.create(
-            shelf=to_read_shelf, book=self.book, added_by=self.local_user)
+            shelf=to_read_shelf, book=self.book, user=self.local_user)
         shelf = self.local_user.shelf_set.get(identifier='reading')
         self.assertEqual(to_read_shelf.books.get(), self.book)
         self.assertFalse(shelf.books.exists())

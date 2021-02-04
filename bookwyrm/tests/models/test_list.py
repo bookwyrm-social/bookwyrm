@@ -38,7 +38,7 @@ class List(TestCase):
         item = models.ListItem.objects.create(
             book_list=self.list,
             book=book,
-            added_by=self.user,
+            user=self.user,
         )
 
         self.assertTrue(item.approved)
