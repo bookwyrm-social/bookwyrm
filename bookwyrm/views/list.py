@@ -30,7 +30,7 @@ class Lists(View):
         lists = models.List.objects.filter(
             ~Q(user=user),
             books__isnull=False,
-        ).all()
+        ).distinct().all()
         lists = privacy_filter(request.user, lists, ['public', 'followers'])
 
         paginated = Paginator(lists, 12)
