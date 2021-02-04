@@ -29,6 +29,7 @@ class Lists(View):
         user = request.user if request.user.is_authenticated else None
         lists = models.List.objects.filter(
             ~Q(user=user),
+            books__isnull=False,
         ).all()
         lists = privacy_filter(request.user, lists, ['public', 'followers'])
 
