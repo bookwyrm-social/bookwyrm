@@ -22,7 +22,8 @@
             {% endif %}
         </section>
 
-        {% if book_results|slice:":1" and local_results.results and request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
+        {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
             <p>
                 Didn't find what you were looking for?
@@ -61,6 +62,7 @@
             {% include 'snippets/toggle/close_button.html' with text="Hide results from other catalogues" small=True controls_text="more-results" %}
             {% endif %}
         </div>
+        {% endif %}
     </div>
     <div class="column">
         <section class="block">
