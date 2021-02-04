@@ -9,7 +9,7 @@ from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
 from . import fields
 from .fields import image_serializer

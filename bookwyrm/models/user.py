@@ -17,8 +17,8 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
-from .base_model import OrderedCollectionPageMixin
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
+from .base_model import BookWyrmModel
 from .federated_server import FederatedServer
 from . import fields, Review
 

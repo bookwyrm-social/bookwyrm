@@ -4,7 +4,8 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import ActivitypubMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 

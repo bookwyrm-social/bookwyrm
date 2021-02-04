@@ -3,7 +3,8 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import ActivitypubMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 class Favorite(ActivitypubMixin, BookWyrmModel):

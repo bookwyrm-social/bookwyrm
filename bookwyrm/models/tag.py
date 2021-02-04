@@ -5,7 +5,8 @@ from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .base_model import OrderedCollectionMixin, BookWyrmModel
+from .activitypub_mixin import OrderedCollectionMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 

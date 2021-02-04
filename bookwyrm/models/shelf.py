@@ -3,8 +3,8 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
-from .base_model import OrderedCollectionMixin
+from .activitypub_mixin import ActivitypubMixin, OrderedCollectionMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 

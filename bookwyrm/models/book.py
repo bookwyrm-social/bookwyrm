@@ -7,8 +7,8 @@ from model_utils.managers import InheritanceManager
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
 
+from .activitypub_mixin import ActivitypubMixin, OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
 from . import fields
 
 class BookDataModel(ActivitypubMixin, BookWyrmModel):
@@ -74,6 +74,7 @@ class Book(BookDataModel):
 
     @property
     def latest_readthrough(self):
+        ''' most recent readthrough activity '''
         return self.readthrough_set.order_by('-updated_date').first()
 
     @property
