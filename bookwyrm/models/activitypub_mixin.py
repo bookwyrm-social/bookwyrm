@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.utils.http import http_date
 
+
 from bookwyrm import activitypub
 from bookwyrm.settings import PAGE_LENGTH, USER_AGENT
 from bookwyrm.signatures import make_signature, make_digest
@@ -53,6 +54,10 @@ class ActivitypubMixin:
                 if hasattr(self, 'serialize_reverse_fields') else []
 
         super().__init__(*args, **kwargs)
+
+
+    def delete(self, *args, **kwargs):
+        ''' broadcast suitable delete activities '''
 
 
     @classmethod
@@ -293,6 +298,34 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
         return self.to_ordered_collection(self.collection_queryset, **kwargs)
 
 
+class CollectionItemMixin(ActivitypubMixin):
+    ''' for items that are part of an (Ordered)Collection '''
+    activity_serializer = activitypub.Add
+    object_field = collection_field = None
+
+    def to_add_activity(self):
+        ''' AP for shelving a book'''
+        object_field = getattr(self, self.object_field)
+        collection_field = getattr(self, self.collection_field)
+        return activitypub.Add(
+            id='%s#add' % self.remote_id,
+            actor=self.user.remote_id,
+            object=object_field.to_activity(),
+            target=collection_field.remote_id
+        ).serialize()
+
+    def to_remove_activity(self):
+        ''' AP for un-shelving a book'''
+        object_field = getattr(self, self.object_field)
+        collection_field = getattr(self, self.collection_field)
+        return activitypub.Remove(
+            id='%s#remove' % self.remote_id,
+            actor=self.user.remote_id,
+            object=object_field.to_activity(),
+            target=collection_field.remote_id
+        ).serialize()
+
+
 def generate_activity(obj):
     ''' go through the fields on an object '''
     activity = {}
@@ -371,15 +404,35 @@ def sign_and_send(sender, data, destination):
 def execute_after_save(sender, instance, created, *args, **kwargs):
     ''' broadcast when a model instance is created or updated '''
     # user content like statuses, lists, and shelves, have a "user" field
-    if created:
-        if not hasattr(instance, 'user'):
-            # book data and users don't need to broadcast on creation
-            return
+    user = instance.user if hasattr(instance, 'user') else None
+    if user and not user.local:
         # we don't want to broadcast when we save remote activities
-        if not instance.user.local:
-            return
-        activity = instance.to_create_activity(instance.user)
-        instance.broadcast(activity, instance.user)
         return
 
-    # now, handle updates
+    if created:
+        if not user:
+            # book data and users don't need to broadcast on creation
+            return
+
+        # ordered collection items get "Add"ed
+        if hasattr(instance, 'to_add_activity'):
+            activity = instance.to_add_activity()
+        else:
+            # everything else gets "Create"d
+            activity = instance.to_create_activity(user)
+    else:
+        # now, handle updates
+        if not user:
+            # users don't have associated users, they ARE users
+            if sender.__class__ == 'User':
+                user = instance
+            # book data trakcs last editor
+            elif hasattr(instance, 'last_edited_by'):
+                user = instance.last_edited_by
+        # again, if we don't know the user or they're remote, don't bother
+        if not user or not user.local:
+            return
+        activity = instance.to_update_activity(user)
+
+    if activity and user and user.local:
+        instance.broadcast(activity, user)

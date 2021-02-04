@@ -3,7 +3,7 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin, OrderedCollectionMixin
+from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -49,13 +49,13 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         unique_together = ('user', 'identifier')
 
 
-class ShelfBook(ActivitypubMixin, BookWyrmModel):
+class ShelfBook(CollectionItemMixin, BookWyrmModel):
     ''' many to many join table for books and shelves '''
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='object')
     shelf = fields.ForeignKey(
         'Shelf', on_delete=models.PROTECT, activitypub_field='target')
-    added_by = fields.ForeignKey(
+    user = fields.ForeignKey(
         'User',
         blank=True,
         null=True,
@@ -64,24 +64,8 @@ class ShelfBook(ActivitypubMixin, BookWyrmModel):
     )
 
     activity_serializer = activitypub.AddBook
-
-    def to_add_activity(self, user):
-        ''' AP for shelving a book'''
-        return activitypub.Add(
-            id='%s#add' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.shelf.remote_id,
-        ).serialize()
-
-    def to_remove_activity(self, user):
-        ''' AP for un-shelving a book'''
-        return activitypub.Remove(
-            id='%s#remove' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.shelf.to_activity()
-        ).serialize()
+    object_field = 'book'
+    collection_field = 'shelf'
 
 
     class Meta:

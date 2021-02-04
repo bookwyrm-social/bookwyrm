@@ -5,7 +5,7 @@ from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .activitypub_mixin import OrderedCollectionMixin
+from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -41,7 +41,7 @@ class Tag(OrderedCollectionMixin, BookWyrmModel):
         super().save(*args, **kwargs)
 
 
-class UserTag(BookWyrmModel):
+class UserTag(CollectionItemMixin, BookWyrmModel):
     ''' an instance of a tag on a book by a user '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='actor')
@@ -51,25 +51,8 @@ class UserTag(BookWyrmModel):
         'Tag', on_delete=models.PROTECT, activitypub_field='target')
 
     activity_serializer = activitypub.AddBook
-
-    def to_add_activity(self, user):
-        ''' AP for shelving a book'''
-        return activitypub.Add(
-            id='%s#add' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.remote_id,
-        ).serialize()
-
-    def to_remove_activity(self, user):
-        ''' AP for un-shelving a book'''
-        return activitypub.Remove(
-            id='%s#remove' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.remote_id,
-        ).serialize()
-
+    object_field = 'book'
+    collection_field = 'tag'
 
     class Meta:
         ''' unqiueness constraint '''
