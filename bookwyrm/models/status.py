@@ -9,10 +9,11 @@ from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from . import fields
 from .fields import image_serializer
+from . import fields
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
@@ -223,7 +224,7 @@ class Review(Status):
     pure_type = 'Article'
 
 
-class Boost(Status):
+class Boost(ActivityMixin, Status):
     ''' boost'ing a post '''
     boosted_status = fields.ForeignKey(
         'Status',

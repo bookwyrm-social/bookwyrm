@@ -446,9 +446,8 @@ class CollectionItemMixin(ActivitypubMixin):
         ).serialize()
 
 
-class ActivitybMixin(ActivitypubMixin):
+class ActivityMixin(ActivitypubMixin):
     ''' add this mixin for models that are AP serializable '''
-
     def save(self, *args, **kwargs):
         ''' broadcast activity '''
         super().save(*args, **kwargs)

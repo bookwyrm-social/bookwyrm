@@ -3,11 +3,11 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin
+from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
 
-class Favorite(ActivitypubMixin, BookWyrmModel):
+class Favorite(ActivityMixin, BookWyrmModel):
     ''' fav'ing a post '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='actor')

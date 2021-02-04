@@ -4,12 +4,12 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin
+from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
 
 
-class UserRelationship(ActivitypubMixin, BookWyrmModel):
+class UserRelationship(ActivityMixin, BookWyrmModel):
     ''' many-to-many through table for followers '''
     user_subject = fields.ForeignKey(
         'User',
