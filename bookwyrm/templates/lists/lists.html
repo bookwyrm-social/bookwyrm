@@ -33,9 +33,7 @@
 {% if lists %}
 <section class="block content">
     <h2 class="title">Recent Lists</h2>
-    {% if request.user.list_set.exists %}
     {% include 'lists/list_items.html' with lists=lists %}
-    {% endif %}
 </section>
 <div>
     {% include 'snippets/pagination.html' with page=lists path=path %}
