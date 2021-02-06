@@ -3,12 +3,12 @@ from unittest.mock import patch
 from collections import namedtuple
 from dataclasses import dataclass
 import re
+from django import db
 from django.test import TestCase
 
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm import models
 from bookwyrm.models import base_model
-from bookwyrm.models import activitypub_mixin
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 from bookwyrm.models.activitypub_mixin import ActivityMixin, ObjectMixin
 
@@ -174,6 +174,7 @@ class ActivitypubMixins(TestCase):
 
 
     def test_get_recipients_combine_inboxes(self):
+        ''' should combine users with the same shared_inbox '''
         self.remote_user.shared_inbox = 'http://example.com/inbox'
         self.remote_user.save(broadcast=False)
         with patch('bookwyrm.models.user.set_remote_server.delay'):
@@ -196,6 +197,7 @@ class ActivitypubMixins(TestCase):
 
 
     def test_get_recipients_software(self):
+        ''' should differentiate between bookwyrm and other remote users '''
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             another_remote_user = models.User.objects.create_user(
                 'nutria', 'nutria@nutria.com', 'nutriaword',
@@ -213,16 +215,62 @@ class ActivitypubMixins(TestCase):
         recipients = ActivitypubMixin.get_recipients(mock_self)
         self.assertEqual(len(recipients), 2)
 
-        recipients = ActivitypubMixin.get_recipients(mock_self, software='bookwyrm')
+        recipients = ActivitypubMixin.get_recipients(
+            mock_self, software='bookwyrm')
         self.assertEqual(len(recipients), 1)
         self.assertEqual(recipients[0], self.remote_user.inbox)
 
-        recipients = ActivitypubMixin.get_recipients(mock_self, software='other')
+        recipients = ActivitypubMixin.get_recipients(
+            mock_self, software='other')
         self.assertEqual(len(recipients), 1)
         self.assertEqual(recipients[0], another_remote_user.inbox)
 
 
     # ObjectMixin
+    def test_object_save(self):
+        ''' should save uneventufully when broadcast is disabled '''
+        class Success(Exception):
+            ''' this means we got to the right method '''
+
+        class ObjectModel(ObjectMixin, base_model.BookWyrmModel):
+            ''' real simple mock model because BookWyrmModel is abstract '''
+            user = models.fields.ForeignKey('User', on_delete=db.models.CASCADE)
+            def save(self, *args, **kwargs):
+                with patch('django.db.models.Model.save'):
+                    super().save(*args, **kwargs)
+            def broadcast(self, activity, sender):
+                ''' do something '''
+                raise Success()
+            def to_create_activity(self, user):
+                return {}
+
+        with self.assertRaises(Success):
+            ObjectModel(user=self.local_user).save()
+
+        ObjectModel(user=self.local_user).save(broadcast=False)
+        ObjectModel(user=None).save()
+
+
+    def test_object_save_delete(self):
+        ''' should create delete activities when objects are deleted by flag '''
+        class ActivitySuccess(Exception):
+            ''' this means we got to the right method '''
+
+        class DeletableObjectModel(ObjectMixin, base_model.BookWyrmModel):
+            ''' real simple mock model because BookWyrmModel is abstract '''
+            user = models.fields.ForeignKey('User', on_delete=db.models.CASCADE)
+            deleted = models.fields.BooleanField()
+            def save(self, *args, **kwargs):
+                with patch('django.db.models.Model.save'):
+                    super().save(*args, **kwargs)
+            def to_delete_activity(self, user):
+                raise ActivitySuccess()
+
+        with self.assertRaises(ActivitySuccess):
+            DeletableObjectModel(
+                id=1, user=self.local_user, deleted=True).save()
+
+
     def test_to_create_activity(self):
         ''' wrapper for ActivityPub "create" action '''
         object_activity = {
