@@ -38,4 +38,4 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
         return
     if not instance.remote_id:
         instance.remote_id = instance.get_remote_id()
-        instance.save()
+        instance.save(broadcast=False)

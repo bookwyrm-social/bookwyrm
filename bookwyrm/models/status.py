@@ -131,7 +131,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ''' update user active time '''
         if self.user.local:
             self.user.last_active_date = timezone.now()
-            self.user.save()
+            self.user.save(broadcast=False)
         return super().save(*args, **kwargs)
 
 

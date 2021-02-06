@@ -4,7 +4,7 @@ from django.test import TestCase
 from bookwyrm import models, broadcast
 
 
-class Book(TestCase):
+class Broadcast(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword',

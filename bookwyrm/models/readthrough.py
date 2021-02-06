@@ -31,7 +31,7 @@ class ReadThrough(BookWyrmModel):
     def save(self, *args, **kwargs):
         ''' update user active time '''
         self.user.last_active_date = timezone.now()
-        self.user.save()
+        self.user.save(broadcast=False)
         super().save(*args, **kwargs)
 
     def create_update(self):

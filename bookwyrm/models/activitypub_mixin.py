@@ -11,9 +11,7 @@ from Crypto.Signature import pkcs1_15
 from Crypto.Hash import SHA256
 from django.apps import apps
 from django.core.paginator import Paginator
-from django.db import models
 from django.db.models import Q
-from django.dispatch import receiver
 from django.utils.http import http_date
 
 from bookwyrm import activitypub
@@ -22,7 +20,8 @@ from bookwyrm.signatures import make_signature, make_digest
 from bookwyrm.tasks import app
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
-
+# I tried to separate these classes into mutliple files but I kept getting
+# circular import errors so I gave up. I'm sure it could be done though!
 class ActivitypubMixin:
     ''' add this mixin for models that are AP serializable '''
     activity_serializer = lambda: {}
@@ -33,6 +32,7 @@ class ActivitypubMixin:
         self.image_fields = []
         self.many_to_many_fields = []
         self.simple_fields = [] # "simple"
+        # sort model fields by type
         for field in self._meta.get_fields():
             if not hasattr(field, 'field_to_activity'):
                 continue
@@ -44,9 +44,11 @@ class ActivitypubMixin:
             else:
                 self.simple_fields.append(field)
 
+        # a list of allll the serializable fields
         self.activity_fields = self.image_fields + \
                 self.many_to_many_fields + self.simple_fields
 
+        # these are separate to avoid infinite recursion issues
         self.deserialize_reverse_fields = self.deserialize_reverse_fields \
                 if hasattr(self, 'deserialize_reverse_fields') else []
         self.serialize_reverse_fields = self.serialize_reverse_fields \
@@ -66,6 +68,7 @@ class ActivitypubMixin:
         This always includes remote_id, but can also be unique identifiers
         like an isbn for an edition '''
         filters = []
+        # grabs all the data from the model to create django queryset filters
         for field in cls._meta.get_fields():
             if not hasattr(field, 'deduplication_field') or \
                     not field.deduplication_field:
@@ -89,11 +92,9 @@ class ActivitypubMixin:
         if hasattr(objects, 'select_subclasses'):
             objects = objects.select_subclasses()
 
-        # an OR operation on all the match fields
+        # an OR operation on all the match fields, sorry for the dense syntax
         match = objects.filter(
-            reduce(
-                operator.or_, (Q(**f) for f in filters)
-            )
+            reduce(operator.or_, (Q(**f) for f in filters))
         )
         # there OUGHT to be only one match
         return match.first()
@@ -115,18 +116,18 @@ class ActivitypubMixin:
         # is this activity owned by a user (statuses, lists, shelves), or is it
         # general to the instance (like books)
         user = self.user if hasattr(self, 'user') else None
-        if not user and self.__model__ == 'user':
+        user_model = apps.get_model('bookwyrm.User', require_ready=True)
+        if not user and isinstance(self, user_model):
             # or maybe the thing itself is a user
             user = self
         # find anyone who's tagged in a status, for example
         mentions = self.mention_users if hasattr(self, 'mention_users') else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or []]
+        recipients = [u.inbox for u in mentions.all() or []]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != 'direct':
-            user_model = apps.get_model('bookwyrm.User', require_ready=True)
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             queryset = user_model.objects.filter(
@@ -142,7 +143,7 @@ class ActivitypubMixin:
             ).values_list('shared_inbox', flat=True).distinct()
             # but not everyone has a shared inbox
             inboxes = queryset.filter(
-                shared_inboxes__isnull=True
+                shared_inbox__isnull=True
             ).values_list('inbox', flat=True)
             recipients += list(shared_inboxes) + list(inboxes)
         return recipients
@@ -154,120 +155,33 @@ class ActivitypubMixin:
         return self.activity_serializer(**activity).serialize()
 
 
-def generate_activity(obj):
-    ''' go through the fields on an object '''
-    activity = {}
-    for field in obj.activity_fields:
-        field.set_activity_from_field(activity, obj)
-
-    if hasattr(obj, 'serialize_reverse_fields'):
-        # for example, editions of a work
-        for model_field_name, activity_field_name, sort_field in \
-                obj.serialize_reverse_fields:
-            related_field = getattr(obj, model_field_name)
-            activity[activity_field_name] = \
-                    unfurl_related_field(related_field, sort_field)
-
-    if not activity.get('id'):
-        activity['id'] = obj.get_remote_id()
-    return activity
-
-
-def unfurl_related_field(related_field, sort_field=None):
-    ''' load reverse lookups (like public key owner or Status attachment '''
-    if hasattr(related_field, 'all'):
-        return [unfurl_related_field(i) for i in related_field.order_by(
-            sort_field).all()]
-    if related_field.reverse_unfurl:
-        return related_field.field_to_activity()
-    return related_field.remote_id
-
-
-@app.task
-def broadcast_task(sender_id, activity, recipients):
-    ''' the celery task for broadcast '''
-    user_model = apps.get_model('bookwyrm.User', require_ready=True)
-    sender = user_model.objects.get(id=sender_id)
-    errors = []
-    for recipient in recipients:
-        try:
-            sign_and_send(sender, activity, recipient)
-        except requests.exceptions.HTTPError as e:
-            errors.append({
-                'error': str(e),
-                'recipient': recipient,
-                'activity': activity,
-            })
-    return errors
-
-
-def sign_and_send(sender, data, destination):
-    ''' crpyto whatever and http junk '''
-    now = http_date()
-
-    if not sender.key_pair.private_key:
-        # this shouldn't happen. it would be bad if it happened.
-        raise ValueError('No private key found for sender')
-
-    digest = make_digest(data)
-
-    response = requests.post(
-        destination,
-        data=data,
-        headers={
-            'Date': now,
-            'Digest': digest,
-            'Signature': make_signature(sender, destination, now, digest),
-            'Content-Type': 'application/activity+json; charset=utf-8',
-            'User-Agent': USER_AGENT,
-        },
-    )
-    if not response.ok:
-        response.raise_for_status()
-    return response
-
-
-@receiver(models.signals.post_save)
-#pylint: disable=unused-argument
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    ''' broadcast when a model instance is created or updated '''
-    # user content like statuses, lists, and shelves, have a "user" field
-    user = instance.user if hasattr(instance, 'user') else None
-
-    # we don't want to broadcast when we save remote activities
-    if user and not user.local:
-        return
-
-    if created:
-        # book data and users don't need to broadcast on creation
-        if not user:
-            return
-
-        # ordered collection items get "Add"ed
-        if hasattr(instance, 'to_add_activity'):
-            activity = instance.to_add_activity()
-        else:
-            # everything else gets "Create"d
-            activity = instance.to_create_activity(user)
-
-    if activity and user and user.local:
-        instance.broadcast(activity, user)
-
-
 class ObjectMixin(ActivitypubMixin):
     ''' add this mixin for object models that are AP serializable '''
-
     def save(self, *args, **kwargs):
-        ''' broadcast updated '''
+        ''' broadcast created/updated/deleted objects as appropriate '''
+        broadcast = kwargs.get('broadcast', True)
+        # this bonus kwarg woul cause an error in the base save method
+        if 'broadcast' in kwargs:
+            del kwargs['broadcast']
+
+        created = not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
-
-        # we only want to handle updates, not newly created objects
-        if not self.id:
+        if not broadcast:
             return
 
-        # this will work for lists, shelves
+        # this will work for objects owned by a user (lists, shelves)
         user = self.user if hasattr(self, 'user') else None
+
+        if created:
+            # broadcast Create activities for objects owned by a local user
+            if not user or not user.local:
+                return
+            activity = self.to_create_activity(user)
+            self.broadcast(activity, user)
+            return
+
+        # --- updating an existing object
         if not user:
             # users don't have associated users, they ARE users
             user_model = apps.get_model('bookwyrm.User', require_ready=True)
@@ -281,7 +195,7 @@ class ObjectMixin(ActivitypubMixin):
             return
 
         # is this a deletion?
-        if self.deleted:
+        if hasattr(self, 'deleted') and self.deleted:
             activity = self.to_delete_activity(user)
         else:
             activity = self.to_update_activity(user)
@@ -377,33 +291,6 @@ class OrderedCollectionPageMixin(ObjectMixin):
         return serializer(**activity).serialize()
 
 
-# pylint: disable=unused-argument
-def to_ordered_collection_page(
-        queryset, remote_id, id_only=False, page=1, **kwargs):
-    ''' serialize and pagiante a queryset '''
-    paginated = Paginator(queryset, PAGE_LENGTH)
-
-    activity_page = paginated.page(page)
-    if id_only:
-        items = [s.remote_id for s in activity_page.object_list]
-    else:
-        items = [s.to_activity() for s in activity_page.object_list]
-
-    prev_page = next_page = None
-    if activity_page.has_next():
-        next_page = '%s?page=%d' % (remote_id, activity_page.next_page_number())
-    if activity_page.has_previous():
-        prev_page = '%s?page=%d' % \
-                (remote_id, activity_page.previous_page_number())
-    return activitypub.OrderedCollectionPage(
-        id='%s?page=%s' % (remote_id, page),
-        partOf=remote_id,
-        orderedItems=items,
-        next=next_page,
-        prev=prev_page
-    ).serialize()
-
-
 class OrderedCollectionMixin(OrderedCollectionPageMixin):
     ''' extends activitypub models to work as ordered collections '''
     @property
@@ -422,6 +309,28 @@ class CollectionItemMixin(ActivitypubMixin):
     ''' for items that are part of an (Ordered)Collection '''
     activity_serializer = activitypub.Add
     object_field = collection_field = None
+
+    def save(self, *args, **kwargs):
+        ''' broadcast updated '''
+        created = not bool(self.id)
+        # first off, we want to save normally no matter what
+        super().save(*args, **kwargs)
+
+        # these shouldn't be edited, only created and deleted
+        if not created or not self.user.local:
+            return
+
+        # adding an obj to the collection
+        activity = self.to_add_activity()
+        self.broadcast(activity, self.user)
+
+
+    def delete(self, *args, **kwargs):
+        ''' broadcast a remove activity '''
+        activity = self.to_remove_activity()
+        super().delete(*args, **kwargs)
+        self.broadcast(activity, self.user)
+
 
     def to_add_activity(self):
         ''' AP for shelving a book'''
@@ -453,6 +362,7 @@ class ActivityMixin(ActivitypubMixin):
         super().save(*args, **kwargs)
         self.broadcast(self.to_activity(), self.user)
 
+
     def delete(self, *args, **kwargs):
         ''' nevermind, undo that activity '''
         self.broadcast(self.to_undo_activity(), self.user)
@@ -466,3 +376,103 @@ class ActivityMixin(ActivitypubMixin):
             actor=self.user.remote_id,
             object=self.to_activity()
         ).serialize()
+
+
+def generate_activity(obj):
+    ''' go through the fields on an object '''
+    activity = {}
+    for field in obj.activity_fields:
+        field.set_activity_from_field(activity, obj)
+
+    if hasattr(obj, 'serialize_reverse_fields'):
+        # for example, editions of a work
+        for model_field_name, activity_field_name, sort_field in \
+                obj.serialize_reverse_fields:
+            related_field = getattr(obj, model_field_name)
+            activity[activity_field_name] = \
+                    unfurl_related_field(related_field, sort_field)
+
+    if not activity.get('id'):
+        activity['id'] = obj.get_remote_id()
+    return activity
+
+
+def unfurl_related_field(related_field, sort_field=None):
+    ''' load reverse lookups (like public key owner or Status attachment '''
+    if hasattr(related_field, 'all'):
+        return [unfurl_related_field(i) for i in related_field.order_by(
+            sort_field).all()]
+    if related_field.reverse_unfurl:
+        return related_field.field_to_activity()
+    return related_field.remote_id
+
+
+@app.task
+def broadcast_task(sender_id, activity, recipients):
+    ''' the celery task for broadcast '''
+    user_model = apps.get_model('bookwyrm.User', require_ready=True)
+    sender = user_model.objects.get(id=sender_id)
+    errors = []
+    for recipient in recipients:
+        try:
+            sign_and_send(sender, activity, recipient)
+        except requests.exceptions.HTTPError as e:
+            errors.append({
+                'error': str(e),
+                'recipient': recipient,
+                'activity': activity,
+            })
+    return errors
+
+
+def sign_and_send(sender, data, destination):
+    ''' crpyto whatever and http junk '''
+    now = http_date()
+
+    if not sender.key_pair.private_key:
+        # this shouldn't happen. it would be bad if it happened.
+        raise ValueError('No private key found for sender')
+
+    digest = make_digest(data)
+
+    response = requests.post(
+        destination,
+        data=data,
+        headers={
+            'Date': now,
+            'Digest': digest,
+            'Signature': make_signature(sender, destination, now, digest),
+            'Content-Type': 'application/activity+json; charset=utf-8',
+            'User-Agent': USER_AGENT,
+        },
+    )
+    if not response.ok:
+        response.raise_for_status()
+    return response
+
+
+# pylint: disable=unused-argument
+def to_ordered_collection_page(
+        queryset, remote_id, id_only=False, page=1, **kwargs):
+    ''' serialize and pagiante a queryset '''
+    paginated = Paginator(queryset, PAGE_LENGTH)
+
+    activity_page = paginated.page(page)
+    if id_only:
+        items = [s.remote_id for s in activity_page.object_list]
+    else:
+        items = [s.to_activity() for s in activity_page.object_list]
+
+    prev_page = next_page = None
+    if activity_page.has_next():
+        next_page = '%s?page=%d' % (remote_id, activity_page.next_page_number())
+    if activity_page.has_previous():
+        prev_page = '%s?page=%d' % \
+                (remote_id, activity_page.previous_page_number())
+    return activitypub.OrderedCollectionPage(
+        id='%s?page=%s' % (remote_id, page),
+        partOf=remote_id,
+        orderedItems=items,
+        next=next_page,
+        prev=prev_page
+    ).serialize()

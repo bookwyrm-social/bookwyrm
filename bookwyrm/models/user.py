@@ -291,7 +291,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
     instance.key_pair = KeyPair.objects.create(
         remote_id='%s/#main-key' % instance.remote_id)
-    instance.save()
+    instance.save(broadcast=False)
 
     shelves = [{
         'name': 'To Read',
@@ -310,7 +310,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             identifier=shelf['identifier'],
             user=instance,
             editable=False
-        ).save()
+        ).save(broadcast=False)
 
 
 @app.task

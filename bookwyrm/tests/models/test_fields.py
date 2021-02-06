@@ -19,7 +19,8 @@ from django.utils import timezone
 
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
-from bookwyrm.models.base_model import ActivitypubMixin, BookWyrmModel
+from bookwyrm.models.base_model import BookWyrmModel
+from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 
 #pylint: disable=too-many-public-methods
 class ActivitypubFields(TestCase):
