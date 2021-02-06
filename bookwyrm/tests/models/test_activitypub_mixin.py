@@ -227,7 +227,7 @@ class ActivitypubMixins(TestCase):
 
 
     # ObjectMixin
-    def test_object_save(self):
+    def test_object_save_create(self):
         ''' should save uneventufully when broadcast is disabled '''
         class Success(Exception):
             ''' this means we got to the right method '''
@@ -247,8 +247,31 @@ class ActivitypubMixins(TestCase):
         with self.assertRaises(Success):
             ObjectModel(user=self.local_user).save()
 
+        ObjectModel(user=self.remote_user).save()
         ObjectModel(user=self.local_user).save(broadcast=False)
         ObjectModel(user=None).save()
+
+
+    def test_object_save_update(self):
+        ''' should save uneventufully when broadcast is disabled '''
+        class Success(Exception):
+            ''' this means we got to the right method '''
+
+        class UpdateObjectModel(ObjectMixin, base_model.BookWyrmModel):
+            ''' real simple mock model because BookWyrmModel is abstract '''
+            user = models.fields.ForeignKey('User', on_delete=db.models.CASCADE)
+            last_edited_by = models.fields.ForeignKey(
+                'User', on_delete=db.models.CASCADE)
+            def save(self, *args, **kwargs):
+                with patch('django.db.models.Model.save'):
+                    super().save(*args, **kwargs)
+            def to_update_activity(self, user):
+                raise Success()
+
+        with self.assertRaises(Success):
+            UpdateObjectModel(id=1, user=self.local_user).save()
+        with self.assertRaises(Success):
+            UpdateObjectModel(id=1, last_edited_by=self.local_user).save()
 
 
     def test_object_save_delete(self):
