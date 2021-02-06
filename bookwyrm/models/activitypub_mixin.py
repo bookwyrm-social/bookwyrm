@@ -121,10 +121,11 @@ class ActivitypubMixin:
             # or maybe the thing itself is a user
             user = self
         # find anyone who's tagged in a status, for example
-        mentions = self.mention_users if hasattr(self, 'mention_users') else []
+        mentions = self.mention_users.all() if \
+            hasattr(self, 'mention_users') else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions.all() or []]
+        recipients = [u.inbox for u in mentions or []]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != 'direct':

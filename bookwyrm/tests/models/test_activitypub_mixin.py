@@ -88,6 +88,14 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(result, book)
 
 
+    def test_get_recipients(self):
+        ''' determines the recipients for a broadcast '''
+        MockSelf = namedtuple('Self', ('privacy'))
+        mock_self = MockSelf('public')
+        ActivitypubMixin.get_recipients(mock_self)
+        
+
+
     # ObjectMixin
     def test_to_create_activity(self):
         ''' wrapper for ActivityPub "create" action '''
