@@ -8,6 +8,7 @@ from django.test import TestCase
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm import models
 from bookwyrm.models import base_model
+from bookwyrm.models import activitypub_mixin
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 from bookwyrm.models.activitypub_mixin import ActivityMixin, ObjectMixin
 
@@ -20,6 +21,14 @@ class ActivitypubMixins(TestCase):
             local=True, localname='mouse')
         self.local_user.remote_id = 'http://example.com/a/b'
         self.local_user.save(broadcast=False)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            self.remote_user = models.User.objects.create_user(
+                'rat', 'rat@rat.com', 'ratword',
+                local=False,
+                remote_id='https://example.com/users/rat',
+                inbox='https://example.com/users/rat/inbox',
+                outbox='https://example.com/users/rat/outbox',
+            )
 
 
     # ActivitypubMixin
@@ -88,12 +97,129 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(result, book)
 
 
-    def test_get_recipients(self):
-        ''' determines the recipients for a broadcast '''
+    def test_get_recipients_public_object(self):
+        ''' determines the recipients for an object's broadcast '''
         MockSelf = namedtuple('Self', ('privacy'))
         mock_self = MockSelf('public')
-        ActivitypubMixin.get_recipients(mock_self)
-        
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], self.remote_user.inbox)
+
+
+    def test_get_recipients_public_user_object_no_followers(self):
+        ''' determines the recipients for a user's object broadcast '''
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 0)
+
+
+    def test_get_recipients_public_user_object(self):
+        ''' determines the recipients for a user's object broadcast '''
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+        self.local_user.followers.add(self.remote_user)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], self.remote_user.inbox)
+
+
+    def test_get_recipients_public_user_object_with_mention(self):
+        ''' determines the recipients for a user's object broadcast '''
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+        self.local_user.followers.add(self.remote_user)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            another_remote_user = models.User.objects.create_user(
+                'nutria', 'nutria@nutria.com', 'nutriaword',
+                local=False,
+                remote_id='https://example.com/users/nutria',
+                inbox='https://example.com/users/nutria/inbox',
+                outbox='https://example.com/users/nutria/outbox',
+            )
+        MockMentions = namedtuple('Mentions', ('all'))
+        mock_mentions = MockMentions(lambda: [another_remote_user])
+        MockSelf = namedtuple('Self', ('privacy', 'user', 'mention_users'))
+        mock_self = MockSelf('public', self.local_user, mock_mentions)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 2)
+        self.assertEqual(recipients[0], another_remote_user.inbox)
+        self.assertEqual(recipients[1], self.remote_user.inbox)
+
+
+    def test_get_recipients_direct(self):
+        ''' determines the recipients for a user's object broadcast '''
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+        self.local_user.followers.add(self.remote_user)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            another_remote_user = models.User.objects.create_user(
+                'nutria', 'nutria@nutria.com', 'nutriaword',
+                local=False,
+                remote_id='https://example.com/users/nutria',
+                inbox='https://example.com/users/nutria/inbox',
+                outbox='https://example.com/users/nutria/outbox',
+            )
+        MockMentions = namedtuple('Mentions', ('all'))
+        mock_mentions = MockMentions(lambda: [another_remote_user])
+        MockSelf = namedtuple('Self', ('privacy', 'user', 'mention_users'))
+        mock_self = MockSelf('direct', self.local_user, mock_mentions)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], another_remote_user.inbox)
+
+
+    def test_get_recipients_combine_inboxes(self):
+        self.remote_user.shared_inbox = 'http://example.com/inbox'
+        self.remote_user.save(broadcast=False)
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            another_remote_user = models.User.objects.create_user(
+                'nutria', 'nutria@nutria.com', 'nutriaword',
+                local=False,
+                remote_id='https://example.com/users/nutria',
+                inbox='https://example.com/users/nutria/inbox',
+                shared_inbox='http://example.com/inbox',
+                outbox='https://example.com/users/nutria/outbox',
+            )
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+        self.local_user.followers.add(self.remote_user)
+        self.local_user.followers.add(another_remote_user)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], 'http://example.com/inbox')
+
+
+    def test_get_recipients_software(self):
+        with patch('bookwyrm.models.user.set_remote_server.delay'):
+            another_remote_user = models.User.objects.create_user(
+                'nutria', 'nutria@nutria.com', 'nutriaword',
+                local=False,
+                remote_id='https://example.com/users/nutria',
+                inbox='https://example.com/users/nutria/inbox',
+                outbox='https://example.com/users/nutria/outbox',
+                bookwyrm_user=False,
+            )
+        MockSelf = namedtuple('Self', ('privacy', 'user'))
+        mock_self = MockSelf('public', self.local_user)
+        self.local_user.followers.add(self.remote_user)
+        self.local_user.followers.add(another_remote_user)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self)
+        self.assertEqual(len(recipients), 2)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self, software='bookwyrm')
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], self.remote_user.inbox)
+
+        recipients = ActivitypubMixin.get_recipients(mock_self, software='other')
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], another_remote_user.inbox)
 
 
     # ObjectMixin

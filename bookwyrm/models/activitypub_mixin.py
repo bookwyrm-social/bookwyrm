@@ -129,11 +129,16 @@ class ActivitypubMixin:
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != 'direct':
+            # we will send this out to a subset of all remote users
+            queryset = user_model.objects.filter(
+                local=False,
+            )
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
-            queryset = user_model.objects.filter(
-                bookwyrm_user=(software == 'bookwyrm')
-            )
+            if software:
+                queryset = queryset.filter(
+                    bookwyrm_user=(software == 'bookwyrm')
+                )
             # if there's a user, we only want to send to the user's followers
             if user:
                 queryset = queryset.filter(following=user)
