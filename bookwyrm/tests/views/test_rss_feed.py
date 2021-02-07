@@ -2,16 +2,14 @@
 
 from unittest.mock import patch
 from django.test import RequestFactory, TestCase
-import responses
 
 from bookwyrm import models
 from bookwyrm.views import rss_feed
-from bookwyrm.settings import DOMAIN
 
 class RssFeedView(TestCase):
     ''' rss feed behaves as expected '''
     def setUp(self):
-
+        ''' test data '''
         self.site = models.SiteSettings.objects.create()
 
         self.user = models.User.objects.create_user(
@@ -31,14 +29,15 @@ class RssFeedView(TestCase):
         self.quote = models.Quotation.objects.create(
             quote='a sickening sense', content='test content',
             user=self.user, book=self.book)
-        
+
         self.generatednote = models.GeneratedNote.objects.create(
             content='test content', user=self.user)
 
         self.factory = RequestFactory()
-        
+
 
     def test_rss_feed(self):
+        ''' load an rss feed '''
         view = rss_feed.RssFeed()
         request = self.factory.get('/user/rss_user/rss')
         with patch("bookwyrm.models.SiteSettings.objects.get") as site:
@@ -47,6 +46,5 @@ class RssFeedView(TestCase):
         self.assertEqual(result.status_code, 200)
 
         self.assertIn(b"Status updates from rss_user", result.content)
-        self.assertIn( b"a sickening sense", result.content)
+        self.assertIn(b"a sickening sense", result.content)
         self.assertIn(b"Example Edition", result.content)
-

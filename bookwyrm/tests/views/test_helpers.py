@@ -38,11 +38,12 @@ class ViewsHelpers(TestCase):
         )
         self.userdata = json.loads(datafile.read_bytes())
         del self.userdata['icon']
-        self.shelf = models.Shelf.objects.create(
-            name='Test Shelf',
-            identifier='test-shelf',
-            user=self.local_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.shelf = models.Shelf.objects.create(
+                name='Test Shelf',
+                identifier='test-shelf',
+                user=self.local_user
+            )
 
 
     def test_get_edition(self):
@@ -83,22 +84,23 @@ class ViewsHelpers(TestCase):
         rat = models.User.objects.create_user(
             'rat', 'rat@rat.rat', 'password', local=True)
 
-        public_status = models.Comment.objects.create(
-            content='public status', book=self.book, user=self.local_user)
-        direct_status = models.Status.objects.create(
-            content='direct', user=self.local_user, privacy='direct')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            public_status = models.Comment.objects.create(
+                content='public status', book=self.book, user=self.local_user)
+            direct_status = models.Status.objects.create(
+                content='direct', user=self.local_user, privacy='direct')
 
-        rat_public = models.Status.objects.create(
-            content='blah blah', user=rat)
-        rat_unlisted = models.Status.objects.create(
-            content='blah blah', user=rat, privacy='unlisted')
-        remote_status = models.Status.objects.create(
-            content='blah blah', user=self.remote_user)
-        followers_status = models.Status.objects.create(
-            content='blah', user=rat, privacy='followers')
-        rat_mention = models.Status.objects.create(
-            content='blah blah blah', user=rat, privacy='followers')
-        rat_mention.mention_users.set([self.local_user])
+            rat_public = models.Status.objects.create(
+                content='blah blah', user=rat)
+            rat_unlisted = models.Status.objects.create(
+                content='blah blah', user=rat, privacy='unlisted')
+            remote_status = models.Status.objects.create(
+                content='blah blah', user=self.remote_user)
+            followers_status = models.Status.objects.create(
+                content='blah', user=rat, privacy='followers')
+            rat_mention = models.Status.objects.create(
+                content='blah blah blah', user=rat, privacy='followers')
+            rat_mention.mention_users.set([self.local_user])
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
@@ -159,14 +161,15 @@ class ViewsHelpers(TestCase):
         rat = models.User.objects.create_user(
             'rat', 'rat@rat.rat', 'password', local=True)
 
-        public_status = models.Comment.objects.create(
-            content='public status', book=self.book, user=self.local_user)
-        rat_public = models.Status.objects.create(
-            content='blah blah', user=rat)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            public_status = models.Comment.objects.create(
+                content='public status', book=self.book, user=self.local_user)
+            rat_public = models.Status.objects.create(
+                content='blah blah', user=rat)
 
-        statuses = views.helpers.get_activity_feed(
-            self.local_user, ['public'])
-        self.assertEqual(len(statuses), 2)
+            statuses = views.helpers.get_activity_feed(
+                self.local_user, ['public'])
+            self.assertEqual(len(statuses), 2)
 
         # block relationship
         rat.blocks.add(self.local_user)
@@ -240,7 +243,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_to_read(self):
         ''' posts shelve activities '''
         shelf = self.local_user.shelf_set.get(identifier='to-read')
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, 'public')
         status = models.GeneratedNote.objects.get()
@@ -251,7 +254,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_reading(self):
         ''' posts shelve activities '''
         shelf = self.local_user.shelf_set.get(identifier='reading')
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, 'public')
         status = models.GeneratedNote.objects.get()
@@ -262,7 +265,7 @@ class ViewsHelpers(TestCase):
     def test_handle_reading_status_read(self):
         ''' posts shelve activities '''
         shelf = self.local_user.shelf_set.get(identifier='read')
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.helpers.handle_reading_status(
                 self.local_user, shelf, self.book, 'public')
         status = models.GeneratedNote.objects.get()
@@ -272,7 +275,7 @@ class ViewsHelpers(TestCase):
 
     def test_handle_reading_status_other(self):
         ''' posts shelve activities '''
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.helpers.handle_reading_status(
                 self.local_user, self.shelf, self.book, 'public')
         self.assertFalse(models.GeneratedNote.objects.exists())

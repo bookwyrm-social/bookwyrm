@@ -1,11 +1,9 @@
 ''' test for app action functionality '''
 from unittest.mock import patch
-from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import forms, models, views
-from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import DOMAIN
 
 
@@ -47,7 +45,7 @@ class StatusViews(TestCase):
         })
         request = self.factory.post('', form.data)
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, 'comment')
         status = models.Comment.objects.get()
         self.assertEqual(status.content, '<p>hi</p>')
@@ -69,7 +67,7 @@ class StatusViews(TestCase):
         })
         request = self.factory.post('', form.data)
         request.user = user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, 'reply')
         status = models.Status.objects.get(user=user)
         self.assertEqual(status.content, '<p>hi</p>')
@@ -92,7 +90,7 @@ class StatusViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, 'comment')
         status = models.Status.objects.get()
         self.assertEqual(list(status.mention_users.all()), [user])
@@ -116,7 +114,7 @@ class StatusViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, 'comment')
         status = models.Status.objects.get()
 
@@ -128,7 +126,7 @@ class StatusViews(TestCase):
         })
         request = self.factory.post('', form.data)
         request.user = user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, 'reply')
 
         reply = models.Status.replies(status).first()
@@ -226,7 +224,7 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
         request = self.factory.post('')
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, status.id)
         status.refresh_from_db()
         self.assertTrue(status.deleted)

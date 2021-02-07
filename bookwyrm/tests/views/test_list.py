@@ -10,7 +10,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
-@patch('bookwyrm.broadcast.broadcast_task.delay')
+@patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay')
 class ListViews(TestCase):
     ''' tag views'''
     def setUp(self):
@@ -32,8 +32,9 @@ class ListViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=work,
         )
-        self.list = models.List.objects.create(
-            name='Test List', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.list = models.List.objects.create(
+                name='Test List', user=self.local_user)
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
         models.SiteSettings.objects.create()
@@ -43,8 +44,9 @@ class ListViews(TestCase):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Lists.as_view()
         models.List.objects.create(name='Public list', user=self.local_user)
-        models.List.objects.create(
-            name='Private list', privacy='private', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.List.objects.create(
+                name='Private list', privacy='private', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
 
@@ -128,6 +130,7 @@ class ListViews(TestCase):
         })
         request.user = self.local_user
 
+        # TODO should broadcast?
         result = view(request, self.list.id)
         self.assertEqual(result.status_code, 302)
 

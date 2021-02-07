@@ -68,7 +68,7 @@ class TagViews(TestCase):
             })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request)
 
         tag = models.Tag.objects.get()
@@ -93,7 +93,7 @@ class TagViews(TestCase):
             })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request)
 
         self.assertTrue(models.Tag.objects.filter(name='A Tag!?').exists())
