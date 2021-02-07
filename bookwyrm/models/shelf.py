@@ -55,12 +55,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     shelf = fields.ForeignKey(
         'Shelf', on_delete=models.PROTECT, activitypub_field='target')
     user = fields.ForeignKey(
-        'User',
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        activitypub_field='actor'
-    )
+        'User', on_delete=models.PROTECT, activitypub_field='actor')
 
     activity_serializer = activitypub.AddBook
     object_field = 'book'
