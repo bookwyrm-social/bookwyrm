@@ -22,7 +22,7 @@ class Incoming(TestCase):
             'mouse@example.com', 'mouse@mouse.com', 'mouseword',
             local=True, localname='mouse')
         self.local_user.remote_id = 'https://example.com/user/mouse'
-        self.local_user.save()
+        self.local_user.save(broadcast=False)
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
                 'rat', 'rat@rat.com', 'ratword',
@@ -31,11 +31,12 @@ class Incoming(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
-        self.status = models.Status.objects.create(
-            user=self.local_user,
-            content='Test status',
-            remote_id='https://example.com/status/1',
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.status = models.Status.objects.create(
+                user=self.local_user,
+                content='Test status',
+                remote_id='https://example.com/status/1',
+            )
         self.factory = RequestFactory()
 
 
@@ -177,8 +178,9 @@ class Incoming(TestCase):
                 "object": "https://example.com/user/mouse"
             }
         }
-        models.UserFollows.objects.create(
-            user_subject=self.remote_user, user_object=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollows.objects.create(
+                user_subject=self.remote_user, user_object=self.local_user)
         self.assertEqual(self.remote_user, self.local_user.followers.first())
 
         incoming.handle_unfollow(activity)
@@ -200,10 +202,11 @@ class Incoming(TestCase):
             }
         }
 
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         incoming.handle_follow_accept(activity)
@@ -232,10 +235,11 @@ class Incoming(TestCase):
             }
         }
 
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         incoming.handle_follow_reject(activity)
@@ -280,9 +284,10 @@ class Incoming(TestCase):
 
     def test_handle_update_list(self):
         ''' a new list '''
-        book_list = models.List.objects.create(
-            name='hi', remote_id='https://example.com/list/22',
-            user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            book_list = models.List.objects.create(
+                name='hi', remote_id='https://example.com/list/22',
+                user=self.local_user)
         activity = {
             'object': {
                 "id": "https://example.com/list/22",
@@ -539,7 +544,7 @@ class Incoming(TestCase):
         activity = {
             "id": "https://bookwyrm.social/shelfbook/6189#add",
             "type": "Add",
-            "actor": "hhttps://example.com/users/rat",
+            "actor": "https://example.com/users/rat",
             "object": "https://bookwyrm.social/book/37292",
             "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
             "@context": "https://www.w3.org/ns/activitystreams"

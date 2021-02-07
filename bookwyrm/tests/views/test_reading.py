@@ -65,8 +65,9 @@ class ReadingViews(TestCase):
     def test_start_reading_reshelf(self):
         ''' begin a book '''
         to_read_shelf = self.local_user.shelf_set.get(identifier='to-read')
-        models.ShelfBook.objects.create(
-            shelf=to_read_shelf, book=self.book, user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.ShelfBook.objects.create(
+                shelf=to_read_shelf, book=self.book, user=self.local_user)
         shelf = self.local_user.shelf_set.get(identifier='reading')
         self.assertEqual(to_read_shelf.books.get(), self.book)
         self.assertFalse(shelf.books.exists())

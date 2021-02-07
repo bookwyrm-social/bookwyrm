@@ -57,8 +57,9 @@ class StatusViews(TestCase):
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             'rat', 'rat@rat.com', 'password', local=True)
-        parent = models.Status.objects.create(
-            content='parent status', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            parent = models.Status.objects.create(
+                content='parent status', user=self.local_user)
         form = forms.ReplyForm({
             'content': 'hi',
             'user': user.id,
@@ -219,8 +220,9 @@ class StatusViews(TestCase):
     def test_handle_delete_status(self):
         ''' marks a status as deleted '''
         view = views.DeleteStatus.as_view()
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
         self.assertFalse(status.deleted)
         request = self.factory.post('')
         request.user = self.local_user
