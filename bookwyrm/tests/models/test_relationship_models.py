@@ -19,7 +19,7 @@ class Relationship(TestCase):
             'mouse', 'mouse@mouse.com', 'mouseword',
             local=True, localname='mouse')
         self.local_user.remote_id = 'http://local.com/user/mouse'
-        self.local_user.save()
+        self.local_user.save(broadcast=False)
 
     def test_user_follows(self):
         rel = models.UserFollows.objects.create(
