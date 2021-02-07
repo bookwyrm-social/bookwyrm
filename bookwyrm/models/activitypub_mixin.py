@@ -384,9 +384,10 @@ class ActivityMixin(ActivitypubMixin):
 
     def to_undo_activity(self):
         ''' undo an action '''
+        user = self.user if hasattr(self, 'user') else self.user_subject
         return activitypub.Undo(
             id='%s#undo' % self.remote_id,
-            actor=self.user.remote_id,
+            actor=user.remote_id,
             object=self.to_activity()
         ).serialize()
 
