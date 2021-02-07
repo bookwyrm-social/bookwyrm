@@ -27,12 +27,11 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' set the identifier '''
-        saved = super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         if not self.identifier:
             slug = re.sub(r'[^\w]', '', self.name).lower()
             self.identifier = '%s-%d' % (slug, self.id)
-            return super().save(*args, **kwargs)
-        return saved
+            super().save(*args, **kwargs)
 
     @property
     def collection_queryset(self):
