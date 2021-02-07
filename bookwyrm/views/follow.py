@@ -1,5 +1,4 @@
 ''' views for actions you can take in the application '''
-from django.db import  transaction
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
@@ -62,17 +61,9 @@ def accept_follow_request(request):
     except models.UserFollowRequest.DoesNotExist:
         # Request already dealt with.
         return redirect(request.user.local_path)
-    handle_accept(follow_request)
+    follow_request.accept()
 
     return redirect(request.user.local_path)
-
-
-def handle_accept(follow_request):
-    ''' send an acceptance message to a follow request '''
-    with transaction.atomic():
-        relationship = models.UserFollows.from_request(follow_request)
-        follow_request.delete()
-        relationship.save()
 
 
 @login_required

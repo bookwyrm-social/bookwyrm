@@ -366,12 +366,14 @@ class ActivityMixin(ActivitypubMixin):
     def save(self, *args, **kwargs):
         ''' broadcast activity '''
         super().save(*args, **kwargs)
-        self.broadcast(self.to_activity(), self.user)
+        user = self.user if hasattr(self, 'user') else self.user_subject
+        self.broadcast(self.to_activity(), user)
 
 
     def delete(self, *args, **kwargs):
         ''' nevermind, undo that activity '''
-        self.broadcast(self.to_undo_activity(), self.user)
+        user = self.user if hasattr(self, 'user') else self.user_subject
+        self.broadcast(self.to_undo_activity(), user)
         super().delete(*args, **kwargs)
 
 
