@@ -29,6 +29,7 @@ class Status(TestCase):
             'test.jpg',
             ContentFile(output.getvalue())
         )
+        models.Status.broadcast = lambda x, y, z: None
 
     def test_status_generated_fields(self):
         ''' setting remote id '''
@@ -239,6 +240,12 @@ class Status(TestCase):
 
     def test_favorite(self):
         ''' fav a status '''
+        def fav_broadcast_mock(_, activity, user):
+            ''' ok '''
+            self.assertEqual(user.remote_id, self.user.remote_id)
+            self.assertEqual(activity['type'], 'Like')
+        models.Favorite.broadcast = fav_broadcast_mock
+
         status = models.Status.objects.create(
             content='test content', user=self.user)
         fav = models.Favorite.objects.create(status=status, user=self.user)

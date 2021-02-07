@@ -183,7 +183,12 @@ class ObjectMixin(ActivitypubMixin):
             # broadcast Create activities for objects owned by a local user
             if not user or not user.local:
                 return
-            activity = self.to_create_activity(user)
+            try:
+                activity = self.to_create_activity(user)
+            except KeyError:
+                # janky as heck, this catches the mutliple inheritence chain
+                # for boosts and ignores this auxilliary broadcast
+                return
             self.broadcast(activity, user)
             return
 
