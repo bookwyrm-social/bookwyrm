@@ -71,7 +71,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
     status = 'follow_request'
     activity_serializer = activitypub.Follow
 
-    def save(self, *args, **kwargs):
+    def save(self, broadcast=True, *args, **kwargs):
         ''' make sure the follow or block relationship doesn't already exist '''
         try:
             UserFollows.objects.get(
@@ -85,7 +85,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             return None
         except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
             super().save(*args, **kwargs)
-        if self.user_subject.local and not self.user_object.local:
+        if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
 
 

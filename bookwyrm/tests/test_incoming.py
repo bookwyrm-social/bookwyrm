@@ -118,7 +118,7 @@ class Incoming(TestCase):
             "object": "https://example.com/user/mouse"
         }
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             incoming.handle_follow(activity)
 
         # notification created
@@ -146,9 +146,9 @@ class Incoming(TestCase):
         }
 
         self.local_user.manually_approves_followers = True
-        self.local_user.save()
+        self.local_user.save(broadcast=False)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             incoming.handle_follow(activity)
 
         # notification created
@@ -392,11 +392,14 @@ class Incoming(TestCase):
 
     def test_handle_delete_status(self):
         ''' remove a status '''
+        self.status.user = self.remote_user
+        self.status.save(broadcast=False)
+
         self.assertFalse(self.status.deleted)
         activity = {
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
-            'actor': self.local_user.remote_id,
+            'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id},
         }
         incoming.handle_delete_status(activity)
@@ -408,6 +411,8 @@ class Incoming(TestCase):
 
     def test_handle_delete_status_notifications(self):
         ''' remove a status with related notifications '''
+        self.status.user = self.remote_user
+        self.status.save(broadcast=False)
         models.Notification.objects.create(
             related_status=self.status,
             user=self.local_user,
@@ -423,7 +428,7 @@ class Incoming(TestCase):
         activity = {
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
-            'actor': self.local_user.remote_id,
+            'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id},
         }
         incoming.handle_delete_status(activity)
@@ -513,7 +518,6 @@ class Incoming(TestCase):
             status=200)
         incoming.handle_boost(activity)
         self.assertEqual(models.Boost.objects.count(), 0)
-
 
 
     def test_handle_unboost(self):
@@ -613,9 +617,10 @@ class Incoming(TestCase):
     def test_handle_blocks(self):
         ''' create a "block" database entry from an activity '''
         self.local_user.followers.add(self.remote_user)
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user)
         self.assertTrue(models.UserFollows.objects.exists())
         self.assertTrue(models.UserFollowRequest.objects.exists())
 

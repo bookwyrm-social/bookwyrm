@@ -211,6 +211,9 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' create a key pair '''
+        # no broadcasting happening here
+        if 'broadcast' in kwargs:
+            del kwargs['broadcast']
         if not self.public_key:
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)

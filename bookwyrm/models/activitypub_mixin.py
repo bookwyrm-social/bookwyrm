@@ -321,14 +321,14 @@ class CollectionItemMixin(ActivitypubMixin):
     activity_serializer = activitypub.Add
     object_field = collection_field = None
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, broadcast=True, **kwargs):
         ''' broadcast updated '''
         created = not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
         # these shouldn't be edited, only created and deleted
-        if not created or not self.user.local:
+        if not broadcast or not created or not self.user.local:
             return
 
         # adding an obj to the collection
@@ -368,17 +368,19 @@ class CollectionItemMixin(ActivitypubMixin):
 
 class ActivityMixin(ActivitypubMixin):
     ''' add this mixin for models that are AP serializable '''
-    def save(self, *args, **kwargs):
+    def save(self, *args, broadcast=True, **kwargs):
         ''' broadcast activity '''
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, 'user') else self.user_subject
-        self.broadcast(self.to_activity(), user)
+        if broadcast and user.local:
+            self.broadcast(self.to_activity(), user)
 
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, broadcast=True, **kwargs):
         ''' nevermind, undo that activity '''
         user = self.user if hasattr(self, 'user') else self.user_subject
-        self.broadcast(self.to_undo_activity(), user)
+        if broadcast and user.local:
+            self.broadcast(self.to_undo_activity(), user)
         super().delete(*args, **kwargs)
 
 
