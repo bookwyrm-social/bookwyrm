@@ -23,7 +23,7 @@ class BaseActivity(TestCase):
             'mouse', 'mouse@mouse.mouse', 'mouseword',
             local=True, localname='mouse')
         self.user.remote_id = 'http://example.com/a/b'
-        self.user.save()
+        self.user.save(broadcast=False)
 
         datafile = pathlib.Path(__file__).parent.joinpath(
             '../data/ap_user.json'
@@ -167,16 +167,19 @@ class BaseActivity(TestCase):
         with self.assertRaises(ValueError):
             self.user.avatar.file #pylint: disable=pointless-statement
 
-        activity.to_model(models.User, self.user)
+        # this would trigger a broadcast because it's a local user
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            activity.to_model(models.User, self.user)
         self.assertIsNotNone(self.user.avatar.name)
         self.assertIsNotNone(self.user.avatar.file)
 
     def test_to_model_many_to_many(self):
         ''' annoying that these all need special handling '''
-        status = models.Status.objects.create(
-            content='test status',
-            user=self.user,
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                content='test status',
+                user=self.user,
+            )
         book = models.Edition.objects.create(
             title='Test Edition', remote_id='http://book.com/book')
         update_data = activitypub.Note(
@@ -208,10 +211,11 @@ class BaseActivity(TestCase):
     def test_to_model_one_to_many(self):
         ''' these are reversed relationships, where the secondary object
         keys the primary object but not vice versa '''
-        status = models.Status.objects.create(
-            content='test status',
-            user=self.user,
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                content='test status',
+                user=self.user,
+            )
         update_data = activitypub.Note(
             id=status.remote_id,
             content=status.content,
@@ -242,10 +246,11 @@ class BaseActivity(TestCase):
     @responses.activate
     def test_set_related_field(self):
         ''' celery task to add back-references to created objects '''
-        status = models.Status.objects.create(
-            content='test status',
-            user=self.user,
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                content='test status',
+                user=self.user,
+            )
         data = {
             'url': 'http://www.example.com/image.jpg',
             'name': 'alt text',

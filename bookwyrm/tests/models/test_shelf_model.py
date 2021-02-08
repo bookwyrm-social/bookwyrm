@@ -18,16 +18,19 @@ class Shelf(TestCase):
 
     def test_remote_id(self):
         ''' shelves use custom remote ids '''
+        real_broadcast = models.Shelf.broadcast
         models.Shelf.broadcast = lambda x, y, z: None
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf',
             user=self.local_user)
         expected_id = 'https://%s/user/mouse/shelf/test-shelf' % settings.DOMAIN
         self.assertEqual(shelf.get_remote_id(), expected_id)
+        models.Shelf.broadcast = real_broadcast
 
 
     def test_to_activity(self):
         ''' jsonify it '''
+        real_broadcast = models.Shelf.broadcast
         models.Shelf.broadcast = lambda x, y, z: None
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf',
@@ -39,10 +42,12 @@ class Shelf(TestCase):
         self.assertEqual(activity_json['type'], 'Shelf')
         self.assertEqual(activity_json['name'], 'Test Shelf')
         self.assertEqual(activity_json['owner'], self.local_user.remote_id)
+        models.Shelf.broadcast = real_broadcast
 
 
     def test_create_update_shelf(self):
         ''' create and broadcast shelf creation '''
+        real_broadcast = models.Shelf.broadcast
         def create_mock(_, activity, user):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
@@ -65,10 +70,14 @@ class Shelf(TestCase):
         shelf.name = 'arthur russel'
         shelf.save()
         self.assertEqual(shelf.name, 'arthur russel')
+        models.Shelf.broadcast = real_broadcast
 
 
     def test_shelve(self):
         ''' create and broadcast shelf creation '''
+        real_broadcast = models.Shelf.broadcast
+        real_shelfbook_broadcast = models.ShelfBook.broadcast
+
         def add_mock(_, activity, user):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
@@ -99,3 +108,6 @@ class Shelf(TestCase):
         models.ShelfBook.broadcast = remove_mock
         shelf_book.delete()
         self.assertFalse(shelf.books.exists())
+
+        models.ShelfBook.broadcast = real_shelfbook_broadcast
+        models.Shelf.broadcast = real_broadcast

@@ -93,7 +93,11 @@ class BookViews(TestCase):
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             shelf = models.Shelf.objects.create(
                 name='Test Shelf', user=self.local_user)
-        shelf.books.add(edition1)
+            models.ShelfBook.objects.create(
+                book=edition1,
+                user=self.local_user,
+                shelf=shelf,
+            )
         models.ReadThrough.objects.create(
             user=self.local_user, book=edition1)
 

@@ -240,6 +240,7 @@ class Status(TestCase):
 
     def test_favorite(self):
         ''' fav a status '''
+        real_broadcast = models.Favorite.broadcast
         def fav_broadcast_mock(_, activity, user):
             ''' ok '''
             self.assertEqual(user.remote_id, self.user.remote_id)
@@ -258,6 +259,7 @@ class Status(TestCase):
         self.assertEqual(activity['type'], 'Like')
         self.assertEqual(activity['actor'], self.user.remote_id)
         self.assertEqual(activity['object'], status.remote_id)
+        models.Favorite.broadcast = real_broadcast
 
     def test_boost(self):
         ''' boosting, this one's a bit fussy '''

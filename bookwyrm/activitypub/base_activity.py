@@ -93,7 +93,10 @@ class ActivityObject:
         with transaction.atomic():
             # we can't set many to many and reverse fields on an unsaved object
             try:
-                instance.save(broadcast=False)
+                try:
+                    instance.save(broadcast=False)
+                except TypeError:
+                    instance.save()
             except IntegrityError as e:
                 raise ActivitySerializerError(e)
 
