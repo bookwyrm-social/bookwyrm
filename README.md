@@ -3,7 +3,8 @@
 Social reading and reviewing, decentralized with ActivityPub
 
 ## Contents
- - [The overall idea](#the-overall-idea)
+- [Joining BookWyrm](#joining-bookwyrm)
+- [The overall idea](#the-overall-idea)
    - [What it is and isn't](#what-it-is-and-isnt)
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
@@ -13,42 +14,46 @@ Social reading and reviewing, decentralized with ActivityPub
  - [Book data](#book-data)
  - [Contributing](#contributing)
 
+## Joining BookWyrm
+BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://github.com/mouse-reeve/bookwyrm/blob/main/instances.md) list.
+
+I, the maintianer of this project, run https://bookwyrm.social, and I generally give out invite codes to those who ask by [email](mailto:mousereeve@riseup.net), [Mastodon direct message](https://friend.camp/@tripofmice), or [Twitter direct message](https://twitter.com/tripofmice).
+
 ## The overall idea
 ### What it is and isn't
 BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
 
 ### The role of federation
-BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon and Pixelfed. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
+BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
 
-Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular type of literature, be just for use by people who are in a book club together, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
+Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular interest, be just for a group of friends, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
 ### Features
-Since the project is still in its early stages, not everything here is fully implemented. There is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/bookwyrm/issues) to get the conversation going!
+Since the project is still in its early stages, the features are growing every day, and there is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/bookwyrm/issues) to get the conversation going!
  - Posting about books
     - Compose reviews, with or without ratings, which are aggregated in the book page
     - Compose other kinds of statuses about books, such as:
      - Comments on a book
      - Quotes or excerpts
-     - Recommenations of other books
     - Reply to statuses
-    - Aggregate reviews of a book across connected BookWyrm instances
-    - Differentiate local and federated reviews and rating
+    - View aggregate reviews of a book across connected BookWyrm instances
+    - Differentiate local and federated reviews and rating in your activity feed
  - Track reading activity
     - Shelve books on default "to-read," "currently reading," and "read" shelves
     - Create custom shelves
-    - Store started reading/finished reading dates
+    - Store started reading/finished reading dates, as well as progress updates along the way
     - Update followers about reading activity (optionally, and with granular privacy controls)
+    - Create lists of books which can be open to submissions from anyone, curated, or only edited by the creator
  - Federation with ActivityPub
     - Broadcast and receive user statuses and activity
-    - Broadcast copies of books that can be used as canonical data sources
+    - Share book data between instances to create a networked database of metadata
     - Identify shared books across instances and aggregate related content
     - Follow and interact with users across BookWyrm instances
-    - Inter-operate with non-BookWyrm ActivityPub services
+    - Inter-operate with non-BookWyrm ActivityPub services (currently, Mastodon is supported)
  - Granular privacy controls
-    - Local-only, followers-only, and public posting
+    - Private, followers-only, and public privacy levels for posting, shelves, and lists
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation
-    - Control which instances you want to federate with
 
 ## Setting up the developer environment
 
@@ -88,6 +93,7 @@ This project is still young and isn't, at the momoment, very stable, so please p
   `cp .env.example .env`
    - Add your domain, email address, mailgun credentials
    - Set a secure redis password and secret key
+   - Set a secure database password for postgres
  - Update your nginx configuration in `nginx/default.conf`
    - Replace `your-domain.com` with your domain name
  - Run the application (this should also set up a Certbot ssl cert for your domain)
@@ -99,6 +105,7 @@ This project is still young and isn't, at the momoment, very stable, so please p
   `docker-compose up -d`
  - Initialize the database
   `./bw-dev initdb`
+ - Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe locationgi
  - Congrats! You did it, go to your domain and enjoy the fruits of your labors
 ### Configure your instance
  - Register a user account in the applcation UI
@@ -114,21 +121,11 @@ This project is still young and isn't, at the momoment, very stable, so please p
     user.is_superuser = True
     user.save()
     ```
-   - Go to the admin panel (`/admin/bookwyrm/sitesettings/1/change` on your domain) and set your instance name, description, code of conduct, and toggle whether registration is open on your instance
-
-
-## Project structure
-All the url routing is in `bookwyrm/urls.py`. This includes the application views (your home page, user page, book page, etc), application endpoints (things that happen when you click buttons), and federation api endpoints (inboxes, outboxes, webfinger, etc).
-
-The application views and actions are in `bookwyrm/views.py`. The internal actions call api handlers which deal with federating content. Outgoing messages (any action done by a user that is federated out), as well as outboxes, live in `bookwyrm/outgoing.py`, and all handlers for incoming messages, as well as inboxes and webfinger, live in `bookwyrm/incoming.py`. Connection to openlibrary.org to get book data is handled in `bookwyrm/connectors/openlibrary.py`. ActivityPub serialization is handled in the `bookwyrm/activitypub/` directory.
-
-Celery is used for background tasks, which includes receiving incoming ActivityPub activities, ActivityPub broadcasting, and external data import. 
-
-The UI is all django templates because that is the default. You can replace it with a complex javascript framework over my ~dead body~ mild objections.
+   - Go to the site settings (`/settings/site-settings` on your domain) and configure your instance name, description, code of conduct, and toggle whether registration is open on your instance
 
 
 ## Book data
-The application is set up to get book data from arbitrary outside sources -- right now, it's only able to connect to OpenLibrary, but other connectors could be written. By default, a book is non-canonical copy of an OpenLibrary book, and will be updated with OpenLibrary if the data there changes. However, a book can edited and decoupled from its original data source, or added locally with no external data source.
+The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
 
 There are three concepts in the book data model:
  - `Book`, an abstract, high-level concept that could mean either a `Work` or an `Edition`. No data is saved as a `Book`, it serves as shared model for `Work` and `Edition`
