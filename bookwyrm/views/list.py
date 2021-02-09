@@ -124,7 +124,7 @@ class List(View):
     @method_decorator(login_required, name='dispatch')
     # pylint: disable=unused-argument
     def post(self, request, list_id):
-        ''' edit a book_list '''
+        ''' edit a list '''
         book_list = get_object_or_404(models.List, id=list_id)
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
