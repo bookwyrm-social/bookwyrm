@@ -139,10 +139,8 @@ class ActivitypubMixins(TestCase):
                 inbox='https://example.com/users/nutria/inbox',
                 outbox='https://example.com/users/nutria/outbox',
             )
-        MockMentions = namedtuple('Mentions', ('all'))
-        mock_mentions = MockMentions(lambda: [another_remote_user])
-        MockSelf = namedtuple('Self', ('privacy', 'user', 'mention_users'))
-        mock_self = MockSelf('public', self.local_user, mock_mentions)
+        MockSelf = namedtuple('Self', ('privacy', 'user', 'recipients'))
+        mock_self = MockSelf('public', self.local_user, [another_remote_user])
 
         recipients = ActivitypubMixin.get_recipients(mock_self)
         self.assertEqual(len(recipients), 2)
@@ -163,10 +161,8 @@ class ActivitypubMixins(TestCase):
                 inbox='https://example.com/users/nutria/inbox',
                 outbox='https://example.com/users/nutria/outbox',
             )
-        MockMentions = namedtuple('Mentions', ('all'))
-        mock_mentions = MockMentions(lambda: [another_remote_user])
-        MockSelf = namedtuple('Self', ('privacy', 'user', 'mention_users'))
-        mock_self = MockSelf('direct', self.local_user, mock_mentions)
+        MockSelf = namedtuple('Self', ('privacy', 'user', 'recipients'))
+        mock_self = MockSelf('direct', self.local_user, [another_remote_user])
 
         recipients = ActivitypubMixin.get_recipients(mock_self)
         self.assertEqual(len(recipients), 1)
@@ -238,10 +234,10 @@ class ActivitypubMixins(TestCase):
             def save(self, *args, **kwargs):
                 with patch('django.db.models.Model.save'):
                     super().save(*args, **kwargs)
-            def broadcast(self, activity, sender):
+            def broadcast(self, activity, sender):#pylint: disable=arguments-differ
                 ''' do something '''
                 raise Success()
-            def to_create_activity(self, user):
+            def to_create_activity(self, user):#pylint: disable=arguments-differ
                 return {}
 
         with self.assertRaises(Success):
