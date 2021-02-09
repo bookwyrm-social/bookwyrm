@@ -234,7 +234,7 @@ class ActivitypubMixins(TestCase):
             def save(self, *args, **kwargs):
                 with patch('django.db.models.Model.save'):
                     super().save(*args, **kwargs)
-            def broadcast(self, activity, sender):#pylint: disable=arguments-differ
+            def broadcast(self, activity, sender, **kwargs):#pylint: disable=arguments-differ
                 ''' do something '''
                 raise Success()
             def to_create_activity(self, user):#pylint: disable=arguments-differ

@@ -19,7 +19,9 @@ class Shelf(TestCase):
     def test_remote_id(self):
         ''' shelves use custom remote ids '''
         real_broadcast = models.Shelf.broadcast
-        models.Shelf.broadcast = lambda x, y, z: None
+        def broadcast_mock(_, activity, user, **kwargs):
+            ''' nah '''
+        models.Shelf.broadcast = broadcast_mock
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf',
             user=self.local_user)
@@ -31,7 +33,9 @@ class Shelf(TestCase):
     def test_to_activity(self):
         ''' jsonify it '''
         real_broadcast = models.Shelf.broadcast
-        models.Shelf.broadcast = lambda x, y, z: None
+        def empty_mock(_, activity, user, **kwargs):
+            ''' nah '''
+        models.Shelf.broadcast = empty_mock
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf',
             user=self.local_user)
@@ -48,7 +52,7 @@ class Shelf(TestCase):
     def test_create_update_shelf(self):
         ''' create and broadcast shelf creation '''
         real_broadcast = models.Shelf.broadcast
-        def create_mock(_, activity, user):
+        def create_mock(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Create')
@@ -59,7 +63,7 @@ class Shelf(TestCase):
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf', user=self.local_user)
 
-        def update_mock(_, activity, user):
+        def update_mock(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Update')
@@ -78,7 +82,7 @@ class Shelf(TestCase):
         real_broadcast = models.Shelf.broadcast
         real_shelfbook_broadcast = models.ShelfBook.broadcast
 
-        def add_mock(_, activity, user):
+        def add_mock(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Add')
@@ -86,7 +90,7 @@ class Shelf(TestCase):
             self.assertEqual(activity['object']['id'], self.book.remote_id)
             self.assertEqual(activity['target'], shelf.remote_id)
 
-        def remove_mock(_, activity, user):
+        def remove_mock(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Remove')
@@ -94,7 +98,10 @@ class Shelf(TestCase):
             self.assertEqual(activity['object']['id'], self.book.remote_id)
             self.assertEqual(activity['target'], shelf.remote_id)
 
-        models.Shelf.broadcast = lambda x, y, z: None
+        def empty_mock(_, activity, user, **kwargs):
+            ''' nah '''
+
+        models.Shelf.broadcast = empty_mock
         shelf = models.Shelf.objects.create(
             name='Test Shelf', identifier='test-shelf', user=self.local_user)
 

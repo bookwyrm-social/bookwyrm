@@ -1,4 +1,5 @@
 ''' testing models '''
+from unittest.mock import patch
 from io import BytesIO
 import pathlib
 
@@ -11,6 +12,7 @@ from django.utils import timezone
 from bookwyrm import models, settings
 
 
+@patch('bookwyrm.models.Status.broadcast')
 class Status(TestCase):
     ''' lotta types of statuses '''
     def setUp(self):
@@ -29,9 +31,8 @@ class Status(TestCase):
             'test.jpg',
             ContentFile(output.getvalue())
         )
-        models.Status.broadcast = lambda x, y, z: None
 
-    def test_status_generated_fields(self):
+    def test_status_generated_fields(self, _):
         ''' setting remote id '''
         status = models.Status.objects.create(content='bleh', user=self.user)
         expected_id = 'https://%s/user/mouse/status/%d' % \
@@ -39,7 +40,7 @@ class Status(TestCase):
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, 'public')
 
-    def test_replies(self):
+    def test_replies(self, _):
         ''' get a list of replies '''
         parent = models.Status.objects.create(content='hi', user=self.user)
         child = models.Status.objects.create(
@@ -55,7 +56,7 @@ class Status(TestCase):
         # should select subclasses
         self.assertIsInstance(replies.last(), models.Review)
 
-    def test_status_type(self):
+    def test_status_type(self, _):
         ''' class name '''
         self.assertEqual(models.Status().status_type, 'Note')
         self.assertEqual(models.Review().status_type, 'Review')
@@ -63,14 +64,14 @@ class Status(TestCase):
         self.assertEqual(models.Comment().status_type, 'Comment')
         self.assertEqual(models.Boost().status_type, 'Boost')
 
-    def test_boostable(self):
+    def test_boostable(self, _):
         ''' can a status be boosted, based on privacy '''
         self.assertTrue(models.Status(privacy='public').boostable)
         self.assertTrue(models.Status(privacy='unlisted').boostable)
         self.assertFalse(models.Status(privacy='followers').boostable)
         self.assertFalse(models.Status(privacy='direct').boostable)
 
-    def test_to_replies(self):
+    def test_to_replies(self, _):
         ''' activitypub replies collection '''
         parent = models.Status.objects.create(content='hi', user=self.user)
         child = models.Status.objects.create(
@@ -84,7 +85,7 @@ class Status(TestCase):
         self.assertEqual(replies['id'], '%s/replies' % parent.remote_id)
         self.assertEqual(replies['totalItems'], 2)
 
-    def test_status_to_activity(self):
+    def test_status_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Status.objects.create(
             content='test content', user=self.user)
@@ -94,7 +95,7 @@ class Status(TestCase):
         self.assertEqual(activity['content'], 'test content')
         self.assertEqual(activity['sensitive'], False)
 
-    def test_status_to_activity_tombstone(self):
+    def test_status_to_activity_tombstone(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Status.objects.create(
             content='test content', user=self.user,
@@ -104,7 +105,7 @@ class Status(TestCase):
         self.assertEqual(activity['type'], 'Tombstone')
         self.assertFalse(hasattr(activity, 'content'))
 
-    def test_status_to_pure_activity(self):
+    def test_status_to_pure_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Status.objects.create(
             content='test content', user=self.user)
@@ -115,7 +116,7 @@ class Status(TestCase):
         self.assertEqual(activity['sensitive'], False)
         self.assertEqual(activity['attachment'], [])
 
-    def test_generated_note_to_activity(self):
+    def test_generated_note_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.GeneratedNote.objects.create(
             content='test content', user=self.user)
@@ -128,7 +129,7 @@ class Status(TestCase):
         self.assertEqual(activity['sensitive'], False)
         self.assertEqual(len(activity['tag']), 2)
 
-    def test_generated_note_to_pure_activity(self):
+    def test_generated_note_to_pure_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.GeneratedNote.objects.create(
             content='test content', user=self.user)
@@ -150,7 +151,7 @@ class Status(TestCase):
         self.assertEqual(
             activity['attachment'][0].name, 'Test Edition cover')
 
-    def test_comment_to_activity(self):
+    def test_comment_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Comment.objects.create(
             content='test content', user=self.user, book=self.book)
@@ -160,7 +161,7 @@ class Status(TestCase):
         self.assertEqual(activity['content'], 'test content')
         self.assertEqual(activity['inReplyToBook'], self.book.remote_id)
 
-    def test_comment_to_pure_activity(self):
+    def test_comment_to_pure_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Comment.objects.create(
             content='test content', user=self.user, book=self.book)
@@ -177,7 +178,7 @@ class Status(TestCase):
         self.assertEqual(
             activity['attachment'][0].name, 'Test Edition cover')
 
-    def test_quotation_to_activity(self):
+    def test_quotation_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Quotation.objects.create(
             quote='a sickening sense', content='test content',
@@ -189,7 +190,7 @@ class Status(TestCase):
         self.assertEqual(activity['content'], 'test content')
         self.assertEqual(activity['inReplyToBook'], self.book.remote_id)
 
-    def test_quotation_to_pure_activity(self):
+    def test_quotation_to_pure_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Quotation.objects.create(
             quote='a sickening sense', content='test content',
@@ -207,7 +208,7 @@ class Status(TestCase):
         self.assertEqual(
             activity['attachment'][0].name, 'Test Edition cover')
 
-    def test_review_to_activity(self):
+    def test_review_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Review.objects.create(
             name='Review name', content='test content', rating=3,
@@ -220,7 +221,7 @@ class Status(TestCase):
         self.assertEqual(activity['content'], 'test content')
         self.assertEqual(activity['inReplyToBook'], self.book.remote_id)
 
-    def test_review_to_pure_activity(self):
+    def test_review_to_pure_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
         status = models.Review.objects.create(
             name='Review name', content='test content', rating=3,
@@ -238,7 +239,7 @@ class Status(TestCase):
         self.assertEqual(
             activity['attachment'][0].name, 'Test Edition cover')
 
-    def test_favorite(self):
+    def test_favorite(self, _):
         ''' fav a status '''
         real_broadcast = models.Favorite.broadcast
         def fav_broadcast_mock(_, activity, user):
@@ -261,7 +262,7 @@ class Status(TestCase):
         self.assertEqual(activity['object'], status.remote_id)
         models.Favorite.broadcast = real_broadcast
 
-    def test_boost(self):
+    def test_boost(self, _):
         ''' boosting, this one's a bit fussy '''
         status = models.Status.objects.create(
             content='test content', user=self.user)
@@ -273,7 +274,7 @@ class Status(TestCase):
         self.assertEqual(activity['type'], 'Announce')
         self.assertEqual(activity, boost.to_activity(pure=True))
 
-    def test_notification(self):
+    def test_notification(self, _):
         ''' a simple model '''
         notification = models.Notification.objects.create(
             user=self.user, notification_type='FAVORITE')
