@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(set_user),
+        migrations.RunPython(set_user, lambda x, y: None),
         migrations.AlterField(
             model_name='shelfbook',
             name='user',
