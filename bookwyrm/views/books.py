@@ -211,9 +211,14 @@ def switch_edition(request):
         shelf__user=request.user
     )
     for shelfbook in shelfbooks.all():
-        # TODO: this needs to be a delete and re-create
-        shelfbook.book = new_edition
-        shelfbook.save()
+        with transaction.atomic():
+            models.ShelfBook.objects.create(
+                created_date=shelfbook.created_date,
+                user=shelfbook.user,
+                shelf=shelfbook.shelf,
+                book=new_edition
+            )
+            shelfbook.delete()
 
     readthroughs = models.ReadThrough.objects.filter(
         book__parent_work=new_edition.parent_work,
