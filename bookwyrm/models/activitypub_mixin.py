@@ -1,8 +1,9 @@
 ''' activitypub model functionality '''
+from base64 import b64encode
 from functools import reduce
 import json
 import operator
-from base64 import b64encode
+import logging
 from uuid import uuid4
 import requests
 
@@ -20,6 +21,7 @@ from bookwyrm.signatures import make_signature, make_digest
 from bookwyrm.tasks import app
 from bookwyrm.models.fields import ImageField, ManyToManyField
 
+logger = logging.getLogger(__name__)
 # I tried to separate these classes into mutliple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
 class ActivitypubMixin:
@@ -121,8 +123,7 @@ class ActivitypubMixin:
             # or maybe the thing itself is a user
             user = self
         # find anyone who's tagged in a status, for example
-        mentions = self.mention_users.all() if \
-            hasattr(self, 'mention_users') else []
+        mentions = self.recipients if hasattr(self, 'recipients') else []
 
         # we always send activities to explicitly mentioned users' inboxes
         recipients = [u.inbox for u in mentions or []]
@@ -428,17 +429,11 @@ def broadcast_task(sender_id, activity, recipients):
     ''' the celery task for broadcast '''
     user_model = apps.get_model('bookwyrm.User', require_ready=True)
     sender = user_model.objects.get(id=sender_id)
-    errors = []
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
         except requests.exceptions.HTTPError as e:
-            errors.append({
-                'error': str(e),
-                'recipient': recipient,
-                'activity': activity,
-            })
-    return errors
+            logger.exception(e)
 
 
 def sign_and_send(sender, data, destination):

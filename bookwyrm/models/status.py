@@ -52,6 +52,15 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment', 'id')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
+    @property
+    def recipients(self):
+        ''' tagged users who definitely need to get this status in broadcast '''
+        mentions = [u for u in self.mention_users.all() if not u.local]
+        if hasattr(self, 'reply_parent') and self.reply_parent \
+                and not self.reply_parent.user.local:
+            mentions.append(self.reply_parent.user)
+        return list(set(mentions))
+
     @classmethod
     def ignore_activity(cls, activity):
         ''' keep notes if they are replies to existing statuses '''

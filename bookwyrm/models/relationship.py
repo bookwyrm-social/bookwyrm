@@ -29,6 +29,11 @@ class UserRelationship(BookWyrmModel):
         ''' all relationships are handled directly with the participants '''
         return 'direct'
 
+    @property
+    def recipients(self):
+        ''' the remote user needs to recieve direct broadcasts '''
+        return [u for u in [self.user_subject, self.user_object] if not u.local]
+
     class Meta:
         ''' relationships should be unique '''
         abstract = True
@@ -71,7 +76,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
     status = 'follow_request'
     activity_serializer = activitypub.Follow
 
-    def save(self, broadcast=True, *args, **kwargs):
+    def save(self, *args, broadcast=True, **kwargs):
         ''' make sure the follow or block relationship doesn't already exist '''
         try:
             UserFollows.objects.get(
