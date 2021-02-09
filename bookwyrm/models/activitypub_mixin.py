@@ -164,14 +164,14 @@ class ActivitypubMixin:
 
 class ObjectMixin(ActivitypubMixin):
     ''' add this mixin for object models that are AP serializable '''
-    def save(self, *args, **kwargs):
+    def save(self, *args, created=None, **kwargs):
         ''' broadcast created/updated/deleted objects as appropriate '''
         broadcast = kwargs.get('broadcast', True)
         # this bonus kwarg woul cause an error in the base save method
         if 'broadcast' in kwargs:
             del kwargs['broadcast']
 
-        created = not bool(self.id)
+        created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
         if not broadcast:

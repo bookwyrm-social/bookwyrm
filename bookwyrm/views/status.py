@@ -34,7 +34,7 @@ class CreateStatus(View):
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
-        status.save()
+        status.save(broadcast=False)
 
         # inspect the text for user tags
         content = status.content
@@ -82,7 +82,7 @@ class CreateStatus(View):
         if hasattr(status, 'quote'):
             status.quote = to_markdown(status.quote)
 
-        status.save()
+        status.save(created=True)
         return redirect(request.headers.get('Referer', '/'))
 
 
