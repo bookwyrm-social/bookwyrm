@@ -26,11 +26,12 @@ class Status(TestCase):
             '../../static/images/default_avi.jpg')
         image = Image.open(image_file)
         output = BytesIO()
-        image.save(output, format=image.format)
-        self.book.cover.save(
-            'test.jpg',
-            ContentFile(output.getvalue())
-        )
+        with patch('bookwyrm.models.Status.broadcast'):
+            image.save(output, format=image.format)
+            self.book.cover.save(
+                'test.jpg',
+                ContentFile(output.getvalue())
+            )
 
     def test_status_generated_fields(self, _):
         ''' setting remote id '''
