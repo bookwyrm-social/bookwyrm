@@ -46,13 +46,14 @@ function back(e) {
     history.back();
 }
 
-function polling(el) {
-    let delay = 10000 + (Math.random() * 1000);
+function polling(el, delay) {
+    delay = delay || 10000;
+    delay += (Math.random() * 1000);
     setTimeout(function() {
         fetch('/api/updates/' + el.getAttribute('data-poll'))
             .then(response => response.json())
             .then(data => updateCountElement(el, data));
-        polling(el);
+        polling(el, delay * 1.25);
     }, delay, el);
 }
 
