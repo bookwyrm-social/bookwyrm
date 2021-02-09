@@ -184,13 +184,21 @@ class ObjectMixin(ActivitypubMixin):
             # broadcast Create activities for objects owned by a local user
             if not user or not user.local:
                 return
+
             try:
+                software = None
+                # do we have a "pure" activitypub version of this for  mastodon?
+                if hasattr(self, 'pure_content'):
+                    pure_activity = self.to_create_activity(user, pure=True)
+                    self.broadcast(pure_activity, user, software='other')
+                    software = 'bookwyrm'
+                # sends to BW only if we just did a pure version for masto
                 activity = self.to_create_activity(user)
+                self.broadcast(activity, user, software=software)
             except KeyError:
                 # janky as heck, this catches the mutliple inheritence chain
                 # for boosts and ignores this auxilliary broadcast
                 return
-            self.broadcast(activity, user)
             return
 
         # --- updating an existing object
