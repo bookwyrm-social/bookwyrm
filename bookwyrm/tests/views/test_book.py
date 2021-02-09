@@ -33,6 +33,7 @@ class BookViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=self.work
         )
+        models.SiteSettings.objects.create()
 
 
     def test_book_page(self):
@@ -44,7 +45,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'book.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get('')
@@ -63,7 +64,7 @@ class BookViews(TestCase):
         request.user.is_superuser = True
         result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_book.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -116,7 +117,7 @@ class BookViews(TestCase):
             is_api.return_value = False
             result = view(request, self.work.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'editions.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get('')

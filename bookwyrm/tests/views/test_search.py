@@ -33,6 +33,7 @@ class ShelfViews(TestCase):
             connector_file='self_connector',
             local=True
         )
+        models.SiteSettings.objects.create()
 
 
     def test_search_json_response(self):
@@ -82,6 +83,7 @@ class ShelfViews(TestCase):
         )
 
         request = self.factory.get('', {'q': 'Test Book'})
+        request.user = self.local_user
         with patch('bookwyrm.views.search.is_api_request') as is_api:
             is_api.return_value = False
             with patch(
@@ -89,7 +91,7 @@ class ShelfViews(TestCase):
                 manager.return_value = [search_result]
                 response = view(request)
         self.assertIsInstance(response, TemplateResponse)
-        self.assertEqual(response.template_name, 'search_results.html')
+        response.render()
         self.assertEqual(
             response.context_data['book_results'][0].title, 'Gideon the Ninth')
 
@@ -98,11 +100,12 @@ class ShelfViews(TestCase):
         ''' searches remote connectors '''
         view = views.Search.as_view()
         request = self.factory.get('', {'q': 'mouse'})
+        request.user = self.local_user
         with patch('bookwyrm.views.search.is_api_request') as is_api:
             is_api.return_value = False
             with patch('bookwyrm.connectors.connector_manager.search'):
                 response = view(request)
         self.assertIsInstance(response, TemplateResponse)
-        self.assertEqual(response.template_name, 'search_results.html')
+        response.render()
         self.assertEqual(
             response.context_data['user_results'][0], self.local_user)

@@ -21,6 +21,7 @@ class FeedMessageViews(TestCase):
             title='Example Edition',
             remote_id='https://example.com/book/1',
         )
+        models.SiteSettings.objects.create()
 
 
     def test_feed(self):
@@ -30,7 +31,7 @@ class FeedMessageViews(TestCase):
         request.user = self.local_user
         result = view(request, 'local')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed/feed.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -45,7 +46,7 @@ class FeedMessageViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed/status.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.feed.is_api_request') as is_api:
@@ -66,7 +67,7 @@ class FeedMessageViews(TestCase):
             is_api.return_value = False
             result = view(request, 'mouse', status.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed/status.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.feed.is_api_request') as is_api:
@@ -83,7 +84,7 @@ class FeedMessageViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'feed/direct_messages.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 

@@ -147,7 +147,7 @@
                 {% endfor %}
             </div>
 
-            {% if readthroughs.exists %}
+            {% if request.user.is_authenticated %}
             <section class="block">
                 <header class="columns">
                     <h2 class="column title is-5 mb-1">Your reading activity</h2>
@@ -155,6 +155,9 @@
                         {% include 'snippets/toggle/open_button.html' with text="Add read dates" icon="plus" class="is-small" controls_text="add-readthrough" %}
                     </div>
                 </header>
+                {% if not readthroughs.exists %}
+                <p>You don't have any reading activity for this book.</p>
+                {% endif %}
                 <section class="hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}

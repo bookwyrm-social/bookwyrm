@@ -190,3 +190,25 @@ class Openlibrary(TestCase):
         ''' detect if the loaded json is an edition '''
         edition = pick_default_edition(self.edition_list_data['entries'])
         self.assertEqual(edition['key'], '/books/OL9788823M')
+
+
+    @responses.activate
+    def test_create_edition_from_data(self):
+        ''' okay but can it actually create an edition with proper metadata '''
+        work = models.Work.objects.create(title='Hello')
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/authors/OL382982A',
+            json={'hi': 'there'},
+            status=200)
+        result = self.connector.create_edition_from_data(
+            work, self.edition_data)
+        self.assertEqual(result.parent_work, work)
+        self.assertEqual(result.title, 'Sabriel')
+        self.assertEqual(result.isbn_10, '0060273224')
+        self.assertIsNotNone(result.description)
+        self.assertEqual(result.languages[0], 'English')
+        self.assertEqual(result.publishers[0], 'Harper Trophy')
+        self.assertEqual(result.pages, 491)
+        self.assertEqual(result.subjects[0], 'Fantasy.')
+        self.assertEqual(result.physical_format, 'Hardcover')

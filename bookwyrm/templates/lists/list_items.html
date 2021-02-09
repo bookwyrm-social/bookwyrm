@@ -1,0 +1,23 @@
+{% load bookwyrm_tags %}
+<div class="columns is-multiline">
+    {% for list in lists %}
+    <div class="column is-one-quarter">
+        <div class="card">
+            <header class="card-header">
+                <h4 class="card-header-title">
+                    <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
+                </h4>
+            </header>
+            <div class="card-image is-flex">
+                {% for book in list.listitem_set.all|slice:5 %}
+                {% include 'snippets/book_cover.html' with book=book.book size="small" %}
+                {% endfor %}
+            </div>
+            <div class="card-content is-flex-grow-0">
+                {% if list.description %}{{ list.description | to_markdown | safe | truncatewords_html:20 }}{% endif %}
+                <p class="subtitle help">Created {% if list.curation != 'open' %} and curated{% endif %} by {% include 'snippets/username.html' with user=list.user %}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

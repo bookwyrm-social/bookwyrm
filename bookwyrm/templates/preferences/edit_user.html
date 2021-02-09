@@ -7,7 +7,7 @@ Edit Profile
 {% if form.non_field_errors %}
 <p class="notification is-danger">{{ form.non_field_errors }}</p>
 {% endif %}
-<form name="edit-profile" action="/edit-profile/" method="post" enctype="multipart/form-data">
+<form name="edit-profile" action="{% url 'prefs-profile' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
         <label class="label" for="id_avatar">Avatar:</label>

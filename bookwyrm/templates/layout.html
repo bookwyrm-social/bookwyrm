@@ -53,11 +53,14 @@
     <div class="navbar-menu" id="main-nav">
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
-            <a href="/user/{{ request.user.localname }}/shelves" class="navbar-item">
+            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
                 Your shelves
             </a>
             <a href="/#feed" class="navbar-item">
                 Feed
+            </a>
+            <a href="{% url 'lists' %}" class="navbar-item">
+                Lists
             </a>
             {% endif %}
         </div>

@@ -130,6 +130,7 @@ class ActivityObject:
     def serialize(self):
         ''' convert to dictionary with context attr '''
         data = self.__dict__
+        data = {k:v for (k, v) in data.items() if v is not None}
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
 

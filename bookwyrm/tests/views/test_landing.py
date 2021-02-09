@@ -18,6 +18,7 @@ class LandingViews(TestCase):
             local=True, localname='mouse')
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
+        models.SiteSettings.objects.create()
 
 
     def test_home_page(self):
@@ -27,13 +28,13 @@ class LandingViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.template_name, 'feed/feed.html')
+        result.render()
 
         request.user = self.anonymous_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.template_name, 'discover.html')
+        result.render()
 
 
     def test_about_page(self):
@@ -43,7 +44,7 @@ class LandingViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'about.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -53,5 +54,3 @@ class LandingViews(TestCase):
         request = self.factory.get('')
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'discover.html')
-        self.assertEqual(result.status_code, 200)

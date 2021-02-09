@@ -140,20 +140,7 @@ class ActivitypubMixin:
 
     def to_activity(self):
         ''' convert from a model to an activity '''
-        activity = {}
-        for field in self.activity_fields:
-            field.set_activity_from_field(activity, self)
-
-        if hasattr(self, 'serialize_reverse_fields'):
-            # for example, editions of a work
-            for model_field_name, activity_field_name, sort_field in \
-                    self.serialize_reverse_fields:
-                related_field = getattr(self, model_field_name)
-                activity[activity_field_name] = \
-                        unfurl_related_field(related_field, sort_field)
-
-        if not activity.get('id'):
-            activity['id'] = self.get_remote_id()
+        activity = generate_activity(self)
         return self.activity_serializer(**activity).serialize()
 
 
@@ -161,16 +148,18 @@ class ActivitypubMixin:
         ''' returns the object wrapped in a Create activity '''
         activity_object = self.to_activity(**kwargs)
 
-        signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
-        content = activity_object['content']
-        signed_message = signer.sign(SHA256.new(content.encode('utf8')))
+        signature = None
         create_id = self.remote_id + '/activity'
+        if 'content' in activity_object:
+            signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
+            content = activity_object['content']
+            signed_message = signer.sign(SHA256.new(content.encode('utf8')))
 
-        signature = activitypub.Signature(
-            creator='%s#main-key' % user.remote_id,
-            created=activity_object['published'],
-            signatureValue=b64encode(signed_message).decode('utf8')
-        )
+            signature = activitypub.Signature(
+                creator='%s#main-key' % user.remote_id,
+                created=activity_object['published'],
+                signatureValue=b64encode(signed_message).decode('utf8')
+            )
 
         return activitypub.Create(
             id=create_id,
@@ -223,7 +212,7 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
 
 
     def to_ordered_collection(self, queryset, \
-            remote_id=None, page=False, **kwargs):
+            remote_id=None, page=False, collection_only=False, **kwargs):
         ''' an ordered collection of whatevers '''
         if not queryset.ordered:
             raise RuntimeError('queryset must be ordered')
@@ -232,18 +221,25 @@ class OrderedCollectionPageMixin(ActivitypubMixin):
         if page:
             return to_ordered_collection_page(
                 queryset, remote_id, **kwargs)
-        name = self.name if hasattr(self, 'name') else None
-        owner = self.user.remote_id if hasattr(self, 'user') else ''
+
+        if collection_only or not hasattr(self, 'activity_serializer'):
+            serializer = activitypub.OrderedCollection
+            activity = {}
+        else:
+            serializer = self.activity_serializer
+            # a dict from the model fields
+            activity = generate_activity(self)
+
+        if remote_id:
+            activity['id'] = remote_id
 
         paginated = Paginator(queryset, PAGE_LENGTH)
-        return activitypub.OrderedCollection(
-            id=remote_id,
-            totalItems=paginated.count,
-            name=name,
-            owner=owner,
-            first='%s?page=1' % remote_id,
-            last='%s?page=%d' % (remote_id, paginated.num_pages)
-        ).serialize()
+        # add computed fields specific to orderd collections
+        activity['totalItems'] = paginated.count
+        activity['first'] = '%s?page=1' % remote_id
+        activity['last'] = '%s?page=%d' % (remote_id, paginated.num_pages)
+
+        return serializer(**activity).serialize()
 
 
 # pylint: disable=unused-argument
@@ -285,3 +281,22 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
         return self.to_ordered_collection(self.collection_queryset, **kwargs)
+
+
+def generate_activity(obj):
+    ''' go through the fields on an object '''
+    activity = {}
+    for field in obj.activity_fields:
+        field.set_activity_from_field(activity, obj)
+
+    if hasattr(obj, 'serialize_reverse_fields'):
+        # for example, editions of a work
+        for model_field_name, activity_field_name, sort_field in \
+                obj.serialize_reverse_fields:
+            related_field = getattr(obj, model_field_name)
+            activity[activity_field_name] = \
+                    unfurl_related_field(related_field, sort_field)
+
+    if not activity.get('id'):
+        activity['id'] = obj.get_remote_id()
+    return activity

@@ -19,6 +19,7 @@ class PasswordViews(TestCase):
             local=True, localname='mouse')
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
+        models.SiteSettings.objects.create(id=1)
 
 
     def test_password_reset_request(self):
@@ -29,7 +30,7 @@ class PasswordViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'password_reset_request.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -43,7 +44,7 @@ class PasswordViews(TestCase):
         request = self.factory.post('', {'email': 'mouse@mouse.com'})
         with patch('bookwyrm.emailing.send_email.delay'):
             resp = view(request)
-        self.assertEqual(resp.template_name, 'password_reset_request.html')
+        resp.render()
 
         self.assertEqual(
             models.PasswordReset.objects.get().user, self.local_user)
@@ -56,7 +57,7 @@ class PasswordViews(TestCase):
         request.user = self.anonymous_user
         result = view(request, code.code)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'password_reset.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -82,7 +83,7 @@ class PasswordViews(TestCase):
             'confirm-password': 'hi'
         })
         resp = view(request, 'jhgdkfjgdf')
-        self.assertEqual(resp.template_name, 'password_reset.html')
+        resp.render()
         self.assertTrue(models.PasswordReset.objects.exists())
 
     def test_password_reset_mismatch(self):
@@ -94,7 +95,7 @@ class PasswordViews(TestCase):
             'confirm-password': 'hihi'
         })
         resp = view(request, code.code)
-        self.assertEqual(resp.template_name, 'password_reset.html')
+        resp.render()
         self.assertTrue(models.PasswordReset.objects.exists())
 
 
@@ -106,7 +107,7 @@ class PasswordViews(TestCase):
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'preferences/change_password.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 

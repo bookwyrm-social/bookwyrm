@@ -23,6 +23,7 @@ class BlockViews(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
+        models.SiteSettings.objects.create()
 
 
     def test_block_get(self):
@@ -32,7 +33,7 @@ class BlockViews(TestCase):
         request.user = self.local_user
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'preferences/blocks.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
     def test_block_post(self):

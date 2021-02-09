@@ -35,10 +35,10 @@ def search(query, min_confidence=0.1):
     return results
 
 
-def local_search(query, min_confidence=0.1):
+def local_search(query, min_confidence=0.1, raw=False):
     ''' only look at local search results '''
     connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(query, min_confidence=min_confidence)
+    return connector.search(query, min_confidence=min_confidence, raw=raw)
 
 
 def first_search_result(query, min_confidence=0.1):
