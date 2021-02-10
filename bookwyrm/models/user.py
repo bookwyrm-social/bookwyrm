@@ -6,7 +6,6 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.dispatch import receiver
 from django.utils import timezone
 
 from bookwyrm import activitypub
@@ -172,15 +171,23 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def save(self, *args, **kwargs):
         ''' populate fields for new local users '''
-        # this user already exists, no need to populate fields
         if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = '%s@%s' % (self.username, actor_parts.netloc)
-            return super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+            return
 
-        if self.id or not self.local:
-            return super().save(*args, **kwargs)
+        # this user already exists, no need to populate fields
+        if self.id:
+            super().save(*args, **kwargs)
+            return
+
+        # this is a new remote user, we need to set their remote server field
+        if not self.local:
+            super().save(*args, **kwargs)
+            set_remote_server.delay(self.id)
+            return
 
         # populate fields for local users
         self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.localname)
@@ -188,7 +195,32 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.shared_inbox = 'https://%s/inbox' % DOMAIN
         self.outbox = '%s/outbox' % self.remote_id
 
-        return super().save(*args, **kwargs)
+        # an id needs to be set before we can proceed with related models
+        super().save(*args, **kwargs)
+
+        # create keys and shelves for new local users
+        self.key_pair = KeyPair.objects.create(
+            remote_id='%s/#main-key' % self.remote_id)
+        self.save(broadcast=False)
+
+        shelves = [{
+            'name': 'To Read',
+            'identifier': 'to-read',
+        }, {
+            'name': 'Currently Reading',
+            'identifier': 'reading',
+        }, {
+            'name': 'Read',
+            'identifier': 'read',
+        }]
+
+        for shelf in shelves:
+            Shelf(
+                name=shelf['name'],
+                identifier=shelf['identifier'],
+                user=self,
+                editable=False
+            ).save(broadcast=False)
 
     @property
     def local_path(self):
@@ -278,42 +310,6 @@ class AnnualGoal(BookWyrmModel):
         ''' how many books you've read this year '''
         return self.user.readthrough_set.filter(
             finish_date__year__gte=self.year).count()
-
-
-
-@receiver(models.signals.post_save, sender=User)
-#pylint: disable=unused-argument
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    ''' create shelves for new users '''
-    if not created:
-        return
-
-    if not instance.local:
-        set_remote_server.delay(instance.id)
-        return
-
-    instance.key_pair = KeyPair.objects.create(
-        remote_id='%s/#main-key' % instance.remote_id)
-    instance.save(broadcast=False)
-
-    shelves = [{
-        'name': 'To Read',
-        'identifier': 'to-read',
-    }, {
-        'name': 'Currently Reading',
-        'identifier': 'reading',
-    }, {
-        'name': 'Read',
-        'identifier': 'read',
-    }]
-
-    for shelf in shelves:
-        Shelf(
-            name=shelf['name'],
-            identifier=shelf['identifier'],
-            user=instance,
-            editable=False
-        ).save(broadcast=False)
 
 
 @app.task
