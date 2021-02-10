@@ -5,20 +5,22 @@ from .base_model import BookWyrmModel
 
 NotificationType = models.TextChoices(
     'NotificationType',
-    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT')
+    'FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD')
 
 class Notification(BookWyrmModel):
     ''' you've been tagged, liked, followed, etc '''
-    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
     related_book = models.ForeignKey(
-        'Edition', on_delete=models.PROTECT, null=True)
+        'Edition', on_delete=models.CASCADE, null=True)
     related_user = models.ForeignKey(
         'User',
-        on_delete=models.PROTECT, null=True, related_name='related_user')
+        on_delete=models.CASCADE, null=True, related_name='related_user')
     related_status = models.ForeignKey(
-        'Status', on_delete=models.PROTECT, null=True)
+        'Status', on_delete=models.CASCADE, null=True)
     related_import = models.ForeignKey(
-        'ImportJob', on_delete=models.PROTECT, null=True)
+        'ImportJob', on_delete=models.CASCADE, null=True)
+    related_list_item = models.ForeignKey(
+        'ListItem', on_delete=models.CASCADE, null=True)
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices)
