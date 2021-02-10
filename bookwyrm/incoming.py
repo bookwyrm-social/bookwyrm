@@ -288,13 +288,6 @@ def handle_favorite(activity):
     if fav.user.local:
         return
 
-    status_builder.create_notification(
-        fav.status.user,
-        'FAVORITE',
-        related_user=fav.user,
-        related_status=fav.status,
-    )
-
 
 @app.task
 def handle_unfavorite(activity):

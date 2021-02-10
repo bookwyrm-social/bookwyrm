@@ -26,13 +26,6 @@ class Favorite(View):
             # you already fav'ed that
             return HttpResponseBadRequest()
 
-        if status.user.local:
-            create_notification(
-                status.user,
-                'FAVORITE',
-                related_user=request.user,
-                related_status=status
-            )
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -52,15 +45,6 @@ class Unfavorite(View):
             return HttpResponseNotFound()
 
         favorite.delete()
-
-        # check for notification
-        if status.user.local:
-            notification = models.Notification.objects.filter(
-                user=status.user, related_user=request.user,
-                related_status=status, notification_type='FAVORITE'
-            ).first()
-            if notification:
-                notification.delete()
         return redirect(request.headers.get('Referer', '/'))
 
 
