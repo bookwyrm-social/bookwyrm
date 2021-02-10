@@ -124,6 +124,8 @@ def shelve(request):
         identifier=request.POST.get('shelf'),
         user=request.user
     ).first()
+    if not desired_shelf:
+        return HttpResponseNotFound()
 
     if request.POST.get('reshelve', True):
         try:
@@ -139,12 +141,14 @@ def shelve(request):
         book=book, shelf=desired_shelf, user=request.user)
 
     # post about "want to read" shelves
-    if desired_shelf.identifier == 'to-read':
+    if desired_shelf.identifier == 'to-read' and \
+            request.POST.get('post-status'):
+        privacy = request.POST.get('privacy') or desired_shelf.privacy
         handle_reading_status(
             request.user,
             desired_shelf,
             book,
-            privacy=desired_shelf.privacy,
+            privacy=privacy
         )
 
     return redirect('/')
