@@ -210,13 +210,20 @@ def get_data(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         raise ConnectorException()
+
     if not resp.ok:
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.exception(e)
+            raise ConnectorException()
     try:
         data = resp.json()
-    except ValueError:
+    except ValueError as e:
+        logger.exception(e)
         raise ConnectorException()
 
     return data
