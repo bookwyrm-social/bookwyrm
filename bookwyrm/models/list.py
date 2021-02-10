@@ -1,4 +1,5 @@
 ''' make a list of books!! '''
+from django.apps import apps
 from django.db import models
 
 from bookwyrm import activitypub
@@ -70,6 +71,22 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     activity_serializer = activitypub.AddBook
     object_field = 'book'
     collection_field = 'book_list'
+
+    def save(self, *args, **kwargs):
+        ''' create a notification too '''
+        created = not bool(self.id)
+        super().save(*args, **kwargs)
+        list_owner = self.book_list.user
+        # create a notification if somoene ELSE added to a local user's list
+        if created and list_owner.local and list_owner != self.user:
+            model = apps.get_model('bookwyrm.Notification', require_ready=True)
+            model.objects.create(
+                user=list_owner,
+                related_user=self.user,
+                related_list_item=self,
+                notification_type='ADD',
+            )
+
 
     class Meta:
         ''' an opinionated constraint! you can't put a book on a list twice '''
