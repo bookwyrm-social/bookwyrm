@@ -217,6 +217,16 @@ class StatusViews(TestCase):
                     'is rad</p>')
 
 
+    def test_to_markdown_link(self):
+        ''' this is mostly handled in other places, but nonetheless '''
+        text = '[hi](http://fish.com) is <marquee>rad</marquee>'
+        result = views.status.to_markdown(text)
+        self.assertEqual(
+            result,
+            '<p><a href="http://fish.com">hi</a> ' \
+                    'is rad</p>')
+
+
     def test_handle_delete_status(self):
         ''' marks a status as deleted '''
         view = views.DeleteStatus.as_view()
