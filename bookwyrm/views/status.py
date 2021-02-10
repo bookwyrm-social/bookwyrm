@@ -48,7 +48,6 @@ class CreateStatus(View):
                 r'<a href="%s">%s</a>\g<1>' % \
                     (mention_user.remote_id, mention_text),
                 content)
-
         # add reply parent to mentions and notify
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
@@ -126,8 +125,8 @@ def format_links(content):
 
 def to_markdown(content):
     ''' catch links and convert to markdown '''
-    content = format_links(content)
     content = markdown(content)
+    content = format_links(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)
