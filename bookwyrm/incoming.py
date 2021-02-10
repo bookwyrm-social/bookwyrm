@@ -256,27 +256,6 @@ def handle_create_status(activity):
         # it was discarded because it's not a bookwyrm type
         return
 
-    # create a notification if this is a reply
-    notified = []
-    if status.reply_parent and status.reply_parent.user.local:
-        notified.append(status.reply_parent.user)
-        status_builder.create_notification(
-            status.reply_parent.user,
-            'REPLY',
-            related_user=status.user,
-            related_status=status,
-        )
-    if status.mention_users.exists():
-        for mentioned_user in status.mention_users.all():
-            if not mentioned_user.local or mentioned_user in notified:
-                continue
-            status_builder.create_notification(
-                mentioned_user,
-                'MENTION',
-                related_user=status.user,
-                related_status=status,
-            )
-
 
 @app.task
 def handle_delete_status(activity):
