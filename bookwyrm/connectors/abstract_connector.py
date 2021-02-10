@@ -107,7 +107,7 @@ class AbstractConnector(AbstractMinimalConnector):
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
                 edition_data = data
@@ -116,7 +116,7 @@ class AbstractConnector(AbstractMinimalConnector):
             try:
                 work_data = self.get_work_from_edition_data(data)
                 work_data = dict_from_mappings(work_data, self.book_mappings)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 work_data = mapped_data
             edition_data = data
 
