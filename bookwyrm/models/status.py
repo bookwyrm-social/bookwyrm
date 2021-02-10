@@ -52,6 +52,31 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment', 'id')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        if self.reply_parent and self.reply_parent.user.local:
+            notification_model.objects.create(
+                user=self.reply_parent.user,
+                notification_type='REPLY',
+                related_user=self.user,
+                related_status=self,
+            )
+        for mention_user in self.mention_users.all():
+            # avoid double-notifying about this status
+            if not mention_user.local or notification_model.objects.filter(
+                    related_status=self, related_user=mention_user).exists():
+                continue
+            notification_model.objects.create(
+                user=mention_user,
+                notification_type='MENTION',
+                related_user=self.user,
+                related_status=self,
+            )
+
     @property
     def recipients(self):
         ''' tagged users who definitely need to get this status in broadcast '''

@@ -10,7 +10,7 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
-from bookwyrm.status import create_notification, delete_status
+from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger
 
@@ -48,31 +48,12 @@ class CreateStatus(View):
                 r'<a href="%s">%s</a>\g<1>' % \
                     (mention_user.remote_id, mention_text),
                 content)
-        # add reply parent to mentions and notify
+        # add reply parent to mentions
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
-            if status.reply_parent.user.local:
-                create_notification(
-                    status.reply_parent.user,
-                    'REPLY',
-                    related_user=request.user,
-                    related_status=status
-                )
-
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
-        # create mention notifications
-        for mention_user in status.mention_users.all():
-            if status.reply_parent and mention_user == status.reply_parent.user:
-                continue
-            if mention_user.local:
-                create_notification(
-                    mention_user,
-                    'MENTION',
-                    related_user=request.user,
-                    related_status=status
-                )
 
         # don't apply formatting to generated notes
         if not isinstance(status, models.GeneratedNote):
