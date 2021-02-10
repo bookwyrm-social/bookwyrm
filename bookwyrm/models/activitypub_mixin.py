@@ -228,7 +228,7 @@ class ObjectMixin(ActivitypubMixin):
 
         signature = None
         create_id = self.remote_id + '/activity'
-        if 'content' in activity_object:
+        if 'content' in activity_object and activity_object['content']:
             signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
             content = activity_object['content']
             signed_message = signer.sign(SHA256.new(content.encode('utf8')))

@@ -22,16 +22,17 @@ class RssFeedView(TestCase):
             parent_work=work
         )
 
-        self.review = models.Review.objects.create(
-            name='Review name', content='test content', rating=3,
-            user=self.user, book=self.book)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.review = models.Review.objects.create(
+                name='Review name', content='test content', rating=3,
+                user=self.user, book=self.book)
 
-        self.quote = models.Quotation.objects.create(
-            quote='a sickening sense', content='test content',
-            user=self.user, book=self.book)
+            self.quote = models.Quotation.objects.create(
+                quote='a sickening sense', content='test content',
+                user=self.user, book=self.book)
 
-        self.generatednote = models.GeneratedNote.objects.create(
-            content='test content', user=self.user)
+            self.generatednote = models.GeneratedNote.objects.create(
+                content='test content', user=self.user)
 
         self.factory = RequestFactory()
 

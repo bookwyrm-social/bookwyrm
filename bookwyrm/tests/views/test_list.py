@@ -65,7 +65,7 @@ class ListViews(TestCase):
     def test_lists_create(self):
         ''' create list view '''
         real_broadcast = models.List.broadcast
-        def mock_broadcast(_, activity, user):
+        def mock_broadcast(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Create')
@@ -129,7 +129,7 @@ class ListViews(TestCase):
     def test_list_edit(self):
         ''' edit a list '''
         real_broadcast = models.List.broadcast
-        def mock_broadcast(_, activity, user):
+        def mock_broadcast(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Update')
@@ -181,7 +181,7 @@ class ListViews(TestCase):
     def test_curate_approve(self):
         ''' approve a pending item '''
         real_broadcast = models.List.broadcast
-        def mock_broadcast(_, activity, user):
+        def mock_broadcast(_, activity, user, **kwargs):
             ''' ok '''
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Add')
