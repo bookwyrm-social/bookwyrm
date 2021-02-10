@@ -7,7 +7,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username, object_visible_to_user
 
@@ -63,23 +62,10 @@ class Goal(View):
 
         if request.POST.get('post-status'):
             # create status, if appropraite
-            status = create_generated_note(
+            create_generated_note(
                 request.user,
                 'set a goal to read %d books in %d' % (goal.goal, goal.year),
                 privacy=goal.privacy
             )
-            broadcast(
-                request.user,
-                status.to_create_activity(request.user),
-                privacy=status.privacy,
-                software='bookwyrm')
-
-            # re-format the activity for non-bookwyrm servers
-            remote_activity = status.to_create_activity(request.user, pure=True)
-            broadcast(
-                request.user,
-                remote_activity,
-                privacy=status.privacy,
-                software='other')
 
         return redirect(request.headers.get('Referer', '/'))

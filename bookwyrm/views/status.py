@@ -8,7 +8,6 @@ from django.views import View
 from markdown import markdown
 
 from bookwyrm import forms, models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.status import create_notification, delete_status
@@ -35,7 +34,7 @@ class CreateStatus(View):
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
-        status.save()
+        status.save(broadcast=False)
 
         # inspect the text for user tags
         content = status.content
@@ -83,16 +82,7 @@ class CreateStatus(View):
         if hasattr(status, 'quote'):
             status.quote = to_markdown(status.quote)
 
-        status.save()
-
-        broadcast(
-            request.user,
-            status.to_create_activity(request.user),
-            software='bookwyrm')
-
-        # re-format the activity for non-bookwyrm servers
-        remote_activity = status.to_create_activity(request.user, pure=True)
-        broadcast(request.user, remote_activity, software='other')
+        status.save(created=True)
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -108,7 +98,6 @@ class DeleteStatus(View):
 
         # perform deletion
         delete_status(status)
-        broadcast(request.user, status.to_delete_activity(request.user))
         return redirect(request.headers.get('Referer', '/'))
 
 def find_mentions(content):

@@ -3,7 +3,6 @@ import csv
 import logging
 
 from bookwyrm import models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.models import ImportJob, ImportItem
 from bookwyrm.status import create_notification
 from bookwyrm.tasks import app
@@ -82,7 +81,7 @@ def handle_imported_book(user, item, include_reviews, privacy):
         return
 
     existing_shelf = models.ShelfBook.objects.filter(
-        book=item.book, added_by=user).exists()
+        book=item.book, user=user).exists()
 
     # shelve the book if it hasn't been shelved already
     if item.shelf and not existing_shelf:
@@ -90,9 +89,8 @@ def handle_imported_book(user, item, include_reviews, privacy):
             identifier=item.shelf,
             user=user
         )
-        shelf_book = models.ShelfBook.objects.create(
-            book=item.book, shelf=desired_shelf, added_by=user)
-        broadcast(user, shelf_book.to_add_activity(user), privacy=privacy)
+        models.ShelfBook.objects.create(
+            book=item.book, shelf=desired_shelf, user=user)
 
     for read in item.reads:
         # check for an existing readthrough with the same dates
@@ -114,7 +112,7 @@ def handle_imported_book(user, item, include_reviews, privacy):
         # we don't know the publication date of the review,
         # but "now" is a bad guess
         published_date_guess = item.date_read or item.date_added
-        review = models.Review.objects.create(
+        models.Review.objects.create(
             user=user,
             book=item.book,
             name=review_title,
@@ -123,6 +121,3 @@ def handle_imported_book(user, item, include_reviews, privacy):
             published_date=published_date_guess,
             privacy=privacy,
         )
-        # we don't need to send out pure activities because non-bookwyrm
-        # instances don't need this data
-        broadcast(user, review.to_create_activity(user), privacy=privacy)

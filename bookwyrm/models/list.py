@@ -3,8 +3,8 @@ from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .base_model import ActivitypubMixin, BookWyrmModel
-from .base_model import OrderedCollectionMixin
+from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 
@@ -51,13 +51,13 @@ class List(OrderedCollectionMixin, BookWyrmModel):
         ordering = ('-updated_date',)
 
 
-class ListItem(ActivitypubMixin, BookWyrmModel):
+class ListItem(CollectionItemMixin, BookWyrmModel):
     ''' ok '''
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='object')
     book_list = fields.ForeignKey(
         'List', on_delete=models.CASCADE, activitypub_field='target')
-    added_by = fields.ForeignKey(
+    user = fields.ForeignKey(
         'User',
         on_delete=models.PROTECT,
         activitypub_field='actor'
@@ -68,24 +68,8 @@ class ListItem(ActivitypubMixin, BookWyrmModel):
     endorsement = models.ManyToManyField('User', related_name='endorsers')
 
     activity_serializer = activitypub.AddBook
-
-    def to_add_activity(self, user):
-        ''' AP for shelving a book'''
-        return activitypub.Add(
-            id='%s#add' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.book_list.remote_id,
-        ).serialize()
-
-    def to_remove_activity(self, user):
-        ''' AP for un-shelving a book'''
-        return activitypub.Remove(
-            id='%s#remove' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.book_list.remote_id
-        ).serialize()
+    object_field = 'book'
+    collection_field = 'book_list'
 
     class Meta:
         ''' an opinionated constraint! you can't put a book on a list twice '''

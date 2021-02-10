@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
-from bookwyrm.broadcast import broadcast
 from .helpers import get_edition, handle_reading_status
 from .shelf import handle_unshelve
 
@@ -44,9 +43,8 @@ def start_reading(request, book_id):
         except models.Shelf.DoesNotExist:
             # this just means it isn't currently on the user's shelves
             pass
-    shelfbook = models.ShelfBook.objects.create(
-        book=book, shelf=shelf, added_by=request.user)
-    broadcast(request.user, shelfbook.to_add_activity(request.user))
+    models.ShelfBook.objects.create(
+        book=book, shelf=shelf, user=request.user)
 
     # post about it (if you want)
     if request.POST.get('post-status'):
@@ -82,9 +80,8 @@ def finish_reading(request, book_id):
         except models.Shelf.DoesNotExist:
             # this just means it isn't currently on the user's shelves
             pass
-    shelfbook = models.ShelfBook.objects.create(
-        book=book, shelf=shelf, added_by=request.user)
-    broadcast(request.user, shelfbook.to_add_activity(request.user))
+    models.ShelfBook.objects.create(
+        book=book, shelf=shelf, user=request.user)
 
     # post about it (if you want)
     if request.POST.get('post-status'):

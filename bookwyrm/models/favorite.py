@@ -3,10 +3,11 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import ActivityMixin
+from .base_model import BookWyrmModel
 from . import fields
 
-class Favorite(ActivitypubMixin, BookWyrmModel):
+class Favorite(ActivityMixin, BookWyrmModel):
     ''' fav'ing a post '''
     user = fields.ForeignKey(
         'User', on_delete=models.PROTECT, activitypub_field='actor')
@@ -18,7 +19,7 @@ class Favorite(ActivitypubMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         ''' update user active time '''
         self.user.last_active_date = timezone.now()
-        self.user.save()
+        self.user.save(broadcast=False)
         super().save(*args, **kwargs)
 
     class Meta:

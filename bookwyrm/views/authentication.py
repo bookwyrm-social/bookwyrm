@@ -46,6 +46,7 @@ class Login(View):
             # successful login
             login(request, user)
             user.last_active_date = timezone.now()
+            user.save(broadcast=False)
             return redirect(request.GET.get('next', '/'))
 
         # login errors

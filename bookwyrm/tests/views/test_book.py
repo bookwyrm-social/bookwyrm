@@ -77,7 +77,7 @@ class BookViews(TestCase):
         form.data['last_edited_by'] = self.local_user.id
         request = self.factory.post('', form.data)
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, 'New Title')
@@ -90,9 +90,14 @@ class BookViews(TestCase):
             title='first ed', parent_work=work)
         edition2 = models.Edition.objects.create(
             title='second ed', parent_work=work)
-        shelf = models.Shelf.objects.create(
-            name='Test Shelf', user=self.local_user)
-        shelf.books.add(edition1)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            shelf = models.Shelf.objects.create(
+                name='Test Shelf', user=self.local_user)
+            models.ShelfBook.objects.create(
+                book=edition1,
+                user=self.local_user,
+                shelf=shelf,
+            )
         models.ReadThrough.objects.create(
             user=self.local_user, book=edition1)
 
@@ -102,7 +107,7 @@ class BookViews(TestCase):
             'edition': edition2.id
         })
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.switch_edition(request)
 
         self.assertEqual(models.ShelfBook.objects.get().book, edition2)

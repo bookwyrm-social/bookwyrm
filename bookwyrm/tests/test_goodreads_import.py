@@ -124,7 +124,7 @@ class GoodreadsImport(TestCase):
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
                 self.user, import_item, False, 'public')
 
@@ -144,9 +144,10 @@ class GoodreadsImport(TestCase):
 
     def test_handle_imported_book_already_shelved(self):
         ''' goodreads import added a book, this adds related connections '''
-        shelf = self.user.shelf_set.filter(identifier='to-read').first()
-        models.ShelfBook.objects.create(
-            shelf=shelf, added_by=self.user, book=self.book)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            shelf = self.user.shelf_set.filter(identifier='to-read').first()
+            models.ShelfBook.objects.create(
+                shelf=shelf, user=self.user, book=self.book)
 
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
@@ -156,7 +157,7 @@ class GoodreadsImport(TestCase):
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
                 self.user, import_item, False, 'public')
 
@@ -185,7 +186,7 @@ class GoodreadsImport(TestCase):
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
                 self.user, import_item, False, 'public')
             goodreads_import.handle_imported_book(
@@ -214,7 +215,7 @@ class GoodreadsImport(TestCase):
         import_item = models.ImportItem.objects.create(
             job_id=import_job.id, index=0, data=entry, book=self.book)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
                 self.user, import_item, True, 'unlisted')
         review = models.Review.objects.get(book=self.book, user=self.user)
@@ -235,7 +236,7 @@ class GoodreadsImport(TestCase):
         import_item = models.ImportItem.objects.create(
             job_id=import_job.id, index=0, data=entry, book=self.book)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             goodreads_import.handle_imported_book(
                 self.user, import_item, False, 'unlisted')
         self.assertFalse(models.Review.objects.filter(

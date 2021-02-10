@@ -9,10 +9,12 @@ from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from . import fields
 from .fields import image_serializer
+from . import fields
+
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
@@ -49,6 +51,15 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     activity_serializer = activitypub.Note
     serialize_reverse_fields = [('attachments', 'attachment', 'id')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
+
+    @property
+    def recipients(self):
+        ''' tagged users who definitely need to get this status in broadcast '''
+        mentions = [u for u in self.mention_users.all() if not u.local]
+        if hasattr(self, 'reply_parent') and self.reply_parent \
+                and not self.reply_parent.user.local:
+            mentions.append(self.reply_parent.user)
+        return list(set(mentions))
 
     @classmethod
     def ignore_activity(cls, activity):
@@ -124,14 +135,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                     image_serializer(self.book.cover, self.book.alt_text)
                 )
         return activity
-
-
-    def save(self, *args, **kwargs):
-        ''' update user active time '''
-        if self.user.local:
-            self.user.last_active_date = timezone.now()
-            self.user.save()
-        return super().save(*args, **kwargs)
 
 
 class GeneratedNote(Status):
@@ -223,7 +226,7 @@ class Review(Status):
     pure_type = 'Article'
 
 
-class Boost(Status):
+class Boost(ActivityMixin, Status):
     ''' boost'ing a post '''
     boosted_status = fields.ForeignKey(
         'Status',
@@ -231,6 +234,8 @@ class Boost(Status):
         related_name='boosters',
         activitypub_field='object',
     )
+    activity_serializer = activitypub.Boost
+
 
     def __init__(self, *args, **kwargs):
         ''' the user field is "actor" here instead of "attributedTo" '''
@@ -243,8 +248,6 @@ class Boost(Status):
         self.many_to_many_fields = []
         self.image_fields = []
         self.deserialize_reverse_fields = []
-
-    activity_serializer = activitypub.Boost
 
     # This constraint can't work as it would cross tables.
     # class Meta:

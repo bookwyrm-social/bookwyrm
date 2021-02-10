@@ -1,14 +1,15 @@
 ''' defines relationships between users '''
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 
-class UserRelationship(ActivitypubMixin, BookWyrmModel):
+class UserRelationship(BookWyrmModel):
     ''' many-to-many through table for followers '''
     user_subject = fields.ForeignKey(
         'User',
@@ -22,6 +23,16 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
         related_name='%(class)s_user_object',
         activitypub_field='object',
     )
+
+    @property
+    def privacy(self):
+        ''' all relationships are handled directly with the participants '''
+        return 'direct'
+
+    @property
+    def recipients(self):
+        ''' the remote user needs to recieve direct broadcasts '''
+        return [u for u in [self.user_subject, self.user_object] if not u.local]
 
     class Meta:
         ''' relationships should be unique '''
@@ -37,8 +48,6 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
             )
         ]
 
-    activity_serializer = activitypub.Follow
-
     def get_remote_id(self, status=None):# pylint: disable=arguments-differ
         ''' use shelf identifier in remote_id '''
         status = status or 'follows'
@@ -46,55 +55,73 @@ class UserRelationship(ActivitypubMixin, BookWyrmModel):
         return '%s#%s/%d' % (base_path, status, self.id)
 
 
-    def to_accept_activity(self):
-        ''' generate an Accept for this follow request '''
-        return activitypub.Accept(
-            id=self.get_remote_id(status='accepts'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
-
-
-    def to_reject_activity(self):
-        ''' generate a Reject for this follow request '''
-        return activitypub.Reject(
-            id=self.get_remote_id(status='rejects'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
-
-
-class UserFollows(UserRelationship):
+class UserFollows(ActivitypubMixin, UserRelationship):
     ''' Following a user '''
     status = 'follows'
+    activity_serializer = activitypub.Follow
+
 
     @classmethod
     def from_request(cls, follow_request):
         ''' converts a follow request into a follow relationship '''
-        return cls(
+        return cls.objects.create(
             user_subject=follow_request.user_subject,
             user_object=follow_request.user_object,
             remote_id=follow_request.remote_id,
         )
 
 
-class UserFollowRequest(UserRelationship):
+class UserFollowRequest(ActivitypubMixin, UserRelationship):
     ''' following a user requires manual or automatic confirmation '''
     status = 'follow_request'
+    activity_serializer = activitypub.Follow
 
-    def save(self, *args, **kwargs):
-        ''' make sure the follow relationship doesn't already exist '''
+    def save(self, *args, broadcast=True, **kwargs):
+        ''' make sure the follow or block relationship doesn't already exist '''
         try:
             UserFollows.objects.get(
                 user_subject=self.user_subject,
                 user_object=self.user_object
             )
+            UserBlocks.objects.get(
+                user_subject=self.user_subject,
+                user_object=self.user_object
+            )
             return None
-        except UserFollows.DoesNotExist:
-            return super().save(*args, **kwargs)
+        except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
+            super().save(*args, **kwargs)
+        if broadcast and self.user_subject.local and not self.user_object.local:
+            self.broadcast(self.to_activity(), self.user_subject)
 
 
-class UserBlocks(UserRelationship):
+    def accept(self):
+        ''' turn this request into the real deal'''
+        user = self.user_object
+        activity = activitypub.Accept(
+            id=self.get_remote_id(status='accepts'),
+            actor=self.user_object.remote_id,
+            object=self.to_activity()
+        ).serialize()
+        with transaction.atomic():
+            UserFollows.from_request(self)
+            self.delete()
+
+        self.broadcast(activity, user)
+
+
+    def reject(self):
+        ''' generate a Reject for this follow request '''
+        user = self.user_object
+        activity = activitypub.Reject(
+            id=self.get_remote_id(status='rejects'),
+            actor=self.user_object.remote_id,
+            object=self.to_activity()
+        ).serialize()
+        self.delete()
+        self.broadcast(activity, user)
+
+
+class UserBlocks(ActivityMixin, UserRelationship):
     ''' prevent another user from following you and seeing your posts '''
     status = 'blocks'
     activity_serializer = activitypub.Block

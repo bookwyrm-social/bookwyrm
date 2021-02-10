@@ -17,8 +17,8 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
-from .base_model import OrderedCollectionPageMixin
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
+from .base_model import BookWyrmModel
 from .federated_server import FederatedServer
 from . import fields, Review
 
@@ -211,6 +211,9 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' create a key pair '''
+        # no broadcasting happening here
+        if 'broadcast' in kwargs:
+            del kwargs['broadcast']
         if not self.public_key:
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
@@ -291,7 +294,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
 
     instance.key_pair = KeyPair.objects.create(
         remote_id='%s/#main-key' % instance.remote_id)
-    instance.save()
+    instance.save(broadcast=False)
 
     shelves = [{
         'name': 'To Read',
@@ -310,7 +313,7 @@ def execute_after_save(sender, instance, created, *args, **kwargs):
             identifier=shelf['identifier'],
             user=instance,
             editable=False
-        ).save()
+        ).save(broadcast=False)
 
 
 @app.task
