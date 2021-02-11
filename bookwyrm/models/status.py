@@ -59,6 +59,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         notification_model = apps.get_model(
             'bookwyrm.Notification', require_ready=True)
+
+        if self.deleted:
+            notification_model.objects.filter(related_status=self).delete()
+
         if self.reply_parent and self.reply_parent.user != self.user and \
                 self.reply_parent.user.local:
             notification_model.objects.create(
@@ -263,6 +267,38 @@ class Boost(ActivityMixin, Status):
         activitypub_field='object',
     )
     activity_serializer = activitypub.Boost
+
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+        if not self.boosted_status.user.local:
+            return
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        if notification_model.objects.filter(
+                user=self.boosted_status.user,
+                related_status=self.boosted_status,
+                related_user=self.user, notification_type='BOOST').exists():
+            return
+        notification_model.objects.create(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        )
+
+    def delete(self, *args, **kwargs):
+        ''' delete and un-notify '''
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.filter(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        ).delete()
+        super().delete(*args, **kwargs)
 
 
     def __init__(self, *args, **kwargs):

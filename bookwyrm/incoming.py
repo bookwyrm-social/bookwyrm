@@ -304,18 +304,10 @@ def handle_unfavorite(activity):
 def handle_boost(activity):
     ''' someone gave us a boost! '''
     try:
-        boost = activitypub.Boost(**activity).to_model(models.Boost)
+        activitypub.Boost(**activity).to_model(models.Boost)
     except activitypub.ActivitySerializerError:
         # this probably just means we tried to boost an unknown status
         return
-
-    if not boost.user.local:
-        status_builder.create_notification(
-            boost.boosted_status.user,
-            'BOOST',
-            related_user=boost.user,
-            related_status=boost.boosted_status,
-        )
 
 
 @app.task
