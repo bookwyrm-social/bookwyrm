@@ -216,9 +216,9 @@ def handle_create_list(activity):
 def handle_update_list(activity):
     ''' update a list '''
     try:
-        book_list = models.List.objects.get(id=activity['object']['id'])
+        book_list = models.List.objects.get(remote_id=activity['object']['id'])
     except models.List.DoesNotExist:
-        return
+        book_list = None
     activitypub.BookList(
         **activity['object']).to_model(models.List, instance=book_list)
 
