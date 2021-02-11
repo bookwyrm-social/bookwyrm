@@ -3,8 +3,8 @@ import re
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, BookWyrmModel
-from .base_model import OrderedCollectionMixin
+from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 
@@ -27,12 +27,11 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' set the identifier '''
-        saved = super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         if not self.identifier:
             slug = re.sub(r'[^\w]', '', self.name).lower()
             self.identifier = '%s-%d' % (slug, self.id)
-            return super().save(*args, **kwargs)
-        return saved
+            super().save(*args, **kwargs)
 
     @property
     def collection_queryset(self):
@@ -49,39 +48,18 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         unique_together = ('user', 'identifier')
 
 
-class ShelfBook(ActivitypubMixin, BookWyrmModel):
+class ShelfBook(CollectionItemMixin, BookWyrmModel):
     ''' many to many join table for books and shelves '''
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='object')
     shelf = fields.ForeignKey(
         'Shelf', on_delete=models.PROTECT, activitypub_field='target')
-    added_by = fields.ForeignKey(
-        'User',
-        blank=True,
-        null=True,
-        on_delete=models.PROTECT,
-        activitypub_field='actor'
-    )
+    user = fields.ForeignKey(
+        'User', on_delete=models.PROTECT, activitypub_field='actor')
 
     activity_serializer = activitypub.AddBook
-
-    def to_add_activity(self, user):
-        ''' AP for shelving a book'''
-        return activitypub.Add(
-            id='%s#add' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.shelf.remote_id,
-        ).serialize()
-
-    def to_remove_activity(self, user):
-        ''' AP for un-shelving a book'''
-        return activitypub.Remove(
-            id='%s#remove' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.shelf.to_activity()
-        ).serialize()
+    object_field = 'book'
+    collection_field = 'shelf'
 
 
     class Meta:

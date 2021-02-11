@@ -8,10 +8,9 @@ from django.views import View
 from markdown import markdown
 
 from bookwyrm import forms, models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
-from bookwyrm.status import create_notification, delete_status
+from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger
 
@@ -35,7 +34,7 @@ class CreateStatus(View):
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
-        status.save()
+        status.save(broadcast=False)
 
         # inspect the text for user tags
         content = status.content
@@ -49,32 +48,12 @@ class CreateStatus(View):
                 r'<a href="%s">%s</a>\g<1>' % \
                     (mention_user.remote_id, mention_text),
                 content)
-
-        # add reply parent to mentions and notify
+        # add reply parent to mentions
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
 
-            if status.reply_parent.user.local:
-                create_notification(
-                    status.reply_parent.user,
-                    'REPLY',
-                    related_user=request.user,
-                    related_status=status
-                )
-
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
-        # create mention notifications
-        for mention_user in status.mention_users.all():
-            if status.reply_parent and mention_user == status.reply_parent.user:
-                continue
-            if mention_user.local:
-                create_notification(
-                    mention_user,
-                    'MENTION',
-                    related_user=request.user,
-                    related_status=status
-                )
 
         # don't apply formatting to generated notes
         if not isinstance(status, models.GeneratedNote):
@@ -83,16 +62,7 @@ class CreateStatus(View):
         if hasattr(status, 'quote'):
             status.quote = to_markdown(status.quote)
 
-        status.save()
-
-        broadcast(
-            request.user,
-            status.to_create_activity(request.user),
-            software='bookwyrm')
-
-        # re-format the activity for non-bookwyrm servers
-        remote_activity = status.to_create_activity(request.user, pure=True)
-        broadcast(request.user, remote_activity, software='other')
+        status.save(created=True)
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -108,7 +78,6 @@ class DeleteStatus(View):
 
         # perform deletion
         delete_status(status)
-        broadcast(request.user, status.to_delete_activity(request.user))
         return redirect(request.headers.get('Referer', '/'))
 
 def find_mentions(content):
@@ -137,8 +106,8 @@ def format_links(content):
 
 def to_markdown(content):
     ''' catch links and convert to markdown '''
-    content = format_links(content)
     content = markdown(content)
+    content = format_links(content)
     # sanitize resulting html
     sanitizer = InputHtmlParser()
     sanitizer.feed(content)

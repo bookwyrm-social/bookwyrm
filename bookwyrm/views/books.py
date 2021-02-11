@@ -12,7 +12,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_activity_feed, get_edition
@@ -78,12 +77,12 @@ class Book(View):
                     .order_by('-updated_date')
 
             user_shelves = models.ShelfBook.objects.filter(
-                added_by=request.user, book=book
+                user=request.user, book=book
             )
 
             other_edition_shelves = models.ShelfBook.objects.filter(
                 ~Q(book=book),
-                added_by=request.user,
+                user=request.user,
                 book__parent_work=book.parent_work,
             )
 
@@ -136,7 +135,6 @@ class EditBook(View):
             return TemplateResponse(request, 'edit_book.html', data)
         book = form.save()
 
-        broadcast(request.user, book.to_update_activity(request.user))
         return redirect('/book/%s' % book.id)
 
 
@@ -170,7 +168,6 @@ def upload_cover(request, book_id):
     book.cover = form.files['cover']
     book.save()
 
-    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -189,7 +186,6 @@ def add_description(request, book_id):
     book.description = description
     book.save()
 
-    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -215,12 +211,14 @@ def switch_edition(request):
         shelf__user=request.user
     )
     for shelfbook in shelfbooks.all():
-        broadcast(request.user, shelfbook.to_remove_activity(request.user))
-
-        shelfbook.book = new_edition
-        shelfbook.save()
-
-        broadcast(request.user, shelfbook.to_add_activity(request.user))
+        with transaction.atomic():
+            models.ShelfBook.objects.create(
+                created_date=shelfbook.created_date,
+                user=shelfbook.user,
+                shelf=shelfbook.shelf,
+                book=new_edition
+            )
+            shelfbook.delete()
 
     readthroughs = models.ReadThrough.objects.filter(
         book__parent_work=new_edition.parent_work,

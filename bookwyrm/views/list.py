@@ -1,7 +1,8 @@
 ''' book list views'''
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db import IntegrityError
+from django.db.models import Count, Q
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -11,7 +12,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import connector_manager
 from .helpers import is_api_request, object_visible_to_user, privacy_filter
 from .helpers import get_user_from_username
@@ -27,9 +27,13 @@ class Lists(View):
             page = 1
 
         user = request.user if request.user.is_authenticated else None
+        # hide lists with no approved books
         lists = models.List.objects.filter(
             ~Q(user=user),
-            books__isnull=False,
+        ).annotate(
+            item_count=Count('listitem', filter=Q(listitem__approved=True))
+        ).filter(
+            item_count__gt=0
         ).distinct().all()
         lists = privacy_filter(request.user, lists, ['public', 'followers'])
 
@@ -51,13 +55,6 @@ class Lists(View):
             return redirect('lists')
         book_list = form.save()
 
-        # let the world know
-        broadcast(
-            request.user,
-            book_list.to_create_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
-        )
         return redirect(book_list.local_path)
 
 class UserLists(View):
@@ -132,19 +129,12 @@ class List(View):
     @method_decorator(login_required, name='dispatch')
     # pylint: disable=unused-argument
     def post(self, request, list_id):
-        ''' edit a book_list '''
+        ''' edit a list '''
         book_list = get_object_or_404(models.List, id=list_id)
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
             return redirect('list', book_list.id)
         book_list = form.save()
-        # let the world know
-        broadcast(
-            request.user,
-            book_list.to_update_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
-        )
         return redirect(book_list.local_path)
 
 
@@ -178,13 +168,6 @@ class Curate(View):
         if approved:
             suggestion.approved = True
             suggestion.save()
-            # let the world know
-            broadcast(
-                request.user,
-                suggestion.to_add_activity(request.user),
-                privacy=book_list.privacy,
-                software='bookwyrm'
-            )
         else:
             suggestion.delete()
         return redirect('list-curate', book_list.id)
@@ -199,31 +182,28 @@ def add_book(request, list_id):
 
     book = get_object_or_404(models.Edition, id=request.POST.get('book'))
     # do you have permission to add to the list?
-    if request.user == book_list.user or book_list.curation == 'open':
-        # go ahead and add it
-        item = models.ListItem.objects.create(
-            book=book,
-            book_list=book_list,
-            added_by=request.user,
-        )
-        # let the world know
-        broadcast(
-            request.user,
-            item.to_add_activity(request.user),
-            privacy=book_list.privacy,
-            software='bookwyrm'
-        )
-    elif book_list.curation == 'curated':
-        # make a pending entry
-        models.ListItem.objects.create(
-            approved=False,
-            book=book,
-            book_list=book_list,
-            added_by=request.user,
-        )
-    else:
-        # you can't add to this list, what were you THINKING
-        return HttpResponseBadRequest()
+    try:
+        if request.user == book_list.user or book_list.curation == 'open':
+            # go ahead and add it
+            models.ListItem.objects.create(
+                book=book,
+                book_list=book_list,
+                user=request.user,
+            )
+        elif book_list.curation == 'curated':
+            # make a pending entry
+            models.ListItem.objects.create(
+                approved=False,
+                book=book,
+                book_list=book_list,
+                user=request.user,
+            )
+        else:
+            # you can't add to this list, what were you THINKING
+            return HttpResponseBadRequest()
+    except IntegrityError:
+        # if the book is already on the list, don't flip out
+        pass
 
     return redirect('list', list_id)
 
@@ -234,16 +214,8 @@ def remove_book(request, list_id):
     book_list = get_object_or_404(models.List, id=list_id)
     item = get_object_or_404(models.ListItem, id=request.POST.get('item'))
 
-    if not book_list.user == request.user and not item.added_by == request.user:
+    if not book_list.user == request.user and not item.user == request.user:
         return HttpResponseNotFound()
 
-    activity = item.to_remove_activity(request.user)
     item.delete()
-    # let the world know
-    broadcast(
-        request.user,
-        activity,
-        privacy=book_list.privacy,
-        software='bookwyrm'
-    )
     return redirect('list', list_id)

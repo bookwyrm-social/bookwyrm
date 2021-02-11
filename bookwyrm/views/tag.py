@@ -8,7 +8,6 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from .helpers import is_api_request
 
 
@@ -45,17 +44,15 @@ class AddTag(View):
         name = request.POST.get('name')
         book_id = request.POST.get('book')
         book = get_object_or_404(models.Edition, id=book_id)
-        tag_obj, created = models.Tag.objects.get_or_create(
+        tag_obj, _ = models.Tag.objects.get_or_create(
             name=name,
         )
-        user_tag, _ = models.UserTag.objects.get_or_create(
+        models.UserTag.objects.get_or_create(
             user=request.user,
             book=book,
             tag=tag_obj,
         )
 
-        if created:
-            broadcast(request.user, user_tag.to_add_activity(request.user))
         return redirect('/book/%s' % book_id)
 
 
@@ -71,8 +68,6 @@ class RemoveTag(View):
 
         user_tag = get_object_or_404(
             models.UserTag, tag=tag_obj, book=book, user=request.user)
-        tag_activity = user_tag.to_remove_activity(request.user)
         user_tag.delete()
 
-        broadcast(request.user, tag_activity)
         return redirect('/book/%s' % book_id)

@@ -18,7 +18,7 @@ class Note(ActivityObject):
     ''' Note activity '''
     published: str
     attributedTo: str
-    content: str
+    content: str = ''
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     replies: Dict = field(default_factory=lambda: {})

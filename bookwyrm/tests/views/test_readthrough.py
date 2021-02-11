@@ -1,13 +1,16 @@
+''' tests updating reading progress '''
+from datetime import datetime
 from unittest.mock import patch
 from django.test import TestCase, Client
 from django.utils import timezone
-from datetime import datetime
 
 from bookwyrm import models
 
-@patch('bookwyrm.broadcast.broadcast_task.delay')
+@patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay')
 class ReadThrough(TestCase):
+    ''' readthrough tests '''
     def setUp(self):
+        ''' basic user and book data '''
         self.client = Client()
 
         self.work = models.Work.objects.create(
@@ -25,7 +28,8 @@ class ReadThrough(TestCase):
             'cinco', 'cinco@example.com', 'seissiete',
             local=True, localname='cinco')
 
-        self.client.force_login(self.user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.client.force_login(self.user)
 
     def test_create_basic_readthrough(self, delay_mock):
         """A basic readthrough doesn't create a progress update"""
@@ -38,13 +42,15 @@ class ReadThrough(TestCase):
         readthroughs = self.edition.readthrough_set.all()
         self.assertEqual(len(readthroughs), 1)
         self.assertEqual(readthroughs[0].progressupdate_set.count(), 0)
-        self.assertEqual(readthroughs[0].start_date,
+        self.assertEqual(
+            readthroughs[0].start_date,
             datetime(2020, 11, 27, tzinfo=timezone.utc))
         self.assertEqual(readthroughs[0].progress, None)
         self.assertEqual(readthroughs[0].finish_date, None)
         self.assertEqual(delay_mock.call_count, 1)
 
     def test_create_progress_readthrough(self, delay_mock):
+        ''' a readthrough with progress '''
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post('/start-reading/{}'.format(self.edition.id), {
@@ -54,7 +60,8 @@ class ReadThrough(TestCase):
 
         readthroughs = self.edition.readthrough_set.all()
         self.assertEqual(len(readthroughs), 1)
-        self.assertEqual(readthroughs[0].start_date,
+        self.assertEqual(
+            readthroughs[0].start_date,
             datetime(2020, 11, 27, tzinfo=timezone.utc))
         self.assertEqual(readthroughs[0].progress, 50)
         self.assertEqual(readthroughs[0].finish_date, None)
@@ -76,7 +83,9 @@ class ReadThrough(TestCase):
         self.assertEqual(len(progress_updates), 2)
         self.assertEqual(progress_updates[1].mode, models.ProgressMode.PAGE)
         self.assertEqual(progress_updates[1].progress, 100)
-        self.assertEqual(delay_mock.call_count, 1) # Edit doesn't publish anything
+
+        # Edit doesn't publish anything
+        self.assertEqual(delay_mock.call_count, 1)
 
         self.client.post('/delete-readthrough', {
             'id': readthroughs[0].id,

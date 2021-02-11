@@ -1,10 +1,11 @@
 ''' make a list of books!! '''
+from django.apps import apps
 from django.db import models
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
-from .base_model import ActivitypubMixin, BookWyrmModel
-from .base_model import OrderedCollectionMixin
+from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
+from .base_model import BookWyrmModel
 from . import fields
 
 
@@ -42,20 +43,22 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     @property
     def collection_queryset(self):
         ''' list of books for this shelf, overrides OrderedCollectionMixin  '''
-        return self.books.all().order_by('listitem')
+        return self.books.filter(
+            listitem__approved=True
+        ).all().order_by('listitem')
 
     class Meta:
         ''' default sorting '''
         ordering = ('-updated_date',)
 
 
-class ListItem(ActivitypubMixin, BookWyrmModel):
+class ListItem(CollectionItemMixin, BookWyrmModel):
     ''' ok '''
     book = fields.ForeignKey(
         'Edition', on_delete=models.PROTECT, activitypub_field='object')
     book_list = fields.ForeignKey(
         'List', on_delete=models.CASCADE, activitypub_field='target')
-    added_by = fields.ForeignKey(
+    user = fields.ForeignKey(
         'User',
         on_delete=models.PROTECT,
         activitypub_field='actor'
@@ -66,24 +69,24 @@ class ListItem(ActivitypubMixin, BookWyrmModel):
     endorsement = models.ManyToManyField('User', related_name='endorsers')
 
     activity_serializer = activitypub.AddBook
+    object_field = 'book'
+    collection_field = 'book_list'
 
-    def to_add_activity(self, user):
-        ''' AP for shelving a book'''
-        return activitypub.Add(
-            id='%s#add' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.book_list.remote_id,
-        ).serialize()
+    def save(self, *args, **kwargs):
+        ''' create a notification too '''
+        created = not bool(self.id)
+        super().save(*args, **kwargs)
+        list_owner = self.book_list.user
+        # create a notification if somoene ELSE added to a local user's list
+        if created and list_owner.local and list_owner != self.user:
+            model = apps.get_model('bookwyrm.Notification', require_ready=True)
+            model.objects.create(
+                user=list_owner,
+                related_user=self.user,
+                related_list_item=self,
+                notification_type='ADD',
+            )
 
-    def to_remove_activity(self, user):
-        ''' AP for un-shelving a book'''
-        return activitypub.Remove(
-            id='%s#remove' % self.remote_id,
-            actor=user.remote_id,
-            object=self.book.to_activity(),
-            target=self.book_list.remote_id
-        ).serialize()
 
     class Meta:
         ''' an opinionated constraint! you can't put a book on a list twice '''

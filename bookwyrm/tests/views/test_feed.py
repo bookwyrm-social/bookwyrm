@@ -18,6 +18,7 @@ class FeedMessageViews(TestCase):
             'mouse@local.com', 'mouse@mouse.mouse', 'password',
             local=True, localname='mouse')
         self.book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title='hi'),
             title='Example Edition',
             remote_id='https://example.com/book/1',
         )
@@ -38,8 +39,9 @@ class FeedMessageViews(TestCase):
     def test_status_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Status.as_view()
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                content='hi', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
         with patch('bookwyrm.views.feed.is_api_request') as is_api:
@@ -59,8 +61,9 @@ class FeedMessageViews(TestCase):
     def test_replies_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Replies.as_view()
-        status = models.Status.objects.create(
-            content='hi', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                content='hi', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
         with patch('bookwyrm.views.feed.is_api_request') as is_api:
@@ -90,11 +93,12 @@ class FeedMessageViews(TestCase):
 
     def test_get_suggested_book(self):
         ''' gets books the ~*~ algorithm ~*~ thinks you want to post about '''
-        models.ShelfBook.objects.create(
-            book=self.book,
-            added_by=self.local_user,
-            shelf=self.local_user.shelf_set.get(identifier='reading')
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.local_user.shelf_set.get(identifier='reading')
+            )
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]['name'], 'Currently Reading')
         self.assertEqual(suggestions[0]['books'][0], self.book)

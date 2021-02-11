@@ -8,7 +8,7 @@ from .error import not_found_page, server_error_page
 from .federation import Federation
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
-from .follow import accept_follow_request, delete_follow_request, handle_accept
+from .follow import accept_follow_request, delete_follow_request
 from .goal import Goal
 from .import_data import Import, ImportStatus
 from .interaction import Favorite, Unfavorite, Boost, Unboost

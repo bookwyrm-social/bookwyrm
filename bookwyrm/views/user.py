@@ -15,7 +15,6 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_activity_feed, get_user_from_username, is_api_request
 from .helpers import is_blocked, object_visible_to_user
@@ -176,7 +175,6 @@ class EditUser(View):
             user.avatar.save(filename, image)
         user.save()
 
-        broadcast(user, user.to_update_activity(user))
         return redirect(user.local_path)
 
 

@@ -263,6 +263,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         if formatted is None or formatted is MISSING:
             return
         getattr(instance, self.name).set(formatted)
+        instance.save(broadcast=False)
 
     def field_to_activity(self, value):
         if self.link_only:

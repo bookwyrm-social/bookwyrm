@@ -4,7 +4,6 @@ from requests import HTTPError
 from django.db.models import Q
 
 from bookwyrm import activitypub, models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import ConnectorException, get_data
 from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
@@ -199,7 +198,6 @@ def handle_reading_status(user, shelf, book, privacy):
     )
     status.save()
 
-    broadcast(user, status.to_create_activity(user))
 
 def is_blocked(viewer, user):
     ''' is this viewer blocked by the user? '''

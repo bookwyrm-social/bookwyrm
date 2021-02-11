@@ -21,19 +21,19 @@
                 <div class="card">
                     <div class="card-content columns p-0 mb-0">
                         <div class="column is-narrow pt-0 pb-0">
-                            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
+                            <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
                         </div>
                         <div class="column is-flex-direction-column is-align-items-self-start">
                             <span>{% include 'snippets/book_titleby.html' with book=item.book %}</span>
                             {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
-                            {% include 'snippets/shelve_button.html' with book=item.book %}
+                            {% include 'snippets/shelve_button/shelve_button.html' with book=item.book %}
                         </div>
                     </div>
                     <div class="card-footer has-background-white-bis">
                         <div class="card-footer-item">
-                            <p>Added by {% include 'snippets/username.html' with user=item.added_by %}</p>
+                            <p>Added by {% include 'snippets/username.html' with user=item.user %}</p>
                         </div>
-                        {% if list.user == request.user or list.curation == 'open' and item.added_by == request.user %}
+                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
                         <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
@@ -72,6 +72,7 @@
         <p>No books found{% if query %} matching the query "{{ query }}"{% endif %}</p>
         {% endif %}
         {% for book in suggested_books %}
+        {% if book %}
         <div class="block columns">
             <div class="column is-narrow">
                 <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
@@ -85,6 +86,7 @@
                 </form>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
     </section>
     {% endif %}
