@@ -4,7 +4,6 @@ import logging
 
 from bookwyrm import models
 from bookwyrm.models import ImportJob, ImportItem
-from bookwyrm.status import create_notification
 from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
@@ -68,7 +67,6 @@ def import_data(job_id):
                 item.fail_reason = 'Could not find a match for book'
                 item.save()
     finally:
-        create_notification(job.user, 'IMPORT', related_import=job)
         job.complete = True
         job.save()
 

@@ -30,7 +30,7 @@ class NotificationViews(TestCase):
     def test_clear_notifications(self):
         ''' erase notifications '''
         models.Notification.objects.create(
-            user=self.local_user, notification_type='MENTION')
+            user=self.local_user, notification_type='FAVORITE')
         models.Notification.objects.create(
             user=self.local_user, notification_type='MENTION', read=True)
         self.assertEqual(models.Notification.objects.count(), 2)

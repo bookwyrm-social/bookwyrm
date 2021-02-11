@@ -7,7 +7,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
-from bookwyrm.status import create_notification
 
 
 # pylint: disable= no-self-use
@@ -26,13 +25,6 @@ class Favorite(View):
             # you already fav'ed that
             return HttpResponseBadRequest()
 
-        if status.user.local:
-            create_notification(
-                status.user,
-                'FAVORITE',
-                related_user=request.user,
-                related_status=status
-            )
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -52,15 +44,6 @@ class Unfavorite(View):
             return HttpResponseNotFound()
 
         favorite.delete()
-
-        # check for notification
-        if status.user.local:
-            notification = models.Notification.objects.filter(
-                user=status.user, related_user=request.user,
-                related_status=status, notification_type='FAVORITE'
-            ).first()
-            if notification:
-                notification.delete()
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -84,14 +67,6 @@ class Boost(View):
             privacy=status.privacy,
             user=request.user,
         )
-
-        if status.user.local:
-            create_notification(
-                status.user,
-                'BOOST',
-                related_user=request.user,
-                related_status=status
-            )
         return redirect(request.headers.get('Referer', '/'))
 
 
@@ -106,13 +81,4 @@ class Unboost(View):
         ).first()
 
         boost.delete()
-
-        # delete related notification
-        if status.user.local:
-            notification = models.Notification.objects.filter(
-                user=status.user, related_user=request.user,
-                related_status=status, notification_type='BOOST'
-            ).first()
-            if notification:
-                notification.delete()
         return redirect(request.headers.get('Referer', '/'))
