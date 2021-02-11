@@ -70,15 +70,24 @@ class Reject(Verb):
 @dataclass(init=False)
 class Add(Verb):
     '''Add activity '''
-    target: ActivityObject
+    target: str
+    object: ActivityObject
     type: str = 'Add'
 
 
 @dataclass(init=False)
-class AddBook(Verb):
+class AddBook(Add):
     '''Add activity that's aware of the book obj '''
-    target: Edition
+    object: Edition
     type: str = 'Add'
+
+
+@dataclass(init=False)
+class AddListItem(AddBook):
+    '''Add activity that's aware of the book obj '''
+    notes: str = None
+    order: int = 0
+    approved: bool = True
 
 
 @dataclass(init=False)

@@ -319,8 +319,19 @@ def handle_add(activity):
     #this is janky as heck but I haven't thought of a better solution
     try:
         activitypub.AddBook(**activity).to_model(models.ShelfBook)
+        return
     except activitypub.ActivitySerializerError:
-        activitypub.AddBook(**activity).to_model(models.Tag)
+        pass
+    try:
+        activitypub.AddListItem(**activity).to_model(models.ListItem)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
+    try:
+        activitypub.AddBook(**activity).to_model(models.UserTag)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
 
 
 @app.task
