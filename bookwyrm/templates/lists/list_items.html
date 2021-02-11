@@ -10,7 +10,7 @@
             </header>
             <div class="card-image is-flex">
                 {% for book in list.listitem_set.all|slice:5 %}
-                {% include 'snippets/book_cover.html' with book=book.book size="small" %}
+                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book size="small" %}</a>
                 {% endfor %}
             </div>
             <div class="card-content is-flex-grow-0">
