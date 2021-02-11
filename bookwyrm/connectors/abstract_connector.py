@@ -239,7 +239,8 @@ def get_image(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         return None
     if not resp.ok:
         return None

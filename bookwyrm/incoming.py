@@ -216,9 +216,9 @@ def handle_create_list(activity):
 def handle_update_list(activity):
     ''' update a list '''
     try:
-        book_list = models.List.objects.get(id=activity['object']['id'])
+        book_list = models.List.objects.get(remote_id=activity['object']['id'])
     except models.List.DoesNotExist:
-        return
+        book_list = None
     activitypub.BookList(
         **activity['object']).to_model(models.List, instance=book_list)
 
@@ -319,8 +319,19 @@ def handle_add(activity):
     #this is janky as heck but I haven't thought of a better solution
     try:
         activitypub.AddBook(**activity).to_model(models.ShelfBook)
+        return
     except activitypub.ActivitySerializerError:
-        activitypub.AddBook(**activity).to_model(models.Tag)
+        pass
+    try:
+        activitypub.AddListItem(**activity).to_model(models.ListItem)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
+    try:
+        activitypub.AddBook(**activity).to_model(models.UserTag)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
 
 
 @app.task

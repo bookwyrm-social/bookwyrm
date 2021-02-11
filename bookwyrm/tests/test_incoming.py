@@ -308,7 +308,7 @@ class Incoming(TestCase):
                 "@context": "https://www.w3.org/ns/activitystreams"
             }
         }
-        incoming.handle_create_list(activity)
+        incoming.handle_update_list(activity)
         book_list.refresh_from_db()
         self.assertEqual(book_list.name, 'Test List')
         self.assertEqual(book_list.curation, 'curated')
@@ -626,7 +626,7 @@ class Incoming(TestCase):
 
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
-            "id": "https://example.com/9e1f41ac-9ddd-4159-aede-9f43c6b9314f",
+            "id": "https://example.com/9e1f41ac-9ddd-4159",
             "type": "Block",
             "actor": "https://example.com/users/rat",
             "object": "https://example.com/user/mouse"
@@ -636,6 +636,29 @@ class Incoming(TestCase):
         block = models.UserBlocks.objects.get()
         self.assertEqual(block.user_subject, self.remote_user)
         self.assertEqual(block.user_object, self.local_user)
+        self.assertEqual(
+            block.remote_id, 'https://example.com/9e1f41ac-9ddd-4159')
 
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
+
+
+    def test_handle_unblock(self):
+        ''' unblock a user '''
+        self.remote_user.blocks.add(self.local_user)
+
+        block = models.UserBlocks.objects.get()
+        block.remote_id = 'https://example.com/9e1f41ac-9ddd-4159'
+        block.save()
+
+        self.assertEqual(block.user_subject, self.remote_user)
+        self.assertEqual(block.user_object, self.local_user)
+        activity = {'type': 'Undo', 'object': {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/9e1f41ac-9ddd-4159",
+            "type": "Block",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse"
+        }}
+        incoming.handle_unblock(activity)
+        self.assertFalse(models.UserBlocks.objects.exists())

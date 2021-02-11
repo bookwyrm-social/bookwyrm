@@ -142,7 +142,12 @@ class Connector(AbstractConnector):
             work = book.parent_work
 
         # we can mass download edition data from OL to avoid repeatedly querying
-        edition_options = self.load_edition_data(work.openlibrary_key)
+        try:
+            edition_options = self.load_edition_data(work.openlibrary_key)
+        except ConnectorException:
+            # who knows, man
+            return
+
         for edition_data in edition_options.get('entries'):
             # does this edition have ANY interesting data?
             if ignore_edition(edition_data):
