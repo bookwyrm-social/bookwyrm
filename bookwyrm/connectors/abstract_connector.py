@@ -145,8 +145,9 @@ class AbstractConnector(AbstractMinimalConnector):
         edition.connector = self.connector
         edition.save()
 
-        work.default_edition = edition
-        work.save()
+        if not work.default_edition:
+            work.default_edition = edition
+            work.save()
 
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
