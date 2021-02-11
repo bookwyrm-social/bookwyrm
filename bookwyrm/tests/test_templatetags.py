@@ -65,9 +65,9 @@ class TemplateTags(TestCase):
         self.assertEqual(bookwyrm_tags.get_notification_count(self.user), 0)
 
         models.Notification.objects.create(
-            user=self.user, notification_type='FOLLOW')
+            user=self.user, notification_type='FAVORITE')
         models.Notification.objects.create(
-            user=self.user, notification_type='FOLLOW')
+            user=self.user, notification_type='MENTION')
 
         models.Notification.objects.create(
             user=self.remote_user, notification_type='FOLLOW')
