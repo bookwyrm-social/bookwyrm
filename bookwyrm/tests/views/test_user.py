@@ -130,7 +130,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
 
-    def test_edit_profile_page(self):
+    def test_edit_user_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.EditUser.as_view()
         request = self.factory.get('')
@@ -149,9 +149,31 @@ class UserViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as delay_mock:
             view(request)
+            self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, 'New Name')
+
+
+    def test_edit_user_avatar(self):
+        ''' use a form to update a user '''
+        view = views.EditUser.as_view()
+        form = forms.EditUserForm(instance=self.local_user)
+        form.data['name'] = 'New Name'
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            '../../static/images/no_cover.jpg')
+        form.files['avatar'] = image_file
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        self.assertNone(self.local_user.avatar)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
+        self.assertEqual(self.local_user.name, 'New Name')
+        self.assertNotNone(self.local_user.avatar)
 
 
     def test_crop_avatar(self):
