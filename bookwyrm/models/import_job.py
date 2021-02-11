@@ -64,7 +64,6 @@ class ImportJob(models.Model):
             )
 
 
-
 class ImportItem(models.Model):
     ''' a single line of a csv being imported '''
     job = models.ForeignKey(

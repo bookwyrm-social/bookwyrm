@@ -276,11 +276,6 @@ class Boost(ActivityMixin, Status):
 
         notification_model = apps.get_model(
             'bookwyrm.Notification', require_ready=True)
-        if notification_model.objects.filter(
-                user=self.boosted_status.user,
-                related_status=self.boosted_status,
-                related_user=self.user, notification_type='BOOST').exists():
-            return
         notification_model.objects.create(
             user=self.boosted_status.user,
             related_status=self.boosted_status,

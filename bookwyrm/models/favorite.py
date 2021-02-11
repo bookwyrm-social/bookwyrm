@@ -26,11 +26,6 @@ class Favorite(ActivityMixin, BookWyrmModel):
         if self.status.user.local and self.status.user != self.user:
             notification_model = apps.get_model(
                 'bookwyrm.Notification', require_ready=True)
-            if notification_model.objects.filter(
-                    user=self.status.user, related_user=self.user,
-                    related_status=self.status, notification_type='FAVORITE'
-                ).exists():
-                return
             notification_model.objects.create(
                 user=self.status.user,
                 notification_type='FAVORITE',
