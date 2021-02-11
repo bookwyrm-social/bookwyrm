@@ -136,14 +136,7 @@ def handle_follow(activity):
         )
         # send the accept normally for a duplicate request
 
-    manually_approves = relationship.user_object.manually_approves_followers
-
-    status_builder.create_notification(
-        relationship.user_object,
-        'FOLLOW_REQUEST' if manually_approves else 'FOLLOW',
-        related_user=relationship.user_subject
-    )
-    if not manually_approves:
+    if not relationship.user_object.manually_approves_followers:
         relationship.accept()
 
 
