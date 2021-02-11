@@ -73,9 +73,9 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             )
         for mention_user in self.mention_users.all():
             # avoid double-notifying about this status
-            if not mention_user.local or notification_model.objects.filter(
-                    user=mention_user, related_status=self,
-                    related_user=self.user).exists():
+            if not mention_user.local or \
+                    (self.reply_parent and \
+                     mention_user == self.reply_parent.user):
                 continue
             notification_model.objects.create(
                 user=mention_user,
