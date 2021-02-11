@@ -3,6 +3,7 @@ import pathlib
 from unittest.mock import patch
 from PIL import Image
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.files.base import ContentFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -24,6 +25,8 @@ class UserViews(TestCase):
             'rat@local.com', 'rat@rat.rat', 'password',
             local=True, localname='rat')
         models.SiteSettings.objects.create()
+        self.anonymous_user = AnonymousUser
+        self.anonymous_user.is_authenticated = False
 
 
     def test_user_page(self):
@@ -31,6 +34,14 @@ class UserViews(TestCase):
         view = views.User.as_view()
         request = self.factory.get('')
         request.user = self.local_user
+        with patch('bookwyrm.views.user.is_api_request') as is_api:
+            is_api.return_value = False
+            result = view(request, 'mouse')
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+        request.user = self.anonymous_user
         with patch('bookwyrm.views.user.is_api_request') as is_api:
             is_api.return_value = False
             result = view(request, 'mouse')
