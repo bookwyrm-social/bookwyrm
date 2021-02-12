@@ -10,7 +10,10 @@ def set_user(app_registry, schema_editor):
     shelfbook = app_registry.get_model('bookwyrm', 'ShelfBook')
     for item in shelfbook.objects.using(db_alias).filter(user__isnull=True):
         item.user = item.shelf.user
-        item.save(broadcast=False)
+        try:
+            item.save(broadcast=False)
+        except TypeError:
+            item.save()
 
 
 class Migration(migrations.Migration):

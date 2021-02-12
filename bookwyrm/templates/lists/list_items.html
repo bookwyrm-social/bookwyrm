@@ -8,7 +8,7 @@
                     <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
             </header>
-            <div class="card-image is-flex">
+            <div class="card-image is-flex is-clipped">
                 {% for book in list.listitem_set.all|slice:5 %}
                 <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book size="small" %}</a>
                 {% endfor %}
