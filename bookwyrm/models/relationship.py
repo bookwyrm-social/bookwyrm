@@ -82,11 +82,16 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         try:
             UserFollows.objects.get(
                 user_subject=self.user_subject,
-                user_object=self.user_object
+                user_object=self.user_object,
             )
+            # blocking in either direction is a no-go
             UserBlocks.objects.get(
                 user_subject=self.user_subject,
-                user_object=self.user_object
+                user_object=self.user_object,
+            )
+            UserBlocks.objects.get(
+                user_subject=self.user_object,
+                user_object=self.user_subject,
             )
             return None
         except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
