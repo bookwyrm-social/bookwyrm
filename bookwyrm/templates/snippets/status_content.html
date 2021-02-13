@@ -3,31 +3,27 @@
     {% if status.status_type == 'Review' %}
     <div>
         <h3 class="title is-5 has-subtitle">
-            {% if status.name %}{{ status.name }}<br>{% endif %}
+            {% if status.name %}<span dir="auto">{{ status.name }}</span><br>{% endif %}
         </h3>
         <p class="subtitle">{% include 'snippets/stars.html' with rating=status.rating %}</p>
     </div>
     {% endif %}
 
     {% if status.content_warning %}
-    <div class="toggle-content">
+    <div>
         <p>{{ status.content_warning }}</p>
-        <input class="toggle-control" type="radio" name="toggle-status-cw-{{ status.id }}" id="hide-status-cw-{{ status.id }}" checked>
-        <div class="toggle-content hidden">
-            <label class="button is-small" for="show-status-cw-{{ status.id }}" tabindex="0" role="button">Show More</label>
-        </div>
+        {% include 'snippets/toggle/open_button.html' with text="show more" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
     </div>
-
-    <input class="toggle-control" type="radio" name="toggle-status-cw-{{ status.id }}" id="show-status-cw-{{ status.id }}">
     {% endif %}
-    <div{% if status.content_warning %} class="toggle-content hidden"{% endif %}>
+
+    <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
         {% if status.content_warning %}
-        <label class="button is-small" for="hide-status-cw-{{ status.id }}" tabindex="0" role="button">Show Less</label>
+        {% include 'snippets/toggle/close_button.html' with text="show less" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
         {% endif %}
 
         {% if status.quote %}
         <div class="quote block">
-            <blockquote>{{ status.quote | safe }}</blockquote>
+            <blockquote dir="auto">{{ status.quote | safe }}</blockquote>
 
             <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
         </div>
@@ -56,7 +52,7 @@
 
 {% if not hide_book %}
 {% if status.book or status.mention_books.count %}
-<div class="{% if status.status_type != 'GeneratedNote' %}box{% endif %}">
+<div class="{% if status.status_type != 'GeneratedNote' %}box has-background-white-bis{% endif %}">
     {% if status.book %}
     {% include 'snippets/book_preview.html' with book=status.book %}
     {% elif status.mention_books.count %}

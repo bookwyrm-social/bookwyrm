@@ -3,7 +3,7 @@
 {% block content %}
 <div class="block">
     <h1 class="title">Import Books from GoodReads</h1>
-    <form name="import" action="/import-data/" method="post" enctype="multipart/form-data">
+    <form name="import" action="/import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="field">
             {{ import_form.as_p }}
@@ -30,7 +30,7 @@
     {% endif %}
     <ul>
         {% for job in jobs %}
-            <li><a href="/import-status/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
+            <li><a href="/import/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
         {% endfor %}
     </ul>
 </div>

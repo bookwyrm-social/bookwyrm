@@ -4,10 +4,11 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from django import template
+from django.db.models import Avg
 from django.utils import timezone
 
-from bookwyrm import models
-from bookwyrm.outgoing import to_markdown
+from bookwyrm import models, views
+from bookwyrm.views.status import to_markdown
 
 
 register = template.Library()
@@ -20,6 +21,17 @@ def dict_key(d, k):
 
 @register.filter(name='rating')
 def get_rating(book, user):
+    ''' get the overall rating of a book '''
+    queryset = views.helpers.get_activity_feed(
+        user,
+        ['public', 'followers', 'unlisted', 'direct'],
+        queryset=models.Review.objects.filter(book=book),
+    )
+    return queryset.aggregate(Avg('rating'))['rating__avg']
+
+
+@register.filter(name='user_rating')
+def get_user_rating(book, user):
     ''' get a user's rating of a book '''
     rating = models.Review.objects.filter(
         user=user,
@@ -142,10 +154,46 @@ def get_markdown(content):
 
 @register.filter(name='mentions')
 def get_mentions(status, user):
-    ''' anyone tagged or replied to in this status '''
+    ''' people to @ in a reply: the parent and all mentions '''
     mentions = set([status.user] + list(status.mention_users.all()))
     return ' '.join(
-        '@' + get_user_identifier(m) for m in mentions if not m == user)
+        '@' + get_user_identifier(m) for m in mentions if not m == user) + ' '
+
+@register.filter(name='status_preview_name')
+def get_status_preview_name(obj):
+    ''' text snippet with book context for a status '''
+    name = obj.__class__.__name__.lower()
+    if name == 'review':
+        return '%s of <em>%s</em>' % (name, obj.book.title)
+    if name == 'comment':
+        return '%s on <em>%s</em>' % (name, obj.book.title)
+    if name == 'quotation':
+        return '%s from <em>%s</em>' % (name, obj.book.title)
+    return name
+
+@register.filter(name='next_shelf')
+def get_next_shelf(current_shelf):
+    ''' shelf you'd use to update reading progress '''
+    if current_shelf == 'to-read':
+        return 'reading'
+    if current_shelf == 'reading':
+        return 'read'
+    if current_shelf == 'read':
+        return 'read'
+    return 'to-read'
+
+@register.simple_tag(takes_context=False)
+def related_status(notification):
+    ''' for notifications '''
+    if not notification.related_status:
+        return None
+    if hasattr(notification.related_status, 'quotation'):
+        return notification.related_status.quotation
+    if hasattr(notification.related_status, 'review'):
+        return notification.related_status.review
+    if hasattr(notification.related_status, 'comment'):
+        return notification.related_status.comment
+    return notification.related_status
 
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
@@ -174,3 +222,9 @@ def active_read_through(book, user):
         book=book,
         finish_date__isnull=True
     ).order_by('-start_date').first()
+
+
+@register.simple_tag(takes_context=False)
+def comparison_bool(str1, str2):
+    ''' idk why I need to write a tag for this, it reutrns a bool '''
+    return str1 == str2

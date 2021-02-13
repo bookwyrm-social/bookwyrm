@@ -2,7 +2,7 @@
 from django.db import models
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin
+from .activitypub_mixin import ActivitypubMixin
 from .base_model import BookWyrmModel
 from . import fields
 

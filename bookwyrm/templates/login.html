@@ -8,7 +8,7 @@
             {% if login_form.non_field_errors %}
             <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
             {% endif %}
-            <form name="login" method="post" action="/user-login">
+            <form name="login" method="post" action="/login">
                 {% csrf_token %}
                 <div class="field">
                     <label class="label" for="id_localname">Username:</label>
@@ -38,7 +38,7 @@
         <div class="box has-background-primary-light">
             {% if site.allow_registration %}
             <h2 class="title">Create an Account</h2>
-            <form name="register" method="post" action="/user-register">
+            <form name="register" method="post" action="/register">
                 {% include 'snippets/register_form.html' %}
             </form>
             {% else %}

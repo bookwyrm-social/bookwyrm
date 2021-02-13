@@ -9,6 +9,9 @@
             <h1 class="title">
                 {{ book.title }}{% if book.subtitle %}:
                 <small>{{ book.subtitle }}</small>{% endif %}
+                {% if book.series %}
+                <small class="has-text-grey-dark">({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})</small><br>
+                {% endif %}
             </h1>
             {% if book.authors %}
             <h2 class="subtitle">
@@ -20,7 +23,7 @@
         {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
         <div class="column is-narrow">
             <a href="{{ book.id }}/edit">
-                <span class="icon icon-pencil">
+                <span class="icon icon-pencil" title="Edit Book">
                     <span class="is-sr-only">Edit Book</span>
                 </span>
             </a>
@@ -32,64 +35,93 @@
         <div class="column is-narrow">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            {% include 'snippets/shelve_button.html' %}
+            {% include 'snippets/shelve_button/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="box p-2">
+                <h3 class="title is-6 mb-1">Add cover</h3>
                 <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="field">
-                        <label class="label" for="id_cover">Cover:</label>
-                        <input type="file" name="cover" accept="image/*" class="" id="id_cover">
-                    </div>
-                    <div class="field">
-                        <button class="button is-small" type="submit">Add cover</button>
+                    <div class="field has-addons">
+                        <div class="control">
+                        <div class="file is-small mb-1">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Choose file...
+                                    </span>
+                                </span>
+                            </label>
+                        </div>
+                        </div>
+                        <div class="control">
+                            <button class="button is-small is-primary" type="submit">Add</button>
+                        </div>
                     </div>
                 </form>
             </div>
             {% endif %}
 
-            <dl class="content">
-            {% for field in info_fields %}
-                {% if field.value %}
-                <dt>{{ field.name }}:</dt>
-                <dd>{{ field.value }}</dd>
+            <section class="content">
+                <dl>
+                    {% if book.isbn_13 %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ISBN:</dt>
+                        <dd>{{ book.isbn_13 }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.oclc_number %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>OCLC Number:</dt>
+                        <dd>{{ book.oclc_number }}</dd>
+                    </div>
+                    {% endif %}
+
+                    {% if book.asin %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <dt>ASIN:</dt>
+                        <dd>{{ book.asin }}</dd>
+                    </div>
+                    {% endif %}
+                </dl>
+
+                <p>
+                {% if book.physical_format %}{{ book.physical_format | title }}{% if book.pages %},<br>{% endif %}{% endif %}
+                {% if book.pages %}{{ book.pages }} pages{% endif %}
+                </p>
+
+                {% if book.openlibrary_key %}
+                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">View on OpenLibrary</a></p>
                 {% endif %}
-            {% endfor %}
-            </dl>
+            </section>
         </div>
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ reviews|length }} review{{ reviews|length|pluralize }})</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ review_count|pluralize }})</h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
-                <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="hide-description" checked>
-                    <div class="toggle-content hidden">
-                        <label class="button" for="add-description" tabindex="0" role="button">Add description</label>
-                    </div>
-                </div>
+                {% include 'snippets/toggle/open_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
 
-                <div>
-                    <input class="toggle-control" type="radio" name="add-description" id="add-description">
-                    <div class="toggle-content hidden">
-                        <div class="box">
-                            <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
-                                {% csrf_token %}
-                                <p class="fields is-grouped">
-                                    <label class="label"for="id_description">Description:</label>
-                                    <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
-                                </p>
-                                <div class="field">
-                                    <button class="button is-primary" type="submit">Save</button>
-                                    <label class="button" for="hide-description" tabindex="0" role="button">Cancel</label>
-                                </div>
-                            </form>
+                <div class="box hidden" id="add-description-{{ book.id }}">
+                    <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
+                        {% csrf_token %}
+                        <p class="fields is-grouped">
+                            <label class="label"for="id_description">Description:</label>
+                            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
+                        </p>
+                        <div class="field">
+                            <button class="button is-primary" type="submit">Save</button>
+                            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-description" controls_uid=book.id hide_inactive=True %}
                         </div>
-                    </div>
+                    </form>
                 </div>
                 {% endif %}
 
@@ -100,32 +132,57 @@
             </div>
 
             {# user's relationship to the book #}
-            <div>
+            <div class="block">
                 {% for shelf in user_shelves %}
                 <p>
                     This edition is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
                 </p>
                 {% endfor %}
-
                 {% for shelf in other_edition_shelves %}
                 <p>
                     A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}
-
-                {% for readthrough in readthroughs %}
-                    {% include 'snippets/readthrough.html' with readthrough=readthrough %}
-                {% endfor %}
             </div>
 
             {% if request.user.is_authenticated %}
-            <div class="box">
-                {% include 'snippets/create_status.html' with book=book hide_cover=True %}
-            </div>
+            <section class="block">
+                <header class="columns">
+                    <h2 class="column title is-5 mb-1">Your reading activity</h2>
+                    <div class="column is-narrow">
+                        {% include 'snippets/toggle/open_button.html' with text="Add read dates" icon="plus" class="is-small" controls_text="add-readthrough" %}
+                    </div>
+                </header>
+                {% if not readthroughs.exists %}
+                <p>You don't have any reading activity for this book.</p>
+                {% endif %}
+                <section class="hidden box" id="add-readthrough">
+                    <form name="add-readthrough" action="/create-readthrough" method="post">
+                        {% include 'snippets/readthrough_form.html' with readthrough=None %}
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-primary" type="submit">Create</button>
+                            </div>
+                            <div class="control">
+                                {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-readthrough" %}
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                {% for readthrough in readthroughs %}
+                {% include 'snippets/readthrough.html' with readthrough=readthrough %}
+                {% endfor %}
+            </section>
+            {% endif %}
 
-            <div class="block">
+            {% if request.user.is_authenticated %}
+            <section class="box">
+                {% include 'snippets/create_status.html' with book=book hide_cover=True %}
+            </section>
+
+            <section class="block">
                 <form name="tag" action="/tag/" method="post">
                     <label for="tags" class="is-3">Tags</label>
                     {% csrf_token %}
@@ -133,7 +190,7 @@
                     <input id="tags" class="input" type="text" name="name">
                     <button class="button" type="submit">Add tag</button>
                 </form>
-            </div>
+            </section>
             {% endif %}
 
             <div class="block">
@@ -145,46 +202,64 @@
             </div>
 
         </div>
+        <div class="column is-narrow">
+            {% if book.subjects %}
+            <section class="content block">
+                <h2 class="title is-5">Subjects</h2>
+                <ul>
+                {% for subject in book.subjects %}
+                    <li>{{ subject }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+
+            {% if book.subject_places %}
+            <section class="content block">
+                <h2 class="title is-5">Places</h2>
+                <ul>
+                {% for place in book.subject_placess %}
+                    <li>{{ place }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+        </div>
     </div>
 </div>
 
-
-{% if not reviews %}
-<div class="block">
-    <p>No reviews yet!</p>
-</div>
-{% endif %}
-
-<div class="block">
+<div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
         {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
     </div>
     {% endfor %}
 
-    <div class="block columns">
-    {% for rating in ratings %}
-    <div class="column">
-        <div class="media">
-            <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
-            <div class="media-content">
-                <div>
-                    {% include 'snippets/username.html' with user=rating.user %}
-                </div>
-                <div class="field is-grouped mb-0">
-                    <div>rated it</div>
-                    {% include 'snippets/stars.html' with rating=rating.rating %}
-                </div>
-                <div>
-                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+    <div class="block is-flex is-flex-wrap-wrap">
+        {% for rating in ratings %}
+        <div class="block mr-5">
+            <div class="media">
+                <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
+                <div class="media-content">
+                    <div>
+                        {% include 'snippets/username.html' with user=rating.user %}
+                    </div>
+                    <div class="field is-grouped mb-0">
+                        <div>rated it</div>
+                        {% include 'snippets/stars.html' with rating=rating.rating %}
+                    </div>
+                    <div>
+                        <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    <div class="block">
+        {% include 'snippets/pagination.html' with page=reviews path=book.local_path anchor="#reviews" %}
     </div>
 </div>
-
 
 {% endblock %}
 

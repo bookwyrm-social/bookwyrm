@@ -1,0 +1,40 @@
+{% extends 'user/user_layout.html' %}
+
+{% block header %}
+<div class="columns">
+    <div class="column">
+        <h1 class="title">
+            {% if is_self %}Your
+            {% else %}
+            {% include 'snippets/username.html' with user=user %}'s
+            {% endif %}
+            Lists
+        </h1>
+    </div>
+    {% if is_self %}
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+{% block panel %}
+<section class="block content">
+    <form name="create-list" method="post" action="{% url 'lists' %}" class="box hidden" id="create-list">
+        <header class="columns">
+            <h3 class="title column">Create list</h3>
+            <div class="column is-narrow">
+                {% include 'snippets/toggle/toggle_button.html' with controls_text="create-list" label="close" class="delete" nonbutton=True %}
+            </div>
+        </header>
+        {% include 'lists/form.html' %}
+    </form>
+
+    {% include 'lists/list_items.html' with lists=lists %}
+</section>
+<div>
+    {% include 'snippets/pagination.html' with page=lists path=path %}
+</div>
+{% endblock %}

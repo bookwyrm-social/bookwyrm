@@ -11,8 +11,11 @@ from .abstract_connector import AbstractConnector, SearchResult
 
 class Connector(AbstractConnector):
     ''' instantiate a connector  '''
-    def search(self, query, min_confidence=0.1):
+    # pylint: disable=arguments-differ
+    def search(self, query, min_confidence=0.1, raw=False):
         ''' search your local database '''
+        if not query:
+            return []
         # first, try searching unqiue identifiers
         results = search_identifiers(query)
         if not results:
@@ -20,10 +23,14 @@ class Connector(AbstractConnector):
             results = search_title_author(query, min_confidence)
         search_results = []
         for result in results:
-            search_results.append(self.format_search_result(result))
+            if raw:
+                search_results.append(result)
+            else:
+                search_results.append(self.format_search_result(result))
             if len(search_results) >= 10:
                 break
-        search_results.sort(key=lambda r: r.confidence, reverse=True)
+        if not raw:
+            search_results.sort(key=lambda r: r.confidence, reverse=True)
         return search_results
 
 

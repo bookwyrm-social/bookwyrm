@@ -22,7 +22,7 @@ class Incoming(TestCase):
             'mouse@example.com', 'mouse@mouse.com', 'mouseword',
             local=True, localname='mouse')
         self.local_user.remote_id = 'https://example.com/user/mouse'
-        self.local_user.save()
+        self.local_user.save(broadcast=False)
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             self.remote_user = models.User.objects.create_user(
                 'rat', 'rat@rat.com', 'ratword',
@@ -31,11 +31,12 @@ class Incoming(TestCase):
                 inbox='https://example.com/users/rat/inbox',
                 outbox='https://example.com/users/rat/outbox',
             )
-        self.status = models.Status.objects.create(
-            user=self.local_user,
-            content='Test status',
-            remote_id='https://example.com/status/1',
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.status = models.Status.objects.create(
+                user=self.local_user,
+                content='Test status',
+                remote_id='https://example.com/status/1',
+            )
         self.factory = RequestFactory()
 
 
@@ -117,7 +118,7 @@ class Incoming(TestCase):
             "object": "https://example.com/user/mouse"
         }
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             incoming.handle_follow(activity)
 
         # notification created
@@ -145,9 +146,9 @@ class Incoming(TestCase):
         }
 
         self.local_user.manually_approves_followers = True
-        self.local_user.save()
+        self.local_user.save(broadcast=False)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             incoming.handle_follow(activity)
 
         # notification created
@@ -177,8 +178,9 @@ class Incoming(TestCase):
                 "object": "https://example.com/user/mouse"
             }
         }
-        models.UserFollows.objects.create(
-            user_subject=self.remote_user, user_object=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollows.objects.create(
+                user_subject=self.remote_user, user_object=self.local_user)
         self.assertEqual(self.remote_user, self.local_user.followers.first())
 
         incoming.handle_unfollow(activity)
@@ -200,10 +202,11 @@ class Incoming(TestCase):
             }
         }
 
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         incoming.handle_follow_accept(activity)
@@ -232,10 +235,11 @@ class Incoming(TestCase):
             }
         }
 
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         incoming.handle_follow_reject(activity)
@@ -248,7 +252,71 @@ class Incoming(TestCase):
         self.assertEqual(follows.count(), 0)
 
 
-    def test_handle_create(self):
+    def test_handle_create_list(self):
+        ''' a new list '''
+        activity = {
+            'object': {
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        }
+        incoming.handle_create_list(activity)
+        book_list = models.List.objects.get()
+        self.assertEqual(book_list.name, 'Test List')
+        self.assertEqual(book_list.curation, 'curated')
+        self.assertEqual(book_list.description, 'summary text')
+        self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
+
+
+    def test_handle_update_list(self):
+        ''' a new list '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            book_list = models.List.objects.create(
+                name='hi', remote_id='https://example.com/list/22',
+                user=self.local_user)
+        activity = {
+            'object': {
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        }
+        incoming.handle_update_list(activity)
+        book_list.refresh_from_db()
+        self.assertEqual(book_list.name, 'Test List')
+        self.assertEqual(book_list.curation, 'curated')
+        self.assertEqual(book_list.description, 'summary text')
+        self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
+
+
+    def test_handle_create_status(self):
         ''' the "it justs works" mode '''
         self.assertEqual(models.Status.objects.count(), 1)
 
@@ -259,7 +327,7 @@ class Incoming(TestCase):
             title='Test Book', remote_id='https://example.com/book/1')
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
 
         status = models.Quotation.objects.get()
         self.assertEqual(
@@ -270,16 +338,16 @@ class Incoming(TestCase):
         self.assertEqual(models.Status.objects.count(), 2)
 
         # while we're here, lets ensure we avoid dupes
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         self.assertEqual(models.Status.objects.count(), 2)
 
-    def test_handle_create_unknown_type(self):
+    def test_handle_create_status_unknown_type(self):
         ''' folks send you all kinds of things '''
         activity = {'object': {'id': 'hi'}, 'type': 'Fish'}
-        result = incoming.handle_create(activity)
+        result = incoming.handle_create_status(activity)
         self.assertIsNone(result)
 
-    def test_handle_create_remote_note_with_mention(self):
+    def test_handle_create_status_remote_note_with_mention(self):
         ''' should only create it under the right circumstances '''
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -290,7 +358,7 @@ class Incoming(TestCase):
         status_data = json.loads(datafile.read_bytes())
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         status = models.Status.objects.last()
         self.assertEqual(status.content, 'test content in note')
         self.assertEqual(status.mention_users.first(), self.local_user)
@@ -299,7 +367,7 @@ class Incoming(TestCase):
         self.assertEqual(
             models.Notification.objects.get().notification_type, 'MENTION')
 
-    def test_handle_create_remote_note_with_reply(self):
+    def test_handle_create_status_remote_note_with_reply(self):
         ''' should only create it under the right circumstances '''
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -312,7 +380,7 @@ class Incoming(TestCase):
         status_data['inReplyTo'] = self.status.remote_id
         activity = {'object': status_data, 'type': 'Create'}
 
-        incoming.handle_create(activity)
+        incoming.handle_create_status(activity)
         status = models.Status.objects.last()
         self.assertEqual(status.content, 'test content in note')
         self.assertEqual(status.reply_parent, self.status)
@@ -324,11 +392,14 @@ class Incoming(TestCase):
 
     def test_handle_delete_status(self):
         ''' remove a status '''
+        self.status.user = self.remote_user
+        self.status.save(broadcast=False)
+
         self.assertFalse(self.status.deleted)
         activity = {
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
-            'actor': self.local_user.remote_id,
+            'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id},
         }
         incoming.handle_delete_status(activity)
@@ -340,6 +411,8 @@ class Incoming(TestCase):
 
     def test_handle_delete_status_notifications(self):
         ''' remove a status with related notifications '''
+        self.status.user = self.remote_user
+        self.status.save(broadcast=False)
         models.Notification.objects.create(
             related_status=self.status,
             user=self.local_user,
@@ -355,7 +428,7 @@ class Incoming(TestCase):
         activity = {
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
-            'actor': self.local_user.remote_id,
+            'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id},
         }
         incoming.handle_delete_status(activity)
@@ -447,7 +520,6 @@ class Incoming(TestCase):
         self.assertEqual(models.Boost.objects.count(), 0)
 
 
-
     def test_handle_unboost(self):
         ''' undo a boost '''
         activity = {
@@ -476,7 +548,7 @@ class Incoming(TestCase):
         activity = {
             "id": "https://bookwyrm.social/shelfbook/6189#add",
             "type": "Add",
-            "actor": "hhttps://example.com/users/rat",
+            "actor": "https://example.com/users/rat",
             "object": "https://bookwyrm.social/book/37292",
             "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
             "@context": "https://www.w3.org/ns/activitystreams"
@@ -506,7 +578,7 @@ class Incoming(TestCase):
     def test_handle_update_edition(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_edition.json')
+            'data/bw_edition.json')
         bookdata = json.loads(datafile.read_bytes())
 
         models.Work.objects.create(
@@ -527,7 +599,7 @@ class Incoming(TestCase):
     def test_handle_update_work(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/fr_work.json')
+            'data/bw_work.json')
         bookdata = json.loads(datafile.read_bytes())
 
         book = models.Work.objects.create(
@@ -540,3 +612,53 @@ class Incoming(TestCase):
             incoming.handle_update_work({'object': bookdata})
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, 'Piranesi')
+
+
+    def test_handle_blocks(self):
+        ''' create a "block" database entry from an activity '''
+        self.local_user.followers.add(self.remote_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user)
+        self.assertTrue(models.UserFollows.objects.exists())
+        self.assertTrue(models.UserFollowRequest.objects.exists())
+
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/9e1f41ac-9ddd-4159",
+            "type": "Block",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse"
+        }
+
+        incoming.handle_block(activity)
+        block = models.UserBlocks.objects.get()
+        self.assertEqual(block.user_subject, self.remote_user)
+        self.assertEqual(block.user_object, self.local_user)
+        self.assertEqual(
+            block.remote_id, 'https://example.com/9e1f41ac-9ddd-4159')
+
+        self.assertFalse(models.UserFollows.objects.exists())
+        self.assertFalse(models.UserFollowRequest.objects.exists())
+
+
+    def test_handle_unblock(self):
+        ''' unblock a user '''
+        self.remote_user.blocks.add(self.local_user)
+
+        block = models.UserBlocks.objects.get()
+        block.remote_id = 'https://example.com/9e1f41ac-9ddd-4159'
+        block.save()
+
+        self.assertEqual(block.user_subject, self.remote_user)
+        self.assertEqual(block.user_object, self.local_user)
+        activity = {'type': 'Undo', 'object': {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/9e1f41ac-9ddd-4159",
+            "type": "Block",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse"
+        }}
+        incoming.handle_unblock(activity)
+        self.assertFalse(models.UserBlocks.objects.exists())

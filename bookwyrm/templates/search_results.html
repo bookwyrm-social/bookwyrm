@@ -22,23 +22,17 @@
             {% endif %}
         </section>
 
-        {% if book_results|slice:":1" and local_results.results and request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
+        {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
             <p>
                 Didn't find what you were looking for?
             </p>
-
-            <input class="toggle-control" type="radio" name="more-results" id="fewer-results" checked>
-            <div class="toggle-content hidden">
-                <label class="button is-small" for="more-results">
-                    <div role="button" tabindex="0">Show results from other catalogues</div>
-                </label>
-            </div>
+            {% include 'snippets/toggle/open_button.html' with text="Show results from other catalogues" small=True controls_text="more-results" %}
         </div>
         {% endif %}
 
-        <input class="toggle-control" type="radio" name="more-results" id="more-results" {% if not local_results.results %}checked{% endif %}>
-        <div class="toggle-content hidden">
+        <div class="{% if local_results.results %}hidden{% endif %}" id="more-results">
             {% for result_set in book_results|slice:"1:" %}
             {% if result_set.results %}
             <section class="block">
@@ -63,25 +57,44 @@
             </section>
             {% endif %}
             {% endfor %}
+
             {% if local_results.results %}
-            <label class="button is-small" for="fewer-results">
-                <div role="button" tabindex="0">Hide results from other catalogues</div>
-            </label>
+            {% include 'snippets/toggle/close_button.html' with text="Hide results from other catalogues" small=True controls_text="more-results" %}
             {% endif %}
         </div>
+        {% endif %}
     </div>
     <div class="column">
-        <h2 class="title">Matching Users</h2>
-        {% if not user_results %}
-        <p>No users found for "{{ query }}"</p>
-        {% endif %}
-        {% for result in user_results %}
-        <div class="block">
-            {% include 'snippets/avatar.html' with user=result %}</h2>
-            {% include 'snippets/username.html' with user=result show_full=True %}</h2>
-            {% include 'snippets/follow_button.html' with user=result %}
-        </div>
-        {% endfor %}
+        <section class="block">
+            <h2 class="title">Matching Users</h2>
+            {% if not user_results %}
+            <p>No users found for "{{ query }}"</p>
+            {% endif %}
+            <ul>
+            {% for result in user_results %}
+                <li class="block">
+                    {% include 'snippets/avatar.html' with user=result %}</h2>
+                    {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+                    {% include 'snippets/follow_button.html' with user=result %}
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+        <section class="block">
+            <h2 class="title">Lists</h2>
+            {% if not list_results %}
+            <p>No lists found for "{{ query }}"</p>
+            {% endif %}
+            {% for result in list_results %}
+            <div class="block">
+                <ul>
+                    <li>
+                        <a href="{% url 'list' result.id %}">{{ result.name }}</a>
+                    </li>
+                </ul>
+            </div>
+            {% endfor %}
+        </section>
     </div>
 </div>
 {% endwith %}

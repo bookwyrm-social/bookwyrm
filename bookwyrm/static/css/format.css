@@ -5,21 +5,32 @@
 .navbar .logo {
     max-height: 50px;
 }
+
+.card {
+    overflow: visible;
+}
+.card-header-title {
+    overflow: hidden;
+}
+
+/* --- SHELVING --- */
+.shelf-option:disabled > *::after {
+    font-family: "icomoon";
+    content: "\e918";
+    margin-left: 0.5em;
+}
+
 /* --- TOGGLES --- */
-input.toggle-control {
+.toggle-button[aria-pressed=true], .toggle-button[aria-pressed=true]:hover {
+    background-color: hsl(171, 100%, 41%);
+    color: white;
+}
+.hide-active[aria-pressed=true], .hide-inactive[aria-pressed=false] {
     display: none;
 }
 
 .hidden {
-    display: none;
-}
-
-input.toggle-control:checked ~ .toggle-content {
-    display: block;
-}
-
-input.toggle-control:checked ~ .modal.toggle-content {
-    display: flex;
+    display: none !important;
 }
 
 /* --- STARS --- */
@@ -69,10 +80,11 @@ input.toggle-control:checked ~ .modal.toggle-content {
 }
 .cover-container.is-large {
     height: max-content;
-    max-width: 500px;
+    max-width: 330px;
 }
 .cover-container.is-large img {
     max-height: 500px;
+    height: auto;
 }
 .cover-container.is-medium {
     height: 150px;
@@ -124,6 +136,9 @@ input.toggle-control:checked ~ .modal.toggle-content {
     vertical-align: middle;
     display: inline;
 }
+.navbar .avatar {
+    max-height: none;
+}
 
 
 /* --- QUOTES --- */
@@ -136,11 +151,11 @@ input.toggle-control:checked ~ .modal.toggle-content {
     position: absolute;
 }
 .quote blockquote:before {
-    content: "\e905";
+    content: "\e906";
     top: 0;
     left: 0;
 }
 .quote blockquote:after {
-    content: "\e904";
+    content: "\e905";
     right: 0;
 }

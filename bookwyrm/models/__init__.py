@@ -7,6 +7,7 @@ from .author import Author
 from .connector import Connector
 
 from .shelf import Shelf, ShelfBook
+from .list import List, ListItem
 
 from .status import Status, GeneratedNote, Comment, Quotation
 from .status import Review, ReviewRating
@@ -14,11 +15,11 @@ from .status import Boost
 from .attachment import Image
 from .favorite import Favorite
 from .notification import Notification
-from .readthrough import ReadThrough
+from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
 from .tag import Tag, UserTag
 
-from .user import User, KeyPair
+from .user import User, KeyPair, AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .federated_server import FederatedServer
 

@@ -1,0 +1,23 @@
+{% extends 'components/card.html' %}
+
+{% block card-header %}
+<h3 class="card-header-title has-background-primary has-text-white">
+    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+</h3>
+{% endblock %}
+
+
+{% block card-content %}
+<div class="content">
+    <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+
+    {% include 'snippets/goal_form.html' %}
+</div>
+{% endblock %}
+
+{% block card-footer %}
+<div class="card-footer-item is-flex-direction-column">
+    <button class="button is-danger is-light is-block set-display" data-id="hide-{{ year }}-reading-goal" data-value="true">Dismiss message</button>
+    <p class="help">You can set or change your reading goal any time from your <a href="{{ request.user.local_path }}">profile page</a></p>
+</div>
+{% endblock %}

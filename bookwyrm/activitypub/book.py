@@ -41,6 +41,7 @@ class Edition(Book):
     pages: int = None
     physicalFormat: str = ''
     publishers: List[str] = field(default_factory=lambda: [])
+    editionRank: int = 0
 
     type: str = 'Edition'
 

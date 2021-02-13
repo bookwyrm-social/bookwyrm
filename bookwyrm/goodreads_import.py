@@ -2,10 +2,9 @@
 import csv
 import logging
 
-from bookwyrm import outgoing
-from bookwyrm.tasks import app
+from bookwyrm import models
 from bookwyrm.models import ImportJob, ImportItem
-from bookwyrm.status import create_notification
+from bookwyrm.tasks import app
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +61,61 @@ def import_data(job_id):
                 item.save()
 
                 # shelves book and handles reviews
-                outgoing.handle_imported_book(
+                handle_imported_book(
                     job.user, item, job.include_reviews, job.privacy)
             else:
                 item.fail_reason = 'Could not find a match for book'
                 item.save()
     finally:
-        create_notification(job.user, 'IMPORT', related_import=job)
+        job.complete = True
+        job.save()
+
+
+def handle_imported_book(user, item, include_reviews, privacy):
+    ''' process a goodreads csv and then post about it '''
+    if isinstance(item.book, models.Work):
+        item.book = item.book.default_edition
+    if not item.book:
+        return
+
+    existing_shelf = models.ShelfBook.objects.filter(
+        book=item.book, user=user).exists()
+
+    # shelve the book if it hasn't been shelved already
+    if item.shelf and not existing_shelf:
+        desired_shelf = models.Shelf.objects.get(
+            identifier=item.shelf,
+            user=user
+        )
+        models.ShelfBook.objects.create(
+            book=item.book, shelf=desired_shelf, user=user)
+
+    for read in item.reads:
+        # check for an existing readthrough with the same dates
+        if models.ReadThrough.objects.filter(
+                user=user, book=item.book,
+                start_date=read.start_date,
+                finish_date=read.finish_date
+            ).exists():
+            continue
+        read.book = item.book
+        read.user = user
+        read.save()
+
+    if include_reviews and (item.rating or item.review):
+        review_title = 'Review of {!r} on Goodreads'.format(
+            item.book.title,
+        ) if item.review else ''
+
+        # we don't know the publication date of the review,
+        # but "now" is a bad guess
+        published_date_guess = item.date_read or item.date_added
+        models.Review.objects.create(
+            user=user,
+            book=item.book,
+            name=review_title,
+            content=item.review,
+            rating=item.rating,
+            published_date=published_date_guess,
+            privacy=privacy,
+        )

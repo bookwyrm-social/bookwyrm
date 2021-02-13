@@ -34,10 +34,15 @@ class AbstractMinimalConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-    def search(self, query, min_confidence=None):# pylint: disable=unused-argument
+    def search(self, query, min_confidence=None):
         ''' free text search '''
+        params = {}
+        if min_confidence:
+            params['min_confidence'] = min_confidence
+
         resp = requests.get(
             '%s%s' % (self.search_url, query),
+            params=params,
             headers={
                 'Accept': 'application/json; charset=utf-8',
                 'User-Agent': settings.USER_AGENT,
@@ -102,7 +107,7 @@ class AbstractConnector(AbstractMinimalConnector):
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
                 edition_data = data
@@ -111,7 +116,7 @@ class AbstractConnector(AbstractMinimalConnector):
             try:
                 work_data = self.get_work_from_edition_data(data)
                 work_data = dict_from_mappings(work_data, self.book_mappings)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 work_data = mapped_data
             edition_data = data
 
@@ -140,8 +145,9 @@ class AbstractConnector(AbstractMinimalConnector):
         edition.connector = self.connector
         edition.save()
 
-        work.default_edition = edition
-        work.save()
+        if not work.default_edition:
+            work.default_edition = edition
+            work.save()
 
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
@@ -205,13 +211,20 @@ def get_data(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         raise ConnectorException()
+
     if not resp.ok:
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            logger.exception(e)
+            raise ConnectorException()
     try:
         data = resp.json()
-    except ValueError:
+    except ValueError as e:
+        logger.exception(e)
         raise ConnectorException()
 
     return data
@@ -226,7 +239,8 @@ def get_image(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         return None
     if not resp.ok:
         return None

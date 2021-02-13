@@ -1,0 +1,50 @@
+{% extends 'settings/admin_layout.html' %}
+{% block header %}Invites{% endblock %}
+{% load humanize %}
+{% block panel %}
+<section class="block">
+    <table class="table is-striped">
+        <tr>
+            <th>Link</th>
+            <th>Expires</th>
+            <th>Max uses</th>
+            <th>Times used</th>
+        </tr>
+        {% if not invites %}
+        <tr><td colspan="4">No active invites</td></tr>
+        {% endif %}
+        {% for invite in invites %}
+        <tr>
+            <td><a href="{{ invite.link }}">{{ invite.link }}</td>
+            <td>{{ invite.expiry|naturaltime }}</td>
+            <td>{{ invite.use_limit }}</td>
+            <td>{{ invite.times_used }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+
+<section class="block">
+    <h2 class="title is-4">Generate New Invite</h2>
+
+    <form name="invite" action="{% url 'settings-invites' %}" method="post">
+        {% csrf_token %}
+        <div class="field is-grouped">
+            <div class="control">
+                <label class="label" for="id_expiry">Expiry:</label>
+                <div class="select">
+                    {{ form.expiry }}
+                </div>
+            </div>
+            <div class="control">
+                <label class="label" for="id_use_limit">Use limit:</label>
+                <div class="select">
+                    {{ form.use_limit }}
+                </div>
+            </div>
+        </div>
+
+        <button class="button is-primary" type="submit">Create Invite</button>
+    </form>
+</section>
+{% endblock %}

@@ -65,6 +65,13 @@ class ActivityObject:
 
     def to_model(self, model, instance=None, save=True):
         ''' convert from an activity to a model instance '''
+        if self.type != model.activity_serializer.type:
+            raise ActivitySerializerError(
+                'Wrong activity type "%s" for activity of type "%s"' % \
+                        (model.activity_serializer.type,
+                         self.type)
+            )
+
         if not isinstance(self, model.activity_serializer):
             raise ActivitySerializerError(
                 'Wrong activity type "%s" for model "%s" (expects "%s")' % \
@@ -93,7 +100,10 @@ class ActivityObject:
         with transaction.atomic():
             # we can't set many to many and reverse fields on an unsaved object
             try:
-                instance.save()
+                try:
+                    instance.save(broadcast=False)
+                except TypeError:
+                    instance.save()
             except IntegrityError as e:
                 raise ActivitySerializerError(e)
 
@@ -130,6 +140,7 @@ class ActivityObject:
     def serialize(self):
         ''' convert to dictionary with context attr '''
         data = self.__dict__
+        data = {k:v for (k, v) in data.items() if v is not None}
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
 

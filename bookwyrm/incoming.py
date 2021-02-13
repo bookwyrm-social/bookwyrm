@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import requests
 
-from bookwyrm import activitypub, models, outgoing
+from bookwyrm import activitypub, models
 from bookwyrm import status as status_builder
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
@@ -47,11 +47,20 @@ def shared_inbox(request):
             return HttpResponse()
         return HttpResponse(status=401)
 
+    # if this isn't a file ripe for refactor, I don't know what is.
     handlers = {
         'Follow': handle_follow,
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
-        'Create': handle_create,
+        'Block': handle_block,
+        'Create': {
+            'BookList': handle_create_list,
+            'Note': handle_create_status,
+            'Article': handle_create_status,
+            'Review': handle_create_status,
+            'Comment': handle_create_status,
+            'Quotation': handle_create_status,
+        },
         'Delete': handle_delete_status,
         'Like': handle_favorite,
         'Announce': handle_boost,
@@ -62,11 +71,13 @@ def shared_inbox(request):
             'Follow': handle_unfollow,
             'Like': handle_unfavorite,
             'Announce': handle_unboost,
+            'Block': handle_unblock,
         },
         'Update': {
             'Person': handle_update_user,
             'Edition': handle_update_edition,
             'Work': handle_update_work,
+            'BookList': handle_update_list,
         },
     }
     activity_type = activity['type']
@@ -125,15 +136,8 @@ def handle_follow(activity):
         )
         # send the accept normally for a duplicate request
 
-    manually_approves = relationship.user_object.manually_approves_followers
-
-    status_builder.create_notification(
-        relationship.user_object,
-        'FOLLOW_REQUEST' if manually_approves else 'FOLLOW',
-        related_user=relationship.user_subject
-    )
-    if not manually_approves:
-        outgoing.handle_accept(relationship)
+    if not relationship.user_object.manually_approves_followers:
+        relationship.accept()
 
 
 @app.task
@@ -179,9 +183,48 @@ def handle_follow_reject(activity):
     request.delete()
     #raises models.UserFollowRequest.DoesNotExist
 
+@app.task
+def handle_block(activity):
+    ''' blocking a user '''
+    # create "block" databse entry
+    activitypub.Block(**activity).to_model(models.UserBlocks)
+    # the removing relationships is handled in post-save hook in model
+
 
 @app.task
-def handle_create(activity):
+def handle_unblock(activity):
+    ''' undoing a block '''
+    try:
+        block_id = activity['object']['id']
+    except KeyError:
+        return
+    try:
+        block = models.UserBlocks.objects.get(remote_id=block_id)
+    except models.UserBlocks.DoesNotExist:
+        return
+    block.delete()
+
+
+@app.task
+def handle_create_list(activity):
+    ''' a new list '''
+    activity = activity['object']
+    activitypub.BookList(**activity).to_model(models.List)
+
+
+@app.task
+def handle_update_list(activity):
+    ''' update a list '''
+    try:
+        book_list = models.List.objects.get(remote_id=activity['object']['id'])
+    except models.List.DoesNotExist:
+        book_list = None
+    activitypub.BookList(
+        **activity['object']).to_model(models.List, instance=book_list)
+
+
+@app.task
+def handle_create_status(activity):
     ''' someone did something, good on them '''
     # deduplicate incoming activities
     activity = activity['object']
@@ -205,27 +248,6 @@ def handle_create(activity):
     if not status:
         # it was discarded because it's not a bookwyrm type
         return
-
-    # create a notification if this is a reply
-    notified = []
-    if status.reply_parent and status.reply_parent.user.local:
-        notified.append(status.reply_parent.user)
-        status_builder.create_notification(
-            status.reply_parent.user,
-            'REPLY',
-            related_user=status.user,
-            related_status=status,
-        )
-    if status.mention_users.exists():
-        for mentioned_user in status.mention_users.all():
-            if not mentioned_user.local or mentioned_user in notified:
-                continue
-            status_builder.create_notification(
-                mentioned_user,
-                'MENTION',
-                related_user=status.user,
-                related_status=status,
-            )
 
 
 @app.task
@@ -251,17 +273,13 @@ def handle_delete_status(activity):
 def handle_favorite(activity):
     ''' approval of your good good post '''
     fav = activitypub.Like(**activity)
+    # we dont know this status, we don't care about this status
+    if not models.Status.objects.filter(remote_id=fav.object).exists():
+        return
 
     fav = fav.to_model(models.Favorite)
     if fav.user.local:
         return
-
-    status_builder.create_notification(
-        fav.status.user,
-        'FAVORITE',
-        related_user=fav.user,
-        related_status=fav.status,
-    )
 
 
 @app.task
@@ -279,18 +297,10 @@ def handle_unfavorite(activity):
 def handle_boost(activity):
     ''' someone gave us a boost! '''
     try:
-        boost = activitypub.Boost(**activity).to_model(models.Boost)
+        activitypub.Boost(**activity).to_model(models.Boost)
     except activitypub.ActivitySerializerError:
         # this probably just means we tried to boost an unknown status
         return
-
-    if not boost.user.local:
-        status_builder.create_notification(
-            boost.boosted_status.user,
-            'BOOST',
-            related_user=boost.user,
-            related_status=boost.boosted_status,
-        )
 
 
 @app.task
@@ -309,8 +319,19 @@ def handle_add(activity):
     #this is janky as heck but I haven't thought of a better solution
     try:
         activitypub.AddBook(**activity).to_model(models.ShelfBook)
+        return
     except activitypub.ActivitySerializerError:
-        activitypub.AddBook(**activity).to_model(models.Tag)
+        pass
+    try:
+        activitypub.AddListItem(**activity).to_model(models.ListItem)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
+    try:
+        activitypub.AddBook(**activity).to_model(models.UserTag)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
 
 
 @app.task

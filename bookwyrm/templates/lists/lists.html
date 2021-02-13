@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<header class="block">
+    <h1 class="title">Lists</h1>
+</header>
+{% if request.user.is_authenticated and not lists.has_previous %}
+<header class="block columns">
+    <div class="column">
+        <h2 class="title">Your lists</h2>
+    </div>
+    <div class="column is-narrow">
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" focus="create-list-header" %}
+    </div>
+</header>
+
+<div class="block">
+    {% include 'lists/create_form.html' with controls_text="create-list" %}
+</div>
+
+<section class="block content">
+    {% if request.user.list_set.exists %}
+    {% include 'lists/list_items.html' with lists=request.user.list_set.all|slice:4 %}
+    {% endif %}
+
+    {% if request.user.list_set.count > 4 %}
+    <a href="{% url 'user-lists' request.user.localname %}">See all {{ request.user.list_set.count}} lists</a>
+    {% endif %}
+</section>
+{% endif %}
+
+
+{% if lists %}
+<section class="block content">
+    <h2 class="title">Recent Lists</h2>
+    {% include 'lists/list_items.html' with lists=lists %}
+</section>
+<div>
+    {% include 'snippets/pagination.html' with page=lists path=path %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,7 +1,9 @@
-<form class="toggle-content hidden tab-option-{{ book.id }}" name="{{ type }}" action="/{{ type }}" method="post" id="tab-{{ type }}-{{ book.id }}">
+{% load bookwyrm_tags %}
+<form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
+    <input type="hidden" name="reply_parent" value="{{ reply_parent.id }}">
     {% if type == 'review' %}
     <div class="control">
         <label class="label" for="id_name_{{ book.id }}_{{ type }}">Title:</label>
@@ -9,7 +11,9 @@
     </div>
     {% endif %}
     <div class="control">
-        <label class="label" for="id_{% if type == 'quote' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        {% if type != 'reply' and type != 'direct'  %}
+        <label class="label" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        {% endif %}
 
         {% if type == 'review' %}
         <fieldset>
@@ -27,24 +31,38 @@
         </fieldset>
         {% endif %}
 
-        {% include 'snippets/content_warning_field.html' %}
-
-        {% if type == 'quote' %}
+        {% if type == 'quotation' %}
         <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
         {% else %}
-        <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
+        {% include 'snippets/content_warning_field.html' with parent_status=status %}
+        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}</textarea>
         {% endif %}
-
     </div>
-    {% if type == 'quote' %}
+    {% if type == 'quotation' %}
     <div class="control">
-        <label class="label" for="id_content_{{ book.id }}_quote">Comment:</label>
-        <textarea name="content" class="textarea is-small" id="id_content_{{ book.id }}_quote"></textarea>
+        <label class="label" for="id_content_quote-{{ book.id }}">Comment:</label>
+        {% include 'snippets/content_warning_field.html' with parent_status=status %}
+        <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
     </div>
     {% endif %}
-    <div class="control is-grouped">
-        {% include 'snippets/privacy_select.html' %}
-        <button class="button is-primary" type="submit">post {{ type }}</button>
+    <input type="checkbox" class="hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
+    {# bottom bar #}
+    <div class="columns pt-1">
+        <div class="field has-addons column">
+            <div class="control">
+                {% include 'snippets/toggle/toggle_button.html' with text="Include spoiler alert" icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=status.content_warning %}
+            </div>
+            <div class="control">
+            {% if type == 'direct' %}
+                <input type="hidden" name="privacy" value="direct">
+                <button type="button" class="button" aria-label="Privacy" disabled>Private</button>
+            {% else %}
+                {% include 'snippets/privacy_select.html' with current=reply_parent.privacy %}
+            {% endif %}
+            </div>
+        </div>
+        <div class="column is-narrow">
+            <button class="button is-link" type="submit">Post</button>
+        </div>
     </div>
 </form>
-

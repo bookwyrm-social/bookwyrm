@@ -213,7 +213,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             setattr(instance, self.name, 'followers')
 
     def set_activity_from_field(self, activity, instance):
-        mentions = [u.remote_id for u in instance.mention_users.all()]
+        # explicitly to anyone mentioned (statuses only)
+        mentions = []
+        if hasattr(instance, 'mention_users'):
+            mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
         followers = instance.user.__class__._meta.get_field('followers')\
                 .field_to_activity(instance.user.followers)
@@ -260,6 +263,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         if formatted is None or formatted is MISSING:
             return
         getattr(instance, self.name).set(formatted)
+        instance.save(broadcast=False)
 
     def field_to_activity(self, value):
         if self.link_only:

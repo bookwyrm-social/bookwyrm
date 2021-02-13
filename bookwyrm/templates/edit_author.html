@@ -1,25 +1,16 @@
 {% extends 'layout.html' %}
 {% load humanize %}
 {% block content %}
-<div class="block">
-    <div class="level">
-        <h1 class="title level-left">
-            Edit "{{ author.name }}"
-        </h1>
-        <div class="level-right">
-            <a href="/author/{{ author.id }}">
-                <span class="edit-link icon icon-close">
-                    <span class="is-sr-only">Close</span>
-                </span>
-            </a>
-        </div>
-    </div>
+<header class="block">
+    <h1 class="title level-left">
+        Edit "{{ author.name }}"
+    </h1>
     <div>
         <p>Added: {{ author.created_date | naturaltime }}</p>
         <p>Updated: {{ author.updated_date | naturaltime }}</p>
         <p>Last edited by: <a href="{{ author.last_edited_by.remote_id }}">{{ author.last_edited_by.display_name }}</a></p>
     </div>
-</div>
+</header>
 
 {% if form.non_field_errors %}
 <div class="block">
@@ -27,7 +18,7 @@
 </div>
 {% endif %}
 
-<form class="block" name="edit-author" action="/edit-author/{{ author.id }}" method="post">
+<form class="block" name="edit-author" action="{{ author.local_path }}/edit" method="post">
     {% csrf_token %}
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
 
