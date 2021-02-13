@@ -17,7 +17,7 @@ Social reading and reviewing, decentralized with ActivityPub
 ## Joining BookWyrm
 BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://github.com/mouse-reeve/bookwyrm/blob/main/instances.md) list.
 
-I, the maintianer of this project, run https://bookwyrm.social, and I generally give out invite codes to those who ask by [email](mailto:mousereeve@riseup.net), [Mastodon direct message](https://friend.camp/@tripofmice), or [Twitter direct message](https://twitter.com/tripofmice).
+You can request an invite to https://bookwyrm.social by [email](mailto:mousereeve@riseup.net), [Mastodon direct message](https://friend.camp/@tripofmice), or [Twitter direct message](https://twitter.com/tripofmice).
 
 ## The overall idea
 ### What it is and isn't
@@ -116,7 +116,6 @@ This project is still young and isn't, at the momoment, very stable, so please p
     ```python
     from bookwyrm import models
     user = models.User.objects.get(id=1)
-    user.is_admin = True
     user.is_staff = True
     user.is_superuser = True
     user.save()

@@ -17,10 +17,13 @@ def follow(request):
     except models.User.DoesNotExist:
         return HttpResponseBadRequest()
 
-    models.UserFollowRequest.objects.get_or_create(
+    rel, _ = models.UserFollowRequest.objects.get_or_create(
         user_subject=request.user,
         user_object=to_follow,
     )
+
+    if to_follow.local and not to_follow.manually_approves_followers:
+        rel.accept()
     return redirect(to_follow.local_path)
 
 
