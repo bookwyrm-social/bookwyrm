@@ -40,7 +40,7 @@ class BookViews(TestCase):
             parent_work=self.work
         )
 
-    def test_handle_follow(self):
+    def test_handle_follow_remote(self):
         ''' send a follow request '''
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
@@ -54,6 +54,49 @@ class BookViews(TestCase):
         self.assertEqual(rel.user_subject, self.local_user)
         self.assertEqual(rel.user_object, self.remote_user)
         self.assertEqual(rel.status, 'follow_request')
+
+
+    def test_handle_follow_local_manually_approves(self):
+        ''' send a follow request '''
+        rat = models.User.objects.create_user(
+            'rat@local.com', 'rat@rat.com', 'ratword',
+            local=True, localname='rat',
+            remote_id='https://example.com/users/rat',
+            manually_approves_followers=True,
+        )
+        request = self.factory.post('', {'user': rat})
+        request.user = self.local_user
+        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
+
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.follow(request)
+        rel = models.UserFollowRequest.objects.get()
+
+        self.assertEqual(rel.user_subject, self.local_user)
+        self.assertEqual(rel.user_object, rat)
+        self.assertEqual(rel.status, 'follow_request')
+
+
+
+    def test_handle_follow_local(self):
+        ''' send a follow request '''
+        rat = models.User.objects.create_user(
+            'rat@local.com', 'rat@rat.com', 'ratword',
+            local=True, localname='rat',
+            remote_id='https://example.com/users/rat',
+        )
+        request = self.factory.post('', {'user': rat})
+        request.user = self.local_user
+        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
+
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.follow(request)
+
+        rel = models.UserFollows.objects.get()
+
+        self.assertEqual(rel.user_subject, self.local_user)
+        self.assertEqual(rel.user_object, rat)
+        self.assertEqual(rel.status, 'follows')
 
 
     def test_handle_unfollow(self):
