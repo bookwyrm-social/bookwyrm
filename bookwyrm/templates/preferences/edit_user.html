@@ -43,6 +43,12 @@ Edit Profile
             {{ form.manually_approves_followers }}
         </label>
     </div>
+    <div class="block">
+        <label class="label" for="id_default_post_privacy">
+            Default post privacy:
+            {{form.default_post_privacy}}
+        </label>
+    </div>
     <button class="button is-primary" type="submit">Save</button>
 </form>
 {% endblock %}

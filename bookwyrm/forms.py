@@ -103,7 +103,7 @@ class EditUserForm(CustomForm):
     class Meta:
         model = models.User
         fields = [
-            'avatar', 'name', 'email', 'summary', 'manually_approves_followers'
+            'avatar', 'name', 'email', 'summary', 'manually_approves_followers', 'default_post_privacy'
         ]
         help_texts = {f: None for f in fields}
 

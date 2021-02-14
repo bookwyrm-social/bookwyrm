@@ -22,7 +22,6 @@ from .base_model import BookWyrmModel
 from .federated_server import FederatedServer
 from . import fields, Review
 
-
 class User(OrderedCollectionPageMixin, AbstractUser):
     ''' a user who wants to read books '''
     username = fields.UsernameField()
@@ -90,6 +89,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through='Favorite',
         through_fields=('user', 'status'),
         related_name='favorite_statuses'
+    )
+    default_post_privacy = models.CharField(
+        max_length=255,
+        default='public',
+        choices=fields.PrivacyLevels.choices
     )
     remote_id = fields.RemoteIdField(
         null=True, unique=True, activitypub_field='id')
