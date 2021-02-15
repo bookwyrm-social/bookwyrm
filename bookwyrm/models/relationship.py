@@ -1,7 +1,6 @@
 ''' defines relationships between users '''
 from django.db import models, transaction
 from django.db.models import Q
-from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
@@ -126,20 +125,15 @@ class UserBlocks(ActivityMixin, UserRelationship):
     status = 'blocks'
     activity_serializer = activitypub.Block
 
+    def save(self, *args, **kwargs):
+        ''' remove follow or follow request rels after a block is created '''
+        super().save(*args, **kwargs)
 
-@receiver(models.signals.post_save, sender=UserBlocks)
-#pylint: disable=unused-argument
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    ''' remove follow or follow request rels after a block is created '''
-    UserFollows.objects.filter(
-        Q(user_subject=instance.user_subject,
-          user_object=instance.user_object) | \
-        Q(user_subject=instance.user_object,
-          user_object=instance.user_subject)
-    ).delete()
-    UserFollowRequest.objects.filter(
-        Q(user_subject=instance.user_subject,
-          user_object=instance.user_object) | \
-        Q(user_subject=instance.user_object,
-          user_object=instance.user_subject)
-    ).delete()
+        UserFollows.objects.filter(
+            Q(user_subject=self.user_subject, user_object=self.user_object) | \
+            Q(user_subject=self.user_object, user_object=self.user_subject)
+        ).delete()
+        UserFollowRequest.objects.filter(
+            Q(user_subject=self.user_subject, user_object=self.user_object) | \
+            Q(user_subject=self.user_object, user_object=self.user_subject)
+        ).delete()

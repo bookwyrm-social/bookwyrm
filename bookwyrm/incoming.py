@@ -195,7 +195,7 @@ def handle_block(activity):
     ''' blocking a user '''
     # create "block" databse entry
     activitypub.Block(**activity).to_model(models.UserBlocks)
-    # the removing relationships is handled in post-save hook in model
+    # the removing relationships is handled in model save
 
 
 @app.task
