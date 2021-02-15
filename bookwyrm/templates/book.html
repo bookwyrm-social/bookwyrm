@@ -224,6 +224,17 @@
                 </ul>
             </section>
             {% endif %}
+
+            {% if lists.exists %}
+            <section class="content block">
+                <h2 class="title is-5">Lists</h2>
+                <ul>
+                {% for list in lists %}
+                <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
         </div>
     </div>
 </div>
