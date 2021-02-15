@@ -1,6 +1,7 @@
 ''' book list views'''
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 from django.db.models import Count, Q
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
@@ -181,24 +182,28 @@ def add_book(request, list_id):
 
     book = get_object_or_404(models.Edition, id=request.POST.get('book'))
     # do you have permission to add to the list?
-    if request.user == book_list.user or book_list.curation == 'open':
-        # go ahead and add it
-        models.ListItem.objects.create(
-            book=book,
-            book_list=book_list,
-            user=request.user,
-        )
-    elif book_list.curation == 'curated':
-        # make a pending entry
-        models.ListItem.objects.create(
-            approved=False,
-            book=book,
-            book_list=book_list,
-            user=request.user,
-        )
-    else:
-        # you can't add to this list, what were you THINKING
-        return HttpResponseBadRequest()
+    try:
+        if request.user == book_list.user or book_list.curation == 'open':
+            # go ahead and add it
+            models.ListItem.objects.create(
+                book=book,
+                book_list=book_list,
+                user=request.user,
+            )
+        elif book_list.curation == 'curated':
+            # make a pending entry
+            models.ListItem.objects.create(
+                approved=False,
+                book=book,
+                book_list=book_list,
+                user=request.user,
+            )
+        else:
+            # you can't add to this list, what were you THINKING
+            return HttpResponseBadRequest()
+    except IntegrityError:
+        # if the book is already on the list, don't flip out
+        pass
 
     return redirect('list', list_id)
 

@@ -52,6 +52,38 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment', 'id')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
+
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+
+        if self.deleted:
+            notification_model.objects.filter(related_status=self).delete()
+
+        if self.reply_parent and self.reply_parent.user != self.user and \
+                self.reply_parent.user.local:
+            notification_model.objects.create(
+                user=self.reply_parent.user,
+                notification_type='REPLY',
+                related_user=self.user,
+                related_status=self,
+            )
+        for mention_user in self.mention_users.all():
+            # avoid double-notifying about this status
+            if not mention_user.local or \
+                    (self.reply_parent and \
+                     mention_user == self.reply_parent.user):
+                continue
+            notification_model.objects.create(
+                user=mention_user,
+                notification_type='MENTION',
+                related_user=self.user,
+                related_status=self,
+            )
+
     @property
     def recipients(self):
         ''' tagged users who definitely need to get this status in broadcast '''
@@ -235,6 +267,33 @@ class Boost(ActivityMixin, Status):
         activitypub_field='object',
     )
     activity_serializer = activitypub.Boost
+
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+        if not self.boosted_status.user.local:
+            return
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.create(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        )
+
+    def delete(self, *args, **kwargs):
+        ''' delete and un-notify '''
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.filter(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        ).delete()
+        super().delete(*args, **kwargs)
 
 
     def __init__(self, *args, **kwargs):

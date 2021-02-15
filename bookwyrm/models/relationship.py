@@ -1,4 +1,5 @@
 ''' defines relationships between users '''
+from django.apps import apps
 from django.db import models, transaction
 from django.db.models import Q
 
@@ -80,17 +81,33 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         try:
             UserFollows.objects.get(
                 user_subject=self.user_subject,
-                user_object=self.user_object
+                user_object=self.user_object,
             )
+            # blocking in either direction is a no-go
             UserBlocks.objects.get(
                 user_subject=self.user_subject,
-                user_object=self.user_object
+                user_object=self.user_object,
+            )
+            UserBlocks.objects.get(
+                user_subject=self.user_object,
+                user_object=self.user_subject,
             )
             return None
         except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
             super().save(*args, **kwargs)
+
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
+
+        if self.user_object.local:
+            model = apps.get_model('bookwyrm.Notification', require_ready=True)
+            notification_type = 'FOLLOW_REQUEST' \
+                if self.user_object.manually_approves_followers else 'FOLLOW'
+            model.objects.create(
+                user=self.user_object,
+                related_user=self.user_subject,
+                notification_type=notification_type,
+            )
 
 
     def accept(self):

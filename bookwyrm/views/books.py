@@ -15,6 +15,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_activity_feed, get_edition
+from .helpers import privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -94,6 +95,10 @@ class Book(View):
             'ratings': reviews.filter(Q(content__isnull=True) | Q(content='')),
             'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
             'tags':  models.UserTag.objects.filter(book=book),
+            'lists': privacy_filter(
+                request.user,
+                book.list_set.all(),
+                ['public', 'unlisted', 'followers']),
             'user_tags': user_tags,
             'user_shelves': user_shelves,
             'other_edition_shelves': other_edition_shelves,

@@ -136,14 +136,7 @@ def handle_follow(activity):
         )
         # send the accept normally for a duplicate request
 
-    manually_approves = relationship.user_object.manually_approves_followers
-
-    status_builder.create_notification(
-        relationship.user_object,
-        'FOLLOW_REQUEST' if manually_approves else 'FOLLOW',
-        related_user=relationship.user_subject
-    )
-    if not manually_approves:
+    if not relationship.user_object.manually_approves_followers:
         relationship.accept()
 
 
@@ -223,9 +216,9 @@ def handle_create_list(activity):
 def handle_update_list(activity):
     ''' update a list '''
     try:
-        book_list = models.List.objects.get(id=activity['object']['id'])
+        book_list = models.List.objects.get(remote_id=activity['object']['id'])
     except models.List.DoesNotExist:
-        return
+        book_list = None
     activitypub.BookList(
         **activity['object']).to_model(models.List, instance=book_list)
 
@@ -255,27 +248,6 @@ def handle_create_status(activity):
     if not status:
         # it was discarded because it's not a bookwyrm type
         return
-
-    # create a notification if this is a reply
-    notified = []
-    if status.reply_parent and status.reply_parent.user.local:
-        notified.append(status.reply_parent.user)
-        status_builder.create_notification(
-            status.reply_parent.user,
-            'REPLY',
-            related_user=status.user,
-            related_status=status,
-        )
-    if status.mention_users.exists():
-        for mentioned_user in status.mention_users.all():
-            if not mentioned_user.local or mentioned_user in notified:
-                continue
-            status_builder.create_notification(
-                mentioned_user,
-                'MENTION',
-                related_user=status.user,
-                related_status=status,
-            )
 
 
 @app.task
@@ -309,13 +281,6 @@ def handle_favorite(activity):
     if fav.user.local:
         return
 
-    status_builder.create_notification(
-        fav.status.user,
-        'FAVORITE',
-        related_user=fav.user,
-        related_status=fav.status,
-    )
-
 
 @app.task
 def handle_unfavorite(activity):
@@ -332,18 +297,10 @@ def handle_unfavorite(activity):
 def handle_boost(activity):
     ''' someone gave us a boost! '''
     try:
-        boost = activitypub.Boost(**activity).to_model(models.Boost)
+        activitypub.Boost(**activity).to_model(models.Boost)
     except activitypub.ActivitySerializerError:
         # this probably just means we tried to boost an unknown status
         return
-
-    if not boost.user.local:
-        status_builder.create_notification(
-            boost.boosted_status.user,
-            'BOOST',
-            related_user=boost.user,
-            related_status=boost.boosted_status,
-        )
 
 
 @app.task
@@ -362,8 +319,19 @@ def handle_add(activity):
     #this is janky as heck but I haven't thought of a better solution
     try:
         activitypub.AddBook(**activity).to_model(models.ShelfBook)
+        return
     except activitypub.ActivitySerializerError:
-        activitypub.AddBook(**activity).to_model(models.Tag)
+        pass
+    try:
+        activitypub.AddListItem(**activity).to_model(models.ListItem)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
+    try:
+        activitypub.AddBook(**activity).to_model(models.UserTag)
+        return
+    except activitypub.ActivitySerializerError:
+        pass
 
 
 @app.task

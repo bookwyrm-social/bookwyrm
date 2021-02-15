@@ -75,19 +75,25 @@
         <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
             <a href="{{ url }}">Activity</a>
         </li>
+        {% if is_self or user.goal.exists %}
         {% now 'Y' as year %}
         {% url 'user-goal' user|username year as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">Reading Goal</a>
         </li>
+        {% endif %}
+        {% if is_self or user.lists.exists %}
         {% url 'user-lists' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">Lists</a>
         </li>
+        {% endif %}
+        {% if user.shelf_set.exists %}
         {% url 'user-shelves' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">Shelves</a>
         </li>
+        {% endif %}
     </ul>
 </nav>
 {% endif %}

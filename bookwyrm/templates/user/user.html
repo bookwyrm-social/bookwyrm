@@ -54,8 +54,13 @@
 {% endif %}
 
 <div>
-    <div class="block">
-        <h2 class="title">User Activity</h2>
+    <div class="columns">
+        <h2 class="title column">User Activity</h2>
+        <div class="column is-narrow">
+            <a class="icon icon-rss" target="_blank" href="{{ user.local_path }}/rss">
+                <span class="is-sr-only">RSS feed</span>
+            </a>
+        </div>
     </div>
     {% for activity in activities %}
     <div class="block" id="feed">
