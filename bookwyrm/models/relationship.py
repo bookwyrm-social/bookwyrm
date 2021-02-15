@@ -1,6 +1,6 @@
 ''' defines relationships between users '''
 from django.apps import apps
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.db.models import Q
 
 from bookwyrm import activitypub
@@ -60,6 +60,20 @@ class UserFollows(ActivitypubMixin, UserRelationship):
     status = 'follows'
     activity_serializer = activitypub.Follow
 
+    def save(self, *args, **kwargs):
+        ''' really really don't let a user follow someone who blocked them '''
+        # blocking in either direction is a no-go
+        if UserBlocks.objects.filter(
+                Q(
+                    user_subject=self.user_subject,
+                    user_object=self.user_object,
+                ) | Q(
+                    user_subject=self.user_object,
+                    user_object=self.user_subject,
+                )
+            ).exists():
+            raise IntegrityError()
+        super().save(*args, **kwargs)
 
     @classmethod
     def from_request(cls, follow_request):
@@ -78,23 +92,25 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
     def save(self, *args, broadcast=True, **kwargs):
         ''' make sure the follow or block relationship doesn't already exist '''
-        try:
-            UserFollows.objects.get(
+        # don't create a request if a follow already exists
+        if UserFollows.objects.filter(
                 user_subject=self.user_subject,
                 user_object=self.user_object,
-            )
-            # blocking in either direction is a no-go
-            UserBlocks.objects.get(
-                user_subject=self.user_subject,
-                user_object=self.user_object,
-            )
-            UserBlocks.objects.get(
-                user_subject=self.user_object,
-                user_object=self.user_subject,
-            )
-            return None
-        except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
-            super().save(*args, **kwargs)
+            ).exists():
+            raise IntegrityError()
+        # blocking in either direction is a no-go
+        if UserBlocks.objects.filter(
+                Q(
+                    user_subject=self.user_subject,
+                    user_object=self.user_object,
+                ) | Q(
+                    user_subject=self.user_object,
+                    user_object=self.user_subject,
+                )
+            ).exists():
+            raise IntegrityError()
+
+        super().save(*args, **kwargs)
 
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
