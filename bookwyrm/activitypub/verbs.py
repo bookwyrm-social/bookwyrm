@@ -23,7 +23,6 @@ class Create(Verb):
 
     def action(self):
         ''' create the model instance from the dataclass '''
-        # check for dupes
         self.object.to_model()
 
 

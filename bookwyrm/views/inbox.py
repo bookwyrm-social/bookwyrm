@@ -45,7 +45,7 @@ class Inbox(View):
                 not activity_json['type'] in activitypub.activity_objects:
             return HttpResponseNotFound()
 
-        activity_task.delay()
+        activity_task.delay(activity_json)
         return HttpResponse()
 
 

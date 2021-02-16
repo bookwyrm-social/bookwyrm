@@ -44,9 +44,7 @@ def naive_parse(activity_objects, activity_json):
     ''' this navigates circular import issues '''
     try:
         activity_type = activity_json['type']
-        print(activity_type)
         serializer = activity_objects[activity_type]
-        print(serializer)
     except KeyError as e:
         raise ActivitySerializerError(e)
 
@@ -64,7 +62,6 @@ class ActivityObject:
         has a default value '''
         for field in fields(self):
             try:
-                print(field.name, field.type)
                 value = kwargs[field.name]
                 try:
                     is_subclass = issubclass(field.type, ActivityObject)

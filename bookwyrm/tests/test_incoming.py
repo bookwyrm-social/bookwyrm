@@ -40,19 +40,6 @@ class Incoming(TestCase):
         self.factory = RequestFactory()
 
 
-    def test_inbox_success(self):
-        ''' a known type, for which we start a task '''
-        request = self.factory.post(
-            self.local_user.shared_inbox,
-            '{"type": "Accept", "object": "exists"}',
-            content_type='application/json')
-        with patch('bookwyrm.incoming.has_valid_signature') as mock_has_valid:
-            mock_has_valid.return_value = True
-
-            with patch('bookwyrm.incoming.handle_follow_accept.delay'):
-                self.assertEqual(
-                    incoming.shared_inbox(request).status_code, 200)
-
 
     def test_handle_follow(self):
         ''' remote user wants to follow local user '''
@@ -198,36 +185,6 @@ class Incoming(TestCase):
         self.assertEqual(follows.count(), 0)
 
 
-    def test_handle_create_list(self):
-        ''' a new list '''
-        activity = {
-            'object': {
-                "id": "https://example.com/list/22",
-                "type": "BookList",
-                "totalItems": 1,
-                "first": "https://example.com/list/22?page=1",
-                "last": "https://example.com/list/22?page=1",
-                "name": "Test List",
-                "owner": "https://example.com/user/mouse",
-                "to": [
-                    "https://www.w3.org/ns/activitystreams#Public"
-                ],
-                "cc": [
-                    "https://example.com/user/mouse/followers"
-                ],
-                "summary": "summary text",
-                "curation": "curated",
-                "@context": "https://www.w3.org/ns/activitystreams"
-            }
-        }
-        incoming.handle_create_list(activity)
-        book_list = models.List.objects.get()
-        self.assertEqual(book_list.name, 'Test List')
-        self.assertEqual(book_list.curation, 'curated')
-        self.assertEqual(book_list.description, 'summary text')
-        self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
-
-
     def test_handle_update_list(self):
         ''' a new list '''
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
@@ -260,80 +217,6 @@ class Incoming(TestCase):
         self.assertEqual(book_list.curation, 'curated')
         self.assertEqual(book_list.description, 'summary text')
         self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
-
-
-    def test_handle_create_status(self):
-        ''' the "it justs works" mode '''
-        self.assertEqual(models.Status.objects.count(), 1)
-
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_quotation.json')
-        status_data = json.loads(datafile.read_bytes())
-        models.Edition.objects.create(
-            title='Test Book', remote_id='https://example.com/book/1')
-        activity = {'object': status_data, 'type': 'Create'}
-
-        incoming.handle_create_status(activity)
-
-        status = models.Quotation.objects.get()
-        self.assertEqual(
-            status.remote_id, 'https://example.com/user/mouse/quotation/13')
-        self.assertEqual(status.quote, 'quote body')
-        self.assertEqual(status.content, 'commentary')
-        self.assertEqual(status.user, self.local_user)
-        self.assertEqual(models.Status.objects.count(), 2)
-
-        # while we're here, lets ensure we avoid dupes
-        incoming.handle_create_status(activity)
-        self.assertEqual(models.Status.objects.count(), 2)
-
-    def test_handle_create_status_unknown_type(self):
-        ''' folks send you all kinds of things '''
-        activity = {'object': {'id': 'hi'}, 'type': 'Fish'}
-        result = incoming.handle_create_status(activity)
-        self.assertIsNone(result)
-
-    def test_handle_create_status_remote_note_with_mention(self):
-        ''' should only create it under the right circumstances '''
-        self.assertEqual(models.Status.objects.count(), 1)
-        self.assertFalse(
-            models.Notification.objects.filter(user=self.local_user).exists())
-
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_note.json')
-        status_data = json.loads(datafile.read_bytes())
-        activity = {'object': status_data, 'type': 'Create'}
-
-        incoming.handle_create_status(activity)
-        status = models.Status.objects.last()
-        self.assertEqual(status.content, 'test content in note')
-        self.assertEqual(status.mention_users.first(), self.local_user)
-        self.assertTrue(
-            models.Notification.objects.filter(user=self.local_user).exists())
-        self.assertEqual(
-            models.Notification.objects.get().notification_type, 'MENTION')
-
-    def test_handle_create_status_remote_note_with_reply(self):
-        ''' should only create it under the right circumstances '''
-        self.assertEqual(models.Status.objects.count(), 1)
-        self.assertFalse(
-            models.Notification.objects.filter(user=self.local_user))
-
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_note.json')
-        status_data = json.loads(datafile.read_bytes())
-        del status_data['tag']
-        status_data['inReplyTo'] = self.status.remote_id
-        activity = {'object': status_data, 'type': 'Create'}
-
-        incoming.handle_create_status(activity)
-        status = models.Status.objects.last()
-        self.assertEqual(status.content, 'test content in note')
-        self.assertEqual(status.reply_parent, self.status)
-        self.assertTrue(
-            models.Notification.objects.filter(user=self.local_user))
-        self.assertEqual(
-            models.Notification.objects.get().notification_type, 'REPLY')
 
 
     def test_handle_delete_status(self):

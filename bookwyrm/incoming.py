@@ -53,14 +53,6 @@ def shared_inbox(request):
         'Accept': handle_follow_accept,
         'Reject': handle_follow_reject,
         'Block': handle_block,
-        'Create': {
-            'BookList': handle_create_list,
-            'Note': handle_create_status,
-            'Article': handle_create_status,
-            'Review': handle_create_status,
-            'Comment': handle_create_status,
-            'Quotation': handle_create_status,
-        },
         'Delete': handle_delete_status,
         'Like': handle_favorite,
         'Announce': handle_boost,
@@ -205,13 +197,6 @@ def handle_unblock(activity):
 
 
 @app.task
-def handle_create_list(activity):
-    ''' a new list '''
-    activity = activity['object']
-    activitypub.BookList(**activity).to_model(models.List)
-
-
-@app.task
 def handle_update_list(activity):
     ''' update a list '''
     try:
@@ -221,32 +206,6 @@ def handle_update_list(activity):
     activitypub.BookList(
         **activity['object']).to_model(models.List, instance=book_list)
 
-
-@app.task
-def handle_create_status(activity):
-    ''' someone did something, good on them '''
-    # deduplicate incoming activities
-    activity = activity['object']
-    status_id = activity.get('id')
-    if models.Status.objects.filter(remote_id=status_id).count():
-        return
-
-    try:
-        serializer = activitypub.activity_objects[activity['type']]
-    except KeyError:
-        return
-
-    activity = serializer(**activity)
-    try:
-        model = models.activity_models[activity.type]
-    except KeyError:
-        # not a type of status we are prepared to deserialize
-        return
-
-    status = activity.to_model(model)
-    if not status:
-        # it was discarded because it's not a bookwyrm type
-        return
 
 
 @app.task
