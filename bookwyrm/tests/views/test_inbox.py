@@ -566,10 +566,12 @@ class Inbox(TestCase):
         views.inbox.activity_task(activity)
 
 
-    def test_handle_add_book(self):
+    def test_handle_add_book_to_shelf(self):
         ''' shelving a book '''
+        work = models.Work.objects.create(title='work title')
         book = models.Edition.objects.create(
-            title='Test', remote_id='https://bookwyrm.social/book/37292')
+            title='Test', remote_id='https://bookwyrm.social/book/37292',
+            parent_work=work)
         shelf = models.Shelf.objects.create(
             user=self.remote_user, name='Test Shelf')
         shelf.remote_id = 'https://bookwyrm.social/user/mouse/shelf/to-read'
@@ -581,13 +583,15 @@ class Inbox(TestCase):
             "actor": "https://example.com/users/rat",
             "object": {
                 "type": "Edition",
+                "title": "Test Title",
+                "work": work.remote_id,
                 "id": "https://bookwyrm.social/book/37292",
             },
             "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
             "@context": "https://www.w3.org/ns/activitystreams"
         }
-        #views.inbox.activity_task(activity)
-        #self.assertEqual(shelf.books.first(), book)
+        views.inbox.activity_task(activity)
+        self.assertEqual(shelf.books.first(), book)
 
 
     def test_handle_update_user(self):

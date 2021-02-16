@@ -80,17 +80,10 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, instance=None, allow_create=True, save=True):
+    def to_model(self, model=None, instance=None, allow_create=True, save=True):
         ''' convert from an activity to a model instance '''
         # figure out the right model -- wish I had a better way for this
-        models = apps.get_models()
-        model = [m for m in models if hasattr(m, 'activity_serializer') and \
-            hasattr(m.activity_serializer, 'type') and \
-            m.activity_serializer.type == self.type]
-        if not len(model):
-            raise ActivitySerializerError(
-                'No model found for activity type "%s"' % self.type)
-        model = model[0]
+        model = model or get_model_from_type(self.type)
 
         if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
             return instance
@@ -156,6 +149,14 @@ class ActivityObject:
     def serialize(self):
         ''' convert to dictionary with context attr '''
         data = self.__dict__
+        # recursively serialize
+        for (k, v) in data.items():
+            try:
+                is_subclass = issubclass(v, ActivityObject)
+            except TypeError:
+                is_subclass = False
+            if is_subclass:
+                data[k] = v.serialize()
         data = {k:v for (k, v) in data.items() if v is not None}
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
@@ -207,11 +208,23 @@ def set_related_field(
             item.save()
 
 
-def resolve_remote_id(model, remote_id, refresh=False, save=True):
+def get_model_from_type(activity_type):
+    ''' given the activity, what type of model '''
+    models = apps.get_models()
+    model = [m for m in models if hasattr(m, 'activity_serializer') and \
+        hasattr(m.activity_serializer, 'type') and \
+        m.activity_serializer.type == activity_type]
+    if not len(model):
+        raise ActivitySerializerError(
+            'No model found for activity type "%s"' % activity_type)
+    return model[0]
+
+def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     ''' take a remote_id and return an instance, creating if necessary '''
-    result = model.find_existing_by_remote_id(remote_id)
-    if result and not refresh:
-        return result
+    if model:# a bonus check we can do if we already know the model
+        result = model.find_existing_by_remote_id(remote_id)
+        if result and not refresh:
+            return result
 
     # load the data and create the object
     try:
@@ -220,13 +233,15 @@ def resolve_remote_id(model, remote_id, refresh=False, save=True):
         raise ActivitySerializerError(
             'Could not connect to host for remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
+    # determine the model implicitly, if not provided
+    if not model:
+        model = get_model_from_type(data.get('type'))
 
     # check for existing items with shared unique identifiers
-    if not result:
-        result = model.find_existing(data)
-        if result and not refresh:
-            return result
+    result = model.find_existing(data)
+    if result and not refresh:
+        return result
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
-    return item.to_model(instance=result, save=save)
+    return item.to_model(model=model, instance=result, save=save)

@@ -122,13 +122,12 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
             return None
 
         related_model = self.related_model
-        if isinstance(value, dict) and value.get('id'):
+        if hasattr(value, 'id') and value.id:
             if not self.load_remote:
                 # only look in the local database
-                return related_model.find_existing(value)
+                return related_model.find_existing(value.serialize())
             # this is an activitypub object, which we can deserialize
-            activity_serializer = related_model.activity_serializer
-            return activity_serializer(**value).to_model()
+            return value.to_model(model=related_model)
         try:
             # make sure the value looks like a remote id
             validate_remote_id(value)
@@ -139,7 +138,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
         if not self.load_remote:
             # only look in the local database
             return related_model.find_existing_by_remote_id(value)
-        return activitypub.resolve_remote_id(related_model, value)
+        return activitypub.resolve_remote_id(value, model=related_model)
 
 
 class RemoteIdField(ActivitypubFieldMixin, models.CharField):
@@ -280,7 +279,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             except ValidationError:
                 continue
             items.append(
-                activitypub.resolve_remote_id(self.related_model, remote_id)
+                activitypub.resolve_remote_id(remote_id, model=self.related_model)
             )
         return items
 
@@ -317,7 +316,7 @@ class TagField(ManyToManyField):
                 # tags can contain multiple types
                 continue
             items.append(
-                activitypub.resolve_remote_id(self.related_model, link.href)
+                activitypub.resolve_remote_id(link.href, model=self.related_model)
             )
         return items
 

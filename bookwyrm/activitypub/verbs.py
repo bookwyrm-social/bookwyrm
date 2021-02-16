@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from .base_activity import ActivityObject, Signature
+from .base_activity import ActivityObject, Signature, resolve_remote_id
 from .book import Edition
 
 
@@ -113,19 +113,22 @@ class Reject(Verb):
 class Add(Verb):
     '''Add activity '''
     target: str
-    object: ActivityObject
+    object: Edition
     type: str = 'Add'
 
     def action(self):
         ''' add obj to collection '''
-        self.to_model()
+        target = resolve_remote_id(self.target, refresh=False)
+        # we want to related field that isn't the book, this is janky af sorry
+        model = [t for t in type(target)._meta.related_objects \
+                if t.name != 'edition'][0].related_model
+        self.to_model(model=model)
 
 
 @dataclass(init=False)
 class AddBook(Add):
     '''Add activity that's aware of the book obj '''
     object: Edition
-    type: str = 'Add'
 
 
 @dataclass(init=False)
