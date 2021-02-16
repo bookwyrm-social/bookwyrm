@@ -40,60 +40,6 @@ class Incoming(TestCase):
         self.factory = RequestFactory()
 
 
-    def test_inbox_invalid_get(self):
-        ''' shouldn't try to handle if the user is not found '''
-        request = self.factory.get('https://www.example.com/')
-        self.assertIsInstance(
-            incoming.inbox(request, 'anything'), HttpResponseNotAllowed)
-        self.assertIsInstance(
-            incoming.shared_inbox(request), HttpResponseNotAllowed)
-
-    def test_inbox_invalid_user(self):
-        ''' shouldn't try to handle if the user is not found '''
-        request = self.factory.post('https://www.example.com/')
-        self.assertIsInstance(
-            incoming.inbox(request, 'fish@tomato.com'), HttpResponseNotFound)
-
-    def test_inbox_invalid_no_object(self):
-        ''' json is missing "object" field '''
-        request = self.factory.post(
-            self.local_user.shared_inbox, data={})
-        self.assertIsInstance(
-            incoming.shared_inbox(request), HttpResponseBadRequest)
-
-    def test_inbox_invalid_bad_signature(self):
-        ''' bad request for invalid signature '''
-        request = self.factory.post(
-            self.local_user.shared_inbox,
-            '{"type": "Test", "object": "exists"}',
-            content_type='application/json')
-        with patch('bookwyrm.incoming.has_valid_signature') as mock_has_valid:
-            mock_has_valid.return_value = False
-            self.assertEqual(
-                incoming.shared_inbox(request).status_code, 401)
-
-    def test_inbox_invalid_bad_signature_delete(self):
-        ''' invalid signature for Delete is okay though '''
-        request = self.factory.post(
-            self.local_user.shared_inbox,
-            '{"type": "Delete", "object": "exists"}',
-            content_type='application/json')
-        with patch('bookwyrm.incoming.has_valid_signature') as mock_has_valid:
-            mock_has_valid.return_value = False
-            self.assertEqual(
-                incoming.shared_inbox(request).status_code, 200)
-
-    def test_inbox_unknown_type(self):
-        ''' never heard of that activity type, don't have a handler for it '''
-        request = self.factory.post(
-            self.local_user.shared_inbox,
-            '{"type": "Fish", "object": "exists"}',
-            content_type='application/json')
-        with patch('bookwyrm.incoming.has_valid_signature') as mock_has_valid:
-            mock_has_valid.return_value = True
-            self.assertIsInstance(
-                incoming.shared_inbox(request), HttpResponseNotFound)
-
     def test_inbox_success(self):
         ''' a known type, for which we start a task '''
         request = self.factory.post(

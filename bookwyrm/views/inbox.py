@@ -4,7 +4,6 @@ from urllib.parse import urldefrag
 
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
-from django.shortcuts import get_object_or_404
 from django.views import View
 import requests
 
@@ -26,10 +25,8 @@ class Inbox(View):
 
         # is it valid json? does it at least vaguely resemble an activity?
         try:
-            resp = request.body
-            activity_json = json.loads(resp)
-            activity_type = activity_json['type'] # Follow, Accept, Create, etc
-        except (json.decoder.JSONDecodeError, KeyError):
+            activity_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
             return HttpResponseBadRequest()
 
         # verify the signature
@@ -43,8 +40,7 @@ class Inbox(View):
 
         # get the activity dataclass from the type field
         try:
-            serializer = getattr(activitypub, activity_type)
-            serializer(**activity_json)
+            activitypub.parse(activity_json)
         except (AttributeError, activitypub.ActivitySerializerError):
             return HttpResponseNotFound()
 

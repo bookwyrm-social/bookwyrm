@@ -40,6 +40,17 @@ class Signature:
     signatureValue: str
     type: str = 'RsaSignature2017'
 
+def naive_parse(activity_objects, activity_json):
+    ''' this navigates circular import issues '''
+    try:
+        activity_type = activity_json['type']
+        print(activity_type)
+        serializer = activity_objects[activity_type]
+        print(serializer)
+    except KeyError:
+        raise ActivitySerializerError('Invalid type "%s"' % activity_type)
+
+    return serializer(activity_objects=activity_objects, **activity_json)
 
 @dataclass(init=False)
 class ActivityObject:
@@ -47,13 +58,17 @@ class ActivityObject:
     id: str
     type: str
 
-    def __init__(self, **kwargs):
+    def __init__(self, activity_objects=None, **kwargs):
         ''' this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value '''
         for field in fields(self):
             try:
+                print(field.name, field.type)
                 value = kwargs[field.name]
+                if field.type == 'ActivityObject' and activity_objects:
+                    value = naive_parse(activity_objects, value)
+
             except KeyError:
                 if field.default == MISSING and \
                         field.default_factory == MISSING:
