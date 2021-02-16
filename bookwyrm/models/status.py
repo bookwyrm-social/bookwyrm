@@ -102,6 +102,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     @classmethod
     def ignore_activity(cls, activity):
         ''' keep notes if they are replies to existing statuses '''
+        if activity.type == 'Announce':
+            # keep it if the booster or the boosted are local
+            boosted = activitypub.resolve_remote_id(activity.object, save=False)
+            return cls.ignore_activity(boosted.to_activity_dataclass())
+
+        # keep if it if it's a custom type
         if activity.type != 'Note':
             return False
         if cls.objects.filter(
@@ -112,8 +118,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if activity.tag == MISSING or activity.tag is None:
             return True
         tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+        user_model = apps.get_model('bookwyrm.User', require_ready=True)
         for tag in tags:
-            user_model = apps.get_model('bookwyrm.User', require_ready=True)
             if user_model.objects.filter(
                     remote_id=tag, local=True).exists():
                 # we found a mention of a known use boost

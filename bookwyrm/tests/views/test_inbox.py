@@ -519,7 +519,7 @@ class Inbox(TestCase):
             'type': 'Announce',
             'id': '%s/boost' % self.status.remote_id,
             'actor': self.remote_user.remote_id,
-            'object': self.status.to_activity(),
+            'object': self.status.remote_id,
         }
         with patch('bookwyrm.models.status.Status.ignore_activity') \
                 as discarder:
@@ -535,16 +535,21 @@ class Inbox(TestCase):
     @responses.activate
     def test_handle_discarded_boost(self):
         ''' test a boost of a mastodon status that will be discarded '''
+        status = models.Status(
+            content='hi',
+            user=self.remote_user,
+        )
+        status.save(broadcast=False)
         activity = {
             'type': 'Announce',
             'id': 'http://www.faraway.com/boost/12',
             'actor': self.remote_user.remote_id,
-            'object': self.status.to_activity(),
+            'object': status.remote_id,
         }
         responses.add(
             responses.GET,
-            'http://www.faraway.com/boost/12',
-            json={'id': 'http://www.faraway.com/boost/12'},
+            status.remote_id,
+            json=status.to_activity(),
             status=200)
         views.inbox.activity_task(activity)
         self.assertEqual(models.Boost.objects.count(), 0)

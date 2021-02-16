@@ -156,10 +156,14 @@ class ActivitypubMixin:
         return recipients
 
 
-    def to_activity(self):
+    def to_activity_dataclass(self):
         ''' convert from a model to an activity '''
         activity = generate_activity(self)
-        return self.activity_serializer(**activity).serialize()
+        return self.activity_serializer(**activity)
+
+    def to_activity(self):
+        ''' convert from a model to a json activity '''
+        return self.to_activity_dataclass().serialize()
 
 
 class ObjectMixin(ActivitypubMixin):
