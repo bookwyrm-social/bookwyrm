@@ -8,7 +8,6 @@ from .base_activity import ActivitySerializerError, resolve_remote_id
 from .image import Image
 from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
 from .note import Tombstone
-from .interaction import Boost, Like
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .ordered_collection import BookList, Shelf
 from .person import Person, PublicKey
@@ -17,6 +16,7 @@ from .book import Edition, Work, Author
 from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject, Block
 from .verbs import Add, AddBook, AddListItem, Remove
+from .verbs import Announce, Like
 
 # this creates a list of all the Activity types that we can serialize,
 # so when an Activity comes in from outside, we can check if it's known

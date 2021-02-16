@@ -95,9 +95,10 @@ class ActivityObject:
         if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
             return instance
 
-        # check for an existing instance, if we're not updating a known obj
+        # check for an existing instance
         instance = instance or model.find_existing(self.serialize())
         if not instance and not allow_create:
+            # so that we don't create when we want to delete or update
             return None
         instance = instance or model()
 
@@ -197,7 +198,7 @@ def set_related_field(
                 getattr(model_field, 'activitypub_field'),
                 instance.remote_id
             )
-        item = activity.to_model(model)
+        item = activity.to_model()
 
         # if the related field isn't serialized (attachments on Status), then
         # we have to set it post-creation
@@ -228,4 +229,4 @@ def resolve_remote_id(model, remote_id, refresh=False, save=True):
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
-    return item.to_model(model, instance=result, save=save)
+    return item.to_model(instance=result, save=save)

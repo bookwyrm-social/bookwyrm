@@ -266,7 +266,7 @@ class Boost(ActivityMixin, Status):
         related_name='boosters',
         activitypub_field='object',
     )
-    activity_serializer = activitypub.Boost
+    activity_serializer = activitypub.Announce
 
     def save(self, *args, **kwargs):
         ''' save and notify '''

@@ -68,12 +68,20 @@ class Follow(Verb):
     object: str
     type: str = 'Follow'
 
+    def action(self):
+        ''' relationship save '''
+        self.to_model()
+
 
 @dataclass(init=False)
 class Block(Verb):
     ''' Block activity '''
     object: str
     type: str = 'Block'
+
+    def action(self):
+        ''' relationship save '''
+        self.to_model()
 
 
 @dataclass(init=False)
@@ -107,6 +115,10 @@ class Add(Verb):
     object: ActivityObject
     type: str = 'Add'
 
+    def action(self):
+        ''' add obj to collection '''
+        self.to_model()
+
 
 @dataclass(init=False)
 class AddBook(Add):
@@ -133,3 +145,25 @@ class Remove(Verb):
         ''' find and remove the activity object '''
         obj = self.object.to_model(save=False, allow_create=False)
         obj.delete()
+
+
+@dataclass(init=False)
+class Like(Verb):
+    ''' a user faving an object '''
+    object: str
+    type: str = 'Like'
+
+    def action(self):
+        ''' like '''
+        self.to_model()
+
+
+@dataclass(init=False)
+class Announce(Verb):
+    ''' boosting a status '''
+    object: str
+    type: str = 'Announce'
+
+    def action(self):
+        ''' boost '''
+        self.to_model()
