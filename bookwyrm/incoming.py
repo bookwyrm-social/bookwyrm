@@ -160,14 +160,12 @@ def handle_follow_accept(activity):
     accepter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
     try:
-        request = models.UserFollowRequest.objects.get(
+        models.UserFollowRequest.objects.get(
             user_subject=requester,
             user_object=accepter
-        )
-        request.delete()
+        ).accept()
     except models.UserFollowRequest.DoesNotExist:
-        pass
-    accepter.followers.add(requester)
+        return
 
 
 @app.task
@@ -176,12 +174,13 @@ def handle_follow_reject(activity):
     requester = models.User.objects.get(remote_id=activity['object']['actor'])
     rejecter = activitypub.resolve_remote_id(models.User, activity['actor'])
 
-    request = models.UserFollowRequest.objects.get(
-        user_subject=requester,
-        user_object=rejecter
-    )
-    request.delete()
-    #raises models.UserFollowRequest.DoesNotExist
+    try:
+        models.UserFollowRequest.objects.get(
+            user_subject=requester,
+            user_object=rejecter
+        ).reject()
+    except models.UserFollowRequest.DoesNotExist:
+        return
 
 @app.task
 def handle_block(activity):

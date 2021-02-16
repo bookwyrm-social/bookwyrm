@@ -11,6 +11,7 @@ from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
 from .goal import Goal
 from .import_data import Import, ImportStatus
+from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .invite import ManageInvites, Invite
 from .landing import About, Home, Discover

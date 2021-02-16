@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 
-from bookwyrm import incoming, settings, views, wellknown
+from bookwyrm import settings, views, wellknown
 from bookwyrm.utils import regex
 
 user_path = r'^user/(?P<username>%s)' % regex.username
@@ -29,8 +29,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # federation endpoints
-    re_path(r'^inbox/?$', incoming.shared_inbox),
-    re_path(r'%s/inbox/?$' % local_user_path, incoming.inbox),
+    re_path(r'^inbox/?$', views.Inbox.as_view()),
+    re_path(r'%s/inbox/?$' % local_user_path, views.Inbox.as_view()),
     re_path(r'%s/outbox/?$' % local_user_path, views.Outbox.as_view()),
     re_path(r'^.well-known/webfinger/?$', wellknown.webfinger),
     re_path(r'^.well-known/nodeinfo/?$', wellknown.nodeinfo_pointer),
