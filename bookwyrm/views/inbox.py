@@ -56,7 +56,7 @@ def activity_task(activity_json):
     try:
         activity = activitypub.parse(activity_json)
     except activitypub.ActivitySerializerError:
-        raise#return
+        return
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)

@@ -100,7 +100,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
         if self.user_object.local:
             manually_approves = self.user_object.manually_approves_followers
-            if manually_approves:
+            if not manually_approves:
                 self.accept()
 
             model = apps.get_model('bookwyrm.Notification', require_ready=True)

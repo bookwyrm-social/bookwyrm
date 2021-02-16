@@ -246,8 +246,9 @@ class Inbox(TestCase):
             "object": "https://example.com/user/mouse"
         }
 
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') as mock:
             views.inbox.activity_task(activity)
+            self.assertEqual(mock.call_count, 1)
 
         # notification created
         notification = models.Notification.objects.get()
@@ -255,8 +256,7 @@ class Inbox(TestCase):
         self.assertEqual(notification.notification_type, 'FOLLOW')
 
         # the request should have been deleted
-        requests = models.UserFollowRequest.objects.all()
-        self.assertEqual(list(requests), [])
+        self.assertFalse(models.UserFollowRequest.objects.exists())
 
         # the follow relationship should exist
         follow = models.UserFollows.objects.get(user_object=self.local_user)
@@ -317,24 +317,24 @@ class Inbox(TestCase):
 
     def test_handle_follow_accept(self):
         ''' a remote user approved a follow request from local '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            rel = models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/users/rat/follows/123#accepts",
             "type": "Accept",
             "actor": "https://example.com/users/rat",
             "object": {
-                "id": "https://example.com/users/rat/follows/123",
+                "id": rel.remote_id,
                 "type": "Follow",
                 "actor": "https://example.com/user/mouse",
                 "object": "https://example.com/users/rat"
             }
         }
 
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            models.UserFollowRequest.objects.create(
-                user_subject=self.local_user,
-                user_object=self.remote_user
-            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         views.inbox.activity_task(activity)
@@ -350,24 +350,24 @@ class Inbox(TestCase):
 
     def test_handle_follow_reject(self):
         ''' turn down a follow request '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            rel = models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user
+            )
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/users/rat/follows/123#accepts",
             "type": "Reject",
             "actor": "https://example.com/users/rat",
             "object": {
-                "id": "https://example.com/users/rat/follows/123",
+                "id": rel.remote_id,
                 "type": "Follow",
                 "actor": "https://example.com/user/mouse",
                 "object": "https://example.com/users/rat"
             }
         }
 
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            models.UserFollowRequest.objects.create(
-                user_subject=self.local_user,
-                user_object=self.remote_user
-            )
         self.assertEqual(models.UserFollowRequest.objects.count(), 1)
 
         views.inbox.activity_task(activity)
