@@ -50,6 +50,7 @@ def naive_parse(activity_objects, activity_json):
 
     return serializer(activity_objects=activity_objects, **activity_json)
 
+
 @dataclass(init=False)
 class ActivityObject:
     ''' actor activitypub json '''
@@ -79,7 +80,7 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, instance=None, save=True):
+    def to_model(self, instance=None, allow_create=True, save=True):
         ''' convert from an activity to a model instance '''
         # figure out the right model -- wish I had a better way for this
         models = apps.get_models()
@@ -95,7 +96,10 @@ class ActivityObject:
             return instance
 
         # check for an existing instance, if we're not updating a known obj
-        instance = instance or model.find_existing(self.serialize()) or model()
+        instance = instance or model.find_existing(self.serialize())
+        if not instance and not allow_create:
+            return None
+        instance = instance or model()
 
         for field in instance.simple_fields:
             field.set_field_from_activity(instance, self)

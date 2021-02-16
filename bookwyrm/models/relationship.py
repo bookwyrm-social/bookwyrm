@@ -56,11 +56,9 @@ class UserRelationship(BookWyrmModel):
         return '%s#%s/%d' % (base_path, status, self.id)
 
 
-class UserFollows(ActivitypubMixin, UserRelationship):
+class UserFollows(UserRelationship):
     ''' Following a user '''
     status = 'follows'
-    activity_serializer = activitypub.Follow
-
 
     @classmethod
     def from_request(cls, follow_request):
@@ -101,9 +99,13 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             self.broadcast(self.to_activity(), self.user_subject)
 
         if self.user_object.local:
+            manually_approves = self.user_object.manually_approves_followers
+            if manually_approves:
+                self.accept()
+
             model = apps.get_model('bookwyrm.Notification', require_ready=True)
-            notification_type = 'FOLLOW_REQUEST' \
-                if self.user_object.manually_approves_followers else 'FOLLOW'
+            notification_type = 'FOLLOW_REQUEST' if \
+                    manually_approves else 'FOLLOW'
             model.objects.create(
                 user=self.user_object,
                 related_user=self.user_subject,

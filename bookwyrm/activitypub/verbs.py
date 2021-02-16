@@ -12,6 +12,10 @@ class Verb(ActivityObject):
     actor: str
     object: ActivityObject
 
+    def action(self):
+        ''' usually we just want to save, this can be overridden as needed '''
+        self.object.to_model()
+
 
 @dataclass(init=False)
 class Create(Verb):
@@ -21,10 +25,6 @@ class Create(Verb):
     signature: Signature = None
     type: str = 'Create'
 
-    def action(self):
-        ''' create the model instance from the dataclass '''
-        self.object.to_model()
-
 
 @dataclass(init=False)
 class Delete(Verb):
@@ -33,6 +33,12 @@ class Delete(Verb):
     cc: List
     type: str = 'Delete'
 
+    def action(self):
+        ''' find and delete the activity object '''
+        obj = self.object.to_model(save=False, allow_create=False)
+        obj.delete()
+
+
 
 @dataclass(init=False)
 class Update(Verb):
@@ -40,11 +46,20 @@ class Update(Verb):
     to: List
     type: str = 'Update'
 
+    def action(self):
+        ''' update a model instance from the dataclass '''
+        self.object.to_model(allow_create=False)
+
 
 @dataclass(init=False)
 class Undo(Verb):
     ''' Undo an activity '''
     type: str = 'Undo'
+
+    def action(self):
+        ''' find and remove the activity object '''
+        obj = self.object.to_model(save=False, allow_create=False)
+        obj.delete()
 
 
 @dataclass(init=False)
@@ -53,11 +68,13 @@ class Follow(Verb):
     object: str
     type: str = 'Follow'
 
+
 @dataclass(init=False)
 class Block(Verb):
     ''' Block activity '''
     object: str
     type: str = 'Block'
+
 
 @dataclass(init=False)
 class Accept(Verb):
@@ -65,12 +82,22 @@ class Accept(Verb):
     object: Follow
     type: str = 'Accept'
 
+    def action(self):
+        ''' find and remove the activity object '''
+        obj = self.object.to_model(save=False, allow_create=False)
+        obj.accept()
+
 
 @dataclass(init=False)
 class Reject(Verb):
     ''' Reject activity '''
     object: Follow
     type: str = 'Reject'
+
+    def action(self):
+        ''' find and remove the activity object '''
+        obj = self.object.to_model(save=False, allow_create=False)
+        obj.reject()
 
 
 @dataclass(init=False)
@@ -101,3 +128,8 @@ class Remove(Verb):
     '''Remove activity '''
     target: ActivityObject
     type: str = 'Remove'
+
+    def action(self):
+        ''' find and remove the activity object '''
+        obj = self.object.to_model(save=False, allow_create=False)
+        obj.delete()
