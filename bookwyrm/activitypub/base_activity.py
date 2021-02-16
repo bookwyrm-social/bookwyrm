@@ -47,8 +47,8 @@ def naive_parse(activity_objects, activity_json):
         print(activity_type)
         serializer = activity_objects[activity_type]
         print(serializer)
-    except KeyError:
-        raise ActivitySerializerError('Invalid type "%s"' % activity_type)
+    except KeyError as e:
+        raise ActivitySerializerError(e)
 
     return serializer(activity_objects=activity_objects, **activity_json)
 
@@ -66,7 +66,11 @@ class ActivityObject:
             try:
                 print(field.name, field.type)
                 value = kwargs[field.name]
-                if field.type == 'ActivityObject' and activity_objects:
+                try:
+                    is_subclass = issubclass(field.type, ActivityObject)
+                except TypeError:
+                    is_subclass = False
+                if is_subclass and activity_objects:
                     value = naive_parse(activity_objects, value)
 
             except KeyError:
@@ -78,22 +82,17 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, model, instance=None, save=True):
+    def to_model(self, instance=None, save=True):
         ''' convert from an activity to a model instance '''
-        if self.type != model.activity_serializer.type:
+        # figure out the right model -- wish I had a better way for this
+        models = apps.get_models()
+        model = [m for m in models if hasattr(m, 'activity_serializer') and \
+            hasattr(m.activity_serializer, 'type') and \
+            m.activity_serializer.type == self.type]
+        if not len(model):
             raise ActivitySerializerError(
-                'Wrong activity type "%s" for activity of type "%s"' % \
-                        (model.activity_serializer.type,
-                         self.type)
-            )
-
-        if not isinstance(self, model.activity_serializer):
-            raise ActivitySerializerError(
-                'Wrong activity type "%s" for model "%s" (expects "%s")' % \
-                        (self.__class__,
-                         model.__name__,
-                         model.activity_serializer)
-            )
+                'No model found for activity type "%s"' % self.type)
+        model = model[0]
 
         if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
             return instance

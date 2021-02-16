@@ -87,16 +87,41 @@ class Inbox(TestCase):
     def test_inbox_success(self):
         ''' a known type, for which we start a task '''
         activity = {
-            "id": "hi",
-            "type": "Accept",
-            "actor": "https://example.com/users/rat",
-            "object": "https://example.com/user/mouse"
+            'id': 'hi',
+            'type': 'Create',
+            'actor': 'hi',
+            "to": [
+                "https://www.w3.org/ns/activitystreams#Public"
+            ],
+            "cc": [
+                "https://example.com/user/mouse/followers"
+            ],
+            'object': {
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
         }
         with patch('bookwyrm.views.inbox.has_valid_signature') as mock_valid:
             mock_valid.return_value = True
-            result = self.client.post(
-                '/inbox',
-                json.dumps(activity),
-                content_type="application/json"
-            )
+
+            with patch('bookwyrm.views.inbox.activity_task.delay'):
+                result = self.client.post(
+                    '/inbox',
+                    json.dumps(activity),
+                    content_type="application/json"
+                )
         self.assertEqual(result.status_code, 200)

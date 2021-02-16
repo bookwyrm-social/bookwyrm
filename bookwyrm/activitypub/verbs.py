@@ -21,6 +21,11 @@ class Create(Verb):
     signature: Signature = None
     type: str = 'Create'
 
+    def action(self):
+        ''' create the model instance from the dataclass '''
+        # check for dupes
+        self.object.to_model()
+
 
 @dataclass(init=False)
 class Delete(Verb):
@@ -46,11 +51,13 @@ class Undo(Verb):
 @dataclass(init=False)
 class Follow(Verb):
     ''' Follow activity '''
+    object: str
     type: str = 'Follow'
 
 @dataclass(init=False)
 class Block(Verb):
     ''' Block activity '''
+    object: str
     type: str = 'Block'
 
 @dataclass(init=False)

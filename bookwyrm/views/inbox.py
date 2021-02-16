@@ -8,6 +8,7 @@ from django.views import View
 import requests
 
 from bookwyrm import activitypub, models
+from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 
 
@@ -38,13 +39,28 @@ class Inbox(View):
                 return HttpResponse()
             return HttpResponse(status=401)
 
-        # get the activity dataclass from the type field
-        try:
-            activitypub.parse(activity_json)
-        except (AttributeError, activitypub.ActivitySerializerError):
+        # just some quick smell tests before we try to parse the json
+        if not 'object' in activity_json or \
+                not 'type' in activity_json or \
+                not activity_json['type'] in activitypub.activity_objects:
             return HttpResponseNotFound()
 
+        activity_task.delay()
         return HttpResponse()
+
+
+@app.task
+def activity_task(activity_json):
+    ''' do something with this json we think is legit '''
+    # lets see if the activitypub module can make sense of this json
+    try:
+        activity = activitypub.parse(activity_json)
+    except activitypub.ActivitySerializerError:
+        return
+
+    # cool that worked, now we should do the action described by the type
+    # (create, update, delete, etc)
+    activity.action()
 
 
 def has_valid_signature(request, activity):
