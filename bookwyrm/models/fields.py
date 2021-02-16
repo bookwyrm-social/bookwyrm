@@ -128,7 +128,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
                 return related_model.find_existing(value)
             # this is an activitypub object, which we can deserialize
             activity_serializer = related_model.activity_serializer
-            return activity_serializer(**value).to_model(related_model)
+            return activity_serializer(**value).to_model()
         try:
             # make sure the value looks like a remote id
             validate_remote_id(value)

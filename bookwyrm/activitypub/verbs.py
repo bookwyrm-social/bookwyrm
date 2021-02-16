@@ -5,6 +5,7 @@ from typing import List
 from .base_activity import ActivityObject, Signature
 from .book import Edition
 
+
 @dataclass(init=False)
 class Verb(ActivityObject):
     ''' generic fields for activities - maybe an unecessary level of

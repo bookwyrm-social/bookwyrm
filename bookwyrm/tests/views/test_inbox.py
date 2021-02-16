@@ -424,7 +424,7 @@ class Inbox(TestCase):
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
             'actor': self.remote_user.remote_id,
-            'object': {'id': self.status.remote_id},
+            'object': {'id': self.status.remote_id, 'type': 'Tombstone'},
         }
         views.inbox.activity_task(activity)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -453,7 +453,7 @@ class Inbox(TestCase):
             'type': 'Delete',
             'id': '%s/activity' % self.status.remote_id,
             'actor': self.remote_user.remote_id,
-            'object': {'id': self.status.remote_id},
+            'object': {'id': self.status.remote_id, 'type': 'Tombstone'},
         }
         views.inbox.activity_task(activity)
         # deletion doens't remove the status, it turns it into a tombstone
@@ -472,6 +472,7 @@ class Inbox(TestCase):
             '@context': 'https://www.w3.org/ns/activitystreams',
             'id': 'https://example.com/fav/1',
             'actor': 'https://example.com/users/rat',
+            'type': 'Like',
             'published': 'Mon, 25 May 2020 19:31:20 GMT',
             'object': 'https://example.com/status/1',
         }
@@ -492,6 +493,7 @@ class Inbox(TestCase):
                 '@context': 'https://www.w3.org/ns/activitystreams',
                 'id': 'https://example.com/fav/1',
                 'actor': 'https://example.com/users/rat',
+                'type': 'Like',
                 'published': 'Mon, 25 May 2020 19:31:20 GMT',
                 'object': 'https://example.com/fav/1',
             }

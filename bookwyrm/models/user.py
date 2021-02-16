@@ -364,4 +364,4 @@ def get_remote_reviews(outbox):
     for activity in data['orderedItems']:
         if not activity['type'] == 'Review':
             continue
-        activitypub.Review(**activity).to_model(Review)
+        activitypub.Review(**activity).to_model()

@@ -8,8 +8,6 @@ from .image import Image
 @dataclass(init=False)
 class Tombstone(ActivityObject):
     ''' the placeholder for a deleted status '''
-    published: str
-    deleted: str
     type: str = 'Tombstone'
 
 
