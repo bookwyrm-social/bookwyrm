@@ -1,6 +1,7 @@
 ''' note serializer and children thereof '''
 from dataclasses import dataclass, field
 from typing import Dict, List
+from django.apps import apps
 
 from .base_activity import ActivityObject, Link
 from .image import Image
@@ -9,6 +10,11 @@ from .image import Image
 class Tombstone(ActivityObject):
     ''' the placeholder for a deleted status '''
     type: str = 'Tombstone'
+
+    def to_model(self, *args, **kwargs):
+        ''' this should never really get serialized, just searched for '''
+        model = apps.get_model('bookwyrm.Status')
+        return model.find_existing_by_remote_id(self.id)
 
 
 @dataclass(init=False)

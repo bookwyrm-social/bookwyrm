@@ -84,6 +84,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 related_status=self,
             )
 
+    def delete(self, *args, **kwargs):
+        ''' "delete" a status '''
+        self.deleted = True
+        self.deleted_date = timezone.now()
+        self.save()
+
     @property
     def recipients(self):
         ''' tagged users who definitely need to get this status in broadcast '''

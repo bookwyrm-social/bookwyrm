@@ -422,6 +422,8 @@ class Inbox(TestCase):
         self.assertFalse(self.status.deleted)
         activity = {
             'type': 'Delete',
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
             'id': '%s/activity' % self.status.remote_id,
             'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id, 'type': 'Tombstone'},
@@ -451,6 +453,8 @@ class Inbox(TestCase):
         self.assertEqual(models.Notification.objects.count(), 2)
         activity = {
             'type': 'Delete',
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
             'id': '%s/activity' % self.status.remote_id,
             'actor': self.remote_user.remote_id,
             'object': {'id': self.status.remote_id, 'type': 'Tombstone'},
