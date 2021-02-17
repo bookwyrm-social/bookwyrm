@@ -236,7 +236,7 @@ class Inbox(TestCase):
         self.assertEqual(book_list.remote_id, 'https://example.com/list/22')
 
 
-    def test_handle_follow(self):
+    def test_handle_follow_x(self):
         ''' remote user wants to follow local user '''
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -246,7 +246,9 @@ class Inbox(TestCase):
             "object": "https://example.com/user/mouse"
         }
 
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') as mock:
+        self.assertFalse(models.UserFollowRequest.objects.exists())
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             views.inbox.activity_task(activity)
             self.assertEqual(mock.call_count, 1)
 
@@ -736,6 +738,6 @@ class Inbox(TestCase):
                 "type": "Block",
                 "actor": "https://example.com/users/rat",
                 "object": "https://example.com/user/mouse"
-        }}
+            }}
         views.inbox.activity_task(activity)
         self.assertFalse(models.UserBlocks.objects.exists())

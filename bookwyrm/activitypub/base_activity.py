@@ -79,8 +79,10 @@ class ActivityObject:
                     value = value.to_activity()
                 # parse a dict into the appropriate activity
                 elif is_subclass and isinstance(value, dict):
-                    value = naive_parse(
-                        activity_objects, value, serializer=field.type)
+                    if activity_objects:
+                        value = naive_parse(activity_objects, value)
+                    else:
+                        value = naive_parse(activity_objects, value, serializer=field.type)
 
             except KeyError:
                 if field.default == MISSING and \

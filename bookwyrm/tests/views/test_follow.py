@@ -135,6 +135,8 @@ class BookViews(TestCase):
 
     def test_handle_reject(self):
         ''' reject a follow request '''
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(

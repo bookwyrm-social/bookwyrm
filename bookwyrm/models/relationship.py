@@ -105,10 +105,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
             pass
 
-        # this was calling itself which is not my idea of "super" ...
-        if not self.id:
-            super().save(*args, **kwargs)
-            return
+        super().save(*args, **kwargs)
 
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
