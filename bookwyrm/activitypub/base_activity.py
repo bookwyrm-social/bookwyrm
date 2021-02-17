@@ -162,15 +162,14 @@ class ActivityObject:
 
     def serialize(self):
         ''' convert to dictionary with context attr '''
-        data = self.__dict__
+        data = self.__dict__.copy()
         # recursively serialize
         for (k, v) in data.items():
             try:
-                is_subclass = issubclass(type(v), ActivityObject)
+                if issubclass(type(v), ActivityObject):
+                    data[k] = v.serialize()
             except TypeError:
-                is_subclass = False
-            if is_subclass:
-                data[k] = v.serialize()
+                pass
         data = {k:v for (k, v) in data.items() if v is not None}
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
