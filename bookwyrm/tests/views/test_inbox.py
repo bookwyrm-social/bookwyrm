@@ -391,6 +391,9 @@ class Inbox(TestCase):
                 name='hi', remote_id='https://example.com/list/22',
                 user=self.local_user)
         activity = {
+            'type': 'Update',
+            'to': [], 'cc': [], 'actor': 'hi',
+            'id': 'sdkjf',
             'object': {
                 "id": "https://example.com/list/22",
                 "type": "BookList",
@@ -617,11 +620,16 @@ class Inbox(TestCase):
         self.local_user.save()
 
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/ap_user.json')
+            '../data/ap_user.json')
         userdata = json.loads(datafile.read_bytes())
         del userdata['icon']
         self.assertIsNone(self.local_user.name)
-        views.inbox.activity_task({'object': userdata})
+        views.inbox.activity_task({
+            'type': 'Update',
+            'to': [], 'cc': [], 'actor': 'hi',
+            'id': 'sdkjf',
+            'object': userdata
+        })
         user = models.User.objects.get(id=self.local_user.id)
         self.assertEqual(user.name, 'MOUSE?? MOUSE!!')
         self.assertEqual(user.username, 'mouse@example.com')
@@ -631,7 +639,7 @@ class Inbox(TestCase):
     def test_handle_update_edition(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/bw_edition.json')
+            '../data/bw_edition.json')
         bookdata = json.loads(datafile.read_bytes())
 
         models.Work.objects.create(
@@ -644,7 +652,12 @@ class Inbox(TestCase):
 
         with patch(
                 'bookwyrm.activitypub.base_activity.set_related_field.delay'):
-            views.inbox.activity_task({'object': bookdata})
+            views.inbox.activity_task({
+                'type': 'Update',
+                'to': [], 'cc': [], 'actor': 'hi',
+                'id': 'sdkjf',
+                'object': bookdata
+            })
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, 'Piranesi')
 
@@ -652,7 +665,7 @@ class Inbox(TestCase):
     def test_handle_update_work(self):
         ''' update an existing edition '''
         datafile = pathlib.Path(__file__).parent.joinpath(
-            'data/bw_work.json')
+            '../data/bw_work.json')
         bookdata = json.loads(datafile.read_bytes())
 
         book = models.Work.objects.create(
@@ -662,7 +675,12 @@ class Inbox(TestCase):
         self.assertEqual(book.title, 'Test Book')
         with patch(
                 'bookwyrm.activitypub.base_activity.set_related_field.delay'):
-            views.inbox.activity_task({'object': bookdata})
+            views.inbox.activity_task({
+                'type': 'Update',
+                'to': [], 'cc': [], 'actor': 'hi',
+                'id': 'sdkjf',
+                'object': bookdata
+            })
         book = models.Work.objects.get(id=book.id)
         self.assertEqual(book.title, 'Piranesi')
 

@@ -42,6 +42,9 @@ class Signature:
 
 def naive_parse(activity_objects, activity_json):
     ''' this navigates circular import issues '''
+    if activity_json.get('publicKeyPem'):
+        # ugh
+        activity_json['type'] = 'PublicKey'
     try:
         activity_type = activity_json['type']
         serializer = activity_objects[activity_type]
@@ -82,7 +85,6 @@ class ActivityObject:
 
     def to_model(self, model=None, instance=None, allow_create=True, save=True):
         ''' convert from an activity to a model instance '''
-        # figure out the right model -- wish I had a better way for this
         model = model or get_model_from_type(self.type)
 
         # only reject statuses if we're potentially creating them
