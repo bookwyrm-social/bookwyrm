@@ -104,7 +104,6 @@ class BookViews(TestCase):
         request.user = self.local_user
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
-        # need to see if this ACTUALLY broadcasts
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
                 as mock:
             views.unfollow(request)

@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin, generate_activity
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -56,9 +56,19 @@ class UserRelationship(BookWyrmModel):
         return '%s#%s/%d' % (base_path, status, self.id)
 
 
-class UserFollows(ActivitypubMixin, UserRelationship):
+class UserFollows(ActivityMixin, UserRelationship):
     ''' Following a user '''
     status = 'follows'
+
+    def save(self, *args, **kwargs):
+        ''' never broadcast a creation (that's handled by "accept"), only a
+            deletion (an unfollow, as opposed to "reject" and undo pending) '''
+        super().save(*args, broadcast=False, **kwargs)
+
+    def to_activity(self):
+        ''' overrides default to manually set serializer '''
+        return activitypub.Follow(**generate_activity(self))
+
 
     @classmethod
     def from_request(cls, follow_request):
