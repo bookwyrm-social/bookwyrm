@@ -84,7 +84,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 related_status=self,
             )
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs):#pylint: disable=unused-argument
         ''' "delete" a status '''
         self.deleted = True
         self.deleted_date = timezone.now()

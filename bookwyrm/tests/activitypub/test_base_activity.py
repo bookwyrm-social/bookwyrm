@@ -79,7 +79,7 @@ class BaseActivity(TestCase):
     def test_resolve_remote_id(self):
         ''' look up or load remote data '''
         # existing item
-        result = resolve_remote_id(models.User, 'http://example.com/a/b')
+        result = resolve_remote_id('http://example.com/a/b', model=models.User)
         self.assertEqual(result, self.user)
 
         # remote item
@@ -91,7 +91,7 @@ class BaseActivity(TestCase):
 
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             result = resolve_remote_id(
-                models.User, 'https://example.com/user/mouse')
+                'https://example.com/user/mouse', model=models.User)
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.remote_id, 'https://example.com/user/mouse')
         self.assertEqual(result.name, 'MOUSE?? MOUSE!!')

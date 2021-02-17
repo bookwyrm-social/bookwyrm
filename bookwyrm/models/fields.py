@@ -279,7 +279,8 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
             except ValidationError:
                 continue
             items.append(
-                activitypub.resolve_remote_id(remote_id, model=self.related_model)
+                activitypub.resolve_remote_id(
+                    remote_id, model=self.related_model)
             )
         return items
 
@@ -316,7 +317,8 @@ class TagField(ManyToManyField):
                 # tags can contain multiple types
                 continue
             items.append(
-                activitypub.resolve_remote_id(link.href, model=self.related_model)
+                activitypub.resolve_remote_id(
+                    link.href, model=self.related_model)
             )
         return items
 
