@@ -86,6 +86,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     def delete(self, *args, **kwargs):#pylint: disable=unused-argument
         ''' "delete" a status '''
+        if hasattr(self, 'boosted_status'):
+            # okay but if it's a boost really delete it
+            super().delete(*args, **kwargs)
+            return
         self.deleted = True
         self.deleted_date = timezone.now()
         self.save()
