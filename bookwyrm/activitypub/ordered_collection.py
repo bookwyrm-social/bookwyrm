@@ -39,6 +39,6 @@ class OrderedCollectionPage(ActivityObject):
     ''' structure of an ordered collection activity '''
     partOf: str
     orderedItems: List
-    next: str
-    prev: str
+    next: str = None
+    prev: str = None
     type: str = 'OrderedCollectionPage'
