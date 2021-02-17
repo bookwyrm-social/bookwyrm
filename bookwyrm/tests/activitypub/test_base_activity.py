@@ -100,7 +100,7 @@ class BaseActivity(TestCase):
         ''' catch mismatch between activity type and model type '''
         instance = ActivityObject(id='a', type='b')
         with self.assertRaises(ActivitySerializerError):
-            instance.to_model(models.User)
+            instance.to_model(model=models.User)
 
     def test_to_model_simple_fields(self):
         ''' test setting simple fields '''
@@ -118,7 +118,7 @@ class BaseActivity(TestCase):
             endpoints={},
         )
 
-        activity.to_model(models.User, self.user)
+        activity.to_model(model=models.User, instance=self.user)
 
         self.assertEqual(self.user.name, 'New Name')
 
@@ -136,9 +136,9 @@ class BaseActivity(TestCase):
             endpoints={},
         )
 
-        activity.publicKey['publicKeyPem'] = 'hi im secure'
+        activity.publicKey.publicKeyPem = 'hi im secure'
 
-        activity.to_model(models.User, self.user)
+        activity.to_model(model=models.User, instance=self.user)
         self.assertEqual(self.user.key_pair.public_key, 'hi im secure')
 
     @responses.activate
@@ -152,9 +152,15 @@ class BaseActivity(TestCase):
             outbox='http://www.com/',
             followers='',
             summary='',
-            publicKey=None,
+            publicKey={
+                'id': 'hi',
+                'owner': self.user.remote_id,
+                'publicKeyPem': 'hi'},
             endpoints={},
-            icon={'url': 'http://www.example.com/image.jpg'}
+            icon={
+                'type': 'Image',
+                'url': 'http://www.example.com/image.jpg'
+            }
         )
 
         responses.add(
@@ -169,7 +175,7 @@ class BaseActivity(TestCase):
 
         # this would trigger a broadcast because it's a local user
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            activity.to_model(models.User, self.user)
+            activity.to_model(model=models.User, instance=self.user)
         self.assertIsNotNone(self.user.avatar.name)
         self.assertIsNotNone(self.user.avatar.file)
 
@@ -202,7 +208,7 @@ class BaseActivity(TestCase):
                 },
             ]
         )
-        update_data.to_model(models.Status, instance=status)
+        update_data.to_model(model=models.Status, instance=status)
         self.assertEqual(status.mention_users.first(), self.user)
         self.assertEqual(status.mention_books.first(), book)
 
@@ -239,7 +245,7 @@ class BaseActivity(TestCase):
         # sets the celery task call to the function call
         with patch(
                 'bookwyrm.activitypub.base_activity.set_related_field.delay'):
-            update_data.to_model(models.Status, instance=status)
+            update_data.to_model(model=models.Status, instance=status)
         self.assertIsNone(status.attachments.first())
 
 

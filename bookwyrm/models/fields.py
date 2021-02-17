@@ -367,8 +367,8 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         image_slug = value
         # when it's an inline image (User avatar/icon, Book cover), it's a json
         # blob, but when it's an attached image, it's just a url
-        if isinstance(image_slug, dict):
-            url = image_slug.get('url')
+        if hasattr(image_slug, 'url'):
+            url = image_slug.url
         elif isinstance(image_slug, str):
             url = image_slug
         else:

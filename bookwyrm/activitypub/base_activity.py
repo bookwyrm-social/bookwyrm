@@ -74,7 +74,8 @@ class ActivityObject:
                     is_subclass = issubclass(field.type, ActivityObject)
                 except TypeError:
                     is_subclass = False
-                if is_subclass:
+                # parse a dict into the appropriate activity
+                if is_subclass and isinstance(value, dict):
                     value = naive_parse(
                         activity_objects, value, serializer=field.type)
 
