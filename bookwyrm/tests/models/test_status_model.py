@@ -63,7 +63,7 @@ class Status(TestCase):
         self.assertEqual(models.Review().status_type, 'Review')
         self.assertEqual(models.Quotation().status_type, 'Quotation')
         self.assertEqual(models.Comment().status_type, 'Comment')
-        self.assertEqual(models.Boost().status_type, 'Boost')
+        self.assertEqual(models.Boost().status_type, 'Announce')
 
     def test_boostable(self, _):
         ''' can a status be boosted, based on privacy '''
