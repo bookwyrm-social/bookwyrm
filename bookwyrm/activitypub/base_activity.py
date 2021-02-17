@@ -68,6 +68,8 @@ class ActivityObject:
         for field in fields(self):
             try:
                 value = kwargs[field.name]
+                if value in (None, MISSING):
+                    raise KeyError()
                 try:
                     is_subclass = issubclass(field.type, ActivityObject)
                 except TypeError:
