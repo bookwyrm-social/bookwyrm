@@ -248,7 +248,7 @@ class ObjectMixin(ActivitypubMixin):
             actor=user.remote_id,
             to=activity_object['to'],
             cc=activity_object['cc'],
-            object=activity_object,
+            object=self,
             signature=signature,
         ).serialize()
 
