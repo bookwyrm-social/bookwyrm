@@ -75,7 +75,8 @@ def has_valid_signature(request, activity):
         if key_actor != activity.get('actor'):
             raise ValueError("Wrong actor created signature.")
 
-        remote_user = activitypub.resolve_remote_id(models.User, key_actor)
+        remote_user = activitypub.resolve_remote_id(
+            key_actor, model=models.User)
         if not remote_user:
             return False
 
@@ -84,7 +85,7 @@ def has_valid_signature(request, activity):
         except ValueError:
             old_key = remote_user.key_pair.public_key
             remote_user = activitypub.resolve_remote_id(
-                models.User, remote_user.remote_id, refresh=True
+                remote_user.remote_id, model=models.User, refresh=True
             )
             if remote_user.key_pair.public_key == old_key:
                 raise # Key unchanged.

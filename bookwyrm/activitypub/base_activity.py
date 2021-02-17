@@ -40,16 +40,17 @@ class Signature:
     signatureValue: str
     type: str = 'RsaSignature2017'
 
-def naive_parse(activity_objects, activity_json):
+def naive_parse(activity_objects, activity_json, serializer=None):
     ''' this navigates circular import issues '''
-    if activity_json.get('publicKeyPem'):
-        # ugh
-        activity_json['type'] = 'PublicKey'
-    try:
-        activity_type = activity_json['type']
-        serializer = activity_objects[activity_type]
-    except KeyError as e:
-        raise ActivitySerializerError(e)
+    if not serializer:
+        if activity_json.get('publicKeyPem'):
+            # ugh
+            activity_json['type'] = 'PublicKey'
+        try:
+            activity_type = activity_json['type']
+            serializer = activity_objects[activity_type]
+        except KeyError as e:
+            raise ActivitySerializerError(e)
 
     return serializer(activity_objects=activity_objects, **activity_json)
 
@@ -71,8 +72,9 @@ class ActivityObject:
                     is_subclass = issubclass(field.type, ActivityObject)
                 except TypeError:
                     is_subclass = False
-                if is_subclass and activity_objects:
-                    value = naive_parse(activity_objects, value)
+                if is_subclass:
+                    value = naive_parse(
+                        activity_objects, value, serializer=field.type)
 
             except KeyError:
                 if field.default == MISSING and \
@@ -89,7 +91,8 @@ class ActivityObject:
 
         # only reject statuses if we're potentially creating them
         if allow_create and \
-                hasattr(model, 'ignore_activity') and model.ignore_activity(self):
+                hasattr(model, 'ignore_activity') and \
+                model.ignore_activity(self):
             return None
 
         # check for an existing instance
@@ -219,10 +222,11 @@ def get_model_from_type(activity_type):
     model = [m for m in models if hasattr(m, 'activity_serializer') and \
         hasattr(m.activity_serializer, 'type') and \
         m.activity_serializer.type == activity_type]
-    if not len(model):
+    if not model:
         raise ActivitySerializerError(
             'No model found for activity type "%s"' % activity_type)
     return model[0]
+
 
 def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     ''' take a remote_id and return an instance, creating if necessary '''

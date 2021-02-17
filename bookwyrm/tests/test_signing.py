@@ -1,3 +1,4 @@
+''' getting and verifying signatures '''
 import time
 from collections import namedtuple
 from urllib.parse import urlsplit
@@ -12,31 +13,33 @@ import pytest
 from django.test import TestCase, Client
 from django.utils.http import http_date
 
-from bookwyrm.models import User
+from bookwyrm import models
 from bookwyrm.activitypub import Follow
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
-def get_follow_data(follower, followee):
-    follow_activity = Follow(
+def get_follow_activity(follower, followee):
+    ''' generates a test activity '''
+    return Follow(
         id='https://test.com/user/follow/id',
         actor=follower.remote_id,
         object=followee.remote_id,
     ).serialize()
-    return json.dumps(follow_activity)
 
 KeyPair = namedtuple('KeyPair', ('private_key', 'public_key'))
 Sender = namedtuple('Sender', ('remote_id', 'key_pair'))
 
 class Signature(TestCase):
+    ''' signature test '''
     def setUp(self):
-        self.mouse = User.objects.create_user(
+        ''' create users and test data '''
+        self.mouse = models.User.objects.create_user(
             'mouse@%s' % DOMAIN, 'mouse@example.com', '',
             local=True, localname='mouse')
-        self.rat = User.objects.create_user(
+        self.rat = models.User.objects.create_user(
             'rat@%s' % DOMAIN, 'rat@example.com', '',
             local=True, localname='rat')
-        self.cat = User.objects.create_user(
+        self.cat = models.User.objects.create_user(
             'cat@%s' % DOMAIN, 'cat@example.com', '',
             local=True, localname='cat')
 
@@ -46,6 +49,8 @@ class Signature(TestCase):
             'http://localhost/user/remote',
             KeyPair(private_key, public_key)
         )
+
+        models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
         ''' test request '''
@@ -63,7 +68,7 @@ class Signature(TestCase):
             }
         )
 
-    def send_test_request(
+    def send_test_request(#pylint: disable=too-many-arguments
             self,
             sender,
             signer=None,
@@ -72,7 +77,7 @@ class Signature(TestCase):
             date=None):
         ''' sends a follow request to the "rat" user '''
         now = date or http_date()
-        data = json.dumps(get_follow_data(sender, self.rat))
+        data = json.dumps(get_follow_activity(sender, self.rat))
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)
@@ -81,6 +86,7 @@ class Signature(TestCase):
                 return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
+        ''' this one should just work '''
         response = self.send_test_request(sender=self.mouse)
         self.assertEqual(response.status_code, 200)
 
@@ -120,6 +126,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_key_needs_refresh(self):
+        ''' an out of date key should be updated and the new key work '''
         datafile = pathlib.Path(__file__).parent.joinpath('data/ap_user.json')
         data = json.loads(datafile.read_bytes())
         data['id'] = self.fake_remote.remote_id
@@ -165,6 +172,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_nonexistent_signer(self):
+        ''' fail when unable to look up signer '''
         responses.add(
             responses.GET,
             self.fake_remote.remote_id,
@@ -180,11 +188,12 @@ class Signature(TestCase):
         with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
-                send_data=get_follow_data(self.mouse, self.cat))
+                send_data=get_follow_activity(self.mouse, self.cat))
             self.assertEqual(response.status_code, 401)
 
     @pytest.mark.integration
     def test_invalid_digest(self):
+        ''' signature digest must be valid '''
         with patch('bookwyrm.activitypub.resolve_remote_id'):
             response = self.send_test_request(
                 self.mouse,
