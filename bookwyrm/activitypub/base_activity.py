@@ -107,7 +107,10 @@ class ActivityObject:
         instance = instance or model()
 
         for field in instance.simple_fields:
-            field.set_field_from_activity(instance, self)
+            try:
+                field.set_field_from_activity(instance, self)
+            except AttributeError as e:
+                raise ActivitySerializerError(e)
 
         # image fields have to be set after other fields because they can save
         # too early and jank up users

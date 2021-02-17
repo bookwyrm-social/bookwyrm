@@ -102,44 +102,6 @@ class BaseActivity(TestCase):
         with self.assertRaises(ActivitySerializerError):
             instance.to_model(model=models.User)
 
-    def test_to_model_simple_fields(self):
-        ''' test setting simple fields '''
-        self.assertIsNone(self.user.name)
-
-        activity = activitypub.Person(
-            id=self.user.remote_id,
-            name='New Name',
-            preferredUsername='mouse',
-            inbox='http://www.com/',
-            outbox='http://www.com/',
-            followers='',
-            summary='',
-            publicKey=None,
-            endpoints={},
-        )
-
-        activity.to_model(model=models.User, instance=self.user)
-
-        self.assertEqual(self.user.name, 'New Name')
-
-    def test_to_model_foreign_key(self):
-        ''' test setting one to one/foreign key '''
-        activity = activitypub.Person(
-            id=self.user.remote_id,
-            name='New Name',
-            preferredUsername='mouse',
-            inbox='http://www.com/',
-            outbox='http://www.com/',
-            followers='',
-            summary='',
-            publicKey=self.user.key_pair.to_activity(),
-            endpoints={},
-        )
-
-        activity.publicKey.publicKeyPem = 'hi im secure'
-
-        activity.to_model(model=models.User, instance=self.user)
-        self.assertEqual(self.user.key_pair.public_key, 'hi im secure')
 
     @responses.activate
     def test_to_model_image(self):
@@ -176,8 +138,9 @@ class BaseActivity(TestCase):
         # this would trigger a broadcast because it's a local user
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             activity.to_model(model=models.User, instance=self.user)
-        self.assertIsNotNone(self.user.avatar.name)
         self.assertIsNotNone(self.user.avatar.file)
+        self.assertEqual(self.user.name, 'New Name')
+        self.assertEqual(self.user.key_pair.public_key, 'hi')
 
     def test_to_model_many_to_many(self):
         ''' annoying that these all need special handling '''
