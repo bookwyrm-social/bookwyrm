@@ -260,7 +260,7 @@ class ObjectMixin(ActivitypubMixin):
             actor=user.remote_id,
             to=['%s/followers' % user.remote_id],
             cc=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity(),
+            object=self,
         ).serialize()
 
 
@@ -271,7 +271,7 @@ class ObjectMixin(ActivitypubMixin):
             id=activity_id,
             actor=user.remote_id,
             to=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity()
+            object=self
         ).serialize()
 
 
@@ -363,7 +363,7 @@ class CollectionItemMixin(ActivitypubMixin):
         return activitypub.Add(
             id='%s#add' % self.remote_id,
             actor=self.user.remote_id,
-            object=object_field.to_activity(),
+            object=object_field,
             target=collection_field.remote_id
         ).serialize()
 
@@ -374,7 +374,7 @@ class CollectionItemMixin(ActivitypubMixin):
         return activitypub.Remove(
             id='%s#remove' % self.remote_id,
             actor=self.user.remote_id,
-            object=object_field.to_activity(),
+            object=object_field,
             target=collection_field.remote_id
         ).serialize()
 
@@ -403,7 +403,7 @@ class ActivityMixin(ActivitypubMixin):
         return activitypub.Undo(
             id='%s#undo' % self.remote_id,
             actor=user.remote_id,
-            object=self.to_activity()
+            object=self,
         ).serialize()
 
 

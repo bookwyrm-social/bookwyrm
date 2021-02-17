@@ -74,14 +74,13 @@ class ActivityObject:
                     is_subclass = issubclass(field.type, ActivityObject)
                 except TypeError:
                     is_subclass = False
+                # serialize a model obj
+                if hasattr(value, 'to_activity'):
+                    value = value.to_activity()
                 # parse a dict into the appropriate activity
-                if is_subclass and isinstance(value, dict):
-                    serializer = None
-                    if not isinstance(field.type, ActivityObject):
-                        # this is generic, gotta figure out the type manually
-                        serializer = field.type
+                elif is_subclass and isinstance(value, dict):
                     value = naive_parse(
-                        activity_objects, value, serializer=serializer)
+                        activity_objects, value, serializer=field.type)
 
             except KeyError:
                 if field.default == MISSING and \
