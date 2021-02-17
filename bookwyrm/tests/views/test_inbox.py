@@ -379,11 +379,8 @@ class Inbox(TestCase):
         views.inbox.activity_task(activity)
 
         # request should be deleted
-        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
-
-        # relationship should be created
-        follows = self.remote_user.followers
-        self.assertEqual(follows.count(), 0)
+        self.assertFalse(models.UserFollowRequest.objects.exists())
+        self.assertFalse(self.remote_user.followers.exists())
 
 
     def test_handle_update_list(self):
@@ -580,7 +577,7 @@ class Inbox(TestCase):
             'object': {
                 'type': 'Announce',
                 'id': boost.remote_id,
-                'actor': self.local_user.remote_id,
+                'actor': self.remote_user.remote_id,
                 'object': self.status.remote_id,
             }
         }

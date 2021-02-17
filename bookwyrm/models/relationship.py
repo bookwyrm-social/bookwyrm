@@ -5,7 +5,8 @@ from django.db.models import Q
 from django.dispatch import receiver
 
 from bookwyrm import activitypub
-from .activitypub_mixin import ActivitypubMixin, ActivityMixin, generate_activity
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import generate_activity
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -143,14 +144,15 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
     def reject(self):
         ''' generate a Reject for this follow request '''
-        user = self.user_object
-        activity = activitypub.Reject(
-            id=self.get_remote_id(status='rejects'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
+        if self.user_object.local:
+            activity = activitypub.Reject(
+                id=self.get_remote_id(status='rejects'),
+                actor=self.user_object.remote_id,
+                object=self.to_activity()
+            ).serialize()
+            self.broadcast(activity, self.user_object)
+
         self.delete()
-        self.broadcast(activity, user)
 
 
 class UserBlocks(ActivityMixin, UserRelationship):
