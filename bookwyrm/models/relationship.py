@@ -91,9 +91,14 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 user_subject=self.user_object,
                 user_object=self.user_subject,
             )
-            return None
+            return
         except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
+            pass
+
+        # this was calling itself which is not my idea of "super" ...
+        if not self.id:
             super().save(*args, **kwargs)
+            return
 
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
@@ -116,16 +121,17 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
     def accept(self):
         ''' turn this request into the real deal'''
         user = self.user_object
-        activity = activitypub.Accept(
-            id=self.get_remote_id(status='accepts'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
+        if not self.user_subject.local:
+            activity = activitypub.Accept(
+                id=self.get_remote_id(status='accepts'),
+                actor=self.user_object.remote_id,
+                object=self.to_activity()
+            ).serialize()
+            self.broadcast(activity, user)
         with transaction.atomic():
             UserFollows.from_request(self)
             self.delete()
 
-        self.broadcast(activity, user)
 
 
     def reject(self):

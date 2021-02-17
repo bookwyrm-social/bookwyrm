@@ -77,7 +77,6 @@ class BookViews(TestCase):
         self.assertEqual(rel.status, 'follow_request')
 
 
-
     def test_handle_follow_local(self):
         ''' send a follow request '''
         rat = models.User.objects.create_user(
@@ -106,15 +105,18 @@ class BookViews(TestCase):
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
         # need to see if this ACTUALLY broadcasts
-        raise ValueError()
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             views.unfollow(request)
+            self.assertEqual(mock.call_count, 1)
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 
 
     def test_handle_accept(self):
         ''' accept a follow request '''
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
