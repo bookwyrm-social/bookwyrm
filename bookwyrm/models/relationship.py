@@ -56,7 +56,7 @@ class UserRelationship(BookWyrmModel):
         return '%s#%s/%d' % (base_path, status, self.id)
 
 
-class UserFollows(UserRelationship):
+class UserFollows(ActivitypubMixin, UserRelationship):
     ''' Following a user '''
     status = 'follows'
 

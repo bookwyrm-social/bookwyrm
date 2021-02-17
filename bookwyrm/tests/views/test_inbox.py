@@ -42,7 +42,7 @@ class Inbox(TestCase):
             'type': 'Create',
             'actor': 'hi',
             "to": [
-                "https://www.w3.org/ns/activitystreams#Public"
+                "https://www.w3.org/ns/activitystreams#public"
             ],
             "cc": [
                 "https://example.com/user/mouse/followers"
@@ -296,19 +296,23 @@ class Inbox(TestCase):
 
     def test_handle_unfollow(self):
         ''' remove a relationship '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            rel = models.UserFollows.objects.create(
+                user_subject=self.remote_user, user_object=self.local_user)
         activity = {
             "type": "Undo",
+            "id": "bleh",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            'actor': self.remote_user.remote_id,
             "@context": "https://www.w3.org/ns/activitystreams",
             "object": {
-                "id": "https://example.com/users/rat/follows/123",
+                "id": rel.remote_id,
                 "type": "Follow",
                 "actor": "https://example.com/users/rat",
                 "object": "https://example.com/user/mouse"
             }
         }
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            models.UserFollows.objects.create(
-                user_subject=self.remote_user, user_object=self.local_user)
         self.assertEqual(self.remote_user, self.local_user.followers.first())
 
         views.inbox.activity_task(activity)
@@ -493,13 +497,16 @@ class Inbox(TestCase):
         activity = {
             'id': 'https://example.com/fav/1#undo',
             'type': 'Undo',
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            'actor': self.remote_user.remote_id,
             'object': {
                 '@context': 'https://www.w3.org/ns/activitystreams',
                 'id': 'https://example.com/fav/1',
                 'actor': 'https://example.com/users/rat',
                 'type': 'Like',
                 'published': 'Mon, 25 May 2020 19:31:20 GMT',
-                'object': 'https://example.com/fav/1',
+                'object': self.status.remote_id,
             }
         }
         models.Favorite.objects.create(
@@ -557,17 +564,21 @@ class Inbox(TestCase):
 
     def test_handle_unboost(self):
         ''' undo a boost '''
+        boost = models.Boost.objects.create(
+            boosted_status=self.status, user=self.remote_user)
         activity = {
             'type': 'Undo',
+            'actor': 'hi',
+            'id': 'bleh',
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
             'object': {
                 'type': 'Announce',
-                'id': '%s/boost' % self.status.remote_id,
+                'id': boost.remote_id,
                 'actor': self.local_user.remote_id,
-                'object': self.status.to_activity(),
+                'object': self.status.remote_id,
             }
         }
-        models.Boost.objects.create(
-            boosted_status=self.status, user=self.remote_user)
         views.inbox.activity_task(activity)
 
 
@@ -695,12 +706,18 @@ class Inbox(TestCase):
 
         self.assertEqual(block.user_subject, self.remote_user)
         self.assertEqual(block.user_object, self.local_user)
-        activity = {'type': 'Undo', 'object': {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": "https://example.com/9e1f41ac-9ddd-4159",
-            "type": "Block",
-            "actor": "https://example.com/users/rat",
-            "object": "https://example.com/user/mouse"
+        activity = {
+            'type': 'Undo',
+            'actor': 'hi',
+            'id': 'bleh',
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            'object': {
+                "@context": "https://www.w3.org/ns/activitystreams",
+                "id": "https://example.com/9e1f41ac-9ddd-4159",
+                "type": "Block",
+                "actor": "https://example.com/users/rat",
+                "object": "https://example.com/user/mouse"
         }}
         views.inbox.activity_task(activity)
         self.assertFalse(models.UserBlocks.objects.exists())

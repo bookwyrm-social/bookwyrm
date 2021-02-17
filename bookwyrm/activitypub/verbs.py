@@ -1,6 +1,7 @@
 ''' undo wrapper activity '''
 from dataclasses import dataclass
 from typing import List
+from django.apps import apps
 
 from .base_activity import ActivityObject, Signature, resolve_remote_id
 from .book import Edition
@@ -59,7 +60,12 @@ class Undo(Verb):
 
     def action(self):
         ''' find and remove the activity object '''
-        obj = self.object.to_model(save=False, allow_create=False)
+        # this is so hacky but it does make it work....
+        # (because you Reject a request and Undo a follow
+        model = None
+        if self.object.type == 'Follow':
+            model = apps.get_model('bookwyrm.UserFollows')
+        obj = self.object.to_model(model=model, save=False, allow_create=False)
         obj.delete()
 
 

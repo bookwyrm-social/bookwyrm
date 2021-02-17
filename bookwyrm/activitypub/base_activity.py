@@ -85,11 +85,14 @@ class ActivityObject:
         # figure out the right model -- wish I had a better way for this
         model = model or get_model_from_type(self.type)
 
-        if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
-            return instance
+        # only reject statuses if we're potentially creating them
+        if allow_create and \
+                hasattr(model, 'ignore_activity') and model.ignore_activity(self):
+            return None
 
         # check for an existing instance
         instance = instance or model.find_existing(self.serialize())
+
         if not instance and not allow_create:
             # so that we don't create when we want to delete or update
             return None
