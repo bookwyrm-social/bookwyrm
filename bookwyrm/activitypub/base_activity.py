@@ -166,7 +166,7 @@ class ActivityObject:
         # recursively serialize
         for (k, v) in data.items():
             try:
-                is_subclass = issubclass(v, ActivityObject)
+                is_subclass = issubclass(type(v), ActivityObject)
             except TypeError:
                 is_subclass = False
             if is_subclass:
