@@ -30,6 +30,12 @@ class ActivitypubMixins(TestCase):
                 outbox='https://example.com/users/rat/outbox',
             )
 
+        self.object_mock = {
+            'to': 'to field', 'cc': 'cc field',
+            'content': 'hi', 'id': 'bip', 'type': 'Test',
+            'published': '2020-12-04T17:52:22.623807+00:00',
+        }
+
 
     # ActivitypubMixin
     def test_to_activity(self):
@@ -292,15 +298,10 @@ class ActivitypubMixins(TestCase):
 
     def test_to_create_activity(self):
         ''' wrapper for ActivityPub "create" action '''
-        object_activity = {
-            'to': 'to field', 'cc': 'cc field',
-            'content': 'hi',
-            'published': '2020-12-04T17:52:22.623807+00:00',
-        }
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
             'https://example.com/status/1',
-            lambda *args: object_activity
+            lambda *args: self.object_mock
         )
         activity = ObjectMixin.to_create_activity(
             mock_self, self.local_user)
@@ -312,7 +313,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(activity['type'], 'Create')
         self.assertEqual(activity['to'], 'to field')
         self.assertEqual(activity['cc'], 'cc field')
-        self.assertEqual(activity['object'], object_activity)
+        self.assertIsInstance(activity['object'], dict)
         self.assertEqual(
             activity['signature'].creator,
             '%s#main-key' % self.local_user.remote_id
@@ -323,7 +324,7 @@ class ActivitypubMixins(TestCase):
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
             'https://example.com/status/1',
-            lambda *args: {}
+            lambda *args: self.object_mock
         )
         activity = ObjectMixin.to_delete_activity(
             mock_self, self.local_user)
@@ -346,7 +347,7 @@ class ActivitypubMixins(TestCase):
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
         mock_self = MockSelf(
             'https://example.com/status/1',
-            lambda *args: {}
+            lambda *args: self.object_mock
         )
         activity = ObjectMixin.to_update_activity(
             mock_self, self.local_user)
@@ -361,7 +362,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(
             activity['to'],
             ['https://www.w3.org/ns/activitystreams#Public'])
-        self.assertEqual(activity['object'], {})
+        self.assertIsInstance(activity['object'], dict)
 
 
     # Activity mixin
@@ -370,7 +371,7 @@ class ActivitypubMixins(TestCase):
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity', 'user'))
         mock_self = MockSelf(
             'https://example.com/status/1',
-            lambda *args: {},
+            lambda *args: self.object_mock,
             self.local_user,
         )
         activity = ActivityMixin.to_undo_activity(mock_self)
@@ -380,4 +381,4 @@ class ActivitypubMixins(TestCase):
         )
         self.assertEqual(activity['actor'], self.local_user.remote_id)
         self.assertEqual(activity['type'], 'Undo')
-        self.assertEqual(activity['object'], {})
+        self.assertIsInstance(activity['object'], dict)
