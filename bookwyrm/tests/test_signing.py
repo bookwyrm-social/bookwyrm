@@ -76,7 +76,7 @@ class Signature(TestCase):
         digest = digest or make_digest(data)
         signature = make_signature(
             signer or sender, self.rat.inbox, now, digest)
-        with patch('bookwyrm.incoming.handle_follow.delay'):
+        with patch('bookwyrm.views.inbox.activity_task.delay'):
             with patch('bookwyrm.models.user.set_remote_server.delay'):
                 return self.send(signature, now, send_data or data, digest)
 

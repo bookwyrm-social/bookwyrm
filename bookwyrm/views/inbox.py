@@ -4,7 +4,9 @@ from urllib.parse import urldefrag
 
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 import requests
 
 from bookwyrm import activitypub, models
@@ -12,6 +14,7 @@ from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 # pylint: disable=no-self-use
 class Inbox(View):
     ''' requests sent by outside servers'''
@@ -56,7 +59,7 @@ def activity_task(activity_json):
     try:
         activity = activitypub.parse(activity_json)
     except activitypub.ActivitySerializerError:
-        raise#return
+        return
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)
