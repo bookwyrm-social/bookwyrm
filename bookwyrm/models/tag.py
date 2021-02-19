@@ -50,7 +50,7 @@ class UserTag(CollectionItemMixin, BookWyrmModel):
     tag = fields.ForeignKey(
         'Tag', on_delete=models.PROTECT, activitypub_field='target')
 
-    activity_serializer = activitypub.AddBook
+    activity_serializer = activitypub.Add
     object_field = 'book'
     collection_field = 'tag'
 

@@ -132,13 +132,7 @@ class Add(Verb):
 
 
 @dataclass(init=False)
-class AddBook(Add):
-    '''Add activity that's aware of the book obj '''
-    object: Edition
-
-
-@dataclass(init=False)
-class AddListItem(AddBook):
+class AddListItem(Add):
     '''Add activity that's aware of the book obj '''
     notes: str = None
     order: int = 0
