@@ -157,7 +157,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         )
 
-    def to_activity(self, pure=False):# pylint: disable=arguments-differ
+    def to_activity_dataclass(self, pure=False):# pylint: disable=arguments-differ
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -165,24 +165,28 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 url=self.remote_id,
                 deleted=self.deleted_date.isoformat(),
                 published=self.deleted_date.isoformat()
-            ).serialize()
-        activity = ActivitypubMixin.to_activity(self)
-        activity['replies'] = self.to_replies()
+            )
+        activity = ActivitypubMixin.to_activity_dataclass(self)
+        activity.replies = self.to_replies()
 
         # "pure" serialization for non-bookwyrm instances
         if pure and hasattr(self, 'pure_content'):
-            activity['content'] = self.pure_content
-            if 'name' in activity:
-                activity['name'] = self.pure_name
-            activity['type'] = self.pure_type
-            activity['attachment'] = [
+            activity.content = self.pure_content
+            if hasattr(activity, 'name'):
+                activity.name = self.pure_name
+            activity.type = self.pure_type
+            activity.attachment = [
                 image_serializer(b.cover, b.alt_text) \
                     for b in self.mention_books.all()[:4] if b.cover]
             if hasattr(self, 'book') and self.book.cover:
-                activity['attachment'].append(
+                activity.attachment.append(
                     image_serializer(self.book.cover, self.book.alt_text)
                 )
         return activity
+
+    def to_activity(self, pure=False):# pylint: disable=arguments-differ
+        ''' json serialized activitypub class '''
+        return self.to_activity_dataclass(pure=pure).serialize()
 
 
 class GeneratedNote(Status):

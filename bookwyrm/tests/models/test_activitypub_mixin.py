@@ -296,29 +296,6 @@ class ActivitypubMixins(TestCase):
                 id=1, user=self.local_user, deleted=True).save()
 
 
-    def test_to_create_activity(self):
-        ''' wrapper for ActivityPub "create" action '''
-        MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
-        mock_self = MockSelf(
-            'https://example.com/status/1',
-            lambda *args: self.object_mock
-        )
-        activity = ObjectMixin.to_create_activity(
-            mock_self, self.local_user)
-        self.assertEqual(
-            activity['id'],
-            'https://example.com/status/1/activity'
-        )
-        self.assertEqual(activity['actor'], self.local_user.remote_id)
-        self.assertEqual(activity['type'], 'Create')
-        self.assertEqual(activity['to'], 'to field')
-        self.assertEqual(activity['cc'], 'cc field')
-        self.assertIsInstance(activity['object'], dict)
-        self.assertEqual(
-            activity['signature'].creator,
-            '%s#main-key' % self.local_user.remote_id
-        )
-
     def test_to_delete_activity(self):
         ''' wrapper for Delete activity '''
         MockSelf = namedtuple('Self', ('remote_id', 'to_activity'))
