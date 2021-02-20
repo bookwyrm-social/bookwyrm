@@ -4,22 +4,36 @@ Social reading and reviewing, decentralized with ActivityPub
 
 ## Contents
 - [Joining BookWyrm](#joining-bookwyrm)
-- [The overall idea](#the-overall-idea)
+- [Contributing](#contributing)
+- [About BookWyrm](#about-bookwyrm)
    - [What it is and isn't](#what-it-is-and-isnt)
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
  - [Setting up the developer environment](#setting-up-the-developer-environment)
  - [Installing in Production](#installing-in-production)
- - [Project structure](#project-structure)
  - [Book data](#book-data)
- - [Contributing](#contributing)
 
 ## Joining BookWyrm
 BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://github.com/mouse-reeve/bookwyrm/blob/main/instances.md) list.
 
 You can request an invite to https://bookwyrm.social by [email](mailto:mousereeve@riseup.net), [Mastodon direct message](https://friend.camp/@tripofmice), or [Twitter direct message](https://twitter.com/tripofmice).
 
-## The overall idea
+
+## Contributing
+There are many ways you can contribute to this project, regardless of your level of technical expertise. 
+
+### Feedback and feature requests
+Please feel encouraged and welcome to point out bugs, suggestions, feature requests, and ideas for how things ought to work using [GitHub issues](https://github.com/mouse-reeve/bookwyrm/issues).
+
+### Code contributions
+Code contributons are gladly welcomed! If you're not sure where to start, take a look at the ["Good first issue"](https://github.com/mouse-reeve/bookwyrm/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) tag. Because BookWyrm is a small project, there isn't a lot of formal structure, but there is a huge capacity for one-on-one support, which can look like asking questions as you go, pair programming, video chats, et cetera, so please feel free to reach out.
+
+If you have questions about the project or contributing, you can seet up a video call during BookWyrm ["office hours"](https://calendly.com/mouse-reeve/30min).
+
+### Financial Support
+BookWyrm is an ad-free passion project with no intentions of seeking out venture funding or corporate financial relationships. If you want to help keep the project going, you can donate to the [Patreon](https://www.patreon.com/bookwyrm), or make a one time gift via [PayPal](https://paypal.me/oulipo).
+
+## About BookWyrm
 ### What it is and isn't
 BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
 
@@ -54,6 +68,25 @@ Since the project is still in its early stages, the features are growing every d
     - Private, followers-only, and public privacy levels for posting, shelves, and lists
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation
+    
+### The Tech Stack
+Web backend
+ - [Django](https://www.djangoproject.com/) web server
+ - [PostgreSQL](https://www.postgresql.org/) database
+ - [ActivityPub](http://activitypub.rocks/) federation
+ - [Celery](http://celeryproject.org/) task queuing
+ - [Redis](https://redis.io/) task backend
+ 
+Front end
+ - Django templates
+ - [Bulma.io](https://bulma.io/) css framework
+ - Vanilla JavaScript, in moderation
+ 
+Deployment
+ - [Docker](https://www.docker.com/) and docker-compose
+ - [Gunicorn](https://gunicorn.org/) web runner
+ - [Flower](https://github.com/mher/flower) celery monitoring
+ - [Nginx](https://nginx.org/en/) HTTP server
 
 ## Setting up the developer environment
 
@@ -132,9 +165,3 @@ There are three concepts in the book data model:
  - `Edition`, a concrete, actually published version of a book
  
 Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
-
-
-## Contributing
-There are many ways you can contribute to this project! You are welcome and encouraged to create or contribute an issue to report a bug, request a feature, make a usability suggestion, or express a nebulous desire.
-
-If you'd like to add to the codebase, that's super rad and you should do it! At this point, there isn't a formalized process, but you can take a look at the open issues, or contact me directly and chat about it.
