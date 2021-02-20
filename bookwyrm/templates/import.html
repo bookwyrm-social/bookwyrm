@@ -2,9 +2,24 @@
 {% load humanize %}
 {% block content %}
 <div class="block">
-    <h1 class="title">Import Books from GoodReads</h1>
+    <h1 class="title">Import Books</h1>
     <form name="import" action="/import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+
+        <label class="label" for="source">
+          <p>Data source</p>
+        <div class="select {{ class }}">
+          <select name="source" id="source">
+            <option value="GoodReads" {% if current == 'LibraryThing' %}selected{% endif %}>
+            GoodReads
+            </option>
+            <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
+            LibraryThing
+            </option>
+          </select>
+        </div>
+        </label>
+
         <div class="field">
             {{ import_form.as_p }}
         </div>
