@@ -179,7 +179,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             super().save(*args, **kwargs)
 
         # this user already exists, no need to populate fields
-        if created:
+        if not created:
             super().save(*args, **kwargs)
             return
 
