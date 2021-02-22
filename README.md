@@ -112,36 +112,42 @@ Once the build is complete, you can access the instance at `localhost:1333`
 ## Installing in Production
 
 This project is still young and isn't, at the momoment, very stable, so please procede with caution when running in production.
+
 ### Server setup
  - Get a domain name and set up DNS for your server
  - Set your server up with appropriate firewalls for running a web application (this instruction set is tested again Ubuntu 20.04)
- - Set up a mailgun account and the appropriate DNS settings
+ - Set up an email service (such as mailgun) and the appropriate SMTP/DNS settings
  - Install Docker and docker-compose
+
 ### Install and configure BookWyrm
+
+The `production` branch of BookWyrm contains a number of tools not on the `main` branch that are suited for running in production, such as `docker-compose` changes to update the default commands or configuration of containers, and indivudal changes to container config to enable things like SSL or regular backups.
+
+Instructions for running BookWyrm in production:
+
  - Get the application code:
   `git clone git@github.com:mouse-reeve/bookwyrm.git`
  - Switch to the `production` branch
   `git checkout production`
  - Create your environment variables file
   `cp .env.example .env`
-   - Add your domain, email address, mailgun credentials
+   - Add your domain, email address, SMTP credentials
    - Set a secure redis password and secret key
    - Set a secure database password for postgres
  - Update your nginx configuration in `nginx/default.conf`
    - Replace `your-domain.com` with your domain name
- - Run the application (this should also set up a Certbot ssl cert for your domain)
-  `docker-compose up --build`
-  Make sure all the images build successfully
+ - Run the application (this should also set up a Certbot ssl cert for your domain) with
+  `docker-compose up --build`, and make sure all the images build successfully
  - When docker has built successfully, stop the process with `CTRL-C`
  - Comment out the `command: certonly...` line in `docker-compose.yml`
- - Run docker-compose in the background
-  `docker-compose up -d`
- - Initialize the database
-  `./bw-dev initdb`
- - Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe locationgi
- - Congrats! You did it, go to your domain and enjoy the fruits of your labors
+ - Run docker-compose in the background with: `docker-compose up -d`
+ - Initialize the database with: `./bw-dev initdb`
+ - Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe location
+
+Congrats! You did it, go to your domain and enjoy the fruits of your labors.
+
 ### Configure your instance
- - Register a user account in the applcation UI
+ - Register a user account in the application UI
  - Make your account a superuser (warning: do *not* use django's `createsuperuser` command)
    - On your server, open the django shell
     `./bw-dev shell`
