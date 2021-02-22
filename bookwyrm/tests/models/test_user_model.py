@@ -1,11 +1,13 @@
 ''' testing models '''
 from unittest.mock import patch
 from django.test import TestCase
+import responses
 
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN
 
-
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 class User(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
@@ -71,3 +73,83 @@ class User(TestCase):
         self.assertEqual(activity['type'], 'OrderedCollection')
         self.assertEqual(activity['id'], self.user.outbox)
         self.assertEqual(activity['totalItems'], 0)
+
+
+    def test_set_remote_server(self):
+        server = models.FederatedServer.objects.create(
+            server_name=DOMAIN,
+            application_type='test type',
+            application_version=3
+        )
+
+        models.user.set_remote_server(self.user.id)
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.federated_server, server)
+
+    @responses.activate
+    def test_get_or_create_remote_server(self):
+        responses.add(
+            responses.GET,
+            'https://%s/.well-known/nodeinfo' % DOMAIN,
+            json={'links': [{'href': 'http://www.example.com'}, {}]}
+        )
+        responses.add(
+            responses.GET,
+            'http://www.example.com',
+            json={'software': {'name': 'hi', 'version': '2'}},
+        )
+
+        server = models.user.get_or_create_remote_server(DOMAIN)
+        self.assertEqual(server.server_name, DOMAIN)
+        self.assertEqual(server.application_type, 'hi')
+        self.assertEqual(server.application_version, '2')
+
+    @responses.activate
+    def test_get_or_create_remote_server_no_wellknown(self):
+        responses.add(
+            responses.GET,
+            'https://%s/.well-known/nodeinfo' % DOMAIN,
+            status=404
+        )
+
+        server = models.user.get_or_create_remote_server(DOMAIN)
+        self.assertEqual(server.server_name, DOMAIN)
+        self.assertIsNone(server.application_type)
+        self.assertIsNone(server.application_version)
+
+    @responses.activate
+    def test_get_or_create_remote_server_no_links(self):
+        responses.add(
+            responses.GET,
+            'https://%s/.well-known/nodeinfo' % DOMAIN,
+            json={'links': [{'href': 'http://www.example.com'}, {}]}
+        )
+        responses.add(
+            responses.GET,
+            'http://www.example.com',
+            status=404
+        )
+
+        server = models.user.get_or_create_remote_server(DOMAIN)
+        self.assertEqual(server.server_name, DOMAIN)
+        self.assertIsNone(server.application_type)
+        self.assertIsNone(server.application_version)
+
+    @responses.activate
+    def test_get_or_create_remote_server_unknown_format(self):
+        responses.add(
+            responses.GET,
+            'https://%s/.well-known/nodeinfo' % DOMAIN,
+            json={'links': [{'href': 'http://www.example.com'}, {}]}
+        )
+        responses.add(
+            responses.GET,
+            'http://www.example.com',
+            json={'fish': 'salmon'}
+        )
+
+        server = models.user.get_or_create_remote_server(DOMAIN)
+        self.assertEqual(server.server_name, DOMAIN)
+        self.assertIsNone(server.application_type)
+        self.assertIsNone(server.application_version)

@@ -338,11 +338,11 @@ def get_or_create_remote_server(domain):
         try:
             nodeinfo_url = data.get('links')[0].get('href')
         except (TypeError, KeyError):
-            return None
+            raise ConnectorException()
 
         data = get_data(nodeinfo_url)
         application_type = data.get('software', {}).get('name')
-        application_type = data.get('software', {}).get('version')
+        application_version = data.get('software', {}).get('version')
     except ConnectorException:
         application_type = application_version = None
 
