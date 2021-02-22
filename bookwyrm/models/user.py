@@ -9,7 +9,7 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.connectors import get_data
+from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
@@ -333,19 +333,24 @@ def get_or_create_remote_server(domain):
     except FederatedServer.DoesNotExist:
         pass
 
-    data = get_data('https://%s/.well-known/nodeinfo' % domain)
-
     try:
-        nodeinfo_url = data.get('links')[0].get('href')
-    except (TypeError, KeyError):
-        return None
+        data = get_data('https://%s/.well-known/nodeinfo' % domain)
+        try:
+            nodeinfo_url = data.get('links')[0].get('href')
+        except (TypeError, KeyError):
+            return None
 
-    data = get_data(nodeinfo_url)
+        data = get_data(nodeinfo_url)
+        application_type = data.get('software', {}).get('name')
+        application_type = data.get('software', {}).get('version')
+    except ConnectorException:
+        application_type = application_version = None
+
 
     server = FederatedServer.objects.create(
         server_name=domain,
-        application_type=data['software']['name'],
-        application_version=data['software']['version'],
+        application_type=application_type,
+        application_version=application_version,
     )
     return server
 
