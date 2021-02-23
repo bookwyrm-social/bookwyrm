@@ -26,7 +26,7 @@ class User(View):
     def get(self, request, username):
         ''' profile page for a user '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -96,7 +96,7 @@ class Followers(View):
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -121,7 +121,7 @@ class Following(View):
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 

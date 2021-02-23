@@ -33,7 +33,7 @@ class Search(View):
             handle_remote_webfinger(query)
 
         # do a  user search
-        user_results = models.User.objects.annotate(
+        user_results = models.User.viewer_aware_objects(request.user).annotate(
             similarity=Greatest(
                 TrigramSimilarity('username', query),
                 TrigramSimilarity('localname', query),

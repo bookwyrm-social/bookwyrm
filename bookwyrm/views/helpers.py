@@ -9,13 +9,13 @@ from bookwyrm.status import create_generated_note
 from bookwyrm.utils import regex
 
 
-def get_user_from_username(username):
+def get_user_from_username(viewer, username):
     ''' helper function to resolve a localname or a username to a user '''
     # raises DoesNotExist if user is now found
     try:
-        return models.User.objects.get(localname=username)
+        return models.User.viwer_aware_objects(viewer).get(localname=username)
     except models.User.DoesNotExist:
-        return models.User.objects.get(username=username)
+        return models.User.viewer_aware_objects(viewer).get(username=username)
 
 
 def is_api_request(request):

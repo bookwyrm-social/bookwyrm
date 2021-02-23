@@ -112,6 +112,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     activity_serializer = activitypub.Person
 
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        ''' the user queryset filtered for the context of the logged in user '''
+        queryset = cls.objects.filter(is_active=True)
+        if viewer.is_authenticated:
+            queryset = queryset.exclude(
+                blocks=viewer
+            )
+        return queryset
+
     def to_outbox(self, filter_type=None, **kwargs):
         ''' an ordered collection of statuses '''
         if filter_type:

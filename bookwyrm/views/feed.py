@@ -65,7 +65,7 @@ class DirectMessage(View):
         user = None
         if username:
             try:
-                user = get_user_from_username(username)
+                user = get_user_from_username(request.user, username)
             except models.User.DoesNotExist:
                 pass
         if user:
