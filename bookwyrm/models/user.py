@@ -319,7 +319,7 @@ def set_remote_server(user_id):
     actor_parts = urlparse(user.remote_id)
     user.federated_server = \
         get_or_create_remote_server(actor_parts.netloc)
-    user.save()
+    user.save(broadcast=False)
     if user.bookwyrm_user:
         get_remote_reviews.delay(user.outbox)
 
