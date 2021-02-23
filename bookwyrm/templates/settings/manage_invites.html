@@ -22,6 +22,7 @@
         </tr>
         {% endfor %}
     </table>
+    {% include 'snippets/pagination.html' with page=invites path=request.path %}
 </section>
 
 <section class="block">
