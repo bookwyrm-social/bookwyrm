@@ -5,13 +5,13 @@
 
 {% block card-header %}
     <h3 class="card-header-title has-background-white-ter is-block">
-        {% include 'snippets/status_header.html' with status=status %}
+        {% include 'snippets/status/status_header.html' with status=status %}
     </h3>
 {% endblock %}
 
 
 {% block card-content %}
-    {% include 'snippets/status_content.html' with status=status %}
+    {% include 'snippets/status/status_content.html' with status=status %}
 {% endblock %}
 
 
@@ -55,7 +55,7 @@
     <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
 </div>
 <div class="card-footer-item">
-    {% include 'snippets/status_options.html' with class="is-small" right=True %}
+    {% include 'snippets/status/status_options.html' with class="is-small" right=True %}
 </div>
 {% endblock %}
 

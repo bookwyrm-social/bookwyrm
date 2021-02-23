@@ -8,7 +8,7 @@
         {% endwith %}
     {% endif %}
 
-{% include 'snippets/status.html' with status=status main=is_root %}
+{% include 'snippets/status/status.html' with status=status main=is_root %}
 
 {% if depth <= max_depth and direction >= 0 %}
     {% for reply in status|replies  %}

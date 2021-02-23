@@ -226,7 +226,7 @@
 <div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
-        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
+        {% include 'snippets/status/status.html' with status=review hide_book=True depth=1 %}
     </div>
     {% endfor %}
 
