@@ -12,7 +12,7 @@ class User(TestCase):
     def setUp(self):
         self.user = models.User.objects.create_user(
             'mouse@%s' % DOMAIN, 'mouse@mouse.mouse', 'mouseword',
-            local=True, localname='mouse', name='hi')
+            local=True, localname='mouse', name='hi', bookwyrm_user=False)
 
     def test_computed_fields(self):
         ''' username instead of id here '''
