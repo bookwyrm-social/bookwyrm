@@ -329,7 +329,8 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
-        return self.to_ordered_collection(self.collection_queryset, **kwargs).serialize()
+        return self.to_ordered_collection(
+            self.collection_queryset, **kwargs).serialize()
 
 
 class CollectionItemMixin(ActivitypubMixin):

@@ -155,7 +155,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             remote_id='%s/replies' % self.remote_id,
             collection_only=True,
             **kwargs
-        )
+        ).serialize()
 
     def to_activity_dataclass(self, pure=False):# pylint: disable=arguments-differ
         ''' return tombstone if the status is deleted '''
