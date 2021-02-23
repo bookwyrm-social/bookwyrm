@@ -41,6 +41,7 @@ class RssFeedView(TestCase):
         ''' load an rss feed '''
         view = rss_feed.RssFeed()
         request = self.factory.get('/user/rss_user/rss')
+        request.user = self.user
         with patch("bookwyrm.models.SiteSettings.objects.get") as site:
             site.return_value = self.site
             result = view(request, username=self.user.username)
