@@ -24,8 +24,8 @@ def is_api_request(request):
             request.path[-5:] == '.json'
 
 
-def is_bookworm_request(request):
-    ''' check if the request is coming from another bookworm instance '''
+def is_bookwyrm_request(request):
+    ''' check if the request is coming from another bookwyrm instance '''
     user_agent = request.headers.get('User-Agent')
     if user_agent is None or \
             re.search(regex.bookwyrm_user_agent, user_agent) is None:

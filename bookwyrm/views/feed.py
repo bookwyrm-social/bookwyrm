@@ -13,7 +13,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_activity_feed
 from .helpers import get_user_from_username
-from .helpers import is_api_request, is_bookworm_request, object_visible_to_user
+from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -107,7 +107,7 @@ class Status(View):
 
         if is_api_request(request):
             return ActivitypubResponse(
-                status.to_activity(pure=not is_bookworm_request(request)))
+                status.to_activity(pure=not is_bookwyrm_request(request)))
 
         data = {**feed_page_data(request.user), **{
             'title': 'Status by %s' % user.username,
