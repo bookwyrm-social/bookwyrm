@@ -30,7 +30,7 @@ class User(TestCase):
         with patch('bookwyrm.models.user.set_remote_server.delay'):
             user = models.User.objects.create_user(
                 'rat', 'rat@rat.rat', 'ratword', local=False,
-                remote_id='https://example.com/dfjkg')
+                remote_id='https://example.com/dfjkg', bookwyrm_user=False)
         self.assertEqual(user.username, 'rat@example.com')
 
 
