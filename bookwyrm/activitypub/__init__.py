@@ -15,7 +15,7 @@ from .response import ActivitypubResponse
 from .book import Edition, Work, Author
 from .verbs import Create, Delete, Undo, Update
 from .verbs import Follow, Accept, Reject, Block
-from .verbs import Add, AddListItem, Remove
+from .verbs import Add, Remove
 from .verbs import Announce, Like
 
 # this creates a list of all the Activity types that we can serialize,

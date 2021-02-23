@@ -121,6 +121,9 @@ class Add(Verb):
     target: str
     object: Edition
     type: str = 'Add'
+    notes: str = None
+    order: int = 0
+    approved: bool = True
 
     def action(self):
         ''' add obj to collection '''
@@ -129,14 +132,6 @@ class Add(Verb):
         model = [t for t in type(target)._meta.related_objects \
                 if t.name != 'edition'][0].related_model
         self.to_model(model=model)
-
-
-@dataclass(init=False)
-class AddListItem(Add):
-    '''Add activity that's aware of the book obj '''
-    notes: str = None
-    order: int = 0
-    approved: bool = True
 
 
 @dataclass(init=False)

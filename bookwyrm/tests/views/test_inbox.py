@@ -612,6 +612,81 @@ class Inbox(TestCase):
         self.assertEqual(shelf.books.first(), book)
 
 
+#    def test_handle_tag_book(self):
+#        ''' tagging a book '''
+#        work = models.Work.objects.create(title='work title')
+#        book = models.Edition.objects.create(
+#            title='Test', remote_id='https://bookwyrm.social/book/37292',
+#            parent_work=work)
+#
+#        activity = {
+#            "id": "https://bookwyrm.social/shelfbook/6189#add",
+#            "type": "Add",
+#            "actor": "https://example.com/users/rat",
+#            "object": {
+#                "type": "Edition",
+#                "title": "Test Title",
+#                "work": work.remote_id,
+#                "id": "https://bookwyrm.social/book/37292",
+#            },
+#            "target": "",
+#            "@context": "https://www.w3.org/ns/activitystreams"
+#        }
+#        views.inbox.activity_task(activity)
+#        self.assertEqual(shelf.books.first(), book)
+
+
+    @responses.activate
+    def test_handle_add_book_to_list(self):
+        ''' listing a book '''
+        work = models.Work.objects.create(title='work title')
+        book = models.Edition.objects.create(
+            title='Test', remote_id='https://bookwyrm.social/book/37292',
+            parent_work=work)
+
+        responses.add(
+            responses.GET,
+            'https://bookwyrm.social/user/mouse/list/to-read',
+            json={
+                "id": "https://example.com/list/22",
+                "type": "BookList",
+                "totalItems": 1,
+                "first": "https://example.com/list/22?page=1",
+                "last": "https://example.com/list/22?page=1",
+                "name": "Test List",
+                "owner": "https://example.com/user/mouse",
+                "to": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "cc": [
+                    "https://example.com/user/mouse/followers"
+                ],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        )
+
+        activity = {
+            "id": "https://bookwyrm.social/listbook/6189#add",
+            "type": "Add",
+            "actor": "https://example.com/users/rat",
+            "object": {
+                "type": "Edition",
+                "title": "Test Title",
+                "work": work.remote_id,
+                "id": "https://bookwyrm.social/book/37292",
+            },
+            "target": "https://bookwyrm.social/user/mouse/list/to-read",
+            "@context": "https://www.w3.org/ns/activitystreams"
+        }
+        views.inbox.activity_task(activity)
+
+        booklist = models.List.objects.get()
+        self.assertEqual(booklist.name, 'Test List')
+        self.assertEqual(booklist.books.first(), book)
+
+
     def test_handle_update_user(self):
         ''' update an existing user '''
         # we only do this with remote users
