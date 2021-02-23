@@ -64,7 +64,7 @@ class User(TestCase):
         self.assertEqual(activity['name'], self.user.name)
         self.assertEqual(activity['inbox'], self.user.inbox)
         self.assertEqual(activity['outbox'], self.user.outbox)
-        self.assertEqual(activity['bookwyrmUser'], True)
+        self.assertEqual(activity['bookwyrmUser'], False)
         self.assertEqual(activity['discoverable'], True)
         self.assertEqual(activity['type'], 'Person')
 
