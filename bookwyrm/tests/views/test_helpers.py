@@ -56,12 +56,14 @@ class ViewsHelpers(TestCase):
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
-            views.helpers.get_user_from_username('mouse'), self.local_user)
+            views.helpers.get_user_from_username(
+                self.local_user, 'mouse'), self.local_user)
         self.assertEqual(
             views.helpers.get_user_from_username(
-                'mouse@local.com'), self.local_user)
+                self.local_user, 'mouse@local.com'), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
-            views.helpers.get_user_from_username('mojfse@example.com')
+            views.helpers.get_user_from_username(
+                self.local_user, 'mojfse@example.com')
 
 
     def test_is_api_request(self):

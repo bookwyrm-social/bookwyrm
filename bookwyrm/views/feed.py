@@ -65,7 +65,7 @@ class DirectMessage(View):
         user = None
         if username:
             try:
-                user = get_user_from_username(username)
+                user = get_user_from_username(request.user, username)
             except models.User.DoesNotExist:
                 pass
         if user:
@@ -91,7 +91,7 @@ class Status(View):
     def get(self, request, username, status_id):
         ''' display a particular status (and replies, etc) '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
             status = models.Status.objects.select_subclasses().get(
                 id=status_id, deleted=False)
         except ValueError:
