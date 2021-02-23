@@ -56,4 +56,4 @@ class Discover(View):
             'books': list(set(books)),
             'ratings': ratings
         }
-        return TemplateResponse(request, 'discover.html', data)
+        return TemplateResponse(request, 'discover/discover.html', data)
