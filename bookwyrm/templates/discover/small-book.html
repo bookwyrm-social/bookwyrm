@@ -1,6 +1,6 @@
 {% load bookwyrm_tags %}
 {% if book %}
-{% include 'snippets/book_cover.html' with book=book %}
+<a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book %}</a>
 {% if ratings %}
 {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
 {% endif %}

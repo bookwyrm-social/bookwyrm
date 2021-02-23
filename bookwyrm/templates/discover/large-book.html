@@ -2,7 +2,7 @@
 {% if book %}
 <div class="columns">
     <div class="column is-narrow">
-        {% include 'snippets/book_cover.html' with book=book size="large" %}
+        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="large" %}</a>
         {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
     </div>
     <div class="column">
