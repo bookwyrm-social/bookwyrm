@@ -9,7 +9,7 @@
         <input type="hidden" name="privacy" value="public">
         <input type="hidden" name="rating" value="{{ forloop.counter }}">
 
-        <div class="field is-grouped stars form-rate-stars mb-1">
+        <div class="field is-grouped stars form-rate-stars mb-1 has-text-warning-dark">
             <label class="is-sr-only" for="rating-no-rating-{{ book.id }}">No rating</label>
             <input class="is-sr-only" type="radio" name="rating" value="" id="rating-no-rating-{{ book.id }}" checked>
             {% for i in '12345'|make_list %}
