@@ -3,29 +3,6 @@
 {% load humanize %}
 {% block panel %}
 <section class="block">
-    <table class="table is-striped">
-        <tr>
-            <th>Link</th>
-            <th>Expires</th>
-            <th>Max uses</th>
-            <th>Times used</th>
-        </tr>
-        {% if not invites %}
-        <tr><td colspan="4">No active invites</td></tr>
-        {% endif %}
-        {% for invite in invites %}
-        <tr>
-            <td><a href="{{ invite.link }}">{{ invite.link }}</td>
-            <td>{{ invite.expiry|naturaltime }}</td>
-            <td>{{ invite.use_limit }}</td>
-            <td>{{ invite.times_used }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% include 'snippets/pagination.html' with page=invites path=request.path %}
-</section>
-
-<section class="block">
     <h2 class="title is-4">Generate New Invite</h2>
 
     <form name="invite" action="{% url 'settings-invites' %}" method="post">
@@ -47,5 +24,28 @@
 
         <button class="button is-primary" type="submit">Create Invite</button>
     </form>
+</section>
+
+<section class="block">
+    <table class="table is-striped">
+        <tr>
+            <th>Link</th>
+            <th>Expires</th>
+            <th>Max uses</th>
+            <th>Times used</th>
+        </tr>
+        {% if not invites %}
+        <tr><td colspan="4">No active invites</td></tr>
+        {% endif %}
+        {% for invite in invites %}
+        <tr>
+            <td><a href="{{ invite.link }}">{{ invite.link }}</td>
+            <td>{{ invite.expiry|naturaltime }}</td>
+            <td>{{ invite.use_limit }}</td>
+            <td>{{ invite.times_used }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include 'snippets/pagination.html' with page=invites path=request.path %}
 </section>
 {% endblock %}
