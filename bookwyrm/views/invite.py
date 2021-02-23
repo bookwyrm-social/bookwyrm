@@ -46,7 +46,15 @@ class ManageInvites(View):
         invite.user = request.user
         invite.save()
 
-        return redirect('/settings/invites')
+        paginated = Paginator(models.SiteInvite.objects.filter(
+            user=request.user
+        ).order_by('-created_date'), PAGE_LENGTH)
+        data = {
+            'title': 'Invitations',
+            'invites': paginated.page(1),
+            'form': form
+        }
+        return TemplateResponse(request, 'settings/manage_invites.html', data)
 
 
 class Invite(View):
