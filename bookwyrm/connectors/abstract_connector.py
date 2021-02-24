@@ -127,7 +127,7 @@ class AbstractConnector(AbstractMinimalConnector):
             # create activitypub object
             work_activity = activitypub.Work(**work_data)
             # this will dedupe automatically
-            work = work_activity.to_model(models.Work)
+            work = work_activity.to_model(model=models.Work)
             for author in self.get_authors_from_data(data):
                 work.authors.add(author)
 
@@ -141,7 +141,7 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
         mapped_data['work'] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
-        edition = edition_activity.to_model(models.Edition)
+        edition = edition_activity.to_model(model=models.Edition)
         edition.connector = self.connector
         edition.save()
 
@@ -168,7 +168,7 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(data, self.author_mappings)
         activity = activitypub.Author(**mapped_data)
         # this will dedupe
-        return activity.to_model(models.Author)
+        return activity.to_model(model=models.Author)
 
 
     @abstractmethod

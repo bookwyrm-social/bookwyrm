@@ -192,7 +192,7 @@ def handle_remote_webfinger(query):
             if link.get('rel') == 'self':
                 try:
                     user = activitypub.resolve_remote_id(
-                        models.User, link['href']
+                        link['href'], model=models.User
                     )
                 except KeyError:
                     return None

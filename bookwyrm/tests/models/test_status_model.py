@@ -63,7 +63,7 @@ class Status(TestCase):
         self.assertEqual(models.Review().status_type, 'Review')
         self.assertEqual(models.Quotation().status_type, 'Quotation')
         self.assertEqual(models.Comment().status_type, 'Comment')
-        self.assertEqual(models.Boost().status_type, 'Boost')
+        self.assertEqual(models.Boost().status_type, 'Announce')
 
     def test_boostable(self, _):
         ''' can a status be boosted, based on privacy '''
@@ -284,3 +284,24 @@ class Status(TestCase):
         with self.assertRaises(IntegrityError):
             models.Notification.objects.create(
                 user=self.user, notification_type='GLORB')
+
+
+    def test_create_broadcast(self, broadcast_mock):
+        ''' should send out two verions of a status on create '''
+        models.Comment.objects.create(
+            content='hi', user=self.user, book=self.book)
+        self.assertEqual(broadcast_mock.call_count, 2)
+        pure_call = broadcast_mock.call_args_list[0]
+        bw_call = broadcast_mock.call_args_list[1]
+
+        self.assertEqual(pure_call[1]['software'], 'other')
+        args = pure_call[0][0]
+        self.assertEqual(args['type'], 'Create')
+        self.assertEqual(args['object']['type'], 'Note')
+        self.assertTrue('content' in args['object'])
+
+
+        self.assertEqual(bw_call[1]['software'], 'bookwyrm')
+        args = bw_call[0][0]
+        self.assertEqual(args['type'], 'Create')
+        self.assertEqual(args['object']['type'], 'Comment')

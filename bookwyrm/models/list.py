@@ -68,7 +68,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     order = fields.IntegerField(blank=True, null=True)
     endorsement = models.ManyToManyField('User', related_name='endorsers')
 
-    activity_serializer = activitypub.AddListItem
+    activity_serializer = activitypub.Add
     object_field = 'book'
     collection_field = 'book_list'
 

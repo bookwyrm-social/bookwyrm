@@ -140,7 +140,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             privacy__in=['public', 'unlisted'],
         ).select_subclasses().order_by('-published_date')
         return self.to_ordered_collection(queryset, \
-            collection_only=True, remote_id=self.outbox, **kwargs)
+            collection_only=True, remote_id=self.outbox, **kwargs).serialize()
 
     def to_following_activity(self, **kwargs):
         ''' activitypub following list '''
@@ -375,4 +375,4 @@ def get_remote_reviews(outbox):
     for activity in data['orderedItems']:
         if not activity['type'] == 'Review':
             continue
-        activitypub.Review(**activity).to_model(Review)
+        activitypub.Review(**activity).to_model()
