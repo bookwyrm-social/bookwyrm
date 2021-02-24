@@ -1,33 +1,14 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% if not request.user.is_authenticated %}
 <header class="block has-text-centered">
     <h1 class="title">{{ site.name }}</h1>
     <h2 class="subtitle">{{ site.instance_tagline }}</h2>
 </header>
 
-<section class="level is-mobile">
-    <div class="level-item has-text-centered">
-        <div>
-            <p class="title has-text-weight-normal"><span class="icon icon-graphic-paperplane"></span></p>
-            <p class="heading">Decentralized</p>
-        </div>
-    </div>
-    <div class="level-item has-text-centered">
-        <div>
-            <p class="title has-text-weight-normal"><span class="icon icon-graphic-heart"></span></p>
-            <p class="heading">Friendly</p>
-        </div>
-    </div>
-    <div class="level-item has-text-centered">
-        <div>
-            <p class="title has-text-weight-normal"><span class="icon icon-graphic-banknote"></span></p>
-            <p class="heading">Anti-Corporate</p>
-        </div>
-    </div>
-</section>
+{% include 'discover/icons.html' %}
 
+{% if not request.user.is_authenticated %}
 <section class="tile is-ancestor">
     <div class="tile is-7 is-parent">
         <div class="tile is-child box">
@@ -49,10 +30,6 @@
     </div>
 </section>
 
-{% else %}
-<div class="block">
-    <h1 class="title has-text-centered">Discover</h1>
-</div>
 {% endif %}
 
 <div class="block is-hidden-tablet">

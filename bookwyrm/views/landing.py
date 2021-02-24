@@ -16,7 +16,7 @@ class About(View):
         data = {
             'title': 'About',
         }
-        return TemplateResponse(request, 'about.html', data)
+        return TemplateResponse(request, 'discover/about.html', data)
 
 class Home(View):
     ''' discover page or home feed depending on auth '''
