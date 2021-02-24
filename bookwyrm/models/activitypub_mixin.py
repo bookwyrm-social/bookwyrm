@@ -161,7 +161,7 @@ class ActivitypubMixin:
         activity = generate_activity(self)
         return self.activity_serializer(**activity)
 
-    def to_activity(self):
+    def to_activity(self, **kwargs): # pylint: disable=unused-argument
         ''' convert from a model to a json activity '''
         return self.to_activity_dataclass().serialize()
 
@@ -286,7 +286,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
     def to_ordered_collection(self, queryset, \
             remote_id=None, page=False, collection_only=False, **kwargs):
-        'pure=pure, '' an ordered collection of whatevers '''
+        ''' an ordered collection of whatevers '''
         if not queryset.ordered:
             raise RuntimeError('queryset must be ordered')
 
@@ -330,7 +330,7 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
         return self.to_ordered_collection(
-            self.collection_queryset, **kwargs)
+            self.collection_queryset, **kwargs).serialize()
 
 
 class CollectionItemMixin(ActivitypubMixin):
@@ -502,4 +502,4 @@ def to_ordered_collection_page(
         orderedItems=items,
         next=next_page,
         prev=prev_page
-    ).serialize()
+    )
