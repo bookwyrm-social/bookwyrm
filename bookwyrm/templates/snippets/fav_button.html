@@ -10,7 +10,7 @@
 </form>
 <form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-success is-small" type="submit">
+    <button class="button is-primary is-small" type="submit">
         <span class="icon icon-heart" title="Un-like status">
             <span class="is-sr-only">Un-like status</span>
         </span>
