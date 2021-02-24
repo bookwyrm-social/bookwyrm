@@ -106,7 +106,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True,
             queryset=models.Comment.objects
         )
@@ -115,7 +115,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'followers'],
+            privacy=['public', 'followers'],
             local_only=True
         )
         self.assertEqual(len(statuses), 2)
@@ -128,7 +128,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'followers'],
+            privacy=['public', 'followers'],
         )
         self.assertEqual(len(statuses), 3)
         self.assertEqual(statuses[2], public_status)
@@ -137,7 +137,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True
         )
         self.assertEqual(len(statuses), 2)
@@ -147,7 +147,7 @@ class ViewsHelpers(TestCase):
         rat.followers.add(self.local_user)
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True
         )
         self.assertEqual(len(statuses), 5)
@@ -170,18 +170,18 @@ class ViewsHelpers(TestCase):
                 content='blah blah', user=rat)
 
             statuses = views.helpers.get_activity_feed(
-                self.local_user, ['public'])
+                self.local_user, privacy=['public'])
             self.assertEqual(len(statuses), 2)
 
         # block relationship
         rat.blocks.add(self.local_user)
         statuses = views.helpers.get_activity_feed(
-            self.local_user, ['public'])
+            self.local_user, privacy=['public'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], public_status)
 
         statuses = views.helpers.get_activity_feed(
-            rat, ['public'])
+            rat, privacy=['public'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], rat_public)
 

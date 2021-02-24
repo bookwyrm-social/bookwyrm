@@ -1,6 +1,7 @@
 ''' helper functions used in various views '''
 import re
 from requests import HTTPError
+from django.core.exceptions import FieldError
 from django.db.models import Q
 
 from bookwyrm import activitypub, models
@@ -98,17 +99,23 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
 
     # exclude direct messages not intended for the user
     if 'direct' in privacy_levels:
-        queryset = queryset.exclude(
-            ~Q(
-                Q(user=viewer) | Q(mention_users=viewer)
-            ), privacy='direct'
-        )
+        try:
+            queryset = queryset.exclude(
+                ~Q(
+                    Q(user=viewer) | Q(mention_users=viewer)
+                ), privacy='direct'
+            )
+        except FieldError:
+            queryset = queryset.exclude(
+                ~Q(user=viewer), privacy='direct'
+            )
+
     return queryset
 
 
 def get_activity_feed(
         user, privacy=None, local_only=False, following_only=False,
-        queryset=None):
+        queryset=None, hide_dms=False):
     ''' get a filtered queryset of statuses '''
     if not queryset:
         queryset = models.Status.objects.select_subclasses()
@@ -119,6 +126,16 @@ def get_activity_feed(
     # apply privacy filters
     queryset = privacy_filter(
         user, queryset, privacy, following_only=following_only)
+
+    if hide_dms:
+        # dms are direct statuses not related to books
+        queryset = queryset.exclude(
+            review__isnull=True,
+            comment__isnull=True,
+            quotation__isnull=True,
+            generatednote__isnull=True,
+            privacy='direct'
+        )
 
     # filter for only local status
     if local_only:

@@ -50,9 +50,7 @@ class Book(View):
         )
         # all reviews for the book
         reviews = get_activity_feed(
-            request.user,
-            ['public', 'unlisted', 'followers', 'direct'],
-            queryset=reviews
+            request.user, queryset=reviews
         )
 
         # the reviews to show

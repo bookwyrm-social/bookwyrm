@@ -11,8 +11,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_activity_feed
-from .helpers import get_user_from_username
+from .helpers import get_activity_feed, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
@@ -28,15 +27,8 @@ class Feed(View):
             page = 1
 
         if tab == 'home':
-            activities = get_activity_feed(request.user, following_only=True)
-            # we only want to show private messages if they're related to books
-            activities = activities.exclude(
-                review__isnull=True,
-                comment__isnull=True,
-                quotation__isnull=True,
-                generatednote__isnull=True,
-                privacy='direct'
-            )
+            activities = get_activity_feed(
+                request.user, following_only=True, hide_dms=True)
         elif tab == 'local':
             activities = get_activity_feed(
                 request.user, privacy=['public', 'followers'], local_only=True)
