@@ -115,7 +115,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
 
 def get_activity_feed(
         user, privacy=None, local_only=False, following_only=False,
-        queryset=None, hide_dms=False):
+        queryset=None):
     ''' get a filtered queryset of statuses '''
     if not queryset:
         queryset = models.Status.objects.select_subclasses()
@@ -127,8 +127,16 @@ def get_activity_feed(
     queryset = privacy_filter(
         user, queryset, privacy, following_only=following_only)
 
-    if hide_dms:
+    # only show dms if we only want dms
+    if privacy == ['direct']:
         # dms are direct statuses not related to books
+        queryset = queryset.filter(
+            review__isnull=True,
+            comment__isnull=True,
+            quotation__isnull=True,
+            generatednote__isnull=True,
+        )
+    else:
         queryset = queryset.exclude(
             review__isnull=True,
             comment__isnull=True,

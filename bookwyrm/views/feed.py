@@ -28,7 +28,7 @@ class Feed(View):
 
         if tab == 'home':
             activities = get_activity_feed(
-                request.user, following_only=True, hide_dms=True)
+                request.user, following_only=True)
         elif tab == 'local':
             activities = get_activity_feed(
                 request.user, privacy=['public', 'followers'], local_only=True)

@@ -72,7 +72,6 @@ class User(View):
         activities = get_activity_feed(
             request.user,
             queryset=user.status_set.select_subclasses(),
-            hide_dms=True
         )
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
