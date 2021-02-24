@@ -612,30 +612,6 @@ class Inbox(TestCase):
         self.assertEqual(shelf.books.first(), book)
 
 
-#    def test_handle_tag_book(self):
-#        ''' tagging a book '''
-#        work = models.Work.objects.create(title='work title')
-#        book = models.Edition.objects.create(
-#            title='Test', remote_id='https://bookwyrm.social/book/37292',
-#            parent_work=work)
-#
-#        activity = {
-#            "id": "https://bookwyrm.social/shelfbook/6189#add",
-#            "type": "Add",
-#            "actor": "https://example.com/users/rat",
-#            "object": {
-#                "type": "Edition",
-#                "title": "Test Title",
-#                "work": work.remote_id,
-#                "id": "https://bookwyrm.social/book/37292",
-#            },
-#            "target": "",
-#            "@context": "https://www.w3.org/ns/activitystreams"
-#        }
-#        views.inbox.activity_task(activity)
-#        self.assertEqual(shelf.books.first(), book)
-
-
     @responses.activate
     def test_handle_add_book_to_list(self):
         ''' listing a book '''
@@ -685,6 +661,49 @@ class Inbox(TestCase):
         booklist = models.List.objects.get()
         self.assertEqual(booklist.name, 'Test List')
         self.assertEqual(booklist.books.first(), book)
+
+
+    @responses.activate
+    def test_handle_tag_book(self):
+        ''' listing a book '''
+        work = models.Work.objects.create(title='work title')
+        book = models.Edition.objects.create(
+            title='Test', remote_id='https://bookwyrm.social/book/37292',
+            parent_work=work)
+
+        responses.add(
+            responses.GET,
+            'https://www.example.com/tag/cool-tag',
+            json={
+                "id": "https://1b1a78582461.ngrok.io/tag/tag",
+                "type": "OrderedCollection",
+                "totalItems": 0,
+                "first": "https://1b1a78582461.ngrok.io/tag/tag?page=1",
+                "last": "https://1b1a78582461.ngrok.io/tag/tag?page=1",
+                "name": "cool tag",
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        )
+
+        activity = {
+            "id": "https://bookwyrm.social/listbook/6189#add",
+            "type": "Add",
+            "actor": "https://example.com/users/rat",
+            "object": {
+                "type": "Edition",
+                "title": "Test Title",
+                "work": work.remote_id,
+                "id": "https://bookwyrm.social/book/37292",
+            },
+            "target": "https://www.example.com/tag/cool-tag",
+            "@context": "https://www.w3.org/ns/activitystreams"
+        }
+        views.inbox.activity_task(activity)
+
+        tag = models.Tag.objects.get()
+        self.assertFalse(models.List.objects.exists())
+        self.assertEqual(tag.name, 'cool tag')
+        self.assertEqual(tag.books.first(), book)
 
 
     def test_handle_update_user(self):

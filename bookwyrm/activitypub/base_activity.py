@@ -82,7 +82,8 @@ class ActivityObject:
                     if activity_objects:
                         value = naive_parse(activity_objects, value)
                     else:
-                        value = naive_parse(activity_objects, value, serializer=field.type)
+                        value = naive_parse(
+                            activity_objects, value, serializer=field.type)
 
             except KeyError:
                 if field.default == MISSING and \
