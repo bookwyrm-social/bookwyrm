@@ -1,6 +1,5 @@
 ''' tagging views'''
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -20,7 +19,7 @@ class Tag(View):
 
         if is_api_request(request):
             return ActivitypubResponse(
-                tag_obj.to_activity(**request.GET), safe=False)
+                tag_obj.to_activity(**request.GET))
 
         books = models.Edition.objects.filter(
             usertag__tag__identifier=tag_id
