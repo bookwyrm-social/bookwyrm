@@ -45,13 +45,9 @@ class Book(View):
         if not work:
             return HttpResponseNotFound()
 
-        reviews = models.Review.objects.filter(
-            book__in=work.editions.all(),
-        )
         # all reviews for the book
-        reviews = get_activity_feed(
-            request.user, queryset=reviews
-        )
+        reviews = models.Review.objects.filter(book__in=work.editions.all())
+        reviews = get_activity_feed(request.user, queryset=reviews)
 
         # the reviews to show
         paginated = Paginator(reviews.exclude(

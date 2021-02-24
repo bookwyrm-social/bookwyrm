@@ -122,7 +122,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(statuses[1], public_status)
         self.assertEqual(statuses[0], rat_public)
 
-        statuses = views.helpers.get_activity_feed(self.local_user, 'direct')
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, privacy=['direct'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], direct_status)
 

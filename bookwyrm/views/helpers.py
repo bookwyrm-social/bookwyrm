@@ -117,7 +117,7 @@ def get_activity_feed(
         user, privacy=None, local_only=False, following_only=False,
         queryset=None):
     ''' get a filtered queryset of statuses '''
-    if not queryset:
+    if queryset is None:
         queryset = models.Status.objects.select_subclasses()
 
     # exclude deleted
@@ -137,13 +137,17 @@ def get_activity_feed(
             generatednote__isnull=True,
         )
     else:
-        queryset = queryset.exclude(
-            review__isnull=True,
-            comment__isnull=True,
-            quotation__isnull=True,
-            generatednote__isnull=True,
-            privacy='direct'
-        )
+        try:
+            queryset = queryset.exclude(
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+                generatednote__isnull=True,
+                privacy='direct'
+            )
+        except FieldError:
+            # if we're looking at a subtype of Status (like Review)
+            pass
 
     # filter for only local status
     if local_only:
