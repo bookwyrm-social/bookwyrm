@@ -11,8 +11,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_activity_feed
-from .helpers import get_user_from_username
+from .helpers import get_activity_feed, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
@@ -29,14 +28,13 @@ class Feed(View):
 
         if tab == 'home':
             activities = get_activity_feed(
-                request.user, ['public', 'unlisted', 'followers'],
-                following_only=True)
+                request.user, following_only=True)
         elif tab == 'local':
             activities = get_activity_feed(
-                request.user, ['public', 'followers'], local_only=True)
+                request.user, privacy=['public', 'followers'], local_only=True)
         else:
             activities = get_activity_feed(
-                request.user, ['public', 'followers'])
+                request.user, privacy=['public', 'followers'])
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {**feed_page_data(request.user), **{
@@ -72,7 +70,7 @@ class DirectMessage(View):
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
         activities = get_activity_feed(
-            request.user, 'direct', queryset=queryset)
+            request.user, privacy=['direct'], queryset=queryset)
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)

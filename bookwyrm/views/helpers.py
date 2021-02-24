@@ -1,6 +1,7 @@
 ''' helper functions used in various views '''
 import re
 from requests import HTTPError
+from django.core.exceptions import FieldError
 from django.db.models import Q
 
 from bookwyrm import activitypub, models
@@ -59,8 +60,11 @@ def object_visible_to_user(viewer, obj):
     return False
 
 
-def privacy_filter(viewer, queryset, privacy_levels, following_only=False):
+def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     ''' filter objects that have "user" and "privacy" fields '''
+    privacy_levels = privacy_levels or \
+            ['public', 'unlisted', 'followers', 'direct']
+
     # exclude blocks from both directions
     if not viewer.is_anonymous:
         blocked = models.User.objects.filter(id__in=viewer.blocks.all()).all()
@@ -95,29 +99,55 @@ def privacy_filter(viewer, queryset, privacy_levels, following_only=False):
 
     # exclude direct messages not intended for the user
     if 'direct' in privacy_levels:
-        queryset = queryset.exclude(
-            ~Q(
-                Q(user=viewer) | Q(mention_users=viewer)
-            ), privacy='direct'
-        )
+        try:
+            queryset = queryset.exclude(
+                ~Q(
+                    Q(user=viewer) | Q(mention_users=viewer)
+                ), privacy='direct'
+            )
+        except FieldError:
+            queryset = queryset.exclude(
+                ~Q(user=viewer), privacy='direct'
+            )
+
     return queryset
 
 
 def get_activity_feed(
-        user, privacy, local_only=False, following_only=False,
-        queryset=models.Status.objects):
+        user, privacy=None, local_only=False, following_only=False,
+        queryset=None):
     ''' get a filtered queryset of statuses '''
-    # if we're looking at Status, we need this. We don't if it's Comment
-    if hasattr(queryset, 'select_subclasses'):
-        queryset = queryset.select_subclasses()
+    if queryset is None:
+        queryset = models.Status.objects.select_subclasses()
 
     # exclude deleted
     queryset = queryset.exclude(deleted=True).order_by('-published_date')
 
     # apply privacy filters
-    privacy = privacy if isinstance(privacy, list) else [privacy]
     queryset = privacy_filter(
         user, queryset, privacy, following_only=following_only)
+
+    # only show dms if we only want dms
+    if privacy == ['direct']:
+        # dms are direct statuses not related to books
+        queryset = queryset.filter(
+            review__isnull=True,
+            comment__isnull=True,
+            quotation__isnull=True,
+            generatednote__isnull=True,
+        )
+    else:
+        try:
+            queryset = queryset.exclude(
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+                generatednote__isnull=True,
+                privacy='direct'
+            )
+        except FieldError:
+            # if we're looking at a subtype of Status (like Review)
+            pass
 
     # filter for only local status
     if local_only:
