@@ -2,7 +2,7 @@
 {% load bookwyrm_tags %}
 {% block content %}
 
-<header class="columns content">
+<header class="columns content is-mobile">
     <div class="column">
         <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
         <p class="subtitle help">Created {% if list.curation != 'open' %} and curated{% endif %} by {% include 'snippets/username.html' with user=list.user %}</p>

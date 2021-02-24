@@ -19,7 +19,7 @@ class Shelf(View):
     def get(self, request, username, shelf_identifier):
         ''' display a shelf '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 

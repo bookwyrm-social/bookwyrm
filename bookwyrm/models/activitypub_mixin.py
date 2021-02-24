@@ -286,7 +286,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
     def to_ordered_collection(self, queryset, \
             remote_id=None, page=False, collection_only=False, **kwargs):
-        ''' an ordered collection of whatevers '''
+        'pure=pure, '' an ordered collection of whatevers '''
         if not queryset.ordered:
             raise RuntimeError('queryset must be ordered')
 
@@ -480,7 +480,7 @@ def sign_and_send(sender, data, destination):
 
 # pylint: disable=unused-argument
 def to_ordered_collection_page(
-        queryset, remote_id, id_only=False, page=1, **kwargs):
+        queryset, remote_id, id_only=False, page=1, pure=False, **kwargs):
     ''' serialize and pagiante a queryset '''
     paginated = Paginator(queryset, PAGE_LENGTH)
 
@@ -488,7 +488,7 @@ def to_ordered_collection_page(
     if id_only:
         items = [s.remote_id for s in activity_page.object_list]
     else:
-        items = [s.to_activity() for s in activity_page.object_list]
+        items = [s.to_activity(pure=pure) for s in activity_page.object_list]
 
     prev_page = next_page = None
     if activity_page.has_next():

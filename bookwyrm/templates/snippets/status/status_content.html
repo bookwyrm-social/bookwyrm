@@ -54,9 +54,9 @@
 {% if status.book or status.mention_books.count %}
 <div class="{% if status.status_type != 'GeneratedNote' %}box has-background-white-bis{% endif %}">
     {% if status.book %}
-    {% include 'snippets/book_preview.html' with book=status.book %}
+    {% include 'snippets/status/book_preview.html' with book=status.book %}
     {% elif status.mention_books.count %}
-    {% include 'snippets/book_preview.html' with book=status.mention_books.first %}
+    {% include 'snippets/status/book_preview.html' with book=status.mention_books.first %}
     {% endif %}
 </div>
 {% endif %}

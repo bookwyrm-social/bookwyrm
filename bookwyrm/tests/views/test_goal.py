@@ -1,5 +1,6 @@
 ''' test for app action functionality '''
 from unittest.mock import patch
+from django.utils import timezone
 
 from django.contrib.auth.models import AnonymousUser
 from django.template.response import TemplateResponse
@@ -30,6 +31,7 @@ class GoalViews(TestCase):
         )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
+        models.SiteSettings.objects.create()
 
 
     def test_goal_page_no_goal(self):
@@ -48,6 +50,7 @@ class GoalViews(TestCase):
         request.user = self.local_user
 
         result = view(request, self.local_user.localname, 2020)
+        result.render()
         self.assertIsInstance(result, TemplateResponse)
 
 
@@ -62,16 +65,23 @@ class GoalViews(TestCase):
 
     def test_goal_page_public(self):
         ''' view a user's public goal '''
+        models.ReadThrough.objects.create(
+            finish_date=timezone.now(),
+            user=self.local_user,
+            book=self.book,
+        )
+
         models.AnnualGoal.objects.create(
             user=self.local_user,
-            year=2020,
+            year=timezone.now().year,
             goal=128937123,
             privacy='public')
         view = views.Goal.as_view()
         request = self.factory.get('')
         request.user = self.rat
 
-        result = view(request, self.local_user.localname, 2020)
+        result = view(request, self.local_user.localname, timezone.now().year)
+        result.render()
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_private(self):

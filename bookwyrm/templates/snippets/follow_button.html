@@ -5,20 +5,29 @@
 Follow request already sent.
 </div>
 
+{% elif user in request.user.blocks.all %}
+{% include 'snippets/block_button.html' %}
 {% else %}
 
-<form action="/follow/" method="POST" class="interaction follow-{{ user.id }} {% if request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
-    {% csrf_token %}
-    <input type="hidden" name="user" value="{{ user.username }}">
-    {% if user.manually_approves_followers %}
-        <button class="button is-small is-link" type="submit">Send follow request</button>
-    {% else %}
-        <button class="button is-small is-link" type="submit">Follow</button>
-    {% endif %}
-</form>
-<form action="/unfollow/" method="POST" class="interaction follow-{{ user.id }} {% if not request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
-    {% csrf_token %}
-    <input type="hidden" name="user" value="{{ user.username }}">
-    <button class="button is-small is-danger is-light" type="submit">Unfollow</button>
-</form>
+<div class="field has-addons">
+    <div class="control">
+        <form action="/follow/" method="POST" class="interaction follow-{{ user.id }} {% if request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.username }}">
+            {% if user.manually_approves_followers %}
+                <button class="button is-small is-link" type="submit">Send follow request</button>
+            {% else %}
+                <button class="button is-small is-link" type="submit">Follow</button>
+            {% endif %}
+        </form>
+        <form action="/unfollow/" method="POST" class="interaction follow-{{ user.id }} {% if not request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ user.username }}">
+            <button class="button is-small is-danger is-light" type="submit">Unfollow</button>
+        </form>
+    </div>
+    <div class="control">
+        {% include 'snippets/user_options.html' with user=user class="is-small" %}
+    </div>
+</div>
 {% endif %}
