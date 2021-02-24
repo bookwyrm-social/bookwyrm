@@ -44,7 +44,8 @@ class Search(View):
 
         # any relevent lists?
         list_results = privacy_filter(
-            request.user, models.List.objects, ['public', 'followers']
+            request.user, models.List.objects,
+            privacy_levels=['public', 'followers']
         ).annotate(
             similarity=Greatest(
                 TrigramSimilarity('name', query),

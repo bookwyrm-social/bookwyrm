@@ -27,7 +27,10 @@ class RssFeed(Feed):
     def items(self, obj):
         ''' the user's activity feed '''
         return get_activity_feed(
-            obj, ['public', 'unlisted'], queryset=obj.status_set)
+            obj,
+            privacy=['public', 'unlisted'],
+            queryset=obj.status_set.select_subclasses()
+        )
 
 
     def item_link(self, item):

@@ -6,6 +6,7 @@ import operator
 import logging
 from uuid import uuid4
 import requests
+from requests.exceptions import HTTPError, SSLError
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -440,7 +441,7 @@ def broadcast_task(sender_id, activity, recipients):
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
-        except requests.exceptions.HTTPError as e:
+        except (HTTPError, SSLError) as e:
             logger.exception(e)
 
 

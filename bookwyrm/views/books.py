@@ -45,15 +45,9 @@ class Book(View):
         if not work:
             return HttpResponseNotFound()
 
-        reviews = models.Review.objects.filter(
-            book__in=work.editions.all(),
-        )
         # all reviews for the book
-        reviews = get_activity_feed(
-            request.user,
-            ['public', 'unlisted', 'followers', 'direct'],
-            queryset=reviews
-        )
+        reviews = models.Review.objects.filter(book__in=work.editions.all())
+        reviews = get_activity_feed(request.user, queryset=reviews)
 
         # the reviews to show
         paginated = Paginator(reviews.exclude(
@@ -96,9 +90,8 @@ class Book(View):
             'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
             'tags':  models.UserTag.objects.filter(book=book),
             'lists': privacy_filter(
-                request.user,
-                book.list_set.all(),
-                ['public', 'unlisted', 'followers']),
+                request.user, book.list_set.all()
+            ),
             'user_tags': user_tags,
             'user_shelves': user_shelves,
             'other_edition_shelves': other_edition_shelves,
