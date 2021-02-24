@@ -28,15 +28,21 @@ class Feed(View):
             page = 1
 
         if tab == 'home':
-            activities = get_activity_feed(
-                request.user, ['public', 'unlisted', 'followers'],
-                following_only=True)
+            activities = get_activity_feed(request.user, following_only=True)
+            # we only want to show private messages if they're related to books
+            activities = activities.exclude(
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+                generatednote__isnull=True,
+                privacy='direct'
+            )
         elif tab == 'local':
             activities = get_activity_feed(
-                request.user, ['public', 'followers'], local_only=True)
+                request.user, privacy=['public', 'followers'], local_only=True)
         else:
             activities = get_activity_feed(
-                request.user, ['public', 'followers'])
+                request.user, privacy=['public', 'followers'])
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {**feed_page_data(request.user), **{
@@ -72,7 +78,7 @@ class DirectMessage(View):
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
         activities = get_activity_feed(
-            request.user, 'direct', queryset=queryset)
+            request.user, privacy=['direct'], queryset=queryset)
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)

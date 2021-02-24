@@ -59,8 +59,11 @@ def object_visible_to_user(viewer, obj):
     return False
 
 
-def privacy_filter(viewer, queryset, privacy_levels, following_only=False):
+def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     ''' filter objects that have "user" and "privacy" fields '''
+    privacy_levels = privacy_levels or \
+            ['public', 'unlisted', 'followers', 'direct']
+
     # exclude blocks from both directions
     if not viewer.is_anonymous:
         blocked = models.User.objects.filter(id__in=viewer.blocks.all()).all()
@@ -104,18 +107,16 @@ def privacy_filter(viewer, queryset, privacy_levels, following_only=False):
 
 
 def get_activity_feed(
-        user, privacy, local_only=False, following_only=False,
-        queryset=models.Status.objects):
+        user, privacy=None, local_only=False, following_only=False,
+        queryset=None):
     ''' get a filtered queryset of statuses '''
-    # if we're looking at Status, we need this. We don't if it's Comment
-    if hasattr(queryset, 'select_subclasses'):
-        queryset = queryset.select_subclasses()
+    if not queryset:
+        queryset = models.Status.objects.select_subclasses()
 
     # exclude deleted
     queryset = queryset.exclude(deleted=True).order_by('-published_date')
 
     # apply privacy filters
-    privacy = privacy if isinstance(privacy, list) else [privacy]
     queryset = privacy_filter(
         user, queryset, privacy, following_only=following_only)
 
