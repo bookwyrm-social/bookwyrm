@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from bookwyrm import activitypub, models
+from .helpers import is_bookwyrm_request
 
 
 # pylint: disable= no-self-use
@@ -17,6 +18,10 @@ class Outbox(View):
             filter_type = None
 
         return JsonResponse(
-            user.to_outbox(**request.GET, filter_type=filter_type),
+            user.to_outbox(
+                **request.GET,
+                filter_type=filter_type,
+                pure=not is_bookwyrm_request(request)
+            ),
             encoder=activitypub.ActivityEncoder
         )

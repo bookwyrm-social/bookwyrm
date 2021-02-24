@@ -11,7 +11,7 @@ class RssFeed(Feed):
 
     def get_object(self, request, username):
         ''' the user who's posts get serialized '''
-        return get_user_from_username(username)
+        return get_user_from_username(request.user, username)
 
 
     def link(self, obj):

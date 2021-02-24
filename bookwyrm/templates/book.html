@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="block">
-    <div class="columns">
+    <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">
                 {{ book.title }}{% if book.subtitle %}:
@@ -42,26 +42,10 @@
                 <h3 class="title is-6 mb-1">Add cover</h3>
                 <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="field has-addons">
-                        <div class="control">
-                        <div class="file is-small mb-1">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
-                                <span class="file-cta">
-                                    <span class="file-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label">
-                                        Choose file...
-                                    </span>
-                                </span>
-                            </label>
-                        </div>
-                        </div>
-                        <div class="control">
-                            <button class="button is-small is-primary" type="submit">Add</button>
-                        </div>
-                    </div>
+                    <label class="label">
+                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
+                    </label>
+                    <button class="button is-small is-primary" type="submit">Add</button>
                 </form>
             </div>
             {% endif %}
@@ -242,7 +226,7 @@
 <div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
-        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
+        {% include 'snippets/status/status.html' with status=review hide_book=True depth=1 %}
     </div>
     {% endfor %}
 

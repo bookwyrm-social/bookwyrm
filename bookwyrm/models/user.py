@@ -9,7 +9,7 @@ from django.db import models
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.connectors import get_data
+from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
@@ -111,6 +111,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return self.localname or self.username
 
     activity_serializer = activitypub.Person
+
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        ''' the user queryset filtered for the context of the logged in user '''
+        queryset = cls.objects.filter(is_active=True)
+        if viewer.is_authenticated:
+            queryset = queryset.exclude(
+                blocks=viewer
+            )
+        return queryset
 
     def to_outbox(self, filter_type=None, **kwargs):
         ''' an ordered collection of statuses '''
@@ -319,7 +329,7 @@ def set_remote_server(user_id):
     actor_parts = urlparse(user.remote_id)
     user.federated_server = \
         get_or_create_remote_server(actor_parts.netloc)
-    user.save()
+    user.save(broadcast=False)
     if user.bookwyrm_user:
         get_remote_reviews.delay(user.outbox)
 
@@ -333,19 +343,24 @@ def get_or_create_remote_server(domain):
     except FederatedServer.DoesNotExist:
         pass
 
-    data = get_data('https://%s/.well-known/nodeinfo' % domain)
-
     try:
-        nodeinfo_url = data.get('links')[0].get('href')
-    except (TypeError, KeyError):
-        return None
+        data = get_data('https://%s/.well-known/nodeinfo' % domain)
+        try:
+            nodeinfo_url = data.get('links')[0].get('href')
+        except (TypeError, KeyError):
+            raise ConnectorException()
 
-    data = get_data(nodeinfo_url)
+        data = get_data(nodeinfo_url)
+        application_type = data.get('software', {}).get('name')
+        application_version = data.get('software', {}).get('version')
+    except ConnectorException:
+        application_type = application_version = None
+
 
     server = FederatedServer.objects.create(
         server_name=domain,
-        application_type=data['software']['name'],
-        application_version=data['software']['version'],
+        application_type=application_type,
+        application_version=application_version,
     )
     return server
 

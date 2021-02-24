@@ -216,11 +216,7 @@ def get_data(url):
         raise ConnectorException()
 
     if not resp.ok:
-        try:
-            resp.raise_for_status()
-        except requests.exceptions.HTTPError as e:
-            logger.exception(e)
-            raise ConnectorException()
+        raise ConnectorException()
     try:
         data = resp.json()
     except ValueError as e:

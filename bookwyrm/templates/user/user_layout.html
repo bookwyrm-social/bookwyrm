@@ -43,14 +43,7 @@
         </div>
     </div>
     {% if not is_self and request.user.is_authenticated %}
-    <div class="field has-addons">
-        <div class="control">
-            {% include 'snippets/follow_button.html' with user=user %}
-        </div>
-        <div class="control">
-            {% include 'snippets/user_options.html' with user=user class="is-small" %}
-        </div>
-    </div>
+    {% include 'snippets/follow_button.html' with user=user %}
     {% endif %}
 
     {% if is_self and user.follower_requests.all %}

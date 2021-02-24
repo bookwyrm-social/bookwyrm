@@ -56,12 +56,14 @@ class ViewsHelpers(TestCase):
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
-            views.helpers.get_user_from_username('mouse'), self.local_user)
+            views.helpers.get_user_from_username(
+                self.local_user, 'mouse'), self.local_user)
         self.assertEqual(
             views.helpers.get_user_from_username(
-                'mouse@local.com'), self.local_user)
+                self.local_user, 'mouse@local.com'), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
-            views.helpers.get_user_from_username('mojfse@example.com')
+            views.helpers.get_user_from_username(
+                self.local_user, 'mojfse@example.com')
 
 
     def test_is_api_request(self):
@@ -188,18 +190,18 @@ class ViewsHelpers(TestCase):
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
-        self.assertFalse(views.helpers.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'},
             HTTP_USER_AGENT=\
                 "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)"
         )
-        self.assertFalse(views.helpers.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
-        self.assertTrue(views.helpers.is_bookworm_request(request))
+        self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
 
     def test_existing_user(self):
