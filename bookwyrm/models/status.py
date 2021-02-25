@@ -258,13 +258,12 @@ class Review(Status):
     def pure_name(self):
         ''' clarify review names for mastodon serialization '''
         if self.rating:
-            #pylint: disable=bad-string-format-type
-            return 'Review of "%s" (%d stars): %s' % (
+            return 'Review of "{}" ({:d} stars): {}'.format(
                 self.book.title,
                 self.rating,
                 self.name
             )
-        return 'Review of "%s": %s' % (
+        return 'Review of "{}": {}'.format(
             self.book.title,
             self.name
         )
@@ -282,13 +281,13 @@ class ReviewRating(Review):
     ''' a subtype of review that only contains a rating '''
     def save(self, *args, **kwargs):
         if not self.rating:
-            raise ValueError('Rating object must include a numerical rating')
+            raise ValueError(
+                'ReviewRating object must include a numerical rating')
         return super().save(*args, **kwargs)
 
     @property
     def pure_content(self):
-        #pylint: disable=bad-string-format-type
-        return 'Rated "%s": %d stars' % (self.book.title, self.rating)
+        return 'Rated "{}": {:d} stars'.format(self.book.title, self.rating)
 
     activity_serializer = activitypub.Rating
     pure_type = 'Note'
