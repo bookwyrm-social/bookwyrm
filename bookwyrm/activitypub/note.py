@@ -67,7 +67,7 @@ class Review(Comment):
 
 @dataclass(init=False)
 class Rating(Comment):
-    ''' a full book review '''
-    rating: int = None
+    ''' just a star rating '''
+    rating: int
     content: str = None
     type: str = 'Rating'
