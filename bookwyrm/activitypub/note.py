@@ -11,7 +11,7 @@ class Tombstone(ActivityObject):
     ''' the placeholder for a deleted status '''
     type: str = 'Tombstone'
 
-    def to_model(self, *args, **kwargs):
+    def to_model(self, *args, **kwargs):# pylint: disable=unused-argument
         ''' this should never really get serialized, just searched for '''
         model = apps.get_model('bookwyrm.Status')
         return model.find_existing_by_remote_id(self.id)
