@@ -4,7 +4,7 @@
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}
-{% elif status.status_type == 'Review' and not status.name and not status.content%}
+{% elif status.status_type == 'Rating' %}
     rated
 {% elif status.status_type == 'Review' %}
     reviewed

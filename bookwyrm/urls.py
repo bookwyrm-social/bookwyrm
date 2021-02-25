@@ -13,6 +13,7 @@ local_user_path = r'^user/(?P<username>%s)' % regex.localname
 status_types = [
     'status',
     'review',
+    'reviewrating',
     'comment',
     'quotation',
     'boost',

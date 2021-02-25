@@ -56,7 +56,7 @@ class CreateStatus(View):
         status.mention_users.set(set(status.mention_users.all()))
 
         # don't apply formatting to generated notes
-        if not isinstance(status, models.GeneratedNote):
+        if not isinstance(status, models.GeneratedNote) and content:
             status.content = to_markdown(content)
         # do apply formatting to quotes
         if hasattr(status, 'quote'):
@@ -82,6 +82,8 @@ class DeleteStatus(View):
 
 def find_mentions(content):
     ''' detect @mentions in raw status content '''
+    if not content:
+        return
     for match in re.finditer(regex.strict_username, content):
         username = match.group().strip().split('@')[1:]
         if len(username) == 1:
