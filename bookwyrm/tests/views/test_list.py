@@ -9,7 +9,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
-
+#pylint: disable=unused-argument
 class ListViews(TestCase):
     ''' tag views'''
     def setUp(self):
@@ -45,7 +45,7 @@ class ListViews(TestCase):
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             models.List.objects.create(name='Public list', user=self.local_user)
             models.List.objects.create(
-                name='Private list', privacy='private', user=self.local_user)
+                name='Private list', privacy='direct', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
 
@@ -164,7 +164,7 @@ class ListViews(TestCase):
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             models.List.objects.create(name='Public list', user=self.local_user)
             models.List.objects.create(
-                name='Private list', privacy='private', user=self.local_user)
+                name='Private list', privacy='direct', user=self.local_user)
         request = self.factory.get('')
         request.user = self.local_user
 

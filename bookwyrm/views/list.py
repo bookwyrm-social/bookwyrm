@@ -35,7 +35,8 @@ class Lists(View):
         ).filter(
             item_count__gt=0
         ).distinct().all()
-        lists = privacy_filter(request.user, lists, ['public', 'followers'])
+        lists = privacy_filter(
+            request.user, lists, privacy_levels=['public', 'followers'])
 
         paginated = Paginator(lists, 12)
         data = {
@@ -65,10 +66,9 @@ class UserLists(View):
             page = int(request.GET.get('page', 1))
         except ValueError:
             page = 1
-        user = get_user_from_username(username)
+        user = get_user_from_username(request.user, username)
         lists = models.List.objects.filter(user=user).all()
-        lists = privacy_filter(
-            request.user, lists, ['public', 'followers', 'unlisted'])
+        lists = privacy_filter(request.user, lists)
         paginated = Paginator(lists, 12)
 
         data = {

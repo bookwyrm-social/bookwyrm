@@ -1,11 +1,11 @@
 ''' defines relationships between users '''
 from django.apps import apps
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.db.models import Q
-from django.dispatch import receiver
 
 from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import generate_activity
 from .base_model import BookWyrmModel
 from . import fields
 
@@ -56,11 +56,30 @@ class UserRelationship(BookWyrmModel):
         return '%s#%s/%d' % (base_path, status, self.id)
 
 
-class UserFollows(ActivitypubMixin, UserRelationship):
+class UserFollows(ActivityMixin, UserRelationship):
     ''' Following a user '''
     status = 'follows'
-    activity_serializer = activitypub.Follow
 
+    def to_activity(self):
+        ''' overrides default to manually set serializer '''
+        return activitypub.Follow(**generate_activity(self))
+
+    def save(self, *args, **kwargs):
+        ''' really really don't let a user follow someone who blocked them '''
+        # blocking in either direction is a no-go
+        if UserBlocks.objects.filter(
+                Q(
+                    user_subject=self.user_subject,
+                    user_object=self.user_object,
+                ) | Q(
+                    user_subject=self.user_object,
+                    user_object=self.user_subject,
+                )
+            ).exists():
+            raise IntegrityError()
+        # don't broadcast this type of relationship -- accepts and requests
+        # are handled by the UserFollowRequest model
+        super().save(*args, broadcast=False, **kwargs)
 
     @classmethod
     def from_request(cls, follow_request):
@@ -79,31 +98,36 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
     def save(self, *args, broadcast=True, **kwargs):
         ''' make sure the follow or block relationship doesn't already exist '''
-        try:
-            UserFollows.objects.get(
+        # don't create a request if a follow already exists
+        if UserFollows.objects.filter(
                 user_subject=self.user_subject,
                 user_object=self.user_object,
-            )
-            # blocking in either direction is a no-go
-            UserBlocks.objects.get(
-                user_subject=self.user_subject,
-                user_object=self.user_object,
-            )
-            UserBlocks.objects.get(
-                user_subject=self.user_object,
-                user_object=self.user_subject,
-            )
-            return None
-        except (UserFollows.DoesNotExist, UserBlocks.DoesNotExist):
-            super().save(*args, **kwargs)
+            ).exists():
+            raise IntegrityError()
+        # blocking in either direction is a no-go
+        if UserBlocks.objects.filter(
+                Q(
+                    user_subject=self.user_subject,
+                    user_object=self.user_object,
+                ) | Q(
+                    user_subject=self.user_object,
+                    user_object=self.user_subject,
+                )
+            ).exists():
+            raise IntegrityError()
+        super().save(*args, **kwargs)
 
         if broadcast and self.user_subject.local and not self.user_object.local:
             self.broadcast(self.to_activity(), self.user_subject)
 
         if self.user_object.local:
+            manually_approves = self.user_object.manually_approves_followers
+            if not manually_approves:
+                self.accept()
+
             model = apps.get_model('bookwyrm.Notification', require_ready=True)
-            notification_type = 'FOLLOW_REQUEST' \
-                if self.user_object.manually_approves_followers else 'FOLLOW'
+            notification_type = 'FOLLOW_REQUEST' if \
+                    manually_approves else 'FOLLOW'
             model.objects.create(
                 user=self.user_object,
                 related_user=self.user_subject,
@@ -114,28 +138,30 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
     def accept(self):
         ''' turn this request into the real deal'''
         user = self.user_object
-        activity = activitypub.Accept(
-            id=self.get_remote_id(status='accepts'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
+        if not self.user_subject.local:
+            activity = activitypub.Accept(
+                id=self.get_remote_id(status='accepts'),
+                actor=self.user_object.remote_id,
+                object=self.to_activity()
+            ).serialize()
+            self.broadcast(activity, user)
         with transaction.atomic():
             UserFollows.from_request(self)
             self.delete()
 
-        self.broadcast(activity, user)
 
 
     def reject(self):
         ''' generate a Reject for this follow request '''
-        user = self.user_object
-        activity = activitypub.Reject(
-            id=self.get_remote_id(status='rejects'),
-            actor=self.user_object.remote_id,
-            object=self.to_activity()
-        ).serialize()
+        if self.user_object.local:
+            activity = activitypub.Reject(
+                id=self.get_remote_id(status='rejects'),
+                actor=self.user_object.remote_id,
+                object=self.to_activity()
+            ).serialize()
+            self.broadcast(activity, self.user_object)
+
         self.delete()
-        self.broadcast(activity, user)
 
 
 class UserBlocks(ActivityMixin, UserRelationship):
@@ -143,20 +169,15 @@ class UserBlocks(ActivityMixin, UserRelationship):
     status = 'blocks'
     activity_serializer = activitypub.Block
 
+    def save(self, *args, **kwargs):
+        ''' remove follow or follow request rels after a block is created '''
+        super().save(*args, **kwargs)
 
-@receiver(models.signals.post_save, sender=UserBlocks)
-#pylint: disable=unused-argument
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    ''' remove follow or follow request rels after a block is created '''
-    UserFollows.objects.filter(
-        Q(user_subject=instance.user_subject,
-          user_object=instance.user_object) | \
-        Q(user_subject=instance.user_object,
-          user_object=instance.user_subject)
-    ).delete()
-    UserFollowRequest.objects.filter(
-        Q(user_subject=instance.user_subject,
-          user_object=instance.user_object) | \
-        Q(user_subject=instance.user_object,
-          user_object=instance.user_subject)
-    ).delete()
+        UserFollows.objects.filter(
+            Q(user_subject=self.user_subject, user_object=self.user_object) | \
+            Q(user_subject=self.user_object, user_object=self.user_subject)
+        ).delete()
+        UserFollowRequest.objects.filter(
+            Q(user_subject=self.user_subject, user_object=self.user_object) | \
+            Q(user_subject=self.user_object, user_object=self.user_subject)
+        ).delete()

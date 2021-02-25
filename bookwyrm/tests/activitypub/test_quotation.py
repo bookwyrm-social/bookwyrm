@@ -46,7 +46,7 @@ class Quotation(TestCase):
     def test_activity_to_model(self):
         ''' create a model instance from an activity object '''
         activity = activitypub.Quotation(**self.status_data)
-        quotation = activity.to_model(models.Quotation)
+        quotation = activity.to_model(model=models.Quotation)
 
         self.assertEqual(quotation.book, self.book)
         self.assertEqual(quotation.user, self.user)

@@ -1,11 +1,10 @@
 ''' non-interactive pages '''
-from django.db.models import Avg, Max
+from django.db.models import Max
 from django.template.response import TemplateResponse
 from django.views import View
 
 from bookwyrm import forms, models
 from .feed import Feed
-from .helpers import get_activity_feed
 
 
 # pylint: disable= no-self-use
@@ -16,7 +15,7 @@ class About(View):
         data = {
             'title': 'About',
         }
-        return TemplateResponse(request, 'about.html', data)
+        return TemplateResponse(request, 'discover/about.html', data)
 
 class Home(View):
     ''' discover page or home feed depending on auth '''
@@ -34,6 +33,7 @@ class Discover(View):
         ''' tiled book activity page '''
         books = models.Edition.objects.filter(
             review__published_date__isnull=False,
+            review__deleted=False,
             review__user__local=True,
             review__privacy__in=['public', 'unlisted'],
         ).exclude(
@@ -42,18 +42,9 @@ class Discover(View):
             Max('review__published_date')
         ).order_by('-review__published_date__max')[:6]
 
-        ratings = {}
-        for book in books:
-            reviews = models.Review.objects.filter(
-                book__in=book.parent_work.editions.all()
-            )
-            reviews = get_activity_feed(
-                request.user, ['public', 'unlisted'], queryset=reviews)
-            ratings[book.id] = reviews.aggregate(Avg('rating'))['rating__avg']
         data = {
             'title': 'Discover',
             'register_form': forms.RegisterForm(),
             'books': list(set(books)),
-            'ratings': ratings
         }
-        return TemplateResponse(request, 'discover.html', data)
+        return TemplateResponse(request, 'discover/discover.html', data)

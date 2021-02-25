@@ -26,7 +26,7 @@ class User(View):
     def get(self, request, username):
         ''' profile page for a user '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -71,8 +71,7 @@ class User(View):
         # user's posts
         activities = get_activity_feed(
             request.user,
-            ['public', 'unlisted', 'followers'],
-            queryset=user.status_set
+            queryset=user.status_set.select_subclasses(),
         )
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
@@ -96,7 +95,7 @@ class Followers(View):
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -121,7 +120,7 @@ class Following(View):
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<header class="block has-text-centered">
+    <h1 class="title">{{ site.name }}</h1>
+    <h2 class="subtitle">{{ site.instance_tagline }}</h2>
+</header>
+
+{% include 'discover/icons.html' %}
+
+<section class="block">
+    {% include 'snippets/about.html' %}
+</section>
+
+<div class="block">
+    <h2 class="title">Code of Conduct</h2>
+    <div class="content">
+        {{ site.code_of_conduct | safe }}
+    </div>
+</div>
+
+{% endblock %}

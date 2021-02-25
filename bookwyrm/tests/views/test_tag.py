@@ -59,6 +59,21 @@ class TagViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
+    def test_tag_page_activitypub_page(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        view = views.Tag.as_view()
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            tag = models.Tag.objects.create(name='hi there')
+            models.UserTag.objects.create(
+                tag=tag, user=self.local_user, book=self.book)
+        request = self.factory.get('', {'page': 1})
+        with patch('bookwyrm.views.tag.is_api_request') as is_api:
+            is_api.return_value = True
+            result = view(request, tag.identifier)
+        self.assertIsInstance(result, ActivitypubResponse)
+        self.assertEqual(result.status_code, 200)
+
+
     def test_tag(self):
         ''' add a tag to a book '''
         view = views.AddTag.as_view()

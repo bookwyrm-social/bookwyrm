@@ -1,6 +1,7 @@
 {% load humanize %}
 {% load bookwyrm_tags %}
 {% if books|length > 0 %}
+<div class="table-container">
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">
@@ -74,6 +75,7 @@
 </tr>
 {% endfor %}
 </table>
+</div>
 {% else %}
 <p>This shelf is empty.</p>
 {% if shelf.editable %}

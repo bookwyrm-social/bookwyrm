@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.settings import USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
@@ -90,3 +91,39 @@ class OutboxView(TestCase):
         data = json.loads(result.content)
         self.assertEqual(data['type'], 'OrderedCollection')
         self.assertEqual(data['totalItems'], 1)
+
+    def test_outbox_bookwyrm_request_true(self):
+        ''' should differentiate between bookwyrm and outside requests '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                name='hi',
+                content='look at this',
+                user=self.local_user,
+                book=self.book,
+                privacy='public',
+            )
+
+        request = self.factory.get('', {'page': 1}, HTTP_USER_AGENT=USER_AGENT)
+        result = views.Outbox.as_view()(request, 'mouse')
+
+        data = json.loads(result.content)
+        self.assertEqual(len(data['orderedItems']), 1)
+        self.assertEqual(data['orderedItems'][0]['type'], 'Review')
+
+    def test_outbox_bookwyrm_request_false(self):
+        ''' should differentiate between bookwyrm and outside requests '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                name='hi',
+                content='look at this',
+                user=self.local_user,
+                book=self.book,
+                privacy='public',
+            )
+
+        request = self.factory.get('', {'page': 1})
+        result = views.Outbox.as_view()(request, 'mouse')
+
+        data = json.loads(result.content)
+        self.assertEqual(len(data['orderedItems']), 1)
+        self.assertEqual(data['orderedItems'][0]['type'], 'Article')

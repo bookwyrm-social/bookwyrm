@@ -6,6 +6,7 @@ import operator
 import logging
 from uuid import uuid4
 import requests
+from requests.exceptions import HTTPError, SSLError
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
@@ -156,10 +157,14 @@ class ActivitypubMixin:
         return recipients
 
 
-    def to_activity(self):
+    def to_activity_dataclass(self):
         ''' convert from a model to an activity '''
         activity = generate_activity(self)
-        return self.activity_serializer(**activity).serialize()
+        return self.activity_serializer(**activity)
+
+    def to_activity(self, **kwargs): # pylint: disable=unused-argument
+        ''' convert from a model to a json activity '''
+        return self.to_activity_dataclass().serialize()
 
 
 class ObjectMixin(ActivitypubMixin):
@@ -187,7 +192,7 @@ class ObjectMixin(ActivitypubMixin):
 
             try:
                 software = None
-                # do we have a "pure" activitypub version of this for  mastodon?
+                # do we have a "pure" activitypub version of this for mastodon?
                 if hasattr(self, 'pure_content'):
                     pure_activity = self.to_create_activity(user, pure=True)
                     self.broadcast(pure_activity, user, software='other')
@@ -195,7 +200,7 @@ class ObjectMixin(ActivitypubMixin):
                 # sends to BW only if we just did a pure version for masto
                 activity = self.to_create_activity(user)
                 self.broadcast(activity, user, software=software)
-            except KeyError:
+            except AttributeError:
                 # janky as heck, this catches the mutliple inheritence chain
                 # for boosts and ignores this auxilliary broadcast
                 return
@@ -224,26 +229,26 @@ class ObjectMixin(ActivitypubMixin):
 
     def to_create_activity(self, user, **kwargs):
         ''' returns the object wrapped in a Create activity '''
-        activity_object = self.to_activity(**kwargs)
+        activity_object = self.to_activity_dataclass(**kwargs)
 
         signature = None
         create_id = self.remote_id + '/activity'
-        if 'content' in activity_object and activity_object['content']:
+        if hasattr(activity_object, 'content') and activity_object.content:
             signer = pkcs1_15.new(RSA.import_key(user.key_pair.private_key))
-            content = activity_object['content']
+            content = activity_object.content
             signed_message = signer.sign(SHA256.new(content.encode('utf8')))
 
             signature = activitypub.Signature(
                 creator='%s#main-key' % user.remote_id,
-                created=activity_object['published'],
+                created=activity_object.published,
                 signatureValue=b64encode(signed_message).decode('utf8')
             )
 
         return activitypub.Create(
             id=create_id,
             actor=user.remote_id,
-            to=activity_object['to'],
-            cc=activity_object['cc'],
+            to=activity_object.to,
+            cc=activity_object.cc,
             object=activity_object,
             signature=signature,
         ).serialize()
@@ -256,7 +261,7 @@ class ObjectMixin(ActivitypubMixin):
             actor=user.remote_id,
             to=['%s/followers' % user.remote_id],
             cc=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity(),
+            object=self,
         ).serialize()
 
 
@@ -267,7 +272,7 @@ class ObjectMixin(ActivitypubMixin):
             id=activity_id,
             actor=user.remote_id,
             to=['https://www.w3.org/ns/activitystreams#Public'],
-            object=self.to_activity()
+            object=self
         ).serialize()
 
 
@@ -308,7 +313,7 @@ class OrderedCollectionPageMixin(ObjectMixin):
         activity['first'] = '%s?page=1' % remote_id
         activity['last'] = '%s?page=%d' % (remote_id, paginated.num_pages)
 
-        return serializer(**activity).serialize()
+        return serializer(**activity)
 
 
 class OrderedCollectionMixin(OrderedCollectionPageMixin):
@@ -320,9 +325,13 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 
     activity_serializer = activitypub.OrderedCollection
 
+    def to_activity_dataclass(self, **kwargs):
+        return self.to_ordered_collection(self.collection_queryset, **kwargs)
+
     def to_activity(self, **kwargs):
         ''' an ordered collection of the specified model queryset  '''
-        return self.to_ordered_collection(self.collection_queryset, **kwargs)
+        return self.to_ordered_collection(
+            self.collection_queryset, **kwargs).serialize()
 
 
 class CollectionItemMixin(ActivitypubMixin):
@@ -359,7 +368,7 @@ class CollectionItemMixin(ActivitypubMixin):
         return activitypub.Add(
             id='%s#add' % self.remote_id,
             actor=self.user.remote_id,
-            object=object_field.to_activity(),
+            object=object_field,
             target=collection_field.remote_id
         ).serialize()
 
@@ -370,7 +379,7 @@ class CollectionItemMixin(ActivitypubMixin):
         return activitypub.Remove(
             id='%s#remove' % self.remote_id,
             actor=self.user.remote_id,
-            object=object_field.to_activity(),
+            object=object_field,
             target=collection_field.remote_id
         ).serialize()
 
@@ -399,7 +408,7 @@ class ActivityMixin(ActivitypubMixin):
         return activitypub.Undo(
             id='%s#undo' % self.remote_id,
             actor=user.remote_id,
-            object=self.to_activity()
+            object=self,
         ).serialize()
 
 
@@ -440,7 +449,7 @@ def broadcast_task(sender_id, activity, recipients):
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
-        except requests.exceptions.HTTPError as e:
+        except (HTTPError, SSLError) as e:
             logger.exception(e)
 
 
@@ -472,7 +481,7 @@ def sign_and_send(sender, data, destination):
 
 # pylint: disable=unused-argument
 def to_ordered_collection_page(
-        queryset, remote_id, id_only=False, page=1, **kwargs):
+        queryset, remote_id, id_only=False, page=1, pure=False, **kwargs):
     ''' serialize and pagiante a queryset '''
     paginated = Paginator(queryset, PAGE_LENGTH)
 
@@ -480,7 +489,7 @@ def to_ordered_collection_page(
     if id_only:
         items = [s.remote_id for s in activity_page.object_list]
     else:
-        items = [s.to_activity() for s in activity_page.object_list]
+        items = [s.to_activity(pure=pure) for s in activity_page.object_list]
 
     prev_page = next_page = None
     if activity_page.has_next():
@@ -494,4 +503,4 @@ def to_ordered_collection_page(
         orderedItems=items,
         next=next_page,
         prev=prev_page
-    ).serialize()
+    )

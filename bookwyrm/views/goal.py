@@ -18,7 +18,7 @@ class Goal(View):
     ''' track books for the year '''
     def get(self, request, username, year):
         ''' reading goal page '''
-        user = get_user_from_username(username)
+        user = get_user_from_username(request.user, username)
         year = int(year)
         goal = models.AnnualGoal.objects.filter(
             year=year, user=user
@@ -42,7 +42,7 @@ class Goal(View):
 
     def post(self, request, username, year):
         ''' update or create an annual goal '''
-        user = get_user_from_username(username)
+        user = get_user_from_username(request.user, username)
         if user != request.user:
             return HttpResponseNotFound()
 

@@ -22,11 +22,8 @@ def dict_key(d, k):
 @register.filter(name='rating')
 def get_rating(book, user):
     ''' get the overall rating of a book '''
-    queryset = views.helpers.get_activity_feed(
-        user,
-        ['public', 'followers', 'unlisted', 'direct'],
-        queryset=models.Review.objects.filter(book=book),
-    )
+    queryset = views.helpers.privacy_filter(
+        user, models.Review.objects.filter(book=book))
     return queryset.aggregate(Avg('rating'))['rating__avg']
 
 

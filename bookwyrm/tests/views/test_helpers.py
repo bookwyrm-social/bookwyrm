@@ -56,12 +56,14 @@ class ViewsHelpers(TestCase):
     def test_get_user_from_username(self):
         ''' works for either localname or username '''
         self.assertEqual(
-            views.helpers.get_user_from_username('mouse'), self.local_user)
+            views.helpers.get_user_from_username(
+                self.local_user, 'mouse'), self.local_user)
         self.assertEqual(
             views.helpers.get_user_from_username(
-                'mouse@local.com'), self.local_user)
+                self.local_user, 'mouse@local.com'), self.local_user)
         with self.assertRaises(models.User.DoesNotExist):
-            views.helpers.get_user_from_username('mojfse@example.com')
+            views.helpers.get_user_from_username(
+                self.local_user, 'mojfse@example.com')
 
 
     def test_is_api_request(self):
@@ -104,7 +106,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True,
             queryset=models.Comment.objects
         )
@@ -113,20 +115,21 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'followers'],
+            privacy=['public', 'followers'],
             local_only=True
         )
         self.assertEqual(len(statuses), 2)
         self.assertEqual(statuses[1], public_status)
         self.assertEqual(statuses[0], rat_public)
 
-        statuses = views.helpers.get_activity_feed(self.local_user, 'direct')
+        statuses = views.helpers.get_activity_feed(
+            self.local_user, privacy=['direct'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], direct_status)
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'followers'],
+            privacy=['public', 'followers'],
         )
         self.assertEqual(len(statuses), 3)
         self.assertEqual(statuses[2], public_status)
@@ -135,7 +138,7 @@ class ViewsHelpers(TestCase):
 
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True
         )
         self.assertEqual(len(statuses), 2)
@@ -145,7 +148,7 @@ class ViewsHelpers(TestCase):
         rat.followers.add(self.local_user)
         statuses = views.helpers.get_activity_feed(
             self.local_user,
-            ['public', 'unlisted', 'followers'],
+            privacy=['public', 'unlisted', 'followers'],
             following_only=True
         )
         self.assertEqual(len(statuses), 5)
@@ -168,18 +171,18 @@ class ViewsHelpers(TestCase):
                 content='blah blah', user=rat)
 
             statuses = views.helpers.get_activity_feed(
-                self.local_user, ['public'])
+                self.local_user, privacy=['public'])
             self.assertEqual(len(statuses), 2)
 
         # block relationship
         rat.blocks.add(self.local_user)
         statuses = views.helpers.get_activity_feed(
-            self.local_user, ['public'])
+            self.local_user, privacy=['public'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], public_status)
 
         statuses = views.helpers.get_activity_feed(
-            rat, ['public'])
+            rat, privacy=['public'])
         self.assertEqual(len(statuses), 1)
         self.assertEqual(statuses[0], rat_public)
 
@@ -188,18 +191,18 @@ class ViewsHelpers(TestCase):
     def test_is_bookwyrm_request(self):
         ''' checks if a request came from a bookwyrm instance '''
         request = self.factory.get('', {'q': 'Test Book'})
-        self.assertFalse(views.helpers.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'},
             HTTP_USER_AGENT=\
                 "http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)"
         )
-        self.assertFalse(views.helpers.is_bookworm_request(request))
+        self.assertFalse(views.helpers.is_bookwyrm_request(request))
 
         request = self.factory.get(
             '', {'q': 'Test Book'}, HTTP_USER_AGENT=USER_AGENT)
-        self.assertTrue(views.helpers.is_bookworm_request(request))
+        self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
 
     def test_existing_user(self):

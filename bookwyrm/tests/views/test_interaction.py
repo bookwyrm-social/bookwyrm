@@ -138,7 +138,7 @@ class InteractionViews(TestCase):
         ''' undo a boost '''
         view = views.Unboost.as_view()
         request = self.factory.post('')
-        request.user = self.remote_user
+        request.user = self.local_user
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             status = models.Status.objects.create(
                 user=self.local_user, content='hi')
@@ -146,7 +146,9 @@ class InteractionViews(TestCase):
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             view(request, status.id)
+            self.assertEqual(mock.call_count, 1)
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
