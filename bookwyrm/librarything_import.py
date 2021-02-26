@@ -12,8 +12,8 @@ class LibrarythingImporter(Importer):
     service = 'LibraryThing'
     delimiter = '\t'
     encoding = 'ISO-8859-1'
-    # mandatory_fields : fields matching the book ISBN13, title and author
-    mandatory_fields = ['ISBN', 'Title', 'Primary Author']
+    # mandatory_fields : fields matching the book title and author
+    mandatory_fields = ['Title', 'Primary Author']
 
     def parse_fields(self, initial):
         data = {}
@@ -23,7 +23,10 @@ class LibrarythingImporter(Importer):
         data['Author'] = initial['Primary Author']
         data['ISBN13'] = initial['ISBN']
         data['My Review'] = initial['Review']
-        data['My Rating'] = math.ceil(float(initial['Rating']))
+        if initial['Rating']:
+            data['My Rating'] = math.ceil(float(initial['Rating']))
+        else:
+            data['My Rating'] = ''
         data['Date Added'] = re.sub('\[|\]', '', initial['Entry Date'])
         data['Date Started'] = re.sub('\[|\]', '', initial['Date Started'])
         data['Date Read'] = re.sub('\[|\]', '', initial['Date Read'])

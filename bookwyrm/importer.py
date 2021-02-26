@@ -12,7 +12,7 @@ class Importer:
     service = 'Unknown'
     delimiter = ','
     encoding = 'UTF-8'
-    mandatory_fields = ['ISBN13', 'Title', 'Author']
+    mandatory_fields = ['Title', 'Author']
 
     def create_job(self, user, csv_file, include_reviews, privacy):
         ''' check over a csv and creates a database entry for the job'''
@@ -23,7 +23,7 @@ class Importer:
         )
         for index, entry in enumerate(list(csv.DictReader(csv_file, delimiter=self.delimiter ))):
             if not all(x in entry for x in self.mandatory_fields):
-                raise ValueError('Author, title, and isbn must be in data.')
+                raise ValueError('Author and title must be in data.')
             entry = self.parse_fields(entry)
             self.save_item(job, index, entry)
         return job
