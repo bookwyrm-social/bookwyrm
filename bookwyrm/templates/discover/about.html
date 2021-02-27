@@ -1,21 +1,35 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'discover/landing_layout.html' %}
+{% block panel %}
 
-<header class="block has-text-centered">
-    <h1 class="title">{{ site.name }}</h1>
-    <h2 class="subtitle">{{ site.instance_tagline }}</h2>
-</header>
+<div class="block columns mt-4">
+    <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">About {{ site.name }}</h2>
+        <ul class="menu-list">
+            <li>
+                <a href="#coc">Code of Conduct</a>
+            </li>
+            <li>
+                <a href="#privacy">Privacy Policy</a>
+            </li>
+        </ul>
+    </nav>
 
-{% include 'discover/icons.html' %}
+    <div class="column content">
+        <div class="block" id="coc">
+            <h2 class="title">Code of Conduct</h2>
+            <div class="content">
+                {{ site.code_of_conduct | safe }}
+            </div>
+        </div>
 
-<section class="block">
-    {% include 'snippets/about.html' %}
-</section>
+        <hr aria-hidden="true">
 
-<div class="block">
-    <h2 class="title">Code of Conduct</h2>
-    <div class="content">
-        {{ site.code_of_conduct | safe }}
+        <div class="block" id="privacy">
+            <h2 class="title">Privacy Policy</h2>
+            <div class="content">
+                {{ site.privacy_policy | safe }}
+            </div>
+        </div>
     </div>
 </div>
 
