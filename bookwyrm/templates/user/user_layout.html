@@ -10,7 +10,7 @@
 {# user bio #}
 <div class="block">
     <div class="columns">
-        <div class="column is-narrow">
+        <div class="column is-two-fifths">
             <div class="media">
                 <div class="media-left">
                     <a href="{{ user.local_path }}">
@@ -29,16 +29,9 @@
             </div>
         </div>
 
-        <div class="column">
+        <div class="column box has-background-white-bis content">
             {% if user.summary %}
-            <div class="columns">
-                <div class="column is-narrow">
-                    <span class="icon icon-quote-open"></span>
-                </div>
-                <div class="column">
-                    <blockquote>{{ user.summary | to_markdown | safe }}</blockquote>
-                </div>
-            </div>
+            {{ user.summary | to_markdown | safe }}
             {% endif %}
         </div>
     </div>
