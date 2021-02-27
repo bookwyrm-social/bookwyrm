@@ -4,6 +4,7 @@ from django.db import migrations, models
 from django.db import connection
 from django.db.models import Q
 import django.db.models.deletion
+from psycopg2.extras import execute_values
 
 def convert_review_rating(app_registry, schema_editor):
     ''' take rating type Reviews and convert them to ReviewRatings '''
@@ -16,11 +17,10 @@ def convert_review_rating(app_registry, schema_editor):
     )
 
     with connection.cursor() as cursor:
-        for review in reviews:
-            cursor.execute('''
+        values = [(r.id,) for r in reviews]
+        execute_values(cursor, '''
 INSERT INTO bookwyrm_reviewrating(review_ptr_id)
-SELECT status_ptr_id FROM bookwyrm_review
-WHERE status_ptr_id=%s''', (review.id))
+VALUES %s''', values)
 
 def unconvert_review_rating(app_registry, schema_editor):
     ''' undo the conversion from ratings back to reviews'''
