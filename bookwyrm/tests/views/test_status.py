@@ -1,4 +1,5 @@
 ''' test for app action functionality '''
+import json
 from unittest.mock import patch
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -236,7 +237,11 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
         request = self.factory.post('')
         request.user = self.local_user
-        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             view(request, status.id)
+            activity = json.loads(mock.call_args_list[0][0][1])
+            self.assertEqual(activity['type'], 'Delete')
+            self.assertEqual(activity['object']['type'], 'Tombstone')
         status.refresh_from_db()
         self.assertTrue(status.deleted)

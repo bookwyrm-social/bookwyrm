@@ -9,7 +9,7 @@ class ActivitypubResponse(JsonResponse):
     configures some stuff beforehand. Made to be a drop-in replacement of
     JsonResponse.
     """
-    def __init__(self, data, encoder=ActivityEncoder, safe=True,
+    def __init__(self, data, encoder=ActivityEncoder, safe=False,
                  json_dumps_params=None, **kwargs):
 
         if 'content_type' not in kwargs:

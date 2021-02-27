@@ -92,11 +92,26 @@ class Openlibrary(TestCase):
         responses.add(
             responses.GET,
             'https://openlibrary.org/authors/OL382982A',
-            json={'hi': 'there'},
+            json={
+                "name": "George Elliott",
+                "personal_name": "George Elliott",
+                "last_modified": {
+                    "type": "/type/datetime",
+                    "value": "2008-08-31 10:09:33.413686"
+                    },
+                "key": "/authors/OL453734A",
+                "type": {
+                    "key": "/type/author"
+                    },
+                "id": 1259965,
+                "revision": 2
+            },
             status=200)
         results = self.connector.get_authors_from_data(self.work_data)
-        for result in results:
-            self.assertIsInstance(result, models.Author)
+        result = list(results)[0]
+        self.assertIsInstance(result, models.Author)
+        self.assertEqual(result.name, 'George Elliott')
+        self.assertEqual(result.openlibrary_key, 'OL453734A')
 
 
     def test_get_cover_url(self):
@@ -201,8 +216,11 @@ class Openlibrary(TestCase):
             'https://openlibrary.org/authors/OL382982A',
             json={'hi': 'there'},
             status=200)
-        result = self.connector.create_edition_from_data(
-            work, self.edition_data)
+        with patch('bookwyrm.connectors.openlibrary.Connector.' \
+                'get_authors_from_data') as mock:
+            mock.return_value = []
+            result = self.connector.create_edition_from_data(
+                work, self.edition_data)
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, 'Sabriel')
         self.assertEqual(result.isbn_10, '0060273224')

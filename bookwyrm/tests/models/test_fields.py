@@ -17,6 +17,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
+from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import BookWyrmModel
@@ -275,7 +276,7 @@ class ActivitypubFields(TestCase):
             'rat', 'rat@rat.rat', 'ratword',
             local=True, localname='rat')
         with patch('bookwyrm.models.user.set_remote_server.delay'):
-            value = instance.field_from_activity(userdata)
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
@@ -300,7 +301,7 @@ class ActivitypubFields(TestCase):
             local=True, localname='rat')
 
         with patch('bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast'):
-            value = instance.field_from_activity(userdata)
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertEqual(value, user)
 
 

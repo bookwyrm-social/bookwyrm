@@ -1,6 +1,7 @@
 ''' models for storing different kinds of Activities '''
 import urllib.parse
 
+from django.apps import apps
 from django.db import models
 
 from bookwyrm import activitypub
@@ -15,17 +16,15 @@ class Tag(OrderedCollectionMixin, BookWyrmModel):
     name = fields.CharField(max_length=100, unique=True)
     identifier = models.CharField(max_length=100)
 
-    @classmethod
-    def book_queryset(cls, identifier):
-        ''' county of books associated with this tag '''
-        return cls.objects.filter(
-            identifier=identifier
-        ).order_by('-updated_date')
-
     @property
-    def collection_queryset(self):
-        ''' books associated with this tag '''
-        return self.book_queryset(self.identifier)
+    def books(self):
+        ''' count of books associated with this tag '''
+        edition_model = apps.get_model('bookwyrm.Edition', require_ready=True)
+        return edition_model.objects.filter(
+            usertag__tag__identifier=self.identifier
+        ).order_by('-created_date').distinct()
+
+    collection_queryset = books
 
     def get_remote_id(self):
         ''' tag should use identifier not id in remote_id '''
@@ -50,7 +49,7 @@ class UserTag(CollectionItemMixin, BookWyrmModel):
     tag = fields.ForeignKey(
         'Tag', on_delete=models.PROTECT, activitypub_field='target')
 
-    activity_serializer = activitypub.AddBook
+    activity_serializer = activitypub.Add
     object_field = 'book'
     collection_field = 'tag'
 

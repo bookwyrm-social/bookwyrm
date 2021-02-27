@@ -4,6 +4,7 @@ from django.test import TestCase
 from bookwyrm import models, settings
 
 
+#pylint: disable=unused-argument
 class Shelf(TestCase):
     ''' some activitypub oddness ahead '''
     def setUp(self):

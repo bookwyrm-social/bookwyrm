@@ -23,19 +23,6 @@ class Relationship(TestCase):
         self.local_user.remote_id = 'http://local.com/user/mouse'
         self.local_user.save(broadcast=False)
 
-    def test_user_follows(self):
-        ''' create a follow relationship '''
-        with patch('bookwyrm.models.activitypub_mixin.ActivityMixin.broadcast'):
-            rel = models.UserFollows.objects.create(
-                user_subject=self.local_user,
-                user_object=self.remote_user
-            )
-
-        activity = rel.to_activity()
-        self.assertEqual(activity['id'], rel.remote_id)
-        self.assertEqual(activity['actor'], self.local_user.remote_id)
-        self.assertEqual(activity['object'], self.remote_user.remote_id)
-
 
     def test_user_follows_from_request(self):
         ''' convert a follow request into a follow '''
@@ -116,13 +103,15 @@ class Relationship(TestCase):
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity['type'], 'Accept')
             self.assertEqual(activity['actor'], self.local_user.remote_id)
-            self.assertEqual(
-                activity['object']['id'], request.remote_id)
+            self.assertEqual(activity['object']['id'], 'https://www.hi.com/')
 
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         models.UserFollowRequest.broadcast = mock_broadcast
         request = models.UserFollowRequest.objects.create(
             user_subject=self.remote_user,
             user_object=self.local_user,
+            remote_id='https://www.hi.com/'
         )
         request.accept()
 
@@ -145,6 +134,8 @@ class Relationship(TestCase):
                 activity['object']['id'], request.remote_id)
 
         models.UserFollowRequest.broadcast = mock_reject
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         request = models.UserFollowRequest.objects.create(
             user_subject=self.remote_user,
             user_object=self.local_user,
