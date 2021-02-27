@@ -1,6 +1,7 @@
 {% load humanize %}
 {% load bookwyrm_tags %}
 {% if books|length > 0 %}
+<div class="table-container">
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">
@@ -37,10 +38,10 @@
 {% for book in books %}
 <tr class="book-preview">
     <td>
-        {% include 'snippets/book_cover.html' with book=book size="small" %}
+        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
     </td>
     <td>
-        <a href="/book/{{ book.id }}">{{ book.title }}</a>
+        <a href="{{ book.local_path }}">{{ book.title }}</a>
     </td>
     <td>
         {{ book.authors.first.name }}
@@ -74,6 +75,7 @@
 </tr>
 {% endfor %}
 </table>
+</div>
 {% else %}
 <p>This shelf is empty.</p>
 {% if shelf.editable %}

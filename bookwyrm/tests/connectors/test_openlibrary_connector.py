@@ -92,11 +92,26 @@ class Openlibrary(TestCase):
         responses.add(
             responses.GET,
             'https://openlibrary.org/authors/OL382982A',
-            json={'hi': 'there'},
+            json={
+                "name": "George Elliott",
+                "personal_name": "George Elliott",
+                "last_modified": {
+                    "type": "/type/datetime",
+                    "value": "2008-08-31 10:09:33.413686"
+                    },
+                "key": "/authors/OL453734A",
+                "type": {
+                    "key": "/type/author"
+                    },
+                "id": 1259965,
+                "revision": 2
+            },
             status=200)
         results = self.connector.get_authors_from_data(self.work_data)
-        for result in results:
-            self.assertIsInstance(result, models.Author)
+        result = list(results)[0]
+        self.assertIsInstance(result, models.Author)
+        self.assertEqual(result.name, 'George Elliott')
+        self.assertEqual(result.openlibrary_key, 'OL453734A')
 
 
     def test_get_cover_url(self):
@@ -190,3 +205,28 @@ class Openlibrary(TestCase):
         ''' detect if the loaded json is an edition '''
         edition = pick_default_edition(self.edition_list_data['entries'])
         self.assertEqual(edition['key'], '/books/OL9788823M')
+
+
+    @responses.activate
+    def test_create_edition_from_data(self):
+        ''' okay but can it actually create an edition with proper metadata '''
+        work = models.Work.objects.create(title='Hello')
+        responses.add(
+            responses.GET,
+            'https://openlibrary.org/authors/OL382982A',
+            json={'hi': 'there'},
+            status=200)
+        with patch('bookwyrm.connectors.openlibrary.Connector.' \
+                'get_authors_from_data') as mock:
+            mock.return_value = []
+            result = self.connector.create_edition_from_data(
+                work, self.edition_data)
+        self.assertEqual(result.parent_work, work)
+        self.assertEqual(result.title, 'Sabriel')
+        self.assertEqual(result.isbn_10, '0060273224')
+        self.assertIsNotNone(result.description)
+        self.assertEqual(result.languages[0], 'English')
+        self.assertEqual(result.publishers[0], 'Harper Trophy')
+        self.assertEqual(result.pages, 491)
+        self.assertEqual(result.subjects[0], 'Fantasy.')
+        self.assertEqual(result.physical_format, 'Hardcover')

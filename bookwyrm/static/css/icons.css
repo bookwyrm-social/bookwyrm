@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?uh765c');
-  src:  url('fonts/icomoon.eot?uh765c#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?uh765c') format('truetype'),
-    url('fonts/icomoon.woff?uh765c') format('woff'),
-    url('fonts/icomoon.svg?uh765c#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?n5x55');
+  src:  url('fonts/icomoon.eot?n5x55#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?n5x55') format('truetype'),
+    url('fonts/icomoon.woff?n5x55') format('woff'),
+    url('fonts/icomoon.svg?n5x55#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,7 +25,16 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-sparkle:before {
+.icon-graphic-heart:before {
+  content: "\e91e";
+}
+.icon-graphic-paperplane:before {
+  content: "\e91f";
+}
+.icon-graphic-banknote:before {
+  content: "\e920";
+}
+.icon-stars:before {
   content: "\e91a";
 }
 .icon-warning:before {
@@ -36,6 +45,9 @@
 }
 .icon-bookmark:before {
   content: "\e91c";
+}
+.icon-rss:before {
+  content: "\e91d";
 }
 .icon-envelope:before {
   content: "\e901";

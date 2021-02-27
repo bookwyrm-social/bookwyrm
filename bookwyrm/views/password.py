@@ -79,7 +79,7 @@ class PasswordReset(View):
             return TemplateResponse(request, 'password_reset.html', data)
 
         user.set_password(new_password)
-        user.save()
+        user.save(broadcast=False)
         login(request, user)
         reset_code.delete()
         return redirect('/')
@@ -88,15 +88,24 @@ class PasswordReset(View):
 @method_decorator(login_required, name='dispatch')
 class ChangePassword(View):
     ''' change password as logged in user '''
+    def get(self, request):
+        ''' change password page '''
+        data = {
+            'title': 'Change Password',
+            'user': request.user,
+        }
+        return TemplateResponse(
+            request, 'preferences/change_password.html', data)
+
     def post(self, request):
         ''' allow a user to change their password '''
         new_password = request.POST.get('password')
         confirm_password = request.POST.get('confirm-password')
 
         if new_password != confirm_password:
-            return redirect('/edit-profile')
+            return redirect('preferences/password')
 
         request.user.set_password(new_password)
-        request.user.save()
+        request.user.save(broadcast=False)
         login(request, request.user)
-        return redirect('/user/%s' % request.user.localname)
+        return redirect(request.user.local_path)

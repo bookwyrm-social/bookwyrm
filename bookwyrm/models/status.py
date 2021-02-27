@@ -9,10 +9,12 @@ from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from .base_model import ActivitypubMixin, OrderedCollectionPageMixin
+from .activitypub_mixin import ActivitypubMixin, ActivityMixin
+from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
-from . import fields
 from .fields import image_serializer
+from . import fields
+
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
     ''' any post, like a reply to a review, etc '''
@@ -50,9 +52,66 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [('attachments', 'attachment', 'id')]
     deserialize_reverse_fields = [('attachments', 'attachment')]
 
+
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+
+        if self.deleted:
+            notification_model.objects.filter(related_status=self).delete()
+
+        if self.reply_parent and self.reply_parent.user != self.user and \
+                self.reply_parent.user.local:
+            notification_model.objects.create(
+                user=self.reply_parent.user,
+                notification_type='REPLY',
+                related_user=self.user,
+                related_status=self,
+            )
+        for mention_user in self.mention_users.all():
+            # avoid double-notifying about this status
+            if not mention_user.local or \
+                    (self.reply_parent and \
+                     mention_user == self.reply_parent.user):
+                continue
+            notification_model.objects.create(
+                user=mention_user,
+                notification_type='MENTION',
+                related_user=self.user,
+                related_status=self,
+            )
+
+    def delete(self, *args, **kwargs):#pylint: disable=unused-argument
+        ''' "delete" a status '''
+        if hasattr(self, 'boosted_status'):
+            # okay but if it's a boost really delete it
+            super().delete(*args, **kwargs)
+            return
+        self.deleted = True
+        self.deleted_date = timezone.now()
+        self.save()
+
+    @property
+    def recipients(self):
+        ''' tagged users who definitely need to get this status in broadcast '''
+        mentions = [u for u in self.mention_users.all() if not u.local]
+        if hasattr(self, 'reply_parent') and self.reply_parent \
+                and not self.reply_parent.user.local:
+            mentions.append(self.reply_parent.user)
+        return list(set(mentions))
+
     @classmethod
     def ignore_activity(cls, activity):
         ''' keep notes if they are replies to existing statuses '''
+        if activity.type == 'Announce':
+            # keep it if the booster or the boosted are local
+            boosted = activitypub.resolve_remote_id(activity.object, save=False)
+            return cls.ignore_activity(boosted.to_activity_dataclass())
+
+        # keep if it if it's a custom type
         if activity.type != 'Note':
             return False
         if cls.objects.filter(
@@ -63,8 +122,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         if activity.tag == MISSING or activity.tag is None:
             return True
         tags = [l['href'] for l in activity.tag if l['type'] == 'Mention']
+        user_model = apps.get_model('bookwyrm.User', require_ready=True)
         for tag in tags:
-            user_model = apps.get_model('bookwyrm.User', require_ready=True)
             if user_model.objects.filter(
                     remote_id=tag, local=True).exists():
                 # we found a mention of a known use boost
@@ -94,10 +153,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return self.to_ordered_collection(
             self.replies(self),
             remote_id='%s/replies' % self.remote_id,
+            collection_only=True,
             **kwargs
-        )
+        ).serialize()
 
-    def to_activity(self, pure=False):# pylint: disable=arguments-differ
+    def to_activity_dataclass(self, pure=False):# pylint: disable=arguments-differ
         ''' return tombstone if the status is deleted '''
         if self.deleted:
             return activitypub.Tombstone(
@@ -105,32 +165,28 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 url=self.remote_id,
                 deleted=self.deleted_date.isoformat(),
                 published=self.deleted_date.isoformat()
-            ).serialize()
-        activity = ActivitypubMixin.to_activity(self)
-        activity['replies'] = self.to_replies()
+            )
+        activity = ActivitypubMixin.to_activity_dataclass(self)
+        activity.replies = self.to_replies()
 
         # "pure" serialization for non-bookwyrm instances
         if pure and hasattr(self, 'pure_content'):
-            activity['content'] = self.pure_content
-            if 'name' in activity:
-                activity['name'] = self.pure_name
-            activity['type'] = self.pure_type
-            activity['attachment'] = [
+            activity.content = self.pure_content
+            if hasattr(activity, 'name'):
+                activity.name = self.pure_name
+            activity.type = self.pure_type
+            activity.attachment = [
                 image_serializer(b.cover, b.alt_text) \
                     for b in self.mention_books.all()[:4] if b.cover]
             if hasattr(self, 'book') and self.book.cover:
-                activity['attachment'].append(
+                activity.attachment.append(
                     image_serializer(self.book.cover, self.book.alt_text)
                 )
         return activity
 
-
-    def save(self, *args, **kwargs):
-        ''' update user active time '''
-        if self.user.local:
-            self.user.last_active_date = timezone.now()
-            self.user.save()
-        return super().save(*args, **kwargs)
+    def to_activity(self, pure=False):# pylint: disable=arguments-differ
+        ''' json serialized activitypub class '''
+        return self.to_activity_dataclass(pure=pure).serialize()
 
 
 class GeneratedNote(Status):
@@ -222,7 +278,7 @@ class Review(Status):
     pure_type = 'Article'
 
 
-class Boost(Status):
+class Boost(ActivityMixin, Status):
     ''' boost'ing a post '''
     boosted_status = fields.ForeignKey(
         'Status',
@@ -230,6 +286,35 @@ class Boost(Status):
         related_name='boosters',
         activitypub_field='object',
     )
+    activity_serializer = activitypub.Announce
+
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+        if not self.boosted_status.user.local:
+            return
+
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.create(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        )
+
+    def delete(self, *args, **kwargs):
+        ''' delete and un-notify '''
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.filter(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        ).delete()
+        super().delete(*args, **kwargs)
+
 
     def __init__(self, *args, **kwargs):
         ''' the user field is "actor" here instead of "attributedTo" '''
@@ -242,8 +327,6 @@ class Boost(Status):
         self.many_to_many_fields = []
         self.image_fields = []
         self.deserialize_reverse_fields = []
-
-    activity_serializer = activitypub.Boost
 
     # This constraint can't work as it would cross tables.
     # class Meta:

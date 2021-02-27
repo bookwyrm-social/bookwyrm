@@ -13,6 +13,13 @@
     overflow: hidden;
 }
 
+/* --- SHELVING --- */
+.shelf-option:disabled > *::after {
+    font-family: "icomoon";
+    content: "\e918";
+    margin-left: 0.5em;
+}
+
 /* --- TOGGLES --- */
 .toggle-button[aria-pressed=true], .toggle-button[aria-pressed=true]:hover {
     background-color: hsl(171, 100%, 41%);
@@ -92,9 +99,6 @@
     }
     .cover-container.is-medium {
         height: 100px;
-    }
-    .cover-container.is-small {
-        height: 70px;
     }
 }
 

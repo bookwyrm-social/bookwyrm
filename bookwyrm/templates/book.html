@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="block">
-    <div class="columns">
+    <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">
                 {{ book.title }}{% if book.subtitle %}:
@@ -35,33 +35,17 @@
         <div class="column is-narrow">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            {% include 'snippets/shelve_button.html' %}
+            {% include 'snippets/shelve_button/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="box p-2">
                 <h3 class="title is-6 mb-1">Add cover</h3>
                 <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="field has-addons">
-                        <div class="control">
-                        <div class="file is-small mb-1">
-                            <label class="file-label">
-                                <input class="file-input" type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
-                                <span class="file-cta">
-                                    <span class="file-icon">
-                                        <i class="fas fa-upload"></i>
-                                    </span>
-                                    <span class="file-label">
-                                        Choose file...
-                                    </span>
-                                </span>
-                            </label>
-                        </div>
-                        </div>
-                        <div class="control">
-                            <button class="button is-small is-primary" type="submit">Add</button>
-                        </div>
-                    </div>
+                    <label class="label">
+                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
+                    </label>
+                    <button class="button is-small is-primary" type="submit">Add</button>
                 </form>
             </div>
             {% endif %}
@@ -103,7 +87,7 @@
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ reviews|length|pluralize }})</h3>
+                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ review_count|pluralize }})</h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
@@ -147,7 +131,7 @@
                 {% endfor %}
             </div>
 
-            {% if readthroughs.exists %}
+            {% if request.user.is_authenticated %}
             <section class="block">
                 <header class="columns">
                     <h2 class="column title is-5 mb-1">Your reading activity</h2>
@@ -155,6 +139,9 @@
                         {% include 'snippets/toggle/open_button.html' with text="Add read dates" icon="plus" class="is-small" controls_text="add-readthrough" %}
                     </div>
                 </header>
+                {% if not readthroughs.exists %}
+                <p>You don't have any reading activity for this book.</p>
+                {% endif %}
                 <section class="hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
@@ -221,6 +208,17 @@
                 </ul>
             </section>
             {% endif %}
+
+            {% if lists.exists %}
+            <section class="content block">
+                <h2 class="title is-5">Lists</h2>
+                <ul>
+                {% for list in lists %}
+                <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -228,7 +226,7 @@
 <div class="block" id="reviews">
     {% for review in reviews %}
     <div class="block">
-        {% include 'snippets/status.html' with status=review hide_book=True depth=1 %}
+        {% include 'snippets/status/status.html' with status=review hide_book=True depth=1 %}
     </div>
     {% endfor %}
 

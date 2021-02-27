@@ -9,11 +9,11 @@
         <input type="hidden" name="privacy" value="public">
         <input type="hidden" name="rating" value="{{ forloop.counter }}">
 
-        <div class="field is-grouped stars form-rate-stars mb-1">
+        <div class="field is-grouped stars form-rate-stars mb-1 has-text-warning-dark">
             <label class="is-sr-only" for="rating-no-rating-{{ book.id }}">No rating</label>
             <input class="is-sr-only" type="radio" name="rating" value="" id="rating-no-rating-{{ book.id }}" checked>
             {% for i in '12345'|make_list %}
-            <input class="is-sr-only" id="rating-book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}" {% if book|rating:user == forloop.counter %}checked{% endif %}>
+            <input class="is-sr-only" id="rating-book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}" {% if book|user_rating:user == forloop.counter %}checked{% endif %}>
             <label class="icon icon-star-empty" for="rating-book{{book.id}}-star-{{ forloop.counter }}">
                 <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
             </label>

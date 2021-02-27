@@ -1,4 +1,5 @@
 ''' sending out activities '''
+from unittest.mock import patch
 import json
 
 from django.http import JsonResponse
@@ -6,6 +7,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.settings import USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
@@ -49,14 +51,16 @@ class OutboxView(TestCase):
 
     def test_outbox_privacy(self):
         ''' don't show dms et cetera in outbox '''
-        models.Status.objects.create(
-            content='PRIVATE!!', user=self.local_user, privacy='direct')
-        models.Status.objects.create(
-            content='bffs ONLY', user=self.local_user, privacy='followers')
-        models.Status.objects.create(
-            content='unlisted status', user=self.local_user, privacy='unlisted')
-        models.Status.objects.create(
-            content='look at this', user=self.local_user, privacy='public')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Status.objects.create(
+                content='PRIVATE!!', user=self.local_user, privacy='direct')
+            models.Status.objects.create(
+                content='bffs ONLY', user=self.local_user, privacy='followers')
+            models.Status.objects.create(
+                content='unlisted status', user=self.local_user,
+                privacy='unlisted')
+            models.Status.objects.create(
+                content='look at this', user=self.local_user, privacy='public')
 
         request = self.factory.get('')
         result = views.Outbox.as_view()(request, 'mouse')
@@ -67,11 +71,12 @@ class OutboxView(TestCase):
 
     def test_outbox_filter(self):
         ''' if we only care about reviews, only get reviews '''
-        models.Review.objects.create(
-            content='look at this', name='hi', rating=1,
-            book=self.book, user=self.local_user)
-        models.Status.objects.create(
-            content='look at this', user=self.local_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                content='look at this', name='hi', rating=1,
+                book=self.book, user=self.local_user)
+            models.Status.objects.create(
+                content='look at this', user=self.local_user)
 
         request = self.factory.get('', {'type': 'bleh'})
         result = views.Outbox.as_view()(request, 'mouse')
@@ -86,3 +91,39 @@ class OutboxView(TestCase):
         data = json.loads(result.content)
         self.assertEqual(data['type'], 'OrderedCollection')
         self.assertEqual(data['totalItems'], 1)
+
+    def test_outbox_bookwyrm_request_true(self):
+        ''' should differentiate between bookwyrm and outside requests '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                name='hi',
+                content='look at this',
+                user=self.local_user,
+                book=self.book,
+                privacy='public',
+            )
+
+        request = self.factory.get('', {'page': 1}, HTTP_USER_AGENT=USER_AGENT)
+        result = views.Outbox.as_view()(request, 'mouse')
+
+        data = json.loads(result.content)
+        self.assertEqual(len(data['orderedItems']), 1)
+        self.assertEqual(data['orderedItems'][0]['type'], 'Review')
+
+    def test_outbox_bookwyrm_request_false(self):
+        ''' should differentiate between bookwyrm and outside requests '''
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                name='hi',
+                content='look at this',
+                user=self.local_user,
+                book=self.book,
+                privacy='public',
+            )
+
+        request = self.factory.get('', {'page': 1})
+        result = views.Outbox.as_view()(request, 'mouse')
+
+        data = json.loads(result.content)
+        self.assertEqual(len(data['orderedItems']), 1)
+        self.assertEqual(data['orderedItems'][0]['type'], 'Article')

@@ -107,7 +107,7 @@ class AbstractConnector(AbstractMinimalConnector):
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
                 edition_data = data
@@ -116,7 +116,7 @@ class AbstractConnector(AbstractMinimalConnector):
             try:
                 work_data = self.get_work_from_edition_data(data)
                 work_data = dict_from_mappings(work_data, self.book_mappings)
-            except KeyError:
+            except (KeyError, ConnectorException):
                 work_data = mapped_data
             edition_data = data
 
@@ -127,7 +127,7 @@ class AbstractConnector(AbstractMinimalConnector):
             # create activitypub object
             work_activity = activitypub.Work(**work_data)
             # this will dedupe automatically
-            work = work_activity.to_model(models.Work)
+            work = work_activity.to_model(model=models.Work)
             for author in self.get_authors_from_data(data):
                 work.authors.add(author)
 
@@ -141,12 +141,13 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
         mapped_data['work'] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
-        edition = edition_activity.to_model(models.Edition)
+        edition = edition_activity.to_model(model=models.Edition)
         edition.connector = self.connector
         edition.save()
 
-        work.default_edition = edition
-        work.save()
+        if not work.default_edition:
+            work.default_edition = edition
+            work.save()
 
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
@@ -167,7 +168,7 @@ class AbstractConnector(AbstractMinimalConnector):
         mapped_data = dict_from_mappings(data, self.author_mappings)
         activity = activitypub.Author(**mapped_data)
         # this will dedupe
-        return activity.to_model(models.Author)
+        return activity.to_model(model=models.Author)
 
 
     @abstractmethod
@@ -210,13 +211,16 @@ def get_data(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         raise ConnectorException()
+
     if not resp.ok:
-        resp.raise_for_status()
+        raise ConnectorException()
     try:
         data = resp.json()
-    except ValueError:
+    except ValueError as e:
+        logger.exception(e)
         raise ConnectorException()
 
     return data
@@ -231,7 +235,8 @@ def get_image(url):
                 'User-Agent': settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError):
+    except (RequestError, SSLError) as e:
+        logger.exception(e)
         return None
     if not resp.ok:
         return None

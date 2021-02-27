@@ -92,6 +92,12 @@ class ReplyForm(CustomForm):
             'user', 'content', 'content_warning', 'sensitive',
             'reply_parent', 'privacy']
 
+class StatusForm(CustomForm):
+    class Meta:
+        model = models.Status
+        fields = [
+            'user', 'content', 'content_warning', 'sensitive', 'privacy']
+
 
 class EditUserForm(CustomForm):
     class Meta:
@@ -189,7 +195,20 @@ class ShelfForm(CustomForm):
         model = models.Shelf
         fields = ['user', 'name', 'privacy']
 
+
 class GoalForm(CustomForm):
     class Meta:
         model = models.AnnualGoal
         fields = ['user', 'year', 'goal', 'privacy']
+
+
+class SiteForm(CustomForm):
+    class Meta:
+        model = models.SiteSettings
+        exclude = []
+
+
+class ListForm(CustomForm):
+    class Meta:
+        model = models.List
+        fields = ['user', 'name', 'description', 'curation', 'privacy']

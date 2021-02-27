@@ -1,0 +1,21 @@
+{% extends 'settings/admin_layout.html' %}
+{% block header %}Federated Servers{% endblock %}
+
+{% block panel %}
+
+<table class="table is-striped">
+    <tr>
+        <th>Server name</th>
+        <th>Software</th>
+        <th>Status</th>
+    </tr>
+    {% for server in servers %}
+    <tr>
+        <td>{{ server.server_name }}</td>
+        <td>{{ server.application_type }} ({{ server.application_version }})</td>
+        <td>{{ server.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -5,7 +5,7 @@
             <a href="/book/{{ book.id }}">
                 {% include 'snippets/book_cover.html' with book=book %}
             </a>
-            {% include 'snippets/shelve_button.html' with book=book switch_mode=True %}
+            {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True %}
         </div>
     </div>
     {% endfor %}

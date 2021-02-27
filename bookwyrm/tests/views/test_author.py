@@ -34,6 +34,7 @@ class AuthorViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=self.work
         )
+        models.SiteSettings.objects.create()
 
 
     def test_author_page(self):
@@ -45,7 +46,8 @@ class AuthorViews(TestCase):
             is_api.return_value = False
             result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'author.html')
+        result.render()
+        self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get('')
@@ -66,7 +68,8 @@ class AuthorViews(TestCase):
 
         result = view(request, author.id)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'edit_author.html')
+        result.render()
+        self.assertEqual(result.status_code, 200)
         self.assertEqual(result.status_code, 200)
 
 
@@ -81,7 +84,7 @@ class AuthorViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, author.id)
         author.refresh_from_db()
         self.assertEqual(author.name, 'New Name')
@@ -116,4 +119,5 @@ class AuthorViews(TestCase):
         resp = view(request, author.id)
         author.refresh_from_db()
         self.assertEqual(author.name, 'Test Author')
-        self.assertEqual(resp.template_name, 'edit_author.html')
+        resp.render()
+        self.assertEqual(resp.status_code, 200)

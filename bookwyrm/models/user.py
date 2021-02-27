@@ -6,19 +6,18 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.dispatch import receiver
 from django.utils import timezone
 
 from bookwyrm import activitypub
-from bookwyrm.connectors import get_data
+from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
-from .base_model import OrderedCollectionPageMixin
-from .base_model import ActivitypubMixin, BookWyrmModel
+from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
+from .base_model import BookWyrmModel
 from .federated_server import FederatedServer
 from . import fields, Review
 
@@ -113,6 +112,16 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     activity_serializer = activitypub.Person
 
+    @classmethod
+    def viewer_aware_objects(cls, viewer):
+        ''' the user queryset filtered for the context of the logged in user '''
+        queryset = cls.objects.filter(is_active=True)
+        if viewer.is_authenticated:
+            queryset = queryset.exclude(
+                blocks=viewer
+            )
+        return queryset
+
     def to_outbox(self, filter_type=None, **kwargs):
         ''' an ordered collection of statuses '''
         if filter_type:
@@ -131,7 +140,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             privacy__in=['public', 'unlisted'],
         ).select_subclasses().order_by('-published_date')
         return self.to_ordered_collection(queryset, \
-                remote_id=self.outbox, **kwargs)
+            collection_only=True, remote_id=self.outbox, **kwargs).serialize()
 
     def to_following_activity(self, **kwargs):
         ''' activitypub following list '''
@@ -172,15 +181,23 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def save(self, *args, **kwargs):
         ''' populate fields for new local users '''
-        # this user already exists, no need to populate fields
+        created = not bool(self.id)
         if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = '%s@%s' % (self.username, actor_parts.netloc)
-            return super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
 
-        if self.id or not self.local:
-            return super().save(*args, **kwargs)
+        # this user already exists, no need to populate fields
+        if not created:
+            super().save(*args, **kwargs)
+            return
+
+        # this is a new remote user, we need to set their remote server field
+        if not self.local:
+            super().save(*args, **kwargs)
+            set_remote_server.delay(self.id)
+            return
 
         # populate fields for local users
         self.remote_id = 'https://%s/user/%s' % (DOMAIN, self.localname)
@@ -188,7 +205,32 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.shared_inbox = 'https://%s/inbox' % DOMAIN
         self.outbox = '%s/outbox' % self.remote_id
 
-        return super().save(*args, **kwargs)
+        # an id needs to be set before we can proceed with related models
+        super().save(*args, **kwargs)
+
+        # create keys and shelves for new local users
+        self.key_pair = KeyPair.objects.create(
+            remote_id='%s/#main-key' % self.remote_id)
+        self.save(broadcast=False)
+
+        shelves = [{
+            'name': 'To Read',
+            'identifier': 'to-read',
+        }, {
+            'name': 'Currently Reading',
+            'identifier': 'reading',
+        }, {
+            'name': 'Read',
+            'identifier': 'read',
+        }]
+
+        for shelf in shelves:
+            Shelf(
+                name=shelf['name'],
+                identifier=shelf['identifier'],
+                user=self,
+                editable=False
+            ).save(broadcast=False)
 
     @property
     def local_path(self):
@@ -211,6 +253,9 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
     def save(self, *args, **kwargs):
         ''' create a key pair '''
+        # no broadcasting happening here
+        if 'broadcast' in kwargs:
+            del kwargs['broadcast']
         if not self.public_key:
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
@@ -266,6 +311,7 @@ class AnnualGoal(BookWyrmModel):
 
     @property
     def progress_percent(self):
+        ''' how close to your goal, in percent form '''
         return int(float(self.book_count / self.goal) * 100)
 
 
@@ -276,42 +322,6 @@ class AnnualGoal(BookWyrmModel):
             finish_date__year__gte=self.year).count()
 
 
-
-@receiver(models.signals.post_save, sender=User)
-#pylint: disable=unused-argument
-def execute_after_save(sender, instance, created, *args, **kwargs):
-    ''' create shelves for new users '''
-    if not created:
-        return
-
-    if not instance.local:
-        set_remote_server.delay(instance.id)
-        return
-
-    instance.key_pair = KeyPair.objects.create(
-        remote_id='%s/#main-key' % instance.remote_id)
-    instance.save()
-
-    shelves = [{
-        'name': 'To Read',
-        'identifier': 'to-read',
-    }, {
-        'name': 'Currently Reading',
-        'identifier': 'reading',
-    }, {
-        'name': 'Read',
-        'identifier': 'read',
-    }]
-
-    for shelf in shelves:
-        Shelf(
-            name=shelf['name'],
-            identifier=shelf['identifier'],
-            user=instance,
-            editable=False
-        ).save()
-
-
 @app.task
 def set_remote_server(user_id):
     ''' figure out the user's remote server in the background '''
@@ -319,7 +329,7 @@ def set_remote_server(user_id):
     actor_parts = urlparse(user.remote_id)
     user.federated_server = \
         get_or_create_remote_server(actor_parts.netloc)
-    user.save()
+    user.save(broadcast=False)
     if user.bookwyrm_user:
         get_remote_reviews.delay(user.outbox)
 
@@ -333,19 +343,24 @@ def get_or_create_remote_server(domain):
     except FederatedServer.DoesNotExist:
         pass
 
-    data = get_data('https://%s/.well-known/nodeinfo' % domain)
-
     try:
-        nodeinfo_url = data.get('links')[0].get('href')
-    except (TypeError, KeyError):
-        return None
+        data = get_data('https://%s/.well-known/nodeinfo' % domain)
+        try:
+            nodeinfo_url = data.get('links')[0].get('href')
+        except (TypeError, KeyError):
+            raise ConnectorException()
 
-    data = get_data(nodeinfo_url)
+        data = get_data(nodeinfo_url)
+        application_type = data.get('software', {}).get('name')
+        application_version = data.get('software', {}).get('version')
+    except ConnectorException:
+        application_type = application_version = None
+
 
     server = FederatedServer.objects.create(
         server_name=domain,
-        application_type=data['software']['name'],
-        application_version=data['software']['version'],
+        application_type=application_type,
+        application_version=application_version,
     )
     return server
 
@@ -360,4 +375,4 @@ def get_remote_reviews(outbox):
     for activity in data['orderedItems']:
         if not activity['type'] == 'Review':
             continue
-        activitypub.Review(**activity).to_model(Review)
+        activitypub.Review(**activity).to_model()

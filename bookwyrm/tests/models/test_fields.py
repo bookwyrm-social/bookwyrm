@@ -17,9 +17,11 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
+from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
-from bookwyrm.models.base_model import ActivitypubMixin, BookWyrmModel
+from bookwyrm.models.base_model import BookWyrmModel
+from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 
 #pylint: disable=too-many-public-methods
 class ActivitypubFields(TestCase):
@@ -177,7 +179,8 @@ class ActivitypubFields(TestCase):
         self.assertEqual(model_instance.privacy_field, 'unlisted')
 
 
-    def test_privacy_field_set_activity_from_field(self):
+    @patch('bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast')
+    def test_privacy_field_set_activity_from_field(self, _):
         ''' translate between to/cc fields and privacy '''
         user = User.objects.create_user(
             'rat', 'rat@rat.rat', 'ratword',
@@ -194,13 +197,15 @@ class ActivitypubFields(TestCase):
         self.assertEqual(activity['to'], [public])
         self.assertEqual(activity['cc'], [followers])
 
-        model_instance = Status.objects.create(user=user, privacy='unlisted')
+        model_instance = Status.objects.create(
+            user=user, content='hi', privacy='unlisted')
         activity = {}
         instance.set_activity_from_field(activity, model_instance)
         self.assertEqual(activity['to'], [followers])
         self.assertEqual(activity['cc'], [public])
 
-        model_instance = Status.objects.create(user=user, privacy='followers')
+        model_instance = Status.objects.create(
+            user=user, content='hi', privacy='followers')
         activity = {}
         instance.set_activity_from_field(activity, model_instance)
         self.assertEqual(activity['to'], [followers])
@@ -208,6 +213,7 @@ class ActivitypubFields(TestCase):
 
         model_instance = Status.objects.create(
             user=user,
+            content='hi',
             privacy='direct',
         )
         model_instance.mention_users.set([user])
@@ -270,7 +276,7 @@ class ActivitypubFields(TestCase):
             'rat', 'rat@rat.rat', 'ratword',
             local=True, localname='rat')
         with patch('bookwyrm.models.user.set_remote_server.delay'):
-            value = instance.field_from_activity(userdata)
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, 'https://example.com/user/mouse')
@@ -289,12 +295,13 @@ class ActivitypubFields(TestCase):
             'mouse', 'mouse@mouse.mouse', 'mouseword',
             local=True, localname='mouse')
         user.remote_id = 'https://example.com/user/mouse'
-        user.save()
+        user.save(broadcast=False)
         User.objects.create_user(
             'rat', 'rat@rat.rat', 'ratword',
             local=True, localname='rat')
 
-        value = instance.field_from_activity(userdata)
+        with patch('bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast'):
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertEqual(value, user)
 
 
@@ -393,7 +400,8 @@ class ActivitypubFields(TestCase):
 
 
     @responses.activate
-    def test_image_field(self):
+    @patch('bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast')
+    def test_image_field(self, _):
         ''' storing images '''
         user = User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'mouseword',

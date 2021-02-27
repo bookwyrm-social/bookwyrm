@@ -8,6 +8,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
+@patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay')
 class ShelfViews(TestCase):
     ''' tag views'''
     def setUp(self):
@@ -24,14 +25,16 @@ class ShelfViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=self.work
         )
-        self.shelf = models.Shelf.objects.create(
-            name='Test Shelf',
-            identifier='test-shelf',
-            user=self.local_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.shelf = models.Shelf.objects.create(
+                name='Test Shelf',
+                identifier='test-shelf',
+                user=self.local_user
+            )
+        models.SiteSettings.objects.create()
 
 
-    def test_shelf_page(self):
+    def test_shelf_page(self, _):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -41,7 +44,7 @@ class ShelfViews(TestCase):
             is_api.return_value = False
             result = view(request, self.local_user.username, shelf.identifier)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'shelf.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
         with patch('bookwyrm.views.shelf.is_api_request') as is_api:
@@ -61,7 +64,7 @@ class ShelfViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    def test_edit_shelf_privacy(self):
+    def test_edit_shelf_privacy(self, _):
         ''' set name or privacy on shelf '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier='to-read')
@@ -74,13 +77,13 @@ class ShelfViews(TestCase):
                 'name': 'To Read',
             })
         request.user = self.local_user
-        view(request, self.local_user.username, shelf.id)
+        view(request, self.local_user.username, shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.privacy, 'unlisted')
 
 
-    def test_edit_shelf_name(self):
+    def test_edit_shelf_name(self, _):
         ''' change the name of an editable shelf '''
         view = views.Shelf.as_view()
         shelf = models.Shelf.objects.create(
@@ -94,14 +97,15 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.id)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, request.user.username, shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, 'cool name')
         self.assertEqual(shelf.identifier, 'testshelf-%d' % shelf.id)
 
 
-    def test_edit_shelf_name_not_editable(self):
+    def test_edit_shelf_name_not_editable(self, _):
         ''' can't change the name of an non-editable shelf '''
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier='to-read')
@@ -114,25 +118,26 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.id)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, 'To Read')
 
 
-    def test_handle_shelve(self):
+    def test_handle_shelve(self, _):
         ''' shelve a book '''
         request = self.factory.post('', {
             'book': self.book.id,
             'shelf': self.shelf.identifier
         })
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_to_read(self):
+    def test_handle_shelve_to_read(self, _):
         ''' special behavior for the to-read shelf '''
         shelf = models.Shelf.objects.get(identifier='to-read')
         request = self.factory.post('', {
@@ -141,13 +146,13 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_reading(self):
+    def test_handle_shelve_reading(self, _):
         ''' special behavior for the reading shelf '''
         shelf = models.Shelf.objects.get(identifier='reading')
         request = self.factory.post('', {
@@ -156,13 +161,13 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_shelve_read(self):
+    def test_handle_shelve_read(self, _):
         ''' special behavior for the read shelf '''
         shelf = models.Shelf.objects.get(identifier='read')
         request = self.factory.post('', {
@@ -171,15 +176,20 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
 
-    def test_handle_unshelve(self):
+    def test_handle_unshelve(self, _):
         ''' remove a book from a shelf '''
-        self.shelf.books.add(self.book)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.shelf
+            )
         self.shelf.save()
         self.assertEqual(self.shelf.books.count(), 1)
         request = self.factory.post('', {
@@ -187,6 +197,6 @@ class ShelfViews(TestCase):
             'shelf': self.shelf.id
         })
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.unshelve(request)
         self.assertEqual(self.shelf.books.count(), 0)

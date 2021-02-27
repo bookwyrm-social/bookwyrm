@@ -8,7 +8,6 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from .helpers import is_api_request
 
 
@@ -62,5 +61,4 @@ class EditAuthor(View):
             return TemplateResponse(request, 'edit_author.html', data)
         author = form.save()
 
-        broadcast(request.user, author.to_update_activity(request.user))
         return redirect('/author/%s' % author.id)

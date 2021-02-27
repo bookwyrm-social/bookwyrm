@@ -2,12 +2,12 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
+from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.broadcast import broadcast
 from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username, object_visible_to_user
 
@@ -18,7 +18,7 @@ class Goal(View):
     ''' track books for the year '''
     def get(self, request, username, year):
         ''' reading goal page '''
-        user = get_user_from_username(username)
+        user = get_user_from_username(request.user, username)
         year = int(year)
         goal = models.AnnualGoal.objects.filter(
             year=year, user=user
@@ -35,13 +35,14 @@ class Goal(View):
             'goal': goal,
             'user': user,
             'year': year,
+            'is_self': request.user == user,
         }
         return TemplateResponse(request, 'goal.html', data)
 
 
     def post(self, request, username, year):
         ''' update or create an annual goal '''
-        user = get_user_from_username(username)
+        user = get_user_from_username(request.user, username)
         if user != request.user:
             return HttpResponseNotFound()
 
@@ -62,18 +63,11 @@ class Goal(View):
 
         if request.POST.get('post-status'):
             # create status, if appropraite
-            status = create_generated_note(
+            template = get_template('snippets/generated_status/goal.html')
+            create_generated_note(
                 request.user,
-                'set a goal to read %d books in %d' % (goal.goal, goal.year),
+                template.render({'goal': goal, 'user': request.user}).strip(),
                 privacy=goal.privacy
             )
-            broadcast(
-                request.user,
-                status.to_create_activity(request.user),
-                software='bookwyrm')
-
-            # re-format the activity for non-bookwyrm servers
-            remote_activity = status.to_create_activity(request.user, pure=True)
-            broadcast(request.user, remote_activity, software='other')
 
         return redirect(request.headers.get('Referer', '/'))

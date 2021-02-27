@@ -9,7 +9,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from .helpers import is_api_request, get_edition, get_user_from_username
 from .helpers import handle_reading_status
 
@@ -20,7 +19,7 @@ class Shelf(View):
     def get(self, request, username, shelf_identifier):
         ''' display a shelf '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
@@ -50,7 +49,7 @@ class Shelf(View):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         books = models.ShelfBook.objects.filter(
-            added_by=user, shelf=shelf
+            user=user, shelf=shelf
         ).order_by('-updated_date').all()
 
         data = {
@@ -62,9 +61,10 @@ class Shelf(View):
             'books': [b.book for b in books],
         }
 
-        return TemplateResponse(request, 'shelf.html', data)
+        return TemplateResponse(request, 'user/shelf.html', data)
 
     @method_decorator(login_required, name='dispatch')
+    # pylint: disable=unused-argument
     def post(self, request, username, shelf_identifier):
         ''' edit a shelf '''
         try:
@@ -124,6 +124,8 @@ def shelve(request):
         identifier=request.POST.get('shelf'),
         user=request.user
     ).first()
+    if not desired_shelf:
+        return HttpResponseNotFound()
 
     if request.POST.get('reshelve', True):
         try:
@@ -135,17 +137,18 @@ def shelve(request):
         except models.Shelf.DoesNotExist:
             # this just means it isn't currently on the user's shelves
             pass
-    shelfbook = models.ShelfBook.objects.create(
-        book=book, shelf=desired_shelf, added_by=request.user)
-    broadcast(request.user, shelfbook.to_add_activity(request.user))
+    models.ShelfBook.objects.create(
+        book=book, shelf=desired_shelf, user=request.user)
 
     # post about "want to read" shelves
-    if desired_shelf.identifier == 'to-read':
+    if desired_shelf.identifier == 'to-read' and \
+            request.POST.get('post-status'):
+        privacy = request.POST.get('privacy') or desired_shelf.privacy
         handle_reading_status(
             request.user,
             desired_shelf,
             book,
-            privacy=desired_shelf.privacy
+            privacy=privacy
         )
 
     return redirect('/')
@@ -162,10 +165,8 @@ def unshelve(request):
     return redirect(request.headers.get('Referer', '/'))
 
 
+#pylint: disable=unused-argument
 def handle_unshelve(user, book, shelf):
     ''' unshelve a book '''
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
-    activity = row.to_remove_activity(user)
     row.delete()
-
-    broadcast(user, activity)

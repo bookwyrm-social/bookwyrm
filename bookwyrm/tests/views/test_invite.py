@@ -18,6 +18,7 @@ class InviteViews(TestCase):
         self.local_user = models.User.objects.create_user(
             'mouse@local.com', 'mouse@mouse.mouse', 'password',
             local=True, localname='mouse')
+        models.SiteSettings.objects.create()
 
 
     def test_invite_page(self):
@@ -32,7 +33,7 @@ class InviteViews(TestCase):
             invite.return_value = True
             result = view(request, 'hi')
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'invite.html')
+        result.render()
         self.assertEqual(result.status_code, 200)
 
 
@@ -44,5 +45,5 @@ class InviteViews(TestCase):
         request.user.is_superuser = True
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.template_name, 'manage_invites.html')
+        result.render()
         self.assertEqual(result.status_code, 200)

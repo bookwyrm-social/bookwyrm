@@ -15,10 +15,9 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_activity_feed, get_user_from_username, is_api_request
-from .helpers import object_visible_to_user
+from .helpers import is_blocked, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -27,8 +26,12 @@ class User(View):
     def get(self, request, username):
         ''' profile page for a user '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
+            return HttpResponseNotFound()
+
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -68,8 +71,7 @@ class User(View):
         # user's posts
         activities = get_activity_feed(
             request.user,
-            ['public', 'unlisted', 'followers'],
-            queryset=models.Status.objects.filter(user=user)
+            queryset=user.status_set.select_subclasses(),
         )
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
@@ -86,15 +88,19 @@ class User(View):
             'goal': goal,
         }
 
-        return TemplateResponse(request, 'user.html', data)
+        return TemplateResponse(request, 'user/user.html', data)
 
 class Followers(View):
     ''' list of followers view '''
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
+            return HttpResponseNotFound()
+
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -107,15 +113,19 @@ class Followers(View):
             'is_self': request.user.id == user.id,
             'followers': user.followers.all(),
         }
-        return TemplateResponse(request, 'followers.html', data)
+        return TemplateResponse(request, 'user/followers.html', data)
 
 class Following(View):
     ''' list of following view '''
     def get(self, request, username):
         ''' list of followers '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
+            return HttpResponseNotFound()
+
+        # make sure we're not blocked
+        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -128,23 +138,20 @@ class Following(View):
             'is_self': request.user.id == user.id,
             'following': user.following.all(),
         }
-        return TemplateResponse(request, 'following.html', data)
+        return TemplateResponse(request, 'user/following.html', data)
 
 
 @method_decorator(login_required, name='dispatch')
 class EditUser(View):
     ''' edit user view '''
     def get(self, request):
-        ''' profile page for a user '''
-        user = request.user
-
-        form = forms.EditUserForm(instance=request.user)
+        ''' edit profile page for a user '''
         data = {
             'title': 'Edit profile',
-            'form': form,
-            'user': user,
+            'form': forms.EditUserForm(instance=request.user),
+            'user': request.user,
         }
-        return TemplateResponse(request, 'edit_user.html', data)
+        return TemplateResponse(request, 'preferences/edit_user.html', data)
 
     def post(self, request):
         ''' les get fancy with images '''
@@ -152,37 +159,41 @@ class EditUser(View):
             request.POST, request.FILES, instance=request.user)
         if not form.is_valid():
             data = {'form': form, 'user': request.user}
-            return TemplateResponse(request, 'edit_user.html', data)
+            return TemplateResponse(request, 'preferences/edit_user.html', data)
 
         user = form.save(commit=False)
 
         if 'avatar' in form.files:
             # crop and resize avatar upload
             image = Image.open(form.files['avatar'])
-            target_size = 120
-            width, height = image.size
-            thumbnail_scale = height / (width / target_size) if height > width \
-                else width / (height / target_size)
-            image.thumbnail([thumbnail_scale, thumbnail_scale])
-            width, height = image.size
-
-            width_diff = width - target_size
-            height_diff = height - target_size
-            cropped = image.crop((
-                int(width_diff / 2),
-                int(height_diff / 2),
-                int(width - (width_diff / 2)),
-                int(height - (height_diff / 2))
-            ))
-            output = BytesIO()
-            cropped.save(output, format=image.format)
-            ContentFile(output.getvalue())
+            image = crop_avatar(image)
 
             # set the name to a hash
             extension = form.files['avatar'].name.split('.')[-1]
             filename = '%s.%s' % (uuid4(), extension)
-            user.avatar.save(filename, ContentFile(output.getvalue()))
+            user.avatar.save(filename, image)
         user.save()
 
-        broadcast(user, user.to_update_activity(user))
         return redirect(user.local_path)
+
+
+def crop_avatar(image):
+    ''' reduce the size and make an avatar square '''
+    target_size = 120
+    width, height = image.size
+    thumbnail_scale = height / (width / target_size) if height > width \
+        else width / (height / target_size)
+    image.thumbnail([thumbnail_scale, thumbnail_scale])
+    width, height = image.size
+
+    width_diff = width - target_size
+    height_diff = height - target_size
+    cropped = image.crop((
+        int(width_diff / 2),
+        int(height_diff / 2),
+        int(width - (width_diff / 2)),
+        int(height - (height_diff / 2))
+    ))
+    output = BytesIO()
+    cropped.save(output, format=image.format)
+    return ContentFile(output.getvalue())
