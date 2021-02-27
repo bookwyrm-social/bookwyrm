@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-27 13:46-0800\n"
+"POT-Creation-Date: 2021-02-27 14:21-0800\n"
 "PO-Revision-Date: 2021-02-27 13:50+PST\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -17,6 +17,92 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: bookwyrm/templates/author.html:13 bookwyrm/templates/author.html:14
+msgid "Edit Author"
+msgstr ""
+
+#: bookwyrm/templates/author.html:29
+msgid "Wikipedia"
+msgstr ""
+
+#: bookwyrm/templates/author.html:34
+#, python-format
+msgid "Books by %(name)s"
+msgstr ""
+
+#: bookwyrm/templates/book.html:27 bookwyrm/templates/book.html:28
+msgid "Edit Book"
+msgstr ""
+
+#: bookwyrm/templates/book.html:43
+msgid "Add cover"
+msgstr ""
+
+#: bookwyrm/templates/book.html:49
+msgid "Add"
+msgstr ""
+
+#: bookwyrm/templates/book.html:58
+msgid "ISBN:"
+msgstr ""
+
+#: bookwyrm/templates/book.html:65
+msgid "OCLC Number:"
+msgstr ""
+
+#: bookwyrm/templates/book.html:72
+msgid "ASIN:"
+msgstr ""
+
+#: bookwyrm/templates/book.html:84
+msgid "View on OpenLibrary"
+msgstr ""
+
+#: bookwyrm/templates/book.html:102
+msgid "Description:"
+msgstr ""
+
+#: bookwyrm/templates/book.html:106 bookwyrm/templates/edit_author.html:74
+msgid "Save"
+msgstr ""
+
+#: bookwyrm/templates/book.html:138
+msgid "Your reading activity"
+msgstr ""
+
+#: bookwyrm/templates/book.html:144
+msgid "You don't have any reading activity for this book."
+msgstr ""
+
+#: bookwyrm/templates/book.html:151
+msgid "Create"
+msgstr ""
+
+#: bookwyrm/templates/book.html:172
+msgid "Tags"
+msgstr ""
+
+#: bookwyrm/templates/book.html:176
+msgid "Add tag"
+msgstr ""
+
+#: bookwyrm/templates/book.html:193
+msgid "Subjects"
+msgstr ""
+
+#: bookwyrm/templates/book.html:204
+msgid "Places"
+msgstr ""
+
+#: bookwyrm/templates/book.html:215 bookwyrm/templates/search_results.html:84
+#: bookwyrm/templates/user/user_layout.html:60
+msgid "Lists"
+msgstr ""
+
+#: bookwyrm/templates/book.html:244
+msgid "rated it"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:15
 msgid "Decentralized"
@@ -36,11 +122,278 @@ msgid "Join %(name)s"
 msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:47
+#: bookwyrm/templates/login.html:45
 msgid "This instance is closed"
 msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:53
 msgid "Your Account"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:27
+msgid "Metadata"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:28
+msgid "Name:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:33
+msgid "Bio:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:38
+msgid "Wikipedia link:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:43
+msgid "Birth date:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:48
+msgid "Death date:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:54
+msgid "Author Identifiers"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:55
+msgid "Openlibrary key:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:60
+msgid "Librarything key:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:65
+msgid "Goodreads key:"
+msgstr ""
+
+#: bookwyrm/templates/edit_author.html:75
+msgid "Cancel"
+msgstr ""
+
+#: bookwyrm/templates/error.html:5
+msgid "Server Error"
+msgstr ""
+
+#: bookwyrm/templates/error.html:6
+msgid "Something went wrong! Sorry about that."
+msgstr ""
+
+#: bookwyrm/templates/goal.html:6
+#, python-format
+msgid "%(year)s Reading Progress"
+msgstr ""
+
+#: bookwyrm/templates/goal.html:28
+#, python-format
+msgid ""
+"Set a goal for how many books you'll finish reading in %(year)s, and track "
+"your progress throughout the year."
+msgstr ""
+
+#: bookwyrm/templates/import.html:5
+msgid "Import Books"
+msgstr ""
+
+#: bookwyrm/templates/import.html:10
+msgid "Data source"
+msgstr ""
+
+#: bookwyrm/templates/import.html:28
+msgid "Include reviews"
+msgstr ""
+
+#: bookwyrm/templates/import.html:33
+msgid "Privacy setting for imported reviews:"
+msgstr ""
+
+#: bookwyrm/templates/import.html:37
+msgid "Import"
+msgstr ""
+
+#: bookwyrm/templates/import.html:42
+msgid "Recent Imports"
+msgstr ""
+
+#: bookwyrm/templates/import.html:44
+msgid "No recent imports"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:6
+msgid "Import Status"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:9
+msgid "Import started: "
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:13
+msgid "Import completed: "
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:16
+msgid "TASK FAILED"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:22
+msgid "Import still in progress."
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:24
+msgid "(Hit reload to update!)"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:31
+msgid "Failed to load"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:55
+msgid "Select all"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:58
+msgid "Retry items"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:80
+msgid "Successfully imported"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:84
+msgid "Book"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:87
+msgid "Title"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:90
+msgid "Author"
+msgstr ""
+
+#: bookwyrm/templates/import_status.html:113
+msgid "Imported"
+msgstr ""
+
+#: bookwyrm/templates/invite.html:8 bookwyrm/templates/login.html:40
+msgid "Create an Account"
+msgstr ""
+
+#: bookwyrm/templates/invite.html:17
+msgid "Permission Denied"
+msgstr ""
+
+#: bookwyrm/templates/invite.html:18
+msgid "Sorry! This invite code is no longer valid."
+msgstr ""
+
+#: bookwyrm/templates/layout.html:37
+msgid "search"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:47
+msgid "Main navigation menu"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:125 bookwyrm/templates/notifications.html:6
+msgid "Notifications"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:142 bookwyrm/templates/layout.html:146
+#: bookwyrm/templates/login.html:14
+msgid "Username:"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:151 bookwyrm/templates/login.html:7
+#: bookwyrm/templates/login.html:30
+msgid "Log in"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:182
+msgid "About this server"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:186
+msgid "Contact site admin"
+msgstr ""
+
+#: bookwyrm/templates/login.html:20
+msgid "Password:"
+msgstr ""
+
+#: bookwyrm/templates/login.html:33
+msgid "Forgot your password?"
+msgstr ""
+
+#: bookwyrm/templates/login.html:46
+msgid "Contact an administrator to get an invite"
+msgstr ""
+
+#: bookwyrm/templates/login.html:56
+msgid "More about this site"
+msgstr ""
+
+#: bookwyrm/templates/notifications.html:10
+msgid "Delete notifications"
+msgstr ""
+
+#: bookwyrm/templates/notifications.html:101
+msgid "You're all caught up!"
+msgstr ""
+
+#: bookwyrm/templates/password_reset_request.html:7
+msgid "Reset Password"
+msgstr ""
+
+#: bookwyrm/templates/password_reset_request.html:9
+msgid "A link to reset your password will be sent to your email address"
+msgstr ""
+
+#: bookwyrm/templates/password_reset_request.html:13
+msgid "Email address:"
+msgstr ""
+
+#: bookwyrm/templates/password_reset_request.html:20
+msgid "Reset password"
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:10
+msgid "Matching Books"
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:13
+#, python-format
+msgid "No books found for \"%(query)s\""
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:29
+msgid "Didn't find what you were looking for?"
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:52
+msgid "Import book"
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:69
+msgid "Matching Users"
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:71
+#, python-format
+msgid "No users found for \"%(query)s\""
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:86
+#, python-format
+msgid "No lists found for \"%(query)s\""
+msgstr ""
+
+#: bookwyrm/templates/tag.html:6
+#, python-format
+msgid "Books tagged \"%(tag.name)s\""
 msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:30
@@ -53,10 +406,6 @@ msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:54
 msgid "Reading Goal"
-msgstr ""
-
-#: bookwyrm/templates/user/user_layout.html:60
-msgid "Lists"
 msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:66
