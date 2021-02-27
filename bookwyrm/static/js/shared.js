@@ -12,10 +12,6 @@ window.onload = function() {
     Array.from(document.getElementsByClassName('select-all'))
         .forEach(t => t.onclick = selectAll);
 
-    // toggle between tabs
-    Array.from(document.getElementsByClassName('tab-change'))
-        .forEach(t => t.onclick = tabChange);
-
     // handle aria settings on menus
     Array.from(document.getElementsByClassName('pulldown-menu'))
         .forEach(t => t.onclick = toggleMenu);
@@ -129,23 +125,6 @@ function interact(e) {
 function selectAll(e) {
     e.target.parentElement.parentElement.querySelectorAll('[type="checkbox"]')
         .forEach(t => t.checked=true);
-}
-
-function tabChange(e) {
-    var el = e.currentTarget;
-    var parentElement = el.closest('[role="tablist"]');
-
-    parentElement.querySelectorAll('[aria-selected="true"]')
-        .forEach(t => t.setAttribute("aria-selected", false));
-    el.setAttribute("aria-selected", true);
-
-    parentElement.querySelectorAll('li')
-        .forEach(t => removeClass(t, 'is-active'));
-    addClass(el, 'is-active');
-
-    var tabId = el.getAttribute('data-tab');
-    Array.from(document.getElementsByClassName(el.getAttribute('data-category')))
-        .forEach(t => addRemoveClass(t, 'hidden', t.id != tabId));
 }
 
 function toggleMenu(e) {

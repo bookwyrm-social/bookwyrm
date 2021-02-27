@@ -1,34 +1,36 @@
 {% load humanize %}
 {% load bookwyrm_tags %}
 
-<div class="tabs is-boxed">
-    <ul role="tablist">
-        <li class="tab-change is-active" data-category="tab-option-{{ book.id }}" role="tab" aria-selected="true" tabindex="0" data-tab="review-{{ book.id }}">
-            <a>Review</a>
-        </li>
-        <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="comment-{{ book.id}}">
-            <a>Comment</a>
-        </li>
-        <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="quote-{{ book.id }}">
-            <a>Quote</a>
-        </li>
-    </ul>
-</div>
+<seven-minute-tabs>
+    <div class="tabs is-boxed" role="tablist">
+        <ul>
+            <li class="is-active">
+                <a href="#review-{{ book.id }}" id="tab-review-{{ book.id }}" role="tab" aria-selected="true" aria-controls="review-{{ book.id }}" data-category="tab-option-{{ book.id }}">Review</a>
+            </li>
+            <li>
+                <a href="#comment-{{ book.id}}" id="tab-comment-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="comment-{{ book.id}}" data-category="tab-option-{{ book.id }}">Comment</a>
+            </li>
+            <li>
+                <a href="#quote-{{ book.id }}" id="tab-quote-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">Quote</a>
+            </li>
+        </ul>
+    </div>
 
-<div class="tab-option-{{ book.id }}" id="review-{{ book.id }}">
-    {% with 0|uuid as uuid %}
-    {% include 'snippets/create_status_form.html' with type='review' %}
-    {% endwith %}
-</div>
+    <div class="tab-option-{{ book.id }}" id="review-{{ book.id }}" role="tabpanel" tabindex="0" aria-labelledby="tab-review-{{ book.id }}">
+        {% with 0|uuid as uuid %}
+        {% include 'snippets/create_status_form.html' with type='review' %}
+        {% endwith %}
+    </div>
 
-<div class="hidden tab-option-{{ book.id }}" id="comment-{{ book.id }}">
-    {% with 0|uuid as uuid %}
-    {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
-    {% endwith %}
-</div>
+    <div class="tab-option-{{ book.id }}" id="comment-{{ book.id }}" role="tabpanel" aria-labelledby="tab-comment-{{ book.id }}" hidden>
+        {% with 0|uuid as uuid %}
+        {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
+        {% endwith %}
+    </div>
 
-<div class="hidden tab-option-{{ book.id }}" id="quote-{{ book.id }}">
-    {% with 0|uuid as uuid %}
-    {% include 'snippets/create_status_form.html' with type="quotation" placeholder="An excerpt from '"|add:book.title|add:"'" %}
-    {% endwith %}
-</div>
+    <div class="tab-option-{{ book.id }}" id="quote-{{ book.id }}" role="tabpanel" aria-labelledby="tab-quote-{{ book.id }}" hidden>
+        {% with 0|uuid as uuid %}
+        {% include 'snippets/create_status_form.html' with type="quotation" placeholder="An excerpt from '"|add:book.title|add:"'" %}
+        {% endwith %}
+    </div>
+</seven-minute-tabs>
