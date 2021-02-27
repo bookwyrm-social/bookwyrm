@@ -9,7 +9,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, goodreads_import, models
+from bookwyrm import forms, goodreads_import, librarything_import, models
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
@@ -31,18 +31,29 @@ class Import(View):
         if form.is_valid():
             include_reviews = request.POST.get('include_reviews') == 'on'
             privacy = request.POST.get('privacy')
+            source = request.POST.get('source')
+
+            importer = None
+            if source == 'LibraryThing':
+                importer = librarything_import.LibrarythingImporter()
+            else:
+                # Default : GoodReads
+                importer = goodreads_import.GoodreadsImporter()
+
             try:
-                job = goodreads_import.create_job(
+                job = importer.create_job(
                     request.user,
                     TextIOWrapper(
                         request.FILES['csv_file'],
-                        encoding=request.encoding),
+                        encoding=importer.encoding),
                     include_reviews,
                     privacy,
                 )
             except (UnicodeDecodeError, ValueError):
                 return HttpResponseBadRequest('Not a valid csv file')
-            goodreads_import.start_import(job)
+
+            importer.start_import(job)
+
             return redirect('/import/%d' % job.id)
         return HttpResponseBadRequest()
 
