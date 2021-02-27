@@ -30,6 +30,11 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS', True)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'),]
 
+LANGUAGES = [
+    ('en-US', _('English')),
+    ('en-beep', _('Beep')),
+]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
