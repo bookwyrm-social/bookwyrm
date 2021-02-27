@@ -90,6 +90,9 @@ case "$CMD" in
     collectstatic)
         execweb python manage.py collectstatic --no-input
         ;;
+    makemessages)
+        django-admin makemessages --extension html --ignore=venv3 --local=$@
+        ;;
     build)
         docker-compose build
         ;;
