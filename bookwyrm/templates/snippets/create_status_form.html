@@ -7,7 +7,7 @@
     <input type="hidden" name="reply_parent" value="{{ reply_parent.id }}">
     {% if type == 'review' %}
     <div class="control">
-        <label class="label" for="id_name_{{ book.id }}_{{ type }}">{% trans "Title:" %}</label>
+        <label class="label" for="id_name_{{ book.id }}_{{ type }}">{% trans "Title" %}:</label>
         <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'">
     </div>
     {% endif %}
@@ -41,7 +41,7 @@
     </div>
     {% if type == 'quotation' %}
     <div class="control">
-        <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment:" %}</label>
+        <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
         <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
     </div>

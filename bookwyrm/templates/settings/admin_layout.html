@@ -26,7 +26,7 @@
         <ul class="menu-list">
             <li>
                 {% url 'settings-site' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Configuration" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings %}</a>
                 {% if url in request.path %}
                 <ul class="emnu-list">
                     <li><a href="{{ url }}#instance-info">{% trans "Instance Info" %}</a></li>
