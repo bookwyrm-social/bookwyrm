@@ -1,2 +1,3 @@
+{% load i18n %}
 <strong>{% if link %}<a href="{{ result.key }}">{{ result.title }}</a>{% else %}{{ result.title }}{% endif %}</strong>
-{% if result.author %} by {{ result.author }}{% endif %}{% if result.year %} ({{ result.year }}){% endif %}
+{% if result.author %} {% blocktrans with author=result.author %}by {{ author }}{% endblocktrans %}{% endif %}{% if result.year %} ({{ result.year }}){% endif %}

@@ -1,34 +1,35 @@
+{% load i18n %}
 {% csrf_token %}
 <input type="hidden" name="user" value="{{ request.user.id }}">
 
 <div class="columns">
     <div class="column">
         <div class="field">
-            <label class="label" for="id_name">Name:</label>
+            <label class="label" for="id_name">{% trans "Name:" %}</label>
             {{ list_form.name }}
         </div>
         <div class="field">
-            <label class="label" for="id_description">Description:</label>
+            <label class="label" for="id_description">{% trans "Description:" %}</label>
             {{ list_form.description }}
         </div>
     </div>
     <div class="column">
         <fieldset class="field">
-            <legend class="label">List curation:</legend>
+            <legend class="label">{% trans "List curation:" %}</legend>
 
             <label class="field">
-                <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> Closed
-                <p class="help mb-2">Only you can add and remove books to this list</p>
+                <input type="radio" name="curation" value="closed"{% if not list or list.curation == 'closed' %} checked{% endif %}> {% trans "Closed" %}
+                <p class="help mb-2">{% trans "Only you can add and remove books to this list" %}</p>
             </label>
 
             <label class="field">
-                <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> Curated
-                <p class="help mb-2">Anyone can suggest books, subject to your approval</p>
+                <input type="radio" name="curation" value="curated"{% if list.curation == 'curated' %} checked{% endif %}> {% trans "Curated" %}
+                <p class="help mb-2">{% trans "Anyone can suggest books, subject to your approval" %}</p>
             </label>
 
             <label class="field">
-                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> Open
-                <p class="help mb-2">Anyone can add books to this list</p>
+                <input type="radio" name="curation" value="open"{% if list.curation == 'open' %} checked{% endif %}> {% trans "Open" %}
+                <p class="help mb-2">{% trans "Anyone can add books to this list" %}</p>
             </label>
         </fieldset>
     </div>
@@ -38,7 +39,7 @@
         {% include 'snippets/privacy_select.html' with current=list.privacy %}
     </div>
     <div class="control">
-        <button type="submit" class="button is-primary">Save</button>
+        <button type="submit" class="button is-primary">{% trans "Save" %}</button>
     </div>
 </div>
 

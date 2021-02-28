@@ -1,17 +1,18 @@
 {% load humanize %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 
 <seven-minute-tabs>
     <div class="tabs is-boxed" role="tablist">
         <ul>
             <li class="is-active">
-                <a href="#review-{{ book.id }}" id="tab-review-{{ book.id }}" role="tab" aria-selected="true" aria-controls="review-{{ book.id }}" data-category="tab-option-{{ book.id }}">Review</a>
+                <a href="#review-{{ book.id }}" id="tab-review-{{ book.id }}" role="tab" aria-selected="true" aria-controls="review-{{ book.id }}" data-category="tab-option-{{ book.id }}">{% trans "Review" %}</a>
             </li>
             <li>
-                <a href="#comment-{{ book.id}}" id="tab-comment-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="comment-{{ book.id}}" data-category="tab-option-{{ book.id }}">Comment</a>
+                <a href="#comment-{{ book.id}}" id="tab-comment-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="comment-{{ book.id}}" data-category="tab-option-{{ book.id }}">{% trans "Comment" %}</a>
             </li>
             <li>
-                <a href="#quote-{{ book.id }}" id="tab-quote-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">Quote</a>
+                <a href="#quote-{{ book.id }}" id="tab-quote-{{ book.id }}" role="tab" tabindex="-1" aria-selected="false" aria-controls="quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">{% trans "Quote" %}</a>
             </li>
         </ul>
     </div>

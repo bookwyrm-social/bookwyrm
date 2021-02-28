@@ -1,4 +1,5 @@
 {% extends 'components/card.html' %}
+{% load i18n %}
 
 {% load bookwyrm_tags %}
 {% load humanize %}
@@ -32,16 +33,16 @@
 
     {% else %}
     <a href="/login">
-        <span class="icon icon-comment" title="Reply">
-            <span class="is-sr-only">Reply</span>
+        <span class="icon icon-comment" title="{% trans 'Reply' %}">
+            <span class="is-sr-only">{% trans "Reply" %}</span>
         </span>
 
-        <span class="icon icon-boost" title="Boost status">
-            <span class="is-sr-only">Boost status</span>
+        <span class="icon icon-boost" title="{% trans 'Boost status' %}">
+            <span class="is-sr-only">{% trans "Boost status" %}</span>
         </span>
 
-        <span class="icon icon-heart" title="Like status">
-            <span class="is-sr-only">Like status</span>
+        <span class="icon icon-heart" title="{% trans 'Like status' %}">
+            <span class="is-sr-only">{% trans "Like status" %}</span>
         </span>
     </a>
     {% endif %}

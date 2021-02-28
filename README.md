@@ -20,22 +20,25 @@ You can request an invite to https://bookwyrm.social by [email](mailto:mousereev
 
 
 ## Contributing
-There are many ways you can contribute to this project, regardless of your level of technical expertise. 
+There are many ways you can contribute to this project, regardless of your level of technical expertise.
 
 ### Feedback and feature requests
 Please feel encouraged and welcome to point out bugs, suggestions, feature requests, and ideas for how things ought to work using [GitHub issues](https://github.com/mouse-reeve/bookwyrm/issues).
 
 ### Code contributions
-Code contributons are gladly welcomed! If you're not sure where to start, take a look at the ["Good first issue"](https://github.com/mouse-reeve/bookwyrm/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) tag. Because BookWyrm is a small project, there isn't a lot of formal structure, but there is a huge capacity for one-on-one support, which can look like asking questions as you go, pair programming, video chats, et cetera, so please feel free to reach out.
+Code contributions are gladly welcomed! If you're not sure where to start, take a look at the ["Good first issue"](https://github.com/mouse-reeve/bookwyrm/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) tag. Because BookWyrm is a small project, there isn't a lot of formal structure, but there is a huge capacity for one-on-one support, which can look like asking questions as you go, pair programming, video chats, et cetera, so please feel free to reach out.
 
-If you have questions about the project or contributing, you can seet up a video call during BookWyrm ["office hours"](https://calendly.com/mouse-reeve/30min).
+If you have questions about the project or contributing, you can set up a video call during BookWyrm ["office hours"](https://calendly.com/mouse-reeve/30min).
+
+### Translation
+Do you speak a language besides English? BookWyrm needs localization! If you're comfortable using git and want to get into the code, there are [instructions](#workin-with-translations-and-locale-files) on how to create and edit localization files. If you feel more comfortable working in a regular text editor and would prefer not to run the application, get in touch directly and we can figure out a system, like emailing a text file, that works best.
 
 ### Financial Support
 BookWyrm is an ad-free passion project with no intentions of seeking out venture funding or corporate financial relationships. If you want to help keep the project going, you can donate to the [Patreon](https://www.patreon.com/bookwyrm), or make a one time gift via [PayPal](https://paypal.me/oulipo).
 
 ## About BookWyrm
 ### What it is and isn't
-BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't  primarily meant for cataloguing or as a datasource for books, but it does do both of those things to some degree. 
+BookWyrm is a platform for social reading! You can use it to track what you're reading, review books, and follow your friends. It isn't primarily meant for cataloguing or as a data-source for books, but it does do both of those things to some degree.
 
 ### The role of federation
 BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub, it inter-operates with different instances of BookWyrm, and other ActivityPub compliant services, like Mastodon. This means you can run an instance for your book club, and still follow your friend who posts on a server devoted to 20th century Russian speculative fiction. It also means that your friend on mastodon can read and comment on a book review that you post on your BookWyrm instance.
@@ -68,7 +71,7 @@ Since the project is still in its early stages, the features are growing every d
     - Private, followers-only, and public privacy levels for posting, shelves, and lists
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation
-    
+
 ### The Tech Stack
 Web backend
  - [Django](https://www.djangoproject.com/) web server
@@ -76,12 +79,12 @@ Web backend
  - [ActivityPub](http://activitypub.rocks/) federation
  - [Celery](http://celeryproject.org/) task queuing
  - [Redis](https://redis.io/) task backend
- 
+
 Front end
  - Django templates
  - [Bulma.io](https://bulma.io/) css framework
  - Vanilla JavaScript, in moderation
- 
+
 Deployment
  - [Docker](https://www.docker.com/) and docker-compose
  - [Gunicorn](https://gunicorn.org/) web runner
@@ -109,19 +112,46 @@ docker-compose up
 
 Once the build is complete, you can access the instance at `localhost:1333`
 
+### Editing static files
+If you edit the CSS or JavaScript, you will need to run Django's `collectstatic` command in order for your changes to have effect. You can do this by running:
+``` bash
+./bw-dev collectstatic
+```
+
+### Workin with translations and locale files
+Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
+
+The application's language is set by a request header sent by your browser to the application, so to change the language of the application, you can change the default language requested by your browser.
+
+#### Adding a locale
+To start translation into a language which is currently supported, run the django-admin `makemessages` command with the language code for the language you want to add (like `de` for German, or `en-gb` for British English):
+``` bash
+./bw-dev makemessages -l <language code>
+```
+
+#### Editing a locale
+When you have a locale file, open the `django.po` in the directory for the language (for example, if you were adding German, `locale/de/LC_MESSAGES/django.po`. All the the text in the application will be shown in paired strings, with `msgid` as the original text, and `msgstr` as the translation (by default, this is set to an empty string, and will display the original text).
+
+Add you translations to the `msgstr` strings, and when you're ready, compile the locale by running:
+``` bash
+./bw-dev compilemessages
+```
+
+You can add the `-l <language code>` to only compile one language. When you refresh the application, you should see your translations at work.
+
 ## Installing in Production
 
-This project is still young and isn't, at the momoment, very stable, so please procede with caution when running in production.
+This project is still young and isn't, at the moment, very stable, so please proceed with caution when running in production.
 
 ### Server setup
  - Get a domain name and set up DNS for your server
- - Set your server up with appropriate firewalls for running a web application (this instruction set is tested again Ubuntu 20.04)
+ - Set your server up with appropriate firewalls for running a web application (this instruction set is tested against Ubuntu 20.04)
  - Set up an email service (such as mailgun) and the appropriate SMTP/DNS settings
  - Install Docker and docker-compose
 
 ### Install and configure BookWyrm
 
-The `production` branch of BookWyrm contains a number of tools not on the `main` branch that are suited for running in production, such as `docker-compose` changes to update the default commands or configuration of containers, and indivudal changes to container config to enable things like SSL or regular backups.
+The `production` branch of BookWyrm contains a number of tools not on the `main` branch that are suited for running in production, such as `docker-compose` changes to update the default commands or configuration of containers, and individual changes to container config to enable things like SSL or regular backups.
 
 Instructions for running BookWyrm in production:
 
@@ -171,3 +201,4 @@ There are three concepts in the book data model:
  - `Edition`, a concrete, actually published version of a book
  
 Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
+

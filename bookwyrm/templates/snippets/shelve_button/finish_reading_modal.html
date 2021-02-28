@@ -1,7 +1,8 @@
 {% extends 'components/modal.html' %}
+{% load i18n %}
 
 {% block modal-title %}
-Finish "<em>{{ book.title }}</em>"
+{% blocktrans with book_title=book.title %}Finish "<em>{{ book_title }}</em>"{% endblocktrans %}
 {% endblock %}
 
 
@@ -15,13 +16,13 @@ Finish "<em>{{ book.title }}</em>"
     <input type="hidden" name="id" value="{{ readthrough.id }}">
     <div class="field">
         <label class="label">
-            Started reading
+            {% trans "Started reading" %}
             <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
         </label>
     </div>
     <div class="field">
         <label class="label">
-            Finished reading
+            {% trans "Finished reading" %}
             <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
         </label>
     </div>
@@ -33,12 +34,12 @@ Finish "<em>{{ book.title }}</em>"
     <div class="column field">
         <label for="post_status-{{ uuid }}">
             <input type="checkbox" name="post-status" class="checkbox" id="post_status-{{ uuid }}" checked>
-            Post to feed
+            {% trans "Post to feed" %}
         </label>
         {% include 'snippets/privacy_select.html' %}
     </div>
     <div class="column">
-        <button type="submit" class="button is-success">Save</button>
+        <button type="submit" class="button is-success">{% trans "Save" %}</button>
         {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="finish-reading" controls_uid=uuid %}
     </div>
 </div>

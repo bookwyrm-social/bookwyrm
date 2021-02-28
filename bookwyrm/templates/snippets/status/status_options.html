@@ -1,9 +1,10 @@
 {% extends 'components/dropdown.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 
 {% block dropdown-trigger %}
 <span class="icon icon-dots-three">
-    <span class="is-sr-only">More options</span>
+    <span class="is-sr-only">{% trans "More options" %}</span>
 </span>
 {% endblock %}
 
@@ -13,13 +14,13 @@
     <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
         <button class="button is-danger is-light is-fullwidth is-small" type="submit">
-            Delete post
+            {% trans "Delete post" %}
         </button>
     </form>
 </li>
 {% else %}
 <li role="menuitem">
-    <a href="/direct-messages/{{ status.user|username }}" class="button is-fullwidth is-small">Send direct message</a>
+    <a href="/direct-messages/{{ status.user|username }}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
 </li>
 <li role="menuitem">
     {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" %}
