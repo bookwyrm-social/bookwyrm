@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-27 18:32-0800\n"
+"POT-Creation-Date: 2021-02-28 08:42-0800\n"
 "PO-Revision-Date: 2021-02-27 13:50+PST\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -67,6 +67,7 @@ msgstr ""
 #: bookwyrm/templates/book.html:106 bookwyrm/templates/edit_author.html:75
 #: bookwyrm/templates/edit_book.html:117 bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:47
+#: bookwyrm/templates/settings/site.html:86
 #: bookwyrm/templates/snippets/progress_update.html:21
 #: bookwyrm/templates/snippets/readthrough.html:61
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
@@ -381,11 +382,11 @@ msgid "Import Status"
 msgstr ""
 
 #: bookwyrm/templates/import_status.html:10
-msgid "Import started: "
+msgid "Import started:"
 msgstr ""
 
 #: bookwyrm/templates/import_status.html:14
-msgid "Import completed: "
+msgid "Import completed:"
 msgstr ""
 
 #: bookwyrm/templates/import_status.html:17
@@ -447,12 +448,9 @@ msgstr ""
 msgid "Sorry! This invite code is no longer valid."
 msgstr ""
 
-#: bookwyrm/templates/layout.html:37 bookwyrm/templates/lists/list.html:62
+#: bookwyrm/templates/layout.html:37 bookwyrm/templates/layout.html:38
+#: bookwyrm/templates/lists/list.html:62
 msgid "Search"
-msgstr ""
-
-#: bookwyrm/templates/layout.html:38 bookwyrm/templates/lists/list.html:63
-msgid "search"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:47 bookwyrm/templates/layout.html:48
@@ -575,6 +573,10 @@ msgstr ""
 msgid "Search for a book"
 msgstr ""
 
+#: bookwyrm/templates/lists/list.html:63
+msgid "search"
+msgstr ""
+
 #: bookwyrm/templates/lists/list.html:69
 msgid "Clear search"
 msgstr ""
@@ -641,66 +643,48 @@ msgstr ""
 
 #: bookwyrm/templates/notifications.html:45
 #, python-format
-msgid ""
-"\n"
-"                                favorited your\n"
-"                                <a href=\"%(related_path)s\">"
-"%(preview_name)s</a>\n"
-"                                "
+msgid "favorited your <a href=\"%(related_path)s\">%(preview_name)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/notifications.html:48
+#, python-format
+msgid "mentioned you in a <a href=\"%(related_path)s\">%(preview_name)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications.html:51
 #, python-format
 msgid ""
-"\n"
-"                                mentioned you in a\n"
-"                                <a href=\"%(related_path)s\">"
-"%(preview_name)s</a>\n"
-"                                "
+"<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">"
+"%(preview_name)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:57
-#, python-format
-msgid ""
-"\n"
-"                                <a href=\"%(related_path)s\">replied</a>\n"
-"                                to your\n"
-"                                <a href=\"%(parent_path)s\">"
-"%(preview_name)s</a>\n"
-"                                "
-msgstr ""
-
-#: bookwyrm/templates/notifications.html:64
+#: bookwyrm/templates/notifications.html:54
 msgid "followed you"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:67
+#: bookwyrm/templates/notifications.html:57
 msgid "sent you a follow request"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:72
+#: bookwyrm/templates/notifications.html:62
 #, python-format
-msgid ""
-"\n"
-"                                boosted your <a href=\"%(related_path)s\">"
-"%(preview_name)s</a>\n"
-"                                "
+msgid "boosted your <a href=\"%(related_path)s\">%(preview_name)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:76
+#: bookwyrm/templates/notifications.html:64
 msgid "added"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:76
+#: bookwyrm/templates/notifications.html:64
 msgid "suggested adding"
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:79
+#: bookwyrm/templates/notifications.html:67
 #, python-format
 msgid " your <a href=\"/import/%(related_id)s\">import</a> completed."
 msgstr ""
 
-#: bookwyrm/templates/notifications.html:111
+#: bookwyrm/templates/notifications.html:99
 msgid "You're all caught up!"
 msgstr ""
 
@@ -966,10 +950,6 @@ msgstr ""
 
 #: bookwyrm/templates/settings/site.html:80
 msgid "Registration closed text:"
-msgstr ""
-
-#: bookwyrm/templates/settings/site.html:86
-msgid "Save Changes"
 msgstr ""
 
 #: bookwyrm/templates/snippets/block_button.html:5
