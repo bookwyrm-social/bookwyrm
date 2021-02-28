@@ -31,8 +31,7 @@ Code contributions are gladly welcomed! If you're not sure where to start, take 
 If you have questions about the project or contributing, you can set up a video call during BookWyrm ["office hours"](https://calendly.com/mouse-reeve/30min).
 
 ### Translation
-Do you speak a language besides English? BookWyrm needs localization! Existing language files can be found in `bookwyrm/locale/`, and you can generate a language file for a language that isn't currently supported by running:
-`./bw-dev makemessages -l <language code>`
+Do you speak a language besides English? BookWyrm needs localization! If you're comfortable using git and want to get into the code, there are [instructions](#workin-with-translations-and-locale-files) on how to create and edit localization files. If you feel more comfortable working in a regular text editor and would prefer not to run the application, get in touch directly and we can figure out a system, like emailing a text file, that works best.
 
 ### Financial Support
 BookWyrm is an ad-free passion project with no intentions of seeking out venture funding or corporate financial relationships. If you want to help keep the project going, you can donate to the [Patreon](https://www.patreon.com/bookwyrm), or make a one time gift via [PayPal](https://paypal.me/oulipo).
@@ -72,7 +71,7 @@ Since the project is still in its early stages, the features are growing every d
     - Private, followers-only, and public privacy levels for posting, shelves, and lists
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation
-   
+
 ### The Tech Stack
 Web backend
  - [Django](https://www.djangoproject.com/) web server
@@ -80,12 +79,12 @@ Web backend
  - [ActivityPub](http://activitypub.rocks/) federation
  - [Celery](http://celeryproject.org/) task queuing
  - [Redis](https://redis.io/) task backend
- 
+
 Front end
  - Django templates
  - [Bulma.io](https://bulma.io/) css framework
  - Vanilla JavaScript, in moderation
- 
+
 Deployment
  - [Docker](https://www.docker.com/) and docker-compose
  - [Gunicorn](https://gunicorn.org/) web runner
@@ -112,6 +111,33 @@ docker-compose up
 ```
 
 Once the build is complete, you can access the instance at `localhost:1333`
+
+### Editing static files
+If you edit the CSS or JavaScript, you will need to run Django's `collectstatic` command in order for your changes to have effect. You can do this by running:
+``` bash
+./bw-dev collectstatic
+```
+
+### Workin with translations and locale files
+Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
+
+The application's language is set by a request header sent by your browser to the application, so to change the language of the application, you can change the default language requested by your browser.
+
+#### Adding a locale
+To start translation into a language which is currently supported, run the django-admin `makemessages` command with the language code for the language you want to add (like `de` for German, or `en-gb` for British English):
+``` bash
+./bw-dev makemessages -l <language code>
+```
+
+#### Editing a locale
+When you have a locale file, open the `django.po` in the directory for the language (for example, if you were adding German, `locale/de/LC_MESSAGES/django.po`. All the the text in the application will be shown in paired strings, with `msgid` as the original text, and `msgstr` as the translation (by default, this is set to an empty string, and will display the original text).
+
+Add you translations to the `msgstr` strings, and when you're ready, compile the locale by running:
+``` bash
+./bw-dev compilemessages
+```
+
+You can add the `-l <language code>` to only compile one language. When you refresh the application, you should see your translations at work.
 
 ## Installing in Production
 
