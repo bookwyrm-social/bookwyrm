@@ -1,34 +1,35 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 {% load humanize %}
 {% block content %}
 <div class="block">
-    <h1 class="title">Import Status</h1>
+    <h1 class="title">{% trans "Import Status" %}</h1>
 
     <p>
-        Import started: {{ job.created_date | naturaltime }}
+        {% trans "Import started:" %} {{ job.created_date | naturaltime }}
     </p>
     {% if job.complete %}
     <p>
-        Import completed: {{ task.date_done | naturaltime }}
+        {% trans "Import completed:" %} {{ task.date_done | naturaltime }}
     </p>
     {% elif task.failed %}
-    <div class="notification is-danger">TASK FAILED</div>
+    <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
     {% endif %}
 </div>
 
 <div class="block">
     {% if not job.complete %}
-    Import still in progress.
+    {% trans "Import still in progress." %}
     <p>
-        (Hit reload to update!)
+        {% trans "(Hit reload to update!)" %}
     </p>
     {% endif %}
 </div>
 
 {% if failed_items %}
 <div class="block">
-    <h2 class="title is-4">Failed to load</h2>
+    <h2 class="title is-4">{% trans "Failed to load" %}</h2>
     {% if not job.retry %}
     <form name="retry" action="/import/{{ job.id }}" method="post">
         {% csrf_token %}
@@ -52,10 +53,10 @@
         <div class="block pt-1 select-all">
             <label class="label">
                 <input type="checkbox" class="checkbox">
-                Select all
+                {% trans "Select all" %}
             </label>
         </div>
-        <button class="button" type="submit">Retry items</button>
+        <button class="button" type="submit">{% trans "Retry items" %}</button>
         {% else %}
         <ul>
             {% for item in failed_items %}
@@ -77,17 +78,17 @@
 {% endif %}
 
 <div class="block">
-    <h2 class="title is-4">Successfully imported</h2>
+    <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
     <table class="table">
         <tr>
             <th>
-                Book
+                {% trans "Book" %}
             </th>
             <th>
-                Title
+                {% trans "Title" %}
             </th>
             <th>
-                Author
+                {% trans "Author" %}
             </th>
             <th>
             </th>
@@ -110,7 +111,7 @@
             <td>
                 {% if item.book %}
                 <span class="icon icon-check">
-                    <span class="is-sr-only">Imported</span>
+                    <span class="is-sr-only">{% trans "Imported" %}</span>
                 </span>
                 {% endif %}
             </td>

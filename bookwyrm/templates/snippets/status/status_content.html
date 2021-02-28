@@ -1,4 +1,5 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 <div class="block">
     {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
     <div>
@@ -38,7 +39,7 @@
                 {% for attachment in status.attachments.all %}
                 <div class="column is-narrow">
                     <figure class="image is-128x128">
-                        <a href="/images/{{ attachment.image }}" target="_blank" aria-label="open image in new window">
+                        <a href="/images/{{ attachment.image }}" target="_blank" aria-label="{% trans 'Open image in new window' %}">
                             <img src="/images/{{ attachment.image }}"{% if attachment.caption %} alt="{{ attachment.caption }}" title="{{ attachment.caption }}"{% endif %}>
                         </a>
                     </figure>

@@ -1,4 +1,5 @@
 {% extends 'user/user_layout.html' %}
+{% load i18n %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -24,7 +25,7 @@
 <section class="block content">
     <form name="create-list" method="post" action="{% url 'lists' %}" class="box hidden" id="create-list">
         <header class="columns">
-            <h3 class="title column">Create list</h3>
+            <h3 class="title column">{% trans "Create list" %}</h3>
             <div class="column is-narrow">
                 {% include 'snippets/toggle/toggle_button.html' with controls_text="create-list" label="close" class="delete" nonbutton=True %}
             </div>

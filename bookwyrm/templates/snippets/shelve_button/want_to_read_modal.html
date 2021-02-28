@@ -1,7 +1,8 @@
 {% extends 'components/modal.html' %}
+{% load i18n %}
 
 {% block modal-title %}
-Want to Read "<em>{{ book.title }}</em>"
+{% blocktrans with book_title=book.title %}Want to Read "<em>{{ book_title }}</em>"{% endblocktrans %}
 {% endblock %}
 
 {% block modal-form-open %}
@@ -16,13 +17,13 @@ Want to Read "<em>{{ book.title }}</em>"
     <div class="column field">
         <label for="post_status_want-{{ uuid }}">
             <input type="checkbox" name="post-status" class="checkbox" id="post_status_want-{{ uuid }}" checked>
-            Post to feed
+            {% trans "Post to feed" %}
         </label>
         {% include 'snippets/privacy_select.html' %}
     </div>
     <div class="column">
         <button class="button is-success" type="submit">
-            <span>Want to read</span>
+            <span>{% trans "Want to read" %}</span>
         </button>
         {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="want-to-read" controls_uid=uuid %}
     </div>

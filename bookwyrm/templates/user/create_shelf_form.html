@@ -1,7 +1,8 @@
 {% extends 'components/inline_form.html' %}
+{% load i18n %}
 
 {% block header %}
-Create New Shelf
+{% trans "Create New Shelf" %}
 {% endblock %}
 
 {% block form %}
@@ -9,7 +10,7 @@ Create New Shelf
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ request.user.id }}">
     <div class="field">
-        <label class="label" for="id_name_create">Name:</label>
+        <label class="label" for="id_name_create">{% trans "Name:" %}</label>
         <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
     </div>
 
@@ -18,7 +19,7 @@ Create New Shelf
             {% include 'snippets/privacy_select.html' %}
         </div>
         <div class="control">
-            <button class="button is-primary" type="submit">Create shelf</button>
+            <button class="button is-primary" type="submit">{% trans "Create shelf" %}</button>
         </div>
     </div>
 </form>
