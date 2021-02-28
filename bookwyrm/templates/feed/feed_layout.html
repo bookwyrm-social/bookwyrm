@@ -10,7 +10,7 @@
         {% if not suggested_books %}
         <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
         {% else %}
-        <seven-minute-tabs>
+        <div class="tab-group">
             <div class="tabs is-small">
                 <ul role="tablist">
                 {% for shelf in suggested_books %}
@@ -24,7 +24,7 @@
                             <ul>
                                 {% for book in shelf.books %}
                                 <li{% if shelf_counter == 1 and forloop.first %} class="is-active"{% endif %}>
-                                    <a href="#book-{{ book.id }}" role="tab" {% if not forloop.first %}tabindex="-1"{% endif %} aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}">
+                                    <a href="#book-{{ book.id }}" id="tab-book-{{ book.id }}" role="tab" aria-label="{{ book.title }}" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}">
                                         {% include 'snippets/book_cover.html' with book=book size="medium" %}
                                     </a>
                                 </li>
@@ -40,7 +40,7 @@
             {% for shelf in suggested_books %}
             {% with shelf_counter=forloop.counter %}
             {% for book in shelf.books %}
-            <div class="suggested-tabs card" role="tabpanel" id="book-{{ book.id }}"{% if shelf_counter != 1 or not forloop.first %} hidden{% endif %}>
+            <div class="suggested-tabs card" role="tabpanel" id="book-{{ book.id }}"{% if shelf_counter != 1 or not forloop.first %} hidden{% endif %} aria-labelledby="tab-book-{{ book.id }}">
                 <div class="card-header">
                     <p class="card-header-title">
                         <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
@@ -61,7 +61,7 @@
             {% endfor %}
             {% endwith %}
             {% endfor %}
-        </seven-minute-tabs>
+        </div>
         {% endif %}
 
         {% if goal %}
