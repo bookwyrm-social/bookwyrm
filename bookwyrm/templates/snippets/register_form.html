@@ -1,6 +1,7 @@
+{% load i18n %}
 {% csrf_token %}
 <div class="field">
-    <label class="label" for="id_localname_register">Username:</label>
+    <label class="label" for="id_localname_register">{% trans "Username:" %}</label>
     <div class="control">
         <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname_register" value="{% if register_form.localname.value %}{{ register_form.localname.value }}{% endif %}">
     </div>
@@ -9,7 +10,7 @@
     {% endfor %}
 </div>
 <div class="field">
-    <label class="label" for="id_email_register">Email address:</label>
+    <label class="label" for="id_email_register">{% trans "Email address:" %}</label>
     <div class="control">
         <input type="email" name="email" maxlength="254" class="input" id="id_email_register" value="{% if register_form.email.value %}{{ register_form.email.value }}{% endif %}">
     {% for error in register_form.email.errors %}
@@ -18,7 +19,7 @@
     </div>
 </div>
 <div class="field">
-    <label class="label" for="id_password_register">Password:</label>
+    <label class="label" for="id_password_register">{% trans "Password:" %}</label>
     <div class="control">
         <input type="password" name="password" maxlength="128" class="input" required="" id="id_password_register">
     {% for error in register_form.password.errors %}
@@ -28,6 +29,6 @@
 </div>
 <div class="field is-grouped">
     <div class="control">
-        <button class="button is-primary" type="submit">Sign Up</button>
+        <button class="button is-primary" type="submit">{% trans "Sign Up" %}</button>
     </div>
 </div>

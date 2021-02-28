@@ -1,39 +1,20 @@
 {% load humanize %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 {% if books|length > 0 %}
 <div class="table-container">
 <table class="table is-striped is-fullwidth">
 
 <tr class="book-preview">
-    <th>
-        Cover
-    </th>
-    <th>
-        Title
-    </th>
-    <th>
-        Author
-    </th>
-    <th>
-        Published
-    </th>
-    <th>
-        Shelved
-    </th>
-    <th>
-        Started
-    </th>
-    <th>
-        Finished
-    </th>
-    <th>
-        External links
-    </th>
-    {% if ratings %}
-    <th>
-        Rating
-    </th>
-    {% endif %}
+    <th>{% trans "Cover" %}</th>
+    <th>{% trans "Title" %}</th>
+    <th>{% trans "Author" %}</th>
+    <th>{% trans "Published" %}</th>
+    <th>{% trans "Shelved" %}</th>
+    <th>{% trans "Started" %}</th>
+    <th>{% trans "Finished" %}</th>
+    <th>{% trans "External links" %}</th>{% if ratings %}
+    <th>{% trans "Rating" %}</th>{% endif %}
 </tr>
 {% for book in books %}
 <tr class="book-preview">
@@ -60,7 +41,7 @@
         {{ read_through.finish_date | naturalday |default_if_none:""}}
     </td>
     <td>
-        <a href="https://openlibrary.org/book/{{ book.openlibrary_key }}" target="_blank">OpenLibrary</a>
+        <a href="https://openlibrary.org/book/{{ book.openlibrary_key }}" target="_blank">{% trans "OpenLibrary" %}</a>
     </td>
     {% if ratings %}
     <td>
@@ -77,13 +58,13 @@
 </table>
 </div>
 {% else %}
-<p>This shelf is empty.</p>
+<p>{% trans "This shelf is empty." %}</p>
 {% if shelf.editable %}
 <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ request.user.id }}">
     <button class="button is-danger is-light" type="submit">
-        Delete shelf
+        {% trans "Delete shelf" %}
     </button>
 </form>
 {% endif %}

@@ -1,16 +1,17 @@
 {% load humanize %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 
 <div class="tabs is-boxed">
     <ul role="tablist">
         <li class="tab-change is-active" data-category="tab-option-{{ book.id }}" role="tab" aria-selected="true" tabindex="0" data-tab="review-{{ book.id }}">
-            <a>Review</a>
+            <a>{% trans "Review" %}</a>
         </li>
         <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="comment-{{ book.id}}">
-            <a>Comment</a>
+            <a>{% trans "Comment" %}</a>
         </li>
         <li class="tab-change" data-category="tab-option-{{ book.id }}" role="tab" tabindex="0" data-tab="quote-{{ book.id }}">
-            <a>Quote</a>
+            <a>{% trans "Quote" %}</a>
         </li>
     </ul>
 </div>

@@ -1,5 +1,6 @@
+{% load i18n %}
 <form name="switch-edition" action="/switch-edition" method="POST">
     {% csrf_token %}
     <input type="hidden" name="edition" value="{{ edition.id }}">
-    <button type="submit" class="button {{ size }}">Switch to this edition</button>
+    <button type="submit" class="button {{ size }}">{% trans "Switch to this edition" %}</button>
 </form>

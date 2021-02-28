@@ -1,13 +1,14 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% block content %}
 
 <header class="block">
-    <h1 class="title">Lists</h1>
+    <h1 class="title">{% trans "Lists" %}</h1>
 </header>
 {% if request.user.is_authenticated and not lists.has_previous %}
 <header class="block columns is-mobile">
     <div class="column">
-        <h2 class="title">Your lists</h2>
+        <h2 class="title">{% trans "Your lists" %}</h2>
     </div>
     <div class="column is-narrow">
         {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" focus="create-list-header" %}
@@ -32,7 +33,7 @@
 
 {% if lists %}
 <section class="block content">
-    <h2 class="title">Recent Lists</h2>
+    <h2 class="title">{% trans "Recent Lists" %}</h2>
     {% include 'lists/list_items.html' with lists=lists %}
 </section>
 <div>

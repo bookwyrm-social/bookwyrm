@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% load humanize %}
 {% load bookwyrm_tags %}
 
@@ -11,22 +12,7 @@
 <div class="block">
     <div class="columns">
         <div class="column is-two-fifths">
-            <div class="media">
-                <div class="media-left">
-                    <a href="{{ user.local_path }}">
-                    {% include 'snippets/avatar.html' with user=user large=True %}
-                    </a>
-                </div>
-                <div class="media-content">
-                    <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
-                    <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
-                    <p>Joined {{ user.created_date | naturaltime }}</p>
-                    <p>
-                        <a href="{{ user.local_path }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-                        <a href="{{ user.local_path }}/following">{{ user.following.count }} following</a>
-                    </p>
-                </div>
-            </div>
+            {% include 'user/user_preview.html' with user=user %}
         </div>
 
         <div class="column box has-background-white-bis content">
@@ -41,7 +27,7 @@
 
     {% if is_self and user.follower_requests.all %}
     <div class="follow-requests">
-        <h2>Follow Requests</h2>
+        <h2>{% trans "Follow Requests" %}</h2>
         {% for requester in user.follower_requests.all %}
             <div class="row shrink">
                 <p>
@@ -59,25 +45,25 @@
     <ul>
         {% url 'user-feed' user|username as url %}
         <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
-            <a href="{{ url }}">Activity</a>
+            <a href="{{ url }}">{% trans "Activity" %}</a>
         </li>
         {% if is_self or user.goal.exists %}
         {% now 'Y' as year %}
         {% url 'user-goal' user|username year as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
-            <a href="{{ url }}">Reading Goal</a>
+            <a href="{{ url }}">{% trans "Reading Goal" %}</a>
         </li>
         {% endif %}
         {% if is_self or user.lists.exists %}
         {% url 'user-lists' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
-            <a href="{{ url }}">Lists</a>
+            <a href="{{ url }}">{% trans "Lists" %}</a>
         </li>
         {% endif %}
         {% if user.shelf_set.exists %}
         {% url 'user-shelves' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
-            <a href="{{ url }}">Shelves</a>
+            <a href="{{ url }}">{% trans "Shelves" %}</a>
         </li>
         {% endif %}
     </ul>
