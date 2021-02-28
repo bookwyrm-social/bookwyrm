@@ -21,7 +21,6 @@ class Login(View):
             return redirect('/')
         # sene user to the login page
         data = {
-            'title': 'Login',
             'login_form': forms.LoginForm(),
             'register_form': forms.RegisterForm(),
         }

@@ -22,7 +22,7 @@
         <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
                 <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
-                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} reading goal{% endblocktrans %}
                 </h2>
             </header>
             <section class="card-content content">
@@ -45,7 +45,13 @@
 
 {% if goal.books %}
 <section class="content">
-    <h2>{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
+    <h2>
+        {% if goal.user == request.user %}
+        {% blocktrans %}Your {{ year }} Books{% endblocktrans %}
+        {% else %}
+        {% blocktrans with username=goal.user.display_name %}{{ username }}'s {{ year }} Books{% endblocktrans %}
+        {% endif %}
+    </h2>
     <div class="columns is-multiline">
         {% for book in goal.books %}
         <div class="column is-narrow">

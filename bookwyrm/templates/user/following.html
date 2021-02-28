@@ -4,11 +4,7 @@
 
 {% block header %}
 <h1 class="title">
-    Users following
-    {% if is_self %}you
-    {% else %}
-    {% include 'snippets/username.html' with user=user %}
-    {% endif %}
+    {% trans "User Profile" %}
 </h1>
 {% endblock %}
 

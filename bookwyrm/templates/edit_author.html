@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load humanize %}
+
+{% block title %}{% trans "Edit Author" %}: {{ author.name }}{% endblock %}
+
 {% block content %}
 <header class="block">
     <h1 class="title level-left">

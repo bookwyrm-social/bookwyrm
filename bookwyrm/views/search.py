@@ -58,7 +58,6 @@ class Search(View):
         book_results = connector_manager.search(
             query, min_confidence=min_confidence)
         data = {
-            'title': 'Search Results',
             'book_results': book_results,
             'user_results': user_results,
             'list_results': list_results,

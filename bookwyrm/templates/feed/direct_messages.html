@@ -3,7 +3,13 @@
 {% block panel %}
 
 <header class="block">
-    <h1 class="title">Direct Messages{% if partner %} with {% include 'snippets/username.html' with user=partner %}{% endif %}</h1>
+    <h1 class="title">
+        {% if partner %}
+        {% blocktrans with username=partner.display_name path=partner.local_path %}Direct Messages with <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}
+        {% else %}
+        {% trans "Direct Messsages" %}
+        {% endif %}
+    </h1>
     {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
 </header>
 

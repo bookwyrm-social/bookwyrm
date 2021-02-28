@@ -17,8 +17,5 @@ class Federation(View):
     def get(self, request):
         ''' edit form '''
         servers = models.FederatedServer.objects.all()
-        data = {
-            'title': 'Federated Servers',
-            'servers': servers
-        }
+        data = {'servers': servers}
         return TemplateResponse(request, 'settings/federation.html', data)

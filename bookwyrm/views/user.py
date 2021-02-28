@@ -79,7 +79,6 @@ class User(View):
         if not object_visible_to_user(request.user, goal):
             goal = None
         data = {
-            'title': user.name,
             'user': user,
             'is_self': is_self,
             'shelves': shelf_preview,
@@ -108,7 +107,6 @@ class Followers(View):
                 user.to_followers_activity(**request.GET))
 
         data = {
-            'title': '%s: followers' % user.name,
             'user': user,
             'is_self': request.user.id == user.id,
             'followers': user.followers.all(),
@@ -133,7 +131,6 @@ class Following(View):
                 user.to_following_activity(**request.GET))
 
         data = {
-            'title': '%s: following' % user.name,
             'user': user,
             'is_self': request.user.id == user.id,
             'following': user.following.all(),
@@ -147,7 +144,6 @@ class EditUser(View):
     def get(self, request):
         ''' edit profile page for a user '''
         data = {
-            'title': 'Edit profile',
             'form': forms.EditUserForm(instance=request.user),
             'user': request.user,
         }

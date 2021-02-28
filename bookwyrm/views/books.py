@@ -82,7 +82,6 @@ class Book(View):
             )
 
         data = {
-            'title': book.title,
             'book': book,
             'reviews': reviews_page,
             'review_count': reviews.count(),
@@ -113,7 +112,6 @@ class EditBook(View):
         if not book.description:
             book.description = book.parent_work.description
         data = {
-            'title': 'Edit Book',
             'book': book,
             'form': forms.EditionForm(instance=book)
         }
@@ -126,7 +124,6 @@ class EditBook(View):
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
         if not form.is_valid():
             data = {
-                'title': 'Edit Book',
                 'book': book,
                 'form': form
             }
@@ -146,7 +143,6 @@ class Editions(View):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
 
         data = {
-            'title': 'Editions of %s' % work.title,
             'editions': work.editions.order_by('-edition_rank').all(),
             'work': work,
         }

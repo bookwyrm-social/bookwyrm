@@ -1,9 +1,10 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
-{% block title %}Updates{% endblock %}
-{% block content %}
 
+{% block title %}{% trans "Updates" %}{% endblock %}
+
+{% block content %}
 <div class="columns">
     {% if user.is_authenticated %}
     <div class="column is-one-third">

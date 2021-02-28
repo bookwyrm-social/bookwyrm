@@ -24,7 +24,6 @@ class Author(View):
         books = models.Work.objects.filter(
             Q(authors=author) | Q(editions__authors=author)).distinct()
         data = {
-            'title': author.name,
             'author': author,
             'books': [b.get_default_edition() for b in books],
         }
@@ -41,7 +40,6 @@ class EditAuthor(View):
         ''' info about a book '''
         author = get_object_or_404(models.Author, id=author_id)
         data = {
-            'title': 'Edit Author',
             'author': author,
             'form': forms.AuthorForm(instance=author)
         }
@@ -54,7 +52,6 @@ class EditAuthor(View):
         form = forms.AuthorForm(request.POST, request.FILES, instance=author)
         if not form.is_valid():
             data = {
-                'title': 'Edit Author',
                 'author': author,
                 'form': form
             }
