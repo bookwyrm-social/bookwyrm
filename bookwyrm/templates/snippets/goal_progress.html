@@ -1,9 +1,10 @@
+{% load i18n %}
 {% load humanize %}
 <p>
     {% if goal.progress_percent >= 100 %}
-        Success!
+        {% trans "Success!" %}
     {% elif goal.progress_percent %}
-        {{ goal.progress_percent }}% complete!
+        {% blocktrans with percent=goal.percent %}{{ percent }}% complete!{% endblocktrans %}
     {% endif %}
     {% if goal.user == request.user %}You've{% else %}{{ goal.user.display_name }} has{% endif %} read {% if request.path != goal.local_path %}<a href="{{ goal.local_path }}">{% endif %}{{ goal.book_count }} of {{ goal.goal | intcomma }} books{% if request.path != goal.local_path %}</a>{% endif %}.
 </p>

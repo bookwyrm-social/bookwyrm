@@ -1,9 +1,10 @@
 {% extends 'user/user_layout.html' %}
+{% load i18n %}
 
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
-        <h1 class="title">{{ year }} Reading Progress</h1>
+        <h1 class="title">{% blocktrans %}{{ year }} Reading Progress{% endblocktrans %}</h1>
     </div>
     {% if is_self and goal %}
     <div class="column is-narrow">
@@ -25,7 +26,7 @@
                 </h2>
             </header>
             <section class="card-content content">
-                <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+                <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
 
                 {% include 'snippets/goal_form.html' with goal=goal year=year %}
             </section>
@@ -34,7 +35,7 @@
     {% endif %}
 
     {% if not goal and user != request.user %}
-    <p>{{ user.display_name }} hasn't set a reading goal for {{ year }}.</p>
+    <p>{% blocktrans with name=user.display_name %}{{ name }} hasn't set a reading goal for {{ year }}.{% endblocktrans %}</p>
     {% endif %}
 
     {% if goal %}

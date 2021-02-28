@@ -1,18 +1,19 @@
 {% extends 'feed/feed_layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 {% block panel %}
 
-<h1 class="title">{{ tab | title }} Timeline</h1>
+<h1 class="title">{% blocktrans with tab_title=tab|title %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
 <div class="tabs">
     <ul>
         <li class="{% if tab == 'home' %}is-active{% endif %}">
-            <a href="/#feed">Home</a>
+            <a href="/#feed">{% trans "Home" %}</a>
         </li>
         <li class="{% if tab == 'local' %}is-active{% endif %}">
-            <a href="/local#feed">Local</a>
+            <a href="/local#feed">{% trans "Local" %}</a>
         </li>
         <li class="{% if tab == 'federated' %}is-active{% endif %}">
-            <a href="/federated#feed">Federated</a>
+            <a href="/federated#feed">{% trans "Federated" %}</a>
         </li>
     </ul>
 </div>
@@ -20,7 +21,7 @@
 {# announcements and system messages #}
 {% if not goal and tab == 'home' %}
 {% now 'Y' as year %}
-<section class="block hidden" aria-title="Announcements" data-hide="hide-{{ year }}-reading-goal">
+<section class="block hidden" aria-title="{% trans 'Announcements' %}" data-hide="hide-{{ year }}-reading-goal">
     {% include 'snippets/goal_card.html' with year=year %}
     <hr>
 </section>
@@ -28,7 +29,7 @@
 
 {# activity feed #}
 {% if not activities %}
-<p>There aren't any activities right now! Try following a user to get started</p>
+<p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
 {% endif %}
 {% for activity in activities %}
 <div class="block">

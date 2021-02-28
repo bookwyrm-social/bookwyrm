@@ -1,4 +1,5 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,8 +34,8 @@
                 </div>
                 <div class="control">
                     <button class="button" type="submit">
-                        <span class="icon icon-search" title="Search">
-                            <span class="is-sr-only">search</span>
+                        <span class="icon icon-search" title="{% trans 'Search' %}">
+                            <span class="is-sr-only">{% trans "Search" %}</span>
                         </span>
                     </button>
                 </div>
@@ -43,8 +44,8 @@
 
         <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main-nav" aria-expanded="false">
             <div class="navbar-item mt-3">
-                <div class="icon icon-dots-three-vertical" title="Main navigation menu">
-                    <span class="is-sr-only">Main navigation menu</span>
+                <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
+                    <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
                 </div>
             </div>
         </div>
@@ -54,13 +55,13 @@
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
             <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                Your shelves
+                {% trans "Your shelves" %}
             </a>
             <a href="/#feed" class="navbar-item">
-                Feed
+                {% trans "Feed" %}
             </a>
             <a href="{% url 'lists' %}" class="navbar-item">
-                Lists
+                {% trans "Lists" %}
             </a>
             {% endif %}
         </div>
@@ -121,8 +122,8 @@
             <div class="navbar-item">
                 <a href="/notifications" class="tags has-addons">
                     <span class="tag is-medium">
-                        <span class="icon icon-bell" title="Notifications">
-                            <span class="is-sr-only">Notifications</span>
+                        <span class="icon icon-bell" title="{% trans 'Notifications' %}">
+                            <span class="is-sr-only">{% trans "Notifications" %}</span>
                         </span>
                     </span>
                     <span class="{% if not request.user|notification_count %}hidden {% endif %}tag is-danger is-medium" data-poll="notifications">
@@ -139,16 +140,16 @@
                             {% csrf_token %}
                             <div class="columns is-variable is-1">
                                 <div class="column">
-                                    <label class="is-sr-only" for="id_localname">Username:</label>
+                                    <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
                                     <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="username">
                                 </div>
                                 <div class="column">
-                                    <label class="is-sr-only" for="id_password">Username:</label>
+                                    <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
                                     <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="password">
                                     <p class="help"><a href="/password-reset">Forgot your password?</a></p>
                                 </div>
                                 <div class="column is-narrow">
-                                    <button class="button is-primary" type="submit">Log in</button>
+                                    <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
                                 </div>
                             </div>
                         </form>
@@ -179,11 +180,11 @@
         <div class="columns">
             <div class="column">
                 <p>
-                    <a href="/about">About this server</a>
+                    <a href="/about">{% trans "About this server" %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>
-                    <a href="mailto:{{ site.admin_email }}">Contact site admin</a>
+                    <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
                 </p>
                 {% endif %}
             </div>

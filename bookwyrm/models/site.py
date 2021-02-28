@@ -20,6 +20,8 @@ class SiteSettings(models.Model):
         default='Contact an administrator to get an invite')
     code_of_conduct = models.TextField(
         default='Add a code of conduct here.')
+    privacy_policy = models.TextField(
+        default='Add a privacy policy here.')
     allow_registration = models.BooleanField(default=True)
     logo = models.ImageField(
         upload_to='logos/', null=True, blank=True
