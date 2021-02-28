@@ -1,190 +1,218 @@
-# A test translation file that just uses the word "beep"
-# Copyright (C) 2021 Mouse Reeve
-# This file is distributed under the same license as the BookWyrm package.
-# Mouse Reeve <mousereeve@riseup.net, 2021.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-27 14:23-0800\n"
-"PO-Revision-Date: 2021-02-27 14:25+PST\n"
-"Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
-"Language-Team: Mouse Reeve <LL@li.org>\n"
-"Language: Beep\n"
+"POT-Creation-Date: 2021-02-27 16:29-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: bookwyrm/models/fields.py:24
+#, python-format
+msgid "%(value)s is not a valid remote_id"
+msgstr ""
+
+#: bookwyrm/models/fields.py:33 bookwyrm/models/fields.py:42
+#, python-format
+msgid "%(value)s is not a valid username"
+msgstr ""
+
+#: bookwyrm/models/fields.py:164
+msgid "username"
+msgstr "Nutzername"
+
+#: bookwyrm/models/fields.py:169
+msgid "A user with that username already exists."
+msgstr ""
+
+#: bookwyrm/settings.py:142
+msgid "English"
+msgstr ""
+
+#: bookwyrm/settings.py:143
+msgid "Beep"
+msgstr ""
 
 #: bookwyrm/templates/author.html:13 bookwyrm/templates/author.html:14
 msgid "Edit Author"
-msgstr "Edit Beep"
+msgstr ""
 
 #: bookwyrm/templates/author.html:29
 msgid "Wikipedia"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/author.html:34
 #, python-format
 msgid "Books by %(name)s"
-msgstr "Beep by %(name)s"
+msgstr ""
 
 #: bookwyrm/templates/book.html:27 bookwyrm/templates/book.html:28
 msgid "Edit Book"
-msgstr "Edit Beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:43
 msgid "Add cover"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:49
 msgid "Add"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:58
 msgid "ISBN:"
-msgstr "ISBN:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:65
 msgid "OCLC Number:"
-msgstr "OCLC Beep:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:72
 msgid "ASIN:"
-msgstr "ASIN:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:84
 msgid "View on OpenLibrary"
-msgstr "View beep OpenBeep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:102
 msgid "Description:"
-msgstr "Beep:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:106 bookwyrm/templates/edit_author.html:74
 msgid "Save"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:138
 msgid "Your reading activity"
-msgstr "Beep reading beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:144
 msgid "You don't have any reading activity for this book."
-msgstr "Beep don't have any reading activity for this beep."
+msgstr ""
 
 #: bookwyrm/templates/book.html:151
 msgid "Create"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:172
 msgid "Tags"
-msgstr "Beep"
+msgstr "Stichworte"
 
 #: bookwyrm/templates/book.html:176
 msgid "Add tag"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/book.html:193
 msgid "Subjects"
-msgstr "Beep"
+msgstr "Themen"
 
 #: bookwyrm/templates/book.html:204
 msgid "Places"
-msgstr "Beep"
+msgstr "Setzt"
 
-#: bookwyrm/templates/book.html:215 bookwyrm/templates/search_results.html:84
+#: bookwyrm/templates/book.html:215 bookwyrm/templates/layout.html:64
+#: bookwyrm/templates/search_results.html:84
 #: bookwyrm/templates/user/user_layout.html:60
 msgid "Lists"
-msgstr "Beep"
+msgstr "Listen"
 
 #: bookwyrm/templates/book.html:244
 msgid "rated it"
-msgstr "rated beep"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:15
 msgid "Decentralized"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:21
 msgid "Friendly"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:27
 msgid "Anti-Corporate"
-msgstr "Anti-Beep"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:42
 #, python-format
 msgid "Join %(name)s"
-msgstr "Beep %(name)s"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:47
 #: bookwyrm/templates/login.html:45
 msgid "This instance is closed"
-msgstr "Beep instance is beep"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:53
 msgid "Your Account"
-msgstr "Your Beep"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:27
 msgid "Metadata"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:28
 msgid "Name:"
-msgstr "Beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:33
 msgid "Bio:"
-msgstr "Beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:38
 msgid "Wikipedia link:"
-msgstr "Beep beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:43
 msgid "Birth date:"
-msgstr "Beep beep:"
+msgstr "Geburtstag"
 
 #: bookwyrm/templates/edit_author.html:48
 msgid "Death date:"
-msgstr "Beep beep:"
+msgstr "Todesdatum"
 
 #: bookwyrm/templates/edit_author.html:54
 msgid "Author Identifiers"
-msgstr "Author Beep"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:55
 msgid "Openlibrary key:"
-msgstr "Beep beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:60
 msgid "Librarything key:"
-msgstr "Beep beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:65
 msgid "Goodreads key:"
-msgstr "Beep beep:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:75
 msgid "Cancel"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/error.html:5
 msgid "Server Error"
-msgstr "Server Beep"
+msgstr ""
 
 #: bookwyrm/templates/error.html:6
 msgid "Something went wrong! Sorry about that."
-msgstr "Something went wrong! Beep about beep."
+msgstr ""
 
 #: bookwyrm/templates/goal.html:6
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr "%(year)s Reading Beep"
+msgstr ""
 
 #: bookwyrm/templates/goal.html:28
 #, python-format
@@ -195,223 +223,231 @@ msgstr ""
 
 #: bookwyrm/templates/import.html:5
 msgid "Import Books"
-msgstr "Import Beep"
+msgstr ""
 
 #: bookwyrm/templates/import.html:10
 msgid "Data source"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/import.html:28
 msgid "Include reviews"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/import.html:33
 msgid "Privacy setting for imported reviews:"
-msgstr "Beep setting for imported beep:"
+msgstr ""
 
 #: bookwyrm/templates/import.html:37
 msgid "Import"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/import.html:42
 msgid "Recent Imports"
-msgstr "Recent Beep"
+msgstr ""
 
 #: bookwyrm/templates/import.html:44
 msgid "No recent imports"
-msgstr "Beep recent beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:6
 msgid "Import Status"
-msgstr "Import Beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:9
 msgid "Import started: "
-msgstr "Beep beep: "
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:13
 msgid "Import completed: "
-msgstr "Beep beep: "
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:16
 msgid "TASK FAILED"
-msgstr "TASK FAILED"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:22
 msgid "Import still in progress."
-msgstr "Beep still in beep."
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:24
 msgid "(Hit reload to update!)"
-msgstr "(Beep reload to beep!)"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:31
 msgid "Failed to load"
-msgstr "Beep to beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:55
 msgid "Select all"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:58
 msgid "Retry items"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:80
 msgid "Successfully imported"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:84
 msgid "Book"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:87
 msgid "Title"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:90
 msgid "Author"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/import_status.html:113
 msgid "Imported"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/invite.html:8 bookwyrm/templates/login.html:40
 msgid "Create an Account"
-msgstr "Create beep Beep"
+msgstr ""
 
 #: bookwyrm/templates/invite.html:17
 msgid "Permission Denied"
-msgstr "Permission Beep"
+msgstr ""
 
 #: bookwyrm/templates/invite.html:18
 msgid "Sorry! This invite code is no longer valid."
-msgstr "Sorry! Beep invite code is no longer beep."
+msgstr ""
 
-#: bookwyrm/templates/layout.html:37
+#: bookwyrm/templates/layout.html:38
 msgid "search"
-msgstr "beep"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:47
+#: bookwyrm/templates/layout.html:48
 msgid "Main navigation menu"
-msgstr "Beep navigation beep"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:125 bookwyrm/templates/notifications.html:6
+#: bookwyrm/templates/layout.html:58
+msgid "Your shelves"
+msgstr "Deine Regale"
+
+#: bookwyrm/templates/layout.html:61
+msgid "Feed"
+msgstr "Aktualisierung"
+
+#: bookwyrm/templates/layout.html:126 bookwyrm/templates/notifications.html:6
 msgid "Notifications"
-msgstr "Beep"
+msgstr "Benachrichtigungen"
 
-#: bookwyrm/templates/layout.html:142 bookwyrm/templates/layout.html:146
+#: bookwyrm/templates/layout.html:143 bookwyrm/templates/layout.html:147
 #: bookwyrm/templates/login.html:14
 msgid "Username:"
-msgstr "Beep:"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:151 bookwyrm/templates/login.html:7
+#: bookwyrm/templates/layout.html:152 bookwyrm/templates/login.html:7
 #: bookwyrm/templates/login.html:30
 msgid "Log in"
-msgstr "Beep beep"
+msgstr ""
 
-#: bookwyrm/templates/layout.html:182
+#: bookwyrm/templates/layout.html:183
 msgid "About this server"
-msgstr "Beep this beep"
+msgstr "Über diesen Server"
 
-#: bookwyrm/templates/layout.html:186
+#: bookwyrm/templates/layout.html:187
 msgid "Contact site admin"
-msgstr "Beep site beep"
+msgstr "Wenden Sie sich an den Site-Administrator"
 
 #: bookwyrm/templates/login.html:20
 msgid "Password:"
-msgstr "Beep:"
+msgstr "Passwort"
 
 #: bookwyrm/templates/login.html:33
 msgid "Forgot your password?"
-msgstr "Beep your beep?"
+msgstr ""
 
 #: bookwyrm/templates/login.html:46
 msgid "Contact an administrator to get an invite"
-msgstr "Beep an administrator to get an beep"
+msgstr ""
 
 #: bookwyrm/templates/login.html:56
 msgid "More about this site"
-msgstr "Beep about this beep"
+msgstr ""
 
 #: bookwyrm/templates/notifications.html:10
 msgid "Delete notifications"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/notifications.html:101
 msgid "You're all caught up!"
-msgstr "Beep're all caught beep!"
+msgstr ""
 
 #: bookwyrm/templates/password_reset_request.html:7
 msgid "Reset Password"
-msgstr "Reset Beep"
+msgstr ""
 
 #: bookwyrm/templates/password_reset_request.html:9
 msgid "A link to reset your password will be sent to your email address"
-msgstr "A link to reset your password will be sent to your email beep"
+msgstr ""
 
 #: bookwyrm/templates/password_reset_request.html:13
 msgid "Email address:"
-msgstr "Beep beep:"
+msgstr ""
 
 #: bookwyrm/templates/password_reset_request.html:20
 msgid "Reset password"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:10
 msgid "Matching Books"
-msgstr "Matching Beep"
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:13
 #, python-format
 msgid "No books found for \"%(query)s\""
-msgstr "Beep books found for \"%(query)s\""
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:29
 msgid "Didn't find what you were looking for?"
-msgstr "Beep't find what you were looking beep?"
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:52
 msgid "Import book"
-msgstr "Beep beep"
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:69
 msgid "Matching Users"
-msgstr "Matching Beep"
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:71
 #, python-format
 msgid "No users found for \"%(query)s\""
-msgstr "Beep users found for \"%(query)s\""
+msgstr ""
 
 #: bookwyrm/templates/search_results.html:86
 #, python-format
 msgid "No lists found for \"%(query)s\""
-msgstr "Beep lists found for \"%(query)s\""
+msgstr ""
 
 #: bookwyrm/templates/tag.html:6
 #, python-format
 msgid "Books tagged \"%(tag.name)s\""
-msgstr "Beep tagged \"%(tag.name)s\""
+msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:30
 msgid "Follow Requests"
-msgstr "Follow Beep"
+msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:48
 msgid "Activity"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:54
 msgid "Reading Goal"
-msgstr "Reading Beep"
+msgstr ""
 
 #: bookwyrm/templates/user/user_layout.html:66
 msgid "Shelves"
-msgstr "Beep"
+msgstr ""
 
 #: bookwyrm/templates/user/user_preview.html:13
 #, python-format
 msgid "Joined %(date)s"
-msgstr "Beep %(date)s"
+msgstr ""

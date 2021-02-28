@@ -91,7 +91,10 @@ case "$CMD" in
         execweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        django-admin makemessages --extension html --ignore=venv3 --local=$@
+        django-admin makemessages --ignore=venv3 -l $@
+        ;;
+    compilemessages)
+        django-admin compilemessages --ignore venv3
         ;;
     build)
         docker-compose build
