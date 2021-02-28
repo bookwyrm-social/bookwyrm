@@ -3,7 +3,7 @@ import re
 from urllib.parse import urlparse
 
 from django.apps import apps
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -207,6 +207,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
         # an id needs to be set before we can proceed with related models
         super().save(*args, **kwargs)
+
+        # make users editors by default
+        self.groups.add(Group.objects.get(name='editor'))
 
         # create keys and shelves for new local users
         self.key_pair = KeyPair.objects.create(
