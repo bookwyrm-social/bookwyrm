@@ -42,32 +42,41 @@
                             {% include 'snippets/avatar.html' with user=notification.related_user %}
                             {% include 'snippets/username.html' with user=notification.related_user %}
                             {% if notification.notification_type == 'FAVORITE' %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
                                 favorited your
-                                <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                <a href="{{ related_path }}">{{ preview_name }}</a>
+                                {% endblocktrans %}
 
                             {% elif notification.notification_type == 'MENTION' %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
                                 mentioned you in a
-                                <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                <a href="{{ related_path }}">{{ preview_name }}</a>
+                                {% endblocktrans %}
 
                             {% elif notification.notification_type == 'REPLY' %}
-                                <a href="{{ related_status.local_path }}">replied</a>
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path parent_path=related_status.reply_parent.local_path %}
+                                <a href="{{ related_path }}">replied</a>
                                 to your
-                                <a href="{{ related_status.reply_parent.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                <a href="{{ parent_path }}">{{ preview_name }}</a>
+                                {% endblocktrans %}
+
                             {% elif notification.notification_type == 'FOLLOW' %}
-                                followed you
+                                {% trans "followed you" %}
                                 {% include 'snippets/follow_button.html' with user=notification.related_user %}
                             {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-                                sent you a follow request
+                                {% trans "sent you a follow request" %}
                                 <div class="row shrink">
                                     {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
                                 </div>
                             {% elif notification.notification_type == 'BOOST' %}
-                                boosted your <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
+                                boosted your <a href="{{ related_path }}">{{ preview_name }}</a>
+                                {% endblocktrans %}
                             {% elif notification.notification_type == 'ADD' %}
-                            {% if notification.related_list_item.approved %}added{% else %}suggested adding{% endif %} {% include 'snippets/book_titleby.html' with book=notification.related_list_item.book %} to your list "<a href="{{ notification.related_list_item.book_list.local_path }}{% if not notification.related_list_item.approved %}/curate{% endif %}">{{ notification.related_list_item.book_list.name }}</a>"
+                            {% if notification.related_list_item.approved %}{% trans "added" %}{% else %}{% trans "suggested adding" %}{% endif %} {% include 'snippets/book_titleby.html' with book=notification.related_list_item.book %} to your list "<a href="{{ notification.related_list_item.book_list.local_path }}{% if not notification.related_list_item.approved %}/curate{% endif %}">{{ notification.related_list_item.book_list.name }}</a>"
                             {% endif %}
                         {% elif notification.related_import %}
-                            your <a href="/import/{{ notification.related_import.id }}">import</a> completed.
+                            {% blocktrans with related_id=notification.related_import.id %} your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
                         {% endif %}
                     </p>
                 </div>

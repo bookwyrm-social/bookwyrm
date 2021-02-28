@@ -32,7 +32,7 @@ If you have questions about the project or contributing, you can set up a video 
 
 ### Translation
 Do you speak a language besides English? BookWyrm needs localization! Existing language files can be found in `bookwyrm/locale/`, and you can generate a language file for a language that isn't currently supported by running:
-`./bw-dev makemessages <language code>`
+`./bw-dev makemessages -l <language code>`
 
 ### Financial Support
 BookWyrm is an ad-free passion project with no intentions of seeking out venture funding or corporate financial relationships. If you want to help keep the project going, you can donate to the [Patreon](https://www.patreon.com/bookwyrm), or make a one time gift via [PayPal](https://paypal.me/oulipo).

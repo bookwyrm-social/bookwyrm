@@ -1,8 +1,9 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% block content %}
 {% with book_results|first as local_results %}
 <div class="block">
-    <h1 class="title">Search Results for "{{ query }}"</h1>
+    <h1 class="title">{% blocktrans %}Search Results for "{{ query }}"{% endblocktrans %}</h1>
 </div>
 
 <div class="block columns">

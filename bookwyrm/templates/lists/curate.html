@@ -1,17 +1,18 @@
 {% extends 'lists/list_layout.html' %}
+{% load i18n %}
 {% block panel %}
 
 <section class="content block">
-    <h2>Pending Books</h2>
-    <p><a href="{% url 'list' list.id %}">Go to list</a></p>
+    <h2>{% trans "Pending Books" %}</h2>
+    <p><a href="{% url 'list' list.id %}">{% trans "Go to list" %}</a></p>
     {% if not pending.exists %}
-    <p>You're all set!</p>
+    <p>{% trans "You're all set!" %}</p>
     {% else %}
     <table class="table is-striped">
         <tr>
             <th></th>
-            <th>Book</th>
-            <th>Suggested by</th>
+            <th>{% trans "Book" %}</th>
+            <th>{% trans "Suggested by" %}</th>
             <th></th>
         </tr>
         {% for item in pending %}
@@ -31,13 +32,13 @@
                         {% csrf_token %}
                         <input type="hidden" name="item" value="{{ item.id }}">
                         <input type="hidden" name="approved" value="true">
-                        <button class="button">Approve</button>
+                        <button class="button">{% trans "Approve" %}</button>
                     </form>
                     <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="item" value="{{ item.id }}">
                         <input type="hidden" name="approved" value="false">
-                        <button class="button is-danger is-light">Discard</button>
+                        <button class="button is-danger is-light">{% trans "Discard" %}</button>
                     </div>
                 </form>
             </td>

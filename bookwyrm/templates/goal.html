@@ -1,4 +1,5 @@
 {% extends 'user/user_layout.html' %}
+{% load i18n %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -34,7 +35,7 @@
     {% endif %}
 
     {% if not goal and user != request.user %}
-    <p>{{ user.display_name }} hasn't set a reading goal for {{ year }}.</p>
+    <p>{% blocktrans with name=user.display_name %}{{ name }} hasn't set a reading goal for {{ year }}.{% endblocktrans %}</p>
     {% endif %}
 
     {% if goal %}

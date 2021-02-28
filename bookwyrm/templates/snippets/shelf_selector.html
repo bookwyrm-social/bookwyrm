@@ -1,6 +1,7 @@
 {% extends 'components/dropdown.html' %}
+{% load i18n %}
 {% block dropdown-trigger %}
-<span>Change shelf</span>
+<span>{% trans "Change shelf" %}</span>
 <span class="icon icon-arrow-down" aria-hidden="true"></span>
 {% endblock %}
 
@@ -23,7 +24,7 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ current.id }}">
-        <button class="button is-fullwidth is-small is-danger is-light" type="submit">Unshelve</button>
+        <button class="button is-fullwidth is-small is-danger is-light" type="submit">{% trans "Unshelve" %}</button>
     </form>
 </li>
 {% endblock %}

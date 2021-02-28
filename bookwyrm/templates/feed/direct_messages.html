@@ -1,9 +1,10 @@
 {% extends 'feed/feed_layout.html' %}
+{% load i18n %}
 {% block panel %}
 
 <header class="block">
     <h1 class="title">Direct Messages{% if partner %} with {% include 'snippets/username.html' with user=partner %}{% endif %}</h1>
-    {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> All messages</a></p>{% endif %}
+    {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
 </header>
 
 <div class="box">
@@ -12,7 +13,7 @@
 
 <section class="block">
     {% if not activities %}
-    <p>You have no messages right now.</p>
+    <p>{% trans "You have no messages right now." %}</p>
     {% endif %}
     {% for activity in activities %}
     <div class="block">
