@@ -7,11 +7,11 @@
     <h1 class="title">{% trans "Import Status" %}</h1>
 
     <p>
-        {% trans "Import started: " %}{{ job.created_date | naturaltime }}
+        {% trans "Import started:" %} {{ job.created_date | naturaltime }}
     </p>
     {% if job.complete %}
     <p>
-        {% trans "Import completed: " %}{{ task.date_done | naturaltime }}
+        {% trans "Import completed:" %} {{ task.date_done | naturaltime }}
     </p>
     {% elif task.failed %}
     <div class="notification is-danger">{% trans "TASK FAILED" %}</div>

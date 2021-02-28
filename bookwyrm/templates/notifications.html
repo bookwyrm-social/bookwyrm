@@ -42,23 +42,13 @@
                             {% include 'snippets/avatar.html' with user=notification.related_user %}
                             {% include 'snippets/username.html' with user=notification.related_user %}
                             {% if notification.notification_type == 'FAVORITE' %}
-                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
-                                favorited your
-                                <a href="{{ related_path }}">{{ preview_name }}</a>
-                                {% endblocktrans %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">{{ preview_name }}</a>{% endblocktrans %}
 
                             {% elif notification.notification_type == 'MENTION' %}
-                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
-                                mentioned you in a
-                                <a href="{{ related_path }}">{{ preview_name }}</a>
-                                {% endblocktrans %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}mentioned you in a <a href="{{ related_path }}">{{ preview_name }}</a>{% endblocktrans %}
 
                             {% elif notification.notification_type == 'REPLY' %}
-                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path parent_path=related_status.reply_parent.local_path %}
-                                <a href="{{ related_path }}">replied</a>
-                                to your
-                                <a href="{{ parent_path }}">{{ preview_name }}</a>
-                                {% endblocktrans %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path parent_path=related_status.reply_parent.local_path %}<a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">{{ preview_name }}</a>{% endblocktrans %}
 
                             {% elif notification.notification_type == 'FOLLOW' %}
                                 {% trans "followed you" %}
@@ -69,9 +59,7 @@
                                     {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
                                 </div>
                             {% elif notification.notification_type == 'BOOST' %}
-                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}
-                                boosted your <a href="{{ related_path }}">{{ preview_name }}</a>
-                                {% endblocktrans %}
+                                {% blocktrans with preview_name=related_status|status_preview_name|safe related_path=related_status.local_path %}boosted your <a href="{{ related_path }}">{{ preview_name }}</a>{% endblocktrans %}
                             {% elif notification.notification_type == 'ADD' %}
                             {% if notification.related_list_item.approved %}{% trans "added" %}{% else %}{% trans "suggested adding" %}{% endif %} {% include 'snippets/book_titleby.html' with book=notification.related_list_item.book %} to your list "<a href="{{ notification.related_list_item.book_list.local_path }}{% if not notification.related_list_item.approved %}/curate{% endif %}">{{ notification.related_list_item.book_list.name }}</a>"
                             {% endif %}
