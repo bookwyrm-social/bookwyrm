@@ -129,6 +129,22 @@ class Connector(AbstractConnector):
         )
 
 
+    def parse_isbn_search_data(self, data):
+        return list(data.values())
+
+    def format_isbn_search_result(self, search_result):
+        # build the remote id from the openlibrary key
+        key = self.books_url + search_result['key']
+        authors = search_result.get('authors') or [{'name': 'Unknown'}]
+        author_names = [ author.get('name') for author in authors]
+        return SearchResult(
+            title=search_result.get('title'),
+            key=key,
+            author=', '.join(author_names),
+            connector=self,
+            year=search_result.get('publish_date'),
+        )
+
     def load_edition_data(self, olkey):
         ''' query openlibrary for editions of a work '''
         url = '%s/works/%s/editions' % (self.books_url, olkey)

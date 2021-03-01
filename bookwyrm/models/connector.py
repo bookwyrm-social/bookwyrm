@@ -22,6 +22,7 @@ class Connector(BookWyrmModel):
     books_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True, blank=True)
+    isbn_search_url = models.CharField(max_length=255, null=True, blank=True)
 
     politeness_delay = models.IntegerField(null=True, blank=True) #seconds
     max_query_count = models.IntegerField(null=True, blank=True)
