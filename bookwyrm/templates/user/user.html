@@ -1,15 +1,18 @@
 {% extends 'user/user_layout.html' %}
+{% load i18n %}
+
+{% block title %}{{ user.name }}{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
-        <h1 class="title">User profile</h1>
+        <h1 class="title">{% trans "User Profile" %}</h1>
     </div>
     {% if is_self %}
     <div class="column is-narrow">
         <a href="/preferences/profile">
             <span class="icon icon-pencil" title="Edit profile">
-                <span class="is-sr-only">Edit profile</span>
+                <span class="is-sr-only">{% trans "Edit profile" %}</span>
             </span>
         </a>
     </div>
@@ -20,12 +23,12 @@
 {% block panel %}
 {% if user.bookwyrm_user %}
 <div class="block">
-    <h2 class="title">Shelves</h2>
+    <h2 class="title">{% trans "Shelves" %}</h2>
     <div class="columns">
         {% for shelf in shelves %}
         <div class="column is-narrow">
             <h3>{{ shelf.name }}
-                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.local_path }}">See all {{ shelf.size }}</a>)</small>{% endif %}</h3>
+                {% if shelf.size > 3 %}<small>(<a href="{{ shelf.local_path }}">{% blocktrans with size=shelf.size %}See all {{ size }}{% endblocktrans %}</a>)</small>{% endif %}</h3>
             <div class="is-mobile field is-grouped">
             {% for book in shelf.books %}
             <div class="control">
@@ -38,7 +41,7 @@
         </div>
         {% endfor %}
     </div>
-    <small><a href="{{ user.local_path }}/shelves">See all {{ shelf_count }} shelves</a></small>
+    <small><a href="{{ user.local_path }}/shelves">{% blocktrans %}See all {{ shelf_count }} shelves{% endblocktrans %}</a></small>
 </div>
 {% endif %}
 
@@ -49,16 +52,17 @@
 </div>
 {% elif user == request.user %}
 <div class="block">
-    <h2 class="title is-4"><a href="{{ user.local_path }}/goal/{% now 'Y' %}">Set a reading goal for {% now 'Y' %}</a></h2>
+    {% now 'Y' as year %}
+    <h2 class="title is-4"><a href="{{ user.local_path }}/goal/{{ year }}">{% blocktrans %}Set a reading goal for {{ year }}{% endblocktrans %}</a></h2>
 </div>
 {% endif %}
 
 <div>
     <div class="columns is-mobile">
-        <h2 class="title column">User Activity</h2>
+        <h2 class="title column">{% trans "User Activity" %}</h2>
         <div class="column is-narrow">
             <a class="icon icon-rss" target="_blank" href="{{ user.local_path }}/rss">
-                <span class="is-sr-only">RSS feed</span>
+                <span class="is-sr-only">{% trans "RSS feed" %}</span>
             </a>
         </div>
     </div>
@@ -69,7 +73,7 @@
     {% endfor %}
     {% if not activities %}
     <div class="block">
-        <p>No activities yet!</a>
+        <p>{% trans "No activities yet!" %}</a>
     </div>
     {% endif %}
 

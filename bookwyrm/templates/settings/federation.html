@@ -1,13 +1,15 @@
 {% extends 'settings/admin_layout.html' %}
-{% block header %}Federated Servers{% endblock %}
+{% load i18n %}
+
+{% block header %}{% trans "Federated Servers" %}{% endblock %}
 
 {% block panel %}
 
 <table class="table is-striped">
     <tr>
-        <th>Server name</th>
-        <th>Software</th>
-        <th>Status</th>
+        <th>{% trans "Server name" %}</th>
+        <th>{% trans "Software" %}</th>
+        <th>{% trans "Status" %}</th>
     </tr>
     {% for server in servers %}
     <tr>

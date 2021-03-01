@@ -1,19 +1,16 @@
 {% extends 'user/user_layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
 
 {% block header %}
 <h1 class="title">
-    Users following
-    {% if is_self %}you
-    {% else %}
-    {% include 'snippets/username.html' with user=user %}
-    {% endif %}
+    {% trans "User Profile" %}
 </h1>
 {% endblock %}
 
 {% block panel %}
 <div class="block">
-    <h2 class="title">Following</h2>
+    <h2 class="title">{% trans "Following" %}</h2>
     {% for follower in user.following.all %}
     <div class="block columns">
         <div class="column">
@@ -26,7 +23,7 @@
     </div>
     {% endfor %}
     {% if not following.count %}
-    <div>{{ user|username }} isn't following any users</div>
+    <div>{% blocktrans with username=user|username %}{{ username }} isn't following any users{% endblocktrans %}</div>
     {% endif %}
 </div>
 {% endblock %}

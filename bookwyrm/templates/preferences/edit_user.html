@@ -1,6 +1,10 @@
 {% extends 'preferences/preferences_layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit Profile" %}{% endblock %}
+
 {% block header %}
-Edit Profile
+{% trans "Edit Profile" %}
 {% endblock %}
 
 {% block panel %}
@@ -10,28 +14,28 @@ Edit Profile
 <form name="edit-profile" action="{% url 'prefs-profile' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="block">
-        <label class="label" for="id_avatar">Avatar:</label>
+        <label class="label" for="id_avatar">{% trans "Avatar:" %}</label>
         {{ form.avatar }}
         {% for error in form.avatar.errors %}
         <p class="help is-danger">{{ error | escape }}</p>
         {% endfor %}
     </div>
     <div class="block">
-        <label class="label" for="id_name">Display name:</label>
+        <label class="label" for="id_name">{% trans "Display name:" %}</label>
         {{ form.name }}
         {% for error in form.name.errors %}
         <p class="help is-danger">{{ error | escape }}</p>
         {% endfor %}
     </div>
     <div class="block">
-        <label class="label" for="id_summary">Summary:</label>
+        <label class="label" for="id_summary">{% trans "Summary:" %}</label>
         {{ form.summary }}
         {% for error in form.summary.errors %}
         <p class="help is-danger">{{ error | escape }}</p>
         {% endfor %}
     </div>
     <div class="block">
-        <label class="label" for="id_email">Email address:</label>
+        <label class="label" for="id_email">{% trans "Email address:" %}</label>
         {{ form.email }}
         {% for error in form.email.errors %}
         <p class="help is-danger">{{ error | escape }}</p>
@@ -39,10 +43,10 @@ Edit Profile
     </div>
     <div class="block">
         <label class="checkbox label" for="id_manually_approves_followers">
-            Manually approve followers:
+            {% trans "Manually approve followers:" %}
             {{ form.manually_approves_followers }}
         </label>
     </div>
-    <button class="button is-primary" type="submit">Save</button>
+    <button class="button is-primary" type="submit">{% trans "Save" %}</button>
 </form>
 {% endblock %}

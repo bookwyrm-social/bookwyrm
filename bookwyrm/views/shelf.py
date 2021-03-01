@@ -53,7 +53,6 @@ class Shelf(View):
         ).order_by('-updated_date').all()
 
         data = {
-            'title': '%s\'s %s shelf' % (user.display_name, shelf.name),
             'user': user,
             'is_self': is_self,
             'shelves': shelves.all(),

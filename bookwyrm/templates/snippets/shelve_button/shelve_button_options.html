@@ -1,16 +1,20 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 {% for shelf in shelves %}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
 {% if dropdown %}<li role="menuitem">{% endif %}
     <div class="{% if dropdown %}dropdown-item pt-0 pb-0{% elif active_shelf.shelf.identifier|next_shelf != shelf.identifier %}hidden{% endif %}">
     {% if shelf.identifier == 'reading' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text="Start reading" controls_text="start-reading" controls_uid=button_uuid focus="modal-title-start-reading" disabled=is_current %}
+        {% trans "Start reading" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start-reading" controls_uid=button_uuid focus="modal-title-start-reading" disabled=is_current %}
     {% endif %}{% elif shelf.identifier == 'read' and active_shelf.shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
-    <button type="button" class="button {{ class }}" disabled><span>Read</span>
+    <button type="button" class="button {{ class }}" disabled><span>{% trans "Read" %}</span>
     {% endif %}{% elif shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text="Finish reading" controls_text="finish-reading" controls_uid=button_uuid focus="modal-title-finish-reading" disabled=is_current %}
+        {% trans "Finish reading" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="finish-reading" controls_uid=button_uuid focus="modal-title-finish-reading" disabled=is_current %}
     {% endif %}{% elif shelf.identifier == 'to-read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
-        {% include 'snippets/toggle/toggle_button.html' with class=class text="Want to read" controls_text="want-to-read" controls_uid=button_uuid focus="modal-title-want-to-read" disabled=is_current %}
+        {% trans "Want to read" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="want-to-read" controls_uid=button_uuid focus="modal-title-want-to-read" disabled=is_current %}
     {% endif %}{% elif shelf.editable %}
         <form name="shelve" action="/shelve/" method="post">
             {% csrf_token %}

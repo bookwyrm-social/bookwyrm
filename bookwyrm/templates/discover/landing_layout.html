@@ -1,14 +1,35 @@
 {% extends 'layout.html' %}
-{% load humanize %}
+{% load i18n %}
 {% load bookwyrm_tags %}
-{% block content %}
 
+{% block title %}{% trans "Welcome" %}{% endblock %}
+
+{% block content %}
 <header class="block has-text-centered">
     <h1 class="title">{{ site.name }}</h1>
     <h2 class="subtitle">{{ site.instance_tagline }}</h2>
 </header>
 
-{% include 'discover/icons.html' %}
+<section class="level is-mobile">
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-paperplane"></span></p>
+            <p class="heading">{% trans "Decentralized" %}</p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-heart"></span></p>
+            <p class="heading">{% trans "Friendly" %}</p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-banknote"></span></p>
+            <p class="heading">{% trans "Anti-Corporate" %}</p>
+        </div>
+    </div>
+</section>
 
 <section class="tile is-ancestor">
     <div class="tile is-7 is-parent">
@@ -20,37 +41,22 @@
         {% if not request.user.is_authenticated %}
         <div class="tile is-child box has-background-primary-light content">
             {% if site.allow_registration %}
-            <h2 class="title">Join {{ site.name }}</h2>
+            <h2 class="title">{% blocktrans with name=site.name %}Join {{ name }}{% endblocktrans %}</h2>
             <form name="register" method="post" action="/register">
                 {% include 'snippets/register_form.html' %}
             </form>
             {% else %}
-            <h2 class="title">This instance is closed</h2>
+            <h2 class="title">{% trans "This instance is closed" %}</h2>
             <p>{{ site.registration_closed_text | safe}}</p>
             {% endif %}
         </div>
         {% else %}
         <div class="tile is-child box has-background-white-bis">
-            <h2 class="title is-4">Your Account</h2>
-            <div class="media block">
-                <div class="media-left">
-                    <a href="{{ user.local_path }}">
-                    {% include 'snippets/avatar.html' with user=user large=True %}
-                    </a>
-                </div>
-                <div class="media-content">
-                    <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
-                    <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
-                    <p>Joined {{ user.created_date | naturaltime }}</p>
-                    <p>
-                        <a href="{{ user.local_path }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-                        <a href="{{ user.local_path }}/following">{{ user.following.count }} following</a>
-                    </p>
-                </div>
-            </div>
+            <h2 class="title is-4">{% trans "Your Account" %}</h2>
+            {% include 'user/user_preview.html' with user=request.user %}
             <div class="box content">
-                {% if user.summary %}
-                {{ user.summary | to_markdown | safe }}
+                {% if request.user.summary %}
+                {{ request.user.summary | to_markdown | safe }}
                 {% endif %}
             </div>
         </div>

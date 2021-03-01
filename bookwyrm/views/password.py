@@ -19,7 +19,6 @@ class PasswordResetRequest(View):
         return TemplateResponse(
             request,
             'password_reset_request.html',
-            {'title': 'Reset Password'}
         )
 
     def post(self, request):
@@ -53,11 +52,7 @@ class PasswordReset(View):
         except models.PasswordReset.DoesNotExist:
             raise PermissionDenied
 
-        return TemplateResponse(
-            request,
-            'password_reset.html',
-            {'title': 'Reset Password', 'code': reset_code.code}
-        )
+        return TemplateResponse(request, 'password_reset.html')
 
     def post(self, request, code):
         ''' allow a user to change their password through an emailed token '''
@@ -90,10 +85,7 @@ class ChangePassword(View):
     ''' change password as logged in user '''
     def get(self, request):
         ''' change password page '''
-        data = {
-            'title': 'Change Password',
-            'user': request.user,
-        }
+        data = {'user': request.user}
         return TemplateResponse(
             request, 'preferences/change_password.html', data)
 

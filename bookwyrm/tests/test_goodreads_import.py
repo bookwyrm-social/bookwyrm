@@ -7,16 +7,19 @@ from unittest.mock import patch
 from django.test import TestCase
 import responses
 
-from bookwyrm import goodreads_import, models
+from bookwyrm import models, importer
+from bookwyrm.goodreads_import import GoodreadsImporter
+from bookwyrm import importer
 from bookwyrm.settings import DOMAIN
 
 class GoodreadsImport(TestCase):
     ''' importing from goodreads csv '''
     def setUp(self):
+        self.importer = GoodreadsImporter()
         ''' use a test csv '''
         datafile = pathlib.Path(__file__).parent.joinpath(
             'data/goodreads.csv')
-        self.csv = open(datafile, 'r')
+        self.csv = open(datafile, 'r', encoding=self.importer.encoding)
         self.user = models.User.objects.create_user(
             'mouse', 'mouse@mouse.mouse', 'password', local=True)
 
@@ -41,7 +44,7 @@ class GoodreadsImport(TestCase):
 
     def test_create_job(self):
         ''' creates the import job entry and checks csv '''
-        import_job = goodreads_import.create_job(
+        import_job = self.importer.create_job(
             self.user, self.csv, False, 'public')
         self.assertEqual(import_job.user, self.user)
         self.assertEqual(import_job.include_reviews, False)
@@ -59,13 +62,13 @@ class GoodreadsImport(TestCase):
 
     def test_create_retry_job(self):
         ''' trying again with items that didn't import '''
-        import_job = goodreads_import.create_job(
+        import_job = self.importer.create_job(
             self.user, self.csv, False, 'unlisted')
         import_items = models.ImportItem.objects.filter(
             job=import_job
             ).all()[:2]
 
-        retry = goodreads_import.create_retry_job(
+        retry = self.importer.create_retry_job(
             self.user, import_job, import_items)
         self.assertNotEqual(import_job, retry)
         self.assertEqual(retry.user, self.user)
@@ -82,13 +85,13 @@ class GoodreadsImport(TestCase):
 
     def test_start_import(self):
         ''' begin loading books '''
-        import_job = goodreads_import.create_job(
+        import_job = self.importer.create_job(
             self.user, self.csv, False, 'unlisted')
         MockTask = namedtuple('Task', ('id'))
         mock_task = MockTask(7)
-        with patch('bookwyrm.goodreads_import.import_data.delay') as start:
+        with patch('bookwyrm.importer.import_data.delay') as start:
             start.return_value = mock_task
-            goodreads_import.start_import(import_job)
+            self.importer.start_import(import_job)
         import_job.refresh_from_db()
         self.assertEqual(import_job.task_id, '7')
 
@@ -96,7 +99,7 @@ class GoodreadsImport(TestCase):
     @responses.activate
     def test_import_data(self):
         ''' resolve entry '''
-        import_job = goodreads_import.create_job(
+        import_job = self.importer.create_job(
             self.user, self.csv, False, 'unlisted')
         book = models.Edition.objects.create(title='Test Book')
 
@@ -104,8 +107,8 @@ class GoodreadsImport(TestCase):
                 'bookwyrm.models.import_job.ImportItem.get_book_from_isbn'
                 ) as resolve:
             resolve.return_value = book
-            with patch('bookwyrm.goodreads_import.handle_imported_book'):
-                goodreads_import.import_data(import_job.id)
+            with patch('bookwyrm.importer.handle_imported_book'):
+                importer.import_data(self.importer.service, import_job.id)
 
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         self.assertEqual(import_item.book.id, book.id)
@@ -120,13 +123,14 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            goodreads_import.handle_imported_book(
-                self.user, import_item, False, 'public')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -153,13 +157,14 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            goodreads_import.handle_imported_book(
-                self.user, import_item, False, 'public')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -182,15 +187,16 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
+            entry = self.importer.parse_fields(entry)
             import_item = models.ImportItem.objects.create(
                 job_id=import_job.id, index=index, data=entry, book=self.book)
             break
 
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            goodreads_import.handle_imported_book(
-                self.user, import_item, False, 'public')
-            goodreads_import.handle_imported_book(
-                self.user, import_item, False, 'public')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, False, 'public')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, False, 'public')
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -212,12 +218,13 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         entry = list(csv.DictReader(csv_file))[2]
+        entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(
             job_id=import_job.id, index=0, data=entry, book=self.book)
 
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            goodreads_import.handle_imported_book(
-                self.user, import_item, True, 'unlisted')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, True, 'unlisted')
         review = models.Review.objects.get(book=self.book, user=self.user)
         self.assertEqual(review.content, 'mixed feelings')
         self.assertEqual(review.rating, 2)
@@ -233,12 +240,13 @@ class GoodreadsImport(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath('data/goodreads.csv')
         csv_file = open(datafile, 'r')
         entry = list(csv.DictReader(csv_file))[2]
+        entry = self.importer.parse_fields(entry)
         import_item = models.ImportItem.objects.create(
             job_id=import_job.id, index=0, data=entry, book=self.book)
 
         with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
-            goodreads_import.handle_imported_book(
-                self.user, import_item, False, 'unlisted')
+            importer.handle_imported_book(
+                self.importer.service, self.user, import_item, False, 'unlisted')
         self.assertFalse(models.Review.objects.filter(
             book=self.book, user=self.user
         ).exists())

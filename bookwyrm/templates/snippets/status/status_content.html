@@ -1,4 +1,5 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 <div class="block">
     {% if status.status_type == 'Review' %}
     <div>
@@ -12,13 +13,15 @@
     {% if status.content_warning %}
     <div>
         <p>{{ status.content_warning }}</p>
-        {% include 'snippets/toggle/open_button.html' with text="show more" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+        {% trans "Show more" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
     </div>
     {% endif %}
 
     <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
         {% if status.content_warning %}
-        {% include 'snippets/toggle/close_button.html' with text="show less" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+        {% trans "Show less" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
         {% endif %}
 
         {% if status.quote %}
@@ -38,7 +41,7 @@
                 {% for attachment in status.attachments.all %}
                 <div class="column is-narrow">
                     <figure class="image is-128x128">
-                        <a href="/images/{{ attachment.image }}" target="_blank" aria-label="open image in new window">
+                        <a href="/images/{{ attachment.image }}" target="_blank" aria-label="{% trans 'Open image in new window' %}">
                             <img src="/images/{{ attachment.image }}"{% if attachment.caption %} alt="{{ attachment.caption }}" title="{{ attachment.caption }}"{% endif %}>
                         </a>
                     </figure>

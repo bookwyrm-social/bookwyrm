@@ -1,18 +1,19 @@
+{% load i18n %}
 {% if item.privacy == 'public' %}
-<span class="icon icon-globe" title="Public">
-    <span class="is-sr-only">Public</span>
+<span class="icon icon-globe" title="{% trans 'Public' %}">
+    <span class="is-sr-only">{% trans "Public" %}</span>
 </span>
 {% elif item.privacy == 'unlisted' %}
-<span class="icon icon-unlock" title="Unlisted">
-    <span class="is-sr-only">Unlisted</span>
+<span class="icon icon-unlock" title="{% trans 'Unlisted' %}">
+    <span class="is-sr-only">{% trans "Unlisted" %}</span>
 </span>
 {% elif item.privacy == 'followers' %}
 <span class="icon icon-lock" title="Followers-only">
-    <span class="is-sr-only">Followers-only</span>
+    <span class="is-sr-only">{% trans "Followers-only" %}</span>
 </span>
 {% else %}
-<span class="icon icon-envelope" title="Private">
-    <span class="is-sr-only">Private</span>
+<span class="icon icon-envelope" title="{% trans 'Private' %}">
+    <span class="is-sr-only">{% trans "Private" %}</span>
 </span>
 {% endif %}
 

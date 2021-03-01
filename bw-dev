@@ -66,6 +66,12 @@ case "$CMD" in
     collectstatic)
         execweb python manage.py collectstatic --no-input
         ;;
+    makemessages)
+        execweb django-admin makemessages --extension html --ignore=venv3 $@
+        ;;
+    compilemessages)
+        execweb django-admin compilemessages --ignore venv3 $@
+        ;;
     build)
         docker-compose build
         ;;

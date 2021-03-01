@@ -1,13 +1,17 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% load humanize %}
 {% load bookwyrm_tags %}
+
+{% block title %}{% trans "Notifications" %}{% endblock %}
+
 {% block content %}
 <div class="block">
-    <h1 class="title">Notifications</h1>
+    <h1 class="title">{% trans "Notifications" %}</h1>
 
     <form name="clear" action="/notifications" method="POST">
         {% csrf_token %}
-        <button class="button is-danger is-light" type="submit" class="secondary">Delete notifications</button>
+        <button class="button is-danger is-light" type="submit" class="secondary">{% trans "Delete notifications" %}</button>
     </form>
 </div>
 
@@ -41,32 +45,65 @@
                             {% include 'snippets/avatar.html' with user=notification.related_user %}
                             {% include 'snippets/username.html' with user=notification.related_user %}
                             {% if notification.notification_type == 'FAVORITE' %}
-                                favorited your
-                                <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                {% if related_status.status_type == 'Review' %}
+                                {% blocktrans with book_title=related_status.book.title related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Comment' %}
+                                {% blocktrans with book_title=related_status.book.title related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Quotation' %}
+                                {% blocktrans with book_title=related_status.book.title related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% else %}
+                                {% blocktrans with related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">status</a>{% endblocktrans %}
+                                {% endif %}
 
                             {% elif notification.notification_type == 'MENTION' %}
-                                mentioned you in a
-                                <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                {% if related_status.status_type == 'Review' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}mentioned you in a <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Comment' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}mentioned you in a <a href="{{ related_path }}">comment on <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Quotation' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}mentioned you in a <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% else %}
+                                {% blocktrans with related_path=related_status.local_path %}mentioned you in a <a href="{{ related_path }}">status</a>{% endblocktrans %}
+                                {% endif %}
 
                             {% elif notification.notification_type == 'REPLY' %}
-                                <a href="{{ related_status.local_path }}">replied</a>
-                                to your
-                                <a href="{{ related_status.reply_parent.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                {% if related_status.status_type == 'Review' %}
+                                {% blocktrans with related_path=related_status.local_path parent_path=related_status.reply_parent.local_path book_title=related_status.reply_parent.book.title %}<a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">review of <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Comment' %}
+                                {% blocktrans with related_path=related_status.local_path parent_path=related_status.reply_parent.local_path book_title=related_status.reply_parent.book.title %}<a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">comment on <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Quotation' %}
+                                {% blocktrans with related_path=related_status.local_path parent_path=related_status.reply_parent.local_path book_title=related_status.reply_parent.book.title %}<a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">quote from <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% else %}
+                                {% blocktrans with related_path=related_status.local_path parent_path=related_status.reply_parent.local_path %}<a href="{{ related_path }}">replied</a> to your <a href="{{ parent_path }}">status</a>{% endblocktrans %}
+                                {% endif %}
+
                             {% elif notification.notification_type == 'FOLLOW' %}
-                                followed you
+                                {% trans "followed you" %}
                                 {% include 'snippets/follow_button.html' with user=notification.related_user %}
                             {% elif notification.notification_type == 'FOLLOW_REQUEST' %}
-                                sent you a follow request
+                                {% trans "sent you a follow request" %}
                                 <div class="row shrink">
                                     {% include 'snippets/follow_request_buttons.html' with user=notification.related_user %}
                                 </div>
                             {% elif notification.notification_type == 'BOOST' %}
-                                boosted your <a href="{{ related_status.local_path }}">{{ related_status | status_preview_name|safe }}</a>
+                                {% if related_status.status_type == 'Review' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">review of <em>{{ book.title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Comment' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">comment on<em>{{ book.title }}</em></a>{% endblocktrans %}
+                                {% elif related_status.status_type == 'Quotation' %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">quote from <em>{{ book.title }}</em></a>{% endblocktrans %}
+                                {% else %}
+                                {% blocktrans with related_path=related_status.local_path %}boosted your <a href="{{ related_path }}">status</a>{% endblocktrans %}
+                                {% endif %}
                             {% elif notification.notification_type == 'ADD' %}
-                            {% if notification.related_list_item.approved %}added{% else %}suggested adding{% endif %} {% include 'snippets/book_titleby.html' with book=notification.related_list_item.book %} to your list "<a href="{{ notification.related_list_item.book_list.local_path }}{% if not notification.related_list_item.approved %}/curate{% endif %}">{{ notification.related_list_item.book_list.name }}</a>"
+                                {% if notification.related_list_item.approved %}
+                                {% blocktrans with book_path=notification.related_list_item.book.local_path book_title=notification.related_list_item.book.title list_path=notification.related_list_item.book_list.local_path list_name=notification.related_list_item.book_list.name %} added <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}">{{ list_name }}</a>"{% endblocktrans %}
+                                {% else %}
+                                {% blocktrans with book_path=notification.related_list_item.book.local_path book_title=notification.related_list_item.book.title list_path=notification.related_list_item.book_list.local_path list_name=notification.related_list_item.book_list.name %} suggested adding <em><a href="{{ book_path }}">{{ book_title }}</a></em> to your list "<a href="{{ list_path }}/curate">{{ list_name }}</a>"{% endblocktrans %}
+                                {% endif %}
                             {% endif %}
                         {% elif notification.related_import %}
-                            your <a href="/import/{{ notification.related_import.id }}">import</a> completed.
+                            {% blocktrans with related_id=notification.related_import.id %} your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
                         {% endif %}
                     </p>
                 </div>
@@ -98,7 +135,7 @@
     {% endfor %}
 
     {% if not notifications %}
-    <p>You're all caught up!</p>
+    <p>{% trans "You're all caught up!" %}</p>
     {% endif %}
 </div>
 {% endblock %}

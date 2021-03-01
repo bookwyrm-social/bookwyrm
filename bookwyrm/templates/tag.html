@@ -1,12 +1,14 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
-{% block content %}
 
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block content %}
 <div class="block">
-    <h1 class="title">Books tagged "{{ tag.name }}"</h1>
+    <h1 class="title">{% blocktrans %}Books tagged "{{ tag.name }}"{% endblocktrans %}</h1>
     {% include 'snippets/book_tiles.html' with books=books.all %}
 </div>
-
 {% endblock %}
 
 

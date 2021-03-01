@@ -1,8 +1,12 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
+
+{% block title %}{% blocktrans with book_title=work.title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
+
 {% block content %}
 <div class="block">
-    <h1 class="title">Editions of <a href="/book/{{ work.id }}">"{{ work.title }}"</a></h1>
+    <h1 class="title">{% blocktrans with path=work.local_path work_title=work.title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
 
     {% include 'snippets/book_tiles.html' with books=editions %}
 </div>
