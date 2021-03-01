@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
 from bookwyrm import forms, models
@@ -13,6 +14,7 @@ from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable= no-self-use
+@method_decorator(csrf_exempt, name='dispatch')
 class Login(View):
     ''' authenticate an existing user '''
     def get(self, request):
@@ -28,6 +30,8 @@ class Login(View):
 
     def post(self, request):
         ''' authentication action '''
+        if request.user.is_authenticated:
+            return redirect('/')
         login_form = forms.LoginForm(request.POST)
 
         localname = login_form.data['localname']
