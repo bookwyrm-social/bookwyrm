@@ -3,6 +3,8 @@
 {% load humanize %}
 {% load bookwyrm_tags %}
 
+{% block title %}{{ user.display_name }}{% endblock %}
+
 {% block content %}
 <header class="block">
     {% block header %}{% endblock %}

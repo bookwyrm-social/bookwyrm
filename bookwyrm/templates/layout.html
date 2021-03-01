@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% if title %}{{ title }} | {% endif %}{{ site.name }}</title>
+    <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="/static/css/bulma.min.css">
     <link type="text/css" rel="stylesheet" href="/static/css/format.css">
@@ -30,7 +30,7 @@
         <form class="navbar-item column" action="/search/">
             <div class="field has-addons">
                 <div class="control">
-                    <input aria-label="Search for a book or user" id="search-input" class="input" type="text" name="q" placeholder="Search for a book or user" value="{{ query }}">
+                    <input aria-label="{% trans 'Search for a book or user' %}" id="search-input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
                 </div>
                 <div class="control">
                     <button class="button" type="submit">
@@ -76,22 +76,22 @@
                 <ul class="navbar-dropdown" id="navbar-dropdown">
                     <li>
                         <a href="/direct-messages" class="navbar-item">
-                            Direct messages
+                            {% trans "Direct Messages" %}
                         </a>
                     </li>
                     <li>
                         <a href="/user/{{request.user.localname}}" class="navbar-item">
-                            Profile
+                            {% trans 'Profile' %}
                         </a>
                     </li>
                     <li>
                         <a href="/preferences/profile" class="navbar-item">
-                            Settings
+                            {% trans 'Settings' %}
                         </a>
                     </li>
                     <li>
                         <a href="/import" class="navbar-item">
-                            Import books
+                            {% trans 'Import Books' %}
                         </a>
                     </li>
                     {% if perms.bookwyrm.create_invites or perms.bookwyrm.edit_instance_settings%}
@@ -100,21 +100,21 @@
                     {% if perms.bookwyrm.create_invites %}
                     <li>
                         <a href="{% url 'settings-invites' %}" class="navbar-item">
-                            Invites
+                            {% trans 'Invites' %}
                         </a>
                     </li>
                     {% endif %}
                     {% if perms.bookwyrm.edit_instance_settings %}
                     <li>
                         <a href="{% url 'settings-site' %}" class="navbar-item">
-                            Site Configuration
+                            {% trans 'Site Configuration' %}
                         </a>
                     </li>
                     {% endif %}
                     <hr class="navbar-divider">
                     <li>
                         <a href="/logout" class="navbar-item">
-                            Log out
+                            {% trans 'Log out' %}
                         </a>
                     </li>
                 </ul>
@@ -195,7 +195,7 @@
             </div>
             {% endif %}
             <div class="column">
-                BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.
+                {% trans 'BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.' %}
             </div>
         </div>
     </div>

@@ -30,7 +30,6 @@ class Goal(View):
             return HttpResponseNotFound()
 
         data = {
-            'title': '%s\'s %d Reading' % (user.display_name, year),
             'goal_form': forms.GoalForm(instance=goal),
             'goal': goal,
             'user': user,
@@ -53,7 +52,6 @@ class Goal(View):
         form = forms.GoalForm(request.POST, instance=goal)
         if not form.is_valid():
             data = {
-                'title': '%s\'s %d Reading' % (request.user.display_name, year),
                 'goal_form': form,
                 'goal': goal,
                 'year': year,
