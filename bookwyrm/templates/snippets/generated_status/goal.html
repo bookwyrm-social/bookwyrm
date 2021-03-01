@@ -1,1 +1,1 @@
-{% load humanize %}set a goal to read {{ goal.goal | intcomma }} book{{ goal.goal | pluralize }} in {{ goal.year }}
+{% load humanize %}{% blocktrans with count=goal.goal|intcomma year=goal.year %}set a goal to read {{ count }} book in {{ year }}{% plural %}set a goal to read {{ count }} books in {{ year }}{% endblocktrans %}

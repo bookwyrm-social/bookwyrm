@@ -29,7 +29,8 @@
     <p>
         <button type="submit" class="button is-link">{% trans "Set goal" %}</button>
         {% if goal %}
-        {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="show-edit-goal" %}
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="show-edit-goal" %}
         {% endif %}
     </p>
 </form>

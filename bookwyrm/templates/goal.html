@@ -8,7 +8,8 @@
     </div>
     {% if is_self and goal %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit goal" icon="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
+        {% trans "Edit Goal" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -45,7 +46,13 @@
 
 {% if goal.books %}
 <section class="content">
-    <h2>{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
+    <h2>
+        {% if goal.user == request.user %}
+        {% blocktrans %}Your {{ year }} Books{% endblocktrans %}
+        {% else %}
+        {% blocktrans with username=goal.user.display_name %}{{ username }}'s {{ year }} Books{% endblocktrans %}
+        {% endif %}
+    </h2>
     <div class="columns is-multiline">
         {% for book in goal.books %}
         <div class="column is-narrow">

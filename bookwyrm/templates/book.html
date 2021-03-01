@@ -93,7 +93,8 @@
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
                 {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
-                {% include 'snippets/toggle/open_button.html' with text="Add description" controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
+                {% trans 'Add Description' as button_text %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
 
                 <div class="box hidden" id="add-description-{{ book.id }}">
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
@@ -104,7 +105,8 @@
                         </p>
                         <div class="field">
                             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-                            {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-description" controls_uid=book.id hide_inactive=True %}
+                            {% trans "Cancel" as button_text %}
+                            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-description" controls_uid=book.id hide_inactive=True %}
                         </div>
                     </form>
                 </div>
@@ -137,7 +139,8 @@
                 <header class="columns">
                     <h2 class="column title is-5 mb-1">{% trans "Your reading activity" %}</h2>
                     <div class="column is-narrow">
-                        {% include 'snippets/toggle/open_button.html' with text="Add read dates" icon="plus" class="is-small" controls_text="add-readthrough" %}
+                        {% trans "Add read dates" as button_text %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" class="is-small" controls_text="add-readthrough" %}
                     </div>
                 </header>
                 {% if not readthroughs.exists %}
@@ -151,7 +154,8 @@
                                 <button class="button is-primary" type="submit">{% trans "Create" %}</button>
                             </div>
                             <div class="control">
-                                {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="add-readthrough" %}
+                                {% trans "Cancel" as button_text %}
+                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-readthrough" %}
                             </div>
                         </div>
                     </form>

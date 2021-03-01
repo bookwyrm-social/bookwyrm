@@ -12,8 +12,8 @@
         <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
         <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
         <p>
-            <a href="{{ user.local_path }}/followers">{{ user.followers.count }} follower{{ user.followers.count | pluralize }}</a>,
-            <a href="{{ user.local_path }}/following">{{ user.following.count }} following</a>
+        <a href="{{ user.local_path }}/followers">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
+        <a href="{{ user.local_path }}/following">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
         </p>
     </div>
 </div>
