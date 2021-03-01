@@ -5,11 +5,11 @@
 <div class="columns is-mobile">
     <div class="column">
         <h1 class="title">
-            {% if is_self %}Your
+            {% if is_self %}
+            {% trans "Your Lists" %}
             {% else %}
-            {% include 'snippets/username.html' with user=user %}'s
+            {% blocktrans with username=user.display_name %}Lists: {{ username }}{% endblocktrans %}
             {% endif %}
-            Lists
         </h1>
     </div>
     {% if is_self %}

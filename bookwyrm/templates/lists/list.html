@@ -1,8 +1,8 @@
 {% extends 'lists/list_layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
-{% block panel %}
 
+{% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
     <p>

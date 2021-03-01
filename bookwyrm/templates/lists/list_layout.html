@@ -1,8 +1,10 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
-{% block content %}
 
+{% block title %}{{ list.name }}{% endblock %}
+
+{% block content %}
 <header class="columns content is-mobile">
     <div class="column">
         <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>

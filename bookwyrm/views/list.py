@@ -40,7 +40,6 @@ class Lists(View):
 
         paginated = Paginator(lists, 12)
         data = {
-            'title': 'Lists',
             'lists': paginated.page(page),
             'list_form': forms.ListForm(),
             'path': '/list',
@@ -72,7 +71,6 @@ class UserLists(View):
         paginated = Paginator(lists, 12)
 
         data = {
-            'title': '%s: Lists' % user.name,
             'user': user,
             'is_self': request.user.id == user.id,
             'lists': paginated.page(page),
@@ -114,7 +112,6 @@ class List(View):
 
 
         data = {
-            'title': '%s | Lists' % book_list.name,
             'list': book_list,
             'items': book_list.listitem_set.filter(approved=True),
             'pending_count': book_list.listitem_set.filter(
@@ -149,7 +146,6 @@ class Curate(View):
             return HttpResponseNotFound()
 
         data = {
-            'title': 'Curate "%s" | Lists' % book_list.name,
             'list': book_list,
             'pending': book_list.listitem_set.filter(approved=False),
             'list_form': forms.ListForm(instance=book_list),

@@ -4,11 +4,7 @@
 
 {% block header %}
 <h1 class="title">
-    {% if is_self %}Your
-    {% else %}
-    {% include 'snippets/username.html' with user=user possessive=True %}
-    {% endif %}
-    followers
+    {% trans "User Profile" %}
 </h1>
 {% endblock %}
 

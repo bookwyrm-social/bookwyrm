@@ -15,8 +15,7 @@ class Block(View):
     ''' blocking users '''
     def get(self, request):
         ''' list of blocked users? '''
-        return TemplateResponse(
-            request, 'preferences/blocks.html', {'title': 'Blocked Users'})
+        return TemplateResponse(request, 'preferences/blocks.html')
 
     def post(self, request, user_id):
         ''' block a user '''

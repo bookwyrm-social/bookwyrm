@@ -19,7 +19,6 @@ class Import(View):
     def get(self, request):
         ''' load import page '''
         return TemplateResponse(request, 'import.html', {
-            'title': 'Import Books',
             'import_form': forms.ImportForm(),
             'jobs': models.ImportJob.
                     objects.filter(user=request.user).order_by('-created_date'),
@@ -71,7 +70,6 @@ class ImportStatus(View):
         failed_items = [i for i in items if i.fail_reason]
         items = [i for i in items if not i.fail_reason]
         return TemplateResponse(request, 'import_status.html', {
-            'title': 'Import Status',
             'job': job,
             'items': items,
             'failed_items': failed_items,

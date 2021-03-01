@@ -5,11 +5,11 @@
 {% block header %}
 <header class="columns">
     <h1 class="title">
-        {% if is_self %}Your
+        {% if is_self %}
+        {% trans "Your Shelves" %}
         {% else %}
-        {% include 'snippets/username.html' with user=user possessive=True %}
+        {% blocktrans with username=user.display_name %}{{ username }}: Shelves{% endblocktrans %}
         {% endif %}
-        shelves
     </h1>
 </header>
 {% endblock %}

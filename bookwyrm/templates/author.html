@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+
+{% block title %}{{ author.name }}{% endblock %}
+
 {% block content %}
 <div class="block">
     <div class="columns is-mobile">
