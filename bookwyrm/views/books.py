@@ -159,6 +159,7 @@ def upload_cover(request, book_id):
     if not form.is_valid():
         return redirect('/book/%d' % book.id)
 
+    book.last_edited_by = request.user
     book.cover = form.files['cover']
     book.save()
 
@@ -178,6 +179,7 @@ def add_description(request, book_id):
     description = request.POST.get('description')
 
     book.description = description
+    book.last_edited_by = request.user
     book.save()
 
     return redirect('/book/%s' % book.id)
