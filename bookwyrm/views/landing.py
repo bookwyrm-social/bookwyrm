@@ -12,10 +12,7 @@ class About(View):
     ''' create invites '''
     def get(self, request):
         ''' more information about the instance '''
-        data = {
-            'title': 'About',
-        }
-        return TemplateResponse(request, 'discover/about.html', data)
+        return TemplateResponse(request, 'discover/about.html')
 
 class Home(View):
     ''' discover page or home feed depending on auth '''
@@ -43,7 +40,6 @@ class Discover(View):
         ).order_by('-review__published_date__max')[:6]
 
         data = {
-            'title': 'Discover',
             'register_form': forms.RegisterForm(),
             'books': list(set(books)),
         }

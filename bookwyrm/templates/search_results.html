@@ -1,5 +1,8 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+
+{% block title %}{% trans "Search Results" %}{% endblock %}
+
 {% block content %}
 {% with book_results|first as local_results %}
 <div class="block">

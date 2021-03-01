@@ -30,7 +30,6 @@ class ManageInvites(View):
         ).order_by('-created_date'), PAGE_LENGTH)
 
         data = {
-            'title': 'Invitations',
             'invites': paginated.page(page),
             'form': forms.CreateInviteForm(),
         }
@@ -50,7 +49,6 @@ class ManageInvites(View):
             user=request.user
         ).order_by('-created_date'), PAGE_LENGTH)
         data = {
-            'title': 'Invitations',
             'invites': paginated.page(1),
             'form': form
         }
@@ -66,7 +64,6 @@ class Invite(View):
         invite = get_object_or_404(models.SiteInvite, code=code)
 
         data = {
-            'title': 'Join',
             'register_form': forms.RegisterForm(),
             'invite': invite,
             'valid': invite.valid() if invite else True,

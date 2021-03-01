@@ -25,7 +25,6 @@ class Tag(View):
             usertag__tag__identifier=tag_id
         ).distinct()
         data = {
-            'title': tag_obj.name,
             'books': books,
             'tag': tag_obj,
         }

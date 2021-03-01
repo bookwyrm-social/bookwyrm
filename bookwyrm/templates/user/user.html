@@ -1,10 +1,12 @@
 {% extends 'user/user_layout.html' %}
 {% load i18n %}
 
+{% block title %}{{ user.name }}{% endblock %}
+
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
-        <h1 class="title">{% trans "User profile" %}</h1>
+        <h1 class="title">{% trans "User Profile" %}</h1>
     </div>
     {% if is_self %}
     <div class="column is-narrow">

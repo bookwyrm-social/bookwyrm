@@ -2,8 +2,10 @@
 {% load i18n %}
 {% load bookwyrm_tags %}
 {% load humanize %}
-{% block content %}
 
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
 <div class="block">
     <div class="columns is-mobile">
         <div class="column">

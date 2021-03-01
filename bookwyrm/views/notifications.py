@@ -16,7 +16,6 @@ class Notifications(View):
                 .order_by('-created_date')
         unread = [n.id for n in notifications.filter(read=False)]
         data = {
-            'title': 'Notifications',
             'notifications': notifications,
             'unread': unread,
         }
