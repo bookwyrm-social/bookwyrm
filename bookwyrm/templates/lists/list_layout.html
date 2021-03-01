@@ -14,7 +14,8 @@
     </div>
     {% if request.user == list.user %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit list" icon="pencil" controls_text="edit-list" focus="edit-list-header" %}
+        {% trans "Edit List" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-list" focus="edit-list-header" %}
     </div>
     {% endif %}
 </header>

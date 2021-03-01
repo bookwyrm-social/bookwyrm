@@ -48,7 +48,8 @@
                         <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
                     </p>
                     <div class="card-header-icon is-hidden-tablet">
-                        {% include 'snippets/toggle/toggle_button.html' with label="close" controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
+                        {% trans "Close" as button_text %}
+                        {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
                     </div>
                 </div>
                 <div class="card-content">

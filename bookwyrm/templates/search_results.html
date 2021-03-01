@@ -32,7 +32,8 @@
             <p>
                 {% trans "Didn't find what you were looking for?" %}
             </p>
-            {% include 'snippets/toggle/open_button.html' with text="Show results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Show results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results" %}
         </div>
         {% endif %}
 
@@ -63,7 +64,8 @@
             {% endfor %}
 
             {% if local_results.results %}
-            {% include 'snippets/toggle/close_button.html' with text="Hide results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Hide results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
             {% endif %}
         </div>
         {% endif %}
