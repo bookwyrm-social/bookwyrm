@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-01 21:06+0000\n"
-"PO-Revision-Date: 2021-03-01 10:10+0100\n"
+"POT-Creation-Date: 2021-03-02 11:28+0000\n"
+"PO-Revision-Date: 2021-03-02 12:27+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
 "Language: fr_FR\n"
@@ -815,7 +815,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "favorited your <a href=\"%(related_path)s\">%(preview_name)s</a>"
 msgid "favorited your <a href=\"%(related_path)s\">status</a>"
-msgstr "a ajouté votre <a href=\"%(related_path)s\">message</a> à ses favoris"
+msgstr "a ajouté votre <a href=\"%(related_path)s\">statut</a> à ses favoris"
 
 #: bookwyrm/templates/notifications.html:60
 #, fuzzy, python-format
@@ -851,7 +851,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "mentioned you in a <a href=\"%(related_path)s\">%(preview_name)s</a>"
 msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "vous a mentionné dans son <a href=\"%(related_path)s\">message</a>"
+msgstr "vous a mentionné dans son <a href=\"%(related_path)s\">statut</a>"
 
 #: bookwyrm/templates/notifications.html:71
 #, fuzzy, python-format
@@ -899,7 +899,7 @@ msgid ""
 "\">status</a>"
 msgstr ""
 "<a href=\"%(related_path)s\">a répondu</a> à votre <a href=\"%(parent_path)s"
-"\">message</a>"
+"\">statut</a>"
 
 #: bookwyrm/templates/notifications.html:81
 msgid "followed you"
@@ -943,7 +943,7 @@ msgstr ""
 #, fuzzy, python-format
 #| msgid "boosted your <a href=\"%(related_path)s\">%(preview_name)s</a>"
 msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "a partagé votre <a href=\"%(related_path)s\">message</a>"
+msgstr "a partagé votre <a href=\"%(related_path)s\">statut</a>"
 
 #: bookwyrm/templates/notifications.html:100
 #, fuzzy, python-format
@@ -1384,8 +1384,8 @@ msgstr "Accepter"
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "Définir l’objectif de lire %(counter)s livre en %(year)s"
-msgstr[1] "Définir l’objectif de lire %(counter)s livres en %(year)s"
+msgstr[0] "souhaite lire %(counter)s livre en %(year)s"
+msgstr[1] "souhaite lire %(counter)s livres en %(year)s"
 
 #: bookwyrm/templates/snippets/goal_card.html:21
 msgid "Dismiss message"
@@ -1471,11 +1471,11 @@ msgstr "Non listé"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
-msgstr "Abonnements seulement"
+msgstr "Abonnemé(e)s uniquement"
 
 #: bookwyrm/templates/snippets/privacy_select.html:6
 msgid "Post privacy"
-msgstr "Confidentialité du message"
+msgstr "Confidentialité du statut"
 
 #: bookwyrm/templates/snippets/privacy_select.html:16
 #: bookwyrm/templates/user/followers.html:13
@@ -1562,22 +1562,22 @@ msgstr "S’enregistrer"
 #: bookwyrm/templates/snippets/rss_title.html:5
 #: bookwyrm/templates/snippets/status/status_header.html:9
 msgid "rated"
-msgstr "avec notes"
+msgstr "a noté"
 
 #: bookwyrm/templates/snippets/rss_title.html:7
 #: bookwyrm/templates/snippets/status/status_header.html:11
 msgid "reviewed"
-msgstr "avec critiques"
+msgstr "a écrit une critique de"
 
 #: bookwyrm/templates/snippets/rss_title.html:9
 #: bookwyrm/templates/snippets/status/status_header.html:13
 msgid "commented on"
-msgstr "avec commentaires"
+msgstr "a commenté"
 
 #: bookwyrm/templates/snippets/rss_title.html:11
 #: bookwyrm/templates/snippets/status/status_header.html:15
 msgid "quoted"
-msgstr "avec citations"
+msgstr "a cité"
 
 #: bookwyrm/templates/snippets/search_result_text.html:3
 #, python-format
@@ -1641,7 +1641,7 @@ msgstr "Commencer la lecture"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
 msgid "Read"
-msgstr "Lire"
+msgstr "Lu"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:13
 #, fuzzy
@@ -1652,7 +1652,7 @@ msgstr "Terminer la lecture"
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:16
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:26
 msgid "Want to read"
-msgstr "A envie de lire"
+msgstr "Je veux le lire"
 
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:5
 #, python-format
@@ -1695,7 +1695,7 @@ msgstr "Plus d’options"
 
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete post"
-msgstr "Supprimer le message"
+msgstr "Supprimer le statut"
 
 #: bookwyrm/templates/snippets/status/status_options.html:23
 #: bookwyrm/templates/snippets/user_options.html:13
