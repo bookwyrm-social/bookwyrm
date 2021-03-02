@@ -29,7 +29,7 @@
     {% endif %}
 
     {% if request.user.list_set.count > 4 %}
-    <a href="{% url 'user-lists' request.user.localname %}">See all {{ request.user.list_set.count}} lists</a>
+    <a href="{% url 'user-lists' request.user.localname %}">{% blocktrans with size=request.user.list_set.count %}See all {{ size }} lists{% endblocktrans %}</a>
     {% endif %}
 </section>
 {% endif %}
