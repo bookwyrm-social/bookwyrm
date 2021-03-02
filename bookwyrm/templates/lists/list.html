@@ -32,7 +32,7 @@
                     </div>
                     <div class="card-footer has-background-white-bis">
                         <div class="card-footer-item">
-                            <p>{% trans "Added by" %} {% include 'snippets/username.html' with user=item.user %}</p>
+                            <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                         </div>
                         {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
                         <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">

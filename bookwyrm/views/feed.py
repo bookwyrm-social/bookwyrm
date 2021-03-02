@@ -6,6 +6,7 @@ from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 
 from bookwyrm import forms, models
@@ -29,18 +30,22 @@ class Feed(View):
         if tab == 'home':
             activities = get_activity_feed(
                 request.user, following_only=True)
+            tab_title = _('Home')
         elif tab == 'local':
             activities = get_activity_feed(
                 request.user, privacy=['public', 'followers'], local_only=True)
+            tab_title = _('Local')
         else:
             activities = get_activity_feed(
                 request.user, privacy=['public', 'followers'])
+            tab_title = _('Federated')
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {**feed_page_data(request.user), **{
             'user': request.user,
             'activities': paginated.page(page),
             'tab': tab,
+            'tab_title': tab_title,
             'goal_form': forms.GoalForm(),
             'path': '/%s' % tab,
         }}
@@ -161,6 +166,7 @@ def get_suggested_books(user, max_books=5):
             continue
         shelf_preview = {
             'name': shelf.name,
+            'identifier': shelf.identifier,
             'books': [s.book for s in shelf_books]
         }
         suggested_books.append(shelf_preview)
