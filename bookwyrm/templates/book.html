@@ -18,7 +18,7 @@
             </h1>
             {% if book.authors %}
             <h2 class="subtitle">
-                by {% include 'snippets/authors.html' with book=book %}
+                {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
             </h2>
             {% endif %}
         </div>
@@ -78,8 +78,13 @@
                 </dl>
 
                 <p>
-                {% if book.physical_format %}{{ book.physical_format | title }}{% if book.pages %},<br>{% endif %}{% endif %}
-                {% if book.pages %}{{ book.pages }} pages{% endif %}
+                {% if book.physical_format and not book.pages %}
+                {{ book.physical_format | title }}
+                {% elif book.physical_format and book.pages %}
+                {% blocktrans with format=book.physical_format|title pages=book.pages %}{{ format }}, {{ pages }} pages{% endblocktrans %}
+                {% elif book.pages %}
+                {% blocktrans with pages=book.pages %}{{ pages }} pages{% endblocktrans %}
+                {% endif %}
                 </p>
 
                 {% if book.openlibrary_key %}
@@ -90,7 +95,14 @@
 
         <div class="column">
             <div class="block">
-                <h3 class="field is-grouped">{% include 'snippets/stars.html' with rating=rating %} ({{ review_count }} review{{ review_count|pluralize }})</h3>
+                <h3 class="field is-grouped">
+                    {% include 'snippets/stars.html' with rating=rating %}
+                    {% blocktrans count counter=review_count %}
+                    ({{ review_count }} review)
+                    {% plural %}
+                    ({{ review_count }} reviews)
+                    {% endblocktrans %}
+                </h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
 
@@ -116,7 +128,7 @@
 
 
                 {% if book.parent_work.editions.count > 1 %}
-                <p><a href="/book/{{ book.parent_work.id }}/editions">{{ book.parent_work.editions.count }} editions</a></p>
+                <p>{% blocktrans with path=book.parent_work.local_path count=book.parent_work.editions.count %}<a href="{{ path }}/editions">{{ count }} editions</a>{% endblocktrans %}</p>
                 {% endif %}
             </div>
 
@@ -124,13 +136,13 @@
             <div class="block">
                 {% for shelf in user_shelves %}
                 <p>
-                    This edition is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                    {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}This edition is on your <a href="{{ path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
                     {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
                 </p>
                 {% endfor %}
                 {% for shelf in other_edition_shelves %}
                 <p>
-                    A <a href="/book/{{ shelf.book.id }}">different edition</a> of this book is on your <a href="/user/{{ user.localname }}/shelf/{{ shelf.shelf.identifier }}">{{ shelf.shelf.name }}</a> shelf.
+                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
                     {% include 'snippets/switch_edition_button.html' with edition=book %}
                 </p>
                 {% endfor %}
