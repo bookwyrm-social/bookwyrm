@@ -1,16 +1,16 @@
-# Chinese language text for the bookwyrm UI
+# Simplified Chinese language text for the BookWyrm UI
 # Copyright (C) 2021 Mouse Reeve
-# This file is distributed under the same license as the BookWyrm package.
-# Mouse Reeve <mousereeve@riseup.net>, 2021
+# This file is distributed under the same license as the bookwyrm package.
+# Mouse Reeve <mousereeve@riseup.net>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0.1\n"
+"Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-01 09:32-0800\n"
-"PO-Revision-Date: 2021-03-02 17:19-0800\n"
-"Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
+"POT-Creation-Date: 2021-03-02 10:32+0000\n"
+"PO-Revision-Date: 2021-03-02 10:35+0000\n"
+"Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -400,9 +400,7 @@ msgstr "编辑目标"
 msgid ""
 "Set a goal for how many books you'll finish reading in %(year)s, and track "
 "your progress throughout the year."
-msgstr ""
-"设定一个 %(year)s 内要读多少书的目标，并记录"
-"你全年的进度。"
+msgstr "设定一个 %(year)s 内要读多少书的目标，并记录你全年的进度。"
 
 #: bookwyrm/templates/goal.html:39
 #, python-format
@@ -487,7 +485,7 @@ msgstr "重试项目"
 
 #: bookwyrm/templates/import_status.html:84
 msgid "Successfully imported"
-msgstr ""
+msgstr "成功导入了"
 
 #: bookwyrm/templates/import_status.html:88
 #: bookwyrm/templates/lists/curate.html:14
@@ -596,8 +594,8 @@ msgid ""
 "BookWyrm is open source software. You can contribute or report issues on <a "
 "href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr ""
-"BookWyrm 是开源软件。你可以在<a "
-"href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
+"BookWyrm 是开源软件。你可以在<a href=\"https://github.com/mouse-reeve/"
+"bookwyrm\">GitHub</a> 贡献或报告问题。"
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:17
@@ -763,8 +761,7 @@ msgid ""
 "favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s</"
 "em></a>"
 msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</"
-"em> 的书评</a>"
+"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:51
 #, python-format
@@ -772,8 +769,7 @@ msgid ""
 "favorited your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</"
 "em></a>"
 msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</"
-"em> 的评论</a>"
+"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:53
 #, python-format
@@ -781,8 +777,7 @@ msgid ""
 "favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</"
 "em></a>"
 msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">来自 <em>%(book_title)s</"
-"em> 的引用</a>"
+"喜欢了你 <a href=\"%(related_path)s\">来自 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications.html:55
 #, python-format
@@ -795,8 +790,8 @@ msgid ""
 "mentioned you in a <a href=\"%(related_path)s\">review of <em>"
 "%(book_title)s</em></a>"
 msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>"
-"%(book_title)s</em> 的书评</a> 里提到了你"
+"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a> 里提到"
+"了你"
 
 #: bookwyrm/templates/notifications.html:62
 #, python-format
@@ -804,8 +799,8 @@ msgid ""
 "mentioned you in a <a href=\"%(related_path)s\">comment on <em>"
 "%(book_title)s</em></a>"
 msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>"
-"%(book_title)s</em> 的评论</a> 里提到了你"
+"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a> 里提到"
+"了你"
 
 #: bookwyrm/templates/notifications.html:64
 #, python-format
@@ -813,8 +808,8 @@ msgid ""
 "mentioned you in a <a href=\"%(related_path)s\">quote from <em>"
 "%(book_title)s</em></a>"
 msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>"
-"%(book_title)s</em> 的引用</a> 中提到了你"
+"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a> 中提到"
+"了你"
 
 #: bookwyrm/templates/notifications.html:66
 #, python-format
@@ -827,8 +822,8 @@ msgid ""
 "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
 "\">review of <em>%(book_title)s</em></a>"
 msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s"
-"\">对 <em>%(book_title)s</em> 的书评</a>"
+"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 "
+"<em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:73
 #, python-format
@@ -836,8 +831,8 @@ msgid ""
 "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
 "\">comment on <em>%(book_title)s</em></a>"
 msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s"
-"\">对 <em>%(book_title)s</em> 的评论</a>"
+"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 "
+"<em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:75
 #, python-format
@@ -845,8 +840,8 @@ msgid ""
 "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
 "\">quote from <em>%(book_title)s</em></a>"
 msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你 <a href=\"%(parent_path)s"
-"\">对 <em>%(book_title)s</em> 中的引用</a>"
+"<a href=\"%(related_path)s\">回复</a> 了你 <a href=\"%(parent_path)s\">对 "
+"<em>%(book_title)s</em> 中的引用</a>"
 
 #: bookwyrm/templates/notifications.html:77
 #, python-format
@@ -854,8 +849,8 @@ msgid ""
 "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
 "\">status</a>"
 msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s"
-"\">状态</a>"
+"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">状态"
+"</a>"
 
 #: bookwyrm/templates/notifications.html:81
 msgid "followed you"
@@ -871,8 +866,7 @@ msgid ""
 "boosted your <a href=\"%(related_path)s\">review of <em>%(book.title)s</em></"
 "a>"
 msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的书评</"
-"a>"
+"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:92
 #, python-format
@@ -880,8 +874,7 @@ msgid ""
 "boosted your <a href=\"%(related_path)s\">comment on<em>%(book.title)s</em></"
 "a>"
 msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的评论</"
-"a>"
+"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:94
 #, python-format
@@ -889,8 +882,7 @@ msgid ""
 "boosted your <a href=\"%(related_path)s\">quote from <em>%(book.title)s</"
 "em></a>"
 msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</"
-"em> 的引用</a>"
+"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications.html:96
 #, python-format
@@ -911,8 +903,9 @@ msgstr ""
 msgid ""
 " suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to "
 "your list \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
-msgstr " 推荐添加 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到"
-"你的列表 \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
+msgstr ""
+" 推荐添加 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 "
+"\"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications.html:106
 #, python-format
@@ -927,6 +920,7 @@ msgstr "你什么也没错过！"
 #: bookwyrm/templates/password_reset.html:10
 #: bookwyrm/templates/password_reset_request.html:4
 #: bookwyrm/templates/password_reset_request.html:10
+#, fuzzy
 msgid "Reset Password"
 msgstr "重设密码"
 
@@ -1275,9 +1269,7 @@ msgstr "删除这些阅读日期吗？"
 msgid ""
 "You are deleting this readthrough and its %(count)s associated progress "
 "updates."
-msgstr ""
-"你正要删除这篇阅读经过以及与之相关的 %(count)s 次进度"
-"更新。"
+msgstr "你正要删除这篇阅读经过以及与之相关的 %(count)s 次进度更新。"
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
 #: bookwyrm/templates/snippets/follow_request_buttons.html:13
@@ -1332,8 +1324,8 @@ msgid ""
 "You can set or change your reading goal any time from your <a href=\"%(path)s"
 "\">profile page</a>"
 msgstr ""
-"你可以在任何时候从你的<a href=\"%(path)s"
-"\">个人资料页面</a> 中设置或改变你的阅读目标"
+"你可以在任何时候从你的<a href=\"%(path)s\">个人资料页面</a> 中设置或改变你的"
+"阅读目标"
 
 #: bookwyrm/templates/snippets/goal_form.html:9
 msgid "Reading goal:"
@@ -1372,7 +1364,8 @@ msgstr "完成了 %(percent)s%% ！"
 msgid ""
 "You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
 msgstr ""
-"你已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</a>。"
+"你已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</"
+"a>。"
 
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
@@ -1380,8 +1373,8 @@ msgid ""
 "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s "
 "books</a>."
 msgstr ""
-"%(username)s 已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s "
-"本</a>。"
+"%(username)s 已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 "
+"%(read_count)s 本</a>。"
 
 #: bookwyrm/templates/snippets/pagination.html:7
 msgid "Previous"
