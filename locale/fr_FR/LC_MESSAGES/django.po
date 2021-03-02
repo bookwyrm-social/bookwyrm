@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-02 11:38+0000\n"
+"POT-Creation-Date: 2021-03-02 18:33+0000\n"
 "PO-Revision-Date: 2021-03-02 12:37+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -31,6 +31,10 @@ msgstr "Wikipedia"
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Livres par %(name)s"
+
+#: bookwyrm/templates/book.html:21
+msgid "by"
+msgstr ""
 
 #: bookwyrm/templates/book.html:29 bookwyrm/templates/book.html:30
 #: bookwyrm/templates/edit_book.html:5
@@ -57,22 +61,47 @@ msgstr "Numéro OCLC :"
 msgid "ASIN:"
 msgstr "ASIN :"
 
+#: bookwyrm/templates/book.html:84
+#, fuzzy, python-format
+#| msgid "of %(book.pages)s pages"
+msgid "%(format)s, %(pages)s pages"
+msgstr "sur %(book.pages)s pages"
+
 #: bookwyrm/templates/book.html:86
+#, fuzzy, python-format
+#| msgid "of %(book.pages)s pages"
+msgid "%(pages)s pages"
+msgstr "sur %(book.pages)s pages"
+
+#: bookwyrm/templates/book.html:91
 msgid "View on OpenLibrary"
 msgstr "Voir sur OpenLibrary"
 
-#: bookwyrm/templates/book.html:98
+#: bookwyrm/templates/book.html:100
+#, python-format
+msgid ""
+"\n"
+"                    (%(review_count)s review)\n"
+"                    "
+msgid_plural ""
+"\n"
+"                    (%(review_count)s reviews)\n"
+"                    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: bookwyrm/templates/book.html:110
 #, fuzzy
 #| msgid "Description:"
 msgid "Add Description"
 msgstr "Ajouter une description"
 
-#: bookwyrm/templates/book.html:105 bookwyrm/templates/edit_book.html:39
+#: bookwyrm/templates/book.html:117 bookwyrm/templates/edit_book.html:39
 #: bookwyrm/templates/lists/form.html:12
 msgid "Description:"
 msgstr "Description :"
 
-#: bookwyrm/templates/book.html:109 bookwyrm/templates/edit_author.html:78
+#: bookwyrm/templates/book.html:121 bookwyrm/templates/edit_author.html:78
 #: bookwyrm/templates/edit_book.html:120 bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:50
 #: bookwyrm/templates/settings/site.html:89
@@ -83,7 +112,7 @@ msgstr "Description :"
 msgid "Save"
 msgstr "Enregistrer"
 
-#: bookwyrm/templates/book.html:110 bookwyrm/templates/book.html:159
+#: bookwyrm/templates/book.html:122 bookwyrm/templates/book.html:171
 #: bookwyrm/templates/edit_author.html:79 bookwyrm/templates/edit_book.html:121
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
@@ -94,53 +123,77 @@ msgstr "Enregistrer"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: bookwyrm/templates/book.html:142
+#: bookwyrm/templates/book.html:131
+#, fuzzy, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
+msgstr "<a href=\"%(path)s\">%(title)s</a> par "
+
+#: bookwyrm/templates/book.html:139
+#, fuzzy, python-format
+#| msgid "favorited your <a href=\"%(related_path)s\">%(preview_name)s</a>"
+msgid "This edition is on your <a href=\"%(path)s\">%(shelf_name)s</a> shelf."
+msgstr "Messages directs avec <a href=\"%(path)s\">%(username)s</a>"
+
+#: bookwyrm/templates/book.html:145
+#, fuzzy, python-format
+#| msgid ""
+#| "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
+#| "\">%(preview_name)s</a>"
+msgid ""
+"A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a "
+"href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
+msgstr ""
+" a ajouté <em><a href=\"%(book_path)s\">%(book_title)s</a></em> à votre "
+"liste « <a href=\"%(list_path)s\">%(list_name)s</a> »"
+
+#: bookwyrm/templates/book.html:154
 msgid "Your reading activity"
 msgstr "Votre activité de lecture"
 
-#: bookwyrm/templates/book.html:144
+#: bookwyrm/templates/book.html:156
 #, fuzzy
 #| msgid "Edit read dates"
 msgid "Add read dates"
 msgstr "Ajouter des dates de lecture"
 
-#: bookwyrm/templates/book.html:149
+#: bookwyrm/templates/book.html:161
 msgid "You don't have any reading activity for this book."
 msgstr "Vous n’avez aucune activité de lecture pour ce livre"
 
-#: bookwyrm/templates/book.html:156
+#: bookwyrm/templates/book.html:168
 msgid "Create"
 msgstr "Créer"
 
-#: bookwyrm/templates/book.html:178
+#: bookwyrm/templates/book.html:190
 msgid "Tags"
 msgstr "Tags"
 
-#: bookwyrm/templates/book.html:182 bookwyrm/templates/snippets/tag.html:18
+#: bookwyrm/templates/book.html:194 bookwyrm/templates/snippets/tag.html:18
 msgid "Add tag"
 msgstr "Ajouter un tag"
 
-#: bookwyrm/templates/book.html:199
+#: bookwyrm/templates/book.html:211
 msgid "Subjects"
 msgstr "Sujets"
 
-#: bookwyrm/templates/book.html:210
+#: bookwyrm/templates/book.html:222
 msgid "Places"
 msgstr "Lieux"
 
-#: bookwyrm/templates/book.html:221 bookwyrm/templates/layout.html:64
+#: bookwyrm/templates/book.html:233 bookwyrm/templates/layout.html:64
 #: bookwyrm/templates/lists/lists.html:4 bookwyrm/templates/lists/lists.html:9
 #: bookwyrm/templates/search_results.html:90
 #: bookwyrm/templates/user/user_layout.html:62
 msgid "Lists"
 msgstr "Listes"
 
-#: bookwyrm/templates/book.html:250
+#: bookwyrm/templates/book.html:262
 msgid "rated it"
 msgstr "l’a noté"
 
 #: bookwyrm/templates/components/inline_form.html:8
-#: bookwyrm/templates/feed/feed_layout.html:51
+#: bookwyrm/templates/feed/feed_layout.html:54
 #, fuzzy
 #| msgid "Closed"
 msgid "Close"
@@ -389,7 +442,27 @@ msgid ""
 "There are no books here right now! Try searching for a book to get started"
 msgstr "Aucun livre ici pour l’instant ! Cherchez un livre pour commencer"
 
-#: bookwyrm/templates/feed/feed_layout.html:73 bookwyrm/templates/goal.html:26
+#: bookwyrm/templates/feed/feed_layout.html:23
+#: bookwyrm/templates/user/shelf.html:24
+#, fuzzy
+#| msgid "Read"
+msgid "To Read"
+msgstr "Lu"
+
+#: bookwyrm/templates/feed/feed_layout.html:24
+#: bookwyrm/templates/user/shelf.html:24
+#, fuzzy
+#| msgid "Started reading"
+msgid "Currently Reading"
+msgstr "Commencer la lecture"
+
+#: bookwyrm/templates/feed/feed_layout.html:25
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
+#: bookwyrm/templates/user/shelf.html:24
+msgid "Read"
+msgstr "Lu"
+
+#: bookwyrm/templates/feed/feed_layout.html:76 bookwyrm/templates/goal.html:26
 #: bookwyrm/templates/snippets/goal_card.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
@@ -690,8 +763,10 @@ msgid "This list is currently empty"
 msgstr "Cette liste est vide actuellement"
 
 #: bookwyrm/templates/lists/list.html:35
-msgid "Added by"
-msgstr "Ajouté par"
+#, fuzzy, python-format
+#| msgid "favorited your <a href=\"%(related_path)s\">%(preview_name)s</a>"
+msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
+msgstr "Messages directs avec <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:41
 msgid "Remove"
@@ -743,6 +818,12 @@ msgstr "Créée par"
 #: bookwyrm/templates/lists/lists.html:14
 msgid "Your lists"
 msgstr "Vos listes"
+
+#: bookwyrm/templates/lists/lists.html:32
+#, fuzzy, python-format
+#| msgid "See all %(size)s"
+msgid "See all %(size)s lists"
+msgstr "Voir les %(size)s"
 
 #: bookwyrm/templates/lists/lists.html:40
 msgid "Recent Lists"
@@ -1639,10 +1720,6 @@ msgstr "Plus d’étagères"
 msgid "Start reading"
 msgstr "Commencer la lecture"
 
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
-msgid "Read"
-msgstr "Lu"
-
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:13
 #, fuzzy
 #| msgid "Finished reading"
@@ -1694,7 +1771,9 @@ msgid "More options"
 msgstr "Plus d’options"
 
 #: bookwyrm/templates/snippets/status/status_options.html:17
-msgid "Delete post"
+#, fuzzy
+#| msgid "Delete post"
+msgid "Delete status"
 msgstr "Supprimer le statut"
 
 #: bookwyrm/templates/snippets/status/status_options.html:23
@@ -1858,6 +1937,9 @@ msgstr[1] "%(username)s n’a pas d’abonné(e)s"
 #, python-format
 msgid "%(counter)s following"
 msgstr "%(counter)s abonnements"
+
+#~ msgid "Added by"
+#~ msgstr "Ajouté par"
 
 #~ msgid "added"
 #~ msgstr "a ajouté"
