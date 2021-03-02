@@ -134,6 +134,7 @@ urlpatterns = [
     re_path(r'^add-description/(?P<book_id>\d+)/?$', views.add_description),
     re_path(r'^resolve-book/?$', views.resolve_book),
     re_path(r'^switch-edition/?$', views.switch_edition),
+    re_path(r'^create-book/?$', views.EditBook.as_view()),
 
     # author
     re_path(r'^author/(?P<author_id>\d+)(.json)?/?$', views.Author.as_view()),

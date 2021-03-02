@@ -106,28 +106,40 @@ class Book(View):
     name='dispatch')
 class EditBook(View):
     ''' edit a book '''
-    def get(self, request, book_id):
+    def get(self, request, book_id=None):
         ''' info about a book '''
-        book = get_edition(book_id)
-        if not book.description:
-            book.description = book.parent_work.description
+        book = None
+        if book_id:
+            book = get_edition(book_id)
+            if not book.description:
+                book.description = book.parent_work.description
         data = {
             'book': book,
             'form': forms.EditionForm(instance=book)
         }
         return TemplateResponse(request, 'edit_book.html', data)
 
-    def post(self, request, book_id):
+    def post(self, request, book_id=None):
         ''' edit a book cool '''
-        book = get_object_or_404(models.Edition, id=book_id)
-
+        book = get_object_or_404(models.Edition, id=book_id) if book_id \
+                else None
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
+
+        data = {
+            'book': book,
+            'form': form
+        }
         if not form.is_valid():
-            data = {
-                'book': book,
-                'form': form
-            }
             return TemplateResponse(request, 'edit_book.html', data)
+
+        if not book or form.author:
+            # creting a book or adding an author to a book needs another step
+            return TemplateResponse(request, 'confirm_book.html', data)
+
+        # remove authors
+        if request.POST.get('remove-author'):
+            import pdb;pdb.set_trace()
+            author = get_object_or_404(id=author_id)
         book = form.save()
 
         return redirect('/book/%s' % book.id)
