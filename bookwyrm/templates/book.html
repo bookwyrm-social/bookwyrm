@@ -97,11 +97,7 @@
             <div class="block">
                 <h3 class="field is-grouped">
                     {% include 'snippets/stars.html' with rating=rating %}
-                    {% blocktrans count counter=review_count %}
-                    ({{ review_count }} review)
-                    {% plural %}
-                    ({{ review_count }} reviews)
-                    {% endblocktrans %}
+                    {% blocktrans count counter=review_count %}({{ review_count }} review){% plural %}({{ review_count }} reviews){% endblocktrans %}
                 </h3>
 
                 {% include 'snippets/trimmed_text.html' with full=book|book_description %}
