@@ -166,6 +166,7 @@ def get_suggested_books(user, max_books=5):
             continue
         shelf_preview = {
             'name': shelf.name,
+            'identifier': shelf.identifier,
             'books': [s.book for s in shelf_books]
         }
         suggested_books.append(shelf_preview)
