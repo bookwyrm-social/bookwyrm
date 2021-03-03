@@ -4,8 +4,8 @@
     {% if status.status_type == 'Review' %}
     <div>
         {% if status.name %}
-        <h3 class="title is-5 has-subtitle">
-            {{ status.name | escape }}
+        <h3 class="title is-5 has-subtitle" dir="auto">
+            {{ status.name|escape }}
         </h3>
         {% endif %}
         {% include 'snippets/stars.html' with rating=status.rating %}
@@ -37,7 +37,7 @@
         {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
         {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
         {% endif %}
-        {% if status.attachments.all %}
+        {% if status.attachments.exists %}
         <div class="block">
             <div class="columns">
                 {% for attachment in status.attachments.all %}
