@@ -3,10 +3,12 @@
 <div class="block">
     {% if status.status_type == 'Review' %}
     <div>
+        {% if status.name %}
         <h3 class="title is-5 has-subtitle">
-            {% if status.name %}<span dir="auto">{{ status.name }}</span><br>{% endif %}
+            {{ status.name | escape }}
         </h3>
-        <p class="subtitle">{% include 'snippets/stars.html' with rating=status.rating %}</p>
+        {% endif %}
+        {% include 'snippets/stars.html' with rating=status.rating %}
     </div>
     {% endif %}
 
@@ -35,7 +37,7 @@
         {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
         {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
         {% endif %}
-        {% if status.attachments %}
+        {% if status.attachments.all %}
         <div class="block">
             <div class="columns">
                 {% for attachment in status.attachments.all %}
