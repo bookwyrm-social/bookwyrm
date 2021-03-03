@@ -294,16 +294,14 @@ class Boost(ActivityMixin, Status):
         if not self.boosted_status.user.local:
             return
 
-        if self.boosted_status.user.local and \
-                self.boosted_status.user != self.user:
-            notification_model = apps.get_model(
-                'bookwyrm.Notification', require_ready=True)
-            notification_model.objects.create(
-                user=self.boosted_status.user,
-                related_status=self.boosted_status,
-                related_user=self.user,
-                notification_type='BOOST',
-            )
+        notification_model = apps.get_model(
+            'bookwyrm.Notification', require_ready=True)
+        notification_model.objects.create(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type='BOOST',
+        )
 
     def delete(self, *args, **kwargs):
         ''' delete and un-notify '''
