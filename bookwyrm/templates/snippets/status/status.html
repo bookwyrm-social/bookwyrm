@@ -1,7 +1,7 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
 {% if not status.deleted %}
-    {% if status.status_type == 'Boost' %}
+    {% if status.status_type == 'Announce' %}
         {% include 'snippets/avatar.html' with user=status.user %}
         {% include 'snippets/username.html' with user=status.user %}
         {% trans "boosted" %}
