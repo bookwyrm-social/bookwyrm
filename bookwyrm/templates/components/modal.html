@@ -1,5 +1,3 @@
-{# @todo Implement focus traps to prevent tabbing out of the modal. #}
-
 <div
     role="dialog"
     class="modal hidden"
@@ -7,6 +5,7 @@
     aria-labelledby="modal-card-title-{{ controls_text }}-{{ controls_uid }}"
     aria-modal="true"
 >
+    {# @todo Implement focus traps to prevent tabbing out of the modal. #}
     <div class="modal-background"></div>
     <div class="modal-card">
         <header class="modal-card-head" tabindex="0" id="modal-title-{{ controls_text }}-{{ controls_uid }}">
