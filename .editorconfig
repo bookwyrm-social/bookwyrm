@@ -12,18 +12,15 @@ indent_style = space
 insert_final_newline = true
 max_line_length = 100
 
-[*.{md,markdown}]
-trim_trailing_whitespace = false
-
-[*.{yml,yaml}]
-indent_size = 2
-max_line_length = off
-
 [{bw-dev,fr-dev,LICENSE}]
 max_line_length = off
 
 [*.{csv,json,html,md,po,py,svg,tsv}]
 max_line_length = off
 
-[fonts/**]
-insert_final_newline = unset
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+max_line_length = off
