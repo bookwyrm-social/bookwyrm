@@ -26,7 +26,8 @@
 </div>
 {% endif %}
 
-<form class="block" name="edit-book" action="{{ book.local_path }}/edit" method="post" enctype="multipart/form-data">
+<form class="block" name="edit-book" action="{{ book.local_path }}/edit#deduplication" method="post" enctype="multipart/form-data">
+    <fieldset {% if confirm_mode %}disabled{% endif %}>
     {% csrf_token %}
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
     <div class="columns">
@@ -68,11 +69,11 @@
                 {% for author in book.authors.all %}
                 <p><a href="{{ author.local_path }}">{{ author.name }}</a>
                 <label class="label">
-                    <input type="checkbox" name="remove-author" value="{{ author.id }}"> {% trans "Remove this author" %}
+                    <input type="checkbox" name="remove_author" value="{{ author.id }}"> {% trans "Remove this author" %}
                 </label>
                 {% endfor %}
                 <label class="label" for="id_add_author">{% trans "Add Author:" %}</label>
-                <input class="input" type="text" name="author" id="id_add_author" placeholder="John Doe">
+                <input class="input" type="text" name="add_author" id="id_add_author" placeholder="John Doe" value="{{ add_author }}">
             </section>
         </div>
 
@@ -138,6 +139,42 @@
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
         <a class="button" href="/book/{{ book.id }}">{% trans "Cancel" %}</a>
     </div>
+    </fieldset>
 </form>
+
+{% if author_matches or book_matches %}
+<hr class="block">
+<form class="box content" id="deduplication">
+    <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
+    <div class="columns">
+        {% if author_matches.exists %}
+        <fieldset class="column is-half">
+            <legend class="label">{% blocktrans %}Is "{{ add_author }}" an existing author?{% endblocktrans %}</legend>
+            {% for match in author_matches %}
+            <label class="label"><input type="radio" name="author_match" value="{{ match.id }}"> {{ match.name }}</label>
+            <p class="help">
+                <a href="{{ author.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+            </p>
+            {% endfor %}
+            <label class="label"><input type="radio" name="author_match"> this is a new author</label>
+        </fieldset>
+        {% else %}
+        <p class="column is-half">{% blocktrans %}Creating a new author: {{ add_author }}{% endblocktrans %}</p>
+        {% endif %}
+
+        {% if not book %}
+        <fieldset class="column is-half">
+            <legend class="title is-5">{% trans "Is this an editions of an existing work?" %}</legend>
+            {% for match in book_matches %}
+            <label class="label"><input type="radio" name="book_match" value="{{ match.id }}"> {{ match.title }}</label>
+            {% endfor %}
+            <label class="label"><input type="radio" name="book_match"> this is a new work</label>
+        </fieldset>
+        {% endif %}
+    </div>
+
+    <button class="button is-primary" type="submit">{% trans "save" %}</button>
+</form>
+{% endif %}
 
 {% endblock %}

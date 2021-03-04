@@ -1,6 +1,7 @@
 ''' the good stuff! the books! '''
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.postgres.search import SearchRank, SearchVector
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Avg, Q
 from django.http import HttpResponseNotFound
@@ -132,16 +133,32 @@ class EditBook(View):
         if not form.is_valid():
             return TemplateResponse(request, 'edit_book.html', data)
 
-        if not book or form.author:
+        add_author = request.POST.get('add_author')
+        if not book or add_author:
             # creting a book or adding an author to a book needs another step
-            return TemplateResponse(request, 'confirm_book.html', data)
+            data['confirm_mode'] = True
+            data['add_author'] = add_author
+            # check for existing authors
+            vector = SearchVector('name', weight='A') +\
+                     SearchVector('aliases', weight='B')
 
-        # remove authors
-        if request.POST.get('remove-author'):
-            import pdb;pdb.set_trace()
-            author = get_object_or_404(id=author_id)
+            data['author_matches'] = models.Author.objects.annotate(
+                search=vector
+            ).annotate(
+                rank=SearchRank(vector, add_author)
+            ).filter(rank__gt=0.8).order_by('-rank')[:5]
+
+            # check if this is an edition of an existing work
+            author_text = book.author_text if book else add_author
+            data['book_matches'] = connector_manager.local_search(
+                '%s %s' % (form.cleaned_data.get('title'), author_text),
+                min_confidence=0.5,
+                raw=True
+            )[:5]
+
+            return TemplateResponse(request, 'edit_book.html', data)
+
         book = form.save()
-
         return redirect('/book/%s' % book.id)
 
 
