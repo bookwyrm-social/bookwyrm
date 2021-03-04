@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-04 04:13+0000\n"
+"POT-Creation-Date: 2021-03-04 22:24+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "%(value)s is not a valid username"
 msgstr ""
 
-#: bookwyrm/models/fields.py:164
+#: bookwyrm/models/fields.py:164 bookwyrm/templates/layout.html:152
 msgid "username"
 msgstr ""
 
@@ -96,6 +96,8 @@ msgid "Books by %(name)s"
 msgstr ""
 
 #: bookwyrm/templates/book.html:21
+#: bookwyrm/templates/discover/large-book.html:12
+#: bookwyrm/templates/discover/small-book.html:9
 msgid "by"
 msgstr ""
 
@@ -423,7 +425,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:79
+#: bookwyrm/templates/layout.html:87
 msgid "Direct Messages"
 msgstr ""
 
@@ -529,7 +531,7 @@ msgid "%(username)s's %(year)s Books"
 msgstr ""
 
 #: bookwyrm/templates/import.html:5 bookwyrm/templates/import.html:9
-#: bookwyrm/templates/layout.html:94
+#: bookwyrm/templates/layout.html:102
 msgid "Import Books"
 msgstr ""
 
@@ -652,55 +654,72 @@ msgstr ""
 msgid "Feed"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:84
+#: bookwyrm/templates/layout.html:92
 #: bookwyrm/templates/preferences/preferences_layout.html:14
 msgid "Profile"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:89
+#: bookwyrm/templates/layout.html:97
 msgid "Settings"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:103
+#: bookwyrm/templates/layout.html:111
 #: bookwyrm/templates/settings/admin_layout.html:19
 #: bookwyrm/templates/settings/manage_invites.html:3
 msgid "Invites"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:110
+#: bookwyrm/templates/layout.html:118
 msgid "Site Configuration"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:117
+#: bookwyrm/templates/layout.html:125
 msgid "Log out"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:125 bookwyrm/templates/layout.html:126
+#: bookwyrm/templates/layout.html:133 bookwyrm/templates/layout.html:134
 #: bookwyrm/templates/notifications.html:6
 #: bookwyrm/templates/notifications.html:10
 msgid "Notifications"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:143 bookwyrm/templates/layout.html:147
+#: bookwyrm/templates/layout.html:151 bookwyrm/templates/layout.html:155
 #: bookwyrm/templates/login.html:17
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:152 bookwyrm/templates/login.html:10
+#: bookwyrm/templates/layout.html:156
+msgid "password"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:157 bookwyrm/templates/login.html:36
+msgid "Forgot your password?"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:160 bookwyrm/templates/login.html:10
 #: bookwyrm/templates/login.html:33
 msgid "Log in"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:183
+#: bookwyrm/templates/layout.html:168
+msgid "Join"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:191
 msgid "About this server"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/layout.html:195
 msgid "Contact site admin"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:198
+#: bookwyrm/templates/layout.html:202
+#, python-format
+msgid "Support %(site.name)s on <a href=\"%(site.support_link)s\" target=\"_blank\">%(site.support_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:206
 msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr ""
 
@@ -844,10 +863,6 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: bookwyrm/templates/login.html:36
-msgid "Forgot your password?"
-msgstr ""
-
 #: bookwyrm/templates/login.html:49
 msgid "Contact an administrator to get an invite"
 msgstr ""
@@ -938,17 +953,17 @@ msgstr ""
 
 #: bookwyrm/templates/notifications.html:90
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book.title)s</em></a>"
+msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications.html:92
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book.title)s</em></a>"
+msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications.html:94
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book.title)s</em></a>"
+msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
 msgstr ""
 
 #: bookwyrm/templates/notifications.html:96
@@ -1637,17 +1652,17 @@ msgstr ""
 msgid "Reply"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/status_content.html:16
-#: bookwyrm/templates/snippets/trimmed_text.html:12
+#: bookwyrm/templates/snippets/status/status_content.html:18
+#: bookwyrm/templates/snippets/trimmed_text.html:15
 msgid "Show more"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/status_content.html:23
-#: bookwyrm/templates/snippets/trimmed_text.html:18
+#: bookwyrm/templates/snippets/status/status_content.html:25
+#: bookwyrm/templates/snippets/trimmed_text.html:25
 msgid "Show less"
 msgstr ""
 
-#: bookwyrm/templates/snippets/status/status_content.html:44
+#: bookwyrm/templates/snippets/status/status_content.html:46
 msgid "Open image in new window"
 msgstr ""
 
