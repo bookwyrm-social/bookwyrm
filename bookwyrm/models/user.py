@@ -212,7 +212,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         try:
             self.groups.add(Group.objects.get(name='editor'))
         except Group.DoesNotExist:
-            # this should never happen except in tests
+            # this should only happen in tests
             pass
 
         # create keys and shelves for new local users
