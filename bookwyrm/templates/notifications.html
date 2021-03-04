@@ -87,11 +87,11 @@
                                 </div>
                             {% elif notification.notification_type == 'BOOST' %}
                                 {% if related_status.status_type == 'Review' %}
-                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">review of <em>{{ book.title }}</em></a>{% endblocktrans %}
                                 {% elif related_status.status_type == 'Comment' %}
-                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">comment on<em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">comment on<em>{{ book.title }}</em></a>{% endblocktrans %}
                                 {% elif related_status.status_type == 'Quotation' %}
-                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">quote from <em>{{ book_title }}</em></a>{% endblocktrans %}
+                                {% blocktrans with related_path=related_status.local_path book_title=related_status.book.title %}boosted your <a href="{{ related_path }}">quote from <em>{{ book.title }}</em></a>{% endblocktrans %}
                                 {% else %}
                                 {% blocktrans with related_path=related_status.local_path %}boosted your <a href="{{ related_path }}">status</a>{% endblocktrans %}
                                 {% endif %}
