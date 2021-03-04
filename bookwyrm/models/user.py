@@ -209,7 +209,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         super().save(*args, **kwargs)
 
         # make users editors by default
-        self.groups.add(Group.objects.get(name='editor'))
+        try:
+            self.groups.add(Group.objects.get(name='editor'))
+        except Group.objects.DoesNotExist:
+            # this should never happen except in tests
+            pass
 
         # create keys and shelves for new local users
         self.key_pair = KeyPair.objects.create(
