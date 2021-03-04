@@ -1,4 +1,5 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 {% if book %}
 <div class="columns">
     <div class="column is-narrow">
@@ -8,7 +9,7 @@
     <div class="column">
         <h3 class="title is-5"><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
         {% if book.authors %}
-        <p class="subtitle is-5">by {% include 'snippets/authors.html' with book=book %}</p>
+        <p class="subtitle is-5">{% trans "by" %} {% include 'snippets/authors.html' with book=book %}</p>
         {% endif %}
         {% if book|book_description %}
         <blockquote class="content">{{ book|book_description|to_markdown|safe|truncatewords_html:50 }}</blockquote>

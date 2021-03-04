@@ -149,12 +149,12 @@
                             <div class="columns is-variable is-1">
                                 <div class="column">
                                     <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
-                                    <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="username">
+                                    <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
                                 </div>
                                 <div class="column">
                                     <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
-                                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="password">
-                                    <p class="help"><a href="/password-reset">Forgot your password?</a></p>
+                                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                    <p class="help"><a href="/password-reset">{% trans "Forgot your password?" %}</a></p>
                                 </div>
                                 <div class="column is-narrow">
                                     <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
@@ -165,7 +165,7 @@
                     {% if site.allow_registration and request.path != '' and request.path != '/' %}
                     <div class="column is-narrow">
                         <a href="/" class="button is-link">
-                            Join
+                            {% trans "Join" %}
                         </a>
                     </div>
                     {% endif %}
@@ -199,7 +199,7 @@
             {% if site.support_link %}
             <div class="column">
                 <span class="icon icon-heart"></span>
-                Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>
+                {% blocktrans %}Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>{% endblocktrans %}
             </div>
             {% endif %}
             <div class="column">
