@@ -20,7 +20,10 @@
                 {% with shelf_counter=forloop.counter %}
                     <li>
                         <p>
-                            {{ shelf.name }}
+                            {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                            {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                            {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                            {% else %}{{ shelf.name }}{% endif %}
                         </p>
                         <div class="tabs is-small is-toggle">
                             <ul>

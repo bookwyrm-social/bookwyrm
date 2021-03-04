@@ -3,7 +3,7 @@
 {% load bookwyrm_tags %}
 {% block panel %}
 
-<h1 class="title">{% blocktrans with tab_title=tab|title %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
+<h1 class="title">{% blocktrans %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
 <div class="tabs">
     <ul>
         <li class="{% if tab == 'home' %}is-active{% endif %}">

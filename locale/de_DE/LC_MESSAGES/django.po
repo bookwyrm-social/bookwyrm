@@ -1,77 +1,77 @@
-# Simplified Chinese language text for the BookWyrm UI
+# German language text for the bookwyrm UI
 # Copyright (C) 2021 Mouse Reeve
-# This file is distributed under the same license as the bookwyrm package.
-# Mouse Reeve <mousereeve@riseup.net>, 2021.
+# This file is distributed under the same license as the BookWyrm package.
+# Mouse Reeve <mousereeve@riseup.net>, 2021
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1.1\n"
+"Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-04 04:13+0000\n"
-"PO-Revision-Date: 2021-03-02 10:35+0000\n"
-"Last-Translator: Kana <gudzpoz@live.com>\n"
-"Language-Team: Mouse Reeve <LL@li.org>\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2021-03-02 17:19-0800\n"
+"Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
+"Language-Team: English <LL@li.org>\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: bookwyrm/forms.py:185
 msgid "One Day"
-msgstr ""
+msgstr "Ein Tag"
 
 #: bookwyrm/forms.py:186
 msgid "One Week"
-msgstr ""
+msgstr "Eine Woche"
 
 #: bookwyrm/forms.py:187
 msgid "One Month"
-msgstr ""
+msgstr "Ein Monat"
 
 #: bookwyrm/forms.py:188
 msgid "Does Not Expire"
-msgstr ""
+msgstr "Läuft nicht aus"
 
 #: bookwyrm/forms.py:190
 #, python-format
 msgid "%(count)d uses"
-msgstr ""
+msgstr "%(count)d Benutzungen"
 
 #: bookwyrm/forms.py:192
 #, fuzzy
 #| msgid "Unlisted"
 msgid "Unlimited"
-msgstr "不公开"
+msgstr "Ungelistet"
 
 #: bookwyrm/models/fields.py:24
 #, python-format
 msgid "%(value)s is not a valid remote_id"
-msgstr ""
+msgstr "%(value)s ist keine gültige remote_id"
 
 #: bookwyrm/models/fields.py:33 bookwyrm/models/fields.py:42
 #, python-format
 msgid "%(value)s is not a valid username"
-msgstr ""
+msgstr "%(value)s ist kein gültiger Username"
 
 #: bookwyrm/models/fields.py:164
 #, fuzzy
-#| msgid "Username:"
+#| msgid "Server name"
 msgid "username"
-msgstr "用户名:"
+msgstr "Servername"
 
 #: bookwyrm/models/fields.py:169
 msgid "A user with that username already exists."
-msgstr ""
+msgstr "Dieser Benutzename ist bereits vergeben."
 
 #: bookwyrm/settings.py:142
 msgid "English"
-msgstr ""
+msgstr "Englisch"
 
 #: bookwyrm/settings.py:143
 msgid "German"
-msgstr ""
+msgstr "Deutsch"
 
 #: bookwyrm/settings.py:144
 msgid "Spanish"
@@ -79,85 +79,86 @@ msgstr ""
 
 #: bookwyrm/settings.py:145
 msgid "French"
-msgstr ""
+msgstr "Französisch"
 
 #: bookwyrm/settings.py:146
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "Vereinfachtes Chinesisch"
 
 #: bookwyrm/templates/author.html:16 bookwyrm/templates/author.html:17
 #: bookwyrm/templates/edit_author.html:5
 msgid "Edit Author"
-msgstr "编辑作者"
+msgstr "Autor*in editieren"
 
 #: bookwyrm/templates/author.html:32
 msgid "Wikipedia"
-msgstr "维基百科"
+msgstr ""
 
 #: bookwyrm/templates/author.html:37
 #, python-format
 msgid "Books by %(name)s"
-msgstr "%(name)s 所著的书"
+msgstr "Bücher von %(name)s"
 
 #: bookwyrm/templates/book.html:21
 msgid "by"
-msgstr ""
+msgstr "von"
 
 #: bookwyrm/templates/book.html:29 bookwyrm/templates/book.html:30
 #: bookwyrm/templates/edit_book.html:5
 msgid "Edit Book"
-msgstr "编辑书目"
+msgstr "Buch editieren"
 
 #: bookwyrm/templates/book.html:45
 msgid "Add cover"
-msgstr "添加封面"
+msgstr "Cover hinzufügen"
 
 #: bookwyrm/templates/book.html:51 bookwyrm/templates/lists/list.html:89
 msgid "Add"
-msgstr "添加"
+msgstr "Hinzufügen"
 
 #: bookwyrm/templates/book.html:60
 msgid "ISBN:"
-msgstr "ISBN:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:67 bookwyrm/templates/edit_book.html:107
 msgid "OCLC Number:"
-msgstr "OCLC 号:"
+msgstr "OCLC Nummer:"
 
 #: bookwyrm/templates/book.html:74 bookwyrm/templates/edit_book.html:111
 msgid "ASIN:"
-msgstr "ASIN:"
+msgstr ""
 
 #: bookwyrm/templates/book.html:84
 #, fuzzy, python-format
 #| msgid "of %(book.pages)s pages"
 msgid "%(format)s, %(pages)s pages"
-msgstr "全书 %(book.pages)s 页"
+msgstr "von %(book.pages)s Seiten"
 
 #: bookwyrm/templates/book.html:86
 #, fuzzy, python-format
 #| msgid "of %(book.pages)s pages"
 msgid "%(pages)s pages"
-msgstr "全书 %(book.pages)s 页"
+msgstr "von %(book.pages)s Seiten"
 
 #: bookwyrm/templates/book.html:91
 msgid "View on OpenLibrary"
-msgstr "在 OpenLibrary 查看"
+msgstr "In OpenLibrary ansehen"
 
 #: bookwyrm/templates/book.html:100
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
-msgstr[0] ""
+msgstr[0] "(%(review_count)s Bewertung)"
+msgstr[1] "(%(review_count)s Bewertungen)"
 
 #: bookwyrm/templates/book.html:106
 msgid "Add Description"
-msgstr "添加描述"
+msgstr "Beschreibung hinzufügen"
 
 #: bookwyrm/templates/book.html:113 bookwyrm/templates/edit_book.html:39
 #: bookwyrm/templates/lists/form.html:12
 msgid "Description:"
-msgstr "描述:"
+msgstr "Beschreibung:"
 
 #: bookwyrm/templates/book.html:117 bookwyrm/templates/edit_author.html:78
 #: bookwyrm/templates/edit_book.html:120 bookwyrm/templates/lists/form.html:42
@@ -168,7 +169,7 @@ msgstr "描述:"
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:34
 msgid "Save"
-msgstr "保存"
+msgstr "Speichern"
 
 #: bookwyrm/templates/book.html:118 bookwyrm/templates/book.html:167
 #: bookwyrm/templates/edit_author.html:79 bookwyrm/templates/edit_book.html:121
@@ -179,1656 +180,1657 @@ msgstr "保存"
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:35
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:28
 msgid "Cancel"
-msgstr "取消"
+msgstr "Abbrechen"
 
 #: bookwyrm/templates/book.html:127
 #, fuzzy, python-format
 #| msgid "<a href=\"%(path)s\">%(title)s</a> by "
 msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
-msgstr "<a href=\"%(path)s\">%(title)s</a> 来自"
+msgstr "<a href=\"%(path)s\">%(title)s</a> von"
 
 #: bookwyrm/templates/book.html:135
 #, fuzzy, python-format
 #| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgid "This edition is on your <a href=\"%(path)s\">%(shelf_name)s</a> shelf."
-msgstr "与 <a href=\"%(path)s\">%(username)s</a> 私信"
+msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/book.html:141
 #, fuzzy, python-format
 #| msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr " 添加了 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr "hat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> zu deiner Liste \"<a href=\"%(list_path)s\">%(list_name)s</a>\" Hinzugefügt"
 
 #: bookwyrm/templates/book.html:150
 msgid "Your reading activity"
-msgstr "你的阅读活动"
+msgstr "Deine Leseaktivität"
 
 #: bookwyrm/templates/book.html:152
 msgid "Add read dates"
-msgstr "添加阅读日期"
+msgstr "Lesedaten hinzufügen"
 
 #: bookwyrm/templates/book.html:157
 msgid "You don't have any reading activity for this book."
-msgstr "你还没有任何这本书的阅读活动。"
+msgstr "Du hast keine Leseaktivität für dieses Buch."
 
 #: bookwyrm/templates/book.html:164
 msgid "Create"
-msgstr "创建"
+msgstr "Erstellen"
 
 #: bookwyrm/templates/book.html:186
 msgid "Tags"
-msgstr "标签"
+msgstr ""
 
 #: bookwyrm/templates/book.html:190 bookwyrm/templates/snippets/tag.html:18
 msgid "Add tag"
-msgstr "添加标签"
+msgstr "Tag hinzufügen"
 
 #: bookwyrm/templates/book.html:207
 msgid "Subjects"
-msgstr "主题"
+msgstr "Themen"
 
 #: bookwyrm/templates/book.html:218
 msgid "Places"
-msgstr "地点"
+msgstr "Orte"
 
 #: bookwyrm/templates/book.html:229 bookwyrm/templates/layout.html:64
 #: bookwyrm/templates/lists/lists.html:4 bookwyrm/templates/lists/lists.html:9
 #: bookwyrm/templates/search_results.html:90
 #: bookwyrm/templates/user/user_layout.html:62
 msgid "Lists"
-msgstr "列表"
+msgstr "Listen"
 
 #: bookwyrm/templates/book.html:258
 msgid "rated it"
-msgstr "评价了"
+msgstr "bewertet"
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/feed/feed_layout.html:54
 msgid "Close"
-msgstr "关闭"
+msgstr "Schließen"
 
 #: bookwyrm/templates/discover/about.html:7
 #, python-format
 msgid "About %(site_name)s"
-msgstr "关于 %(site_name)s"
+msgstr "Über %(site_name)s"
 
 #: bookwyrm/templates/discover/about.html:10
 #: bookwyrm/templates/discover/about.html:20
 msgid "Code of Conduct"
-msgstr "行为准则"
+msgstr ""
 
 #: bookwyrm/templates/discover/about.html:13
 #: bookwyrm/templates/discover/about.html:29
 msgid "Privacy Policy"
-msgstr "隐私政策"
+msgstr "Datenschutzerklärung"
 
 #: bookwyrm/templates/discover/discover.html:6
 msgid "Recent Books"
-msgstr "最近书目"
+msgstr "Aktive Bücher"
 
 #: bookwyrm/templates/discover/landing_layout.html:5
 msgid "Welcome"
-msgstr "欢迎"
+msgstr "Willkommen"
 
 #: bookwyrm/templates/discover/landing_layout.html:17
 msgid "Decentralized"
-msgstr "去中心化"
+msgstr "Dezentral"
 
 #: bookwyrm/templates/discover/landing_layout.html:23
 msgid "Friendly"
-msgstr "友好"
+msgstr "Freundlich"
 
 #: bookwyrm/templates/discover/landing_layout.html:29
 msgid "Anti-Corporate"
-msgstr "反企业"
+msgstr ""
 
 #: bookwyrm/templates/discover/landing_layout.html:44
 #, python-format
 msgid "Join %(name)s"
-msgstr "加入 %(name)s"
+msgstr "Tritt %(name)s bei"
 
 #: bookwyrm/templates/discover/landing_layout.html:49
 #: bookwyrm/templates/login.html:48
 msgid "This instance is closed"
-msgstr "本实例不开放。"
+msgstr "Diese Instanz ist geschlossen"
 
 #: bookwyrm/templates/discover/landing_layout.html:55
 msgid "Your Account"
-msgstr "你的帐号"
+msgstr "Dein Account"
 
 #: bookwyrm/templates/edit_author.html:13 bookwyrm/templates/edit_book.html:13
 msgid "Added:"
-msgstr "添加了:"
+msgstr "Hinzugefügt:"
 
 #: bookwyrm/templates/edit_author.html:14 bookwyrm/templates/edit_book.html:14
 msgid "Updated:"
-msgstr "更新了:"
+msgstr "Aktualisiert:"
 
 #: bookwyrm/templates/edit_author.html:15 bookwyrm/templates/edit_book.html:15
 msgid "Last edited by:"
-msgstr "最后编辑人:"
+msgstr "Zuletzt bearbeitet von:"
 
 #: bookwyrm/templates/edit_author.html:31 bookwyrm/templates/edit_book.html:30
 msgid "Metadata"
-msgstr "元数据"
+msgstr "Metadaten"
 
 #: bookwyrm/templates/edit_author.html:32 bookwyrm/templates/lists/form.html:8
 #: bookwyrm/templates/user/create_shelf_form.html:13
 #: bookwyrm/templates/user/edit_shelf_form.html:14
 msgid "Name:"
-msgstr "名称:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:37
 msgid "Bio:"
-msgstr "简介:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:42
 msgid "Wikipedia link:"
-msgstr "维基百科链接:"
+msgstr "Wikipedialink:"
 
 #: bookwyrm/templates/edit_author.html:47
 msgid "Birth date:"
-msgstr "出生日期:"
+msgstr "Geburtsdatum:"
 
 #: bookwyrm/templates/edit_author.html:52
 msgid "Death date:"
-msgstr "死亡日期:"
+msgstr "Todesdatum:"
 
 #: bookwyrm/templates/edit_author.html:58
 msgid "Author Identifiers"
-msgstr "作者标识号:"
+msgstr "Autor*innenidentifikatoren"
 
 #: bookwyrm/templates/edit_author.html:59 bookwyrm/templates/edit_book.html:103
 msgid "Openlibrary key:"
-msgstr "Openlibrary key:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:64
 msgid "Librarything key:"
-msgstr "Librarything key:"
+msgstr ""
 
 #: bookwyrm/templates/edit_author.html:69
 msgid "Goodreads key:"
-msgstr "Goodreads key:"
+msgstr ""
 
 #: bookwyrm/templates/edit_book.html:31
 msgid "Title:"
-msgstr "标题:"
+msgstr "Titel:"
 
 #: bookwyrm/templates/edit_book.html:35
 msgid "Subtitle:"
-msgstr "副标题:"
+msgstr "Untertitel:"
 
 #: bookwyrm/templates/edit_book.html:43
 msgid "Series:"
-msgstr "系列:"
+msgstr "Serie:"
 
 #: bookwyrm/templates/edit_book.html:47
 msgid "Series number:"
-msgstr "系列编号:"
+msgstr "Seriennummer:"
 
 #: bookwyrm/templates/edit_book.html:51
 msgid "First published date:"
-msgstr "初版时间:"
+msgstr "Erstveröffentlichungsdatum:"
 
 #: bookwyrm/templates/edit_book.html:55
 msgid "Published date:"
-msgstr "出版时间:"
+msgstr "Veröffentlichungsdatum:"
 
 #: bookwyrm/templates/edit_book.html:68
 #: bookwyrm/templates/snippets/shelf.html:9
 msgid "Cover"
-msgstr "封面"
+msgstr ""
 
 #: bookwyrm/templates/edit_book.html:78
 msgid "Physical Properties"
-msgstr "实体性质"
+msgstr "Physikalische Eigenschaften"
 
 #: bookwyrm/templates/edit_book.html:79
 msgid "Format:"
-msgstr "格式:"
+msgstr ""
 
 #: bookwyrm/templates/edit_book.html:87
 msgid "Pages:"
-msgstr "页数:"
+msgstr "Seiten:"
 
 #: bookwyrm/templates/edit_book.html:94
 msgid "Book Identifiers"
-msgstr "书目标识号"
+msgstr "Buchidentifikatoren"
 
 #: bookwyrm/templates/edit_book.html:95
 msgid "ISBN 13:"
-msgstr "ISBN 13:"
+msgstr ""
 
 #: bookwyrm/templates/edit_book.html:99
 msgid "ISBN 10:"
-msgstr "ISBN 10:"
+msgstr ""
 
 #: bookwyrm/templates/editions.html:5
 #, python-format
 msgid "Editions of %(book_title)s"
-msgstr "%(book_title)s 的各版本"
+msgstr "Editionen von  %(book_title)s"
 
 #: bookwyrm/templates/editions.html:9
 #, python-format
 msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
-msgstr "<a href=\"%(work_path)s\">\"%(work_title)s\"</a> 的各版本"
+msgstr "Editionen von <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
 
 #: bookwyrm/templates/error.html:4
 msgid "Oops!"
-msgstr "哎呀！"
+msgstr "Ups!"
 
 #: bookwyrm/templates/error.html:8
 msgid "Server Error"
-msgstr "服务器错误"
+msgstr ""
 
 #: bookwyrm/templates/error.html:9
 msgid "Something went wrong! Sorry about that."
-msgstr "某些东西出错了！对不起啦。"
+msgstr "Etwas lief schief. Entschuldigung!"
 
 #: bookwyrm/templates/feed/direct_messages.html:8
 #, python-format
 msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
-msgstr "与 <a href=\"%(path)s\">%(username)s</a> 私信"
+msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
 #: bookwyrm/templates/layout.html:79
 msgid "Direct Messages"
-msgstr "私信"
+msgstr "Direktnachrichten"
 
 #: bookwyrm/templates/feed/direct_messages.html:13
 msgid "All messages"
-msgstr "所有消息"
+msgstr "Alle Nachrichten"
 
 #: bookwyrm/templates/feed/direct_messages.html:22
 msgid "You have no messages right now."
-msgstr "你现在没有消息。"
+msgstr "Du hast momentan keine Nachrichten."
 
 #: bookwyrm/templates/feed/feed.html:6
 #, python-format
 msgid "%(tab_title)s Timeline"
-msgstr "%(tab_title)s 时间线"
+msgstr ""
 
 #: bookwyrm/templates/feed/feed.html:10 bookwyrm/views/feed.py:33
 msgid "Home"
-msgstr "主页"
+msgstr ""
 
 #: bookwyrm/templates/feed/feed.html:13 bookwyrm/views/feed.py:37
 msgid "Local"
-msgstr "本站"
+msgstr "Lokal"
 
 #: bookwyrm/templates/feed/feed.html:16 bookwyrm/views/feed.py:41
 msgid "Federated"
-msgstr "跨站"
+msgstr "Föderiert"
 
 #: bookwyrm/templates/feed/feed.html:24
 msgid "Announcements"
-msgstr "公告"
+msgstr "Ankündigungen"
 
 #: bookwyrm/templates/feed/feed.html:32
 msgid "There aren't any activities right now! Try following a user to get started"
-msgstr "现在还没有任何活动！尝试着从关注一个用户开始吧"
+msgstr "Hier sind noch keine Aktivitäten! Folge anderen, um loszulegen"
 
 #: bookwyrm/templates/feed/feed_layout.html:5
 msgid "Updates"
-msgstr "更新"
+msgstr ""
 
 #: bookwyrm/templates/feed/feed_layout.html:11
 msgid "Your books"
-msgstr "你的书目"
+msgstr "Deine Bücher"
 
 #: bookwyrm/templates/feed/feed_layout.html:13
 msgid "There are no books here right now! Try searching for a book to get started"
-msgstr "现在这里还没有任何书目！尝试着从搜索某本书开始吧"
+msgstr "Hier sind noch keine Bücher! Versuche nach Büchern zu suchen um loszulegen"
 
 #: bookwyrm/templates/feed/feed_layout.html:23
 #: bookwyrm/templates/user/shelf.html:24
 #, fuzzy
 #| msgid "Read"
 msgid "To Read"
-msgstr "阅读"
+msgstr "Auf der Leseliste"
 
 #: bookwyrm/templates/feed/feed_layout.html:24
 #: bookwyrm/templates/user/shelf.html:24
 #, fuzzy
 #| msgid "Start reading"
 msgid "Currently Reading"
-msgstr "开始阅读"
+msgstr "Gerade lesend"
 
 #: bookwyrm/templates/feed/feed_layout.html:25
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
 #: bookwyrm/templates/user/shelf.html:24
 msgid "Read"
-msgstr "阅读"
+msgstr "Gelesen"
 
 #: bookwyrm/templates/feed/feed_layout.html:76 bookwyrm/templates/goal.html:26
 #: bookwyrm/templates/snippets/goal_card.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
-msgstr "%(year)s 阅读目标"
+msgstr "%(year)s Leseziel"
 
 #: bookwyrm/templates/feed/status.html:8
 msgid "Back"
-msgstr "返回"
+msgstr "Zurück"
 
 #: bookwyrm/templates/goal.html:7
 #, python-format
 msgid "%(year)s Reading Progress"
-msgstr "%(year)s 阅读进度"
+msgstr "%(year)s Lesefortschritt"
 
 #: bookwyrm/templates/goal.html:11
 msgid "Edit Goal"
-msgstr "编辑目标"
+msgstr "Ziel bearbeiten"
 
 #: bookwyrm/templates/goal.html:30
 #: bookwyrm/templates/snippets/goal_card.html:13
 #, python-format
 msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
-msgstr "设定一个 %(year)s 内要读多少书的目标，并记录你全年的进度。"
+msgstr "Setze dir ein Ziel, wie viele Bücher du %(year)s lesen wirst und behalte deinen Fortschritt über's Jahr im Auge."
 
 #: bookwyrm/templates/goal.html:39
 #, python-format
 msgid "%(name)s hasn't set a reading goal for %(year)s."
-msgstr "%(name)s 还没有设定 %(year)s 的阅读目标。"
+msgstr "%(name)s hat sich für %(year)s kein Leseziel gesetzt."
 
 #: bookwyrm/templates/goal.html:51
 #, python-format
 msgid "Your %(year)s Books"
-msgstr "你 %(year)s 的书目"
+msgstr "Deine %(year)s Bücher"
 
 #: bookwyrm/templates/goal.html:53
 #, python-format
 msgid "%(username)s's %(year)s Books"
-msgstr "%(username)s 在 %(year)s 的书目"
+msgstr "%(username)ss %(year)s Bücher"
 
 #: bookwyrm/templates/import.html:5 bookwyrm/templates/import.html:9
 #: bookwyrm/templates/layout.html:94
 msgid "Import Books"
-msgstr "导入书目"
+msgstr "Bücher importieren"
 
 #: bookwyrm/templates/import.html:14
 msgid "Data source"
-msgstr "数据来源"
+msgstr "Datenquelle"
 
 #: bookwyrm/templates/import.html:32
 msgid "Include reviews"
-msgstr "纳入书评"
+msgstr "Bewertungen importieren"
 
 #: bookwyrm/templates/import.html:37
 msgid "Privacy setting for imported reviews:"
-msgstr "导入书评的隐私设定"
+msgstr "Datenschutzeinstellung für importierte Bewertungen"
 
 #: bookwyrm/templates/import.html:41
 msgid "Import"
-msgstr "导入"
+msgstr "Importieren"
 
 #: bookwyrm/templates/import.html:46
 msgid "Recent Imports"
-msgstr "最近的导入"
+msgstr "Aktuelle Importe"
 
 #: bookwyrm/templates/import.html:48
 msgid "No recent imports"
-msgstr "无最近的导入"
+msgstr "Keine aktuellen Importe"
 
 #: bookwyrm/templates/import_status.html:6
 #: bookwyrm/templates/import_status.html:10
 msgid "Import Status"
-msgstr "导入状态"
+msgstr "Importstatus"
 
 #: bookwyrm/templates/import_status.html:13
 msgid "Import started:"
-msgstr "导入开始:"
+msgstr "Import gestartet:"
 
 #: bookwyrm/templates/import_status.html:17
 msgid "Import completed:"
-msgstr "导入完成:"
+msgstr "Import abgeschlossen:"
 
 #: bookwyrm/templates/import_status.html:20
 msgid "TASK FAILED"
-msgstr "任务失败"
+msgstr "AUFGABE GESCHEITERT"
 
 #: bookwyrm/templates/import_status.html:26
 msgid "Import still in progress."
-msgstr "还在导入中。"
+msgstr "Import läuft noch."
 
 #: bookwyrm/templates/import_status.html:28
 msgid "(Hit reload to update!)"
-msgstr "（按下重新加载来更新！）"
+msgstr "(Aktualisiere für ein Update!)"
 
 #: bookwyrm/templates/import_status.html:35
 msgid "Failed to load"
-msgstr "加载失败"
+msgstr "Laden fehlgeschlagen"
 
 #: bookwyrm/templates/import_status.html:59
 msgid "Select all"
-msgstr "全选"
+msgstr "Alle auswählen"
 
 #: bookwyrm/templates/import_status.html:62
 msgid "Retry items"
-msgstr "重试项目"
+msgstr "Punkte erneut versuchen"
 
 #: bookwyrm/templates/import_status.html:84
 msgid "Successfully imported"
-msgstr "成功导入了"
+msgstr "Erfolgreich importiert"
 
 #: bookwyrm/templates/import_status.html:88
 #: bookwyrm/templates/lists/curate.html:14
 msgid "Book"
-msgstr "书目"
+msgstr "Buch"
 
 #: bookwyrm/templates/import_status.html:91
 #: bookwyrm/templates/snippets/create_status_form.html:10
 #: bookwyrm/templates/snippets/shelf.html:10
 msgid "Title"
-msgstr "标题"
+msgstr "Titel"
 
 #: bookwyrm/templates/import_status.html:94
 #: bookwyrm/templates/snippets/shelf.html:11
 msgid "Author"
-msgstr "作者"
+msgstr "Autor*in"
 
 #: bookwyrm/templates/import_status.html:117
 msgid "Imported"
-msgstr "已导入"
+msgstr "Importiert"
 
 #: bookwyrm/templates/invite.html:4 bookwyrm/templates/invite.html:12
 #: bookwyrm/templates/login.html:43
 msgid "Create an Account"
-msgstr "创建帐号"
+msgstr "Erstelle einen Account"
 
 #: bookwyrm/templates/invite.html:21
 msgid "Permission Denied"
-msgstr "没有权限"
+msgstr "Zugiff verweigert"
 
 #: bookwyrm/templates/invite.html:22
 msgid "Sorry! This invite code is no longer valid."
-msgstr "抱歉！此邀请码已不再有效。"
+msgstr "Sorry! Dieser Einladecode ist mehr gültig."
 
 #: bookwyrm/templates/layout.html:33
 msgid "Search for a book or user"
-msgstr "搜索书目或用户"
+msgstr "Suche nach Buch oder Benutzer*in"
 
 #: bookwyrm/templates/layout.html:37 bookwyrm/templates/layout.html:38
 #: bookwyrm/templates/lists/list.html:62
 msgid "Search"
-msgstr "搜索"
+msgstr "Suche"
 
 #: bookwyrm/templates/layout.html:47 bookwyrm/templates/layout.html:48
 msgid "Main navigation menu"
-msgstr "主导航菜单"
+msgstr "Navigationshauptmenü"
 
 #: bookwyrm/templates/layout.html:58
 msgid "Your shelves"
-msgstr "你的书架"
+msgstr "Deine Regale"
 
 #: bookwyrm/templates/layout.html:61
 msgid "Feed"
-msgstr "动态"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:84
 #: bookwyrm/templates/preferences/preferences_layout.html:14
 msgid "Profile"
-msgstr "个人资料"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:89
 msgid "Settings"
-msgstr "设置"
+msgstr "Einstellungen"
 
 #: bookwyrm/templates/layout.html:103
 #: bookwyrm/templates/settings/admin_layout.html:19
 #: bookwyrm/templates/settings/manage_invites.html:3
 msgid "Invites"
-msgstr "邀请"
+msgstr "Einladungen"
 
 #: bookwyrm/templates/layout.html:110
 msgid "Site Configuration"
-msgstr "站点配置"
+msgstr "Seiteneinstellungen"
 
 #: bookwyrm/templates/layout.html:117
 msgid "Log out"
-msgstr "登出"
+msgstr "Abmelden"
 
 #: bookwyrm/templates/layout.html:125 bookwyrm/templates/layout.html:126
 #: bookwyrm/templates/notifications.html:6
 #: bookwyrm/templates/notifications.html:10
 msgid "Notifications"
-msgstr "通知"
+msgstr "Benachrichtigungen"
 
 #: bookwyrm/templates/layout.html:143 bookwyrm/templates/layout.html:147
 #: bookwyrm/templates/login.html:17
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
-msgstr "用户名:"
+msgstr ""
 
 #: bookwyrm/templates/layout.html:152 bookwyrm/templates/login.html:10
 #: bookwyrm/templates/login.html:33
 msgid "Log in"
-msgstr "登录"
+msgstr "Anmelden"
 
 #: bookwyrm/templates/layout.html:183
 msgid "About this server"
-msgstr "关于本服务器"
+msgstr "Über diesen Server"
 
 #: bookwyrm/templates/layout.html:187
 msgid "Contact site admin"
-msgstr "联系站点管理员"
+msgstr "Admin kontaktieren"
 
 #: bookwyrm/templates/layout.html:198
 msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr "BookWyrm 是开源软件。你可以在<a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
+msgstr "BookWyrm ist open source Software. Du kannst dich auf <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> beteiligen oder etwas melden."
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:17
 msgid "Create List"
-msgstr "创建列表"
+msgstr "Liste erstellen"
 
 #: bookwyrm/templates/lists/curate.html:6
 msgid "Pending Books"
-msgstr "等候中的书目"
+msgstr "Unbestätigte Bücher"
 
 #: bookwyrm/templates/lists/curate.html:7
 msgid "Go to list"
-msgstr "前往列表"
+msgstr "Zur Liste"
 
 #: bookwyrm/templates/lists/curate.html:9
 msgid "You're all set!"
-msgstr "都弄好了！"
+msgstr "Du bist soweit!"
 
 #: bookwyrm/templates/lists/curate.html:15
 msgid "Suggested by"
-msgstr "推荐来自"
+msgstr "Vorgeschlagen von"
 
 #: bookwyrm/templates/lists/curate.html:35
 msgid "Approve"
-msgstr "批准"
+msgstr "Bestätigen"
 
 #: bookwyrm/templates/lists/curate.html:41
 msgid "Discard"
-msgstr "削除"
+msgstr "Ablehnen"
 
 #: bookwyrm/templates/lists/edit_form.html:5
 #: bookwyrm/templates/lists/list_layout.html:17
 msgid "Edit List"
-msgstr "编辑列表"
+msgstr "Liste bearbeiten"
 
 #: bookwyrm/templates/lists/form.html:18
 msgid "List curation:"
-msgstr "列表策展:"
+msgstr "Listenkuratierung:"
 
 #: bookwyrm/templates/lists/form.html:21
 msgid "Closed"
-msgstr "已关闭"
+msgstr "Geschlossen"
 
 #: bookwyrm/templates/lists/form.html:22
 msgid "Only you can add and remove books to this list"
-msgstr "只有你可以在此列表中添加或移除书目"
+msgstr "Nur du kannst Bücher hinzufügen oder entfernen"
 
 #: bookwyrm/templates/lists/form.html:26
 msgid "Curated"
-msgstr "策展"
+msgstr "Kuratiert"
 
 #: bookwyrm/templates/lists/form.html:27
 msgid "Anyone can suggest books, subject to your approval"
-msgstr "任何人都可以推荐书目、主题让你批准"
+msgstr "Alle können Bücher vorschlagen, du kannst diese bestätigen"
 
 #: bookwyrm/templates/lists/form.html:31
 msgid "Open"
-msgstr "开放"
+msgstr "Offen"
 
 #: bookwyrm/templates/lists/form.html:32
 msgid "Anyone can add books to this list"
-msgstr "任何人都可以向此列表中添加书目"
+msgstr "Alle können Bücher hinzufügen"
 
 #: bookwyrm/templates/lists/list.html:17
 msgid "This list is currently empty"
-msgstr "此列表当前是空的"
+msgstr "Diese Liste ist momentan leer"
 
 #: bookwyrm/templates/lists/list.html:35
 #, fuzzy, python-format
 #| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr "与 <a href=\"%(path)s\">%(username)s</a> 私信"
+msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:41
 msgid "Remove"
-msgstr "移除"
+msgstr "Entfernen"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "Add Books"
-msgstr "添加书目"
+msgstr "Bücher hinzufügen"
 
 #: bookwyrm/templates/lists/list.html:54
 msgid "Suggest Books"
-msgstr "推荐书目"
+msgstr "Bücher vorschlagen"
 
 #: bookwyrm/templates/lists/list.html:58
 msgid "Search for a book"
-msgstr "搜索书目"
+msgstr "Nach einem Buch suchen"
 
 #: bookwyrm/templates/lists/list.html:63
 msgid "search"
-msgstr "搜索"
+msgstr "suchen"
 
 #: bookwyrm/templates/lists/list.html:69
 msgid "Clear search"
-msgstr "清除搜索"
+msgstr "Suche leeren"
 
 #: bookwyrm/templates/lists/list.html:74
 #, python-format
 msgid "No books found matching the query \"%(query)s\""
-msgstr "没有符合 \"%(query)s\" 请求的书目"
+msgstr "Keine passenden Bücher zu \"%(query)s\" gefunden"
 
 #: bookwyrm/templates/lists/list.html:75
 msgid "No books found"
-msgstr "没有找到书目"
+msgstr "Keine Bücher gefunden"
 
 #: bookwyrm/templates/lists/list.html:89
 msgid "Suggest"
-msgstr "推荐"
+msgstr "Vorschlagen"
 
 #: bookwyrm/templates/lists/list_items.html:19
 #: bookwyrm/templates/lists/list_layout.html:11
 msgid "Created and curated by"
-msgstr "创建者及策展者为"
+msgstr "Erstellt und kuratiert von"
 
 #: bookwyrm/templates/lists/list_items.html:19
 #: bookwyrm/templates/lists/list_layout.html:11
 msgid "Created by"
-msgstr "创建者为"
+msgstr "Erstellt von"
 
 #: bookwyrm/templates/lists/lists.html:14
 msgid "Your lists"
-msgstr "你的列表"
+msgstr "Deine Listen"
 
 #: bookwyrm/templates/lists/lists.html:32
 #, fuzzy, python-format
 #| msgid "See all %(size)s"
 msgid "See all %(size)s lists"
-msgstr "查看所有 %(size)s"
+msgstr "Alle %(size)s anzeigen"
 
 #: bookwyrm/templates/lists/lists.html:40
 msgid "Recent Lists"
-msgstr "最近的列表"
+msgstr "Aktuelle Listen"
 
 #: bookwyrm/templates/login.html:4
 msgid "Login"
-msgstr "登录"
+msgstr ""
 
 #: bookwyrm/templates/login.html:23 bookwyrm/templates/password_reset.html:17
 #: bookwyrm/templates/snippets/register_form.html:22
 msgid "Password:"
-msgstr "密码:"
+msgstr "Passwort:"
 
 #: bookwyrm/templates/login.html:36
 msgid "Forgot your password?"
-msgstr "忘记了密码？"
+msgstr "Passwort vergessen?"
 
 #: bookwyrm/templates/login.html:49
 msgid "Contact an administrator to get an invite"
-msgstr "联系管理员以取得邀请"
+msgstr "Kontaktiere für eine Einladung eine*n Admin"
 
 #: bookwyrm/templates/login.html:59
 msgid "More about this site"
-msgstr "关于本站点的更多"
+msgstr "Mehr über diese Seite"
 
 #: bookwyrm/templates/notfound.html:4 bookwyrm/templates/notfound.html:8
 msgid "Not Found"
-msgstr "未找到"
+msgstr "Nicht gefunden"
 
 #: bookwyrm/templates/notfound.html:9
 #, fuzzy
 #| msgid "The page your requested doesn't seem to exist!"
 msgid "The page you requested doesn't seem to exist!"
-msgstr "你请求的页面似乎并不存在！"
+msgstr "Die Seite die du angefordert hast scheint nicht zu existieren!"
 
 #: bookwyrm/templates/notifications.html:14
 msgid "Delete notifications"
-msgstr "删除通知"
+msgstr "Benachrichtigungen löschen"
 
 #: bookwyrm/templates/notifications.html:49
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
+msgstr "hat deine <a href=\"%(related_path)s\">Bewertung von <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications.html:51
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
+msgstr "hat deinen <a href=\"%(related_path)s\">Kommentar zu <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications.html:53
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "喜欢了你 <a href=\"%(related_path)s\">来自 <em>%(book_title)s</em> 的引用</a>"
+msgstr " hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a>"
 
 #: bookwyrm/templates/notifications.html:55
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">status</a>"
-msgstr "喜欢了你的 <a href=\"%(related_path)s\">状态</a>"
+msgstr "hat deinen <a href=\"%(related_path)s\">Status</a> favorisiert"
 
 #: bookwyrm/templates/notifications.html:60
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a> 里提到了你"
+msgstr "hat dich in einer <a href=\"%(related_path)s\">Bewertung von <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications.html:62
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a> 里提到了你"
+msgstr "hat dich in einem <a href=\"%(related_path)s\">Kommentar zu <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications.html:64
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a> 中提到了你"
+msgstr "hat dich in einem <a href=\"%(related_path)s\">Zitat von <em>%(book_title)s</em></a> erwähnt"
 
 #: bookwyrm/templates/notifications.html:66
 #, python-format
 msgid "mentioned you in a <a href=\"%(related_path)s\">status</a>"
-msgstr "在 <a href=\"%(related_path)s\">状态</a> 中提到了你"
+msgstr "hat dich in einem <a href=\"%(related_path)s\">Status</a> erwähnt"
 
 #: bookwyrm/templates/notifications.html:71
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
+msgstr "hat auf deine <a href=\"%(parent_path)s\">Bewertung von <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a> "
 
 #: bookwyrm/templates/notifications.html:73
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
+msgstr "hat auf deinen <a href=\"%(parent_path)s\">Kommentar zu <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications.html:75
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr "<a href=\"%(related_path)s\">回复</a> 了你 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 中的引用</a>"
+msgstr "hat auf dein <a href=\"%(parent_path)s\">Zitat aus <em>%(book_title)s</em></a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications.html:77
 #, python-format
 msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
-msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">状态</a>"
+msgstr "hat auf deinen <a href=\"%(parent_path)s\">Status</a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #: bookwyrm/templates/notifications.html:81
 msgid "followed you"
-msgstr "关注了你"
+msgstr "folgt dir"
 
 #: bookwyrm/templates/notifications.html:84
 msgid "sent you a follow request"
-msgstr "向你发送了关注请求"
+msgstr "hat dir eine Folgeanfrage geschickt"
 
 #: bookwyrm/templates/notifications.html:90
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的书评</a>"
+msgstr "hat deine <a href=\"%(related_path)s\">Bewertung von <em>%(book.title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications.html:92
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的评论</a>"
+msgstr "hat deinen <a href=\"%(related_path)s\">Kommentar zu<em>%(book.title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications.html:94
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的引用</a>"
+msgstr "hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book.title)s</em></a> geteilt"
 
 #: bookwyrm/templates/notifications.html:96
 #, python-format
 msgid "boosted your <a href=\"%(related_path)s\">status</a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">状态</a>"
+msgstr "hat deinen <a href=\"%(related_path)s\">Status</a> geteilt"
 
 #: bookwyrm/templates/notifications.html:100
 #, python-format
 msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr " 添加了 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr "hat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> zu deiner Liste \"<a href=\"%(list_path)s\">%(list_name)s</a>\" Hinzugefügt"
 
 #: bookwyrm/templates/notifications.html:102
 #, python-format
 msgid " suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
-msgstr " 推荐添加 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
+msgstr "hat <em><a href=\"%(book_path)s\">%(book_title)s</a></em> für deine Liste \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\" vorgeschlagen"
 
 #: bookwyrm/templates/notifications.html:106
 #, python-format
 msgid " your <a href=\"/import/%(related_id)s\">import</a> completed."
-msgstr " 你的 <a href=\"/import/%(related_id)s\">导入</a> 已完成。"
+msgstr " dein <a href=\"/import/%(related_id)s\">Import</a> ist abgeschlossen."
 
 #: bookwyrm/templates/notifications.html:138
 msgid "You're all caught up!"
-msgstr "你什么也没错过！"
+msgstr "Du bist auf dem neusten Stand!"
 
 #: bookwyrm/templates/password_reset.html:4
 #: bookwyrm/templates/password_reset.html:10
 #: bookwyrm/templates/password_reset_request.html:4
 #: bookwyrm/templates/password_reset_request.html:10
-#, fuzzy
 msgid "Reset Password"
-msgstr "重设密码"
+msgstr "Passwort zurücksetzen!"
 
 #: bookwyrm/templates/password_reset.html:23
 #: bookwyrm/templates/preferences/change_password.html:18
 msgid "Confirm password:"
-msgstr "确认密码:"
+msgstr "Passwort bestätigen:"
 
 #: bookwyrm/templates/password_reset.html:30
 msgid "Confirm"
-msgstr "确认"
+msgstr "Bestätigen"
 
 #: bookwyrm/templates/password_reset_request.html:12
 msgid "A link to reset your password will be sent to your email address"
-msgstr "重设你的密码的链接将会被发送到你的邮箱地址"
+msgstr "Ein Link zum Zurücksetzen deines Passworts wird an deine Mailadresse geschickt"
 
 #: bookwyrm/templates/password_reset_request.html:16
 #: bookwyrm/templates/preferences/edit_user.html:38
 #: bookwyrm/templates/snippets/register_form.html:13
 msgid "Email address:"
-msgstr "邮箱地址:"
+msgstr "E-Mail Adresse"
 
 #: bookwyrm/templates/password_reset_request.html:23
 msgid "Reset password"
-msgstr "重设密码"
+msgstr "Passwort zurücksetzen"
 
 #: bookwyrm/templates/preferences/blocks.html:4
 #: bookwyrm/templates/preferences/blocks.html:7
 #: bookwyrm/templates/preferences/preferences_layout.html:23
 msgid "Blocked Users"
-msgstr "屏蔽的用户"
+msgstr "Blockierte Nutzer*innen"
 
 #: bookwyrm/templates/preferences/blocks.html:12
 msgid "No users currently blocked."
-msgstr "当前没有被屏蔽的用户。"
+msgstr "Momentan keine Nutzer*innen blockiert."
 
 #: bookwyrm/templates/preferences/change_password.html:4
 #: bookwyrm/templates/preferences/change_password.html:7
 #: bookwyrm/templates/preferences/change_password.html:21
 #: bookwyrm/templates/preferences/preferences_layout.html:17
 msgid "Change Password"
-msgstr "更改密码"
+msgstr "Passwort ändern"
 
 #: bookwyrm/templates/preferences/change_password.html:14
 msgid "New password:"
-msgstr "新密码:"
+msgstr "Neues Passwort:"
 
 #: bookwyrm/templates/preferences/edit_user.html:4
 #: bookwyrm/templates/preferences/edit_user.html:7
 msgid "Edit Profile"
-msgstr "编辑个人资料"
+msgstr "Profil bearbeiten:"
 
 #: bookwyrm/templates/preferences/edit_user.html:17
 msgid "Avatar:"
-msgstr "头像:"
+msgstr ""
 
 #: bookwyrm/templates/preferences/edit_user.html:24
 msgid "Display name:"
-msgstr "显示名称:"
+msgstr "Displayname:"
 
 #: bookwyrm/templates/preferences/edit_user.html:31
 msgid "Summary:"
-msgstr "概要:"
+msgstr "Zusammenfassung:"
 
 #: bookwyrm/templates/preferences/edit_user.html:46
 msgid "Manually approve followers:"
-msgstr "手动批准关注者:"
+msgstr "Folgende manuell bestätigen"
 
 #: bookwyrm/templates/preferences/preferences_layout.html:11
 msgid "Account"
-msgstr "帐号"
+msgstr ""
 
 #: bookwyrm/templates/preferences/preferences_layout.html:20
 msgid "Relationships"
-msgstr "关系"
+msgstr "Beziehungen"
 
 #: bookwyrm/templates/search_results.html:4
 msgid "Search Results"
-msgstr "搜索结果"
+msgstr "Suchergebnisse"
 
 #: bookwyrm/templates/search_results.html:9
 #, python-format
 msgid "Search Results for \"%(query)s\""
-msgstr "\"%(query)s\" 的搜索结果"
+msgstr "Suchergebnisse für \"%(query)s\""
 
 #: bookwyrm/templates/search_results.html:14
 msgid "Matching Books"
-msgstr "匹配的书目"
+msgstr "Passende Bücher"
 
 #: bookwyrm/templates/search_results.html:17
 #, python-format
 msgid "No books found for \"%(query)s\""
-msgstr "没有找到 \"%(query)s\" 的书目"
+msgstr "Keine Bücher für \"%(query)s\" gefunden"
 
 #: bookwyrm/templates/search_results.html:33
 msgid "Didn't find what you were looking for?"
-msgstr "没有找到你想找的？"
+msgstr "Nicht gefunden, wonach du gesucht hast?"
 
 #: bookwyrm/templates/search_results.html:35
 msgid "Show results from other catalogues"
-msgstr "显示其它类别的结果"
+msgstr "Ergebnisse aus anderen Katalogen zeigen"
 
 #: bookwyrm/templates/search_results.html:57
 msgid "Import book"
-msgstr "导入书目"
+msgstr "Buch importieren"
 
 #: bookwyrm/templates/search_results.html:67
 msgid "Hide results from other catalogues"
-msgstr "隐藏其它类别的结果"
+msgstr "Ergebnisse aus anderen Katalogen ausblenden"
 
 #: bookwyrm/templates/search_results.html:75
 msgid "Matching Users"
-msgstr "匹配的用户"
+msgstr "Passende Nutzer*innen"
 
 #: bookwyrm/templates/search_results.html:77
 #, python-format
 msgid "No users found for \"%(query)s\""
-msgstr "没有找到 \"%(query)s\" 的用户"
+msgstr "Keine Nutzer*innen für \"%(query)s\" gefunden"
 
 #: bookwyrm/templates/search_results.html:92
 #, python-format
 msgid "No lists found for \"%(query)s\""
-msgstr "没有找到 \"%(query)s\" 的条目"
+msgstr "Keine Liste für \"%(query)s\" gefunden"
 
 #: bookwyrm/templates/settings/admin_layout.html:4
 msgid "Administration"
-msgstr "管理"
+msgstr ""
 
 #: bookwyrm/templates/settings/admin_layout.html:15
 msgid "Manage Users"
-msgstr "管理用户"
+msgstr "Nutzer*innen verwalten"
 
 #: bookwyrm/templates/settings/admin_layout.html:23
 #: bookwyrm/templates/settings/federation.html:4
 msgid "Federated Servers"
-msgstr "互联的服务器"
+msgstr "Föderierende Server"
 
 #: bookwyrm/templates/settings/admin_layout.html:28
 msgid "Instance Settings"
-msgstr "实例设置"
+msgstr "Instanzeinstellungen"
 
 #: bookwyrm/templates/settings/admin_layout.html:32
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
-msgstr "站点设置"
+msgstr "Seiteneinstellungen"
 
 #: bookwyrm/templates/settings/admin_layout.html:35
 #: bookwyrm/templates/settings/site.html:13
 msgid "Instance Info"
-msgstr "实例信息"
+msgstr "Instanzinformationen"
 
 #: bookwyrm/templates/settings/admin_layout.html:36
 #: bookwyrm/templates/settings/site.html:39
 msgid "Images"
-msgstr "图像"
+msgstr "Bilder"
 
 #: bookwyrm/templates/settings/admin_layout.html:37
 #: bookwyrm/templates/settings/site.html:59
 msgid "Footer Content"
-msgstr "页脚内容"
+msgstr "Inhalt des Footers"
 
 #: bookwyrm/templates/settings/admin_layout.html:38
 #: bookwyrm/templates/settings/site.html:77
 msgid "Registration"
-msgstr "注册"
+msgstr "Registrierung"
 
 #: bookwyrm/templates/settings/federation.html:10
 msgid "Server name"
-msgstr "服务器名称"
+msgstr "Servername"
 
 #: bookwyrm/templates/settings/federation.html:11
 msgid "Software"
-msgstr "软件"
+msgstr ""
 
 #: bookwyrm/templates/settings/federation.html:12
 msgid "Status"
-msgstr "状态"
+msgstr ""
 
 #: bookwyrm/templates/settings/manage_invites.html:7
 msgid "Generate New Invite"
-msgstr "生成新的邀请"
+msgstr "Neue Einladung erzeugen"
 
 #: bookwyrm/templates/settings/manage_invites.html:13
 msgid "Expiry:"
-msgstr "过期:"
+msgstr "Ablaufen:"
 
 #: bookwyrm/templates/settings/manage_invites.html:19
 msgid "Use limit:"
-msgstr "使用限制:"
+msgstr "Begrenzte Benutzung"
 
 #: bookwyrm/templates/settings/manage_invites.html:26
 msgid "Create Invite"
-msgstr "创建邀请"
+msgstr "Einladung erstellen"
 
 #: bookwyrm/templates/settings/manage_invites.html:33
 msgid "Link"
-msgstr "链接"
+msgstr ""
 
 #: bookwyrm/templates/settings/manage_invites.html:34
 msgid "Expires"
-msgstr "过期"
+msgstr "Läuft aus"
 
 #: bookwyrm/templates/settings/manage_invites.html:35
 msgid "Max uses"
-msgstr "最大使用次数"
+msgstr "Maximale Benutzungen"
 
 #: bookwyrm/templates/settings/manage_invites.html:36
 msgid "Times used"
-msgstr "已使用次数"
+msgstr "Mal benutzt"
 
 #: bookwyrm/templates/settings/manage_invites.html:39
 msgid "No active invites"
-msgstr "无有效的邀请"
+msgstr "Keine aktiven Einladungen"
 
 #: bookwyrm/templates/settings/site.html:15
 msgid "Instance Name:"
-msgstr "实例名称"
+msgstr "Instanzname"
 
 #: bookwyrm/templates/settings/site.html:19
 msgid "Tagline:"
-msgstr "标语"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:23
 msgid "Instance description:"
-msgstr "实例描述:"
+msgstr "Instanzbeschreibung"
 
 #: bookwyrm/templates/settings/site.html:27
 msgid "Code of conduct:"
-msgstr "行为准则:"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:31
 msgid "Privacy Policy:"
-msgstr "隐私政策:"
+msgstr "Datenschutzerklärung"
 
 #: bookwyrm/templates/settings/site.html:42
 msgid "Logo:"
-msgstr "图标:"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:46
 msgid "Logo small:"
-msgstr "小号图标:"
+msgstr "Logo klein"
 
 #: bookwyrm/templates/settings/site.html:50
 msgid "Favicon:"
-msgstr "Favicon:"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:61
 msgid "Support link:"
-msgstr "支持链接:"
+msgstr "Unterstützungslink"
 
 #: bookwyrm/templates/settings/site.html:65
 msgid "Support title:"
-msgstr "支持标题:"
+msgstr "Unterstützungstitel"
 
 #: bookwyrm/templates/settings/site.html:69
 msgid "Admin email:"
-msgstr "管理员邮件:"
+msgstr ""
 
 #: bookwyrm/templates/settings/site.html:79
 msgid "Allow registration:"
-msgstr "允许注册:"
+msgstr "Registrierungen erlauben"
 
 #: bookwyrm/templates/settings/site.html:83
 msgid "Registration closed text:"
-msgstr "注册关闭文字:"
+msgstr "Registrierungen geschlossen text"
 
 #: bookwyrm/templates/snippets/block_button.html:5
 msgid "Block"
-msgstr "屏蔽"
+msgstr ""
 
 #: bookwyrm/templates/snippets/block_button.html:10
 msgid "Un-block"
-msgstr "取消屏蔽"
+msgstr ""
 
 #: bookwyrm/templates/snippets/book_titleby.html:3
 #, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by "
-msgstr "<a href=\"%(path)s\">%(title)s</a> 来自"
+msgstr "<a href=\"%(path)s\">%(title)s</a> von "
 
 #: bookwyrm/templates/snippets/boost_button.html:8
 #: bookwyrm/templates/snippets/boost_button.html:9
 #: bookwyrm/templates/snippets/status/status_body.html:41
 #: bookwyrm/templates/snippets/status/status_body.html:42
 msgid "Boost status"
-msgstr "转发状态"
+msgstr "Status teilen"
 
 #: bookwyrm/templates/snippets/boost_button.html:16
 #: bookwyrm/templates/snippets/boost_button.html:17
 msgid "Un-boost status"
-msgstr "取消转发状态"
+msgstr "Teilen zurücknehmen"
 
 #: bookwyrm/templates/snippets/content_warning_field.html:3
 msgid "Spoiler alert:"
-msgstr "剧透警告:"
+msgstr "Spoileralarm:"
 
 #: bookwyrm/templates/snippets/content_warning_field.html:4
 msgid "Spoilers ahead!"
-msgstr "前有剧透！"
+msgstr "Spoileralarm!"
 
 #: bookwyrm/templates/snippets/create_status.html:9
 msgid "Review"
-msgstr "书评"
+msgstr "Bewerten"
 
 #: bookwyrm/templates/snippets/create_status.html:12
 #: bookwyrm/templates/snippets/create_status_form.html:44
 msgid "Comment"
-msgstr "评论"
+msgstr "Kommentieren"
 
 #: bookwyrm/templates/snippets/create_status.html:15
 msgid "Quote"
-msgstr "引用"
+msgstr "Zitieren"
 
 #: bookwyrm/templates/snippets/create_status_form.html:21
 #: bookwyrm/templates/snippets/shelf.html:17
 msgid "Rating"
-msgstr "评价"
+msgstr ""
 
 #: bookwyrm/templates/snippets/create_status_form.html:23
 #: bookwyrm/templates/snippets/rate_action.html:14
 #: bookwyrm/templates/snippets/stars.html:3
 msgid "No rating"
-msgstr "没有评价"
+msgstr "Kein Rating"
 
 #: bookwyrm/templates/snippets/create_status_form.html:54
 msgid "Include spoiler alert"
-msgstr "加入剧透警告"
+msgstr "Spoileralarm aktivieren"
 
 #: bookwyrm/templates/snippets/create_status_form.html:60
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
 #: bookwyrm/templates/snippets/privacy_select.html:19
 msgid "Private"
-msgstr "私密"
+msgstr "Privat"
 
 #: bookwyrm/templates/snippets/create_status_form.html:67
 msgid "Post"
-msgstr "发布"
+msgstr "Absenden"
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:4
 msgid "Delete these read dates?"
-msgstr "删除这些阅读日期吗？"
+msgstr "Diese Lesedaten löschen?"
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:7
 #, python-format
 msgid "You are deleting this readthrough and its %(count)s associated progress updates."
-msgstr "你正要删除这篇阅读经过以及与之相关的 %(count)s 次进度更新。"
+msgstr "Du löscht diesen Leseforschritt und %(count)s zugehörige Fortschrittsupdates."
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
 #: bookwyrm/templates/snippets/follow_request_buttons.html:13
 msgid "Delete"
-msgstr "删除"
+msgstr "Löschen"
 
 #: bookwyrm/templates/snippets/fav_button.html:7
 #: bookwyrm/templates/snippets/fav_button.html:8
 #: bookwyrm/templates/snippets/status/status_body.html:45
 #: bookwyrm/templates/snippets/status/status_body.html:46
 msgid "Like status"
-msgstr "喜欢状态"
+msgstr "Status favorisieren"
 
 #: bookwyrm/templates/snippets/fav_button.html:15
 #: bookwyrm/templates/snippets/fav_button.html:16
 msgid "Un-like status"
-msgstr "取消喜欢状态"
+msgstr "Favorisieren zurücknehmen"
 
 #: bookwyrm/templates/snippets/follow_button.html:6
 msgid "Follow request already sent."
-msgstr "已经发送关注请求。"
+msgstr "Folgeanfrage bereits gesendet."
 
 #: bookwyrm/templates/snippets/follow_button.html:19
 msgid "Send follow request"
-msgstr "发送关注请求"
+msgstr "Folgeanfrage senden"
 
 #: bookwyrm/templates/snippets/follow_button.html:21
 msgid "Follow"
-msgstr "关注"
+msgstr "Folgen"
 
 #: bookwyrm/templates/snippets/follow_button.html:27
 msgid "Unfollow"
-msgstr "取消关注"
+msgstr "Entfolgen"
 
 #: bookwyrm/templates/snippets/follow_request_buttons.html:8
 msgid "Accept"
-msgstr "接受"
+msgstr "Annehmen"
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
 msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "设定了在 %(year)s 内要读 %(counter)s 书的目标"
+msgstr[0] "Setze das Ziel, %(year)s %(counter)s Buch zu lesen"
+msgstr[1] "Setze das Ziel, %(year)s %(counter)s Bücher zu lesen"
 
 #: bookwyrm/templates/snippets/goal_card.html:21
 msgid "Dismiss message"
-msgstr "遣散消息"
+msgstr "Nachricht verwerfen"
 
 #: bookwyrm/templates/snippets/goal_card.html:22
 #, python-format
 msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
-msgstr "你可以在任何时候从你的<a href=\"%(path)s\">个人资料页面</a> 中设置或改变你的阅读目标"
+msgstr "Du kannst dein Leseziel jederzeit auf deiner <a href=\"%(path)s\">Profilseite</a> setzen oder ändern."
 
 #: bookwyrm/templates/snippets/goal_form.html:9
 msgid "Reading goal:"
-msgstr "阅读目标:"
+msgstr "Leseziel:"
 
 #: bookwyrm/templates/snippets/goal_form.html:14
 msgid "books"
-msgstr "书目"
+msgstr "Bücher"
 
 #: bookwyrm/templates/snippets/goal_form.html:19
 msgid "Goal privacy:"
-msgstr "目标隐私:"
+msgstr "Sichtbarkeit des Ziels"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:37
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:29
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:20
 msgid "Post to feed"
-msgstr "发布到消息流中"
+msgstr "Posten"
 
 #: bookwyrm/templates/snippets/goal_form.html:30
 msgid "Set goal"
-msgstr "设置目标"
+msgstr "Ziel setzen"
 
 #: bookwyrm/templates/snippets/goal_progress.html:5
 msgid "Success!"
-msgstr "成功！"
+msgstr "Erfolg!"
 
 #: bookwyrm/templates/snippets/goal_progress.html:7
 #, python-format
 msgid "%(percent)s%% complete!"
-msgstr "完成了 %(percent)s%% ！"
+msgstr "%(percent)s%% komplett!"
 
 #: bookwyrm/templates/snippets/goal_progress.html:10
 #, python-format
 msgid "You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr "你已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</a>。"
+msgstr "Du hast <a href=\"%(path)s\">%(read_count)s von %(goal_count)s Büchern</a> gelesen."
 
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr "%(username)s 已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</a>。"
+msgstr "%(username)s hat <a href=\"%(path)s\">%(read_count)s von %(goal_count)s Büchern</a> gelesen."
 
 #: bookwyrm/templates/snippets/pagination.html:7
 msgid "Previous"
-msgstr "往前"
+msgstr "Vorher"
 
 #: bookwyrm/templates/snippets/pagination.html:15
 msgid "Next"
-msgstr "往后"
+msgstr "Danach"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
 #: bookwyrm/templates/snippets/privacy_select.html:10
 msgid "Public"
-msgstr "公开"
+msgstr "Öffentlich"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:7
 #: bookwyrm/templates/snippets/privacy-icons.html:8
 #: bookwyrm/templates/snippets/privacy_select.html:13
 msgid "Unlisted"
-msgstr "不公开"
+msgstr "Ungelistet"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
-msgstr "仅关注者"
+msgstr "Nur für Folgende"
 
 #: bookwyrm/templates/snippets/privacy_select.html:6
 msgid "Post privacy"
-msgstr "发文隐私"
+msgstr ""
 
 #: bookwyrm/templates/snippets/privacy_select.html:16
 #: bookwyrm/templates/user/followers.html:13
 msgid "Followers"
-msgstr "关注者"
+msgstr "Folgende"
 
 #: bookwyrm/templates/snippets/progress_update.html:6
 msgid "Progress:"
-msgstr "进度:"
+msgstr "Fortschritt:"
 
 #: bookwyrm/templates/snippets/progress_update.html:16
 #: bookwyrm/templates/snippets/readthrough_form.html:22
 msgid "pages"
-msgstr "页数"
+msgstr "Seiten"
 
 #: bookwyrm/templates/snippets/progress_update.html:17
 #: bookwyrm/templates/snippets/readthrough_form.html:23
 msgid "percent"
-msgstr "百分比"
+msgstr "Prozent"
 
 #: bookwyrm/templates/snippets/progress_update.html:25
 #, python-format
 msgid "of %(book.pages)s pages"
-msgstr "全书 %(book.pages)s 页"
+msgstr "von %(book.pages)s Seiten"
 
 #: bookwyrm/templates/snippets/rate_action.html:4
 msgid "Leave a rating"
-msgstr "留下评价"
+msgstr "Raten"
 
 #: bookwyrm/templates/snippets/rate_action.html:29
 msgid "Rate"
-msgstr "评价"
+msgstr ""
 
 #: bookwyrm/templates/snippets/readthrough.html:7
 msgid "Progress Updates:"
-msgstr "进度更新:"
+msgstr "Fortschrittsupdates:"
 
 #: bookwyrm/templates/snippets/readthrough.html:11
 msgid "finished"
-msgstr "已完成"
+msgstr "beendet"
 
 #: bookwyrm/templates/snippets/readthrough.html:14
 msgid "Show all updates"
-msgstr "显示所有更新"
+msgstr "Zeige alle Updates"
 
 #: bookwyrm/templates/snippets/readthrough.html:30
 msgid "Delete this progress update"
-msgstr "删除此进度更新"
+msgstr "Dieses Fortschrittsupdate löschen"
 
 #: bookwyrm/templates/snippets/readthrough.html:40
 msgid "started"
-msgstr "已开始"
+msgstr "Angefangen"
 
 #: bookwyrm/templates/snippets/readthrough.html:46
 #: bookwyrm/templates/snippets/readthrough.html:60
 msgid "Edit read dates"
-msgstr "编辑阅读日期"
+msgstr "Lesedaten bearbeiten"
 
 #: bookwyrm/templates/snippets/readthrough.html:50
 msgid "Delete these read dates"
-msgstr "删除这些阅读日期"
+msgstr "Diese Lesedaten löschen"
 
 #: bookwyrm/templates/snippets/readthrough_form.html:7
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:19
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:17
 msgid "Started reading"
-msgstr "已开始阅读"
+msgstr "Zu lesen angefangen"
 
 #: bookwyrm/templates/snippets/readthrough_form.html:14
 msgid "Progress"
-msgstr "进度"
+msgstr "Fortschritt"
 
 #: bookwyrm/templates/snippets/readthrough_form.html:30
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:25
 msgid "Finished reading"
-msgstr "已完成阅读"
+msgstr "Lesen beendet"
 
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
-msgstr "注册"
+msgstr "Registrieren"
 
 #: bookwyrm/templates/snippets/rss_title.html:5
 #: bookwyrm/templates/snippets/status/status_header.html:9
 msgid "rated"
-msgstr "评价了"
+msgstr ""
 
 #: bookwyrm/templates/snippets/rss_title.html:7
 #: bookwyrm/templates/snippets/status/status_header.html:11
 msgid "reviewed"
-msgstr "写了书评给"
+msgstr "bewertet"
 
 #: bookwyrm/templates/snippets/rss_title.html:9
 #: bookwyrm/templates/snippets/status/status_header.html:13
 msgid "commented on"
-msgstr "评论了"
+msgstr "kommentiert zu"
 
 #: bookwyrm/templates/snippets/rss_title.html:11
 #: bookwyrm/templates/snippets/status/status_header.html:15
 msgid "quoted"
-msgstr "引用了"
+msgstr "zitiert"
 
 #: bookwyrm/templates/snippets/search_result_text.html:3
 #, python-format
 msgid "by %(author)s"
-msgstr "由 %(author)s 所著"
+msgstr "von %(author)s"
 
 #: bookwyrm/templates/snippets/shelf.html:12
 msgid "Published"
-msgstr "已出版"
+msgstr "Veröffentlicht"
 
 #: bookwyrm/templates/snippets/shelf.html:13
 msgid "Shelved"
-msgstr "已上架"
+msgstr "Ins Regal gestellt"
 
 #: bookwyrm/templates/snippets/shelf.html:14
 msgid "Started"
-msgstr "已开始"
+msgstr "Gestartet"
 
 #: bookwyrm/templates/snippets/shelf.html:15
 msgid "Finished"
-msgstr "已完成"
+msgstr "Beendet"
 
 #: bookwyrm/templates/snippets/shelf.html:16
 msgid "External links"
-msgstr "外部链接"
+msgstr "Eterne Links"
 
 #: bookwyrm/templates/snippets/shelf.html:44
 msgid "OpenLibrary"
-msgstr "OpenLibrary"
+msgstr ""
 
 #: bookwyrm/templates/snippets/shelf.html:61
 msgid "This shelf is empty."
-msgstr "此书架是空的。"
+msgstr "Dieses Regal ist leer."
 
 #: bookwyrm/templates/snippets/shelf.html:67
 msgid "Delete shelf"
-msgstr "删除书架"
+msgstr "Regal löschen"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:4
 msgid "Change shelf"
-msgstr "改变书架"
+msgstr "Regal wechseln"
 
 #: bookwyrm/templates/snippets/shelf_selector.html:27
 msgid "Unshelve"
-msgstr "取下书架"
+msgstr "Vom Regal nehmen"
 
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:5
 #, python-format
 msgid "Finish \"<em>%(book_title)s</em>\""
-msgstr "完成 \"<em>%(book_title)s</em>\""
+msgstr "\"<em>%(book_title)s</em>\" beenden"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
-msgstr "更多书架"
+msgstr "Mehr Regale"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:8
 msgid "Start reading"
-msgstr "开始阅读"
+msgstr "Zu lesen beginnen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:13
 msgid "Finish reading"
-msgstr "完成阅读"
+msgstr "Lesen beenden"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:16
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:26
 msgid "Want to read"
-msgstr "想要阅读"
+msgstr "Auf Leseliste setzen"
 
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:5
 #, python-format
 msgid "Start \"<em>%(book_title)s</em>\""
-msgstr "开始 \"<em>%(book_title)s</em>\""
+msgstr "\"<em>%(book_title)s</em>\" beginnen"
 
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:5
 #, python-format
 msgid "Want to Read \"<em>%(book_title)s</em>\""
-msgstr "想要阅读 \"<em>%(book_title)s</em>\""
+msgstr "\"<em>%(book_title)s</em>\" auf Leseliste setzen"
 
 #: bookwyrm/templates/snippets/status/status.html:7
 msgid "boosted"
-msgstr "转发了"
+msgstr "geteilt"
 
 #: bookwyrm/templates/snippets/status/status_body.html:24
 #: bookwyrm/templates/snippets/status/status_body.html:37
 #: bookwyrm/templates/snippets/status/status_body.html:38
 msgid "Reply"
-msgstr "回复"
+msgstr "Antwort"
 
 #: bookwyrm/templates/snippets/status/status_content.html:16
 #: bookwyrm/templates/snippets/trimmed_text.html:12
 msgid "Show more"
-msgstr "显示更多"
+msgstr "Mehr anzeigen"
 
 #: bookwyrm/templates/snippets/status/status_content.html:23
 #: bookwyrm/templates/snippets/trimmed_text.html:18
 msgid "Show less"
-msgstr "显示更少"
+msgstr "Weniger anzeigen"
 
 #: bookwyrm/templates/snippets/status/status_content.html:44
 msgid "Open image in new window"
-msgstr "在新窗口中打开图像"
+msgstr "Bild in neuem Fenster öffnen"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
 msgid "More options"
-msgstr "更多选项"
+msgstr "Mehr Optionen"
 
 #: bookwyrm/templates/snippets/status/status_options.html:17
 #, fuzzy
 #| msgid "Delete post"
 msgid "Delete status"
-msgstr "删除发文"
+msgstr "Post löschen"
 
 #: bookwyrm/templates/snippets/status/status_options.html:23
 #: bookwyrm/templates/snippets/user_options.html:13
 msgid "Send direct message"
-msgstr "发送私信"
+msgstr "Direktnachricht senden"
 
 #: bookwyrm/templates/snippets/switch_edition_button.html:5
 msgid "Switch to this edition"
-msgstr "切换到此版本"
+msgstr "Zu dieser Edition wechseln"
 
 #: bookwyrm/templates/snippets/tag.html:14
 msgid "Remove tag"
-msgstr "移除标签"
+msgstr "Tag entfernen"
 
 #: bookwyrm/templates/tag.html:9
 #, python-format
 msgid "Books tagged \"%(tag.name)s\""
-msgstr "标有 \"%(tag.name)s\" 标签的书"
+msgstr "Mit \"%(tag.name)s\" markierte Bücher"
 
 #: bookwyrm/templates/user/create_shelf_form.html:5
 #: bookwyrm/templates/user/create_shelf_form.html:22
 #, fuzzy
 #| msgid "Create shelf"
 msgid "Create Shelf"
-msgstr "创建书架"
+msgstr "Regal erstellen"
 
 #: bookwyrm/templates/user/edit_shelf_form.html:5
 msgid "Edit Shelf"
-msgstr "编辑书架"
+msgstr "Regal bearbeiten"
 
 #: bookwyrm/templates/user/edit_shelf_form.html:26
 msgid "Update shelf"
-msgstr "更新书架"
+msgstr "Regal aktualisieren"
 
 #: bookwyrm/templates/user/followers.html:7
 #: bookwyrm/templates/user/following.html:7 bookwyrm/templates/user/user.html:9
 msgid "User Profile"
-msgstr "用户个人资料"
+msgstr "Benutzerprofil"
 
 #: bookwyrm/templates/user/followers.html:26
 #, python-format
 msgid "%(username)s has no followers"
-msgstr "%(username)s 没有关注者"
+msgstr "niemand folgt %(username)s "
 
 #: bookwyrm/templates/user/following.html:13
 msgid "Following"
-msgstr "正在关注"
+msgstr "Folgend"
 
 #: bookwyrm/templates/user/following.html:26
 #, python-format
 msgid "%(username)s isn't following any users"
-msgstr "%(username)s 没有关注任何用户"
+msgstr "%(username)s folgt niemandem"
 
 #: bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
-msgstr "你的列表"
+msgstr "Deine Listen"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
 msgid "Lists: %(username)s"
-msgstr "列表: %(username)s"
+msgstr "Listen: %(username)s"
 
 #: bookwyrm/templates/user/lists.html:17 bookwyrm/templates/user/lists.html:29
 msgid "Create list"
-msgstr "创建列表"
+msgstr "Liste Erstellen"
 
 #: bookwyrm/templates/user/shelf.html:9
 msgid "Your Shelves"
-msgstr "你的书架"
+msgstr "Deine Regale"
 
 #: bookwyrm/templates/user/shelf.html:11
 #, python-format
 msgid "%(username)s: Shelves"
-msgstr "%(username)s: 书架"
+msgstr "%(username)s: Regale"
 
 #: bookwyrm/templates/user/shelf.html:33
 msgid "Create shelf"
-msgstr "创建书架"
+msgstr "Regal erstellen"
 
 #: bookwyrm/templates/user/shelf.html:54
 msgid "Edit shelf"
-msgstr "编辑书架"
+msgstr "Regal bearbeiten"
 
 #: bookwyrm/templates/user/user.html:15
 msgid "Edit profile"
-msgstr "编辑个人资料"
+msgstr "Profil bearbeiten"
 
 #: bookwyrm/templates/user/user.html:26
 #: bookwyrm/templates/user/user_layout.html:68
 msgid "Shelves"
-msgstr "书架"
+msgstr "Regale"
 
 #: bookwyrm/templates/user/user.html:31
 #, python-format
 msgid "See all %(size)s"
-msgstr "查看所有 %(size)s"
+msgstr "Alle %(size)s anzeigen"
 
 #: bookwyrm/templates/user/user.html:44
 #, python-format
 msgid "See all %(shelf_count)s shelves"
-msgstr "查看所有 %(shelf_count)s 个书架"
+msgstr "Alle %(shelf_count)s Regale anzeigen"
 
 #: bookwyrm/templates/user/user.html:56
 #, python-format
 msgid "Set a reading goal for %(year)s"
-msgstr "设定 %(year)s 的阅读目标"
+msgstr "Leseziel für %(year)s setzen"
 
 #: bookwyrm/templates/user/user.html:62
 msgid "User Activity"
-msgstr "用户活动"
+msgstr "Nutzer*innenaktivität"
 
 #: bookwyrm/templates/user/user.html:65
 msgid "RSS feed"
-msgstr "RSS 流"
+msgstr ""
 
 #: bookwyrm/templates/user/user.html:76
 msgid "No activities yet!"
-msgstr "还没有活动！"
+msgstr "Noch keine Aktivitäten!"
 
 #: bookwyrm/templates/user/user_layout.html:32
 msgid "Follow Requests"
-msgstr "关注请求"
+msgstr "Folgeanfragen"
 
 #: bookwyrm/templates/user/user_layout.html:50
 msgid "Activity"
-msgstr "活动"
+msgstr "Aktivität"
 
 #: bookwyrm/templates/user/user_layout.html:56
 msgid "Reading Goal"
-msgstr "阅读目标"
+msgstr "Leseziel"
 
 #: bookwyrm/templates/user/user_preview.html:13
 #, python-format
 msgid "Joined %(date)s"
-msgstr "已加入 %(date)s"
+msgstr "Beigetreten %(date)s"
 
 #: bookwyrm/templates/user/user_preview.html:15
 #, python-format
 msgid "%(counter)s follower"
 msgid_plural "%(counter)s followers"
-msgstr[0] "%(counter)s 个关注者"
+msgstr[0] "%(counter)s Folgende*r"
+msgstr[1] "%(counter)s Folgende"
 
 #: bookwyrm/templates/user/user_preview.html:16
 #, python-format
 msgid "%(counter)s following"
-msgstr "关注着 %(counter)s 人"
-
-#~ msgid "Create New Shelf"
-#~ msgstr "新建书架"
-
-#~ msgid "Create new list"
-#~ msgstr "新建列表"
+msgstr "%(counter)s folgen"
 
 #~ msgid "Added by"
-#~ msgstr "添加来自"
+#~ msgstr "Hinzugefügt von"
+
+#~ msgid "Create New Shelf"
+#~ msgstr "Neues Regal erstellen"
+
+#~ msgid "Create new list"
+#~ msgstr "Neue Liste erstellen"

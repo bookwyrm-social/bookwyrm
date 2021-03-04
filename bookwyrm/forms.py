@@ -6,6 +6,7 @@ from django import forms
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from bookwyrm import models
 
@@ -181,13 +182,14 @@ class CreateInviteForm(CustomForm):
         exclude = ['code', 'user', 'times_used']
         widgets = {
             'expiry': ExpiryWidget(choices=[
-                ('day', 'One Day'),
-                ('week', 'One Week'),
-                ('month', 'One Month'),
-                ('forever', 'Does Not Expire')]),
+                ('day', _('One Day')),
+                ('week', _('One Week')),
+                ('month', _('One Month')),
+                ('forever', _('Does Not Expire'))]),
             'use_limit': widgets.Select(
-                choices=[(i, "%d uses" % (i,)) for i in [1, 5, 10, 25, 50, 100]]
-                + [(None, 'Unlimited')])
+                choices=[(i, _("%(count)d uses" % {'count': i})) \
+                        for i in [1, 5, 10, 25, 50, 100]]
+                + [(None, _('Unlimited'))])
         }
 
 class ShelfForm(CustomForm):

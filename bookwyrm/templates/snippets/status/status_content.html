@@ -34,7 +34,7 @@
         </div>
         {% endif %}
 
-        {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
+        {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Announce' %}
         {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
         {% endif %}
         {% if status.attachments.exists %}
