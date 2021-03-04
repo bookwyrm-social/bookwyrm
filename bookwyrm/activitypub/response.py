@@ -10,7 +10,7 @@ class ActivitypubResponse(JsonResponse):
     JsonResponse.
     """
     def __init__(self, data, encoder=ActivityEncoder, safe=False,
-                 json_dumps_params=None, **kwargs):
+                json_dumps_params=None, **kwargs):
 
         if 'content_type' not in kwargs:
             kwargs['content_type'] = 'application/activity+json'

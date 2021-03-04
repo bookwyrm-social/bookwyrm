@@ -46,9 +46,11 @@ def validate_username(value):
 
 class ActivitypubFieldMixin:
     ''' make a database field serializable '''
-    def __init__(self, *args, \
-                 activitypub_field=None, activitypub_wrapper=None,
-                 deduplication_field=False, **kwargs):
+    def __init__(
+        self, *args, \
+        activitypub_field=None, activitypub_wrapper=None,
+        deduplication_field=False, **kwargs
+    ):
         self.deduplication_field = deduplication_field
         if activitypub_wrapper:
             self.activitypub_wrapper = activitypub_field

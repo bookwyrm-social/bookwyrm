@@ -224,7 +224,7 @@ def isbn_10_to_13(isbn_10):
     # multiply the odd digits by 1 and the even digits by 3 and sum them
     try:
         checksum = sum(int(i) for i in converted[::2]) + \
-               sum(int(i) * 3 for i in converted[1::2])
+            sum(int(i) * 3 for i in converted[1::2])
     except ValueError:
         return None
     # add the checksum mod 10 to the end
