@@ -67,7 +67,7 @@
         </div>
     </div>
     {% for activity in activities %}
-    <div class="block" id="feed">
+    <div class="block" id="feed-{{ activity.id }}">
         {% include 'snippets/status/status.html' with status=activity %}
     </div>
     {% endfor %}
