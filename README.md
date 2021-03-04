@@ -31,7 +31,7 @@ Code contributions are gladly welcomed! If you're not sure where to start, take 
 If you have questions about the project or contributing, you can set up a video call during BookWyrm ["office hours"](https://calendly.com/mouse-reeve/30min).
 
 ### Translation
-Do you speak a language besides English? BookWyrm needs localization! If you're comfortable using git and want to get into the code, there are [instructions](#workin-with-translations-and-locale-files) on how to create and edit localization files. If you feel more comfortable working in a regular text editor and would prefer not to run the application, get in touch directly and we can figure out a system, like emailing a text file, that works best.
+Do you speak a language besides English? BookWyrm needs localization! If you're comfortable using git and want to get into the code, there are [instructions](#working-with-translations-and-locale-files) on how to create and edit localization files. If you feel more comfortable working in a regular text editor and would prefer not to run the application, get in touch directly and we can figure out a system, like emailing a text file, that works best.
 
 ### Financial Support
 BookWyrm is an ad-free passion project with no intentions of seeking out venture funding or corporate financial relationships. If you want to help keep the project going, you can donate to the [Patreon](https://www.patreon.com/bookwyrm), or make a one time gift via [PayPal](https://paypal.me/oulipo).
@@ -118,7 +118,7 @@ If you edit the CSS or JavaScript, you will need to run Django's `collectstatic`
 ./bw-dev collectstatic
 ```
 
-### Workin with translations and locale files
+### Working with translations and locale files
 Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
 
 The application's language is set by a request header sent by your browser to the application, so to change the language of the application, you can change the default language requested by your browser.
@@ -132,7 +132,10 @@ To start translation into a language which is currently supported, run the djang
 #### Editing a locale
 When you have a locale file, open the `django.po` in the directory for the language (for example, if you were adding German, `locale/de/LC_MESSAGES/django.po`. All the the text in the application will be shown in paired strings, with `msgid` as the original text, and `msgstr` as the translation (by default, this is set to an empty string, and will display the original text).
 
-Add you translations to the `msgstr` strings, and when you're ready, compile the locale by running:
+Add your translations to the `msgstr` strings. As the messages in the application are updated, `gettext` will sometimes add best-guess fuzzy matched options for those translations. When a message is marked as fuzzy, it will not be used in the application, so be sure to remove it when you translate that line.
+
+When you're done, compile the locale by running:
+
 ``` bash
 ./bw-dev compilemessages
 ```
