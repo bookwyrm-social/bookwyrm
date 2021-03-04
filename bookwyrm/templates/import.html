@@ -11,16 +11,16 @@
         {% csrf_token %}
 
         <label class="label" for="source">
-          <p>{% trans "Data source" %}</p>
+            <p>{% trans "Data source" %}</p>
         <div class="select {{ class }}">
-          <select name="source" id="source">
-            <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
-            GoodReads
-            </option>
-            <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
-            LibraryThing
-            </option>
-          </select>
+            <select name="source" id="source">
+                <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
+                    GoodReads
+                </option>
+                <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
+                    LibraryThing
+                </option>
+            </select>
         </div>
         </label>
 
