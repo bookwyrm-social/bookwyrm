@@ -211,7 +211,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # make users editors by default
         try:
             self.groups.add(Group.objects.get(name='editor'))
-        except Group.objects.DoesNotExist:
+        except Group.DoesNotExist:
             # this should never happen except in tests
             pass
 
