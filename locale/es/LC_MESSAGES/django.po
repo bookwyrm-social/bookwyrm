@@ -40,7 +40,6 @@ msgid "%(count)d uses"
 msgstr "%(count)d usos"
 
 #: bookwyrm/forms.py:192
-#, fuzzy
 #| msgid "Unlisted"
 msgid "Unlimited"
 msgstr "Sin límite"
@@ -56,10 +55,8 @@ msgid "%(value)s is not a valid username"
 msgstr "%(value)s no es un usuario válido"
 
 #: bookwyrm/models/fields.py:164
-#, fuzzy
-#| msgid "Username:"
 msgid "username"
-msgstr "Nombre de usuario:"
+msgstr "nombre de usuario"
 
 #: bookwyrm/models/fields.py:169
 msgid "A user with that username already exists."
@@ -129,16 +126,14 @@ msgid "ASIN:"
 msgstr "ASIN:"
 
 #: bookwyrm/templates/book.html:84
-#, fuzzy, python-format
-#| msgid "of %(book.pages)s pages"
+#, python-format
 msgid "%(format)s, %(pages)s pages"
-msgstr "de %(book.pages)s páginas"
+msgstr "%(format)s, %(pages)s páginas"
 
 #: bookwyrm/templates/book.html:86
-#, fuzzy, python-format
-#| msgid "of %(book.pages)s pages"
+#, python-format
 msgid "%(pages)s pages"
-msgstr "de %(book.pages)s páginas"
+msgstr "%(pages)s páginas"
 
 #: bookwyrm/templates/book.html:91
 msgid "View on OpenLibrary"
@@ -183,20 +178,19 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: bookwyrm/templates/book.html:127
-#, fuzzy, python-format
+#, python-format
 #| msgid "<a href=\"%(path)s\">%(title)s</a> by "
 msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
 msgstr "<a href=\"%(path)s/editions\">%(count)s ediciones</a>"
 
 #: bookwyrm/templates/book.html:135
-#, fuzzy, python-format
+#, python-format
 #| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgid "This edition is on your <a href=\"%(path)s\">%(shelf_name)s</a> shelf."
 msgstr "Esta edición está en tu <a href=\"%(path)s\">%(shelf_name)s</a> estante."
 
 #: bookwyrm/templates/book.html:141
-#, fuzzy, python-format
-#| msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+#, python-format
 msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
 msgstr "Una <a href=\"%(book_path)s\">edición diferente</a> de este libro está en tu <a href=\"%(shelf_path)s\">%(shelf_name)s</a> estante."
 
@@ -490,8 +484,6 @@ msgstr "Leer"
 
 #: bookwyrm/templates/feed/feed_layout.html:24
 #: bookwyrm/templates/user/shelf.html:24
-#, fuzzy
-#| msgid "Start reading"
 msgid "Currently Reading"
 msgstr "Leyendo actualmente"
 
@@ -784,8 +776,7 @@ msgid "This list is currently empty"
 msgstr "Esta lista está vacia"
 
 #: bookwyrm/templates/lists/list.html:35
-#, fuzzy, python-format
-#| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
+#, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Agregado por <a href=\"%(user_path)s\">%(username)s</a>"
 
@@ -841,8 +832,7 @@ msgid "Your lists"
 msgstr "Tus listas"
 
 #: bookwyrm/templates/lists/lists.html:32
-#, fuzzy, python-format
-#| msgid "See all %(size)s"
+#, python-format
 msgid "See all %(size)s lists"
 msgstr "Ver las %(size)s listas"
 
@@ -1672,8 +1662,6 @@ msgid "More options"
 msgstr "Más opciones"
 
 #: bookwyrm/templates/snippets/status/status_options.html:17
-#, fuzzy
-#| msgid "Delete post"
 msgid "Delete status"
 msgstr "Eliminar status"
 
@@ -1697,8 +1685,6 @@ msgstr "Libros etiquetados con \"%(tag.name)s\""
 
 #: bookwyrm/templates/user/create_shelf_form.html:5
 #: bookwyrm/templates/user/create_shelf_form.html:22
-#, fuzzy
-#| msgid "Create shelf"
 msgid "Create Shelf"
 msgstr "Crear estante"
 
