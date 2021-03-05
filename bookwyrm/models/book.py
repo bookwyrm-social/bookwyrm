@@ -91,7 +91,7 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         ''' image alt test '''
-        text = '%s cover' % self.title
+        text = '%s' % self.title
         if self.edition_info:
             text += ' (%s)' % self.edition_info
         return text
