@@ -150,7 +150,7 @@ class Status(TestCase):
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
                 (settings.DOMAIN, self.book.cover.url))
         self.assertEqual(
-            activity['attachment'][0].name, 'Test Edition cover')
+            activity['attachment'][0].name, 'Test Edition')
 
     def test_comment_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
@@ -177,7 +177,7 @@ class Status(TestCase):
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
                 (settings.DOMAIN, self.book.cover.url))
         self.assertEqual(
-            activity['attachment'][0].name, 'Test Edition cover')
+            activity['attachment'][0].name, 'Test Edition')
 
     def test_quotation_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
@@ -207,7 +207,7 @@ class Status(TestCase):
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
                 (settings.DOMAIN, self.book.cover.url))
         self.assertEqual(
-            activity['attachment'][0].name, 'Test Edition cover')
+            activity['attachment'][0].name, 'Test Edition')
 
     def test_review_to_activity(self, _):
         ''' subclass of the base model version with a "pure" serializer '''
@@ -238,7 +238,7 @@ class Status(TestCase):
         self.assertEqual(activity['attachment'][0].url, 'https://%s%s' % \
                 (settings.DOMAIN, self.book.cover.url))
         self.assertEqual(
-            activity['attachment'][0].name, 'Test Edition cover')
+            activity['attachment'][0].name, 'Test Edition')
 
     def test_favorite(self, _):
         ''' fav a status '''
