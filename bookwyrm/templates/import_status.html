@@ -38,9 +38,13 @@
         {% csrf_token %}
 
         {% with failed_count=failed_items|length %}
-            <a class="skip-link" href="#select-all-failed-imports">
-                {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
-            </a>
+            {% if failed_count > 10 %}
+                <p class="block">
+                    <a href="#select-all-failed-imports">
+                        {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
+                    </a>
+                </p>
+            {% endif %}
         {% endwith %}
 
         <fieldset id="failed-imports">
@@ -64,7 +68,7 @@
         <fieldset class="mt-3">
             <a name="select-all-failed-imports"></a>
 
-            <label class="label is-inline mb-1">
+            <label class="label is-inline">
                 <input
                     id="toggle-all-checkboxes-failed-imports"
                     class="checkbox"
@@ -75,7 +79,7 @@
                 {% trans "Select all" %}
             </label>
 
-            <button class="button is-block" type="submit">{% trans "Retry items" %}</button>
+            <button class="button is-block mt-3" type="submit">{% trans "Retry items" %}</button>
         </fieldset>
 
         <hr>
