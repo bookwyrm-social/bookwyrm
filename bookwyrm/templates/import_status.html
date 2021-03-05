@@ -5,7 +5,7 @@
 
 {% block title %}{% trans "Import Status" %}{% endblock %}
 
-{% block content %}
+{% block content %}{% spaceless %}
 <div class="block">
     <h1 class="title">{% trans "Import Status" %}</h1>
 
@@ -36,8 +36,15 @@
     {% if not job.retry %}
     <form name="retry" action="/import/{{ job.id }}" method="post">
         {% csrf_token %}
-        <ul>
-            <fieldset>
+
+        {% with failed_count=failed_items|length %}
+            <a class="skip-link" href="#select-all-failed-imports">
+                {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
+            </a>
+        {% endwith %}
+
+        <fieldset id="failed-imports">
+            <ul>
             {% for item in failed_items %}
                 <li class="pb-1">
                     <input class="checkbox" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
@@ -51,15 +58,28 @@
                     </p>
                 </li>
             {% endfor %}
-            </fieldset>
-        </ul>
-        <div class="block pt-1 select-all">
-            <label class="label">
-                <input type="checkbox" class="checkbox">
+            </ul>
+        </fieldset>
+
+        <fieldset class="mt-3">
+            <a name="select-all-failed-imports"></a>
+
+            <label class="label is-inline mb-1">
+                <input
+                    id="toggle-all-checkboxes-failed-imports"
+                    class="checkbox"
+                    type="checkbox"
+                    data-action="toggle-all"
+                    data-target="failed-imports"
+                />
                 {% trans "Select all" %}
             </label>
-        </div>
-        <button class="button" type="submit">{% trans "Retry items" %}</button>
+
+            <button class="button is-block" type="submit">{% trans "Retry items" %}</button>
+        </fieldset>
+
+        <hr>
+
         {% else %}
         <ul>
             {% for item in failed_items %}
@@ -123,4 +143,4 @@
     </table>
 </div>
 </div>
-{% endblock %}
+{% endspaceless %}{% endblock %}

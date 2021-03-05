@@ -8,9 +8,12 @@ window.onload = function() {
     Array.from(document.getElementsByClassName('interaction'))
         .forEach(t => t.onsubmit = interact);
 
-    // select all
-    Array.from(document.getElementsByClassName('select-all'))
-        .forEach(t => t.onclick = selectAll);
+    // Toggle all checkboxes.
+    document
+        .querySelectorAll('[data-action="toggle-all"]')
+        .forEach(input => {
+            input.addEventListener('change', toggleAllCheckboxes);
+        });
 
     // tab groups
     Array.from(document.getElementsByClassName('tab-group'))
@@ -136,9 +139,20 @@ function interact(e) {
         .forEach(t => addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
 }
 
-function selectAll(e) {
-    e.target.parentElement.parentElement.querySelectorAll('[type="checkbox"]')
-        .forEach(t => t.checked=true);
+/**
+ * Toggle all descendant checkboxes of a target.
+ *
+ * Use `data-target="ID_OF_TARGET"` on the node being listened to.
+ *
+ * @param  {Event} event - change Event
+ * @return {undefined}
+ */
+function toggleAllCheckboxes(event) {
+    const mainCheckbox = event.target;
+
+    document
+        .querySelectorAll(`#${mainCheckbox.dataset.target} [type="checkbox"]`)
+        .forEach(checkbox => {checkbox.checked = mainCheckbox.checked;});
 }
 
 function toggleMenu(e) {
