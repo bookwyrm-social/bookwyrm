@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-04 04:13+0000\n"
+"POT-Creation-Date: 2021-03-04 22:24+0000\n"
 "PO-Revision-Date: 2021-03-02 10:35+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -55,11 +55,9 @@ msgstr ""
 msgid "%(value)s is not a valid username"
 msgstr ""
 
-#: bookwyrm/models/fields.py:164
-#, fuzzy
-#| msgid "Username:"
+#: bookwyrm/models/fields.py:164 bookwyrm/templates/layout.html:152
 msgid "username"
-msgstr "用户名:"
+msgstr "用户名"
 
 #: bookwyrm/models/fields.py:169
 msgid "A user with that username already exists."
@@ -100,6 +98,8 @@ msgid "Books by %(name)s"
 msgstr "%(name)s 所著的书"
 
 #: bookwyrm/templates/book.html:21
+#: bookwyrm/templates/discover/large-book.html:12
+#: bookwyrm/templates/discover/small-book.html:9
 msgid "by"
 msgstr ""
 
@@ -431,7 +431,7 @@ msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgstr "与 <a href=\"%(path)s\">%(username)s</a> 私信"
 
 #: bookwyrm/templates/feed/direct_messages.html:10
-#: bookwyrm/templates/layout.html:79
+#: bookwyrm/templates/layout.html:87
 msgid "Direct Messages"
 msgstr "私信"
 
@@ -541,7 +541,7 @@ msgid "%(username)s's %(year)s Books"
 msgstr "%(username)s 在 %(year)s 的书目"
 
 #: bookwyrm/templates/import.html:5 bookwyrm/templates/import.html:9
-#: bookwyrm/templates/layout.html:94
+#: bookwyrm/templates/layout.html:102
 msgid "Import Books"
 msgstr "导入书目"
 
@@ -664,55 +664,72 @@ msgstr "你的书架"
 msgid "Feed"
 msgstr "动态"
 
-#: bookwyrm/templates/layout.html:84
+#: bookwyrm/templates/layout.html:92
 #: bookwyrm/templates/preferences/preferences_layout.html:14
 msgid "Profile"
 msgstr "个人资料"
 
-#: bookwyrm/templates/layout.html:89
+#: bookwyrm/templates/layout.html:97
 msgid "Settings"
 msgstr "设置"
 
-#: bookwyrm/templates/layout.html:103
+#: bookwyrm/templates/layout.html:111
 #: bookwyrm/templates/settings/admin_layout.html:19
 #: bookwyrm/templates/settings/manage_invites.html:3
 msgid "Invites"
 msgstr "邀请"
 
-#: bookwyrm/templates/layout.html:110
+#: bookwyrm/templates/layout.html:118
 msgid "Site Configuration"
 msgstr "站点配置"
 
-#: bookwyrm/templates/layout.html:117
+#: bookwyrm/templates/layout.html:125
 msgid "Log out"
 msgstr "登出"
 
-#: bookwyrm/templates/layout.html:125 bookwyrm/templates/layout.html:126
+#: bookwyrm/templates/layout.html:133 bookwyrm/templates/layout.html:134
 #: bookwyrm/templates/notifications.html:6
 #: bookwyrm/templates/notifications.html:10
 msgid "Notifications"
 msgstr "通知"
 
-#: bookwyrm/templates/layout.html:143 bookwyrm/templates/layout.html:147
+#: bookwyrm/templates/layout.html:151 bookwyrm/templates/layout.html:155
 #: bookwyrm/templates/login.html:17
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "用户名:"
 
-#: bookwyrm/templates/layout.html:152 bookwyrm/templates/login.html:10
+#: bookwyrm/templates/layout.html:156
+msgid "password"
+msgstr "密码"
+
+#: bookwyrm/templates/layout.html:157 bookwyrm/templates/login.html:36
+msgid "Forgot your password?"
+msgstr "忘记了密码？"
+
+#: bookwyrm/templates/layout.html:160 bookwyrm/templates/login.html:10
 #: bookwyrm/templates/login.html:33
 msgid "Log in"
 msgstr "登录"
 
-#: bookwyrm/templates/layout.html:183
+#: bookwyrm/templates/layout.html:168
+msgid "Join"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:191
 msgid "About this server"
 msgstr "关于本服务器"
 
-#: bookwyrm/templates/layout.html:187
+#: bookwyrm/templates/layout.html:195
 msgid "Contact site admin"
 msgstr "联系站点管理员"
 
-#: bookwyrm/templates/layout.html:198
+#: bookwyrm/templates/layout.html:202
+#, python-format
+msgid "Support %(site.name)s on <a href=\"%(site.support_link)s\" target=\"_blank\">%(site.support_title)s</a>"
+msgstr ""
+
+#: bookwyrm/templates/layout.html:206
 msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm 是开源软件。你可以在<a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
 
@@ -858,10 +875,6 @@ msgstr "登录"
 msgid "Password:"
 msgstr "密码:"
 
-#: bookwyrm/templates/login.html:36
-msgid "Forgot your password?"
-msgstr "忘记了密码？"
-
 #: bookwyrm/templates/login.html:49
 msgid "Contact an administrator to get an invite"
 msgstr "联系管理员以取得邀请"
@@ -875,8 +888,6 @@ msgid "Not Found"
 msgstr "未找到"
 
 #: bookwyrm/templates/notfound.html:9
-#, fuzzy
-#| msgid "The page your requested doesn't seem to exist!"
 msgid "The page you requested doesn't seem to exist!"
 msgstr "你请求的页面似乎并不存在！"
 
@@ -954,18 +965,18 @@ msgstr "向你发送了关注请求"
 
 #: bookwyrm/templates/notifications.html:90
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的书评</a>"
+msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:92
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的评论</a>"
+msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:94
 #, python-format
-msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book.title)s</em></a>"
-msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book.title)s</em> 的引用</a>"
+msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications.html:96
 #, python-format
@@ -995,7 +1006,6 @@ msgstr "你什么也没错过！"
 #: bookwyrm/templates/password_reset.html:10
 #: bookwyrm/templates/password_reset_request.html:4
 #: bookwyrm/templates/password_reset_request.html:10
-#, fuzzy
 msgid "Reset Password"
 msgstr "重设密码"
 
@@ -1653,17 +1663,17 @@ msgstr "转发了"
 msgid "Reply"
 msgstr "回复"
 
-#: bookwyrm/templates/snippets/status/status_content.html:16
-#: bookwyrm/templates/snippets/trimmed_text.html:12
+#: bookwyrm/templates/snippets/status/status_content.html:18
+#: bookwyrm/templates/snippets/trimmed_text.html:15
 msgid "Show more"
 msgstr "显示更多"
 
-#: bookwyrm/templates/snippets/status/status_content.html:23
-#: bookwyrm/templates/snippets/trimmed_text.html:18
+#: bookwyrm/templates/snippets/status/status_content.html:25
+#: bookwyrm/templates/snippets/trimmed_text.html:25
 msgid "Show less"
 msgstr "显示更少"
 
-#: bookwyrm/templates/snippets/status/status_content.html:44
+#: bookwyrm/templates/snippets/status/status_content.html:46
 msgid "Open image in new window"
 msgstr "在新窗口中打开图像"
 
@@ -1673,8 +1683,6 @@ msgid "More options"
 msgstr "更多选项"
 
 #: bookwyrm/templates/snippets/status/status_options.html:17
-#, fuzzy
-#| msgid "Delete post"
 msgid "Delete status"
 msgstr "删除发文"
 
@@ -1698,8 +1706,6 @@ msgstr "标有 \"%(tag.name)s\" 标签的书"
 
 #: bookwyrm/templates/user/create_shelf_form.html:5
 #: bookwyrm/templates/user/create_shelf_form.html:22
-#, fuzzy
-#| msgid "Create shelf"
 msgid "Create Shelf"
 msgstr "创建书架"
 

@@ -4,7 +4,7 @@
 <{% if anchor %}a href="{{ user.local_path }}"{% else %}span{% endif %}
     class="user ml-1"
 >
-    {{ user.name|default:user|username }}
+    {{ user.display_name }}
 </a>
 
 {% if possessive %}'s{% endif %}
