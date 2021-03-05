@@ -118,6 +118,7 @@ class List(View):
                 approved=False).count(),
             'suggested_books': suggestions,
             'list_form': forms.ListForm(instance=book_list),
+            'status_form': forms.ListStatusForm(),
             'query': query or ''
         }
         return TemplateResponse(request, 'lists/list.html', data)

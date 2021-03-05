@@ -1,13 +1,12 @@
 {% extends 'components/card.html' %}
-
 {% load bookwyrm_tags %}
 {% load humanize %}
+{% load i18n %}
 
 {% block card-header %}
     <h3 class="card-header-title has-background-white-ter is-block">
         {% include 'snippets/avatar.html' with user=request.user %}
-        {% include 'snippets/username.html' with user=request.user %}
-        created a list
+        {% blocktrans with username=user.display_name list_name=list.name %}{{ username }} created a list: "{{ list_name }}"{% endblocktrans %}
     </h3>
 {% endblock %}
 
@@ -22,7 +21,7 @@
             {% include 'snippets/privacy_select.html' with current=list.privacy %}
         </div>
         <div class="control">
-            <button type="submit" class="button is-primary">Post status</button>
+            <button type="submit" class="button is-primary">{% trans "Post" %}</button>
         </div>
     </div>
 </form>
