@@ -1,7 +1,8 @@
+{% load i18n %}
 <p class="stars">
-    <span class="is-sr-only">{% if rating %}{{ rating|floatformat }} star{{ rating|floatformat | pluralize }}{% else %}No rating{% endif %}</span>
+<span class="is-sr-only">{% if rating %}{{ rating|floatformat }} star{{ rating|floatformat | pluralize }}{% else %}{% trans "No rating" %}{% endif %}</span>
     {% for i in '12345'|make_list %}
-    <span class="icon icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}" aria-hidden="true">
+    <span class="icon is-small mr-1 icon-star-{% if rating >= forloop.counter %}full{% elif rating|floatformat:0 >= forloop.counter|floatformat:0 %}half{% else %}empty{% endif %}" aria-hidden="true">
     </span>
     {% endfor %}
 </p>

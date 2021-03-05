@@ -38,10 +38,10 @@ class InteractionViews(TestCase):
         view = views.Favorite.as_view()
         request = self.factory.post('')
         request.user = self.remote_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, status.id)
         fav = models.Favorite.objects.get()
         self.assertEqual(fav.status, status)
@@ -58,15 +58,15 @@ class InteractionViews(TestCase):
         view = views.Unfavorite.as_view()
         request = self.factory.post('')
         request.user = self.remote_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
             views.Favorite.as_view()(request, status.id)
 
         self.assertEqual(models.Favorite.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, status.id)
         self.assertEqual(models.Favorite.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
@@ -77,10 +77,10 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post('')
         request.user = self.remote_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, status.id)
 
         boost = models.Boost.objects.get()
@@ -99,10 +99,10 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post('')
         request.user = self.local_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi', privacy='unlisted')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi', privacy='unlisted')
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, status.id)
 
         boost = models.Boost.objects.get()
@@ -113,10 +113,10 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post('')
         request.user = self.local_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi', privacy='followers')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi', privacy='followers')
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, status.id)
         self.assertFalse(models.Boost.objects.exists())
 
@@ -125,10 +125,10 @@ class InteractionViews(TestCase):
         view = views.Boost.as_view()
         request = self.factory.post('')
         request.user = self.local_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
             view(request, status.id)
             view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
@@ -138,15 +138,17 @@ class InteractionViews(TestCase):
         ''' undo a boost '''
         view = views.Unboost.as_view()
         request = self.factory.post('')
-        request.user = self.remote_user
-        status = models.Status.objects.create(
-            user=self.local_user, content='hi')
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        request.user = self.local_user
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(
+                user=self.local_user, content='hi')
             views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             view(request, status.id)
+            self.assertEqual(mock.call_count, 1)
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)

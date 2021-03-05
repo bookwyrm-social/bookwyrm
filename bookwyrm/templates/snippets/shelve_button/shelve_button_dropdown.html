@@ -1,0 +1,11 @@
+{% extends 'components/dropdown.html' %}
+{% load i18n %}
+{% block dropdown-trigger %}
+<span class="icon icon-arrow-down">
+    <span class="is-sr-only">{% trans "More shelves" %}</span>
+</span>
+{% endblock %}
+
+{% block dropdown-list %}
+{% include 'snippets/shelve_button/shelve_button_options.html' with active_shelf=active_shelf shelves=request.user.shelf_set.all dropdown=True class="shelf-option is-fullwidth is-small" %}
+{% endblock %}

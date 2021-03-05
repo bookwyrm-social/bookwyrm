@@ -12,10 +12,10 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.broadcast import broadcast
 from bookwyrm.connectors import connector_manager
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_activity_feed, get_edition
+from .helpers import privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -45,15 +45,9 @@ class Book(View):
         if not work:
             return HttpResponseNotFound()
 
-        reviews = models.Review.objects.filter(
-            book__in=work.editions.all(),
-        )
         # all reviews for the book
-        reviews = get_activity_feed(
-            request.user,
-            ['public', 'unlisted', 'followers', 'direct'],
-            queryset=reviews
-        )
+        reviews = models.Review.objects.filter(book__in=work.editions.all())
+        reviews = get_activity_feed(request.user, queryset=reviews)
 
         # the reviews to show
         paginated = Paginator(reviews.exclude(
@@ -78,23 +72,25 @@ class Book(View):
                     .order_by('-updated_date')
 
             user_shelves = models.ShelfBook.objects.filter(
-                added_by=request.user, book=book
+                user=request.user, book=book
             )
 
             other_edition_shelves = models.ShelfBook.objects.filter(
                 ~Q(book=book),
-                added_by=request.user,
+                user=request.user,
                 book__parent_work=book.parent_work,
             )
 
         data = {
-            'title': book.title,
             'book': book,
             'reviews': reviews_page,
             'review_count': reviews.count(),
             'ratings': reviews.filter(Q(content__isnull=True) | Q(content='')),
             'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
             'tags':  models.UserTag.objects.filter(book=book),
+            'lists': privacy_filter(
+                request.user, book.list_set.all()
+            ),
             'user_tags': user_tags,
             'user_shelves': user_shelves,
             'other_edition_shelves': other_edition_shelves,
@@ -116,7 +112,6 @@ class EditBook(View):
         if not book.description:
             book.description = book.parent_work.description
         data = {
-            'title': 'Edit Book',
             'book': book,
             'form': forms.EditionForm(instance=book)
         }
@@ -129,14 +124,12 @@ class EditBook(View):
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
         if not form.is_valid():
             data = {
-                'title': 'Edit Book',
                 'book': book,
                 'form': form
             }
             return TemplateResponse(request, 'edit_book.html', data)
         book = form.save()
 
-        broadcast(request.user, book.to_update_activity(request.user))
         return redirect('/book/%s' % book.id)
 
 
@@ -150,7 +143,6 @@ class Editions(View):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
 
         data = {
-            'title': 'Editions of %s' % work.title,
             'editions': work.editions.order_by('-edition_rank').all(),
             'work': work,
         }
@@ -167,10 +159,10 @@ def upload_cover(request, book_id):
     if not form.is_valid():
         return redirect('/book/%d' % book.id)
 
+    book.last_edited_by = request.user
     book.cover = form.files['cover']
     book.save()
 
-    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -187,9 +179,9 @@ def add_description(request, book_id):
     description = request.POST.get('description')
 
     book.description = description
+    book.last_edited_by = request.user
     book.save()
 
-    broadcast(request.user, book.to_update_activity(request.user))
     return redirect('/book/%s' % book.id)
 
 
@@ -215,12 +207,14 @@ def switch_edition(request):
         shelf__user=request.user
     )
     for shelfbook in shelfbooks.all():
-        broadcast(request.user, shelfbook.to_remove_activity(request.user))
-
-        shelfbook.book = new_edition
-        shelfbook.save()
-
-        broadcast(request.user, shelfbook.to_add_activity(request.user))
+        with transaction.atomic():
+            models.ShelfBook.objects.create(
+                created_date=shelfbook.created_date,
+                user=shelfbook.user,
+                shelf=shelfbook.shelf,
+                book=new_edition
+            )
+            shelfbook.delete()
 
     readthroughs = models.ReadThrough.objects.filter(
         book__parent_work=new_edition.parent_work,

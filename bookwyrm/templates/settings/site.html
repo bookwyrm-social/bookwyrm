@@ -1,45 +1,53 @@
 {% extends 'settings/admin_layout.html' %}
-{% block header %}Site Configuration{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Site Settings" %}{% endblock %}
+
+{% block header %}{% trans "Site Settings" %}{% endblock %}
 
 {% block panel %}
 
 <form action="{% url 'settings-site' %}" method="POST" class="content">
     {% csrf_token %}
     <section class="block" id="instance-info">
-        <h2 class="title is-4">Instance Info</h2>
+        <h2 class="title is-4">{% trans "Instance Info" %}</h2>
         <div class="control">
-            <label class="label" for="id_name">Instance Name:</label>
+            <label class="label" for="id_name">{% trans "Instance Name:" %}</label>
             {{ site_form.name }}
         </div>
         <div class="control">
-            <label class="label" for="id_instance_tagline">Tagline:</label>
+            <label class="label" for="id_instance_tagline">{% trans "Tagline:" %}</label>
             {{ site_form.instance_tagline }}
         </div>
         <div class="control">
-            <label class="label" for="id_instance_description">Instance description:</label>
+            <label class="label" for="id_instance_description">{% trans "Instance description:" %}</label>
             {{ site_form.instance_description }}
         </div>
         <div class="control">
-            <label class="label" for="id_code_of_conduct">Code of conduct:</label>
+            <label class="label" for="id_code_of_conduct">{% trans "Code of conduct:" %}</label>
             {{ site_form.code_of_conduct }}
+        </div>
+        <div class="control">
+            <label class="label" for="id_privacy_policy">{% trans "Privacy Policy:" %}</label>
+            {{ site_form.privacy_policy }}
         </div>
     </section>
 
     <hr aria-hidden="true">
 
     <section class="block" id="images">
-        <h2 class="title is-4">Images</h2>
+        <h2 class="title is-4">{% trans "Images" %}</h2>
         <div class="field is-grouped">
             <div class="control">
-                <label class="label" for="id_logo">Logo:</label>
+                <label class="label" for="id_logo">{% trans "Logo:" %}</label>
                 {{ site_form.logo }}
             </div>
             <div class="control">
-                <label class="label" for="id_logo_small">Logo small:</label>
+                <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
                 {{ site_form.logo_small }}
             </div>
             <div class="control">
-                <label class="label" for="id_favicon">Favicon:</label>
+                <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
                 {{ site_form.favicon }}
             </div>
         </div>
@@ -48,17 +56,17 @@
     <hr aria-hidden="true">
 
     <section class="block" id="footer">
-        <h2 class="title is-4">Footer Content</h2>
+        <h2 class="title is-4">{% trans "Footer Content" %}</h2>
         <div class="control">
-            <label class="label" for="id_support_link">Support link:</label>
+            <label class="label" for="id_support_link">{% trans "Support link:" %}</label>
             <input type="text" name="support_link" maxlength="255" class="input" id="id_support_link" placeholder="https://www.patreon.com/bookwyrm"{% if site.support_link %} value="{{ site.support_link  }}"{% endif %}>
         </div>
         <div class="control">
-            <label class="label" for="id_support_title">Support title:</label>
+            <label class="label" for="id_support_title">{% trans "Support title:" %}</label>
             <input type="text" name="support_title" maxlength="100" class="input" id="id_support_title" placeholder="Patreon"{% if site.support_title %} value="{{ site.support_title }}"{% endif %}>
         </div>
         <div class="control">
-            <label class="label" for="id_admin_email">Admin email:</label>
+            <label class="label" for="id_admin_email">{% trans "Admin email:" %}</label>
             {{ site_form.admin_email }}
         </div>
     </section>
@@ -66,19 +74,19 @@
     <hr aria-hidden="true">
 
     <section class="block" id="registration">
-        <h2 class="title is-4">Registration</h2>
+        <h2 class="title is-4">{% trans "Registration" %}</h2>
         <div class="control">
-            <label class="label" for="id_allow_registration">Allow registration:
+            <label class="label" for="id_allow_registration">{% trans "Allow registration:" %}
             {{ site_form.allow_registration }}
         </div>
         <div class="control">
-            <label class="label" for="id_registration_closed_text">Registration closed text:</label>
+            <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ site_form.registration_closed_text }}
         </div>
     </section>
 
     <footer class="block">
-        <button class="button is-primary" type="submit">Save Changes</button>
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
     </footer>
 </form>
 {% endblock %}

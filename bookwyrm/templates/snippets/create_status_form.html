@@ -1,4 +1,5 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 <form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
@@ -6,7 +7,7 @@
     <input type="hidden" name="reply_parent" value="{{ reply_parent.id }}">
     {% if type == 'review' %}
     <div class="control">
-        <label class="label" for="id_name_{{ book.id }}_{{ type }}">Title:</label>
+        <label class="label" for="id_name_{{ book.id }}_{{ type }}">{% trans "Title" %}:</label>
         <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'">
     </div>
     {% endif %}
@@ -17,9 +18,9 @@
 
         {% if type == 'review' %}
         <fieldset>
-            <legend class="is-sr-only">Rating</legend>
+            <legend class="is-sr-only">{% trans "Rating" %}</legend>
             <div class="field is-grouped stars form-rate-stars">
-                <label class="is-sr-only" for="no-rating-{{ book.id }}">No rating</label>
+                <label class="is-sr-only" for="no-rating-{{ book.id }}">{% trans "No rating" %}</label>
                 <input class="is-sr-only" type="radio" name="rating" value="" id="no-rating-{{ book.id }}" checked>
                 {% for i in '12345'|make_list %}
                 <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
@@ -40,7 +41,7 @@
     </div>
     {% if type == 'quotation' %}
     <div class="control">
-        <label class="label" for="id_content_quote-{{ book.id }}">Comment:</label>
+        <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
         <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
     </div>
@@ -50,19 +51,20 @@
     <div class="columns pt-1">
         <div class="field has-addons column">
             <div class="control">
-                {% include 'snippets/toggle/toggle_button.html' with text="Include spoiler alert" icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=status.content_warning %}
+                {% trans "Include spoiler alert" as button_text %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=status.content_warning %}
             </div>
             <div class="control">
             {% if type == 'direct' %}
                 <input type="hidden" name="privacy" value="direct">
-                <button type="button" class="button" aria-label="Privacy" disabled>Private</button>
+                <button type="button" class="button" aria-label="Privacy" disabled>{% trans "Private" %}</button>
             {% else %}
                 {% include 'snippets/privacy_select.html' with current=reply_parent.privacy %}
             {% endif %}
             </div>
         </div>
         <div class="column is-narrow">
-            <button class="button is-link" type="submit">Post</button>
+            <button class="button is-link" type="submit">{% trans "Post" %}</button>
         </div>
     </div>
 </form>

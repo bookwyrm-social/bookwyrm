@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Oops!" %}{% endblock %}
+
 {% block content %}
-
 <div class="block">
-    <h1 class="title">Server Error</h1>
-    <p>Something went wrong! Sorry about that.</p>
+    <h1 class="title">{% trans "Server Error" %}</h1>
+    <p>{% trans "Something went wrong! Sorry about that." %}</p>
 </div>
-
 {% endblock %}
 

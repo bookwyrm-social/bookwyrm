@@ -1,0 +1,37 @@
+{% extends 'discover/landing_layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+<div class="block columns mt-4">
+    <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">{% blocktrans with site_name=site.name %}About {{ site_name }}{% endblocktrans %}</h2>
+        <ul class="menu-list">
+            <li>
+                <a href="#coc">{% trans "Code of Conduct" %}</a>
+            </li>
+            <li>
+                <a href="#privacy">{% trans "Privacy Policy" %}</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="column content">
+        <div class="block" id="coc">
+            <h2 class="title">{% trans "Code of Conduct" %}</h2>
+            <div class="content">
+                {{ site.code_of_conduct | safe }}
+            </div>
+        </div>
+
+        <hr aria-hidden="true">
+
+        <div class="block" id="privacy">
+            <h2 class="title">{% trans "Privacy Policy" %}</h2>
+            <div class="content">
+                {{ site.privacy_policy | safe }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

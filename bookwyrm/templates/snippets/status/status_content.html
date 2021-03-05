@@ -1,0 +1,68 @@
+{% load bookwyrm_tags %}
+{% load i18n %}
+<div class="block">
+    {% if status.status_type == 'Review' %}
+    <div>
+        {% if status.name %}
+        <h3 class="title is-5 has-subtitle" dir="auto">
+            {{ status.name|escape }}
+        </h3>
+        {% endif %}
+        {% include 'snippets/stars.html' with rating=status.rating %}
+    </div>
+    {% endif %}
+
+    {% if status.content_warning %}
+    <div>
+        <p>{{ status.content_warning }}</p>
+        {% trans "Show more" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+    </div>
+    {% endif %}
+
+    <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
+        {% if status.content_warning %}
+        {% trans "Show less" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+        {% endif %}
+
+        {% if status.quote %}
+        <div class="quote block">
+            <blockquote dir="auto">{{ status.quote | safe }}</blockquote>
+
+            <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
+        </div>
+        {% endif %}
+
+        {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Announce' %}
+        {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
+        {% endif %}
+        {% if status.attachments.exists %}
+        <div class="block">
+            <div class="columns">
+                {% for attachment in status.attachments.all %}
+                <div class="column is-narrow">
+                    <figure class="image is-128x128">
+                        <a href="/images/{{ attachment.image }}" target="_blank" aria-label="{% trans 'Open image in new window' %}">
+                            <img src="/images/{{ attachment.image }}"{% if attachment.caption %} alt="{{ attachment.caption }}" title="{{ attachment.caption }}"{% endif %}>
+                        </a>
+                    </figure>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if not hide_book %}
+{% if status.book or status.mention_books.count %}
+<div class="{% if status.status_type != 'GeneratedNote' %}box has-background-white-bis{% endif %}">
+    {% if status.book %}
+    {% include 'snippets/status/book_preview.html' with book=status.book %}
+    {% elif status.mention_books.count %}
+    {% include 'snippets/status/book_preview.html' with book=status.mention_books.first %}
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}

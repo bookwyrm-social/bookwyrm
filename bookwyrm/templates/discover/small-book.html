@@ -1,0 +1,12 @@
+{% load bookwyrm_tags %}
+{% load i18n %}
+{% if book %}
+<a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book %}</a>
+{% include 'snippets/stars.html' with rating=book|rating:request.user %}
+
+<h3 class="title is-6"><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
+{% if book.authors %}
+<p class="subtitle is-6">{% trans "by" %} {% include 'snippets/authors.html' with book=book %}</p>
+{% endif %}
+
+{% endif %}

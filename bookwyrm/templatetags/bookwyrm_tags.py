@@ -22,11 +22,8 @@ def dict_key(d, k):
 @register.filter(name='rating')
 def get_rating(book, user):
     ''' get the overall rating of a book '''
-    queryset = views.helpers.get_activity_feed(
-        user,
-        ['public', 'followers', 'unlisted', 'direct'],
-        queryset=models.Review.objects.filter(book=book),
-    )
+    queryset = views.helpers.privacy_filter(
+        user, models.Review.objects.filter(book=book))
     return queryset.aggregate(Avg('rating'))['rating__avg']
 
 
@@ -171,6 +168,17 @@ def get_status_preview_name(obj):
         return '%s from <em>%s</em>' % (name, obj.book.title)
     return name
 
+@register.filter(name='next_shelf')
+def get_next_shelf(current_shelf):
+    ''' shelf you'd use to update reading progress '''
+    if current_shelf == 'to-read':
+        return 'reading'
+    if current_shelf == 'reading':
+        return 'read'
+    if current_shelf == 'read':
+        return 'read'
+    return 'to-read'
+
 @register.simple_tag(takes_context=False)
 def related_status(notification):
     ''' for notifications '''
@@ -211,3 +219,9 @@ def active_read_through(book, user):
         book=book,
         finish_date__isnull=True
     ).order_by('-start_date').first()
+
+
+@register.simple_tag(takes_context=False)
+def comparison_bool(str1, str2):
+    ''' idk why I need to write a tag for this, it reutrns a bool '''
+    return str1 == str2

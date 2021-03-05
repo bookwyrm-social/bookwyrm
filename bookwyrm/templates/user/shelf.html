@@ -1,14 +1,15 @@
 {% extends 'user/user_layout.html' %}
 {% load bookwyrm_tags %}
+{% load i18n %}
 
 {% block header %}
 <header class="columns">
     <h1 class="title">
-        {% if is_self %}Your
+        {% if is_self %}
+        {% trans "Your Shelves" %}
         {% else %}
-        {% include 'snippets/username.html' with user=user possessive=True %}
+        {% blocktrans with username=user.display_name %}{{ username }}: Shelves{% endblocktrans %}
         {% endif %}
-        shelves
     </h1>
 </header>
 {% endblock %}
@@ -16,20 +17,21 @@
 {% block panel %}
 <div class="block columns">
     <div class="column">
-        <div class="tabs" role="tablist">
+        <div class="tabs">
             <ul>
-                {% for shelf_tab in shelves %}
-                <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                    <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}" role="tab" aria-selected="{% if shelf_tab.identifier == shelf.identifier %}true{% else %}false{% endif %}">{{ shelf_tab.name }}</a>
+            {% for shelf_tab in shelves %}
+            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
                 </li>
-                {% endfor %}
+            {% endfor %}
             </ul>
         </div>
     </div>
 
     {% if is_self %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Create shelf" icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        {% trans "Create shelf" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -38,7 +40,7 @@
     {% include 'user/create_shelf_form.html' with controls_text='create-shelf-form' %}
 </div>
 
-<div class="block columns">
+<div class="block columns is-mobile">
     <div class="column">
         <h2 class="title is-3">
             {{ shelf.name }}
@@ -49,7 +51,8 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit shelf" icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
+        {% trans "Edit shelf" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
     </div>
     {% endif %}
 </div>

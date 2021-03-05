@@ -1,0 +1,33 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% blocktrans with book_title=book.title %}Want to Read "<em>{{ book_title }}</em>"{% endblocktrans %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="shelve" action="/shelve/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
+    <input type="hidden" name="shelf" value="to-read">
+{% endblock %}
+
+{% block modal-footer %}
+<div class="columns">
+    <div class="column field">
+        <label for="post_status_want-{{ uuid }}">
+            <input type="checkbox" name="post-status" class="checkbox" id="post_status_want-{{ uuid }}" checked>
+            {% trans "Post to feed" %}
+        </label>
+        {% include 'snippets/privacy_select.html' %}
+    </div>
+    <div class="column">
+        <button class="button is-success" type="submit">
+            <span>{% trans "Want to read" %}</span>
+        </button>
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="want-to-read" controls_uid=uuid %}
+    </div>
+</div>
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}

@@ -17,6 +17,7 @@ class OrderedCollection(ActivityObject):
 
 @dataclass(init=False)
 class OrderedCollectionPrivate(OrderedCollection):
+    ''' an ordered collection with privacy settings '''
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
 
@@ -38,6 +39,6 @@ class OrderedCollectionPage(ActivityObject):
     ''' structure of an ordered collection activity '''
     partOf: str
     orderedItems: List
-    next: str
-    prev: str
+    next: str = None
+    prev: str = None
     type: str = 'OrderedCollectionPage'

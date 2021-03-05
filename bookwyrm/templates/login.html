@@ -1,23 +1,26 @@
 {% extends 'layout.html' %}
-{% block content %}
+{% load i18n %}
 
+{% block title %}{% trans "Login" %}{% endblock %}
+
+{% block content %}
 <div class="columns">
     <div class="column">
         <div class="box">
-            <h1 class="title">Log in</h1>
+            <h1 class="title">{% trans "Log in" %}</h1>
             {% if login_form.non_field_errors %}
             <p class="notification is-danger">{{ login_form.non_field_errors }}</p>
             {% endif %}
             <form name="login" method="post" action="/login">
                 {% csrf_token %}
                 <div class="field">
-                    <label class="label" for="id_localname">Username:</label>
+                    <label class="label" for="id_localname">{% trans "Username:" %}</label>
                     <div class="control">
                         {{ login_form.localname }}
                     </div>
                 </div>
                 <div class="field">
-                    <label class="label" for="id_password">Password:</label>
+                    <label class="label" for="id_password">{% trans "Password:" %}</label>
                     <div class="control">
                         {{ login_form.password }}
                     </div>
@@ -27,23 +30,23 @@
                 </div>
                 <div class="field is-grouped">
                     <div class="control">
-                        <button class="button is-primary" type="submit">Log in</button>
+                        <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
                     </div>
                     <div class="control">
-                        <small><a href="/password-reset">Forgot your password?</a></small>
+                        <small><a href="/password-reset">{% trans "Forgot your password?" %}</a></small>
                     </div>
                 </div>
             </form>
         </div>
         <div class="box has-background-primary-light">
             {% if site.allow_registration %}
-            <h2 class="title">Create an Account</h2>
+            <h2 class="title">{% trans "Create an Account" %}</h2>
             <form name="register" method="post" action="/register">
                 {% include 'snippets/register_form.html' %}
             </form>
             {% else %}
-            <h2 class="title">This instance is closed</h2>
-            <p>Contact an administrator to get an invite</p>
+            <h2 class="title">{% trans "This instance is closed" %}</h2>
+            <p>{% trans "Contact an administrator to get an invite" %}</p>
             {% endif %}
         </div>
     </div>
@@ -53,7 +56,7 @@
             {% include 'snippets/about.html' %}
 
             <p class="block">
-                <a href="/about/">More about this site</a>
+                <a href="/about/">{% trans "More about this site" %}</a>
             </p>
         </div>
     </div>

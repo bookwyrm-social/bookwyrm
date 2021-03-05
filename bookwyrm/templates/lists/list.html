@@ -1,10 +1,11 @@
 {% extends 'lists/list_layout.html' %}
+{% load i18n %}
 {% load bookwyrm_tags %}
-{% block panel %}
 
+{% block panel %}
 {% if items.exists and list.user == request.user %}
 <section class="block">
-    <h2 class="title is-4">Post list to feed</h2>
+    <h2 class="title is-4">{% trans "Post list to feed" %}</h2>
     <div class="block column is-three-quarters">
         {% include 'lists/list_status.html' %}
     </div>
@@ -22,31 +23,31 @@
 <div class="columns mt-3">
     <section class="column is-three-quarters">
         {% if not items.exists %}
-        <p>This list is currently empty</p>
+        <p>{% trans "This list is currently empty" %}</p>
         {% else %}
         <ol>
         {% for item in items %}
             <li class="block pb-3">
                 <div class="card">
-                    <div class="card-content columns p-0 mb-0">
+                    <div class="card-content columns p-0 mb-0 is-mobile">
                         <div class="column is-narrow pt-0 pb-0">
-                            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
+                            <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
                         </div>
                         <div class="column is-flex-direction-column is-align-items-self-start">
                             <span>{% include 'snippets/book_titleby.html' with book=item.book %}</span>
                             {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
-                            {% include 'snippets/shelve_button.html' with book=item.book %}
+                            {% include 'snippets/shelve_button/shelve_button.html' with book=item.book %}
                         </div>
                     </div>
                     <div class="card-footer has-background-white-bis">
                         <div class="card-footer-item">
-                            <p>Added by {% include 'snippets/username.html' with user=item.added_by %}</p>
+                            <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                         </div>
-                        {% if list.user == request.user or list.curation == 'open' and item.added_by == request.user %}
+                        {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
                         <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
-                            <button type="submit" class="button is-small is-danger">Remove</button>
+                            <button type="submit" class="button is-small is-danger">{% trans "Remove" %}</button>
                         </form>
                         {% endif %}
                     </div>
@@ -59,29 +60,33 @@
 
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
     <section class="column is-one-quarter content">
-        <h2>{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Suggest{% endif %} Books</h2>
+        <h2>{% if list.curation == 'open' or request.user == list.user %}{% trans "Add Books" %}{% else %}{% trans "Suggest Books" %}{% endif %}</h2>
         <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
-                    <input aria-label="Search for a book" class="input" type="text" name="q" placeholder="Search for a book" value="{{ query }}">
+                    <input aria-label="{% trans 'Search for a book' %}" class="input" type="text" name="q" placeholder="{% trans 'Search for a book' %}" value="{{ query }}">
                 </div>
                 <div class="control">
                     <button class="button" type="submit">
-                        <span class="icon icon-search" title="Search">
-                            <span class="is-sr-only">search</span>
+                        <span class="icon icon-search" title="{% trans 'Search' %}">
+                            <span class="is-sr-only">{% trans "search" %}</span>
                         </span>
                     </button>
                 </div>
             </div>
             {% if query %}
-            <p class="help"><a href="{% url 'list' list.id %}">Clear search</a></p>
+            <p class="help"><a href="{% url 'list' list.id %}">{% trans "Clear search" %}</a></p>
             {% endif %}
         </form>
         {% if not suggested_books %}
-        <p>No books found{% if query %} matching the query "{{ query }}"{% endif %}</p>
+        {% if query %}
+        <p>{% blocktrans %}No books found matching the query "{{ query }}"{% endblocktrans %}</p>{% else %}
+        <p>{% trans "No books found" %}</p>
+        {% endif %}
         {% endif %}
         {% for book in suggested_books %}
-        <div class="block columns">
+        {% if book %}
+        <div class="block columns is-mobile">
             <div class="column is-narrow">
                 <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
             </div>
@@ -90,10 +95,11 @@
                 <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
-                    <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}Add{% else %}Suggest{% endif %}</button>
+                    <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
                 </form>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
     </section>
     {% endif %}

@@ -11,7 +11,7 @@ class RssFeed(Feed):
 
     def get_object(self, request, username):
         ''' the user who's posts get serialized '''
-        return get_user_from_username(username)
+        return get_user_from_username(request.user, username)
 
 
     def link(self, obj):
@@ -27,7 +27,10 @@ class RssFeed(Feed):
     def items(self, obj):
         ''' the user's activity feed '''
         return get_activity_feed(
-            obj, ['public', 'unlisted'], queryset=obj.status_set)
+            obj,
+            privacy=['public', 'unlisted'],
+            queryset=obj.status_set.select_subclasses()
+        )
 
 
     def item_link(self, item):

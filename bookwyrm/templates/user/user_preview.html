@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load humanize %}
+
+<div class="media block">
+    <div class="media-left">
+        <a href="{{ user.local_path }}">
+        {% include 'snippets/avatar.html' with user=user large=True %}
+        </a>
+    </div>
+    <div class="media-content">
+        <p>{% if user.name %}{{ user.name }}{% else %}{{ user.localname }}{% endif %}</p>
+        <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
+        <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
+        <p>
+        <a href="{{ user.local_path }}/followers">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
+        <a href="{{ user.local_path }}/following">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
+        </p>
+    </div>
+</div>
+

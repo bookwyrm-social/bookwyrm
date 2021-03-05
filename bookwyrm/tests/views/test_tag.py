@@ -39,9 +39,10 @@ class TagViews(TestCase):
     def test_tag_page(self):
         ''' there are so many views, this just makes sure it LOADS '''
         view = views.Tag.as_view()
-        tag = models.Tag.objects.create(name='hi there')
-        models.UserTag.objects.create(
-            tag=tag, user=self.local_user, book=self.book)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            tag = models.Tag.objects.create(name='hi there')
+            models.UserTag.objects.create(
+                tag=tag, user=self.local_user, book=self.book)
         request = self.factory.get('')
         with patch('bookwyrm.views.tag.is_api_request') as is_api:
             is_api.return_value = False
@@ -51,6 +52,21 @@ class TagViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
         request = self.factory.get('')
+        with patch('bookwyrm.views.tag.is_api_request') as is_api:
+            is_api.return_value = True
+            result = view(request, tag.identifier)
+        self.assertIsInstance(result, ActivitypubResponse)
+        self.assertEqual(result.status_code, 200)
+
+
+    def test_tag_page_activitypub_page(self):
+        ''' there are so many views, this just makes sure it LOADS '''
+        view = views.Tag.as_view()
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            tag = models.Tag.objects.create(name='hi there')
+            models.UserTag.objects.create(
+                tag=tag, user=self.local_user, book=self.book)
+        request = self.factory.get('', {'page': 1})
         with patch('bookwyrm.views.tag.is_api_request') as is_api:
             is_api.return_value = True
             result = view(request, tag.identifier)
@@ -68,7 +84,7 @@ class TagViews(TestCase):
             })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request)
 
         tag = models.Tag.objects.get()
@@ -82,9 +98,10 @@ class TagViews(TestCase):
     def test_untag(self):
         ''' remove a tag from a book '''
         view = views.RemoveTag.as_view()
-        tag = models.Tag.objects.create(name='A Tag!?')
-        models.UserTag.objects.create(
-            user=self.local_user, book=self.book, tag=tag)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            tag = models.Tag.objects.create(name='A Tag!?')
+            models.UserTag.objects.create(
+                user=self.local_user, book=self.book, tag=tag)
         request = self.factory.post(
             '', {
                 'user': self.local_user.id,
@@ -93,7 +110,7 @@ class TagViews(TestCase):
             })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request)
 
         self.assertTrue(models.Tag.objects.filter(name='A Tag!?').exists())

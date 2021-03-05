@@ -8,7 +8,7 @@ from bookwyrm import models, views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
-@patch('bookwyrm.broadcast.broadcast_task.delay')
+@patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay')
 class ShelfViews(TestCase):
     ''' tag views'''
     def setUp(self):
@@ -25,11 +25,12 @@ class ShelfViews(TestCase):
             remote_id='https://example.com/book/1',
             parent_work=self.work
         )
-        self.shelf = models.Shelf.objects.create(
-            name='Test Shelf',
-            identifier='test-shelf',
-            user=self.local_user
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            self.shelf = models.Shelf.objects.create(
+                name='Test Shelf',
+                identifier='test-shelf',
+                user=self.local_user
+            )
         models.SiteSettings.objects.create()
 
 
@@ -96,7 +97,8 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.identifier)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, request.user.username, shelf.identifier)
         shelf.refresh_from_db()
 
         self.assertEqual(shelf.name, 'cool name')
@@ -116,7 +118,8 @@ class ShelfViews(TestCase):
                 'name': 'cool name'
             })
         request.user = self.local_user
-        view(request, request.user.username, shelf.identifier)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, request.user.username, shelf.identifier)
 
         self.assertEqual(shelf.name, 'To Read')
 
@@ -128,7 +131,8 @@ class ShelfViews(TestCase):
             'shelf': self.shelf.identifier
         })
         request.user = self.local_user
-        views.shelve(request)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
@@ -142,7 +146,8 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        views.shelve(request)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -156,7 +161,8 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        views.shelve(request)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -170,7 +176,7 @@ class ShelfViews(TestCase):
         })
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.shelve(request)
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
@@ -178,7 +184,12 @@ class ShelfViews(TestCase):
 
     def test_handle_unshelve(self, _):
         ''' remove a book from a shelf '''
-        self.shelf.books.add(self.book)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.shelf
+            )
         self.shelf.save()
         self.assertEqual(self.shelf.books.count(), 1)
         request = self.factory.post('', {
@@ -186,6 +197,6 @@ class ShelfViews(TestCase):
             'shelf': self.shelf.id
         })
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.unshelve(request)
         self.assertEqual(self.shelf.books.count(), 0)

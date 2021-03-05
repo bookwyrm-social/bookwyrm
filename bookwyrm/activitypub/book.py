@@ -67,4 +67,4 @@ class Author(ActivityObject):
     librarythingKey: str = ''
     goodreadsKey: str = ''
     wikipediaLink: str = ''
-    type: str = 'Person'
+    type: str = 'Author'

@@ -1,16 +1,20 @@
 {% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Search Results" %}{% endblock %}
+
 {% block content %}
 {% with book_results|first as local_results %}
 <div class="block">
-    <h1 class="title">Search Results for "{{ query }}"</h1>
+    <h1 class="title">{% blocktrans %}Search Results for "{{ query }}"{% endblocktrans %}</h1>
 </div>
 
 <div class="block columns">
     <div class="column">
-        <h2 class="title">Matching Books</h2>
+        <h2 class="title">{% trans "Matching Books" %}</h2>
         <section class="block">
             {% if not local_results.results %}
-            <p>No books found for "{{ query }}"</p>
+            <p>{% blocktrans %}No books found for "{{ query }}"{% endblocktrans %}</p>
             {% else %}
             <ul>
             {% for result in local_results.results %}
@@ -22,12 +26,14 @@
             {% endif %}
         </section>
 
-        {% if book_results|slice:":1" and local_results.results and request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
+        {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
             <p>
-                Didn't find what you were looking for?
+                {% trans "Didn't find what you were looking for?" %}
             </p>
-            {% include 'snippets/toggle/open_button.html' with text="Show results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Show results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results" %}
         </div>
         {% endif %}
 
@@ -48,7 +54,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="remote_id" value="{{ result.key }}">
                             <div>{% include 'snippets/search_result_text.html' with result=result link=False %}</div>
-                            <button type="submit" class="button is-small is-link">Import book</button>
+                            <button type="submit" class="button is-small is-link">{% trans "Import book" %}</button>
                         </form>
                     </li>
                 {% endfor %}
@@ -58,15 +64,17 @@
             {% endfor %}
 
             {% if local_results.results %}
-            {% include 'snippets/toggle/close_button.html' with text="Hide results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Hide results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
             {% endif %}
         </div>
+        {% endif %}
     </div>
     <div class="column">
         <section class="block">
-            <h2 class="title">Matching Users</h2>
+            <h2 class="title">{% trans "Matching Users" %}</h2>
             {% if not user_results %}
-            <p>No users found for "{{ query }}"</p>
+            <p>{% blocktrans %}No users found for "{{ query }}"{% endblocktrans %}</p>
             {% endif %}
             <ul>
             {% for result in user_results %}
@@ -79,9 +87,9 @@
             </ul>
         </section>
         <section class="block">
-            <h2 class="title">Lists</h2>
+            <h2 class="title">{% trans "Lists" %}</h2>
             {% if not list_results %}
-            <p>No lists found for "{{ query }}"</p>
+            <p>{% blocktrans %}No lists found for "{{ query }}"{% endblocktrans %}</p>
             {% endif %}
             {% for result in list_results %}
             <div class="block">

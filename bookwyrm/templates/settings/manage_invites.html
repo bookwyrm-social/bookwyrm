@@ -1,17 +1,42 @@
 {% extends 'settings/admin_layout.html' %}
-{% block header %}Invites{% endblock %}
+{% load i18n %}
+{% block header %}{% trans "Invites" %}{% endblock %}
 {% load humanize %}
 {% block panel %}
 <section class="block">
+    <h2 class="title is-4">{% trans "Generate New Invite" %}</h2>
+
+    <form name="invite" action="{% url 'settings-invites' %}" method="post">
+        {% csrf_token %}
+        <div class="field is-grouped">
+            <div class="control">
+                <label class="label" for="id_expiry">{% trans "Expiry:" %}</label>
+                <div class="select">
+                    {{ form.expiry }}
+                </div>
+            </div>
+            <div class="control">
+                <label class="label" for="id_use_limit">{% trans "Use limit:" %}</label>
+                <div class="select">
+                    {{ form.use_limit }}
+                </div>
+            </div>
+        </div>
+
+        <button class="button is-primary" type="submit">{% trans "Create Invite" %}</button>
+    </form>
+</section>
+
+<section class="block">
     <table class="table is-striped">
         <tr>
-            <th>Link</th>
-            <th>Expires</th>
-            <th>Max uses</th>
-            <th>Times used</th>
+            <th>{% trans "Link" %}</th>
+            <th>{% trans "Expires" %}</th>
+            <th>{% trans "Max uses" %}</th>
+            <th>{% trans "Times used" %}</th>
         </tr>
         {% if not invites %}
-        <tr><td colspan="4">No active invites</td></tr>
+        <tr><td colspan="4">{% trans "No active invites" %}</td></tr>
         {% endif %}
         {% for invite in invites %}
         <tr>
@@ -22,29 +47,6 @@
         </tr>
         {% endfor %}
     </table>
-</section>
-
-<section class="block">
-    <h2 class="title is-4">Generate New Invite</h2>
-
-    <form name="invite" action="{% url 'settings-invites' %}" method="post">
-        {% csrf_token %}
-        <div class="field is-grouped">
-            <div class="control">
-                <label class="label" for="id_expiry">Expiry:</label>
-                <div class="select">
-                    {{ form.expiry }}
-                </div>
-            </div>
-            <div class="control">
-                <label class="label" for="id_use_limit">Use limit:</label>
-                <div class="select">
-                    {{ form.use_limit }}
-                </div>
-            </div>
-        </div>
-
-        <button class="button is-primary" type="submit">Create Invite</button>
-    </form>
+    {% include 'snippets/pagination.html' with page=invites path=request.path %}
 </section>
 {% endblock %}

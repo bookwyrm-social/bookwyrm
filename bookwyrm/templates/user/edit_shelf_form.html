@@ -1,7 +1,8 @@
 {% extends 'components/inline_form.html' %}
+{% load i18n %}
 
 {% block header %}
-Edit Shelf
+{% trans "Edit Shelf" %}
 {% endblock %}
 
 {% block form %}
@@ -10,7 +11,7 @@ Edit Shelf
     <input type="hidden" name="user" value="{{ request.user.id }}">
     {% if shelf.editable %}
     <div class="field">
-        <label class="label" for="id_name">Name:</label>
+        <label class="label" for="id_name">{% trans "Name:" %}</label>
         <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
     </div>
     {% else %}
@@ -22,10 +23,9 @@ Edit Shelf
             {% include 'snippets/privacy_select.html' with current=shelf.privacy %}
         </div>
         <div class="control">
-            <button class="button is-primary" type="submit">Update shelf</button>
+            <button class="button is-primary" type="submit">{% trans "Update shelf" %}</button>
         </div>
     </div>
 </form>
 {% endblock %}
-
 

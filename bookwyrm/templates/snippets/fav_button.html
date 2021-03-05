@@ -1,18 +1,19 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 {% with status.id|uuid as uuid %}
 <form name="favorite" action="/favorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-small" type="submit">
-        <span class="icon icon-heart" title="Like status">
-            <span class="is-sr-only">Like status</span>
+        <span class="icon icon-heart" title="{% trans 'Like status' %}">
+            <span class="is-sr-only">{% trans "Like status" %}</span>
         </span>
     </button>
 </form>
 <form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-success is-small" type="submit">
-        <span class="icon icon-heart" title="Un-like status">
-            <span class="is-sr-only">Un-like status</span>
+    <button class="button is-primary is-small" type="submit">
+        <span class="icon icon-heart" title="{% trans 'Un-like status' %}">
+            <span class="is-sr-only">{% trans "Un-like status" %}</span>
         </span>
     </button>
 </form>

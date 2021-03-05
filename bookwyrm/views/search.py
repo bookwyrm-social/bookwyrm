@@ -33,7 +33,7 @@ class Search(View):
             handle_remote_webfinger(query)
 
         # do a  user search
-        user_results = models.User.objects.annotate(
+        user_results = models.User.viewer_aware_objects(request.user).annotate(
             similarity=Greatest(
                 TrigramSimilarity('username', query),
                 TrigramSimilarity('localname', query),
@@ -44,7 +44,8 @@ class Search(View):
 
         # any relevent lists?
         list_results = privacy_filter(
-            request.user, models.List.objects, ['public', 'followers']
+            request.user, models.List.objects,
+            privacy_levels=['public', 'followers']
         ).annotate(
             similarity=Greatest(
                 TrigramSimilarity('name', query),
@@ -57,7 +58,6 @@ class Search(View):
         book_results = connector_manager.search(
             query, min_confidence=min_confidence)
         data = {
-            'title': 'Search Results',
             'book_results': book_results,
             'user_results': user_results,
             'list_results': list_results,

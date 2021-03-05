@@ -1,4 +1,8 @@
 {% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Administration" %}{% endblock %}
+
 {% block content %}
 
 <header class="block column is-offset-one-quarter pl-1">
@@ -8,30 +12,30 @@
 <div class="block columns">
     <nav class="menu column is-one-quarter">
         {% if perms.bookwyrm.create_invites %}
-        <h2 class="menu-label">Manage Users</h2>
+        <h2 class="menu-label">{% trans "Manage Users" %}</h2>
         <ul class="menu-list">
             <li>
                 {% url 'settings-invites' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>Invites</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
             <li>
                 {% url 'settings-federation' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>Federated Servers</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Servers" %}</a>
             </li>
         </ul>
         {% endif %}
         {% if perms.bookwyrm.edit_instance_settings %}
-        <h2 class="menu-label">Instance Settings</h2>
+        <h2 class="menu-label">{% trans "Instance Settings" %}</h2>
         <ul class="menu-list">
             <li>
                 {% url 'settings-site' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>Site Configuration</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings" %}</a>
                 {% if url in request.path %}
                 <ul class="emnu-list">
-                    <li><a href="{{ url }}#instance-info">Instance Info</a></li>
-                    <li><a href="{{ url }}#images">Images</a></li>
-                    <li><a href="{{ url }}#footer">Footer Content</a></li>
-                    <li><a href="{{ url }}#registration">Registration</a></li>
+                    <li><a href="{{ url }}#instance-info">{% trans "Instance Info" %}</a></li>
+                    <li><a href="{{ url }}#images">{% trans "Images" %}</a></li>
+                    <li><a href="{{ url }}#footer">{% trans "Footer Content" %}</a></li>
+                    <li><a href="{{ url }}#registration">{% trans "Registration" %}</a></li>
                 </ul>
                 {% endif %}
             </li>

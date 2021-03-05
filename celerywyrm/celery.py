@@ -25,5 +25,5 @@ app.autodiscover_tasks(
     ['bookwyrm'], related_name='connectors.abstract_connector')
 app.autodiscover_tasks(['bookwyrm'], related_name='emailing')
 app.autodiscover_tasks(['bookwyrm'], related_name='goodreads_import')
-app.autodiscover_tasks(['bookwyrm'], related_name='incoming')
 app.autodiscover_tasks(['bookwyrm'], related_name='models.user')
+app.autodiscover_tasks(['bookwyrm'], related_name='views.inbox')

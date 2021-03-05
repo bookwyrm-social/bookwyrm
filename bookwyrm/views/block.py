@@ -8,7 +8,6 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
-from bookwyrm.broadcast import broadcast
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name='dispatch')
@@ -16,21 +15,13 @@ class Block(View):
     ''' blocking users '''
     def get(self, request):
         ''' list of blocked users? '''
-        return TemplateResponse(
-            request, 'preferences/blocks.html', {'title': 'Blocked Users'})
+        return TemplateResponse(request, 'preferences/blocks.html')
 
     def post(self, request, user_id):
         ''' block a user '''
         to_block = get_object_or_404(models.User, id=user_id)
-        block = models.UserBlocks.objects.create(
+        models.UserBlocks.objects.create(
             user_subject=request.user, user_object=to_block)
-        if not to_block.local:
-            broadcast(
-                request.user,
-                block.to_activity(),
-                privacy='direct',
-                direct_recipients=[to_block]
-            )
         return redirect('/preferences/block')
 
 
@@ -46,13 +37,5 @@ def unblock(request, user_id):
         )
     except models.UserBlocks.DoesNotExist:
         return HttpResponseNotFound()
-
-    if not to_unblock.local:
-        broadcast(
-            request.user,
-            block.to_undo_activity(request.user),
-            privacy='direct',
-            direct_recipients=[to_unblock]
-        )
     block.delete()
     return redirect('/preferences/block')

@@ -40,15 +40,16 @@ class BlockViews(TestCase):
         ''' create a "block" database entry from an activity '''
         view = views.Block.as_view()
         self.local_user.followers.add(self.remote_user)
-        models.UserFollowRequest.objects.create(
-            user_subject=self.local_user,
-            user_object=self.remote_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.local_user,
+                user_object=self.remote_user)
         self.assertTrue(models.UserFollows.objects.exists())
         self.assertTrue(models.UserFollowRequest.objects.exists())
 
         request = self.factory.post('')
         request.user = self.local_user
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             view(request, self.remote_user.id)
         block = models.UserBlocks.objects.get()
         self.assertEqual(block.user_subject, self.local_user)
@@ -63,7 +64,7 @@ class BlockViews(TestCase):
         request = self.factory.post('')
         request.user = self.local_user
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.block.unblock(request, self.remote_user.id)
 
         self.assertFalse(models.UserBlocks.objects.exists())

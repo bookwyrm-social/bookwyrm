@@ -19,10 +19,7 @@ class Site(View):
     def get(self, request):
         ''' edit form '''
         site = models.SiteSettings.objects.get()
-        data = {
-            'title': 'Site Settings',
-            'site_form': forms.SiteForm(instance=site)
-        }
+        data = {'site_form': forms.SiteForm(instance=site)}
         return TemplateResponse(request, 'settings/site.html', data)
 
     def post(self, request):
@@ -30,10 +27,7 @@ class Site(View):
         site = models.SiteSettings.objects.get()
         form = forms.SiteForm(request.POST, instance=site)
         if not form.is_valid():
-            data = {
-                'title': 'Site Settings',
-                'site_form': form
-            }
+            data = {'site_form': form}
             return TemplateResponse(request, 'settings/site.html', data)
         form.save()
 

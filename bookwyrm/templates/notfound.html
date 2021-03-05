@@ -1,9 +1,11 @@
 {% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Not Found" %}{% endblock %}
+
 {% block content %}
-
 <div class="block">
-    <h1 class="title">Not Found</h1>
-    <p>The page your requested doesn't seem to exist!</p>
+    <h1 class="title">{% trans "Not Found" %}</h1>
+    <p>{% trans "The page you requested doesn't seem to exist!" %}</p>
 </div>
-
 {% endblock %}

@@ -1,19 +1,20 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
 
 {% with status.id|uuid as uuid %}
 <form name="boost" action="/boost/{{ status.id }}" method="post" class="interaction boost-{{ status.id }}-{{ uuid }} {% if request.user|boosted:status  %}hidden{% endif %}" data-id="boost-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
     <button class="button is-small" type="submit" {% if not status.boostable %}disabled{% endif %}>
-        <span class="icon icon-boost" title="Boost status">
-            <span class="is-sr-only">Boost status</span>
+        <span class="icon icon-boost" title="{% trans 'Boost status' %}">
+            <span class="is-sr-only">{% trans "Boost status" %}</span>
         </span>
     </button>
 </form>
 <form name="unboost" action="/unboost/{{ status.id }}" method="post" class="interaction boost-{{ status.id }}-{{ uuid }} active {% if not request.user|boosted:status %}hidden{% endif %}" data-id="boost-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-small is-success" type="submit">
-        <span class="icon icon-boost" title="Un-boost status">
-            <span class="is-sr-only">Un-boost status</span>
+    <button class="button is-small is-primary" type="submit">
+        <span class="icon icon-boost" title="{% trans 'Un-boost status' %}">
+            <span class="is-sr-only">{% trans "Un-boost status" %}</span>
         </span>
     </button>
 </form>

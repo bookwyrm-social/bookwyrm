@@ -40,6 +40,20 @@ class Signature:
     signatureValue: str
     type: str = 'RsaSignature2017'
 
+def naive_parse(activity_objects, activity_json, serializer=None):
+    ''' this navigates circular import issues '''
+    if not serializer:
+        if activity_json.get('publicKeyPem'):
+            # ugh
+            activity_json['type'] = 'PublicKey'
+        try:
+            activity_type = activity_json['type']
+            serializer = activity_objects[activity_type]
+        except KeyError as e:
+            raise ActivitySerializerError(e)
+
+    return serializer(activity_objects=activity_objects, **activity_json)
+
 
 @dataclass(init=False)
 class ActivityObject:
@@ -47,13 +61,30 @@ class ActivityObject:
     id: str
     type: str
 
-    def __init__(self, **kwargs):
+    def __init__(self, activity_objects=None, **kwargs):
         ''' this lets you pass in an object with fields that aren't in the
         dataclass, which it ignores. Any field in the dataclass is required or
         has a default value '''
         for field in fields(self):
             try:
                 value = kwargs[field.name]
+                if value in (None, MISSING):
+                    raise KeyError()
+                try:
+                    is_subclass = issubclass(field.type, ActivityObject)
+                except TypeError:
+                    is_subclass = False
+                # serialize a model obj
+                if hasattr(value, 'to_activity'):
+                    value = value.to_activity()
+                # parse a dict into the appropriate activity
+                elif is_subclass and isinstance(value, dict):
+                    if activity_objects:
+                        value = naive_parse(activity_objects, value)
+                    else:
+                        value = naive_parse(
+                            activity_objects, value, serializer=field.type)
+
             except KeyError:
                 if field.default == MISSING and \
                         field.default_factory == MISSING:
@@ -63,24 +94,29 @@ class ActivityObject:
             setattr(self, field.name, value)
 
 
-    def to_model(self, model, instance=None, save=True):
+    def to_model(self, model=None, instance=None, allow_create=True, save=True):
         ''' convert from an activity to a model instance '''
-        if not isinstance(self, model.activity_serializer):
-            raise ActivitySerializerError(
-                'Wrong activity type "%s" for model "%s" (expects "%s")' % \
-                        (self.__class__,
-                         model.__name__,
-                         model.activity_serializer)
-            )
+        model = model or get_model_from_type(self.type)
 
-        if hasattr(model, 'ignore_activity') and model.ignore_activity(self):
-            return instance
+        # only reject statuses if we're potentially creating them
+        if allow_create and \
+                hasattr(model, 'ignore_activity') and \
+                model.ignore_activity(self):
+            return None
 
-        # check for an existing instance, if we're not updating a known obj
-        instance = instance or model.find_existing(self.serialize()) or model()
+        # check for an existing instance
+        instance = instance or model.find_existing(self.serialize())
+
+        if not instance and not allow_create:
+            # so that we don't create when we want to delete or update
+            return None
+        instance = instance or model()
 
         for field in instance.simple_fields:
-            field.set_field_from_activity(instance, self)
+            try:
+                field.set_field_from_activity(instance, self)
+            except AttributeError as e:
+                raise ActivitySerializerError(e)
 
         # image fields have to be set after other fields because they can save
         # too early and jank up users
@@ -93,7 +129,10 @@ class ActivityObject:
         with transaction.atomic():
             # we can't set many to many and reverse fields on an unsaved object
             try:
-                instance.save()
+                try:
+                    instance.save(broadcast=False)
+                except TypeError:
+                    instance.save()
             except IntegrityError as e:
                 raise ActivitySerializerError(e)
 
@@ -129,7 +168,14 @@ class ActivityObject:
 
     def serialize(self):
         ''' convert to dictionary with context attr '''
-        data = self.__dict__
+        data = self.__dict__.copy()
+        # recursively serialize
+        for (k, v) in data.items():
+            try:
+                if issubclass(type(v), ActivityObject):
+                    data[k] = v.serialize()
+            except TypeError:
+                pass
         data = {k:v for (k, v) in data.items() if v is not None}
         data['@context'] = 'https://www.w3.org/ns/activitystreams'
         return data
@@ -172,7 +218,7 @@ def set_related_field(
                 getattr(model_field, 'activitypub_field'),
                 instance.remote_id
             )
-        item = activity.to_model(model)
+        item = activity.to_model()
 
         # if the related field isn't serialized (attachments on Status), then
         # we have to set it post-creation
@@ -181,11 +227,24 @@ def set_related_field(
             item.save()
 
 
-def resolve_remote_id(model, remote_id, refresh=False, save=True):
+def get_model_from_type(activity_type):
+    ''' given the activity, what type of model '''
+    models = apps.get_models()
+    model = [m for m in models if hasattr(m, 'activity_serializer') and \
+        hasattr(m.activity_serializer, 'type') and \
+        m.activity_serializer.type == activity_type]
+    if not model:
+        raise ActivitySerializerError(
+            'No model found for activity type "%s"' % activity_type)
+    return model[0]
+
+
+def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     ''' take a remote_id and return an instance, creating if necessary '''
-    result = model.find_existing_by_remote_id(remote_id)
-    if result and not refresh:
-        return result
+    if model:# a bonus check we can do if we already know the model
+        result = model.find_existing_by_remote_id(remote_id)
+        if result and not refresh:
+            return result
 
     # load the data and create the object
     try:
@@ -194,13 +253,15 @@ def resolve_remote_id(model, remote_id, refresh=False, save=True):
         raise ActivitySerializerError(
             'Could not connect to host for remote_id in %s model: %s' % \
                 (model.__name__, remote_id))
+    # determine the model implicitly, if not provided
+    if not model:
+        model = get_model_from_type(data.get('type'))
 
     # check for existing items with shared unique identifiers
-    if not result:
-        result = model.find_existing(data)
-        if result and not refresh:
-            return result
+    result = model.find_existing(data)
+    if result and not refresh:
+        return result
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
-    return item.to_model(model, instance=result, save=save)
+    return item.to_model(model=model, instance=result, save=save)

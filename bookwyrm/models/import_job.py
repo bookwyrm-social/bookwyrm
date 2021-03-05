@@ -2,6 +2,7 @@
 import re
 import dateutil.parser
 
+from django.apps import apps
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
@@ -50,6 +51,18 @@ class ImportJob(models.Model):
     )
     retry = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        ''' save and notify '''
+        super().save(*args, **kwargs)
+        if self.complete:
+            notification_model = apps.get_model(
+                'bookwyrm.Notification', require_ready=True)
+            notification_model.objects.create(
+                user=self.user,
+                notification_type='IMPORT',
+                related_import=self,
+            )
+
 
 class ImportItem(models.Model):
     ''' a single line of a csv being imported '''
@@ -84,8 +97,8 @@ class ImportItem(models.Model):
     def get_book_from_title_author(self):
         ''' search by title and author '''
         search_term = construct_search_term(
-            self.data['Title'],
-            self.data['Author']
+            self.title,
+            self.author
         )
         search_result = connector_manager.first_search_result(
             search_term, min_confidence=0.999
@@ -137,6 +150,14 @@ class ImportItem(models.Model):
         return None
 
     @property
+    def date_started(self):
+        ''' when the book was started '''
+        if "Date Started" in self.data and self.data['Date Started']:
+            return timezone.make_aware(
+                dateutil.parser.parse(self.data['Date Started']))
+        return None
+
+    @property
     def date_read(self):
         ''' the date a book was completed '''
         if self.data['Date Read']:
@@ -147,18 +168,24 @@ class ImportItem(models.Model):
     @property
     def reads(self):
         ''' formats a read through dataset for the book in this line '''
-        if (self.shelf == 'reading'
-                and self.date_added and not self.date_read):
-            return [ReadThrough(start_date=self.date_added)]
+        start_date = self.date_started
+
+        # Goodreads special case (no 'date started' field)
+        if ((self.shelf == 'reading' or (self.shelf == 'read' and self.date_read))
+                and self.date_added and not start_date):
+            start_date = self.date_added
+
+        if (start_date and start_date is not None and not self.date_read):
+            return [ReadThrough(start_date=start_date)]
         if self.date_read:
             return [ReadThrough(
-                start_date=self.date_added,
+                start_date=start_date,
                 finish_date=self.date_read,
             )]
         return []
 
     def __repr__(self):
-        return "<GoodreadsItem {!r}>".format(self.data['Title'])
+        return "<{!r}Item {!r}>".format(self.data['import_source'], self.data['Title'])
 
     def __str__(self):
         return "{} by {}".format(self.data['Title'], self.data['Author'])

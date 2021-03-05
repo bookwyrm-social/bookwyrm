@@ -6,14 +6,14 @@ from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_activity_feed
-from .helpers import get_user_from_username
-from .helpers import is_api_request, is_bookworm_request, object_visible_to_user
+from .helpers import get_activity_feed, get_user_from_username
+from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -29,21 +29,23 @@ class Feed(View):
 
         if tab == 'home':
             activities = get_activity_feed(
-                request.user, ['public', 'unlisted', 'followers'],
-                following_only=True)
+                request.user, following_only=True)
+            tab_title = _('Home')
         elif tab == 'local':
             activities = get_activity_feed(
-                request.user, ['public', 'followers'], local_only=True)
+                request.user, privacy=['public', 'followers'], local_only=True)
+            tab_title = _('Local')
         else:
             activities = get_activity_feed(
-                request.user, ['public', 'followers'])
+                request.user, privacy=['public', 'followers'])
+            tab_title = _('Federated')
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {**feed_page_data(request.user), **{
-            'title': 'Updates Feed',
             'user': request.user,
             'activities': paginated.page(page),
             'tab': tab,
+            'tab_title': tab_title,
             'goal_form': forms.GoalForm(),
             'path': '/%s' % tab,
         }}
@@ -65,19 +67,18 @@ class DirectMessage(View):
         user = None
         if username:
             try:
-                user = get_user_from_username(username)
+                user = get_user_from_username(request.user, username)
             except models.User.DoesNotExist:
                 pass
         if user:
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
         activities = get_activity_feed(
-            request.user, 'direct', queryset=queryset)
+            request.user, privacy=['direct'], queryset=queryset)
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)
         data = {**feed_page_data(request.user), **{
-            'title': 'Direct Messages',
             'user': request.user,
             'partner': user,
             'activities': activity_page,
@@ -91,7 +92,7 @@ class Status(View):
     def get(self, request, username, status_id):
         ''' display a particular status (and replies, etc) '''
         try:
-            user = get_user_from_username(username)
+            user = get_user_from_username(request.user, username)
             status = models.Status.objects.select_subclasses().get(
                 id=status_id, deleted=False)
         except ValueError:
@@ -107,10 +108,9 @@ class Status(View):
 
         if is_api_request(request):
             return ActivitypubResponse(
-                status.to_activity(pure=not is_bookworm_request(request)))
+                status.to_activity(pure=not is_bookwyrm_request(request)))
 
         data = {**feed_page_data(request.user), **{
-            'title': 'Status by %s' % user.username,
             'status': status,
         }}
         return TemplateResponse(request, 'feed/status.html', data)
@@ -166,6 +166,7 @@ def get_suggested_books(user, max_books=5):
             continue
         shelf_preview = {
             'name': shelf.name,
+            'identifier': shelf.identifier,
             'books': [s.book for s in shelf_books]
         }
         suggested_books.append(shelf_preview)

@@ -35,8 +35,9 @@ class TemplateTags(TestCase):
 
     def test_get_user_rating(self):
         ''' get a user's most recent rating of a book '''
-        models.Review.objects.create(
-            user=self.user, book=self.book, rating=3)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Review.objects.create(
+                user=self.user, book=self.book, rating=3)
         self.assertEqual(
             bookwyrm_tags.get_user_rating(self.book, self.user), 3)
 
@@ -64,9 +65,9 @@ class TemplateTags(TestCase):
         self.assertEqual(bookwyrm_tags.get_notification_count(self.user), 0)
 
         models.Notification.objects.create(
-            user=self.user, notification_type='FOLLOW')
+            user=self.user, notification_type='FAVORITE')
         models.Notification.objects.create(
-            user=self.user, notification_type='FOLLOW')
+            user=self.user, notification_type='MENTION')
 
         models.Notification.objects.create(
             user=self.remote_user, notification_type='FOLLOW')
@@ -76,14 +77,16 @@ class TemplateTags(TestCase):
 
     def test_get_replies(self):
         ''' direct replies to a status '''
-        parent = models.Review.objects.create(
-            user=self.user, book=self.book)
-        first_child = models.Status.objects.create(
-            reply_parent=parent, user=self.user)
-        second_child = models.Status.objects.create(
-            reply_parent=parent, user=self.user)
-        third_child = models.Status.objects.create(
-            reply_parent=parent, user=self.user, deleted=True)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            parent = models.Review.objects.create(
+                user=self.user, book=self.book, content='hi')
+            first_child = models.Status.objects.create(
+                reply_parent=parent, user=self.user, content='hi')
+            second_child = models.Status.objects.create(
+                reply_parent=parent, user=self.user, content='hi')
+            third_child = models.Status.objects.create(
+                reply_parent=parent, user=self.user,
+                deleted=True, deleted_date=timezone.now())
 
         replies = bookwyrm_tags.get_replies(parent)
         self.assertEqual(len(replies), 2)
@@ -94,10 +97,11 @@ class TemplateTags(TestCase):
 
     def test_get_parent(self):
         ''' get the reply parent of a status '''
-        parent = models.Review.objects.create(
-            user=self.user, book=self.book)
-        child = models.Status.objects.create(
-            reply_parent=parent, user=self.user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            parent = models.Review.objects.create(
+                user=self.user, book=self.book, content='hi')
+            child = models.Status.objects.create(
+                reply_parent=parent, user=self.user, content='hi')
 
         result = bookwyrm_tags.get_parent(child)
         self.assertEqual(result, parent)
@@ -110,10 +114,11 @@ class TemplateTags(TestCase):
             user=self.remote_user, book=self.book)
 
         self.assertFalse(bookwyrm_tags.get_user_liked(self.user, status))
-        models.Favorite.objects.create(
-            user=self.user,
-            status=status
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Favorite.objects.create(
+                user=self.user,
+                status=status
+            )
         self.assertTrue(bookwyrm_tags.get_user_liked(self.user, status))
 
 
@@ -123,10 +128,11 @@ class TemplateTags(TestCase):
             user=self.remote_user, book=self.book)
 
         self.assertFalse(bookwyrm_tags.get_user_boosted(self.user, status))
-        models.Boost.objects.create(
-            user=self.user,
-            boosted_status=status
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.Boost.objects.create(
+                user=self.user,
+                boosted_status=status
+            )
         self.assertTrue(bookwyrm_tags.get_user_boosted(self.user, status))
 
 
@@ -135,9 +141,10 @@ class TemplateTags(TestCase):
         self.assertFalse(
             bookwyrm_tags.follow_request_exists(self.user, self.remote_user))
 
-        models.UserFollowRequest.objects.create(
-            user_subject=self.user,
-            user_object=self.remote_user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            models.UserFollowRequest.objects.create(
+                user_subject=self.user,
+                user_object=self.remote_user)
 
         self.assertFalse(
             bookwyrm_tags.follow_request_exists(self.user, self.remote_user))
@@ -147,12 +154,13 @@ class TemplateTags(TestCase):
 
     def test_get_boosted(self):
         ''' load a boosted status '''
-        status = models.Review.objects.create(
-            user=self.remote_user, book=self.book)
-        boost = models.Boost.objects.create(
-            user=self.user,
-            boosted_status=status
-        )
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Review.objects.create(
+                user=self.remote_user, book=self.book)
+            boost = models.Boost.objects.create(
+                user=self.user,
+                boosted_status=status
+            )
         boosted = bookwyrm_tags.get_boosted(boost)
         self.assertIsInstance(boosted, models.Review)
         self.assertEqual(boosted, status)
@@ -233,29 +241,31 @@ class TemplateTags(TestCase):
 
     def test_get_status_preview_name(self):
         ''' status context string '''
-        status = models.Status.objects.create(content='hi', user=self.user)
-        result = bookwyrm_tags.get_status_preview_name(status)
-        self.assertEqual(result, 'status')
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(content='hi', user=self.user)
+            result = bookwyrm_tags.get_status_preview_name(status)
+            self.assertEqual(result, 'status')
 
-        status = models.Review.objects.create(
-            content='hi', user=self.user, book=self.book)
-        result = bookwyrm_tags.get_status_preview_name(status)
-        self.assertEqual(result, 'review of <em>Test Book</em>')
+            status = models.Review.objects.create(
+                content='hi', user=self.user, book=self.book)
+            result = bookwyrm_tags.get_status_preview_name(status)
+            self.assertEqual(result, 'review of <em>Test Book</em>')
 
-        status = models.Comment.objects.create(
-            content='hi', user=self.user, book=self.book)
-        result = bookwyrm_tags.get_status_preview_name(status)
-        self.assertEqual(result, 'comment on <em>Test Book</em>')
+            status = models.Comment.objects.create(
+                content='hi', user=self.user, book=self.book)
+            result = bookwyrm_tags.get_status_preview_name(status)
+            self.assertEqual(result, 'comment on <em>Test Book</em>')
 
-        status = models.Quotation.objects.create(
-            content='hi', user=self.user, book=self.book)
+            status = models.Quotation.objects.create(
+                content='hi', user=self.user, book=self.book)
         result = bookwyrm_tags.get_status_preview_name(status)
         self.assertEqual(result, 'quotation from <em>Test Book</em>')
 
 
     def test_related_status(self):
         ''' gets the subclass model for a notification status '''
-        status = models.Status.objects.create(content='hi', user=self.user)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            status = models.Status.objects.create(content='hi', user=self.user)
         notification = models.Notification.objects.create(
             user=self.user, notification_type='MENTION',
             related_status=status)

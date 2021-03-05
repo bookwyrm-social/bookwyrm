@@ -40,13 +40,13 @@ class BookViews(TestCase):
             parent_work=self.work
         )
 
-    def test_handle_follow(self):
+    def test_handle_follow_remote(self):
         ''' send a follow request '''
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.follow(request)
 
         rel = models.UserFollowRequest.objects.get()
@@ -56,20 +56,66 @@ class BookViews(TestCase):
         self.assertEqual(rel.status, 'follow_request')
 
 
+    def test_handle_follow_local_manually_approves(self):
+        ''' send a follow request '''
+        rat = models.User.objects.create_user(
+            'rat@local.com', 'rat@rat.com', 'ratword',
+            local=True, localname='rat',
+            remote_id='https://example.com/users/rat',
+            manually_approves_followers=True,
+        )
+        request = self.factory.post('', {'user': rat})
+        request.user = self.local_user
+        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
+
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.follow(request)
+        rel = models.UserFollowRequest.objects.get()
+
+        self.assertEqual(rel.user_subject, self.local_user)
+        self.assertEqual(rel.user_object, rat)
+        self.assertEqual(rel.status, 'follow_request')
+
+
+    def test_handle_follow_local(self):
+        ''' send a follow request '''
+        rat = models.User.objects.create_user(
+            'rat@local.com', 'rat@rat.com', 'ratword',
+            local=True, localname='rat',
+            remote_id='https://example.com/users/rat',
+        )
+        request = self.factory.post('', {'user': rat})
+        request.user = self.local_user
+        self.assertEqual(models.UserFollowRequest.objects.count(), 0)
+
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            views.follow(request)
+
+        rel = models.UserFollows.objects.get()
+
+        self.assertEqual(rel.user_subject, self.local_user)
+        self.assertEqual(rel.user_object, rat)
+        self.assertEqual(rel.status, 'follows')
+
+
     def test_handle_unfollow(self):
         ''' send an unfollow '''
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         self.remote_user.followers.add(self.local_user)
         self.assertEqual(self.remote_user.followers.count(), 1)
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay') \
+                as mock:
             views.unfollow(request)
+            self.assertEqual(mock.call_count, 1)
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 
 
     def test_handle_accept(self):
         ''' accept a follow request '''
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -77,7 +123,7 @@ class BookViews(TestCase):
             user_object=self.local_user
         )
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.accept_follow_request(request)
         # request should be deleted
         self.assertEqual(
@@ -89,6 +135,8 @@ class BookViews(TestCase):
 
     def test_handle_reject(self):
         ''' reject a follow request '''
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
         request = self.factory.post('', {'user': self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -96,7 +144,7 @@ class BookViews(TestCase):
             user_object=self.local_user
         )
 
-        with patch('bookwyrm.broadcast.broadcast_task.delay'):
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
             views.delete_follow_request(request)
         # request should be deleted
         self.assertEqual(

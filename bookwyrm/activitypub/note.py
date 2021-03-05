@@ -1,6 +1,7 @@
 ''' note serializer and children thereof '''
 from dataclasses import dataclass, field
 from typing import Dict, List
+from django.apps import apps
 
 from .base_activity import ActivityObject, Link
 from .image import Image
@@ -8,9 +9,12 @@ from .image import Image
 @dataclass(init=False)
 class Tombstone(ActivityObject):
     ''' the placeholder for a deleted status '''
-    published: str
-    deleted: str
     type: str = 'Tombstone'
+
+    def to_model(self, *args, **kwargs):
+        ''' this should never really get serialized, just searched for '''
+        model = apps.get_model('bookwyrm.Status')
+        return model.find_existing_by_remote_id(self.id)
 
 
 @dataclass(init=False)
@@ -18,7 +22,7 @@ class Note(ActivityObject):
     ''' Note activity '''
     published: str
     attributedTo: str
-    content: str
+    content: str = ''
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     replies: Dict = field(default_factory=lambda: {})

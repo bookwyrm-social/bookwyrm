@@ -1,9 +1,10 @@
-<nav class="pagination" role="navigation" aria-label="pagination">
+{% load i18n %}
+<nav class="pagination" aria-label="pagination">
     {% if page.has_previous %}
     <p class="pagination-previous">
         <a href="{{ path }}?page={{ page.previous_page_number }}{{ anchor }}">
             <span class="icon icon-arrow-left"></span>
-            Previous
+            {% trans "Previous" %}
         </a>
     </p>
     {% endif %}
@@ -11,7 +12,7 @@
     {% if page.has_next %}
     <p class="pagination-next">
     <a href="{{ path }}?page={{ page.next_page_number }}{{ anchor }}">
-            Next
+            {% trans "Next" %}
             <span class="icon icon-arrow-right"></span>
         </a>
     </p>

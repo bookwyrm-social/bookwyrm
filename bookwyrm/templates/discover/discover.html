@@ -1,0 +1,50 @@
+{% extends 'discover/landing_layout.html' %}
+{% load i18n %}
+{% block panel %}
+
+<div class="block is-hidden-tablet">
+    <h2 class="title has-text-centered">{% trans "Recent Books" %}</h2>
+</div>
+
+<section class="tile is-ancestor">
+    <div class="tile is-vertical">
+        <div class="tile is-parent">
+            <div class="tile is-child box has-background-white-ter">
+                {% include 'discover/large-book.html' with book=books.0 %}
+            </div>
+        </div>
+        <div class="tile">
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'discover/small-book.html' with book=books.1 %}
+                </div>
+            </div>
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'discover/small-book.html' with book=books.2 %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tile is-vertical">
+        <div class="tile">
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'discover/small-book.html' with book=books.3 %}
+                </div>
+            </div>
+            <div class="tile is-parent is-6">
+                <div class="tile is-child box has-background-white-ter">
+                    {% include 'discover/small-book.html' with book=books.4 %}
+                </div>
+            </div>
+        </div>
+        <div class="tile is-parent">
+            <div class="tile is-child box has-background-white-ter">
+                {% include 'discover/large-book.html' with book=books.5 %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

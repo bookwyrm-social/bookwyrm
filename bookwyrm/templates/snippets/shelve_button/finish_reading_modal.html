@@ -1,0 +1,48 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% blocktrans with book_title=book.title %}Finish "<em>{{ book_title }}</em>"{% endblocktrans %}
+{% endblock %}
+
+
+{% block modal-form-open %}
+<form name="finish-reading" action="/finish-reading/{{ book.id }}" method="post">
+{% endblock %}
+
+{% block modal-body %}
+<section class="modal-card-body">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ readthrough.id }}">
+    <div class="field">
+        <label class="label">
+            {% trans "Started reading" %}
+            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+        </label>
+    </div>
+    <div class="field">
+        <label class="label">
+            {% trans "Finished reading" %}
+            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+        </label>
+    </div>
+</section>
+{% endblock %}
+
+{% block modal-footer %}
+<div class="columns">
+    <div class="column field">
+        <label for="post_status-{{ uuid }}">
+            <input type="checkbox" name="post-status" class="checkbox" id="post_status-{{ uuid }}" checked>
+            {% trans "Post to feed" %}
+        </label>
+        {% include 'snippets/privacy_select.html' %}
+    </div>
+    <div class="column">
+        <button type="submit" class="button is-success">{% trans "Save" %}</button>
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="finish-reading" controls_uid=uuid %}
+    </div>
+</div>
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}

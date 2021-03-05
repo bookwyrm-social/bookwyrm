@@ -1,9 +1,10 @@
 ''' bookwyrm settings and configuration '''
 import os
-
 from environs import Env
 
 import requests
+from django.utils.translation import gettext_lazy as _
+
 
 env = Env()
 DOMAIN = env('DOMAIN')
@@ -27,6 +28,7 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS', True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'),]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -135,6 +138,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('en-us', _('English')),
+    ('de-de', _('German')),
+    ('es', _('Spanish')),
+    ('fr-fr', _('French')),
+    ('zh-cn', _('Simplified Chinese')),
+]
+
 
 TIME_ZONE = 'UTC'
 
