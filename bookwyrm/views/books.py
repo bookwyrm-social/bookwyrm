@@ -122,8 +122,8 @@ class EditBook(View):
 
     def post(self, request, book_id=None):
         ''' edit a book cool '''
-        book = get_object_or_404(models.Edition, id=book_id) if book_id \
-                else None
+        # returns None if no match is found
+        book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
         data = {
@@ -134,9 +134,8 @@ class EditBook(View):
             return TemplateResponse(request, 'edit_book.html', data)
 
         add_author = request.POST.get('add_author')
-        if not book or add_author:
-            # creting a book or adding an author to a book needs another step
-            data['confirm_mode'] = True
+        # we're adding an author through a free text field
+        if add_author:
             data['add_author'] = add_author
             # check for existing authors
             vector = SearchVector('name', weight='A') +\
@@ -148,6 +147,8 @@ class EditBook(View):
                 rank=SearchRank(vector, add_author)
             ).filter(rank__gt=0.8).order_by('-rank')[:5]
 
+        # we're creating a new book
+        if not book:
             # check if this is an edition of an existing work
             author_text = book.author_text if book else add_author
             data['book_matches'] = connector_manager.local_search(
@@ -156,9 +157,51 @@ class EditBook(View):
                 raw=True
             )[:5]
 
+        # either of the above cases requires additional confirmation
+        if add_author or not book:
+            # creting a book or adding an author to a book needs another step
+            data['confirm_mode'] = True
             return TemplateResponse(request, 'edit_book.html', data)
 
         book = form.save()
+        return redirect('/book/%s' % book.id)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(
+    permission_required('bookwyrm.edit_book', raise_exception=True),
+    name='dispatch')
+class ConfirmEditBook(View):
+    ''' confirm edits to a book '''
+    def post(self, request, book_id=None):
+        ''' edit a book cool '''
+        # returns None if no match is found
+        book = models.Edition.objects.filter(id=book_id).first()
+        form = forms.EditionForm(request.POST, request.FILES, instance=book)
+
+        data = {
+            'book': book,
+            'form': form
+        }
+        if not form.is_valid():
+            return TemplateResponse(request, 'edit_book.html', data)
+
+        # create work, if needed
+        # TODO
+
+        # save book
+        book = form.save()
+
+        # get or create author as needed
+        if request.POST.get('add_author'):
+            if request.POST.get('author_match'):
+                author = get_object_or_404(
+                    models.Author, id=request.POST['author_match'])
+            else:
+                author = models.Author.objects.create(
+                    name=request.POST.get('add_author'))
+            book.authors.add(author)
+
         return redirect('/book/%s' % book.id)
 
 

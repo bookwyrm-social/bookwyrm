@@ -129,6 +129,7 @@ urlpatterns = [
     # books
     re_path(r'%s(.json)?/?$' % book_path, views.Book.as_view()),
     re_path(r'%s/edit/?$' % book_path, views.EditBook.as_view()),
+    re_path(r'%s/confirm/?$' % book_path, views.ConfirmEditBook.as_view()),
     re_path(r'%s/editions(.json)?/?$' % book_path, views.Editions.as_view()),
     re_path(r'^upload-cover/(?P<book_id>\d+)/?$', views.upload_cover),
     re_path(r'^add-description/(?P<book_id>\d+)/?$', views.add_description),
