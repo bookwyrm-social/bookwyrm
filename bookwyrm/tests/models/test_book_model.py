@@ -81,7 +81,7 @@ class Book(TestCase):
         book.save()
         self.assertEqual(book.edition_info, 'worm, Glorbish language, 2020')
         self.assertEqual(
-            book.alt_text, 'Test Edition cover (worm, Glorbish language, 2020)')
+            book.alt_text, 'Test Edition (worm, Glorbish language, 2020)')
 
 
     def test_get_rank(self):
