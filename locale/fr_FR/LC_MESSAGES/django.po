@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-04 22:24+0000\n"
+"POT-Creation-Date: 2021-03-05 14:10+0000\n"
 "PO-Revision-Date: 2021-03-02 12:37+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -613,37 +613,42 @@ msgstr "(Rechargez la page pour mettre à jour !"
 
 #: bookwyrm/templates/import_status.html:35
 msgid "Failed to load"
-msgstr "Le chargement a échoué"
+msgstr "Items non importés"
 
-#: bookwyrm/templates/import_status.html:59
+#: bookwyrm/templates/import_status.html:42
+#, python-format
+msgid "Jump to the bottom of the list to select the %(failed_count)s items which failed to import."
+msgstr "Sauter en bas de liste pour sélectionner les %(failed_count)s items n’ayant pu être importés."
+
+#: bookwyrm/templates/import_status.html:74
 msgid "Select all"
 msgstr "Tout sélectionner"
 
-#: bookwyrm/templates/import_status.html:62
+#: bookwyrm/templates/import_status.html:79
 msgid "Retry items"
-msgstr "Essayer d’importer les objets sélectionnés de nouveau"
+msgstr "Essayer d’importer les items sélectionnés de nouveau"
 
-#: bookwyrm/templates/import_status.html:84
+#: bookwyrm/templates/import_status.html:101
 msgid "Successfully imported"
 msgstr "Importation réussie"
 
-#: bookwyrm/templates/import_status.html:88
+#: bookwyrm/templates/import_status.html:105
 #: bookwyrm/templates/lists/curate.html:14
 msgid "Book"
 msgstr "Livre"
 
-#: bookwyrm/templates/import_status.html:91
+#: bookwyrm/templates/import_status.html:108
 #: bookwyrm/templates/snippets/create_status_form.html:10
 #: bookwyrm/templates/snippets/shelf.html:10
 msgid "Title"
 msgstr "Titre"
 
-#: bookwyrm/templates/import_status.html:94
+#: bookwyrm/templates/import_status.html:111
 #: bookwyrm/templates/snippets/shelf.html:11
 msgid "Author"
 msgstr "Auteur ou autrice"
 
-#: bookwyrm/templates/import_status.html:117
+#: bookwyrm/templates/import_status.html:134
 msgid "Imported"
 msgstr "Importé"
 
