@@ -161,35 +161,3 @@ html {
     content: "\e905";
     right: 0;
 }
-
-/**
- * Accessibility (a11y)
- ============================================================================ */
-
-/**
- * Skip links
- *
- * @see https://webaim.org/styles/main.css
- ---------------------------------------------------------------------------- */
-.skip-link {
-    position: absolute;
-    opacity: 0;
-    z-index: 100;
-    padding: 6px;
-    border: 1px solid white;
-    color: white;
-    background: #BF1722;
-    transition: opacity 1s ease-out;
-}
-
-.skip-link:focus {
-    opacity: 1;
-    outline-color: transparent;
-    transition: opacity .1s ease-in;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .skip-link {
-        transition-duration: 0.001ms !important;
-    }
-}
