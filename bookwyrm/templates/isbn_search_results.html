@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Search Results" %}{% endblock %}
+
+{% block content %}
+{% with book_results|first as local_results %}
+<div class="block">
+    <h1 class="title">{% blocktrans %}Search Results for "{{ query }}"{% endblocktrans %}</h1>
+</div>
+
+<div class="block columns">
+    <div class="column">
+        <h2 class="title">{% trans "Matching Books" %}</h2>
+        <section class="block">
+            {% if not results %}
+            <p>{% blocktrans %}No books found for "{{ query }}"{% endblocktrans %}</p>
+            {% else %}
+            <ul>
+            {% for result in results %}
+                <li class="pd-4">
+                    <a href="{{ result.key }}">{% include 'snippets/search_result_text.html' with result=result link=True %}</a>
+                </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </section>
+
+    <div class="column">
+    </div>
+</div>
+{% endwith %}
+{% endblock %}

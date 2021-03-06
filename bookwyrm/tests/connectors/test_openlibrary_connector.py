@@ -27,6 +27,7 @@ class Openlibrary(TestCase):
             books_url='https://openlibrary.org',
             covers_url='https://covers.openlibrary.org',
             search_url='https://openlibrary.org/search?q=',
+            isbn_search_url='https://openlibrary.org/isbn',
         )
         self.connector = Connector('openlibrary.org')
 
@@ -146,6 +147,34 @@ class Openlibrary(TestCase):
             result.key, 'https://openlibrary.org/works/OL20639540W')
         self.assertEqual(result.author, 'Amal El-Mohtar, Max Gladstone')
         self.assertEqual(result.year, 2019)
+        self.assertEqual(result.connector, self.connector)
+
+
+    def test_parse_isbn_search_result(self):
+        ''' extract the results from the search json response '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ol_isbn_search.json')
+        search_data = json.loads(datafile.read_bytes())
+        result = self.connector.parse_isbn_search_data(search_data)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 1)
+
+
+    def test_format_isbn_search_result(self):
+        ''' translate json from openlibrary into SearchResult '''
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            '../data/ol_isbn_search.json')
+        search_data = json.loads(datafile.read_bytes())
+        results = self.connector.parse_isbn_search_data(search_data)
+        self.assertIsInstance(results, list)
+
+        result = self.connector.format_isbn_search_result(results[0])
+        self.assertIsInstance(result, SearchResult)
+        self.assertEqual(result.title, 'Les ombres errantes')
+        self.assertEqual(
+            result.key, 'https://openlibrary.org/books/OL16262504M')
+        self.assertEqual(result.author, 'Pascal Quignard')
+        self.assertEqual(result.year, '2002')
         self.assertEqual(result.connector, self.connector)
 
 

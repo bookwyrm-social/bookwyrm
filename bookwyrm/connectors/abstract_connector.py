@@ -26,6 +26,7 @@ class AbstractMinimalConnector(ABC):
             'books_url',
             'covers_url',
             'search_url',
+            'isbn_search_url',
             'max_query_count',
             'name',
             'identifier',
@@ -61,6 +62,30 @@ class AbstractMinimalConnector(ABC):
             results.append(self.format_search_result(doc))
         return results
 
+    def isbn_search(self, query):
+        ''' isbn search '''
+        params = {}
+        resp = requests.get(
+            '%s%s' % (self.isbn_search_url, query),
+            params=params,
+            headers={
+                'Accept': 'application/json; charset=utf-8',
+                'User-Agent': settings.USER_AGENT,
+            },
+        )
+        if not resp.ok:
+            resp.raise_for_status()
+        try:
+            data = resp.json()
+        except ValueError as e:
+            logger.exception(e)
+            raise ConnectorException('Unable to parse json response', e)
+        results = []
+
+        for doc in self.parse_isbn_search_data(data):
+            results.append(self.format_isbn_search_result(doc))
+        return results
+
     @abstractmethod
     def get_or_create_book(self, remote_id):
         ''' pull up a book record by whatever means possible '''
@@ -71,6 +96,14 @@ class AbstractMinimalConnector(ABC):
 
     @abstractmethod
     def format_search_result(self, search_result):
+        ''' create a SearchResult obj from json '''
+
+    @abstractmethod
+    def parse_isbn_search_data(self, data):
+        ''' turn the result json from a search into a list '''
+
+    @abstractmethod
+    def format_isbn_search_result(self, search_result):
         ''' create a SearchResult obj from json '''
 
 

@@ -66,6 +66,7 @@ def init_connectors():
         books_url='https://%s/book' % DOMAIN,
         covers_url='https://%s/images/covers' % DOMAIN,
         search_url='https://%s/search?q=' % DOMAIN,
+        isbn_search_url='https://%s/isbn/' % DOMAIN,
         priority=1,
     )
 
@@ -77,6 +78,7 @@ def init_connectors():
         books_url='https://bookwyrm.social/book',
         covers_url='https://bookwyrm.social/images/covers',
         search_url='https://bookwyrm.social/search?q=',
+        isbn_search_url='https://bookwyrm.social/isbn/',
         priority=2,
     )
 
@@ -88,6 +90,7 @@ def init_connectors():
         books_url='https://openlibrary.org',
         covers_url='https://covers.openlibrary.org',
         search_url='https://openlibrary.org/search?q=',
+        isbn_search_url='https://openlibrary.org/api/books?jscmd=data&format=json&bibkeys=ISBN:',
         priority=3,
     )
 
