@@ -254,8 +254,8 @@
                     <div>
                         {% include 'snippets/username.html' with user=rating.user %}
                     </div>
-                    <div class="field is-grouped mb-0">
-                        <div>{% trans "rated it" %}</div>
+                    <div class="is-flex">
+                        <p class="mr-1">{% trans "rated it" %}</p>
                         {% include 'snippets/stars.html' with rating=rating.rating %}
                     </div>
                     <div>

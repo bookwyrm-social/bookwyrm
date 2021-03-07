@@ -79,7 +79,7 @@
                     aria-controls="navbar-dropdown"
                 >
                     {% include 'snippets/avatar.html' with user=request.user %}
-                    {% include 'snippets/username.html' with user=request.user anchor=false %}
+                    <span class="ml-2">{% include 'snippets/username.html' with user=request.user anchor=false %}</span>
                 </a>
                 <ul class="navbar-dropdown" id="navbar-dropdown">
                     <li>
