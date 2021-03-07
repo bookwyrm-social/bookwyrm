@@ -103,12 +103,14 @@
 
             <section class="block">
                 <h2 class="title is-4">{% trans "Authors" %}</h2>
-                {% for author in book.authors.all %}
-                <p><a href="{{ author.local_path }}">{{ author.name }}</a>
-                <label class="label">
-                    <input type="checkbox" name="remove_author" value="{{ author.id }}"> {% trans "Remove this author" %}
-                </label>
-                {% endfor %}
+                <fieldset>
+                    {% for author in book.authors.all %}
+                    <p><a href="{{ author.local_path }}">{{ author.name }}</a>
+                    <label class="label">
+                        <input type="checkbox" name="remove_authors" value="{{ author.id }}"> {% trans "Remove this author" %}
+                    </label>
+                    {% endfor %}
+                </fieldset>
                 {% if confirm_mode %}
                 <input type="hidden" name="add_author" value="{{ add_author }}">
                 {% else %}

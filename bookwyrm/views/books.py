@@ -163,6 +163,10 @@ class EditBook(View):
             data['confirm_mode'] = True
             return TemplateResponse(request, 'edit_book.html', data)
 
+        remove_authors = request.POST.getlist('remove_authors')
+        for author_id in remove_authors:
+            book.authors.remove(author_id)
+
         book = form.save()
         return redirect('/book/%s' % book.id)
 
