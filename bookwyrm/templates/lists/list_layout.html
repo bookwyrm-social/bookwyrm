@@ -8,8 +8,9 @@
 <header class="columns content is-mobile">
     <div class="column">
         <h1 class="title">{{ list.name }} <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span></h1>
-        <p class="subtitle help">{% if list.curation != 'open' %}{% trans "Created and curated by" %}{% else %}{% trans "Created by" %} {% include 'snippets/username.html' with user=list.user %}</p>
-        {% endif %}
+        <p class="subtitle help">
+            {% include 'lists/created_text.html' with list=list %}
+        </p>
         {% include 'snippets/trimmed_text.html' with full=list.description %}
     </div>
     {% if request.user == list.user %}

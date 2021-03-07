@@ -42,8 +42,10 @@
                     <p>
                         {# DESCRIPTION #}
                         {% if notification.related_user %}
-                            {% include 'snippets/avatar.html' with user=notification.related_user %}
-                            {% include 'snippets/username.html' with user=notification.related_user %}
+                            <a href="{{ notification.related_user.local_path }}">
+                                {% include 'snippets/avatar.html' with user=notification.related_user %}
+                                {{ notification.related_user.display_name }}
+                            </a>
                             {% if notification.notification_type == 'FAVORITE' %}
                                 {% if related_status.status_type == 'Review' %}
                                 {% blocktrans with book_title=related_status.book.title related_path=related_status.local_path %}favorited your <a href="{{ related_path }}">review of <em>{{ book_title }}</em></a>{% endblocktrans %}

@@ -33,7 +33,7 @@
         {% for requester in user.follower_requests.all %}
             <div class="row shrink">
                 <p>
-                    {% include 'snippets/username.html' with user=requester show_full=True %}
+                    <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
                 </p>
                 {% include 'snippets/follow_request_buttons.html' with user=requester %}
             </div>

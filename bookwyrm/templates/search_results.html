@@ -79,8 +79,10 @@
             <ul>
             {% for result in user_results %}
                 <li class="block">
-                    {% include 'snippets/avatar.html' with user=result %}</h2>
-                    {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+                    <a href="{{ result.local_path }}">
+                        {% include 'snippets/avatar.html' with user=result %}
+                        {{ result.display_name }}
+                    </a> ({{ result.username }})
                     {% include 'snippets/follow_button.html' with user=result %}
                 </li>
             {% endfor %}
