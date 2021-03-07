@@ -20,7 +20,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
     @classmethod
     def ignore_activity(cls, activity):
         ''' don't bother with incoming favs of unknown statuses '''
-        return cls.objects.filter(remote_id=activity.object).exists()
+        return not cls.objects.filter(remote_id=activity.object).exists()
 
     def save(self, *args, **kwargs):
         ''' update user active time '''

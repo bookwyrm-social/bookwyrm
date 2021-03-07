@@ -74,7 +74,7 @@ class Inbox(TestCase):
             mock_valid.return_value = False
             result = self.client.post(
                 '/user/mouse/inbox',
-                '{"type": "Test", "object": "exists"}',
+                '{"type": "Announce", "object": "exists"}',
                 content_type="application/json"
             )
             self.assertEqual(result.status_code, 401)
@@ -493,6 +493,21 @@ class Inbox(TestCase):
         self.assertEqual(fav.status, self.status)
         self.assertEqual(fav.remote_id, 'https://example.com/fav/1')
         self.assertEqual(fav.user, self.remote_user)
+
+    def test_ignore_favorite(self):
+        ''' don't try to save an unknown status '''
+        activity = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': 'https://example.com/fav/1',
+            'actor': 'https://example.com/users/rat',
+            'type': 'Like',
+            'published': 'Mon, 25 May 2020 19:31:20 GMT',
+            'object': 'https://unknown.status/not-found',
+        }
+
+        views.inbox.activity_task(activity)
+
+        self.assertFalse(models.Favorite.objects.exists())
 
     def test_handle_unfavorite(self):
         ''' fav a status '''
