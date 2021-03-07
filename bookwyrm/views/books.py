@@ -89,7 +89,7 @@ class Book(View):
             'rating': reviews.aggregate(Avg('rating'))['rating__avg'],
             'tags':  models.UserTag.objects.filter(book=book),
             'lists': privacy_filter(
-                request.user, book.list_set.all()
+                request.user, book.list_set.filter(listitem__approved=True)
             ),
             'user_tags': user_tags,
             'user_shelves': user_shelves,
