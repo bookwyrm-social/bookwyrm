@@ -84,8 +84,40 @@ class BookViews(TestCase):
 
 
     def test_edit_book_add_author(self):
-        ''' lets a user edit a book '''
-        # TODO
+        ''' lets a user edit a book with new authors '''
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data['title'] = 'New Title'
+        form.data['last_edited_by'] = self.local_user.id
+        form.data['add_author'] = 'Sappho'
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        result = view(request, self.book.id)
+        result.render()
+
+        # the changes haven't been saved yet
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, 'Example Edition')
+
+    def test_edit_book_add_new_author_confirm(self):
+        ''' lets a user edit a book confirmed with new authors '''
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data['title'] = 'New Title'
+        form.data['last_edited_by'] = self.local_user.id
+        form.data['add_author'] = 'Sappho'
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        view(request, self.book.id)
+
+        # the changes haven't been saved yet
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, 'New Title')
+        self.assertEqual(self.book.authors.first().name, 'Sappho')
 
 
     def test_switch_edition(self):
