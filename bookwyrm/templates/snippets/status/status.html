@@ -4,7 +4,7 @@
     {% if status.status_type == 'Announce' %}
         <a href="{{ status.user.local_path }}">
             {% include 'snippets/avatar.html' with user=status.user %}
-            {{ stauts.user.display_name }}
+            {{ status.user.display_name }}
         </a>
         {% trans "boosted" %}
         {% include 'snippets/status/status_body.html' with status=status|boosted_status %}
