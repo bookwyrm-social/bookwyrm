@@ -20,7 +20,7 @@ class Inbox(View):
     ''' requests sent by outside servers'''
     def post(self, request, username=None):
         ''' only works as POST request '''
-        # first let's do some basic checks to see if this is legible
+        # make sure the user's inbox even exists
         if username:
             try:
                 models.User.objects.get(localname=username)
@@ -33,6 +33,11 @@ class Inbox(View):
         except json.decoder.JSONDecodeError:
             return HttpResponseBadRequest()
 
+        if not 'object' in activity_json or \
+                not 'type' in activity_json or \
+                not activity_json['type'] in activitypub.activity_objects:
+            return HttpResponseNotFound()
+
         # verify the signature
         if not has_valid_signature(request, activity_json):
             if activity_json['type'] == 'Delete':
@@ -41,12 +46,6 @@ class Inbox(View):
                 # been deleted.
                 return HttpResponse()
             return HttpResponse(status=401)
-
-        # just some quick smell tests before we try to parse the json
-        if not 'object' in activity_json or \
-                not 'type' in activity_json or \
-                not activity_json['type'] in activitypub.activity_objects:
-            return HttpResponseNotFound()
 
         activity_task.delay(activity_json)
         return HttpResponse()
@@ -63,7 +62,11 @@ def activity_task(activity_json):
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)
-    activity.action()
+    try:
+        activity.action()
+    except activitypub.ActivitySerializerError:
+        # this is raised if the activity is discarded
+        return
 
 
 def has_valid_signature(request, activity):
