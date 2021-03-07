@@ -17,6 +17,11 @@ class Favorite(ActivityMixin, BookWyrmModel):
 
     activity_serializer = activitypub.Like
 
+    @classmethod
+    def ignore_activity(cls, activity):
+        ''' don't bother with incoming favs of unknown statuses '''
+        return cls.objects.filter(remote_id=activity.object).exists()
+
     def save(self, *args, **kwargs):
         ''' update user active time '''
         self.user.last_active_date = timezone.now()

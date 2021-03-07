@@ -102,7 +102,7 @@ class ActivityObject:
         if allow_create and \
                 hasattr(model, 'ignore_activity') and \
                 model.ignore_activity(self):
-            return None
+            raise ActivitySerializerError()
 
         # check for an existing instance
         instance = instance or model.find_existing(self.serialize())
