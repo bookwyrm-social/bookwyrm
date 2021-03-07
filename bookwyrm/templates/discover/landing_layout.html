@@ -54,11 +54,11 @@
         <div class="tile is-child box has-background-white-bis">
             <h2 class="title is-4">{% trans "Your Account" %}</h2>
             {% include 'user/user_preview.html' with user=request.user %}
+            {% if request.user.summary %}
             <div class="box content">
-                {% if request.user.summary %}
                 {{ request.user.summary | to_markdown | safe }}
-                {% endif %}
             </div>
+            {% endif %}
         </div>
         {% endif %}
     </div>

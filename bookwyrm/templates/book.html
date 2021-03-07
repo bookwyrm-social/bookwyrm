@@ -35,7 +35,7 @@
     </div>
 
     <div class="columns">
-        <div class="column is-narrow">
+        <div class="column is-one-fifth">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button/shelve_button.html' %}
@@ -93,7 +93,7 @@
             </section>
         </div>
 
-        <div class="column">
+        <div class="column is-three-fifths">
             <div class="block">
                 <h3 class="field is-grouped">
                     {% include 'snippets/stars.html' with rating=rating %}
@@ -201,7 +201,7 @@
             </div>
 
         </div>
-        <div class="column is-narrow">
+        <div class="column is-one-fifth">
             {% if book.subjects %}
             <section class="content block">
                 <h2 class="title is-5">{% trans "Subjects" %}</h2>
@@ -217,7 +217,7 @@
             <section class="content block">
                 <h2 class="title is-5">{% trans "Places" %}</h2>
                 <ul>
-                {% for place in book.subject_placess %}
+                {% for place in book.subject_places %}
                     <li>{{ place }}</li>
                 {% endfor %}
                 </ul>
@@ -254,8 +254,8 @@
                     <div>
                         {% include 'snippets/username.html' with user=rating.user %}
                     </div>
-                    <div class="field is-grouped mb-0">
-                        <div>{% trans "rated it" %}</div>
+                    <div class="is-flex">
+                        <p class="mr-1">{% trans "rated it" %}</p>
                         {% include 'snippets/stars.html' with rating=rating.rating %}
                     </div>
                     <div>

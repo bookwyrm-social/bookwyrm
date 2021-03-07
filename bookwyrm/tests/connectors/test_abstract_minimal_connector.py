@@ -18,6 +18,7 @@ class AbstractConnector(TestCase):
             books_url='https://example.com/books',
             covers_url='https://example.com/covers',
             search_url='https://example.com/search?q=',
+            isbn_search_url='https://example.com/isbn',
         )
 
         class TestConnector(abstract_connector.AbstractMinimalConnector):
@@ -27,6 +28,10 @@ class AbstractConnector(TestCase):
             def get_or_create_book(self, remote_id):
                 pass
             def parse_search_data(self, data):
+                return data
+            def format_isbn_search_result(self, search_result):
+                return search_result
+            def parse_isbn_search_data(self, data):
                 return data
         self.test_connector = TestConnector('example.com')
 
@@ -39,6 +44,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(connector.books_url, 'https://example.com/books')
         self.assertEqual(connector.covers_url, 'https://example.com/covers')
         self.assertEqual(connector.search_url, 'https://example.com/search?q=')
+        self.assertEqual(connector.isbn_search_url, 'https://example.com/isbn')
         self.assertIsNone(connector.name)
         self.assertEqual(connector.identifier, 'example.com')
         self.assertIsNone(connector.max_query_count)

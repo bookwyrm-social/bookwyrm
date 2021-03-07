@@ -64,6 +64,10 @@ class ShelfViews(TestCase):
                 pass
             def parse_search_data(self, data):
                 pass
+            def format_isbn_search_result(self, search_result):
+                return search_result
+            def parse_isbn_search_data(self, data):
+                return data
         models.Connector.objects.create(
             identifier='example.com',
             connector_file='openlibrary',

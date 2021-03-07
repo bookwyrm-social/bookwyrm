@@ -1,7 +1,9 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
-{% include 'snippets/avatar.html' with user=status.user %}
+<a href="{{ status.user.local_path }}">
+{% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
 {% include 'snippets/username.html' with user=status.user %}
+</a>
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}
