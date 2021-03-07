@@ -484,7 +484,7 @@ class Inbox(TestCase):
             'actor': 'https://example.com/users/rat',
             'type': 'Like',
             'published': 'Mon, 25 May 2020 19:31:20 GMT',
-            'object': 'https://example.com/status/1',
+            'object': self.status.remote_id,
         }
 
         views.inbox.activity_task(activity)
