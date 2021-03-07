@@ -19,3 +19,11 @@ class Connector(AbstractMinimalConnector):
     def format_search_result(self, search_result):
         search_result['connector'] = self
         return SearchResult(**search_result)
+
+    def parse_isbn_search_data(self, data):
+        return data
+
+    def format_isbn_search_result(self, search_result):
+        search_result['connector'] = self
+        return SearchResult(**search_result)
+

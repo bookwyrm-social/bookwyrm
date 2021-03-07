@@ -1,5 +1,6 @@
 ''' interface with whatever connectors the app has '''
 import importlib
+import re
 from urllib.parse import urlparse
 
 from requests import HTTPError
@@ -15,13 +16,31 @@ class ConnectorException(HTTPError):
 def search(query, min_confidence=0.1):
     ''' find books based on arbitary keywords '''
     results = []
+
+    # Have we got a ISBN ?
+    isbn = re.sub('[\W_]', '', query)
+    maybe_isbn = len(isbn) in [10, 13] # ISBN10 or ISBN13
+
     dedup_slug = lambda r: '%s/%s/%s' % (r.title, r.author, r.year)
     result_index = set()
     for connector in get_connectors():
-        try:
-            result_set = connector.search(query, min_confidence=min_confidence)
-        except (HTTPError, ConnectorException):
-            continue
+        result_set = None
+        if maybe_isbn:
+            # Search on ISBN
+            if not connector.isbn_search_url or connector.isbn_search_url == '': 
+                result_set = []
+            else:
+                try:
+                    result_set = connector.isbn_search(isbn)
+                except (HTTPError, ConnectorException):
+                    pass
+
+        # if no isbn search or results, we fallback to generic search
+        if result_set == None or result_set == []:
+            try:
+                result_set = connector.search(query, min_confidence=min_confidence)
+            except (HTTPError, ConnectorException):
+                continue
 
         result_set = [r for r in result_set \
                 if dedup_slug(r) not in result_index]
@@ -39,6 +58,12 @@ def local_search(query, min_confidence=0.1, raw=False):
     ''' only look at local search results '''
     connector = load_connector(models.Connector.objects.get(local=True))
     return connector.search(query, min_confidence=min_confidence, raw=raw)
+
+
+def isbn_local_search(query, raw=False):
+    ''' only look at local search results '''
+    connector = load_connector(models.Connector.objects.get(local=True))
+    return connector.isbn_search(query, raw=raw)
 
 
 def first_search_result(query, min_confidence=0.1):

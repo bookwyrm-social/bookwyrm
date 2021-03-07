@@ -24,7 +24,7 @@
                 {% include 'snippets/book_titleby.html' with book=item.book %}
             </td>
             <td>
-                {% include 'snippets/username.html' with user=item.user %}
+                <a href="{{ item.user.local_path }}">{{ item.user.display_name }}</a>
             </td>
             <td>
                 <div class="field has-addons">

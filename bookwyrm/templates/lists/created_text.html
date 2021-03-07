@@ -1,0 +1,10 @@
+{% load i18n %}
+{% spaceless %}
+
+{% if list.curation != 'open' %}
+{% blocktrans with username=list.user.display_name path=list.user.local_path %}Created and curated by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}
+{% else %}
+{% blocktrans with username=list.user.display_name path=list.user.local_path %}Created by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}
+{% endif %}
+
+{% endspaceless %}

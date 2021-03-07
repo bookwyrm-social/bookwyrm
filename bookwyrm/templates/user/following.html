@@ -14,8 +14,11 @@
     {% for follower in user.following.all %}
     <div class="block columns">
         <div class="column">
-            {% include 'snippets/avatar.html' with user=follower %}
-            {% include 'snippets/username.html' with user=follower show_full=True  %}
+            <a href="{{ follower.local_path }}">
+                {% include 'snippets/avatar.html' with user=follower %}
+                {{ follower.display_name }}
+            </a>
+            ({{ follower.username }})
         </div>
         <div class="column">
             {% include 'snippets/follow_button.html' with user=follower %}

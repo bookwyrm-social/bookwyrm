@@ -31,3 +31,4 @@ from .site import Site
 from .status import CreateStatus, DeleteStatus
 from .updates import Updates
 from .user import User, EditUser, Followers, Following
+from .isbn import Isbn

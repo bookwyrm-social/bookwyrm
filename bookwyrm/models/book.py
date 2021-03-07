@@ -37,6 +37,10 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
             self.remote_id = None
         return super().save(*args, **kwargs)
 
+    def broadcast(self, activity, sender, software='bookwyrm'):
+        ''' only send book data updates to other bookwyrm instances '''
+        super().broadcast(activity, sender, software=software)
+
 
 class Book(BookDataModel):
     ''' a generic book, which can mean either an edition or a work '''
@@ -91,7 +95,7 @@ class Book(BookDataModel):
     @property
     def alt_text(self):
         ''' image alt test '''
-        text = '%s cover' % self.title
+        text = '%s' % self.title
         if self.edition_info:
             text += ' (%s)' % self.edition_info
         return text
