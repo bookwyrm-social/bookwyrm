@@ -26,7 +26,7 @@ class Book(ActivityObject):
     librarythingKey: str = ''
     goodreadsKey: str = ''
 
-    cover: Image = field(default_factory=lambda: {})
+    cover: Image = None
     type: str = 'Book'
 
 

@@ -449,7 +449,7 @@ def broadcast_task(sender_id, activity, recipients):
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
-        except (HTTPError, SSLError) as e:
+        except (HTTPError, SSLError, ConnectionError) as e:
             logger.exception(e)
 
 

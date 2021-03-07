@@ -33,8 +33,46 @@ class Connector(AbstractConnector):
             search_results.sort(key=lambda r: r.confidence, reverse=True)
         return search_results
 
+    def isbn_search(self, query, raw=False):
+        ''' search your local database '''
+        if not query:
+            return []
+
+        filters = [{f: query} for f in ['isbn_10', 'isbn_13']]
+        results = models.Edition.objects.filter(
+            reduce(operator.or_, (Q(**f) for f in filters))
+        ).distinct()
+
+        # when there are multiple editions of the same work, pick the default.
+        # it would be odd for this to happen.
+        results = results.filter(parent_work__default_edition__id=F('id')) \
+                or results
+
+        search_results = []
+        for result in results:
+            if raw:
+                search_results.append(result)
+            else:
+                search_results.append(self.format_search_result(result))
+            if len(search_results) >= 10:
+                break
+        return search_results
+
 
     def format_search_result(self, search_result):
+        return SearchResult(
+            title=search_result.title,
+            key=search_result.remote_id,
+            author=search_result.author_text,
+            year=search_result.published_date.year if \
+                    search_result.published_date else None,
+            connector=self,
+            confidence=search_result.rank if \
+                    hasattr(search_result, 'rank') else 1,
+        )
+
+
+    def format_isbn_search_result(self, search_result):
         return SearchResult(
             title=search_result.title,
             key=search_result.remote_id,
@@ -58,6 +96,10 @@ class Connector(AbstractConnector):
 
     def get_authors_from_data(self, data):
         return None
+
+    def parse_isbn_search_data(self, data):
+        ''' it's already in the right format, don't even worry about it '''
+        return data
 
     def parse_search_data(self, data):
         ''' it's already in the right format, don't even worry about it '''

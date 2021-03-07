@@ -1,7 +1,9 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
-{% include 'snippets/avatar.html' with user=status.user %}
-{% include 'snippets/username.html' with user=status.user %}
+<a href="{{ status.user.local_path }}">
+{% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
+{{ status.user.display_name }}
+</a>
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}
@@ -15,7 +17,17 @@
     {% trans "quoted" %}
 {% elif status.reply_parent %}
     {% with parent_status=status|parent %}
-    replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{% if parent_status.status_type == 'GeneratedNote' %}update{% else %}{{ parent_status.status_type | lower }}{% endif %}</a>
+
+    {% if parent_status.status_type == 'Review' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">review</a>{% endblocktrans %}
+    {% elif parent_status.status_type == 'Comment' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">comment</a>{% endblocktrans %}
+    {% elif parent_status.status_type == 'Quotation' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">quote</a>{% endblocktrans %}
+    {% else %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">status</a>{% endblocktrans %}
+    {% endif %}
+
     {% endwith %}
 {% endif %}
 {% if status.book %}

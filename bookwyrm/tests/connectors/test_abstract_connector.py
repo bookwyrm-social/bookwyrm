@@ -42,6 +42,10 @@ class AbstractConnector(TestCase):
                 return search_result
             def parse_search_data(self, data):
                 return data
+            def format_isbn_search_result(self, search_result):
+                return search_result
+            def parse_isbn_search_data(self, data):
+                return data
             def is_work_data(self, data):
                 return data['type'] == 'work'
             def get_edition_from_work_data(self, data):
