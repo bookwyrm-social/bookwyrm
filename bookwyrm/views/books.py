@@ -206,6 +206,10 @@ class ConfirmEditBook(View):
                     name=request.POST.get('add_author'))
             book.authors.add(author)
 
+        remove_authors = request.POST.getlist('remove_authors')
+        for author_id in remove_authors:
+            book.authors.remove(author_id)
+
         return redirect('/book/%s' % book.id)
 
 

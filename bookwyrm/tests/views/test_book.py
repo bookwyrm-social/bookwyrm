@@ -114,10 +114,28 @@ class BookViews(TestCase):
 
         view(request, self.book.id)
 
-        # the changes haven't been saved yet
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, 'New Title')
         self.assertEqual(self.book.authors.first().name, 'Sappho')
+
+    def test_edit_book_remove_author(self):
+        ''' remove an author from a book '''
+        author = models.Author.objects.create(name='Sappho')
+        self.book.authors.add(author)
+        form = forms.EditionForm(instance=self.book)
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data['title'] = 'New Title'
+        form.data['last_edited_by'] = self.local_user.id
+        form.data['remove_authors'] = [author.id]
+        request = self.factory.post('', form.data)
+        request.user = self.local_user
+
+        view(request, self.book.id)
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, 'New Title')
+        self.assertFalse(self.book.authors.exists())
 
 
     def test_switch_edition(self):
