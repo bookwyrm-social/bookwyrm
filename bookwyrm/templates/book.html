@@ -252,7 +252,7 @@
                 <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
                 <div class="media-content">
                     <div>
-                        {% include 'snippets/username.html' with user=rating.user %}
+                        <a href="{{ rating.user.local_path }}">{{ rating.user.display_name }}</a>
                     </div>
                     <div class="is-flex">
                         <p class="mr-1">{% trans "rated it" %}</p>
