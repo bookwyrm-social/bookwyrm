@@ -54,8 +54,8 @@ class RegisterForm(CustomForm):
 
 class RatingForm(CustomForm):
     class Meta:
-        model = models.Review
-        fields = ["user", "book", "content", "rating", "privacy"]
+        model = models.ReviewRating
+        fields = ["user", "book", "rating", "privacy"]
 
 
 class ReviewForm(CustomForm):

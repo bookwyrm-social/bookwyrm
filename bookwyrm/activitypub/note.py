@@ -13,7 +13,7 @@ class Tombstone(ActivityObject):
 
     type: str = "Tombstone"
 
-    def to_model(self, *args, **kwargs):
+    def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument
         """ this should never really get serialized, just searched for """
         model = apps.get_model("bookwyrm.Status")
         return model.find_existing_by_remote_id(self.id)
@@ -61,6 +61,14 @@ class Comment(Note):
 
 
 @dataclass(init=False)
+class Quotation(Comment):
+    """ a quote and commentary on a book """
+
+    quote: str
+    type: str = "Quotation"
+
+
+@dataclass(init=False)
 class Review(Comment):
     """ a full book review """
 
@@ -70,8 +78,9 @@ class Review(Comment):
 
 
 @dataclass(init=False)
-class Quotation(Comment):
-    """ a quote and commentary on a book """
+class Rating(Comment):
+    """ just a star rating """
 
-    quote: str
-    type: str = "Quotation"
+    rating: int
+    content: str = None
+    type: str = "Rating"

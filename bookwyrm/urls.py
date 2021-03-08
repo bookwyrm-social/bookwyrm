@@ -10,7 +10,15 @@ from bookwyrm.utils import regex
 user_path = r"^user/(?P<username>%s)" % regex.username
 local_user_path = r"^user/(?P<username>%s)" % regex.localname
 
-status_types = ["status", "review", "comment", "quotation", "boost", "generatednote"]
+status_types = [
+    "status",
+    "review",
+    "reviewrating",
+    "comment",
+    "quotation",
+    "boost",
+    "generatednote",
+]
 status_path = r"%s/(%s)/(?P<status_id>\d+)" % (user_path, "|".join(status_types))
 
 book_path = r"^book/(?P<book_id>\d+)"
