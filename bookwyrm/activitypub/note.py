@@ -13,9 +13,9 @@ class Tombstone(ActivityObject):
 
     type: str = "Tombstone"
 
-    def to_model(self, *args, **kwargs):# pylint: disable=unused-argument
-        ''' this should never really get serialized, just searched for '''
-        model = apps.get_model('bookwyrm.Status')
+    def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument
+        """ this should never really get serialized, just searched for """
+        model = apps.get_model("bookwyrm.Status")
         return model.find_existing_by_remote_id(self.id)
 
 

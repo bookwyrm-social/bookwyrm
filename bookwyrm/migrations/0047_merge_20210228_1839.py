@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0046_reviewrating'),
-        ('bookwyrm', '0046_sitesettings_privacy_policy'),
+        ("bookwyrm", "0046_reviewrating"),
+        ("bookwyrm", "0046_sitesettings_privacy_policy"),
     ]
 
-    operations = [
-    ]
+    operations = []
