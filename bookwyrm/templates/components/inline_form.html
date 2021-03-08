@@ -1,10 +1,12 @@
+{% load i18n %}
 <section class="card hidden {{ class }}" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}">
     <header class="card-header has-background-white-ter">
         <h2 class="card-header-title" tabindex="0" id="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}-header">
             {% block header %}{% endblock %}
         </h2>
         <span class="card-header-icon">
-        {% include 'snippets/toggle/toggle_button.html' with label="Close" class="delete" nonbutton=True controls_text=controls_text %}
+            {% trans "Close" as button_text %}
+            {% include 'snippets/toggle/toggle_button.html' with label=button_text class="delete" nonbutton=True controls_text=controls_text %}
         </span>
     </header>
     <section class="card-content content">

@@ -3,23 +3,27 @@
 <div class="block">
     {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
     <div>
-        <h3 class="title is-5 has-subtitle">
-            {% if status.name %}<span dir="auto">{{ status.name }}</span><br>{% endif %}
+        {% if status.name %}
+        <h3 class="title is-5 has-subtitle" dir="auto">
+            {{ status.name|escape }}
         </h3>
-        <p class="subtitle">{% include 'snippets/stars.html' with rating=status.rating %}</p>
+        {% endif %}
+        {% include 'snippets/stars.html' with rating=status.rating %}
     </div>
     {% endif %}
 
     {% if status.content_warning %}
     <div>
         <p>{{ status.content_warning }}</p>
-        {% include 'snippets/toggle/open_button.html' with text="show more" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+        {% trans "Show more" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
     </div>
     {% endif %}
 
     <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
         {% if status.content_warning %}
-        {% include 'snippets/toggle/close_button.html' with text="show less" class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+        {% trans "Show less" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
         {% endif %}
 
         {% if status.quote %}
@@ -30,10 +34,10 @@
         </div>
         {% endif %}
 
-        {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Boost' %}
+        {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Announce' %}
         {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
         {% endif %}
-        {% if status.attachments %}
+        {% if status.attachments.exists %}
         <div class="block">
             <div class="columns">
                 {% for attachment in status.attachments.all %}

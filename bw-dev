@@ -35,6 +35,10 @@ function initdb {
     execweb python manage.py initdb
 }
 
+function makeitblack {
+    runweb black celerywyrm bookwyrm
+}
+
 CMD=$1
 shift
 
@@ -91,10 +95,10 @@ case "$CMD" in
         execweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        django-admin makemessages --extension html --ignore=venv3 $@
+        execweb django-admin makemessages --no-wrap --ignore=venv3 $@
         ;;
     compilemessages)
-        django-admin compilemessages --ignore venv3 $@
+        execweb django-admin compilemessages --ignore venv3 $@
         ;;
     build)
         docker-compose build
@@ -102,7 +106,10 @@ case "$CMD" in
     clean)
         clean
         ;;
+    black)
+        makeitblack
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black"
         ;;
 esac

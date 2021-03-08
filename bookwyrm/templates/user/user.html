@@ -1,10 +1,12 @@
 {% extends 'user/user_layout.html' %}
 {% load i18n %}
 
+{% block title %}{{ user.display_name }}{% endblock %}
+
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
-        <h1 class="title">{% trans "User profile" %}</h1>
+        <h1 class="title">{% trans "User Profile" %}</h1>
     </div>
     {% if is_self %}
     <div class="column is-narrow">
@@ -65,7 +67,7 @@
         </div>
     </div>
     {% for activity in activities %}
-    <div class="block" id="feed">
+    <div class="block" id="feed-{{ activity.id }}">
         {% include 'snippets/status/status.html' with status=activity %}
     </div>
     {% endfor %}

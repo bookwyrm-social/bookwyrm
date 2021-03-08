@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0009_shelf_privacy'),
+        ("bookwyrm", "0009_shelf_privacy"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='importjob',
-            name='retry',
+            model_name="importjob",
+            name="retry",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -5,27 +5,27 @@ from django.db import migrations, models
 
 def populate_identifiers(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    tags = app_registry.get_model('bookwyrm', 'Tag')
+    tags = app_registry.get_model("bookwyrm", "Tag")
     for tag in tags.objects.using(db_alias):
-        tag.identifier = re.sub(r'\W+', '-', tag.name).lower()
+        tag.identifier = re.sub(r"\W+", "-", tag.name).lower()
         tag.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0004_tag'),
+        ("bookwyrm", "0004_tag"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tag',
-            name='identifier',
+            model_name="tag",
+            name="identifier",
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='name',
+            model_name="tag",
+            name="name",
             field=models.CharField(max_length=100),
         ),
         migrations.RunPython(populate_identifiers),

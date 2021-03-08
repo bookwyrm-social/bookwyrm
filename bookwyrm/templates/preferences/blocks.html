@@ -1,6 +1,8 @@
 {% extends 'preferences/preferences_layout.html' %}
 {% load i18n %}
 
+{% block title %}{% trans "Blocked Users" %}{{ author.name }}{% endblock %}
+
 {% block header %}
 {% trans "Blocked Users" %}
 {% endblock %}
@@ -13,7 +15,7 @@
 {% for user in request.user.blocks.all %}
     <li class="is-flex">
         <p>
-            {% include 'snippets/avatar.html' with user=user %} {% include 'snippets/username.html' with user=user %}
+            <a href="{{ user.local_path }}">{% include 'snippets/avatar.html' with user=user %} {{ user.display_name }}</a>
         </p>
         <p class="mr-2">
             {% include 'snippets/block_button.html' with user=user %}

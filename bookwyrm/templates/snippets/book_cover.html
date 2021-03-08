@@ -1,13 +1,12 @@
 {% load bookwyrm_tags %}
 <div class="cover-container is-{{ size }}">
 {% if book.cover %}
-<img class="book-cover" src="/images/{{ book.cover }}" alt="{{ book.alt_text }}" title="{{ book.alt_text }}">
+<img class="book-cover" src="/images/{{ book.cover }}" alt="{{ book.alt_text }}">
 {% else %}
     <div class="no-cover book-cover">
         <img class="book-cover" src="/static/images/no_cover.jpg" alt="No cover">
         <div>
-            <p>{{ book.title }}</p>
-            <p>({{ book.edition_info }})</p>
+            <p>{{ book.alt_text }}</p>
         </div>
     </div>
 {% endif %}

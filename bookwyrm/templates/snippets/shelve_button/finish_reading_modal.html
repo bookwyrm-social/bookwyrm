@@ -40,7 +40,8 @@
     </div>
     <div class="column">
         <button type="submit" class="button is-success">{% trans "Save" %}</button>
-        {% include 'snippets/toggle/close_button.html' with text="Cancel" controls_text="finish-reading" controls_uid=uuid %}
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="finish-reading" controls_uid=uuid %}
     </div>
 </div>
 {% endblock %}

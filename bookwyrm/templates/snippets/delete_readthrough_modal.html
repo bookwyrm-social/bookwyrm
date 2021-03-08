@@ -14,6 +14,7 @@
     <button class="button is-danger" type="submit">
         {% trans "Delete" %}
     </button>
-    {% include 'snippets/toggle/toggle_button.html' with text="Cancel" controls_text="delete-readthrough" controls_uid=readthrough.id %}
+    {% trans "Cancel" as button_text %}
+    {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="delete-readthrough" controls_uid=readthrough.id %}
 </form>
 {% endblock %}

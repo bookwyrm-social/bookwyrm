@@ -1,5 +1,8 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+
+{% block title %}{% trans "Search Results" %}{% endblock %}
+
 {% block content %}
 {% with book_results|first as local_results %}
 <div class="block">
@@ -29,7 +32,8 @@
             <p>
                 {% trans "Didn't find what you were looking for?" %}
             </p>
-            {% include 'snippets/toggle/open_button.html' with text="Show results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Show results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results" %}
         </div>
         {% endif %}
 
@@ -60,7 +64,8 @@
             {% endfor %}
 
             {% if local_results.results %}
-            {% include 'snippets/toggle/close_button.html' with text="Hide results from other catalogues" small=True controls_text="more-results" %}
+            {% trans "Hide results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
             {% endif %}
         </div>
         {% endif %}
@@ -74,8 +79,10 @@
             <ul>
             {% for result in user_results %}
                 <li class="block">
-                    {% include 'snippets/avatar.html' with user=result %}</h2>
-                    {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+                    <a href="{{ result.local_path }}">
+                        {% include 'snippets/avatar.html' with user=result %}
+                        {{ result.display_name }}
+                    </a> ({{ result.username }})
                     {% include 'snippets/follow_button.html' with user=result %}
                 </li>
             {% endfor %}

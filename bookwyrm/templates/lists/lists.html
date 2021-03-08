@@ -1,5 +1,8 @@
 {% extends 'layout.html' %}
 {% load i18n %}
+
+{% block title %}{% trans "Lists" %}{% endblock %}
+
 {% block content %}
 
 <header class="block">
@@ -11,7 +14,8 @@
         <h2 class="title">{% trans "Your lists" %}</h2>
     </div>
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text="Create new list" focus="create-list-header" %}
+        {% trans "Create List" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text=button_text focus="create-list-header" %}
     </div>
 </header>
 
@@ -25,7 +29,7 @@
     {% endif %}
 
     {% if request.user.list_set.count > 4 %}
-    <a href="{% url 'user-lists' request.user.localname %}">See all {{ request.user.list_set.count}} lists</a>
+    <a href="{% url 'user-lists' request.user.localname %}">{% blocktrans with size=request.user.list_set.count %}See all {{ size }} lists{% endblocktrans %}</a>
     {% endif %}
 </section>
 {% endif %}

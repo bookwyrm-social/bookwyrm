@@ -1,4 +1,4 @@
-''' incoming activities '''
+""" incoming activities """
 import json
 from urllib.parse import urldefrag
 
@@ -14,13 +14,14 @@ from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):
-    ''' requests sent by outside servers'''
+    """ requests sent by outside servers"""
+
     def post(self, request, username=None):
-        ''' only works as POST request '''
-        # first let's do some basic checks to see if this is legible
+        """ only works as POST request """
+        # make sure the user's inbox even exists
         if username:
             try:
                 models.User.objects.get(localname=username)
@@ -33,20 +34,21 @@ class Inbox(View):
         except json.decoder.JSONDecodeError:
             return HttpResponseBadRequest()
 
+        if (
+            not "object" in activity_json
+            or not "type" in activity_json
+            or not activity_json["type"] in activitypub.activity_objects
+        ):
+            return HttpResponseNotFound()
+
         # verify the signature
         if not has_valid_signature(request, activity_json):
-            if activity_json['type'] == 'Delete':
+            if activity_json["type"] == "Delete":
                 # Pretend that unauth'd deletes succeed. Auth may be failing
                 # because the resource or owner of the resource might have
                 # been deleted.
                 return HttpResponse()
             return HttpResponse(status=401)
-
-        # just some quick smell tests before we try to parse the json
-        if not 'object' in activity_json or \
-                not 'type' in activity_json or \
-                not activity_json['type'] in activitypub.activity_objects:
-            return HttpResponseNotFound()
 
         activity_task.delay(activity_json)
         return HttpResponse()
@@ -54,7 +56,7 @@ class Inbox(View):
 
 @app.task
 def activity_task(activity_json):
-    ''' do something with this json we think is legit '''
+    """ do something with this json we think is legit """
     # lets see if the activitypub module can make sense of this json
     try:
         activity = activitypub.parse(activity_json)
@@ -63,20 +65,23 @@ def activity_task(activity_json):
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)
-    activity.action()
+    try:
+        activity.action()
+    except activitypub.ActivitySerializerError:
+        # this is raised if the activity is discarded
+        return
 
 
 def has_valid_signature(request, activity):
-    ''' verify incoming signature '''
+    """ verify incoming signature """
     try:
         signature = Signature.parse(request)
 
         key_actor = urldefrag(signature.key_id).url
-        if key_actor != activity.get('actor'):
+        if key_actor != activity.get("actor"):
             raise ValueError("Wrong actor created signature.")
 
-        remote_user = activitypub.resolve_remote_id(
-            key_actor, model=models.User)
+        remote_user = activitypub.resolve_remote_id(key_actor, model=models.User)
         if not remote_user:
             return False
 
@@ -88,7 +93,7 @@ def has_valid_signature(request, activity):
                 remote_user.remote_id, model=models.User, refresh=True
             )
             if remote_user.key_pair.public_key == old_key:
-                raise # Key unchanged.
+                raise  # Key unchanged.
             signature.verify(remote_user.key_pair.public_key, request)
     except (ValueError, requests.exceptions.HTTPError):
         return False

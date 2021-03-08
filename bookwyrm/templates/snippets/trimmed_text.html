@@ -1,4 +1,6 @@
 {% load bookwyrm_tags %}
+{% load i18n %}
+
 {% with 0|uuid as uuid %}
 {% if full %}
 {% with full|to_markdown|safe as full %}
@@ -6,17 +8,29 @@
 {% with full|to_markdown|safe|truncatewords_html:60 as trimmed %}
 {% if trimmed != full %}
 <div id="hide-full-{{ uuid }}">
-    <div class="content" id="trimmed-{{ uuid }}"><span dir="auto">{{ trimmed }}</span>
-        {% include 'snippets/toggle/open_button.html' with text="show more" controls_text="full" controls_uid=uuid class="is-small" %}
+    <div class="content" id="trimmed-{{ uuid }}">
+        <p dir="auto">{{ trimmed }}</p>
+
+        <div>
+            {% trans "Show more" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+        </div>
     </div>
 </div>
 <div id="full-{{ uuid }}" class="hidden">
-    <div class="content"><span dir="auto">{{ full }}</span>
-        {% include 'snippets/toggle/close_button.html' with text="show less" controls_text="full" controls_uid=uuid class="is-small" %}
+    <div class="content">
+        <div dir="auto">{{ full }}</div>
+
+        <div>
+            {% trans "Show less" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+        </div>
     </div>
 </div>
 {% else %}
-<div class="content"><span dir="auto">{{ full }}</span></div>
+<div class="content">
+    <div dir="auto">{{ full }}</div>
+</div>
 {% endif %}
 {% endwith %}
 
