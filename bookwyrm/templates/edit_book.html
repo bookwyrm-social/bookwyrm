@@ -72,7 +72,6 @@
     <hr class="block">
     {% endif %}
 
-    <fieldset>
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
     <div class="columns">
         <div class="column">
@@ -181,11 +180,12 @@
         </div>
     </div>
 
+    {% if not confirm_mode %}
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
         <a class="button" href="/book/{{ book.id }}">{% trans "Cancel" %}</a>
     </div>
-    </fieldset>
+    {% endif %}
 </form>
 
 {% endblock %}
