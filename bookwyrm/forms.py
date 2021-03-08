@@ -138,7 +138,6 @@ class EditionForm(CustomForm):
     class Meta:
         model = models.Edition
         exclude = [
-
             "remote_id",
             "origin_id",
             "created_date",

@@ -106,107 +106,104 @@ class Book(View):
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
 )
 class EditBook(View):
-    ''' edit a book '''
+    """ edit a book """
+
     def get(self, request, book_id=None):
-        ''' info about a book '''
+        """ info about a book """
         book = None
         if book_id:
             book = get_edition(book_id)
             if not book.description:
                 book.description = book.parent_work.description
-        data = {
-            'book': book,
-            'form': forms.EditionForm(instance=book)
-        }
-        return TemplateResponse(request, 'edit_book.html', data)
+        data = {"book": book, "form": forms.EditionForm(instance=book)}
+        return TemplateResponse(request, "edit_book.html", data)
 
     def post(self, request, book_id=None):
-        ''' edit a book cool '''
+        """ edit a book cool """
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
-        data = {
-            'book': book,
-            'form': form
-        }
+        data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, 'edit_book.html', data)
+            return TemplateResponse(request, "edit_book.html", data)
 
-        add_author = request.POST.get('add_author')
+        add_author = request.POST.get("add_author")
         # we're adding an author through a free text field
         if add_author:
-            data['add_author'] = add_author
+            data["add_author"] = add_author
             # check for existing authors
-            vector = SearchVector('name', weight='A') +\
-                     SearchVector('aliases', weight='B')
+            vector = SearchVector("name", weight="A") + SearchVector(
+                "aliases", weight="B"
+            )
 
-            data['author_matches'] = models.Author.objects.annotate(
-                search=vector
-            ).annotate(
-                rank=SearchRank(vector, add_author)
-            ).filter(rank__gt=0.4).order_by('-rank')[:5]
+            data["author_matches"] = (
+                models.Author.objects.annotate(search=vector)
+                .annotate(rank=SearchRank(vector, add_author))
+                .filter(rank__gt=0.4)
+                .order_by("-rank")[:5]
+            )
 
         # we're creating a new book
         if not book:
             # check if this is an edition of an existing work
             author_text = book.author_text if book else add_author
-            data['book_matches'] = connector_manager.local_search(
-                '%s %s' % (form.cleaned_data.get('title'), author_text),
+            data["book_matches"] = connector_manager.local_search(
+                "%s %s" % (form.cleaned_data.get("title"), author_text),
                 min_confidence=0.5,
-                raw=True
+                raw=True,
             )[:5]
 
         # either of the above cases requires additional confirmation
         if add_author or not book:
             # creting a book or adding an author to a book needs another step
-            data['confirm_mode'] = True
-            return TemplateResponse(request, 'edit_book.html', data)
+            data["confirm_mode"] = True
+            return TemplateResponse(request, "edit_book.html", data)
 
-        remove_authors = request.POST.getlist('remove_authors')
+        remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
         book = form.save()
-        return redirect('/book/%s' % book.id)
+        return redirect("/book/%s" % book.id)
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required('bookwyrm.edit_book', raise_exception=True),
-    name='dispatch')
+    permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
+)
 class ConfirmEditBook(View):
-    ''' confirm edits to a book '''
+    """ confirm edits to a book """
+
     def post(self, request, book_id=None):
-        ''' edit a book cool '''
+        """ edit a book cool """
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
 
-        data = {
-            'book': book,
-            'form': form
-        }
+        data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, 'edit_book.html', data)
+            return TemplateResponse(request, "edit_book.html", data)
 
         with transaction.atomic():
             # save book
             book = form.save()
 
             # get or create author as needed
-            if request.POST.get('add_author'):
-                if request.POST.get('author_match'):
+            if request.POST.get("add_author"):
+                if request.POST.get("author_match"):
                     author = get_object_or_404(
-                        models.Author, id=request.POST['author_match'])
+                        models.Author, id=request.POST["author_match"]
+                    )
                 else:
                     author = models.Author.objects.create(
-                        name=request.POST.get('add_author'))
+                        name=request.POST.get("add_author")
+                    )
                 book.authors.add(author)
 
             # create work, if needed
             if not book_id:
-                work_match = request.POST.get('parent_work')
+                work_match = request.POST.get("parent_work")
                 if work_match:
                     work = get_object_or_404(models.Work, id=work_match)
                 else:
@@ -215,7 +212,7 @@ class ConfirmEditBook(View):
                 book.parent_work = work
                 book.save()
 
-            for author_id in request.POST.getlist('remove_authors'):
+            for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)
 
         return redirect("/book/%s" % book.id)
