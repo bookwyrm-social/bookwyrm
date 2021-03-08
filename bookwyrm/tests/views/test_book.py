@@ -112,7 +112,8 @@ class BookViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        view(request, self.book.id)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, self.book.id)
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, 'New Title')
@@ -132,7 +133,8 @@ class BookViews(TestCase):
         request = self.factory.post('', form.data)
         request.user = self.local_user
 
-        view(request, self.book.id)
+        with patch('bookwyrm.models.activitypub_mixin.broadcast_task.delay'):
+            view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, 'New Title')
         self.assertFalse(self.book.authors.exists())
