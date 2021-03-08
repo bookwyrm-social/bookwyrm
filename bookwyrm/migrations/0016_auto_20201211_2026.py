@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0015_auto_20201128_0349'),
+        ("bookwyrm", "0015_auto_20201128_0349"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='admin_email',
+            model_name="sitesettings",
+            name="admin_email",
             field=models.EmailField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='support_link',
+            model_name="sitesettings",
+            name="support_link",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='support_title',
+            model_name="sitesettings",
+            name="support_title",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
     ]

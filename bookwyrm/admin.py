@@ -1,4 +1,4 @@
-''' models that will show up in django admin for superuser '''
+""" models that will show up in django admin for superuser """
 from django.contrib import admin
 from bookwyrm import models
 

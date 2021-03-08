@@ -1,4 +1,4 @@
-''' database schema for info about authors '''
+""" database schema for info about authors """
 from django.db import models
 
 from bookwyrm import activitypub
@@ -9,9 +9,11 @@ from . import fields
 
 
 class Author(BookDataModel):
-    ''' basic biographic info '''
+    """ basic biographic info """
+
     wikipedia_link = fields.CharField(
-        max_length=255, blank=True, null=True, deduplication_field=True)
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)
@@ -22,7 +24,7 @@ class Author(BookDataModel):
     bio = fields.HtmlField(null=True, blank=True)
 
     def get_remote_id(self):
-        ''' editions and works both use "book" instead of model_name '''
-        return 'https://%s/author/%s' % (DOMAIN, self.id)
+        """ editions and works both use "book" instead of model_name """
+        return "https://%s/author/%s" % (DOMAIN, self.id)
 
     activity_serializer = activitypub.Author

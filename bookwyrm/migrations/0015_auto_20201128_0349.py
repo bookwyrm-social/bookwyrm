@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0014_auto_20201128_0118'),
+        ("bookwyrm", "0014_auto_20201128_0118"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='image',
-            name='status',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='attachments', to='bookwyrm.Status'),
+            model_name="image",
+            name="status",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="attachments",
+                to="bookwyrm.Status",
+            ),
         ),
     ]

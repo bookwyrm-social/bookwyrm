@@ -1,4 +1,4 @@
-''' undo wrapper activity '''
+""" undo wrapper activity """
 from dataclasses import dataclass
 from typing import List
 from django.apps import apps
@@ -9,160 +9,173 @@ from .book import Edition
 
 @dataclass(init=False)
 class Verb(ActivityObject):
-    ''' generic fields for activities - maybe an unecessary level of
-        abstraction but w/e '''
+    """generic fields for activities - maybe an unecessary level of
+    abstraction but w/e"""
+
     actor: str
     object: ActivityObject
 
     def action(self):
-        ''' usually we just want to save, this can be overridden as needed '''
+        """ usually we just want to save, this can be overridden as needed """
         self.object.to_model()
 
 
 @dataclass(init=False)
 class Create(Verb):
-    ''' Create activity '''
+    """ Create activity """
+
     to: List
     cc: List
     signature: Signature = None
-    type: str = 'Create'
+    type: str = "Create"
 
 
 @dataclass(init=False)
 class Delete(Verb):
-    ''' Create activity '''
+    """ Create activity """
+
     to: List
     cc: List
-    type: str = 'Delete'
+    type: str = "Delete"
 
     def action(self):
-        ''' find and delete the activity object '''
+        """ find and delete the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
         obj.delete()
 
 
-
 @dataclass(init=False)
 class Update(Verb):
-    ''' Update activity '''
+    """ Update activity """
+
     to: List
-    type: str = 'Update'
+    type: str = "Update"
 
     def action(self):
-        ''' update a model instance from the dataclass '''
+        """ update a model instance from the dataclass """
         self.object.to_model(allow_create=False)
 
 
 @dataclass(init=False)
 class Undo(Verb):
-    ''' Undo an activity '''
-    type: str = 'Undo'
+    """ Undo an activity """
+
+    type: str = "Undo"
 
     def action(self):
-        ''' find and remove the activity object '''
+        """ find and remove the activity object """
         # this is so hacky but it does make it work....
         # (because you Reject a request and Undo a follow
         model = None
-        if self.object.type == 'Follow':
-            model = apps.get_model('bookwyrm.UserFollows')
+        if self.object.type == "Follow":
+            model = apps.get_model("bookwyrm.UserFollows")
         obj = self.object.to_model(model=model, save=False, allow_create=False)
         obj.delete()
 
 
 @dataclass(init=False)
 class Follow(Verb):
-    ''' Follow activity '''
+    """ Follow activity """
+
     object: str
-    type: str = 'Follow'
+    type: str = "Follow"
 
     def action(self):
-        ''' relationship save '''
+        """ relationship save """
         self.to_model()
 
 
 @dataclass(init=False)
 class Block(Verb):
-    ''' Block activity '''
+    """ Block activity """
+
     object: str
-    type: str = 'Block'
+    type: str = "Block"
 
     def action(self):
-        ''' relationship save '''
+        """ relationship save """
         self.to_model()
 
 
 @dataclass(init=False)
 class Accept(Verb):
-    ''' Accept activity '''
+    """ Accept activity """
+
     object: Follow
-    type: str = 'Accept'
+    type: str = "Accept"
 
     def action(self):
-        ''' find and remove the activity object '''
+        """ find and remove the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
         obj.accept()
 
 
 @dataclass(init=False)
 class Reject(Verb):
-    ''' Reject activity '''
+    """ Reject activity """
+
     object: Follow
-    type: str = 'Reject'
+    type: str = "Reject"
 
     def action(self):
-        ''' find and remove the activity object '''
+        """ find and remove the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
         obj.reject()
 
 
 @dataclass(init=False)
 class Add(Verb):
-    '''Add activity '''
+    """Add activity """
+
     target: str
     object: Edition
-    type: str = 'Add'
+    type: str = "Add"
     notes: str = None
     order: int = 0
     approved: bool = True
 
     def action(self):
-        ''' add obj to collection '''
+        """ add obj to collection """
         target = resolve_remote_id(self.target, refresh=False)
         # we want to related field that isn't the book, this is janky af sorry
-        model = [t for t in type(target)._meta.related_objects \
-                if t.name != 'edition'][0].related_model
+        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
+            0
+        ].related_model
         self.to_model(model=model)
 
 
 @dataclass(init=False)
 class Remove(Verb):
-    '''Remove activity '''
+    """Remove activity """
+
     target: ActivityObject
-    type: str = 'Remove'
+    type: str = "Remove"
 
     def action(self):
-        ''' find and remove the activity object '''
+        """ find and remove the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
         obj.delete()
 
 
 @dataclass(init=False)
 class Like(Verb):
-    ''' a user faving an object '''
+    """ a user faving an object """
+
     object: str
-    type: str = 'Like'
+    type: str = "Like"
 
     def action(self):
-        ''' like '''
+        """ like """
         self.to_model()
 
 
 @dataclass(init=False)
 class Announce(Verb):
-    ''' boosting a status '''
+    """ boosting a status """
+
     object: str
-    type: str = 'Announce'
+    type: str = "Announce"
 
     def action(self):
-        ''' boost '''
+        """ boost """
         self.to_model()

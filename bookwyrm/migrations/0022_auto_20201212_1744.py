@@ -5,26 +5,27 @@ from django.db import migrations
 
 def set_author_name(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    authors = app_registry.get_model('bookwyrm', 'Author')
+    authors = app_registry.get_model("bookwyrm", "Author")
     for author in authors.objects.using(db_alias):
         if not author.name:
-            author.name = '%s %s' % (author.first_name, author.last_name)
+            author.name = "%s %s" % (author.first_name, author.last_name)
             author.save()
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0021_merge_20201212_1737'),
+        ("bookwyrm", "0021_merge_20201212_1737"),
     ]
 
     operations = [
         migrations.RunPython(set_author_name),
         migrations.RemoveField(
-            model_name='author',
-            name='first_name',
+            model_name="author",
+            name="first_name",
         ),
         migrations.RemoveField(
-            model_name='author',
-            name='last_name',
+            model_name="author",
+            name="last_name",
         ),
     ]

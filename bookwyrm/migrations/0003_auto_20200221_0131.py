@@ -7,87 +7,89 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0002_auto_20200219_0816'),
+        ("bookwyrm", "0002_auto_20200219_0816"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='author',
-            name='content',
+            model_name="author",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='book',
-            name='content',
+            model_name="book",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='favorite',
-            name='content',
+            model_name="favorite",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='federatedserver',
-            name='content',
+            model_name="federatedserver",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='shelf',
-            name='content',
+            model_name="shelf",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='shelfbook',
-            name='content',
+            model_name="shelfbook",
+            name="content",
         ),
         migrations.RemoveField(
-            model_name='userrelationship',
-            name='content',
+            model_name="userrelationship",
+            name="content",
         ),
         migrations.AddField(
-            model_name='author',
-            name='updated_date',
+            model_name="author",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='book',
-            name='updated_date',
+            model_name="book",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='favorite',
-            name='updated_date',
+            model_name="favorite",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='federatedserver',
-            name='updated_date',
+            model_name="federatedserver",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='shelf',
-            name='updated_date',
+            model_name="shelf",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='shelfbook',
-            name='updated_date',
+            model_name="shelfbook",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='status',
-            name='updated_date',
+            model_name="status",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='user',
-            name='created_date',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="user",
+            name="created_date",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='user',
-            name='updated_date',
+            model_name="user",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.AddField(
-            model_name='userrelationship',
-            name='updated_date',
+            model_name="userrelationship",
+            name="updated_date",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

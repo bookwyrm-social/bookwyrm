@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0008_work_default_edition'),
+        ("bookwyrm", "0008_work_default_edition"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='shelf',
-            name='privacy',
-            field=models.CharField(choices=[('public', 'Public'), ('unlisted', 'Unlisted'), ('followers', 'Followers'), ('direct', 'Direct')], default='public', max_length=255),
+            model_name="shelf",
+            name="privacy",
+            field=models.CharField(
+                choices=[
+                    ("public", "Public"),
+                    ("unlisted", "Unlisted"),
+                    ("followers", "Followers"),
+                    ("direct", "Direct"),
+                ],
+                default="public",
+                max_length=255,
+            ),
         ),
     ]

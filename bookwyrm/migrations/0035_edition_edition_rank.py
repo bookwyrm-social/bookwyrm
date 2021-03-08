@@ -6,20 +6,21 @@ from django.db import migrations
 
 def set_rank(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    books = app_registry.get_model('bookwyrm', 'Edition')
+    books = app_registry.get_model("bookwyrm", "Edition")
     for book in books.objects.using(db_alias):
         book.save()
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0034_importjob_complete'),
+        ("bookwyrm", "0034_importjob_complete"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='edition',
-            name='edition_rank',
+            model_name="edition",
+            name="edition_rank",
             field=bookwyrm.models.fields.IntegerField(default=0),
         ),
         migrations.RunPython(set_rank),
