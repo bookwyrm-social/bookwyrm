@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-07 18:25+0000\n"
+"POT-Creation-Date: 2021-03-07 23:40+0000\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -129,10 +129,14 @@ msgid "ASIN:"
 msgstr ""
 
 #: bookwyrm/templates/book.html:84
+#, fuzzy, python-format
+#| msgid "%(format)s, %(pages)s pages"
 msgid "%(format)s, %(pages)s pages"
 msgstr "%(format)s, %(book.pages)s Seiten"
 
 #: bookwyrm/templates/book.html:86
+#, fuzzy, python-format
+#| msgid "%(pages)s pages"
 msgid "%(pages)s pages"
 msgstr "%(book.pages)s Seiten"
 
@@ -530,7 +534,7 @@ msgstr "%(name)s hat sich für %(year)s kein Leseziel gesetzt."
 #: bookwyrm/templates/goal.html:51
 #, python-format
 msgid "Your %(year)s Books"
-msgstr "Deine %(year)s Bücher"
+msgstr "Deine Bücher %(year)s"
 
 #: bookwyrm/templates/goal.html:53
 #, python-format
@@ -691,7 +695,7 @@ msgstr ""
 #: bookwyrm/templates/layout.html:92
 #: bookwyrm/templates/preferences/preferences_layout.html:14
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: bookwyrm/templates/layout.html:97
 msgid "Settings"
@@ -750,7 +754,7 @@ msgstr "Admin kontaktieren"
 
 #: bookwyrm/templates/layout.html:202
 #, python-format
-msgid "Support %(site.name)s on <a href=\"%(site.support_link)s\" target=\"_blank\">%(site.support_title)s</a>"
+msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:206
@@ -934,7 +938,7 @@ msgstr "hat deinen <a href=\"%(related_path)s\">Kommentar zu <em>%(book_title)s<
 #: bookwyrm/templates/notifications.html:55
 #, python-format
 msgid "favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
-msgstr " hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a>"
+msgstr " hat dein <a href=\"%(related_path)s\">Zitat aus <em>%(book_title)s</em></a> favorisiert"
 
 #: bookwyrm/templates/notifications.html:57
 #, python-format
@@ -1094,7 +1098,7 @@ msgstr "Displayname:"
 
 #: bookwyrm/templates/preferences/edit_user.html:31
 msgid "Summary:"
-msgstr "Zusammenfassung:"
+msgstr "Bio:"
 
 #: bookwyrm/templates/preferences/edit_user.html:46
 msgid "Manually approve followers:"
@@ -1459,11 +1463,11 @@ msgstr "%(username)s hat <a href=\"%(path)s\">%(read_count)s von %(goal_count)s 
 
 #: bookwyrm/templates/snippets/pagination.html:7
 msgid "Previous"
-msgstr "Vorher"
+msgstr "Zurück"
 
 #: bookwyrm/templates/snippets/pagination.html:15
 msgid "Next"
-msgstr "Danach"
+msgstr "Weiter"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
@@ -1523,7 +1527,7 @@ msgstr "Fortschrittsupdates:"
 
 #: bookwyrm/templates/snippets/readthrough.html:11
 msgid "finished"
-msgstr "beendet"
+msgstr "Abgeschlossen"
 
 #: bookwyrm/templates/snippets/readthrough.html:14
 msgid "Show all updates"
@@ -1559,7 +1563,7 @@ msgstr "Fortschritt"
 #: bookwyrm/templates/snippets/readthrough_form.html:30
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:25
 msgid "Finished reading"
-msgstr "Lesen beendet"
+msgstr "Lesen abgeschlossen"
 
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
@@ -1573,17 +1577,17 @@ msgstr ""
 #: bookwyrm/templates/snippets/rss_title.html:7
 #: bookwyrm/templates/snippets/status/status_header.html:13
 msgid "reviewed"
-msgstr "bewertet"
+msgstr "bewertete"
 
 #: bookwyrm/templates/snippets/rss_title.html:9
 #: bookwyrm/templates/snippets/status/status_header.html:15
 msgid "commented on"
-msgstr "kommentiert zu"
+msgstr "kommentierte"
 
 #: bookwyrm/templates/snippets/rss_title.html:11
 #: bookwyrm/templates/snippets/status/status_header.html:17
 msgid "quoted"
-msgstr "zitiert"
+msgstr "zitierte"
 
 #: bookwyrm/templates/snippets/search_result_text.html:3
 #, python-format
@@ -1604,7 +1608,7 @@ msgstr "Gestartet"
 
 #: bookwyrm/templates/snippets/shelf.html:15
 msgid "Finished"
-msgstr "Beendet"
+msgstr "Abgeschlossen"
 
 #: bookwyrm/templates/snippets/shelf.html:16
 msgid "External links"
@@ -1633,7 +1637,7 @@ msgstr "Vom Regal nehmen"
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:5
 #, python-format
 msgid "Finish \"<em>%(book_title)s</em>\""
-msgstr "\"<em>%(book_title)s</em>\" beenden"
+msgstr "\"<em>%(book_title)s</em>\" abschließen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
@@ -1645,7 +1649,7 @@ msgstr "Zu lesen beginnen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:13
 msgid "Finish reading"
-msgstr "Lesen beenden"
+msgstr "Lesen abschließen"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:16
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:26
@@ -1664,7 +1668,7 @@ msgstr "\"<em>%(book_title)s</em>\" auf Leseliste setzen"
 
 #: bookwyrm/templates/snippets/status/status.html:9
 msgid "boosted"
-msgstr "geteilt"
+msgstr "teilt"
 
 #: bookwyrm/templates/snippets/status/status_body.html:24
 #: bookwyrm/templates/snippets/status/status_body.html:37
@@ -1862,7 +1866,7 @@ msgstr[1] "%(counter)s Folgende"
 #: bookwyrm/templates/user/user_preview.html:16
 #, python-format
 msgid "%(counter)s following"
-msgstr "%(counter)s folgen"
+msgstr "Folgt %(counter)s"
 
 #~ msgid "Created and curated by"
 #~ msgstr "Erstellt und kuratiert von"

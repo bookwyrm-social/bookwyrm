@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0046_sitesettings_privacy_policy'),
+        ("bookwyrm", "0046_sitesettings_privacy_policy"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='connector',
-            name='isbn_search_url',
+            model_name="connector",
+            name="isbn_search_url",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

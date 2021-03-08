@@ -1,4 +1,4 @@
-''' actor serializer '''
+""" actor serializer """
 from dataclasses import dataclass, field
 from typing import Dict
 
@@ -8,15 +8,17 @@ from .image import Image
 
 @dataclass(init=False)
 class PublicKey(ActivityObject):
-    ''' public key block '''
+    """ public key block """
+
     owner: str
     publicKeyPem: str
-    type: str = 'PublicKey'
+    type: str = "PublicKey"
 
 
 @dataclass(init=False)
 class Person(ActivityObject):
-    ''' actor activitypub json '''
+    """ actor activitypub json """
+
     preferredUsername: str
     inbox: str
     outbox: str
@@ -29,4 +31,4 @@ class Person(ActivityObject):
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = True
-    type: str = 'Person'
+    type: str = "Person"

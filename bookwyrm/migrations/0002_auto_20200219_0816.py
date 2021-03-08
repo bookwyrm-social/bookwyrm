@@ -8,31 +8,59 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0001_initial'),
+        ("bookwyrm", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Favorite',
+            name="Favorite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(blank=True, null=True)),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('status', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Status')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(blank=True, null=True)),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "status",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="bookwyrm.Status",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'status')},
+                "unique_together": {("user", "status")},
             },
         ),
         migrations.AddField(
-            model_name='status',
-            name='favorites',
-            field=models.ManyToManyField(related_name='user_favorites', through='bookwyrm.Favorite', to=settings.AUTH_USER_MODEL),
+            model_name="status",
+            name="favorites",
+            field=models.ManyToManyField(
+                related_name="user_favorites",
+                through="bookwyrm.Favorite",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='favorites',
-            field=models.ManyToManyField(related_name='favorite_statuses', through='bookwyrm.Favorite', to='bookwyrm.Status'),
+            model_name="user",
+            name="favorites",
+            field=models.ManyToManyField(
+                related_name="favorite_statuses",
+                through="bookwyrm.Favorite",
+                to="bookwyrm.Status",
+            ),
         ),
     ]

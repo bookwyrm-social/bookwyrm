@@ -7,14 +7,16 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0032_auto_20210104_2055'),
+        ("bookwyrm", "0032_auto_20210104_2055"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='siteinvite',
-            name='created_date',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="siteinvite",
+            name="created_date",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
     ]
