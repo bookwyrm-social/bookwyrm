@@ -35,6 +35,10 @@ function initdb {
     execweb python manage.py initdb
 }
 
+function makeitblack {
+    runweb black celerywyrm bookwyrm
+}
+
 CMD=$1
 shift
 
@@ -96,7 +100,10 @@ case "$CMD" in
     clean)
         clean
         ;;
+    black)
+        makeitblack
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black"
         ;;
 esac
