@@ -209,7 +209,8 @@ class ConfirmEditBook(View):
                     work = models.Work.objects.create(title=form.cleaned_data["title"])
                     work.authors.set(book.authors.all())
                 book.parent_work = work
-                book.save()
+                # we don't tell the world when creating a book
+                book.save(broadcast=False)
 
             for author_id in request.POST.getlist("remove_authors"):
                 book.authors.remove(author_id)

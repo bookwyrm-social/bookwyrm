@@ -149,8 +149,8 @@ class BookViews(TestCase):
         form.data["last_edited_by"] = self.local_user.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request)
+
+        view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
 
@@ -164,8 +164,8 @@ class BookViews(TestCase):
         form.data["last_edited_by"] = self.local_user.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request)
+
+        view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work, self.work)
 
@@ -179,8 +179,8 @@ class BookViews(TestCase):
         form.data["last_edited_by"] = self.local_user.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request)
+
+        view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
         self.assertEqual(book.authors.first().name, "Sappho")
