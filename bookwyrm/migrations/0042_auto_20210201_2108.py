@@ -7,22 +7,40 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0041_auto_20210131_1614'),
+        ("bookwyrm", "0041_auto_20210131_1614"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='list',
-            options={'ordering': ('-updated_date',)},
+            name="list",
+            options={"ordering": ("-updated_date",)},
         ),
         migrations.AlterField(
-            model_name='list',
-            name='privacy',
-            field=bookwyrm.models.fields.PrivacyField(choices=[('public', 'Public'), ('unlisted', 'Unlisted'), ('followers', 'Followers'), ('direct', 'Direct')], default='public', max_length=255),
+            model_name="list",
+            name="privacy",
+            field=bookwyrm.models.fields.PrivacyField(
+                choices=[
+                    ("public", "Public"),
+                    ("unlisted", "Unlisted"),
+                    ("followers", "Followers"),
+                    ("direct", "Direct"),
+                ],
+                default="public",
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='shelf',
-            name='privacy',
-            field=bookwyrm.models.fields.PrivacyField(choices=[('public', 'Public'), ('unlisted', 'Unlisted'), ('followers', 'Followers'), ('direct', 'Direct')], default='public', max_length=255),
+            model_name="shelf",
+            name="privacy",
+            field=bookwyrm.models.fields.PrivacyField(
+                choices=[
+                    ("public", "Public"),
+                    ("unlisted", "Unlisted"),
+                    ("followers", "Followers"),
+                    ("direct", "Direct"),
+                ],
+                default="public",
+                max_length=255,
+            ),
         ),
     ]

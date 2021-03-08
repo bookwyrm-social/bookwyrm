@@ -1,4 +1,4 @@
-''' import books from another app '''
+""" import books from another app """
 from io import TextIOWrapper
 
 from django.contrib.auth.decorators import login_required
@@ -13,27 +13,33 @@ from bookwyrm import forms, goodreads_import, librarything_import, models
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class Import(View):
-    ''' import view '''
+    """ import view """
+
     def get(self, request):
-        ''' load import page '''
-        return TemplateResponse(request, 'import.html', {
-            'import_form': forms.ImportForm(),
-            'jobs': models.ImportJob.
-                    objects.filter(user=request.user).order_by('-created_date'),
-        })
+        """ load import page """
+        return TemplateResponse(
+            request,
+            "import.html",
+            {
+                "import_form": forms.ImportForm(),
+                "jobs": models.ImportJob.objects.filter(user=request.user).order_by(
+                    "-created_date"
+                ),
+            },
+        )
 
     def post(self, request):
-        ''' ingest a goodreads csv '''
+        """ ingest a goodreads csv """
         form = forms.ImportForm(request.POST, request.FILES)
         if form.is_valid():
-            include_reviews = request.POST.get('include_reviews') == 'on'
-            privacy = request.POST.get('privacy')
-            source = request.POST.get('source')
+            include_reviews = request.POST.get("include_reviews") == "on"
+            privacy = request.POST.get("privacy")
+            source = request.POST.get("source")
 
             importer = None
-            if source == 'LibraryThing':
+            if source == "LibraryThing":
                 importer = librarything_import.LibrarythingImporter()
             else:
                 # Default : GoodReads
@@ -43,44 +49,44 @@ class Import(View):
                 job = importer.create_job(
                     request.user,
                     TextIOWrapper(
-                        request.FILES['csv_file'],
-                        encoding=importer.encoding),
+                        request.FILES["csv_file"], encoding=importer.encoding
+                    ),
                     include_reviews,
                     privacy,
                 )
             except (UnicodeDecodeError, ValueError):
-                return HttpResponseBadRequest('Not a valid csv file')
+                return HttpResponseBadRequest("Not a valid csv file")
 
             importer.start_import(job)
 
-            return redirect('/import/%d' % job.id)
+            return redirect("/import/%d" % job.id)
         return HttpResponseBadRequest()
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class ImportStatus(View):
-    ''' status of an existing import '''
+    """ status of an existing import """
+
     def get(self, request, job_id):
-        ''' status of an import job '''
+        """ status of an import job """
         job = models.ImportJob.objects.get(id=job_id)
         if job.user != request.user:
             raise PermissionDenied
         task = app.AsyncResult(job.task_id)
-        items = job.items.order_by('index').all()
+        items = job.items.order_by("index").all()
         failed_items = [i for i in items if i.fail_reason]
         items = [i for i in items if not i.fail_reason]
-        return TemplateResponse(request, 'import_status.html', {
-            'job': job,
-            'items': items,
-            'failed_items': failed_items,
-            'task': task
-        })
+        return TemplateResponse(
+            request,
+            "import_status.html",
+            {"job": job, "items": items, "failed_items": failed_items, "task": task},
+        )
 
     def post(self, request, job_id):
-        ''' retry lines from an import '''
+        """ retry lines from an import """
         job = get_object_or_404(models.ImportJob, id=job_id)
         items = []
-        for item in request.POST.getlist('import_item'):
+        for item in request.POST.getlist("import_item"):
             items.append(get_object_or_404(models.ImportItem, id=item))
 
         job = goodreads_import.create_retry_job(
@@ -89,4 +95,4 @@ class ImportStatus(View):
             items,
         )
         goodreads_import.start_import(job)
-        return redirect('/import/%d' % job.id)
+        return redirect("/import/%d" % job.id)

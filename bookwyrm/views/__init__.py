@@ -1,4 +1,4 @@
-''' make sure all our nice views are available '''
+""" make sure all our nice views are available """
 from .authentication import Login, Register, Logout
 from .author import Author, EditAuthor
 from .block import Block, unblock
