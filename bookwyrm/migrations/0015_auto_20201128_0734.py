@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0014_merge_20201128_0007'),
+        ("bookwyrm", "0014_merge_20201128_0007"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='readthrough',
-            old_name='pages_read',
-            new_name='progress',
+            model_name="readthrough",
+            old_name="pages_read",
+            new_name="progress",
         ),
         migrations.AddField(
-            model_name='readthrough',
-            name='progress_mode',
-            field=models.CharField(choices=[('PG', 'page'), ('PCT', 'percent')], default='PG', max_length=3),
+            model_name="readthrough",
+            name="progress_mode",
+            field=models.CharField(
+                choices=[("PG", "page"), ("PCT", "percent")], default="PG", max_length=3
+            ),
         ),
     ]

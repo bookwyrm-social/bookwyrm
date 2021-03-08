@@ -5,9 +5,10 @@ from django.conf import settings
 from django.db import migrations
 import django.db.models.deletion
 
+
 def set_user(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    shelfbook = app_registry.get_model('bookwyrm', 'ShelfBook')
+    shelfbook = app_registry.get_model("bookwyrm", "ShelfBook")
     for item in shelfbook.objects.using(db_alias).filter(user__isnull=True):
         item.user = item.shelf.user
         try:
@@ -19,15 +20,19 @@ def set_user(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0043_auto_20210204_2223'),
+        ("bookwyrm", "0043_auto_20210204_2223"),
     ]
 
     operations = [
         migrations.RunPython(set_user, lambda x, y: None),
         migrations.AlterField(
-            model_name='shelfbook',
-            name='user',
-            field=bookwyrm.models.fields.ForeignKey(default=2, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL),
+            model_name="shelfbook",
+            name="user",
+            field=bookwyrm.models.fields.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.PROTECT,
+                to=settings.AUTH_USER_MODEL,
+            ),
             preserve_default=False,
         ),
     ]

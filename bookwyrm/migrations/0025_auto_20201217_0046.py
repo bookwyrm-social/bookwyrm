@@ -7,33 +7,33 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0024_merge_20201216_1721'),
+        ("bookwyrm", "0024_merge_20201216_1721"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='author',
-            name='bio',
+            model_name="author",
+            name="bio",
             field=bookwyrm.models.fields.HtmlField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='book',
-            name='description',
+            model_name="book",
+            name="description",
             field=bookwyrm.models.fields.HtmlField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='quotation',
-            name='quote',
+            model_name="quotation",
+            name="quote",
             field=bookwyrm.models.fields.HtmlField(),
         ),
         migrations.AlterField(
-            model_name='status',
-            name='content',
+            model_name="status",
+            name="content",
             field=bookwyrm.models.fields.HtmlField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='summary',
-            field=bookwyrm.models.fields.HtmlField(default=''),
+            model_name="user",
+            name="summary",
+            field=bookwyrm.models.fields.HtmlField(default=""),
         ),
     ]
