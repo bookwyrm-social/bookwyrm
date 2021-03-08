@@ -130,12 +130,13 @@ urlpatterns = [
     re_path(r'%s(.json)?/?$' % book_path, views.Book.as_view()),
     re_path(r'%s/edit/?$' % book_path, views.EditBook.as_view()),
     re_path(r'%s/confirm/?$' % book_path, views.ConfirmEditBook.as_view()),
+    re_path(r'^create-book/?$', views.EditBook.as_view()),
+    re_path(r'^create-book/confirm?$', views.ConfirmEditBook.as_view()),
     re_path(r'%s/editions(.json)?/?$' % book_path, views.Editions.as_view()),
     re_path(r'^upload-cover/(?P<book_id>\d+)/?$', views.upload_cover),
     re_path(r'^add-description/(?P<book_id>\d+)/?$', views.add_description),
     re_path(r'^resolve-book/?$', views.resolve_book),
     re_path(r'^switch-edition/?$', views.switch_edition),
-    re_path(r'^create-book/?$', views.EditBook.as_view()),
 
     # isbn
     re_path(r'^isbn/(?P<isbn>\d+)(.json)?/?$', views.Isbn.as_view()),

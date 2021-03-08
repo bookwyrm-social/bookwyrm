@@ -145,7 +145,7 @@ class EditBook(View):
                 search=vector
             ).annotate(
                 rank=SearchRank(vector, add_author)
-            ).filter(rank__gt=0.8).order_by('-rank')[:5]
+            ).filter(rank__gt=0.4).order_by('-rank')[:5]
 
         # we're creating a new book
         if not book:
@@ -190,25 +190,33 @@ class ConfirmEditBook(View):
         if not form.is_valid():
             return TemplateResponse(request, 'edit_book.html', data)
 
-        # create work, if needed
-        # TODO
+        with transaction.atomic():
+            # save book
+            book = form.save()
 
-        # save book
-        book = form.save()
+            # get or create author as needed
+            if request.POST.get('add_author'):
+                if request.POST.get('author_match'):
+                    author = get_object_or_404(
+                        models.Author, id=request.POST['author_match'])
+                else:
+                    author = models.Author.objects.create(
+                        name=request.POST.get('add_author'))
+                book.authors.add(author)
 
-        # get or create author as needed
-        if request.POST.get('add_author'):
-            if request.POST.get('author_match'):
-                author = get_object_or_404(
-                    models.Author, id=request.POST['author_match'])
-            else:
-                author = models.Author.objects.create(
-                    name=request.POST.get('add_author'))
-            book.authors.add(author)
+            # create work, if needed
+            if not book_id:
+                work_match = request.POST.get('parent_work')
+                if work_match:
+                    work = get_object_or_404(models.Work, id=work_match)
+                else:
+                    work = models.Work.objects.create(title=form.cleaned_data.title)
+                    work.authors.set(book.authors.all())
+                book.parent_work = work
+                book.save()
 
-        remove_authors = request.POST.getlist('remove_authors')
-        for author_id in remove_authors:
-            book.authors.remove(author_id)
+            for author_id in request.POST.getlist('remove_authors'):
+                book.authors.remove(author_id)
 
         return redirect('/book/%s' % book.id)
 
