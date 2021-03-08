@@ -33,7 +33,7 @@
         {% for requester in user.follower_requests.all %}
             <div class="row shrink">
                 <p>
-                    {% include 'snippets/username.html' with user=requester show_full=True %}
+                    <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
                 </p>
                 {% include 'snippets/follow_request_buttons.html' with user=requester %}
             </div>
@@ -56,7 +56,7 @@
             <a href="{{ url }}">{% trans "Reading Goal" %}</a>
         </li>
         {% endif %}
-        {% if is_self or user.lists.exists %}
+        {% if is_self or user.list_set.exists %}
         {% url 'user-lists' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Lists" %}</a>

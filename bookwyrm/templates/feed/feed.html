@@ -6,13 +6,13 @@
 <h1 class="title">{% blocktrans %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
 <div class="tabs">
     <ul>
-        <li class="{% if tab == 'home' %}is-active{% endif %}">
+        <li class="{% if tab == 'home' %}is-active{% endif %}"{% if tab == 'home' %} aria-current="page"{% endif %}>
             <a href="/#feed">{% trans "Home" %}</a>
         </li>
-        <li class="{% if tab == 'local' %}is-active{% endif %}">
+        <li class="{% if tab == 'local' %}is-active{% endif %}"{% if tab == 'local' %} aria-current="page"{% endif %}>
             <a href="/local#feed">{% trans "Local" %}</a>
         </li>
-        <li class="{% if tab == 'federated' %}is-active{% endif %}">
+        <li class="{% if tab == 'federated' %}is-active{% endif %}"{% if tab == 'federated' %} aria-current="page"{% endif %}>
             <a href="/federated#feed">{% trans "Federated" %}</a>
         </li>
     </ul>

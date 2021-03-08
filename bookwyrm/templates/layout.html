@@ -79,7 +79,7 @@
                     aria-controls="navbar-dropdown"
                 >
                     {% include 'snippets/avatar.html' with user=request.user %}
-                    {% include 'snippets/username.html' with user=request.user anchor=false %}
+                    <span class="ml-2">{{ user.display_name }}</span>
                 </a>
                 <ul class="navbar-dropdown" id="navbar-dropdown">
                     <li>
@@ -199,7 +199,7 @@
             {% if site.support_link %}
             <div class="column">
                 <span class="icon icon-heart"></span>
-                {% blocktrans %}Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>{% endblocktrans %}
+                {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
             </div>
             {% endif %}
             <div class="column">

@@ -7,6 +7,7 @@ from bookwyrm import activitypub
 from .activitypub_mixin import ActivityMixin
 from .base_model import BookWyrmModel
 from . import fields
+from .status import Status
 
 class Favorite(ActivityMixin, BookWyrmModel):
     ''' fav'ing a post '''
@@ -16,6 +17,11 @@ class Favorite(ActivityMixin, BookWyrmModel):
         'Status', on_delete=models.PROTECT, activitypub_field='object')
 
     activity_serializer = activitypub.Like
+
+    @classmethod
+    def ignore_activity(cls, activity):
+        ''' don't bother with incoming favs of unknown statuses '''
+        return not Status.objects.filter(remote_id=activity.object).exists()
 
     def save(self, *args, **kwargs):
         ''' update user active time '''
