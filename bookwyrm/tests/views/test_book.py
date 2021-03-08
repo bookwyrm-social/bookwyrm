@@ -140,6 +140,35 @@ class BookViews(TestCase):
         self.assertEqual(self.book.title, "New Title")
         self.assertFalse(self.book.authors.exists())
 
+    def test_create_book(self):
+        """ create an entirely new book and work """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request)
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.parent_work.title, "New Title")
+
+    def test_create_book_existing_work(self):
+        """ create an entirely new book and work """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["parent_work"] = self.work.id
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request)
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.parent_work, self.work)
+
     def test_switch_edition(self):
         """ updates user's relationships to a book """
         work = models.Work.objects.create(title="test work")
