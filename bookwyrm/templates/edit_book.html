@@ -104,7 +104,7 @@
                 {% for error in form.openlibrary_key.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_librarything_key">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
+                <p class="fields is-grouped"><label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
                 {% for error in form.oclc_number.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
