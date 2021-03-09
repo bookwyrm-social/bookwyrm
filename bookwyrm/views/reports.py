@@ -24,7 +24,7 @@ class Reports(View):
 
     def get(self, request):
         """ view current reports """
-        resolved = request.GET.get("resolved", False)
+        resolved = request.GET.get("resolved") == "true"
         data = {
             "resolved": resolved,
             "reports": models.Report.objects.filter(resolved=resolved),

@@ -1,16 +1,17 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
 
+{% block title %}{% trans "Reports" %}{% endblock %}
 {% block header %}{% trans "Reports" %}{% endblock %}
 
 {% block panel %}
 <div class="tabs">
     <ul>
-        <li class="{% if filter == 'open' %}is-active{% endif %}"{% if filter == 'open' %} aria-current="page"{% endif %}>
-            <a href="{% url 'settings-reports' %}?status=open">{% trans "Open" %}</a>
+        <li class="{% if not resolved %}is-active{% endif %}"{% if not resolved == 'open' %} aria-current="page"{% endif %}>
+            <a href="{% url 'settings-reports' %}?resolved=false">{% trans "Open" %}</a>
         </li>
-        <li class="{% if filter == 'resolved' %}is-active{% endif %}"{% if filter == 'resolved' %} aria-current="page"{% endif %}>
-            <a href="{% url 'settings-reports' %}?status=closed">{% trans "Resolved" %}</a>
+        <li class="{% if resolved %}is-active{% endif %}"{% if resolved %} aria-current="page"{% endif %}>
+            <a href="{% url 'settings-reports' %}?resolved=true">{% trans "Resolved" %}</a>
         </li>
     </ul>
 </div>

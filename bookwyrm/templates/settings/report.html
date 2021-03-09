@@ -1,2 +1,43 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
+
+{% block title %}{% blocktrans with report_id=report.id %}Report #{{ report_id }}{% endblocktrans %}{% endblock %}
+{% block header %}{% blocktrans with report_id=report.id %}Report #{{ report_id }}{% endblocktrans %}{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <a href="{% url 'settings-reports' %}">{% trans "Back to reports" %}</a>
+</div>
+
+<div class="block">
+    {% include 'settings/report_preview.html' with report=report %}
+</div>
+
+<div class="block content">
+    <h3>{% trans "Actions" %}</h3>
+    <div class="field is-grouped">
+        <button class="button">Direct message</button>
+        <button class="button">Suspend</button>
+    </div>
+
+    {% for comment in report.reportcomment_set.all %}
+    <div class="block">
+        {{ comment }}
+    </div>
+    {% endfor %}
+    <form>
+        <label for="report_comment" class="label">Comment on report</label>
+        <textarea name="comment" id="report_comment" class="textarea"></textarea>
+        <button class="button">{% trans "Comment" %}</button>
+    </forM=m>
+</div>
+
+<div class="block content">
+    <h3>{% trans "Reported statuses" %}</h3>
+    <ul>
+        {% for status in report.statuses.all %}
+        <li>{{ status.id }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
