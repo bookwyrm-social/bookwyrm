@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  weeding:
+    build:
+      # We need to build from the parent directory so we can access weed.sh
+      context: ..
+      dockerfile: ./tests/Dockerfile
+    entrypoint: /testing-entrypoint.sh

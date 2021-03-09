@@ -209,6 +209,11 @@ Whenever a user interacts with a book, they are interacting with a specific edit
 Bookwyrm's db service dumps a backup copy of its database to its `/backups` directory daily at midnight UTC.
 Backups are named `backup__%Y-%m-%d.sql`.
 
+The db service has an optional script for periodically pruning the backups directory so that all recent daily backups are kept, but for older backups, only weekly or monthly backups are kept.
+To enable this script:
+- Uncomment the final line in `postgres-docker/cronfile`
+- rebuild your instance `docker-compose up --build`
+
 You can copy backups from the backups volume to your host machine with `docker cp`:
 - Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
 - Run `docker cp <container_name>:/backups <host machine path>
