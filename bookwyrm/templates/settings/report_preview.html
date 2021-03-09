@@ -1,14 +1,19 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
 {% block card-header %}
-<h2 class="title is-4">
-    <a href="{% url 'settings-report' report.id %}">report title</a></h2>
+<h2 class="card-header-title has-background-white-ter is-block">
+    <a href="{% url 'settings-report' report.id %}">report title</a>
+</h2>
 {% endblock %}
 
 {% block card-content %}
-about this report
+<div class="block">
+    about this report
+</div>
 {% endblock %}
 
 {% block card-footer %}
-footer
+<div class="card-footer-item">
+    footer
+</div>
 {% endblock %}

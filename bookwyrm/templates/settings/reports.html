@@ -15,13 +15,13 @@
     </ul>
 </div>
 
-<ul>
+<div class="block">
     {% for report in reports %}
-    <li class="card">
+    <div class="block">
         {% include 'settings/report_preview.html' with report=report %}
-    </li>
+    </div>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock %}
 
