@@ -175,7 +175,6 @@ Instructions for running BookWyrm in production:
  - Comment out the `command: certonly...` line in `docker-compose.yml`
  - Run docker-compose in the background with: `docker-compose up -d`
  - Initialize the database with: `./bw-dev initdb`
- - Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe location
 
 Congrats! You did it, go to your domain and enjoy the fruits of your labors.
 
@@ -205,3 +204,16 @@ There are three concepts in the book data model:
  
 Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
 
+### Backups
+
+Bookwyrm's db service dumps a backup copy of its database to its `/backups` directory daily at midnight UTC.
+Backups are named `backup__%Y-%m-%d.sql`.
+
+The db service has an optional script for periodically pruning the backups directory so that all recent daily backups are kept, but for older backups, only weekly or monthly backups are kept.
+To enable this script:
+- Uncomment the final line in `postgres-docker/cronfile`
+- rebuild your instance `docker-compose up --build`
+
+You can copy backups from the backups volume to your host machine with `docker cp`:
+- Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
+- Run `docker cp <container_name>:/backups <host machine path>

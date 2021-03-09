@@ -27,6 +27,8 @@ services:
     db:
         build: postgres-docker
         env_file: .env
+        entrypoint: /bookwyrm-entrypoint.sh
+        command: cron postgres
         volumes:
           - pgdata:/var/lib/postgresql/data
           - backups:/backups
