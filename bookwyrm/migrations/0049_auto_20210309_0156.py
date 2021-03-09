@@ -10,41 +10,104 @@ import django.db.models.expressions
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0048_merge_20210308_1754'),
+        ("bookwyrm", "0048_merge_20210308_1754"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Report',
+            name="Report",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('updated_date', models.DateTimeField(auto_now=True)),
-                ('remote_id', bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id])),
-                ('note', models.TextField(blank=True, null=True)),
-                ('resolved', models.BooleanField(default=False)),
-                ('reporter', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='reporter', to=settings.AUTH_USER_MODEL)),
-                ('statuses', models.ManyToManyField(blank=True, null=True, to='bookwyrm.Status')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("updated_date", models.DateTimeField(auto_now=True)),
+                (
+                    "remote_id",
+                    bookwyrm.models.fields.RemoteIdField(
+                        max_length=255,
+                        null=True,
+                        validators=[bookwyrm.models.fields.validate_remote_id],
+                    ),
+                ),
+                ("note", models.TextField(blank=True, null=True)),
+                ("resolved", models.BooleanField(default=False)),
+                (
+                    "reporter",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="reporter",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "statuses",
+                    models.ManyToManyField(blank=True, null=True, to="bookwyrm.Status"),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ReportComment',
+            name="ReportComment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('updated_date', models.DateTimeField(auto_now=True)),
-                ('remote_id', bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id])),
-                ('note', models.TextField()),
-                ('report', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Report')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("updated_date", models.DateTimeField(auto_now=True)),
+                (
+                    "remote_id",
+                    bookwyrm.models.fields.RemoteIdField(
+                        max_length=255,
+                        null=True,
+                        validators=[bookwyrm.models.fields.validate_remote_id],
+                    ),
+                ),
+                ("note", models.TextField()),
+                (
+                    "report",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="bookwyrm.Report",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddConstraint(
-            model_name='report',
-            constraint=models.CheckConstraint(check=models.Q(_negated=True, reporter=django.db.models.expressions.F('user')), name='self_report'),
+            model_name="report",
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    _negated=True, reporter=django.db.models.expressions.F("user")
+                ),
+                name="self_report",
+            ),
         ),
     ]

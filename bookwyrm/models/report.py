@@ -17,12 +17,11 @@ class Report(BookWyrmModel):
 
     class Meta:
         """ don't let users report themselves """
+
         constraints = [
-            models.CheckConstraint(
-                check=~Q(reporter=F('user')),
-                name='self_report'
-            )
+            models.CheckConstraint(check=~Q(reporter=F("user")), name="self_report")
         ]
+
 
 class ReportComment(BookWyrmModel):
     """ updates on a report """
