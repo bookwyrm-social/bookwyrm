@@ -4,7 +4,7 @@ from .base_model import BookWyrmModel
 
 
 class FederatedServer(BookWyrmModel):
-    """ store which server's we federate with """
+    """ store which servers we federate with """
 
     server_name = models.CharField(max_length=255, unique=True)
     # federated, blocked, whatever else

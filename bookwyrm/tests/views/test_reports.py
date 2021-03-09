@@ -20,6 +20,13 @@ class ReportViews(TestCase):
             local=True,
             localname="mouse",
         )
+        self.local_user = models.User.objects.create_user(
+            "rat@local.com",
+            "rat@mouse.mouse",
+            "password",
+            local=True,
+            localname="rat",
+        )
         models.SiteSettings.objects.create()
 
     def test_reports_page(self):
@@ -39,7 +46,7 @@ class ReportViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        report = models.Report.objects.create()
+        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
 
         result = view(request, report.id)
 

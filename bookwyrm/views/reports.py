@@ -8,7 +8,7 @@ from django.views import View
 from bookwyrm import models
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_user", raise_exception=True),
@@ -21,11 +21,13 @@ from bookwyrm import models
 class Reports(View):
     """ list of reports  """
 
-    def get(self, request, status="open"):
+    def get(self, request):
         """ view current reports """
+        resolved = request.GET.get("resolved")
         data = {
-            "status": status
-        }  # {"reports": models.Report.objects.filter(status=status)}
+            "resolved": resolved,
+            "reports": models.Report.objects.filter(resolved=resolved),
+        }
         return TemplateResponse(request, "settings/reports.html", data)
 
 
@@ -34,5 +36,5 @@ class Report(View):
 
     def get(self, request, report_id):
         """ load a report """
-        data = {"report": get_object_or_404(models.REport, id=report_id)}
+        data = {"report": get_object_or_404(models.Report, id=report_id)}
         return TemplateResponse(request, "settings/report.html", data)
