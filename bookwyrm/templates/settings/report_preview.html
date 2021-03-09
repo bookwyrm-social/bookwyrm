@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block card-header %}
 <h2 class="title is-4">
-    <a href="{% url settings-report report.id %}">report title</a></h2>
+    <a href="{% url 'settings-report' report.id %}">report title</a></h2>
 {% endblock %}
 
 {% block card-content %}
@@ -11,4 +11,4 @@ about this report
 
 {% block card-footer %}
 footer
-{% endblock
+{% endblock %}

@@ -13,7 +13,7 @@
     <a href="/direct-messages/{{ user|username }}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
 </li>
 <li role="menuitem">
-    <a href="{{ user.local_path }}/report" class="button is-fullwidth is-small">{% trans "Report user" %}</a>
+    {% include 'snippets/report_button.html' with user=status.user class="is-fullwidth" %}
 </li>
 <li role="menuitem">
     {% include 'snippets/block_button.html' with user=user class="is-fullwidth" %}

@@ -3,8 +3,7 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import views
+from bookwyrm import forms, models, views
 
 
 class ReportViews(TestCase):
@@ -20,7 +19,7 @@ class ReportViews(TestCase):
             local=True,
             localname="mouse",
         )
-        self.local_user = models.User.objects.create_user(
+        self.rat = models.User.objects.create_user(
             "rat@local.com",
             "rat@mouse.mouse",
             "password",
@@ -35,6 +34,20 @@ class ReportViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+    def test_reports_page_with_data(self):
+        """ there are so many views, this just makes sure it LOADS """
+        view = views.Reports.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
@@ -53,3 +66,17 @@ class ReportViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_make_report(self):
+        """ a user reports another user """
+        form = forms.ReportForm()
+        form.data["reporter"] = self.local_user.id
+        form.data["user"] = self.rat.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        views.make_report(request)
+
+        report = models.Report.objects.get()
+        self.assertEqual(report.reporter, self.local_user)
+        self.assertEqual(report.user, self.rat)
