@@ -29,7 +29,7 @@ class Reports(View):
             "resolved": resolved,
             "reports": models.Report.objects.filter(resolved=resolved),
         }
-        return TemplateResponse(request, "settings/reports.html", data)
+        return TemplateResponse(request, "moderation/reports.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -47,7 +47,7 @@ class Report(View):
     def get(self, request, report_id):
         """ load a report """
         data = {"report": get_object_or_404(models.Report, id=report_id)}
-        return TemplateResponse(request, "settings/report.html", data)
+        return TemplateResponse(request, "moderation/report.html", data)
 
 
 @login_required
