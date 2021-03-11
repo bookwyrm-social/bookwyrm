@@ -203,7 +203,7 @@ class ConfirmEditBook(View):
             # create work, if needed
             if not book_id:
                 work_match = request.POST.get("parent_work")
-                if work_match:
+                if work_match and work_match != "0":
                     work = get_object_or_404(models.Work, id=work_match)
                 else:
                     work = models.Work.objects.create(title=form.cleaned_data["title"])

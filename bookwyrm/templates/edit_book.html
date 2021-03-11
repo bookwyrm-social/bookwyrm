@@ -60,7 +60,7 @@
                 {% for match in book_matches %}
                 <label class="label"><input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}</label>
                 {% endfor %}
-                <label><input type="radio" name="parent_work"> this is a new work</label>
+                <label><input type="radio" name="parent_work" value="0"> this is a new work</label>
             </fieldset>
             {% endif %}
         </div>
