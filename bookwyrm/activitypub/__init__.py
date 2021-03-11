@@ -6,7 +6,8 @@ from .base_activity import ActivityEncoder, Signature, naive_parse
 from .base_activity import Link, Mention
 from .base_activity import ActivitySerializerError, resolve_remote_id
 from .image import Image
-from .note import Note, GeneratedNote, Article, Comment, Review, Quotation
+from .note import Note, GeneratedNote, Article, Comment, Quotation
+from .note import Review, Rating
 from .note import Tombstone
 from .ordered_collection import OrderedCollection, OrderedCollectionPage
 from .ordered_collection import BookList, Shelf
