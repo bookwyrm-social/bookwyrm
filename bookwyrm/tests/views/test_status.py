@@ -216,7 +216,7 @@ class StatusViews(TestCase):
             '<a href="%s">'
             "archive.org/details/dli.granth.72113/page/n25/mode/2up</a>" % url,
         )
-        url = "https://openlibrary.org/search" "?q=arkady+strugatsky&mode=everything"
+        url = "https://openlibrary.org/search?q=arkady+strugatsky&mode=everything"
         self.assertEqual(
             views.status.format_links(url),
             '<a href="%s">openlibrary.org/search'
@@ -246,6 +246,38 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+            view(request, status.id)
+            activity = json.loads(mock.call_args_list[0][0][1])
+            self.assertEqual(activity["type"], "Delete")
+            self.assertEqual(activity["object"]["type"], "Tombstone")
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
+    def test_handle_delete_status_permission_denied(self):
+        """ marks a status as deleted """
+        view = views.DeleteStatus.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
+        self.assertFalse(status.deleted)
+        request = self.factory.post("")
+        request.user = self.remote_user
+
+        view(request, status.id)
+
+        status.refresh_from_db()
+        self.assertFalse(status.deleted)
+
+    def test_handle_delete_status_moderator(self):
+        """ marks a status as deleted """
+        view = views.DeleteStatus.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
+        self.assertFalse(status.deleted)
+        request = self.factory.post("")
+        request.user = self.remote_user
+        request.user.is_superuser = True
+
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             view(request, status.id)
             activity = json.loads(mock.call_args_list[0][0][1])

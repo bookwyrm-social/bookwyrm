@@ -15,6 +15,7 @@
 
 <div class="block content">
     <h3>{% trans "Actions" %}</h3>
+    <p><a href="{{ report.user.local_path }}">{% trans "View user profile" %}</a></p>
     <div class="is-flex">
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' report.user.username %}">{% trans "Send direct message" %}</a>
@@ -46,7 +47,11 @@
     <ul>
         {% for status in report.statuses.select_subclasses.all %}
         <li>
+            {% if status.deleted %}
+            <em>{% trans "Statuses has been deleted" %}</em>
+            {% else %}
             {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

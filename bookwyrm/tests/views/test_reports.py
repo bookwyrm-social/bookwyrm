@@ -99,7 +99,6 @@ class ReportViews(TestCase):
         report.refresh_from_db()
         self.assertFalse(report.resolved)
 
-
     def test_deactivate_user(self):
         """ toggle whether a user is able to log in """
         self.assertTrue(self.rat.is_active)

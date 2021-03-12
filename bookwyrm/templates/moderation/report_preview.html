@@ -12,7 +12,6 @@
     <p>
         {% if report.note %}{{ report.note }}{% else %}<em>{% trans "No notes provided" %}</em>{% endif %}
     </p>
-    <p><a href="{{ report.user.local_path }}">{% trans "View user profile" %}</a></p>
 </div>
 {% endblock %}
 

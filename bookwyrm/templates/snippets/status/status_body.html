@@ -19,8 +19,15 @@
 {% block card-footer %}
 <div class="card-footer-item">
     {% if moderation_mode and perms.bookwyrm.moderate_post %}
+
     {# moderation options #}
-    <button class="button is-danger is-light">{% trans "Delete status" %}</button>
+    <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
+        {% csrf_token %}
+        <button class="button is-danger is-light" type="submit">
+            {% trans "Delete status" %}
+        </button>
+    </form>
+
     {% elif request.user.is_authenticated %}
     <div class="field has-addons">
         <div class="control">
