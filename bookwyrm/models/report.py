@@ -21,6 +21,7 @@ class Report(BookWyrmModel):
         constraints = [
             models.CheckConstraint(check=~Q(reporter=F("user")), name="self_report")
         ]
+        ordering = ("-created_date",)
 
 
 class ReportComment(BookWyrmModel):

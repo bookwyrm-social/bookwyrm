@@ -9,7 +9,7 @@
 
 {% block card-content %}
 <div class="block">
-    {% if report.notes %}{{ report.notes }}{% else %}<em>{% trans "No notes provided" %}</em>{% endif %}
+    {% if report.note %}{{ report.note }}{% else %}<em>{% trans "No notes provided" %}</em>{% endif %}
 </div>
 {% endblock %}
 

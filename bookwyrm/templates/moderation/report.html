@@ -32,11 +32,13 @@
     </forM=m>
 </div>
 
-<div class="block content">
-    <h3>{% trans "Reported statuses" %}</h3>
+<div class="block">
+    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
     <ul>
-        {% for status in report.statuses.all %}
-        <li>{{ status.id }}</li>
+        {% for status in report.statuses.select_subclasses.all %}
+        <li>
+            {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
+        </li>
         {% endfor %}
     </ul>
 </div>

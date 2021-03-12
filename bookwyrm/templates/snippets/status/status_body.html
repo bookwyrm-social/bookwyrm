@@ -18,7 +18,10 @@
 
 {% block card-footer %}
 <div class="card-footer-item">
-    {% if request.user.is_authenticated %}
+    {% if moderation_mode and perms.bookwyrm.moderate_post %}
+    {# moderation options #}
+    <button class="button is-danger is-light">{% trans "Delete status" %}</button>
+    {% elif request.user.is_authenticated %}
     <div class="field has-addons">
         <div class="control">
             {% trans "Reply" as button_text %}
@@ -56,14 +59,16 @@
 <div class="card-footer-item">
     <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
 </div>
+{% if not moderation_mode %}
 <div class="card-footer-item">
     {% include 'snippets/status/status_options.html' with class="is-small" right=True %}
 </div>
+{% endif %}
 {% endblock %}
 
 
 {% block card-bonus %}
-{% if request.user.is_authenticated %}
+{% if request.user.is_authenticated and not moderation_mode %}
 {% with status.id|uuid as uuid %}
 <section class="hidden" id="show-comment-{{ status.id }}">
     <div class="card-footer">
