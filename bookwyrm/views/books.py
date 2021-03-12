@@ -133,6 +133,8 @@ class EditBook(View):
             data["add_author"] = add_author
             data["author_matches"] = []
             for author in add_author.split(","):
+                if not author:
+                    continue
                 # check for existing authors
                 vector = SearchVector("name", weight="A") + SearchVector(
                     "aliases", weight="B"
@@ -200,6 +202,8 @@ class ConfirmEditBook(View):
             # get or create author as needed
             if request.POST.get("add_author"):
                 for (i, author) in enumerate(request.POST.get("add_author").split(",")):
+                    if not author:
+                        continue
                     match = request.POST.get("author_match-%d" % i)
                     if match and match != "0":
                         author = get_object_or_404(
