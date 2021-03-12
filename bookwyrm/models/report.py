@@ -30,3 +30,8 @@ class ReportComment(BookWyrmModel):
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     note = models.TextField()
     report = models.ForeignKey(Report, on_delete=models.PROTECT)
+
+    class Meta:
+        """ sort comments """
+
+        ordering = ("-created_date",)

@@ -46,8 +46,20 @@ class Report(View):
 
     def get(self, request, report_id):
         """ load a report """
-        data = {"report": get_object_or_404(models.Report, id=report_id)}
+        data = {
+            "report": get_object_or_404(models.Report, id=report_id),
+        }
         return TemplateResponse(request, "moderation/report.html", data)
+
+    def post(self, request, report_id):
+        """ comment on a report """
+        report = get_object_or_404(models.Report, id=report_id)
+        models.ReportComment.objects.create(
+            user=request.user,
+            report=report,
+            note=request.POST.get("note"),
+        )
+        return redirect("settings-report", report.id)
 
 
 @login_required
