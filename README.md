@@ -169,10 +169,11 @@ Instructions for running BookWyrm in production:
    - Set a secure database password for postgres
  - Update your nginx configuration in `nginx/default.conf`
    - Replace `your-domain.com` with your domain name
+   - If you aren't using the `www` subdomain, remove the www.your-domain.com version of the domain from the `server_name` in the first server block in `nginx/default.conf` and remove the `-d www.${DOMAIN}` flag at the end of the `certbot` command in `docker-compose.yml`.
  - Run the application (this should also set up a Certbot ssl cert for your domain) with
   `docker-compose up --build`, and make sure all the images build successfully
  - When docker has built successfully, stop the process with `CTRL-C`
- - Comment out the `command: certonly...` line in `docker-compose.yml`
+ - Comment out the `command: certonly...` line in `docker-compose.yml`, and uncomment the following line (`command: renew ...`) so that the certificate will be automatically renewed.
  - Run docker-compose in the background with: `docker-compose up -d`
  - Initialize the database with: `./bw-dev initdb`
 
