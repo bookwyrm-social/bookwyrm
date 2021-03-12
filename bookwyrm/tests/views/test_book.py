@@ -84,6 +84,108 @@ class BookViews(TestCase):
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
 
+    def test_edit_book_add_author(self):
+        """ lets a user edit a book with new authors """
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["add_author"] = "Sappho"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        result = view(request, self.book.id)
+        result.render()
+
+        # the changes haven't been saved yet
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "Example Edition")
+
+    def test_edit_book_add_new_author_confirm(self):
+        """ lets a user edit a book confirmed with new authors """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["add_author"] = "Sappho"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.book.id)
+
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "New Title")
+        self.assertEqual(self.book.authors.first().name, "Sappho")
+
+    def test_edit_book_remove_author(self):
+        """ remove an author from a book """
+        author = models.Author.objects.create(name="Sappho")
+        self.book.authors.add(author)
+        form = forms.EditionForm(instance=self.book)
+        view = views.EditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm(instance=self.book)
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        form.data["remove_authors"] = [author.id]
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.book.id)
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.title, "New Title")
+        self.assertFalse(self.book.authors.exists())
+
+    def test_create_book(self):
+        """ create an entirely new book and work """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request)
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.parent_work.title, "New Title")
+
+    def test_create_book_existing_work(self):
+        """ create an entirely new book and work """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["parent_work"] = self.work.id
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request)
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.parent_work, self.work)
+
+    def test_create_book_with_author(self):
+        """ create an entirely new book and work """
+        view = views.ConfirmEditBook.as_view()
+        self.local_user.groups.add(self.group)
+        form = forms.EditionForm()
+        form.data["title"] = "New Title"
+        form.data["add_author"] = "Sappho"
+        form.data["last_edited_by"] = self.local_user.id
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        view(request)
+        book = models.Edition.objects.get(title="New Title")
+        self.assertEqual(book.parent_work.title, "New Title")
+        self.assertEqual(book.authors.first().name, "Sappho")
+        self.assertEqual(book.authors.first(), book.parent_work.authors.first())
+
     def test_switch_edition(self):
         """ updates user's relationships to a book """
         work = models.Work.objects.create(title="test work")

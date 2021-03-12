@@ -143,7 +143,7 @@ class EditionForm(CustomForm):
             "created_date",
             "updated_date",
             "edition_rank",
-            "authors",  # TODO
+            "authors",
             "parent_work",
             "shelves",
             "subjects",  # TODO
