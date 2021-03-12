@@ -63,6 +63,11 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
+        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
+        views.deactivate_user,
+        name="settings-report-deactivate",
+    ),
+    re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
         views.resolve_report,
         name="settings-report-resolve",

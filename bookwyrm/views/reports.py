@@ -51,6 +51,16 @@ class Report(View):
 
 
 @login_required
+@permission_required("bookwyrm_moderate_user")
+def deactivate_user(_, report_id):
+    """ mark an account as inactive """
+    report = get_object_or_404(models.Report, id=report_id)
+    report.user.is_active = not report.user.is_active
+    report.user.save()
+    return redirect("settings-report", report.id)
+
+
+@login_required
 @permission_required("bookwyrm_moderate_post")
 def resolve_report(_, report_id):
     """ mark a report as (un)resolved """

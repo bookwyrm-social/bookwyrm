@@ -98,3 +98,22 @@ class ReportViews(TestCase):
         views.resolve_report(request, report.id)
         report.refresh_from_db()
         self.assertFalse(report.resolved)
+
+
+    def test_deactivate_user(self):
+        """ toggle whether a user is able to log in """
+        self.assertTrue(self.rat.is_active)
+        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        request = self.factory.post("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        # resolve
+        views.deactivate_user(request, report.id)
+        self.rat.refresh_from_db()
+        self.assertFalse(self.rat.is_active)
+
+        # un-resolve
+        views.deactivate_user(request, report.id)
+        self.rat.refresh_from_db()
+        self.assertTrue(self.rat.is_active)
