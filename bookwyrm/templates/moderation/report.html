@@ -16,7 +16,7 @@
 <div class="block content">
     <h3>{% trans "Actions" %}</h3>
     <div class="field is-grouped">
-        <button class="button">Direct message</button>
+        <a class="button" href="{% url 'direct-messages-user' report.user.username %}">{% trans "Send direct message" %}</a>
         <button class="button">Suspend</button>
     </div>
 

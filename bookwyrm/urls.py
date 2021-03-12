@@ -75,10 +75,13 @@ urlpatterns = [
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     # feeds
     re_path(r"^(?P<tab>home|local|federated)/?$", views.Feed.as_view()),
-    re_path(r"^direct-messages/?$", views.DirectMessage.as_view()),
+    re_path(
+        r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
+    ),
     re_path(
         r"^direct-messages/(?P<username>%s)?$" % regex.username,
         views.DirectMessage.as_view(),
+        name="direct-messages-user",
     ),
     # search
     re_path(r"^search/?$", views.Search.as_view()),
