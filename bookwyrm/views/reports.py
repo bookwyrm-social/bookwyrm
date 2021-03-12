@@ -49,9 +49,6 @@ class Report(View):
         data = {"report": get_object_or_404(models.Report, id=report_id)}
         return TemplateResponse(request, "moderation/report.html", data)
 
-    def post(self, request, report_id):
-        """ update a report """
-
 
 @login_required
 @permission_required("bookwyrm_moderate_post")
