@@ -131,22 +131,24 @@ class EditBook(View):
         # we're adding an author through a free text field
         if add_author:
             data["add_author"] = add_author
-            data['author_matches'] = []
-            for author in add_author.split(','):
+            data["author_matches"] = []
+            for author in add_author.split(","):
                 # check for existing authors
                 vector = SearchVector("name", weight="A") + SearchVector(
                     "aliases", weight="B"
                 )
 
-                data["author_matches"].append({
-                    'name': author.strip(),
-                    'matches': (
-                        models.Author.objects.annotate(search=vector)
-                        .annotate(rank=SearchRank(vector, add_author))
-                        .filter(rank__gt=0.4)
-                        .order_by("-rank")[:5]
-                    )
-                })
+                data["author_matches"].append(
+                    {
+                        "name": author.strip(),
+                        "matches": (
+                            models.Author.objects.annotate(search=vector)
+                            .annotate(rank=SearchRank(vector, add_author))
+                            .filter(rank__gt=0.4)
+                            .order_by("-rank")[:5]
+                        ),
+                    }
+                )
 
         # we're creating a new book
         if not book:
@@ -197,16 +199,14 @@ class ConfirmEditBook(View):
 
             # get or create author as needed
             if request.POST.get("add_author"):
-                for (i, author) in enumerate(request.POST.get("add_author").split(',')):
+                for (i, author) in enumerate(request.POST.get("add_author").split(",")):
                     match = request.POST.get("author_match-%d" % i)
                     if match and match != "0":
                         author = get_object_or_404(
                             models.Author, id=request.POST["author_match-%d" % i]
                         )
                     else:
-                        author = models.Author.objects.create(
-                            name=author.strip()
-                        )
+                        author = models.Author.objects.create(name=author.strip())
                     book.authors.add(author)
 
             # create work, if needed
