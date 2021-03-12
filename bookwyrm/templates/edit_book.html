@@ -39,29 +39,37 @@
     <div class="box">
         <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
         <div class="columns">
-            {% if author_matches.exists %}
-            <fieldset class="column is-half">
-                <legend class="label">{% blocktrans with name=add_author %}Is "{{ name }}" an existing author?{% endblocktrans %}</legend>
-                {% for match in author_matches %}
-                <label><input type="radio" name="author_match" value="{{ match.id }}" required> {{ match.name }}</label>
-                <p class="help">
-                    <a href="{{ author.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
-                </p>
+            {% if author_matches %}
+            <div class="column is-half">
+                {% for author in author_matches %}
+                <fieldset class="mb-4">
+                    <legend class="title is-5 mb-1">{% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}</legend>
+                    {% with forloop.counter as counter %}
+                    {% for match in author.matches %}
+                    <label><input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required> {{ match.name }}</label>
+                    <p class="help">
+                        <a href="{{ author.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                    </p>
+                    {% endfor %}
+                    <label><input type="radio" name="author_match-{{ counter }}" value="0" required> {% trans "This is a new author" %}</label>
+                    {% endwith %}
+                </fieldset>
                 {% endfor %}
-                <label><input type="radio" name="author_match"> {% trans "This is a new author" %}</label>
-            </fieldset>
+            </div>
             {% else %}
             <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
             {% endif %}
 
             {% if not book %}
-            <fieldset class="column is-half">
-                <legend class="title is-5">{% trans "Is this an editions of an existing work?" %}</legend>
-                {% for match in book_matches %}
-                <label class="label"><input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}</label>
-                {% endfor %}
-                <label><input type="radio" name="parent_work" value="0"> this is a new work</label>
-            </fieldset>
+            <div class="column is-half">
+                <fieldset>
+                    <legend class="title is-5 mb-1">{% trans "Is this an edition of an existing work?" %}</legend>
+                    {% for match in book_matches %}
+                    <label class="label"><input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}</label>
+                    {% endfor %}
+                    <label><input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}</label>
+                </fieldset>
+            </div>
             {% endif %}
         </div>
 
@@ -109,16 +117,19 @@
 
             <section class="block">
                 <h2 class="title is-4">{% trans "Authors" %}</h2>
+                {% if book.authors.exists %}
                 <fieldset>
                     {% for author in book.authors.all %}
-                    <p><a href="{{ author.local_path }}">{{ author.name }}</a>
-                    <label class="label">
-                        <input type="checkbox" name="remove_authors" value="{{ author.id }}"> {% trans "Remove this author" %}
+                    <label class="label mb-2">
+                        <input type="checkbox" name="remove_authors" value="{{ author.id }}" {% if author.id|stringformat:"i" in remove_authors %}checked{% endif %}>
+                        {% blocktrans with name=author.name path=author.local_path %}Remove <a href="{{ path }}">{{ name }}</a>{% endblocktrans %}
                     </label>
                     {% endfor %}
                 </fieldset>
-                <label class="label" for="id_add_author">{% trans "Add Author:" %}</label>
-                <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe' %}" value="{{ add_author }}">
+                {% endif %}
+                <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
+                <p class="help">Separate multiple author names with commas.</p>
+                <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}">
             </section>
         </div>
 

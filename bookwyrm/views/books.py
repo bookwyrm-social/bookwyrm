@@ -131,17 +131,22 @@ class EditBook(View):
         # we're adding an author through a free text field
         if add_author:
             data["add_author"] = add_author
-            # check for existing authors
-            vector = SearchVector("name", weight="A") + SearchVector(
-                "aliases", weight="B"
-            )
+            data['author_matches'] = []
+            for author in add_author.split(','):
+                # check for existing authors
+                vector = SearchVector("name", weight="A") + SearchVector(
+                    "aliases", weight="B"
+                )
 
-            data["author_matches"] = (
-                models.Author.objects.annotate(search=vector)
-                .annotate(rank=SearchRank(vector, add_author))
-                .filter(rank__gt=0.4)
-                .order_by("-rank")[:5]
-            )
+                data["author_matches"].append({
+                    'name': author.strip(),
+                    'matches': (
+                        models.Author.objects.annotate(search=vector)
+                        .annotate(rank=SearchRank(vector, add_author))
+                        .filter(rank__gt=0.4)
+                        .order_by("-rank")[:5]
+                    )
+                })
 
         # we're creating a new book
         if not book:
@@ -157,6 +162,8 @@ class EditBook(View):
         if add_author or not book:
             # creting a book or adding an author to a book needs another step
             data["confirm_mode"] = True
+            # this isn't preserved because it isn't part of the form obj
+            data["remove_authors"] = request.POST.getlist("remove_authors")
             return TemplateResponse(request, "edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
@@ -190,15 +197,17 @@ class ConfirmEditBook(View):
 
             # get or create author as needed
             if request.POST.get("add_author"):
-                if request.POST.get("author_match"):
-                    author = get_object_or_404(
-                        models.Author, id=request.POST["author_match"]
-                    )
-                else:
-                    author = models.Author.objects.create(
-                        name=request.POST.get("add_author")
-                    )
-                book.authors.add(author)
+                for (i, author) in enumerate(request.POST.get("add_author").split(',')):
+                    match = request.POST.get("author_match-%d" % i)
+                    if match and match != "0":
+                        author = get_object_or_404(
+                            models.Author, id=request.POST["author_match-%d" % i]
+                        )
+                    else:
+                        author = models.Author.objects.create(
+                            name=author.strip()
+                        )
+                    book.authors.add(author)
 
             # create work, if needed
             if not book_id:
