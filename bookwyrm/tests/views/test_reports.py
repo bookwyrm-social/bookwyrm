@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -107,12 +108,14 @@ class ReportViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        # resolve
-        views.deactivate_user(request, report.id)
+        # de-activate
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.deactivate_user(request, report.id)
         self.rat.refresh_from_db()
         self.assertFalse(self.rat.is_active)
 
-        # un-resolve
-        views.deactivate_user(request, report.id)
+        # re-activate
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.deactivate_user(request, report.id)
         self.rat.refresh_from_db()
         self.assertTrue(self.rat.is_active)
