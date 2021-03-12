@@ -174,6 +174,7 @@ Instructions for running BookWyrm in production:
   `docker-compose up --build`, and make sure all the images build successfully
  - When docker has built successfully, stop the process with `CTRL-C`
  - Comment out the `command: certonly...` line in `docker-compose.yml`, and uncomment the following line (`command: renew ...`) so that the certificate will be automatically renewed.
+ - Uncomment the https redirect and `server` block in `nginx/default.conf` (lines 17-48).
  - Run docker-compose in the background with: `docker-compose up -d`
  - Initialize the database with: `./bw-dev initdb`
 
