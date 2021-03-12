@@ -62,6 +62,11 @@ urlpatterns = [
         views.Report.as_view(),
         name="settings-report",
     ),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
+        views.resolve_report,
+        name="settings-report-resolve",
+    ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
     re_path(r"^about/?$", views.About.as_view()),

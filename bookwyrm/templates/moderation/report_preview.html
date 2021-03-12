@@ -21,6 +21,15 @@
     {{ report.created_date | naturaltime }}
 </div>
 <div class="card-footer-item">
-    <button class="button">{% trans "Mark as resolved" %}</button>
+    <form name="resolve" method="post" action="{% url 'settings-report-resolve' report.id %}">
+        {% csrf_token %}
+        <button class="button" type="submit">
+            {% if report.resolved %}
+            {% trans "Re-open" %}
+            {% else %}
+            {% trans "Resolve" %}
+            {% endif %}
+        </button>
+    </form>
 </div>
 {% endblock %}

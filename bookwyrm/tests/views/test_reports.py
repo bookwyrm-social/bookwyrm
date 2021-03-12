@@ -46,7 +46,7 @@ class ReportViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        models.Report.objects.create(reporter=self.local_user, user=self.rat)
 
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)
@@ -80,3 +80,21 @@ class ReportViews(TestCase):
         report = models.Report.objects.get()
         self.assertEqual(report.reporter, self.local_user)
         self.assertEqual(report.user, self.rat)
+
+    def test_resolve_report(self):
+        """ toggle report resolution status """
+        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+        self.assertFalse(report.resolved)
+        request = self.factory.post("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        # resolve
+        views.resolve_report(request, report.id)
+        report.refresh_from_db()
+        self.assertTrue(report.resolved)
+
+        # un-resolve
+        views.resolve_report(request, report.id)
+        report.refresh_from_db()
+        self.assertFalse(report.resolved)

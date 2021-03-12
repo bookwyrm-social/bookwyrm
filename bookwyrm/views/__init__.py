@@ -20,7 +20,7 @@ from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
 from .reading import start_reading, finish_reading, delete_progressupdate
-from .reports import Report, Reports, make_report
+from .reports import Report, Reports, make_report, resolve_report
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .search import Search
