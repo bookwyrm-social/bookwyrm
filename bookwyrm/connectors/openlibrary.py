@@ -95,10 +95,12 @@ class Connector(AbstractConnector):
             url = "%s%s" % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
-    def get_cover_url(self, cover_blob):
+    def get_cover_url(self, cover_blob, size='L'):
         """ ask openlibrary for the cover """
+        if not cover_blob:
+            return None
         cover_id = cover_blob[0]
-        image_name = "%s-L.jpg" % cover_id
+        image_name = "%s-%s.jpg" % (cover_id, size)
         return "%s/b/id/%s" % (self.covers_url, image_name)
 
     def parse_search_data(self, data):
@@ -108,12 +110,15 @@ class Connector(AbstractConnector):
         # build the remote id from the openlibrary key
         key = self.books_url + search_result["key"]
         author = search_result.get("author_name") or ["Unknown"]
+        cover_blob = search_result.get("cover_i")
+        cover = self.get_cover_url([cover_blob], size='M') if cover_blob else None
         return SearchResult(
             title=search_result.get("title"),
             key=key,
             author=", ".join(author),
             connector=self,
             year=search_result.get("first_publish_year"),
+            cover=cover,
         )
 
     def parse_isbn_search_data(self, data):
