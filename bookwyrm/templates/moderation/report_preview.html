@@ -3,7 +3,7 @@
 {% load humanize %}
 {% block card-header %}
 <h2 class="card-header-title has-background-white-ter is-block">
-    <a href="{% url 'settings-report' report.id %}">{{ report.user.username }}</a>
+    <a href="{% url 'settings-report' report.id %}">{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}</a>
 </h2>
 {% endblock %}
 

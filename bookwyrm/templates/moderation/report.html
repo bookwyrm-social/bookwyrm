@@ -2,8 +2,8 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block title %}{% blocktrans with report_id=report.id %}Report #{{ report_id }}{% endblocktrans %}{% endblock %}
-{% block header %}{% blocktrans with report_id=report.id %}Report #{{ report_id }}{% endblocktrans %}{% endblock %}
+{% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
+{% block header %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
 
 {% block panel %}
 <div class="block">
@@ -57,6 +57,9 @@
 
 <div class="block">
     <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
+    {% if not report.statuses.exists %}
+    <em>{% trans "No statuses reported" %}</em>
+    {% else %}
     <ul>
         {% for status in report.statuses.select_subclasses.all %}
         <li>
@@ -68,5 +71,6 @@
         </li>
         {% endfor %}
     </ul>
+    {% endif %}
 </div>
 {% endblock %}
