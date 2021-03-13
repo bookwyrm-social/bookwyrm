@@ -18,7 +18,7 @@ def search(query, min_confidence=0.1):
     results = []
 
     # Have we got a ISBN ?
-    isbn = re.sub("[\W_]", "", query)
+    isbn = re.sub(r"[\W_]", "", query)
     maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
 
     dedup_slug = lambda r: "%s/%s/%s" % (r.title, r.author, r.year)
@@ -36,7 +36,7 @@ def search(query, min_confidence=0.1):
                     pass
 
         # if no isbn search or results, we fallback to generic search
-        if result_set == None or result_set == []:
+        if result_set in (None, []):
             try:
                 result_set = connector.search(query, min_confidence=min_confidence)
             except (HTTPError, ConnectorException):
