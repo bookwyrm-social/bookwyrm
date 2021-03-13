@@ -75,7 +75,7 @@ class DeleteStatus(View):
         status = get_object_or_404(models.Status, id=status_id)
 
         # don't let people delete other people's statuses
-        if status.user != request.user:
+        if status.user != request.user and not request.user.has_perm("moderate_post"):
             return HttpResponseBadRequest()
 
         # perform deletion

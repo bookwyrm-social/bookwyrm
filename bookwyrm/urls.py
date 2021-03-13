@@ -55,6 +55,24 @@ urlpatterns = [
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    # moderation
+    re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/?$",
+        views.Report.as_view(),
+        name="settings-report",
+    ),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
+        views.deactivate_user,
+        name="settings-report-deactivate",
+    ),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
+        views.resolve_report,
+        name="settings-report-resolve",
+    ),
+    re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
     re_path(r"^about/?$", views.About.as_view()),
     path("", views.Home.as_view()),
@@ -62,10 +80,13 @@ urlpatterns = [
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     # feeds
     re_path(r"^(?P<tab>home|local|federated)/?$", views.Feed.as_view()),
-    re_path(r"^direct-messages/?$", views.DirectMessage.as_view()),
+    re_path(
+        r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
+    ),
     re_path(
         r"^direct-messages/(?P<username>%s)?$" % regex.username,
         views.DirectMessage.as_view(),
+        name="direct-messages-user",
     ),
     # search
     re_path(r"^search/?$", views.Search.as_view()),

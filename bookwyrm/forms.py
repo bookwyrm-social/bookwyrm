@@ -231,3 +231,9 @@ class ListForm(CustomForm):
     class Meta:
         model = models.List
         fields = ["user", "name", "description", "curation", "privacy"]
+
+
+class ReportForm(CustomForm):
+    class Meta:
+        model = models.Report
+        fields = ["user", "reporter", "statuses", "note"]
