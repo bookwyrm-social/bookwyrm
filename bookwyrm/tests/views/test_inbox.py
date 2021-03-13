@@ -281,8 +281,7 @@ class Inbox(TestCase):
         self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             request = models.UserFollowRequest.objects.create(
-                user_subject=self.remote_user,
-                user_object=self.local_user
+                user_subject=self.remote_user, user_object=self.local_user
             )
         self.assertTrue(self.local_user.follower_requests.exists())
 
@@ -299,7 +298,7 @@ class Inbox(TestCase):
                 "type": "Follow",
                 "actor": "https://example.com/users/rat",
                 "object": "https://example.com/user/mouse",
-            }
+            },
         }
 
         views.inbox.activity_task(activity)
