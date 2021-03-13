@@ -15,7 +15,7 @@ class ConnectorManager(TestCase):
         self.work = models.Work.objects.create(title="Example Work")
 
         self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
+            title="Example Edition", parent_work=self.work, isbn_10="0000000000"
         )
         self.work.default_edition = self.edition
         self.work.save()
@@ -28,6 +28,7 @@ class ConnectorManager(TestCase):
             base_url="http://test.com/",
             books_url="http://test.com/",
             covers_url="http://test.com/",
+            isbn_search_url="http://test.com/isbn/",
         )
 
     def test_get_or_create_connector(self):
@@ -53,6 +54,14 @@ class ConnectorManager(TestCase):
     def test_search(self):
         """ search all connectors """
         results = connector_manager.search("Example")
+        self.assertEqual(len(results), 1)
+        self.assertIsInstance(results[0]["connector"], SelfConnector)
+        self.assertEqual(len(results[0]["results"]), 1)
+        self.assertEqual(results[0]["results"][0].title, "Example Edition")
+
+    def test_search_isbn(self):
+        """ special handling if a query resembles an isbn """
+        results = connector_manager.search("0000000000")
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0]["connector"], SelfConnector)
         self.assertEqual(len(results[0]["results"]), 1)
