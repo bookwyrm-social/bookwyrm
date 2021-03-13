@@ -44,21 +44,10 @@ class AbstractMinimalConnector(ABC):
         if min_confidence:
             params["min_confidence"] = min_confidence
 
-        resp = requests.get(
+        data = get_data(
             "%s%s" % (self.search_url, query),
             params=params,
-            headers={
-                "Accept": "application/json; charset=utf-8",
-                "User-Agent": settings.USER_AGENT,
-            },
         )
-        if not resp.ok:
-            resp.raise_for_status()
-        try:
-            data = resp.json()
-        except ValueError as e:
-            logger.exception(e)
-            raise ConnectorException("Unable to parse json response", e)
         results = []
 
         for doc in self.parse_search_data(data)[:10]:
@@ -234,11 +223,12 @@ def dict_from_mappings(data, mappings):
     return result
 
 
-def get_data(url):
+def get_data(url, params=None):
     """ wrapper for request.get """
     try:
         resp = requests.get(
             url,
+            params=params,
             headers={
                 "Accept": "application/json; charset=utf-8",
                 "User-Agent": settings.USER_AGENT,
