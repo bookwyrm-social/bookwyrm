@@ -275,6 +275,37 @@ class Inbox(TestCase):
         follow = models.UserFollows.objects.all()
         self.assertEqual(list(follow), [])
 
+    def test_handle_undo_follow_request(self):
+        """ the requester cancels a follow request """
+        self.local_user.manually_approves_followers = True
+        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            request = models.UserFollowRequest.objects.create(
+                user_subject=self.remote_user,
+                user_object=self.local_user
+            )
+        self.assertTrue(self.local_user.follower_requests.exists())
+
+        activity = {
+            "type": "Undo",
+            "id": "bleh",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "actor": self.remote_user.remote_id,
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "object": {
+                "@context": "https://www.w3.org/ns/activitystreams",
+                "id": request.remote_id,
+                "type": "Follow",
+                "actor": "https://example.com/users/rat",
+                "object": "https://example.com/user/mouse",
+            }
+        }
+
+        views.inbox.activity_task(activity)
+
+        self.assertFalse(self.local_user.follower_requests.exists())
+
     def test_handle_unfollow(self):
         """ remove a relationship """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
