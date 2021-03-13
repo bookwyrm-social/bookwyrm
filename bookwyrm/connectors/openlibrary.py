@@ -95,7 +95,7 @@ class Connector(AbstractConnector):
             url = "%s%s" % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
-    def get_cover_url(self, cover_blob, size='L'):
+    def get_cover_url(self, cover_blob, size="L"):
         """ ask openlibrary for the cover """
         if not cover_blob:
             return None
@@ -111,7 +111,7 @@ class Connector(AbstractConnector):
         key = self.books_url + search_result["key"]
         author = search_result.get("author_name") or ["Unknown"]
         cover_blob = search_result.get("cover_i")
-        cover = self.get_cover_url([cover_blob], size='M') if cover_blob else None
+        cover = self.get_cover_url([cover_blob], size="M") if cover_blob else None
         return SearchResult(
             title=search_result.get("title"),
             key=key,

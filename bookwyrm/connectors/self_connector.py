@@ -67,7 +67,7 @@ class Connector(AbstractConnector):
             if search_result.published_date
             else None,
             connector=self,
-            cover='%s%s' % (self.covers_url, search_result.cover),
+            cover="%s%s" % (self.covers_url, search_result.cover),
             confidence=search_result.rank if hasattr(search_result, "rank") else 1,
         )
 
