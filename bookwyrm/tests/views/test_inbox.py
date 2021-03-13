@@ -563,6 +563,23 @@ class Inbox(TestCase):
         }
         views.inbox.activity_task(activity)
 
+    def test_handle_unboost_unknown_boost(self):
+        """ undo a boost """
+        activity = {
+            "type": "Undo",
+            "actor": "hi",
+            "id": "bleh",
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "object": {
+                "type": "Announce",
+                "id": "http://fake.com/unknown/boost",
+                "actor": self.remote_user.remote_id,
+                "object": self.status.remote_id,
+            },
+        }
+        views.inbox.activity_task(activity)
+
     def test_handle_add_book_to_shelf(self):
         """ shelving a book """
         work = models.Work.objects.create(title="work title")
