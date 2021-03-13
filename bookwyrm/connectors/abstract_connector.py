@@ -244,7 +244,7 @@ def get_data(url):
                 "User-Agent": settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError) as e:
+    except (RequestError, SSLError, ConnectionError) as e:
         logger.exception(e)
         raise ConnectorException()
 

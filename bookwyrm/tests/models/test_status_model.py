@@ -8,8 +8,9 @@ from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
+import responses
 
-from bookwyrm import models, settings
+from bookwyrm import activitypub, models, settings
 
 
 # pylint: disable=too-many-public-methods
@@ -385,3 +386,16 @@ class Status(TestCase):
         status.mention_users.set([self.remote_user])
 
         self.assertEqual(status.recipients, [self.remote_user])
+
+    @responses.activate
+    def test_ignore_activity_boost(self, _):
+        """ don't bother with most remote statuses """
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+        )
+
+        responses.add(responses.GET, "http://fish.com/nothing", status=404)
+
+        self.assertTrue(models.Status.ignore_activity(activity))
