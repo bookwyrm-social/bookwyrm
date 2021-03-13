@@ -12,7 +12,7 @@ class Report(BookWyrmModel):
     )
     note = models.TextField(null=True, blank=True)
     user = models.ForeignKey("User", on_delete=models.PROTECT)
-    statuses = models.ManyToManyField("Status", null=True, blank=True)
+    statuses = models.ManyToManyField("Status", blank=True)
     resolved = models.BooleanField(default=False)
 
     class Meta:
