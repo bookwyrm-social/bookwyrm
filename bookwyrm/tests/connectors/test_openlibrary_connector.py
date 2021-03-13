@@ -8,6 +8,7 @@ import responses
 
 from bookwyrm import models
 from bookwyrm.connectors.openlibrary import Connector
+from bookwyrm.connectors.openlibrary import ignore_edition
 from bookwyrm.connectors.openlibrary import get_languages, get_description
 from bookwyrm.connectors.openlibrary import pick_default_edition, get_openlibrary_key
 from bookwyrm.connectors.abstract_connector import SearchResult
@@ -237,3 +238,12 @@ class Openlibrary(TestCase):
         self.assertEqual(result.pages, 491)
         self.assertEqual(result.subjects[0], "Fantasy.")
         self.assertEqual(result.physical_format, "Hardcover")
+
+    def test_ignore_edition(self):
+        """ skip editions with poor metadata """
+        self.assertFalse(ignore_edition({"isbn_13": "hi"}))
+        self.assertFalse(ignore_edition({"oclc_numbers": "hi"}))
+        self.assertFalse(ignore_edition({"covers": "hi"}))
+        self.assertFalse(ignore_edition({"languages": "languages/fr"}))
+        self.assertTrue(ignore_edition({"languages": "languages/eng"}))
+        self.assertTrue(ignore_edition({"format": "paperback"}))

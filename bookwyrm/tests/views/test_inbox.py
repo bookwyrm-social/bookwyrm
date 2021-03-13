@@ -563,6 +563,23 @@ class Inbox(TestCase):
         }
         views.inbox.activity_task(activity)
 
+    def test_handle_unboost_unknown_boost(self):
+        """ undo a boost """
+        activity = {
+            "type": "Undo",
+            "actor": "hi",
+            "id": "bleh",
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "object": {
+                "type": "Announce",
+                "id": "http://fake.com/unknown/boost",
+                "actor": self.remote_user.remote_id,
+                "object": self.status.remote_id,
+            },
+        }
+        views.inbox.activity_task(activity)
+
     def test_handle_add_book_to_shelf(self):
         """ shelving a book """
         work = models.Work.objects.create(title="work title")
@@ -590,6 +607,41 @@ class Inbox(TestCase):
         }
         views.inbox.activity_task(activity)
         self.assertEqual(shelf.books.first(), book)
+
+    def test_handle_unshelve_book(self):
+        """ remove a book from a shelf """
+        work = models.Work.objects.create(title="work title")
+        book = models.Edition.objects.create(
+            title="Test",
+            remote_id="https://bookwyrm.social/book/37292",
+            parent_work=work,
+        )
+        shelf = models.Shelf.objects.create(user=self.remote_user, name="Test Shelf")
+        shelf.remote_id = "https://bookwyrm.social/user/mouse/shelf/to-read"
+        shelf.save()
+
+        shelfbook = models.ShelfBook.objects.create(
+            user=self.remote_user, shelf=shelf, book=book
+        )
+
+        self.assertEqual(shelf.books.first(), book)
+        self.assertEqual(shelf.books.count(), 1)
+
+        activity = {
+            "id": shelfbook.remote_id,
+            "type": "Remove",
+            "actor": "https://example.com/users/rat",
+            "object": {
+                "type": "Edition",
+                "title": "Test Title",
+                "work": work.remote_id,
+                "id": "https://bookwyrm.social/book/37292",
+            },
+            "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+        views.inbox.activity_task(activity)
+        self.assertFalse(shelf.books.exists())
 
     @responses.activate
     def test_handle_add_book_to_list(self):

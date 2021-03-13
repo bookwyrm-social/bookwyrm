@@ -70,6 +70,9 @@ class Undo(Verb):
         if self.object.type == "Follow":
             model = apps.get_model("bookwyrm.UserFollows")
         obj = self.object.to_model(model=model, save=False, allow_create=False)
+        if not obj:
+            # if we don't have the object, we can't undo it. happens a lot with boosts
+            return
         obj.delete()
 
 
@@ -137,7 +140,7 @@ class Add(Verb):
     def action(self):
         """ add obj to collection """
         target = resolve_remote_id(self.target, refresh=False)
-        # we want to related field that isn't the book, this is janky af sorry
+        # we want to get the related field that isn't the book, this is janky af sorry
         model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
             0
         ].related_model
@@ -153,7 +156,11 @@ class Remove(Verb):
 
     def action(self):
         """ find and remove the activity object """
-        obj = self.object.to_model(save=False, allow_create=False)
+        target = resolve_remote_id(self.target, refresh=False)
+        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
+            0
+        ].related_model
+        obj = self.to_model(model=model, save=False, allow_create=False)
         obj.delete()
 
 

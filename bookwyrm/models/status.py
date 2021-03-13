@@ -115,13 +115,18 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     def ignore_activity(cls, activity):
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
-            # keep it if the booster or the boosted are local
-            boosted = activitypub.resolve_remote_id(activity.object, save=False)
+            try:
+                boosted = activitypub.resolve_remote_id(activity.object, save=False)
+            except activitypub.ActivitySerializerError:
+                # if we can't load the status, definitely ignore it
+                return True
+            # keep the boost if we would keep the status
             return cls.ignore_activity(boosted.to_activity_dataclass())
 
         # keep if it if it's a custom type
         if activity.type != "Note":
             return False
+        # keep it if it's a reply to an existing status
         if cls.objects.filter(remote_id=activity.inReplyTo).exists():
             return False
 

@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 
-from bookwyrm import settings, views, wellknown
+from bookwyrm import settings, views
 from bookwyrm.utils import regex
 
 user_path = r"^user/(?P<username>%s)" % regex.username
@@ -31,11 +31,11 @@ urlpatterns = [
     re_path(r"^inbox/?$", views.Inbox.as_view()),
     re_path(r"%s/inbox/?$" % local_user_path, views.Inbox.as_view()),
     re_path(r"%s/outbox/?$" % local_user_path, views.Outbox.as_view()),
-    re_path(r"^.well-known/webfinger/?$", wellknown.webfinger),
-    re_path(r"^.well-known/nodeinfo/?$", wellknown.nodeinfo_pointer),
-    re_path(r"^nodeinfo/2\.0/?$", wellknown.nodeinfo),
-    re_path(r"^api/v1/instance/?$", wellknown.instance_info),
-    re_path(r"^api/v1/instance/peers/?$", wellknown.peers),
+    re_path(r"^.well-known/webfinger/?$", views.webfinger),
+    re_path(r"^.well-known/nodeinfo/?$", views.nodeinfo_pointer),
+    re_path(r"^nodeinfo/2\.0/?$", views.nodeinfo),
+    re_path(r"^api/v1/instance/?$", views.instance_info),
+    re_path(r"^api/v1/instance/peers/?$", views.peers),
     # polling updates
     re_path("^api/updates/notifications/?$", views.Updates.as_view()),
     # authentication
@@ -55,6 +55,24 @@ urlpatterns = [
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
+    # moderation
+    re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/?$",
+        views.Report.as_view(),
+        name="settings-report",
+    ),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
+        views.deactivate_user,
+        name="settings-report-deactivate",
+    ),
+    re_path(
+        r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
+        views.resolve_report,
+        name="settings-report-resolve",
+    ),
+    re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
     re_path(r"^about/?$", views.About.as_view()),
     path("", views.Home.as_view()),
@@ -62,10 +80,13 @@ urlpatterns = [
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     # feeds
     re_path(r"^(?P<tab>home|local|federated)/?$", views.Feed.as_view()),
-    re_path(r"^direct-messages/?$", views.DirectMessage.as_view()),
+    re_path(
+        r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
+    ),
     re_path(
         r"^direct-messages/(?P<username>%s)?$" % regex.username,
         views.DirectMessage.as_view(),
+        name="direct-messages-user",
     ),
     # search
     re_path(r"^search/?$", views.Search.as_view()),
@@ -127,6 +148,9 @@ urlpatterns = [
     # books
     re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view()),
     re_path(r"%s/edit/?$" % book_path, views.EditBook.as_view()),
+    re_path(r"%s/confirm/?$" % book_path, views.ConfirmEditBook.as_view()),
+    re_path(r"^create-book/?$", views.EditBook.as_view()),
+    re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
     re_path(r"%s/editions(.json)?/?$" % book_path, views.Editions.as_view()),
     re_path(r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover),
     re_path(r"^add-description/(?P<book_id>\d+)/?$", views.add_description),

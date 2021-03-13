@@ -122,3 +122,27 @@ class AbstractConnector(TestCase):
         self.assertEqual(result, self.book)
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Edition.objects.count(), 1)
+
+    @responses.activate
+    def test_get_or_create_author(self):
+        """ load an author """
+        self.connector.author_mappings = [
+            Mapping("id"),
+            Mapping("name"),
+        ]
+
+        responses.add(
+            responses.GET,
+            "https://www.example.com/author",
+            json={"id": "https://www.example.com/author", "name": "Test Author"},
+        )
+        result = self.connector.get_or_create_author("https://www.example.com/author")
+        self.assertIsInstance(result, models.Author)
+        self.assertEqual(result.name, "Test Author")
+        self.assertEqual(result.origin_id, "https://www.example.com/author")
+
+    def test_get_or_create_author_existing(self):
+        """ get an existing author """
+        author = models.Author.objects.create(name="Test Author")
+        result = self.connector.get_or_create_author(author.remote_id)
+        self.assertEqual(author, result)

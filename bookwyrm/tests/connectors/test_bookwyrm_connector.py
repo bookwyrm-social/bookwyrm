@@ -23,10 +23,12 @@ class BookWyrmConnector(TestCase):
         )
         self.connector = Connector("example.com")
 
-        work_file = pathlib.Path(__file__).parent.joinpath("../data/bw_work.json")
-        edition_file = pathlib.Path(__file__).parent.joinpath("../data/bw_edition.json")
-        self.work_data = json.loads(work_file.read_bytes())
-        self.edition_data = json.loads(edition_file.read_bytes())
+    def test_get_or_create_book_existing(self):
+        """ load book activity """
+        work = models.Work.objects.create(title="Test Work")
+        book = models.Edition.objects.create(title="Test Edition", parent_work=work)
+        result = self.connector.get_or_create_book(book.remote_id)
+        self.assertEqual(book, result)
 
     def test_format_search_result(self):
         """ create a SearchResult object from search response json """
@@ -41,4 +43,12 @@ class BookWyrmConnector(TestCase):
         self.assertEqual(result.key, "https://example.com/book/122")
         self.assertEqual(result.author, "Susanna Clarke")
         self.assertEqual(result.year, 2017)
+        self.assertEqual(result.connector, self.connector)
+
+    def test_format_isbn_search_result(self):
+        """ just gotta attach the connector  """
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/bw_search.json")
+        search_data = json.loads(datafile.read_bytes())
+        results = self.connector.parse_isbn_search_data(search_data)
+        result = self.connector.format_isbn_search_result(results[0])
         self.assertEqual(result.connector, self.connector)

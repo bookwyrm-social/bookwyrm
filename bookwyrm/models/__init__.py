@@ -21,6 +21,7 @@ from .tag import Tag, UserTag
 
 from .user import User, KeyPair, AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
+from .report import Report, ReportComment
 from .federated_server import FederatedServer
 
 from .import_job import ImportJob, ImportItem

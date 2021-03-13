@@ -362,14 +362,15 @@ class CollectionItemMixin(ActivitypubMixin):
         """ broadcast a remove activity """
         activity = self.to_remove_activity()
         super().delete(*args, **kwargs)
-        self.broadcast(activity, self.user)
+        if self.user.local:
+            self.broadcast(activity, self.user)
 
     def to_add_activity(self):
         """ AP for shelving a book"""
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id="%s#add" % self.remote_id,
+            id=self.remote_id,
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
@@ -380,7 +381,7 @@ class CollectionItemMixin(ActivitypubMixin):
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id="%s#remove" % self.remote_id,
+            id=self.remote_id,
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
@@ -456,8 +457,8 @@ def broadcast_task(sender_id, activity, recipients):
     for recipient in recipients:
         try:
             sign_and_send(sender, activity, recipient)
-        except (HTTPError, SSLError, ConnectionError) as e:
-            logger.exception(e)
+        except (HTTPError, SSLError, ConnectionError):
+            pass
 
 
 def sign_and_send(sender, data, destination):

@@ -161,21 +161,17 @@ def ignore_edition(edition_data):
     """ don't load a million editions that have no metadata """
     # an isbn, we love to see it
     if edition_data.get("isbn_13") or edition_data.get("isbn_10"):
-        print(edition_data.get("isbn_10"))
         return False
     # grudgingly, oclc can stay
     if edition_data.get("oclc_numbers"):
-        print(edition_data.get("oclc_numbers"))
         return False
     # if it has a cover it can stay
     if edition_data.get("covers"):
-        print(edition_data.get("covers"))
         return False
     # keep non-english editions
     if edition_data.get("languages") and "languages/eng" not in str(
         edition_data.get("languages")
     ):
-        print(edition_data.get("languages"))
         return False
     return True
 

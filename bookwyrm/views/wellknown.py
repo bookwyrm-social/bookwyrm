@@ -4,18 +4,17 @@ from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
 from django.utils import timezone
+from django.views.decorators.http import require_GET
 
 from bookwyrm import models
 from bookwyrm.settings import DOMAIN, VERSION
 
 
+@require_GET
 def webfinger(request):
     """ allow other servers to ask about a user """
-    if request.method != "GET":
-        return HttpResponseNotFound()
-
     resource = request.GET.get("resource")
-    if not resource and not resource.startswith("acct:"):
+    if not resource or not resource.startswith("acct:"):
         return HttpResponseNotFound()
 
     username = resource.replace("acct:", "")
@@ -38,11 +37,9 @@ def webfinger(request):
     )
 
 
-def nodeinfo_pointer(request):
+@require_GET
+def nodeinfo_pointer(_):
     """ direct servers to nodeinfo """
-    if request.method != "GET":
-        return HttpResponseNotFound()
-
     return JsonResponse(
         {
             "links": [
@@ -55,11 +52,9 @@ def nodeinfo_pointer(request):
     )
 
 
-def nodeinfo(request):
+@require_GET
+def nodeinfo(_):
     """ basic info about the server """
-    if request.method != "GET":
-        return HttpResponseNotFound()
-
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.filter(local=True).count()
 
@@ -92,11 +87,9 @@ def nodeinfo(request):
     )
 
 
-def instance_info(request):
+@require_GET
+def instance_info(_):
     """ let's talk about your cool unique instance """
-    if request.method != "GET":
-        return HttpResponseNotFound()
-
     user_count = models.User.objects.filter(local=True).count()
     status_count = models.Status.objects.filter(user__local=True).count()
 
@@ -120,10 +113,8 @@ def instance_info(request):
     )
 
 
-def peers(request):
+@require_GET
+def peers(_):
     """ list of federated servers this instance connects with """
-    if request.method != "GET":
-        return HttpResponseNotFound()
-
     names = models.FederatedServer.objects.values_list("server_name", flat=True)
     return JsonResponse(list(names), safe=False)

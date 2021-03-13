@@ -29,7 +29,7 @@ function initdb {
 }
 
 function makeitblack {
-    runweb black celerywyrm bookwyrm
+    docker-compose run --rm web black celerywyrm bookwyrm
 }
 
 CMD=$1

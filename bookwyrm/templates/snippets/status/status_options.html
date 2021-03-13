@@ -10,6 +10,7 @@
 
 {% block dropdown-list %}
 {% if status.user == request.user %}
+{# things you can do to your own statuses #}
 <li role="menuitem">
     <form class="dropdown-item pt-0 pb-0" name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
@@ -19,8 +20,12 @@
     </form>
 </li>
 {% else %}
+{# things you can do to other people's statuses #}
 <li role="menuitem">
-    <a href="/direct-messages/{{ status.user|username }}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
+    <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small is-fullwidth">{% trans "Send direct message" %}</a>
+</li>
+<li role="menuitem">
+    {% include 'snippets/report_button.html' with user=status.user status=status %}
 </li>
 <li role="menuitem">
     {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" %}
