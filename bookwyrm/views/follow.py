@@ -40,10 +40,22 @@ def unfollow(request):
     except models.User.DoesNotExist:
         return HttpResponseBadRequest()
 
-    models.UserFollows.objects.get(
-        user_subject=request.user, user_object=to_unfollow
-    ).delete()
-    return redirect(to_unfollow.local_path)
+    try:
+        models.UserFollows.objects.get(
+            user_subject=request.user, user_object=to_unfollow
+        ).delete()
+    except models.UserFollows.DoesNotExist:
+        pass
+
+    try:
+        models.UserFollowRequest.objects.get(
+            user_subject=request.user, user_object=to_unfollow
+        ).delete()
+    except models.UserFollowRequest.DoesNotExist:
+        pass
+
+    # this is handled with ajax so it shouldn't really matter
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required

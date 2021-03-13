@@ -188,8 +188,8 @@ urlpatterns = [
     re_path(r"^start-reading/(?P<book_id>\d+)/?$", views.start_reading),
     re_path(r"^finish-reading/(?P<book_id>\d+)/?$", views.finish_reading),
     # following
-    re_path(r"^follow/?$", views.follow),
-    re_path(r"^unfollow/?$", views.unfollow),
+    re_path(r"^follow/?$", views.follow, name="follow"),
+    re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),
     re_path(r"^accept-follow-request/?$", views.accept_follow_request),
     re_path(r"^delete-follow-request/?$", views.delete_follow_request),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

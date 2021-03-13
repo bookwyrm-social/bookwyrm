@@ -1,5 +1,7 @@
 """ test for app action functionality """
+import json
 from unittest.mock import patch
+
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
@@ -117,6 +119,8 @@ class BookViews(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             views.unfollow(request)
             self.assertEqual(mock.call_count, 1)
+            activity = json.loads(mock.call_args_list[0][0][1])
+            self.assertEqual(activity["type"], "Undo")
 
         self.assertEqual(self.remote_user.followers.count(), 0)
 

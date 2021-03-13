@@ -1,3 +1,34 @@
 {% load i18n %}
-<strong>{% if link %}<a href="{{ result.key }}">{{ result.title }}</a>{% else %}{{ result.title }}{% endif %}</strong>
-{% if result.author %} {% blocktrans with author=result.author %}by {{ author }}{% endblocktrans %}{% endif %}{% if result.year %} ({{ result.year }}){% endif %}
+<div class="columns is-mobile">
+    <div class="cover-container is-small column is-2">
+    {% if result.cover %}
+        <img src="{{ result.cover }}" class="book-cover" aria-hidden="true">
+    {% else %}
+        <div class="no-cover book-cover">
+            <img class="book-cover" src="/static/images/no_cover.jpg" aria-hidden="true">
+            <div>
+                <p>{% trans "No cover" %}</p>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+
+    <div class="column">
+        <p>
+            <strong>
+                <a href="{{ result.key }}"{% if remote_result %} rel=”noopener” target="_blank"{% endif %}>{{ result.title }}</a>
+            </strong>
+            {% if result.author %}
+            {% blocktrans with author=result.author %}by {{ author }}{% endblocktrans %}{% endif %}{% if result.year %} ({{ result.year }})
+            {% endif %}
+        </p>
+
+        {% if remote_result %}
+        <form action="/resolve-book" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="remote_id" value="{{ result.key }}">
+            <button type="submit" class="button is-small is-link">{% trans "Import book" %}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
