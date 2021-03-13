@@ -68,6 +68,21 @@ class ReportViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+    def test_report_comment(self):
+        """ comment on a report """
+        view = views.Report.as_view()
+        request = self.factory.post("", {"note": "hi"})
+        request.user = self.local_user
+        request.user.is_superuser = True
+        report = models.Report.objects.create(reporter=self.local_user, user=self.rat)
+
+        view(request, report.id)
+
+        comment = models.ReportComment.objects.get()
+        self.assertEqual(comment.user, self.local_user)
+        self.assertEqual(comment.note, "hi")
+        self.assertEqual(comment.report, report)
+
     def test_make_report(self):
         """ a user reports another user """
         form = forms.ReportForm()
