@@ -71,6 +71,18 @@ class AbstractConnector(TestCase):
         self.assertEqual(results[1], "b")
         self.assertEqual(results[2], "c")
 
+    @responses.activate
+    def test_search_min_confidence(self):
+        """ makes an http request to the outside service """
+        responses.add(
+            responses.GET,
+            "https://example.com/search?q=a%20book%20title&min_confidence=1",
+            json=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
+            status=200,
+        )
+        results = self.test_connector.search("a book title", min_confidence=1)
+        self.assertEqual(len(results), 10)
+
     def test_search_result(self):
         """ a class that stores info about a search result """
         result = SearchResult(
