@@ -14,6 +14,7 @@ from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .invite import ManageInvites, Invite
+from .isbn import Isbn
 from .landing import About, Home, Discover
 from .list import Lists, List, Curate, UserLists
 from .notifications import Notifications
@@ -32,4 +33,4 @@ from .status import CreateStatus, DeleteStatus
 from .tag import Tag, AddTag, RemoveTag
 from .updates import Updates
 from .user import User, EditUser, Followers, Following
-from .isbn import Isbn
+from .wellknown import webfinger, nodeinfo_pointer, nodeinfo, instance_info, peers

@@ -5,7 +5,6 @@ from PIL import Image
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory

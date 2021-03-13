@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 
-from bookwyrm import settings, views, wellknown
+from bookwyrm import settings, views
 from bookwyrm.utils import regex
 
 user_path = r"^user/(?P<username>%s)" % regex.username
@@ -31,11 +31,11 @@ urlpatterns = [
     re_path(r"^inbox/?$", views.Inbox.as_view()),
     re_path(r"%s/inbox/?$" % local_user_path, views.Inbox.as_view()),
     re_path(r"%s/outbox/?$" % local_user_path, views.Outbox.as_view()),
-    re_path(r"^.well-known/webfinger/?$", wellknown.webfinger),
-    re_path(r"^.well-known/nodeinfo/?$", wellknown.nodeinfo_pointer),
-    re_path(r"^nodeinfo/2\.0/?$", wellknown.nodeinfo),
-    re_path(r"^api/v1/instance/?$", wellknown.instance_info),
-    re_path(r"^api/v1/instance/peers/?$", wellknown.peers),
+    re_path(r"^.well-known/webfinger/?$", views.webfinger),
+    re_path(r"^.well-known/nodeinfo/?$", views.nodeinfo_pointer),
+    re_path(r"^nodeinfo/2\.0/?$", views.nodeinfo),
+    re_path(r"^api/v1/instance/?$", views.instance_info),
+    re_path(r"^api/v1/instance/peers/?$", views.peers),
     # polling updates
     re_path("^api/updates/notifications/?$", views.Updates.as_view()),
     # authentication
