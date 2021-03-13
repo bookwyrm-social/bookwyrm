@@ -24,5 +24,4 @@ class Connector(AbstractMinimalConnector):
         return data
 
     def format_isbn_search_result(self, search_result):
-        search_result["connector"] = self
-        return SearchResult(**search_result)
+        return self.format_search_result(search_result)

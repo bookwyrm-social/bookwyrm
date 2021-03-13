@@ -262,9 +262,10 @@ class SearchResult:
 
     title: str
     key: str
-    author: str
-    year: str
     connector: object
+    author: str = None
+    year: str = None
+    cover: str = None
     confidence: int = 1
 
     def __repr__(self):

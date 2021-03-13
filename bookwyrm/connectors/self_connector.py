@@ -67,20 +67,12 @@ class Connector(AbstractConnector):
             if search_result.published_date
             else None,
             connector=self,
+            cover="%s%s" % (self.covers_url, search_result.cover),
             confidence=search_result.rank if hasattr(search_result, "rank") else 1,
         )
 
     def format_isbn_search_result(self, search_result):
-        return SearchResult(
-            title=search_result.title,
-            key=search_result.remote_id,
-            author=search_result.author_text,
-            year=search_result.published_date.year
-            if search_result.published_date
-            else None,
-            connector=self,
-            confidence=search_result.rank if hasattr(search_result, "rank") else 1,
-        )
+        return self.format_search_result(search_result)
 
     def is_work_data(self, data):
         pass
