@@ -8,19 +8,31 @@ from django.core.files.base import ContentFile
 from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
+import responses
 
-from bookwyrm import models, settings
+from bookwyrm import activitypub, models, settings
 
 
+# pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.Status.broadcast")
 class Status(TestCase):
     """ lotta types of statuses """
 
     def setUp(self):
         """ useful things for creating a status """
-        self.user = models.User.objects.create_user(
+        self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         self.book = models.Edition.objects.create(title="Test Edition")
 
         image_file = pathlib.Path(__file__).parent.joinpath(
@@ -34,22 +46,22 @@ class Status(TestCase):
 
     def test_status_generated_fields(self, _):
         """ setting remote id """
-        status = models.Status.objects.create(content="bleh", user=self.user)
+        status = models.Status.objects.create(content="bleh", user=self.local_user)
         expected_id = "https://%s/user/mouse/status/%d" % (settings.DOMAIN, status.id)
         self.assertEqual(status.remote_id, expected_id)
         self.assertEqual(status.privacy, "public")
 
     def test_replies(self, _):
         """ get a list of replies """
-        parent = models.Status.objects.create(content="hi", user=self.user)
+        parent = models.Status.objects.create(content="hi", user=self.local_user)
         child = models.Status.objects.create(
-            content="hello", reply_parent=parent, user=self.user
+            content="hello", reply_parent=parent, user=self.local_user
         )
         models.Review.objects.create(
-            content="hey", reply_parent=parent, user=self.user, book=self.book
+            content="hey", reply_parent=parent, user=self.local_user, book=self.book
         )
         models.Status.objects.create(
-            content="hi hello", reply_parent=child, user=self.user
+            content="hi hello", reply_parent=child, user=self.local_user
         )
 
         replies = models.Status.replies(parent)
@@ -75,15 +87,15 @@ class Status(TestCase):
 
     def test_to_replies(self, _):
         """ activitypub replies collection """
-        parent = models.Status.objects.create(content="hi", user=self.user)
+        parent = models.Status.objects.create(content="hi", user=self.local_user)
         child = models.Status.objects.create(
-            content="hello", reply_parent=parent, user=self.user
+            content="hello", reply_parent=parent, user=self.local_user
         )
         models.Review.objects.create(
-            content="hey", reply_parent=parent, user=self.user, book=self.book
+            content="hey", reply_parent=parent, user=self.local_user, book=self.book
         )
         models.Status.objects.create(
-            content="hi hello", reply_parent=child, user=self.user
+            content="hi hello", reply_parent=child, user=self.local_user
         )
 
         replies = parent.to_replies()
@@ -92,7 +104,9 @@ class Status(TestCase):
 
     def test_status_to_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
-        status = models.Status.objects.create(content="test content", user=self.user)
+        status = models.Status.objects.create(
+            content="test content", user=self.local_user
+        )
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
@@ -103,7 +117,7 @@ class Status(TestCase):
         """ subclass of the base model version with a "pure" serializer """
         status = models.Status.objects.create(
             content="test content",
-            user=self.user,
+            user=self.local_user,
             deleted=True,
             deleted_date=timezone.now(),
         )
@@ -114,7 +128,9 @@ class Status(TestCase):
 
     def test_status_to_pure_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
-        status = models.Status.objects.create(content="test content", user=self.user)
+        status = models.Status.objects.create(
+            content="test content", user=self.local_user
+        )
         activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
@@ -125,10 +141,10 @@ class Status(TestCase):
     def test_generated_note_to_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
         status = models.GeneratedNote.objects.create(
-            content="test content", user=self.user
+            content="test content", user=self.local_user
         )
         status.mention_books.set([self.book])
-        status.mention_users.set([self.user])
+        status.mention_users.set([self.local_user])
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "GeneratedNote")
@@ -139,10 +155,10 @@ class Status(TestCase):
     def test_generated_note_to_pure_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
         status = models.GeneratedNote.objects.create(
-            content="test content", user=self.user
+            content="test content", user=self.local_user
         )
         status.mention_books.set([self.book])
-        status.mention_users.set([self.user])
+        status.mention_users.set([self.local_user])
         activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(
@@ -163,7 +179,7 @@ class Status(TestCase):
     def test_comment_to_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
         status = models.Comment.objects.create(
-            content="test content", user=self.user, book=self.book
+            content="test content", user=self.local_user, book=self.book
         )
         activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
@@ -174,7 +190,7 @@ class Status(TestCase):
     def test_comment_to_pure_activity(self, _):
         """ subclass of the base model version with a "pure" serializer """
         status = models.Comment.objects.create(
-            content="test content", user=self.user, book=self.book
+            content="test content", user=self.local_user, book=self.book
         )
         activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
@@ -196,7 +212,7 @@ class Status(TestCase):
         status = models.Quotation.objects.create(
             quote="a sickening sense",
             content="test content",
-            user=self.user,
+            user=self.local_user,
             book=self.book,
         )
         activity = status.to_activity()
@@ -211,7 +227,7 @@ class Status(TestCase):
         status = models.Quotation.objects.create(
             quote="a sickening sense",
             content="test content",
-            user=self.user,
+            user=self.local_user,
             book=self.book,
         )
         activity = status.to_activity(pure=True)
@@ -235,7 +251,7 @@ class Status(TestCase):
             name="Review name",
             content="test content",
             rating=3,
-            user=self.user,
+            user=self.local_user,
             book=self.book,
         )
         activity = status.to_activity()
@@ -252,7 +268,7 @@ class Status(TestCase):
             name="Review name",
             content="test content",
             rating=3,
-            user=self.user,
+            user=self.local_user,
             book=self.book,
         )
         activity = status.to_activity(pure=True)
@@ -275,30 +291,34 @@ class Status(TestCase):
 
         def fav_broadcast_mock(_, activity, user):
             """ ok """
-            self.assertEqual(user.remote_id, self.user.remote_id)
+            self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity["type"], "Like")
 
         models.Favorite.broadcast = fav_broadcast_mock
 
-        status = models.Status.objects.create(content="test content", user=self.user)
-        fav = models.Favorite.objects.create(status=status, user=self.user)
+        status = models.Status.objects.create(
+            content="test content", user=self.local_user
+        )
+        fav = models.Favorite.objects.create(status=status, user=self.local_user)
 
         # can't fav a status twice
         with self.assertRaises(IntegrityError):
-            models.Favorite.objects.create(status=status, user=self.user)
+            models.Favorite.objects.create(status=status, user=self.local_user)
 
         activity = fav.to_activity()
         self.assertEqual(activity["type"], "Like")
-        self.assertEqual(activity["actor"], self.user.remote_id)
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"], status.remote_id)
         models.Favorite.broadcast = real_broadcast
 
     def test_boost(self, _):
         """ boosting, this one's a bit fussy """
-        status = models.Status.objects.create(content="test content", user=self.user)
-        boost = models.Boost.objects.create(boosted_status=status, user=self.user)
+        status = models.Status.objects.create(
+            content="test content", user=self.local_user
+        )
+        boost = models.Boost.objects.create(boosted_status=status, user=self.local_user)
         activity = boost.to_activity()
-        self.assertEqual(activity["actor"], self.user.remote_id)
+        self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["object"], status.remote_id)
         self.assertEqual(activity["type"], "Announce")
         self.assertEqual(activity, boost.to_activity(pure=True))
@@ -306,18 +326,20 @@ class Status(TestCase):
     def test_notification(self, _):
         """ a simple model """
         notification = models.Notification.objects.create(
-            user=self.user, notification_type="FAVORITE"
+            user=self.local_user, notification_type="FAVORITE"
         )
         self.assertFalse(notification.read)
 
         with self.assertRaises(IntegrityError):
             models.Notification.objects.create(
-                user=self.user, notification_type="GLORB"
+                user=self.local_user, notification_type="GLORB"
             )
 
     def test_create_broadcast(self, broadcast_mock):
         """ should send out two verions of a status on create """
-        models.Comment.objects.create(content="hi", user=self.user, book=self.book)
+        models.Comment.objects.create(
+            content="hi", user=self.local_user, book=self.book
+        )
         self.assertEqual(broadcast_mock.call_count, 2)
         pure_call = broadcast_mock.call_args_list[0]
         bw_call = broadcast_mock.call_args_list[1]
@@ -332,3 +354,48 @@ class Status(TestCase):
         args = bw_call[0][0]
         self.assertEqual(args["type"], "Create")
         self.assertEqual(args["object"]["type"], "Comment")
+
+    def test_recipients_with_mentions(self, _):
+        """ get recipients to broadcast a status """
+        status = models.GeneratedNote.objects.create(
+            content="test content", user=self.local_user
+        )
+        status.mention_users.add(self.remote_user)
+
+        self.assertEqual(status.recipients, [self.remote_user])
+
+    def test_recipients_with_reply_parent(self, _):
+        """ get recipients to broadcast a status """
+        parent_status = models.GeneratedNote.objects.create(
+            content="test content", user=self.remote_user
+        )
+        status = models.GeneratedNote.objects.create(
+            content="test content", user=self.local_user, reply_parent=parent_status
+        )
+
+        self.assertEqual(status.recipients, [self.remote_user])
+
+    def test_recipients_with_reply_parent_and_mentions(self, _):
+        """ get recipients to broadcast a status """
+        parent_status = models.GeneratedNote.objects.create(
+            content="test content", user=self.remote_user
+        )
+        status = models.GeneratedNote.objects.create(
+            content="test content", user=self.local_user, reply_parent=parent_status
+        )
+        status.mention_users.set([self.remote_user])
+
+        self.assertEqual(status.recipients, [self.remote_user])
+
+    @responses.activate
+    def test_ignore_activity_boost(self, _):
+        """ don't bother with most remote statuses """
+        activity = activitypub.Announce(
+            id="http://www.faraway.com/boost/12",
+            actor=self.remote_user.remote_id,
+            object="http://fish.com/nothing",
+        )
+
+        responses.add(responses.GET, "http://fish.com/nothing", status=404)
+
+        self.assertTrue(models.Status.ignore_activity(activity))

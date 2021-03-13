@@ -70,6 +70,9 @@ class Undo(Verb):
         if self.object.type == "Follow":
             model = apps.get_model("bookwyrm.UserFollows")
         obj = self.object.to_model(model=model, save=False, allow_create=False)
+        if not obj:
+            # if we don't have the object, we can't undo it. happens a lot with boosts
+            return
         obj.delete()
 
 

@@ -258,10 +258,9 @@ def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     # load the data and create the object
     try:
         data = get_data(remote_id)
-    except (ConnectorException, ConnectionError):
+    except ConnectorException:
         raise ActivitySerializerError(
-            "Could not connect to host for remote_id in %s model: %s"
-            % (model.__name__, remote_id)
+            "Could not connect to host for remote_id in: %s" % (remote_id)
         )
     # determine the model implicitly, if not provided
     if not model:
