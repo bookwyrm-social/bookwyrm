@@ -19,7 +19,7 @@ class AbstractConnector(TestCase):
             books_url="https://example.com/books",
             covers_url="https://example.com/covers",
             search_url="https://example.com/search?q=",
-            isbn_search_url="https://example.com/isbn",
+            isbn_search_url="https://example.com/isbn?q=",
         )
 
         class TestConnector(abstract_connector.AbstractMinimalConnector):
@@ -50,7 +50,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(connector.books_url, "https://example.com/books")
         self.assertEqual(connector.covers_url, "https://example.com/covers")
         self.assertEqual(connector.search_url, "https://example.com/search?q=")
-        self.assertEqual(connector.isbn_search_url, "https://example.com/isbn")
+        self.assertEqual(connector.isbn_search_url, "https://example.com/isbn?q=")
         self.assertIsNone(connector.name)
         self.assertEqual(connector.identifier, "example.com")
         self.assertIsNone(connector.max_query_count)
@@ -81,6 +81,18 @@ class AbstractConnector(TestCase):
             status=200,
         )
         results = self.test_connector.search("a book title", min_confidence=1)
+        self.assertEqual(len(results), 10)
+
+    @responses.activate
+    def test_isbn_search(self):
+        """ makes an http request to the outside service """
+        responses.add(
+            responses.GET,
+            "https://example.com/isbn?q=123456",
+            json=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"],
+            status=200,
+        )
+        results = self.test_connector.isbn_search("123456")
         self.assertEqual(len(results), 10)
 
     def test_search_result(self):
