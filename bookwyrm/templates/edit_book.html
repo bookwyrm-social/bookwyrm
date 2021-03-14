@@ -40,18 +40,19 @@
         <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
         <div class="columns">
             {% if author_matches %}
+            <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
             <div class="column is-half">
                 {% for author in author_matches %}
                 <fieldset class="mb-4">
                     <legend class="title is-5 mb-1">{% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}</legend>
-                    {% with forloop.counter as counter %}
+                    {% with forloop.counter0 as counter %}
                     {% for match in author.matches %}
                     <label><input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required> {{ match.name }}</label>
                     <p class="help">
-                        <a href="{{ author.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                        <a href="{{ match.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
                     </p>
                     {% endfor %}
-                    <label><input type="radio" name="author_match-{{ counter }}" value="0" required> {% trans "This is a new author" %}</label>
+                    <label><input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}</label>
                     {% endwith %}
                 </fieldset>
                 {% endfor %}
