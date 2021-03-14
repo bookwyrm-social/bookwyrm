@@ -4,7 +4,7 @@ from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Avg, Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -145,12 +145,13 @@ class EditBook(View):
                         "name": author.strip(),
                         "matches": (
                             models.Author.objects.annotate(search=vector)
-                            .annotate(rank=SearchRank(vector, add_author))
+                            .annotate(rank=SearchRank(vector, author))
                             .filter(rank__gt=0.4)
                             .order_by("-rank")[:5]
                         ),
                     }
                 )
+                print(data["author_matches"])
 
         # we're creating a new book
         if not book:
@@ -200,18 +201,20 @@ class ConfirmEditBook(View):
             book = form.save()
 
             # get or create author as needed
-            if request.POST.get("add_author"):
-                for (i, author) in enumerate(request.POST.get("add_author").split(",")):
-                    if not author:
-                        continue
-                    match = request.POST.get("author_match-%d" % i)
-                    if match and match != "0":
-                        author = get_object_or_404(
-                            models.Author, id=request.POST["author_match-%d" % i]
-                        )
-                    else:
-                        author = models.Author.objects.create(name=author.strip())
-                    book.authors.add(author)
+            for i in range(int(request.POST.get("author-match-count", 0))):
+                match = request.POST.get("author_match-%d" % i)
+                if not match:
+                    return HttpResponseBadRequest()
+                try:
+                    # if it's an int, it's an ID
+                    match = int(match)
+                    author = get_object_or_404(
+                        models.Author, id=request.POST["author_match-%d" % i]
+                    )
+                except ValueError:
+                    # otherwise it's a name
+                    author = models.Author.objects.create(name=match)
+                book.authors.add(author)
 
             # create work, if needed
             if not book_id:
