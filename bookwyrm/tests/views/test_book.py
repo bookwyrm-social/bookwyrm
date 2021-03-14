@@ -109,7 +109,8 @@ class BookViews(TestCase):
         form = forms.EditionForm(instance=self.book)
         form.data["title"] = "New Title"
         form.data["last_edited_by"] = self.local_user.id
-        form.data["add_author"] = "Sappho"
+        form.data["author-match-count"] = 1
+        form.data["author_match-0"] = "Sappho"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
@@ -175,7 +176,8 @@ class BookViews(TestCase):
         self.local_user.groups.add(self.group)
         form = forms.EditionForm()
         form.data["title"] = "New Title"
-        form.data["add_author"] = "Sappho"
+        form.data["author-match-count"] = "1"
+        form.data["author_match-0"] = "Sappho"
         form.data["last_edited_by"] = self.local_user.id
         request = self.factory.post("", form.data)
         request.user = self.local_user
