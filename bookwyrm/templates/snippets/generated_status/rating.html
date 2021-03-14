@@ -1,0 +1,5 @@
+{% load i18n %}{% load humanize %}{{% spaceless %}
+
+{% blocktrans with title=book.title path=book.local_path rating=rating %}Rated <em><a href="{{ path }}">{{ title }}</a> </em>: {{ rating }} stars{% endblocktrans %}
+
+{% endspaceless %}
