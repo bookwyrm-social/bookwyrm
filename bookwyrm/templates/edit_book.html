@@ -48,7 +48,7 @@
                     {% for match in author.matches %}
                     <label><input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required> {{ match.name }}</label>
                     <p class="help">
-                        <a href="{{ author.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                        <a href="{{ match.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
                     </p>
                     {% endfor %}
                     <label><input type="radio" name="author_match-{{ counter }}" value="0" required> {% trans "This is a new author" %}</label>
