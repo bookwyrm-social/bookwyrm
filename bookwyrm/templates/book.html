@@ -233,7 +233,7 @@
             </section>
             {% endif %}
 
-            {% if lists.exists %}
+            {% if lists.exists or request.user.list_set.exists %}
             <section class="content block">
                 <h2 class="title is-5">{% trans "Lists" %}</h2>
                 <ul>
@@ -241,6 +241,26 @@
                 <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
                 {% endfor %}
                 </ul>
+
+                {% if request.user.list_set.exists %}
+                <form name="list-add" method="post" action="{% url 'list-add-book' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <label class="label" for="id_list">{% trans "Add to list" %}</label>
+                    <div class="field has-addons">
+                        <div class="select control">
+                            <select name="list" id="id_list">
+                                {% for list in user.list_set.all %}
+                                <option value="{{ list.id }}">{{ list.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-link">{% trans "Add" %}</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </section>
             {% endif %}
         </div>

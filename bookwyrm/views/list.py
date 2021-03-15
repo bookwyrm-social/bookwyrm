@@ -173,9 +173,9 @@ class Curate(View):
 
 
 @require_POST
-def add_book(request, list_id):
+def add_book(request):
     """ put a book on a list """
-    book_list = get_object_or_404(models.List, id=list_id)
+    book_list = get_object_or_404(models.List, id=request.POST.get('list'))
     if not object_visible_to_user(request.user, book_list):
         return HttpResponseNotFound()
 
@@ -204,7 +204,7 @@ def add_book(request, list_id):
         # if the book is already on the list, don't flip out
         pass
 
-    return redirect("list", list_id)
+    return redirect("list", book_list.id)
 
 
 @require_POST
