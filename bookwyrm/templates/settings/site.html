@@ -7,7 +7,7 @@
 
 {% block panel %}
 
-<form action="{% url 'settings-site' %}" method="POST" class="content">
+<form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
     {% csrf_token %}
     <section class="block" id="instance-info">
         <h2 class="title is-4">{% trans "Instance Info" %}</h2>
