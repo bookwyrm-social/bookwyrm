@@ -271,11 +271,12 @@ class ListViews(TestCase):
             "",
             {
                 "book": self.book.id,
+                "list": self.list.id,
             },
         )
         request.user = self.local_user
 
-        views.list.add_book(request, self.list.id)
+        views.list.add_book(request)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.local_user)
@@ -300,11 +301,12 @@ class ListViews(TestCase):
             "",
             {
                 "book": self.book.id,
+                "list": self.list.id,
             },
         )
         request.user = self.rat
 
-        views.list.add_book(request, self.list.id)
+        views.list.add_book(request)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.rat)
@@ -330,11 +332,12 @@ class ListViews(TestCase):
             "",
             {
                 "book": self.book.id,
+                "list": self.list.id,
             },
         )
         request.user = self.rat
 
-        views.list.add_book(request, self.list.id)
+        views.list.add_book(request)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.rat)
@@ -360,11 +363,12 @@ class ListViews(TestCase):
             "",
             {
                 "book": self.book.id,
+                "list": self.list.id,
             },
         )
         request.user = self.local_user
 
-        views.list.add_book(request, self.list.id)
+        views.list.add_book(request)
         item = self.list.listitem_set.get()
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.local_user)

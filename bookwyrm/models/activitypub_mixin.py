@@ -445,7 +445,11 @@ def unfurl_related_field(related_field, sort_field=None):
             unfurl_related_field(i) for i in related_field.order_by(sort_field).all()
         ]
     if related_field.reverse_unfurl:
-        return related_field.field_to_activity()
+        # if it's a one-to-one (key pair)
+        if hasattr(related_field, "field_to_activity"):
+            return related_field.field_to_activity()
+        # if it's one-to-many (attachments)
+        return related_field.to_activity()
     return related_field.remote_id
 
 

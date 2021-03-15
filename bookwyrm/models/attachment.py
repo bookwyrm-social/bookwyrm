@@ -25,7 +25,11 @@ class Image(Attachment):
     """ an image attachment """
 
     image = fields.ImageField(
-        upload_to="status/", null=True, blank=True, activitypub_field="url"
+        upload_to="status/",
+        null=True,
+        blank=True,
+        activitypub_field="url",
+        alt_field="caption",
     )
     caption = fields.TextField(null=True, blank=True, activitypub_field="name")
 

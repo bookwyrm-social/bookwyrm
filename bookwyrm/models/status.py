@@ -5,6 +5,7 @@ import re
 from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.template.loader import get_template
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
@@ -309,7 +310,8 @@ class ReviewRating(Review):
 
     @property
     def pure_content(self):
-        return 'Rated "{}": {:d} stars'.format(self.book.title, self.rating)
+        template = get_template("snippets/generated_status/rating.html")
+        return template.render({"book": self.book, "rating": self.rating}).strip()
 
     activity_serializer = activitypub.Rating
     pure_type = "Note"

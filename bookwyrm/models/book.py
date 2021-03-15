@@ -1,7 +1,7 @@
 """ database schema for books and shelves """
 import re
 
-from django.db import models
+from django.db import models, transaction
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -148,6 +148,15 @@ class Work(OrderedCollectionPageMixin, Book):
         """ in case the default edition is not set """
         return self.default_edition or self.editions.order_by("-edition_rank").first()
 
+    @transaction.atomic()
+    def reset_default_edition(self):
+        """ sets a new default edition based on computed rank """
+        self.default_edition = None
+        # editions are re-ranked implicitly
+        self.save()
+        self.default_edition = self.get_default_edition()
+        self.save()
+
     def to_edition_list(self, **kwargs):
         """ an ordered collection of editions """
         return self.to_ordered_collection(
@@ -200,9 +209,13 @@ class Edition(Book):
     activity_serializer = activitypub.Edition
     name_field = "title"
 
-    def get_rank(self):
+    def get_rank(self, ignore_default=False):
         """ calculate how complete the data is on this edition """
-        if self.parent_work and self.parent_work.default_edition == self:
+        if (
+            not ignore_default
+            and self.parent_work
+            and self.parent_work.default_edition == self
+        ):
             # default edition has the highest rank
             return 20
         rank = 0
