@@ -88,31 +88,46 @@
         <div class="column">
             <section class="block">
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
-                <p class="fields is-grouped"><label class="label" for="id_title">{% trans "Title:" %}</label> {{ form.title }} </p>
+                <p class="mb-2"><label class="label" for="id_title">{% trans "Title:" %}</label> {{ form.title }} </p>
                 {% for error in form.title.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label> {{ form.subtitle }} </p>
+
+                <p class="mb-2"><label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label> {{ form.subtitle }} </p>
                 {% for error in form.subtitle.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_description">{% trans "Description:" %}</label> {{ form.description }} </p>
+
+                <p class="mb-2"><label class="label" for="id_description">{% trans "Description:" %}</label> {{ form.description }} </p>
                 {% for error in form.description.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_series">{% trans "Series:" %}</label> {{ form.series }} </p>
+
+                <p class="mb-2"><label class="label" for="id_series">{% trans "Series:" %}</label> {{ form.series }} </p>
                 {% for error in form.series.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_series_number">{% trans "Series number:" %}</label> {{ form.series_number }} </p>
+
+                <p class="mb-2"><label class="label" for="id_series_number">{% trans "Series number:" %}</label> {{ form.series_number }} </p>
                 {% for error in form.series_number.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_first_published_date">{% trans "First published date:" %}</label> {{ form.first_published_date }} </p>
+
+                <p class="mb-2">
+                    <label class="label" for="id_publishers">{% trans "Publisher:" %}</label>
+                    {{ form.publishers }}
+                    <span class="help">{% trans "Separate multiple publishers with commas." %}</span>
+                </p>
+                {% for error in form.publishers.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+
+                <p class="mb-2"><label class="label" for="id_first_published_date">{% trans "First published date:" %}</label> {{ form.first_published_date }} </p>
                 {% for error in form.first_published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_published_date">{% trans "Published date:" %}</label> {{ form.published_date }} </p>
+
+                <p class="mb-2"><label class="label" for="id_published_date">{% trans "Published date:" %}</label> {{ form.published_date }} </p>
                 {% for error in form.published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
@@ -131,8 +146,8 @@
                 </fieldset>
                 {% endif %}
                 <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
-                <p class="help">Separate multiple author names with commas.</p>
                 <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}" {% if confirm_mode %}readonly{% endif %}>
+                <p class="help">Separate multiple author names with commas.</p>
             </section>
         </div>
 
@@ -154,7 +169,7 @@
 
             <div class="block">
                 <h2 class="title is-4">{% trans "Physical Properties" %}</h2>
-                <p class="fields is-grouped"><label class="label" for="id_physical_format">{% trans "Format:" %}</label> {{ form.physical_format }} </p>
+                <p class="mb-2"><label class="label" for="id_physical_format">{% trans "Format:" %}</label> {{ form.physical_format }} </p>
                 {% for error in form.physical_format.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
@@ -162,7 +177,7 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="fields is-grouped"><label class="label" for="id_pages">{% trans "Pages:" %}</label> {{ form.pages }} </p>
+                <p class="mb-2"><label class="label" for="id_pages">{% trans "Pages:" %}</label> {{ form.pages }} </p>
                 {% for error in form.pages.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
@@ -170,23 +185,23 @@
 
             <div class="block">
                 <h2 class="title is-4">{% trans "Book Identifiers" %}</h2>
-                <p class="fields is-grouped"><label class="label" for="id_isbn_13">{% trans "ISBN 13:" %}</label> {{ form.isbn_13 }} </p>
+                <p class="mb-2"><label class="label" for="id_isbn_13">{% trans "ISBN 13:" %}</label> {{ form.isbn_13 }} </p>
                 {% for error in form.isbn_13.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label> {{ form.isbn_10 }} </p>
+                <p class="mb-2"><label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label> {{ form.isbn_10 }} </p>
                 {% for error in form.isbn_10.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }} </p>
+                <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }} </p>
                 {% for error in form.openlibrary_key.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
+                <p class="mb-2"><label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
                 {% for error in form.oclc_number.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="fields is-grouped"><label class="label" for="id_asin">{% trans "ASIN:" %}</label> {{ form.asin }} </p>
+                <p class="mb-2"><label class="label" for="id_asin">{% trans "ASIN:" %}</label> {{ form.asin }} </p>
                 {% for error in form.ASIN.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
