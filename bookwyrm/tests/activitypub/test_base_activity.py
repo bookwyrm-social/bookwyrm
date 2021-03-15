@@ -123,7 +123,7 @@ class BaseActivity(TestCase):
             summary="",
             publicKey={"id": "hi", "owner": self.user.remote_id, "publicKeyPem": "hi"},
             endpoints={},
-            icon={"type": "Image", "url": "http://www.example.com/image.jpg"},
+            icon={"type": "Document", "url": "http://www.example.com/image.jpg"},
         )
 
         responses.add(
@@ -194,7 +194,7 @@ class BaseActivity(TestCase):
                 {
                     "url": "http://www.example.com/image.jpg",
                     "name": "alt text",
-                    "type": "Image",
+                    "type": "Document",
                 }
             ],
         )
@@ -224,7 +224,7 @@ class BaseActivity(TestCase):
         data = {
             "url": "http://www.example.com/image.jpg",
             "name": "alt text",
-            "type": "Image",
+            "type": "Document",
         }
         responses.add(
             responses.GET,
