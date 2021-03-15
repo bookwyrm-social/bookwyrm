@@ -9,5 +9,5 @@ class Image(ActivityObject):
 
     url: str
     name: str = ""
-    type: str = "Image"
-    id: str = ""
+    type: str = "Document"
+    id: str = None
