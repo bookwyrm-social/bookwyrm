@@ -26,7 +26,7 @@ class Site(View):
     def post(self, request):
         """ edit the site settings """
         site = models.SiteSettings.objects.get()
-        form = forms.SiteForm(request.POST, instance=site)
+        form = forms.SiteForm(request.POST, request.FILES, instance=site)
         if not form.is_valid():
             data = {"site_form": form}
             return TemplateResponse(request, "settings/site.html", data)
