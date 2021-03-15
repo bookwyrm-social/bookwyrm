@@ -169,7 +169,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(activity["sensitive"], False)
         self.assertIsInstance(activity["attachment"], list)
-        self.assertEqual(activity["attachment"][0].type, "Image")
+        self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
             "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
@@ -200,7 +200,7 @@ class Status(TestCase):
             'test content<p>(comment on <a href="%s">"Test Edition"</a>)</p>'
             % self.book.remote_id,
         )
-        self.assertEqual(activity["attachment"][0].type, "Image")
+        self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
             "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
@@ -238,7 +238,7 @@ class Status(TestCase):
             'a sickening sense <p>-- <a href="%s">"Test Edition"</a></p>'
             "test content" % self.book.remote_id,
         )
-        self.assertEqual(activity["attachment"][0].type, "Image")
+        self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
             "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
@@ -278,7 +278,7 @@ class Status(TestCase):
             activity["name"], 'Review of "%s" (3 stars): Review name' % self.book.title
         )
         self.assertEqual(activity["content"], "test content")
-        self.assertEqual(activity["attachment"][0].type, "Image")
+        self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
             "https://%s%s" % (settings.DOMAIN, self.book.cover.url),

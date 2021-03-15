@@ -404,7 +404,7 @@ class ActivitypubFields(TestCase):
             )
         )
         self.assertEqual(output.name, "alt text")
-        self.assertEqual(output.type, "Image")
+        self.assertEqual(output.type, "Document")
 
         instance = fields.ImageField()
 
