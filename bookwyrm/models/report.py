@@ -22,8 +22,8 @@ class Report(BookWyrmModel):
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         # moderators and superusers should be notified
         admins = user_model.objects.filter(
-            Q(user_permissions__name__in=["moderate_user", "moderate_post"]) |
-            Q(is_superuser=True)
+            Q(user_permissions__name__in=["moderate_user", "moderate_post"])
+            | Q(is_superuser=True)
         ).all()
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
         for admin in admins:
@@ -32,7 +32,6 @@ class Report(BookWyrmModel):
                 related_report=self,
                 notification_type="REPORT",
             )
-
 
     class Meta:
         """ don't let users report themselves """
