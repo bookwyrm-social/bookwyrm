@@ -91,7 +91,7 @@
                     {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
                     {% elif book.published_date %}
                     {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
-                    {% else %}
+                    {% elif book.publishers %}
                     {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
                     {% endif %}
                 </p>
