@@ -5,7 +5,7 @@ from .base_model import BookWyrmModel
 
 NotificationType = models.TextChoices(
     "NotificationType",
-    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD",
+    "FAVORITE REPLY MENTION TAG FOLLOW FOLLOW_REQUEST BOOST IMPORT ADD REPORT",
 )
 
 
@@ -22,6 +22,7 @@ class Notification(BookWyrmModel):
     related_list_item = models.ForeignKey(
         "ListItem", on_delete=models.CASCADE, null=True
     )
+    related_report = models.ForeignKey("Report", on_delete=models.CASCADE, null=True)
     read = models.BooleanField(default=False)
     notification_type = models.CharField(
         max_length=255, choices=NotificationType.choices
@@ -37,6 +38,7 @@ class Notification(BookWyrmModel):
             related_status=self.related_status,
             related_import=self.related_import,
             related_list_item=self.related_list_item,
+            related_report=self.related_report,
             notification_type=self.notification_type,
         ).exists():
             return
