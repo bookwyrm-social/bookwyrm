@@ -20,7 +20,7 @@
         {% for item in items %}
             <li class="block pb-3">
                 <div class="card">
-                    <div class="card-content columns p-0 mb-0 is-mobile">
+                    <div class="card-content columns p-0 pr-2 mb-0 is-mobile">
                         <div class="column is-narrow pt-0 pb-0">
                             <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
                         </div>
