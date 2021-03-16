@@ -35,6 +35,8 @@
                 <span class="icon icon-list"></span>
                 {% elif notification.notification_type == 'ADD' %}
                 <span class="icon icon-plus"></span>
+                {% elif notification.notification_type == 'REPORT' %}
+                <span class="icon icon-warning"></span>
                 {% endif %}
             </div>
             <div class="column">
@@ -105,7 +107,10 @@
                                 {% endif %}
                             {% endif %}
                         {% elif notification.related_import %}
-                            {% blocktrans with related_id=notification.related_import.id %} your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
+                            {% blocktrans with related_id=notification.related_import.id %}Your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
+                        {% elif notification.related_report %}
+                            {% url 'settings-report' notification.related_report.id as path %}
+                            {% blocktrans with related_id=path %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
                         {% endif %}
                     </p>
                 </div>

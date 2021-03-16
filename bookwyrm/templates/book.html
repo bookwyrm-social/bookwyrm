@@ -35,7 +35,7 @@
     </div>
 
     <div class="columns">
-        <div class="column is-one-fifth">
+        <div class="column is-one-fifth is-clipped">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button/shelve_button.html' %}
@@ -56,21 +56,21 @@
             <section class="content">
                 <dl>
                     {% if book.isbn_13 %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "ISBN:" %}</dt>
                         <dd>{{ book.isbn_13 }}</dd>
                     </div>
                     {% endif %}
 
                     {% if book.oclc_number %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "OCLC Number:" %}</dt>
                         <dd>{{ book.oclc_number }}</dd>
                     </div>
                     {% endif %}
 
                     {% if book.asin %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "ASIN:" %}</dt>
                         <dd>{{ book.asin }}</dd>
                     </div>
@@ -91,7 +91,7 @@
                     {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
                     {% elif book.published_date %}
                     {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
-                    {% else %}
+                    {% elif book.publishers %}
                     {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
                     {% endif %}
                 </p>
