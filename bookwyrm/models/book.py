@@ -96,7 +96,7 @@ class Book(BookDataModel):
             if self.languages and self.languages[0] != "English"
             else None,
             str(self.published_date.year) if self.published_date else None,
-            ', '.join(self.publishers)
+            ", ".join(self.publishers),
         ]
         return ", ".join(i for i in items if i)
 
