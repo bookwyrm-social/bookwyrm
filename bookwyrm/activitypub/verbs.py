@@ -64,6 +64,11 @@ class Undo(Verb):
 
     def action(self):
         """ find and remove the activity object """
+        if isinstance(self.object, str):
+            # it may be that sometihng should be done with these, but idk what
+            # this seems just to be coming from pleroma
+            return
+
         # this is so hacky but it does make it work....
         # (because you Reject a request and Undo a follow
         model = None
