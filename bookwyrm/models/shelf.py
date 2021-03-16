@@ -68,6 +68,11 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     object_field = "book"
     collection_field = "shelf"
 
+    def save(self, *args, **kwargs):
+        if not self.user:
+            self.user = self.shelf.user
+        super().save(*args, **kwargs)
+
     class Meta:
         """an opinionated constraint!
         you can't put a book on shelf twice"""
