@@ -24,7 +24,7 @@ class Person(ActivityObject):
     outbox: str
     followers: str
     publicKey: PublicKey
-    endpoints: Dict
+    endpoints: Dict = field(default_factory=lambda: {})
     name: str = None
     summary: str = None
     icon: Image = field(default_factory=lambda: {})
