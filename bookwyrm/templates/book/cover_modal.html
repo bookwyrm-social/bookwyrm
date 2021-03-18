@@ -1,0 +1,26 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Add cover" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="add-cover" method="POST" action="{% url 'upload-cover' book.id %}" enctype="multipart/form-data">
+{% endblock %}
+
+{% block modal-body %}
+<section class="modal-card-body">
+    {% csrf_token %}
+    {% csrf_token %}
+    <label class="label">
+        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover">
+    </label>
+</section>
+{% endblock %}
+
+{% block modal-footer %}
+<button class="button is-primary" type="submit">{% trans "Add" %}</button>
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}
+

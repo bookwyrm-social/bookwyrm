@@ -41,15 +41,10 @@
             {% include 'snippets/shelve_button/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
-            <div class="box p-2">
-                <h3 class="title is-6 mb-1">{% trans "Add cover" %}</h3>
-                <form name="add-cover" method="POST" action="{% url 'upload-cover' book.id %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <label class="label">
-                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover">
-                    </label>
-                    <button class="button is-small is-primary" type="submit">{% trans "Add" %}</button>
-                </form>
+            <div class="block">
+                {% trans "Add cover" as button_text %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
+                {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
             </div>
             {% endif %}
 
