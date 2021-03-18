@@ -43,10 +43,10 @@
             {% if request.user.is_authenticated and not book.cover %}
             <div class="box p-2">
                 <h3 class="title is-6 mb-1">{% trans "Add cover" %}</h3>
-                <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
+                <form name="add-cover" method="POST" action="{% url 'upload-cover' book.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label class="label">
-                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
+                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover">
                     </label>
                     <button class="button is-small is-primary" type="submit">{% trans "Add" %}</button>
                 </form>

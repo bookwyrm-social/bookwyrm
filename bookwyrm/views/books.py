@@ -97,7 +97,7 @@ class Book(View):
             "readthroughs": readthroughs,
             "path": "/book/%s" % book_id,
         }
-        return TemplateResponse(request, "book.html", data)
+        return TemplateResponse(request, "book/book.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -115,7 +115,7 @@ class EditBook(View):
             if not book.description:
                 book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
-        return TemplateResponse(request, "edit_book.html", data)
+        return TemplateResponse(request, "book/edit_book.html", data)
 
     def post(self, request, book_id=None):
         """ edit a book cool """
@@ -125,7 +125,7 @@ class EditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         add_author = request.POST.get("add_author")
         # we're adding an author through a free text field
@@ -169,7 +169,7 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
@@ -194,7 +194,7 @@ class ConfirmEditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         with transaction.atomic():
             # save book
