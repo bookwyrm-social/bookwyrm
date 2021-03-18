@@ -42,6 +42,12 @@
         {% endfor %}
     </div>
     <div class="block">
+        <label class="checkbox label" for="id_show_goal">
+            {% trans "Show set reading goal prompt in feed:" %}
+            {{ form.show_goal }}
+        </label>
+    </div>
+    <div class="block">
         <label class="checkbox label" for="id_manually_approves_followers">
             {% trans "Manually approve followers:" %}
             {{ form.manually_approves_followers }}

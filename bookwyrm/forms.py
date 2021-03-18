@@ -115,7 +115,7 @@ class StatusForm(CustomForm):
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User
-        fields = ["avatar", "name", "email", "summary", "manually_approves_followers"]
+        fields = ["avatar", "name", "email", "summary", "manually_approves_followers", "show_goal"]
         help_texts = {f: None for f in fields}
 
 
