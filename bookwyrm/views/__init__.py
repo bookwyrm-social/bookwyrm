@@ -9,7 +9,7 @@ from .federation import Federation
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
-from .goal import Goal
+from .goal import Goal, hide_goal
 from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
