@@ -1,6 +1,9 @@
 """ the good stuff! the books! """
+from uuid import uuid4
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
+from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Avg, Q
@@ -14,6 +17,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
+from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_activity_feed, get_edition
 from .helpers import privacy_filter
@@ -256,6 +260,17 @@ class Editions(View):
 def upload_cover(request, book_id):
     """ upload a new cover """
     book = get_object_or_404(models.Edition, id=book_id)
+
+    url = request.POST.get("cover-url")
+    if url:
+        # load it from a url
+        image_file = get_image(url)
+        if not image_file:
+            return redirect("/book/%d" % book.id)
+        image_name = str(uuid4()) + "." + url.split(".")[-1]
+        image_content = ContentFile(image_file.content)
+        book.cover.save(*[image_name, image_content])
+        return redirect("/book/%d" % book.id)
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid():
