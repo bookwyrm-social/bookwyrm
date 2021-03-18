@@ -102,6 +102,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     updated_date = models.DateTimeField(auto_now=True)
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
+    show_goal = models.BooleanField(default=True)
 
     name_field = "username"
 

@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.status import create_generated_note
@@ -65,3 +66,12 @@ class Goal(View):
             )
 
         return redirect(request.headers.get("Referer", "/"))
+
+
+@require_POST
+@login_required
+def hide_goal(request):
+    """ don't keep bugging people to set a goal """
+    request.user.show_goal = False
+    request.user.save(broadcast=False)
+    return redirect(request.headers.get("Referer", "/"))

@@ -19,9 +19,9 @@
 </div>
 
 {# announcements and system messages #}
-{% if not goal and tab == 'home' %}
+{% if request.user.show_goal and not goal and tab == 'home' %}
 {% now 'Y' as year %}
-<section class="block hidden" aria-title="{% trans 'Announcements' %}" data-hide="hide-{{ year }}-reading-goal">
+<section class="block" aria-title="{% trans 'Announcements' %}">
     {% include 'snippets/goal_card.html' with year=year %}
     <hr>
 </section>
