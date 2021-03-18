@@ -109,11 +109,13 @@ urlpatterns = [
     ),
     re_path(r"%s/shelves/?$" % user_path, views.user_shelves_page, name="user-shelves"),
     re_path(r"%s/lists/?$" % user_path, views.UserLists.as_view(), name="user-lists"),
+    # goals
     re_path(
         r"%s/goal/(?P<year>\d{4})/?$" % user_path,
         views.Goal.as_view(),
         name="user-goal",
     ),
+    re_path(r"^hide-goal/?$", views.hide_goal, name="hide-goal"),
     # lists
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),

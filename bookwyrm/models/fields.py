@@ -73,7 +73,7 @@ class ActivitypubFieldMixin:
                 raise
             value = getattr(data, "actor")
         formatted = self.field_from_activity(value)
-        if formatted is None or formatted is MISSING:
+        if formatted is None or formatted is MISSING or formatted == {}:
             return
         setattr(instance, self.name, formatted)
 
@@ -101,7 +101,7 @@ class ActivitypubFieldMixin:
 
     def field_from_activity(self, value):
         """ formatter to convert activitypub into a model value """
-        if hasattr(self, "activitypub_wrapper"):
+        if value and hasattr(self, "activitypub_wrapper"):
             value = value.get(self.activitypub_wrapper)
         return value
 

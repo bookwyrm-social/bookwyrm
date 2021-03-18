@@ -6,7 +6,7 @@
 {% with full|to_markdown|safe as full %}
 
 {% with full|to_markdown|safe|truncatewords_html:60 as trimmed %}
-{% if trimmed != full %}
+{% if not no_trim and trimmed != full %}
 <div id="hide-full-{{ uuid }}">
     <div class="content" id="trimmed-{{ uuid }}">
         <div dir="auto">{{ trimmed }}</div>
