@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0051_auto_20210316_1950'),
+        ("bookwyrm", "0051_auto_20210316_1950"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='show_goal',
+            model_name="user",
+            name="show_goal",
             field=models.BooleanField(default=True),
         ),
     ]
