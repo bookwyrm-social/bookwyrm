@@ -8,13 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0052_user_show_goal'),
+        ("bookwyrm", "0052_user_show_goal"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='review',
-            name='rating',
-            field=bookwyrm.models.fields.DecimalField(blank=True, decimal_places=2, default=None, max_digits=3, null=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)]),
+            model_name="review",
+            name="rating",
+            field=bookwyrm.models.fields.DecimalField(
+                blank=True,
+                decimal_places=2,
+                default=None,
+                max_digits=3,
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(1),
+                    django.core.validators.MaxValueValidator(5),
+                ],
+            ),
         ),
     ]
