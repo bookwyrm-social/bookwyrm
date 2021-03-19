@@ -273,11 +273,13 @@ class Review(Status):
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
     )
-    rating = fields.IntegerField(
+    rating = fields.DecimalField(
         default=None,
         null=True,
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
+        decimal_places=2,
+        max_digits=3,
     )
 
     @property
