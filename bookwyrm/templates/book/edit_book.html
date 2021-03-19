@@ -85,7 +85,7 @@
 
     <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
     <div class="columns">
-        <div class="column">
+        <div class="column is-half">
             <section class="block">
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
                 <p class="mb-2"><label class="label" for="id_title">{% trans "Title:" %}</label> {{ form.title }} </p>
@@ -151,15 +151,26 @@
             </section>
         </div>
 
-        <div class="column">
+        <div class="column is-half">
+            <h2 class="title is-4">{% trans "Cover" %}</h2>
             <div class="columns">
                 <div class="column is-narrow">
                     {% include 'snippets/book_cover.html' with book=book size="small" %}
                 </div>
                 <div class="column is-narrow">
                     <div class="block">
-                        <h2 class="title is-4">{% trans "Cover" %}</h2>
-                        <p>{{ form.cover }}</p>
+                        <p>
+                            <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
+                            {{ form.cover }}
+                        </p>
+                        {% if book %}
+                        <p>
+                            <label class="label" for="id_cover_url">
+                                {% trans "Load cover from url:" %}
+                            </label>
+                            <input class="input" name="cover-url" id="id_cover_url">
+                        </p>
+                        {% endif %}
                         {% for error in form.cover.errors %}
                         <p class="help is-danger">{{ error | escape }}</p>
                         {% endfor %}
