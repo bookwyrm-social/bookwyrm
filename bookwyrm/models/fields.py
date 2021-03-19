@@ -444,3 +444,7 @@ class BooleanField(ActivitypubFieldMixin, models.BooleanField):
 
 class IntegerField(ActivitypubFieldMixin, models.IntegerField):
     """ activitypub-aware boolean field """
+
+
+class DecimalField(ActivitypubFieldMixin, models.DecimalField):
+    """ activitypub-aware boolean field """
