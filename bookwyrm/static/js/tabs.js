@@ -1,10 +1,3 @@
-// tab groups
-window.onload = function() {
-    Array.from(document.getElementsByClassName('tab-group'))
-        .forEach(t => new TabGroup(t));
-};
-
-
 /*
 * The content below is licensed according to the W3C Software License at
 * https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document

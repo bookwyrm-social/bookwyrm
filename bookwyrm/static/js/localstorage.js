@@ -1,14 +1,4 @@
 // set javascript listeners
-window.onload = function() {
-    // display based on localstorage vars
-    document.querySelectorAll('[data-hide]')
-        .forEach(t => setDisplay(t));
-
-    // update localstorage
-    Array.from(document.getElementsByClassName('set-display'))
-        .forEach(t => t.onclick = updateDisplay);
-};
-
 function updateDisplay(e) {
     // used in set reading goal
     var key = e.target.getAttribute('data-id');
