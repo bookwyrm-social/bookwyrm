@@ -23,6 +23,24 @@ window.onload = function() {
     // browser back behavior
     document.querySelectorAll('[data-back]')
         .forEach(t => t.onclick = back);
+
+    Array.from(document.getElementsByClassName('tab-group'))
+        .forEach(t => new TabGroup(t));
+
+    // display based on localstorage vars
+    document.querySelectorAll('[data-hide]')
+        .forEach(t => setDisplay(t));
+
+    // update localstorage
+    Array.from(document.getElementsByClassName('set-display'))
+        .forEach(t => t.onclick = updateDisplay);
+
+    // Toggle all checkboxes.
+    document
+        .querySelectorAll('[data-action="toggle-all"]')
+        .forEach(input => {
+            input.addEventListener('change', toggleAllCheckboxes);
+        });
 };
 
 function back(e) {

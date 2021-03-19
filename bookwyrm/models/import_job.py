@@ -3,7 +3,6 @@ import re
 import dateutil.parser
 
 from django.apps import apps
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 
@@ -70,7 +69,7 @@ class ImportItem(models.Model):
 
     job = models.ForeignKey(ImportJob, on_delete=models.CASCADE, related_name="items")
     index = models.IntegerField()
-    data = JSONField()
+    data = models.JSONField()
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
     fail_reason = models.TextField(null=True)
 

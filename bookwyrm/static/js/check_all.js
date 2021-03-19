@@ -1,11 +1,4 @@
 // Toggle all checkboxes.
-window.onload = function() {
-    document
-        .querySelectorAll('[data-action="toggle-all"]')
-        .forEach(input => {
-            input.addEventListener('change', toggleAllCheckboxes);
-        });
-};
 
 /**
  * Toggle all descendant checkboxes of a target.
