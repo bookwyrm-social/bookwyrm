@@ -252,8 +252,11 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
             views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
@@ -281,8 +284,11 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
             views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)

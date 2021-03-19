@@ -179,7 +179,13 @@ class EditBook(View):
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
-        book = form.save()
+        book = form.save(commit=False)
+        url = request.POST.get("cover-url")
+        if url:
+            image = set_cover_from_url(url)
+            if image:
+                book.cover.save(*image, save=False)
+        book.save()
         return redirect("/book/%s" % book.id)
 
 
@@ -260,27 +266,33 @@ class Editions(View):
 def upload_cover(request, book_id):
     """ upload a new cover """
     book = get_object_or_404(models.Edition, id=book_id)
+    book.last_edited_by = request.user
 
     url = request.POST.get("cover-url")
     if url:
-        # load it from a url
-        image_file = get_image(url)
-        if not image_file:
-            return redirect("/book/%d" % book.id)
-        image_name = str(uuid4()) + "." + url.split(".")[-1]
-        image_content = ContentFile(image_file.content)
-        book.cover.save(*[image_name, image_content])
+        image = set_cover_from_url(url)
+        book.cover.save(*image)
+
         return redirect("/book/%d" % book.id)
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
-    if not form.is_valid():
+    if not form.is_valid() or not form.files.get("cover"):
         return redirect("/book/%d" % book.id)
 
-    book.last_edited_by = request.user
     book.cover = form.files["cover"]
     book.save()
 
     return redirect("/book/%s" % book.id)
+
+
+def set_cover_from_url(url):
+    """ load it from a url """
+    image_file = get_image(url)
+    if not image_file:
+        return None
+    image_name = str(uuid4()) + "." + url.split(".")[-1]
+    image_content = ContentFile(image_file.content)
+    return [image_name, image_content]
 
 
 @login_required
