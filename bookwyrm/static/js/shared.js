@@ -8,13 +8,6 @@ window.onload = function() {
     Array.from(document.getElementsByClassName('interaction'))
         .forEach(t => t.onsubmit = interact);
 
-    // Toggle all checkboxes.
-    document
-        .querySelectorAll('[data-action="toggle-all"]')
-        .forEach(input => {
-            input.addEventListener('change', toggleAllCheckboxes);
-        });
-
     // handle aria settings on menus
     Array.from(document.getElementsByClassName('pulldown-menu'))
         .forEach(t => t.onclick = toggleMenu);
@@ -107,22 +100,6 @@ function interact(e) {
     var identifier = e.target.getAttribute('data-id');
     Array.from(document.getElementsByClassName(identifier))
         .forEach(t => addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
-}
-
-/**
- * Toggle all descendant checkboxes of a target.
- *
- * Use `data-target="ID_OF_TARGET"` on the node being listened to.
- *
- * @param  {Event} event - change Event
- * @return {undefined}
- */
-function toggleAllCheckboxes(event) {
-    const mainCheckbox = event.target;
-
-    document
-        .querySelectorAll(`#${mainCheckbox.dataset.target} [type="checkbox"]`)
-        .forEach(checkbox => {checkbox.checked = mainCheckbox.checked;});
 }
 
 function toggleMenu(e) {
