@@ -1,7 +1,14 @@
 """ test for app action functionality """
+from io import BytesIO
+import pathlib
 from unittest.mock import patch
+
+from PIL import Image
+import responses
+
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -229,3 +236,59 @@ class BookViews(TestCase):
             result = view(request, self.work.id)
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
+
+    def test_upload_cover_file(self):
+        """ add a cover via file upload """
+        self.assertFalse(self.book.cover)
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+
+        form = forms.CoverForm(instance=self.book)
+        form.data["cover"] = SimpleUploadedFile(
+            image_file, open(image_file, "rb").read(), content_type="image/jpeg"
+        )
+
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
+
+        self.book.refresh_from_db()
+        self.assertTrue(self.book.cover)
+
+    @responses.activate
+    def test_upload_cover_url(self):
+        """ add a cover via url """
+        self.assertFalse(self.book.cover)
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        responses.add(
+            responses.GET,
+            "http://example.com",
+            body=output.getvalue(),
+            status=200,
+        )
+
+        form = forms.CoverForm(instance=self.book)
+        form.data["cover-url"] = "http://example.com"
+
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
+
+        self.book.refresh_from_db()
+        self.assertTrue(self.book.cover)

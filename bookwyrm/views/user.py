@@ -173,7 +173,7 @@ class EditUser(View):
             # set the name to a hash
             extension = form.files["avatar"].name.split(".")[-1]
             filename = "%s.%s" % (uuid4(), extension)
-            user.avatar.save(filename, image)
+            user.avatar.save(filename, image, save=False)
         user.save()
 
         return redirect(user.local_path)

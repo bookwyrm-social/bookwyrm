@@ -1,6 +1,9 @@
 """ the good stuff! the books! """
+from uuid import uuid4
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
+from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Avg, Q
@@ -14,6 +17,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
+from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_activity_feed, get_edition
 from .helpers import privacy_filter
@@ -97,7 +101,7 @@ class Book(View):
             "readthroughs": readthroughs,
             "path": "/book/%s" % book_id,
         }
-        return TemplateResponse(request, "book.html", data)
+        return TemplateResponse(request, "book/book.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -115,7 +119,7 @@ class EditBook(View):
             if not book.description:
                 book.description = book.parent_work.description
         data = {"book": book, "form": forms.EditionForm(instance=book)}
-        return TemplateResponse(request, "edit_book.html", data)
+        return TemplateResponse(request, "book/edit_book.html", data)
 
     def post(self, request, book_id=None):
         """ edit a book cool """
@@ -125,7 +129,7 @@ class EditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         add_author = request.POST.get("add_author")
         # we're adding an author through a free text field
@@ -169,13 +173,19 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
         for author_id in remove_authors:
             book.authors.remove(author_id)
 
-        book = form.save()
+        book = form.save(commit=False)
+        url = request.POST.get("cover-url")
+        if url:
+            image = set_cover_from_url(url)
+            if image:
+                book.cover.save(*image, save=False)
+        book.save()
         return redirect("/book/%s" % book.id)
 
 
@@ -194,7 +204,7 @@ class ConfirmEditBook(View):
 
         data = {"book": book, "form": form}
         if not form.is_valid():
-            return TemplateResponse(request, "edit_book.html", data)
+            return TemplateResponse(request, "book/edit_book.html", data)
 
         with transaction.atomic():
             # save book
@@ -256,16 +266,33 @@ class Editions(View):
 def upload_cover(request, book_id):
     """ upload a new cover """
     book = get_object_or_404(models.Edition, id=book_id)
+    book.last_edited_by = request.user
 
-    form = forms.CoverForm(request.POST, request.FILES, instance=book)
-    if not form.is_valid():
+    url = request.POST.get("cover-url")
+    if url:
+        image = set_cover_from_url(url)
+        book.cover.save(*image)
+
         return redirect("/book/%d" % book.id)
 
-    book.last_edited_by = request.user
+    form = forms.CoverForm(request.POST, request.FILES, instance=book)
+    if not form.is_valid() or not form.files.get("cover"):
+        return redirect("/book/%d" % book.id)
+
     book.cover = form.files["cover"]
     book.save()
 
     return redirect("/book/%s" % book.id)
+
+
+def set_cover_from_url(url):
+    """ load it from a url """
+    image_file = get_image(url)
+    if not image_file:
+        return None
+    image_name = str(uuid4()) + "." + url.split(".")[-1]
+    image_content = ContentFile(image_file.content)
+    return [image_name, image_content]
 
 
 @login_required
