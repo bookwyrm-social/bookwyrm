@@ -19,7 +19,7 @@
             <ul>
             {% for result in local_results.results %}
                 <li class="pd-4">
-                    <a href="{{ result.key }}">{% include 'snippets/search_result_text.html' with result=result link=True %}</a>
+                    {% include 'snippets/search_result_text.html' with result=result %}
                 </li>
             {% endfor %}
             </ul>
@@ -50,12 +50,7 @@
                 <ul>
                 {% for result in result_set.results %}
                     <li class="pb-4">
-                        <form action="/resolve-book" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="remote_id" value="{{ result.key }}">
-                            <div>{% include 'snippets/search_result_text.html' with result=result link=False %}</div>
-                            <button type="submit" class="button is-small is-link">{% trans "Import book" %}</button>
-                        </form>
+                        {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
                     </li>
                 {% endfor %}
                 </ul>
@@ -68,6 +63,10 @@
             {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
             {% endif %}
         </div>
+
+        <div class="block">
+            <a href="/create-book">Manually add book</a>
+        </div>
         {% endif %}
     </div>
     <div class="column">
@@ -79,8 +78,10 @@
             <ul>
             {% for result in user_results %}
                 <li class="block">
-                    {% include 'snippets/avatar.html' with user=result %}</h2>
-                    {% include 'snippets/username.html' with user=result show_full=True %}</h2>
+                    <a href="{{ result.local_path }}">
+                        {% include 'snippets/avatar.html' with user=result %}
+                        {{ result.display_name }}
+                    </a> ({{ result.username }})
                     {% include 'snippets/follow_button.html' with user=result %}
                 </li>
             {% endfor %}

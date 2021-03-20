@@ -1,7 +1,7 @@
 {% extends 'user/user_layout.html' %}
 {% load i18n %}
 
-{% block title %}{{ user.name }}{% endblock %}
+{% block title %}{{ user.display_name }}{% endblock %}
 
 {% block header %}
 <div class="columns is-mobile">
@@ -67,7 +67,7 @@
         </div>
     </div>
     {% for activity in activities %}
-    <div class="block" id="feed">
+    <div class="block" id="feed-{{ activity.id }}">
         {% include 'snippets/status/status.html' with status=activity %}
     </div>
     {% endfor %}

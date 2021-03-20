@@ -1,18 +1,12 @@
 {% load i18n %}
 {% if request.user == user or not request.user.is_authenticated %}
-{% elif request.user in user.follower_requests.all %}
-
-<div>
-    {% trans "Follow request already sent." %}
-</div>
-
 {% elif user in request.user.blocks.all %}
 {% include 'snippets/block_button.html' %}
 {% else %}
 
 <div class="field has-addons">
     <div class="control">
-        <form action="/follow/" method="POST" class="interaction follow-{{ user.id }} {% if request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
+        <form action="{% url 'follow' %}" method="POST" class="interaction follow-{{ user.id }} {% if request.user in user.followers.all or request.user in user.follower_requests.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
             {% if user.manually_approves_followers %}
@@ -21,10 +15,14 @@
                 <button class="button is-small is-link" type="submit">{% trans "Follow" %}</button>
             {% endif %}
         </form>
-        <form action="/unfollow/" method="POST" class="interaction follow-{{ user.id }} {% if not request.user in user.followers.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
+        <form action="{% url 'unfollow' %}" method="POST" class="interaction follow-{{ user.id }} {% if not request.user in user.followers.all and not request.user in user.follower_requests.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
+            {% if user.manually_approves_followers and request.user not in user.followers.all %}
+            <button class="button is-small is-danger is-light" type="submit">{% trans "Undo follow request" %}</button>
+            {% else %}
             <button class="button is-small is-danger is-light" type="submit">{% trans "Unfollow" %}</button>
+            {% endif %}
         </form>
     </div>
     <div class="control">

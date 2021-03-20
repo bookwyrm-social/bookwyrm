@@ -19,6 +19,10 @@
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
             <li>
+                {% url 'settings-reports' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
+            </li>
+            <li>
                 {% url 'settings-federation' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Servers" %}</a>
             </li>
@@ -42,7 +46,7 @@
         </ul>
         {% endif %}
     </nav>
-    <div class="column content">
+    <div class="column">
         {% block panel %}{% endblock %}
     </div>
 </div>

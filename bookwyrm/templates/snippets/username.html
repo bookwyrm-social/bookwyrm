@@ -1,2 +1,0 @@
-{% load bookwyrm_tags %}
-<a href="{{ user.local_path }}" class="user">{% if user.name %}{{ user.name }}{% else %}{{ user | username }}{% endif %}</a>{% if possessive %}'s{% endif %}{% if show_full and user.name or show_full and user.localname %} ({{ user.username }}){% endif %}

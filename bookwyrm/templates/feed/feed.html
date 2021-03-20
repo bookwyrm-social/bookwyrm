@@ -6,22 +6,22 @@
 <h1 class="title">{% blocktrans %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
 <div class="tabs">
     <ul>
-        <li class="{% if tab == 'home' %}is-active{% endif %}">
+        <li class="{% if tab == 'home' %}is-active{% endif %}"{% if tab == 'home' %} aria-current="page"{% endif %}>
             <a href="/#feed">{% trans "Home" %}</a>
         </li>
-        <li class="{% if tab == 'local' %}is-active{% endif %}">
+        <li class="{% if tab == 'local' %}is-active{% endif %}"{% if tab == 'local' %} aria-current="page"{% endif %}>
             <a href="/local#feed">{% trans "Local" %}</a>
         </li>
-        <li class="{% if tab == 'federated' %}is-active{% endif %}">
+        <li class="{% if tab == 'federated' %}is-active{% endif %}"{% if tab == 'federated' %} aria-current="page"{% endif %}>
             <a href="/federated#feed">{% trans "Federated" %}</a>
         </li>
     </ul>
 </div>
 
 {# announcements and system messages #}
-{% if not goal and tab == 'home' %}
+{% if request.user.show_goal and not goal and tab == 'home' %}
 {% now 'Y' as year %}
-<section class="block hidden" aria-title="{% trans 'Announcements' %}" data-hide="hide-{{ year }}-reading-goal">
+<section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
     <hr>
 </section>
