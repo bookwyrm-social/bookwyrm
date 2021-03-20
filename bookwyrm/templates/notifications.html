@@ -35,6 +35,8 @@
                 <span class="icon icon-list"></span>
                 {% elif notification.notification_type == 'ADD' %}
                 <span class="icon icon-plus"></span>
+                {% elif notification.notification_type == 'REPORT' %}
+                <span class="icon icon-warning"></span>
                 {% endif %}
             </div>
             <div class="column">
@@ -105,7 +107,10 @@
                                 {% endif %}
                             {% endif %}
                         {% elif notification.related_import %}
-                            {% blocktrans with related_id=notification.related_import.id %} your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
+                            {% blocktrans with related_id=notification.related_import.id %}Your <a href="/import/{{ related_id }}">import</a> completed.{% endblocktrans %}
+                        {% elif notification.related_report %}
+                            {% url 'settings-report' notification.related_report.id as path %}
+                            {% blocktrans with related_id=path %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
                         {% endif %}
                     </p>
                 </div>
@@ -115,15 +120,7 @@
                     <div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white{% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %} has-text-black{% else %}-bis has-text-grey-dark{% endif %}{% endif %}">
                         <div class="columns">
                             <div class="column">
-                                {% if related_status.content %}
-                                <a href="{{ related_status.local_path }}">
-                                    {{ related_status.content | safe | truncatewords_html:10 }}{% if related_status.mention_books %} <em>{{ related_status.mention_books.first.title }}</em>{% endif %}
-                                </a>
-                                {% elif related_status.quote %}
-                                <a href="{{ related_status.local_path }}">{{ related_status.quote | safe | truncatewords_html:10 }}</a>
-                                {% elif related_status.rating %}
-                                {% include 'snippets/stars.html' with rating=related_status.rating %}
-                                {% endif %}
+                                {% include 'snippets/status_preview.html' with status=related_status %}
                             </div>
                             <div class="column is-narrow {% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %}has-text-black{% else %}has-text-grey-dark{% endif %}">
                                 {{ related_status.published_date | post_date }}

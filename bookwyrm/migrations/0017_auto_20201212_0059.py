@@ -7,13 +7,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0016_auto_20201211_2026'),
+        ("bookwyrm", "0016_auto_20201211_2026"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='readthrough',
-            name='book',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='bookwyrm.Edition'),
+            model_name="readthrough",
+            name="book",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, to="bookwyrm.Edition"
+            ),
         ),
     ]

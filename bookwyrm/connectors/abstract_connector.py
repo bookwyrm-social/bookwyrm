@@ -1,4 +1,4 @@
-''' functionality outline for a book data connector '''
+""" functionality outline for a book data connector """
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 import logging
@@ -13,8 +13,11 @@ from .connector_manager import load_more_data, ConnectorException
 
 
 logger = logging.getLogger(__name__)
+
+
 class AbstractMinimalConnector(ABC):
-    ''' just the bare bones, for other bookwyrm instances '''
+    """ just the bare bones, for other bookwyrm instances """
+
     def __init__(self, identifier):
         # load connector settings
         info = models.Connector.objects.get(identifier=identifier)
@@ -22,40 +25,29 @@ class AbstractMinimalConnector(ABC):
 
         # the things in the connector model to copy over
         self_fields = [
-            'base_url',
-            'books_url',
-            'covers_url',
-            'search_url',
-            'isbn_search_url',
-            'max_query_count',
-            'name',
-            'identifier',
-            'local'
+            "base_url",
+            "books_url",
+            "covers_url",
+            "search_url",
+            "isbn_search_url",
+            "max_query_count",
+            "name",
+            "identifier",
+            "local",
         ]
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
     def search(self, query, min_confidence=None):
-        ''' free text search '''
+        """ free text search """
         params = {}
         if min_confidence:
-            params['min_confidence'] = min_confidence
+            params["min_confidence"] = min_confidence
 
-        resp = requests.get(
-            '%s%s' % (self.search_url, query),
+        data = get_data(
+            "%s%s" % (self.search_url, query),
             params=params,
-            headers={
-                'Accept': 'application/json; charset=utf-8',
-                'User-Agent': settings.USER_AGENT,
-            },
         )
-        if not resp.ok:
-            resp.raise_for_status()
-        try:
-            data = resp.json()
-        except ValueError as e:
-            logger.exception(e)
-            raise ConnectorException('Unable to parse json response', e)
         results = []
 
         for doc in self.parse_search_data(data)[:10]:
@@ -63,74 +55,64 @@ class AbstractMinimalConnector(ABC):
         return results
 
     def isbn_search(self, query):
-        ''' isbn search '''
+        """ isbn search """
         params = {}
-        resp = requests.get(
-            '%s%s' % (self.isbn_search_url, query),
+        data = get_data(
+            "%s%s" % (self.isbn_search_url, query),
             params=params,
-            headers={
-                'Accept': 'application/json; charset=utf-8',
-                'User-Agent': settings.USER_AGENT,
-            },
         )
-        if not resp.ok:
-            resp.raise_for_status()
-        try:
-            data = resp.json()
-        except ValueError as e:
-            logger.exception(e)
-            raise ConnectorException('Unable to parse json response', e)
         results = []
 
-        for doc in self.parse_isbn_search_data(data):
+        # this shouldn't be returning mutliple results, but just in case
+        for doc in self.parse_isbn_search_data(data)[:10]:
             results.append(self.format_isbn_search_result(doc))
         return results
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
-        ''' pull up a book record by whatever means possible '''
+        """ pull up a book record by whatever means possible """
 
     @abstractmethod
     def parse_search_data(self, data):
-        ''' turn the result json from a search into a list '''
+        """ turn the result json from a search into a list """
 
     @abstractmethod
     def format_search_result(self, search_result):
-        ''' create a SearchResult obj from json '''
+        """ create a SearchResult obj from json """
 
     @abstractmethod
     def parse_isbn_search_data(self, data):
-        ''' turn the result json from a search into a list '''
+        """ turn the result json from a search into a list """
 
     @abstractmethod
     def format_isbn_search_result(self, search_result):
-        ''' create a SearchResult obj from json '''
+        """ create a SearchResult obj from json """
 
 
 class AbstractConnector(AbstractMinimalConnector):
-    ''' generic book data connector '''
+    """ generic book data connector """
+
     def __init__(self, identifier):
         super().__init__(identifier)
         # fields we want to look for in book data to copy over
         # title we handle separately.
         self.book_mappings = []
 
-
     def is_available(self):
-        ''' check if you're allowed to use this connector '''
+        """ check if you're allowed to use this connector """
         if self.max_query_count is not None:
             if self.connector.query_count >= self.max_query_count:
                 return False
         return True
 
-
     def get_or_create_book(self, remote_id):
-        ''' translate arbitrary json into an Activitypub dataclass '''
+        """ translate arbitrary json into an Activitypub dataclass """
         # first, check if we have the origin_id saved
-        existing = models.Edition.find_existing_by_remote_id(remote_id) or \
-                models.Work.find_existing_by_remote_id(remote_id)
+        existing = models.Edition.find_existing_by_remote_id(
+            remote_id
+        ) or models.Work.find_existing_by_remote_id(remote_id)
         if existing:
-            if hasattr(existing, 'get_default_editon'):
+            if hasattr(existing, "get_default_editon"):
                 return existing.get_default_editon()
             return existing
 
@@ -154,7 +136,7 @@ class AbstractConnector(AbstractMinimalConnector):
             edition_data = data
 
         if not work_data or not edition_data:
-            raise ConnectorException('Unable to load book data: %s' % remote_id)
+            raise ConnectorException("Unable to load book data: %s" % remote_id)
 
         with transaction.atomic():
             # create activitypub object
@@ -168,11 +150,10 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
-
     def create_edition_from_data(self, work, edition_data):
-        ''' if we already have the work, we're ready '''
+        """ if we already have the work, we're ready """
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
-        mapped_data['work'] = work.remote_id
+        mapped_data["work"] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
         edition = edition_activity.to_model(model=models.Edition)
         edition.connector = self.connector
@@ -189,9 +170,8 @@ class AbstractConnector(AbstractMinimalConnector):
 
         return edition
 
-
     def get_or_create_author(self, remote_id):
-        ''' load that author '''
+        """ load that author """
         existing = models.Author.find_existing_by_remote_id(remote_id)
         if existing:
             return existing
@@ -203,48 +183,48 @@ class AbstractConnector(AbstractMinimalConnector):
         # this will dedupe
         return activity.to_model(model=models.Author)
 
-
     @abstractmethod
     def is_work_data(self, data):
-        ''' differentiate works and editions '''
+        """ differentiate works and editions """
 
     @abstractmethod
     def get_edition_from_work_data(self, data):
-        ''' every work needs at least one edition '''
+        """ every work needs at least one edition """
 
     @abstractmethod
     def get_work_from_edition_data(self, data):
-        ''' every edition needs a work '''
+        """ every edition needs a work """
 
     @abstractmethod
     def get_authors_from_data(self, data):
-        ''' load author data '''
+        """ load author data """
 
     @abstractmethod
     def expand_book_data(self, book):
-        ''' get more info on a book '''
+        """ get more info on a book """
 
 
 def dict_from_mappings(data, mappings):
-    ''' create a dict in Activitypub format, using mappings supplies by
-    the subclass '''
+    """create a dict in Activitypub format, using mappings supplies by
+    the subclass"""
     result = {}
     for mapping in mappings:
         result[mapping.local_field] = mapping.get_value(data)
     return result
 
 
-def get_data(url):
-    ''' wrapper for request.get '''
+def get_data(url, params=None):
+    """ wrapper for request.get """
     try:
         resp = requests.get(
             url,
+            params=params,
             headers={
-                'Accept': 'application/json; charset=utf-8',
-                'User-Agent': settings.USER_AGENT,
+                "Accept": "application/json; charset=utf-8",
+                "User-Agent": settings.USER_AGENT,
             },
         )
-    except (RequestError, SSLError) as e:
+    except (RequestError, SSLError, ConnectionError) as e:
         logger.exception(e)
         raise ConnectorException()
 
@@ -260,12 +240,12 @@ def get_data(url):
 
 
 def get_image(url):
-    ''' wrapper for requesting an image '''
+    """ wrapper for requesting an image """
     try:
         resp = requests.get(
             url,
             headers={
-                'User-Agent': settings.USER_AGENT,
+                "User-Agent": settings.USER_AGENT,
             },
         )
     except (RequestError, SSLError) as e:
@@ -278,27 +258,31 @@ def get_image(url):
 
 @dataclass
 class SearchResult:
-    ''' standardized search result object '''
+    """ standardized search result object """
+
     title: str
     key: str
-    author: str
-    year: str
     connector: object
+    author: str = None
+    year: str = None
+    cover: str = None
     confidence: int = 1
 
     def __repr__(self):
         return "<SearchResult key={!r} title={!r} author={!r}>".format(
-            self.key, self.title, self.author)
+            self.key, self.title, self.author
+        )
 
     def json(self):
-        ''' serialize a connector for json response '''
+        """ serialize a connector for json response """
         serialized = asdict(self)
-        del serialized['connector']
+        del serialized["connector"]
         return serialized
 
 
 class Mapping:
-    ''' associate a local database field with a field in an external dataset '''
+    """ associate a local database field with a field in an external dataset """
+
     def __init__(self, local_field, remote_field=None, formatter=None):
         noop = lambda x: x
 
@@ -307,11 +291,11 @@ class Mapping:
         self.formatter = formatter or noop
 
     def get_value(self, data):
-        ''' pull a field from incoming json and return the formatted version '''
+        """ pull a field from incoming json and return the formatted version """
         value = data.get(self.remote_field)
         if not value:
             return None
         try:
             return self.formatter(value)
-        except:# pylint: disable=bare-except
+        except:  # pylint: disable=bare-except
             return None

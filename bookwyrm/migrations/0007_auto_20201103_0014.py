@@ -8,13 +8,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0006_auto_20200221_1702_squashed_0064_merge_20201101_1913'),
+        ("bookwyrm", "0006_auto_20200221_1702_squashed_0064_merge_20201101_1913"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='siteinvite',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="siteinvite",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

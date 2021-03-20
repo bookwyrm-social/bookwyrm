@@ -20,7 +20,7 @@
         {% for item in items %}
             <li class="block pb-3">
                 <div class="card">
-                    <div class="card-content columns p-0 mb-0 is-mobile">
+                    <div class="card-content columns p-0 pr-2 mb-0 is-mobile">
                         <div class="column is-narrow pt-0 pb-0">
                             <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
                         </div>
@@ -83,9 +83,10 @@
             </div>
             <div class="column">
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-                <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
+                <form name="add-book" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="list" value="{{ list.id }}">
                     <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
                 </form>
             </div>

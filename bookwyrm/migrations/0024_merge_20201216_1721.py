@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0023_auto_20201214_0511'),
-        ('bookwyrm', '0023_merge_20201216_0112'),
+        ("bookwyrm", "0023_auto_20201214_0511"),
+        ("bookwyrm", "0023_merge_20201216_0112"),
     ]
 
-    operations = [
-    ]
+    operations = []

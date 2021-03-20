@@ -1,7 +1,7 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
 <div class="block">
-    {% if status.status_type == 'Review' %}
+    {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
     <div>
         {% if status.name %}
         <h3 class="title is-5 has-subtitle" dir="auto">
@@ -35,7 +35,7 @@
         {% endif %}
 
         {% if status.content and status.status_type != 'GeneratedNote' and status.status_type != 'Announce' %}
-        {% include 'snippets/trimmed_text.html' with full=status.content|safe %}
+        {% include 'snippets/trimmed_text.html' with full=status.content|safe no_trim=status.content_warning %}
         {% endif %}
         {% if status.attachments.exists %}
         <div class="block">

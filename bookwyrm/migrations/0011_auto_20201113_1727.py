@@ -2,9 +2,10 @@
 
 from django.db import migrations, models
 
+
 def set_origin_id(app_registry, schema_editor):
     db_alias = schema_editor.connection.alias
-    books = app_registry.get_model('bookwyrm', 'Book').objects.using(db_alias)
+    books = app_registry.get_model("bookwyrm", "Book").objects.using(db_alias)
     for book in books:
         book.origin_id = book.remote_id
         # the remote_id will be set automatically
@@ -15,18 +16,18 @@ def set_origin_id(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0010_importjob_retry'),
+        ("bookwyrm", "0010_importjob_retry"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='author',
-            name='origin_id',
+            model_name="author",
+            name="origin_id",
             field=models.CharField(max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='book',
-            name='origin_id',
+            model_name="book",
+            name="origin_id",
             field=models.CharField(max_length=255, null=True),
         ),
         migrations.RunPython(set_origin_id),

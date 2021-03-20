@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0017_auto_20201130_1819'),
+        ("bookwyrm", "0017_auto_20201130_1819"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='following',
+            model_name="user",
+            name="following",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='private_key',
+            model_name="user",
+            name="private_key",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='public_key',
+            model_name="user",
+            name="public_key",
         ),
     ]

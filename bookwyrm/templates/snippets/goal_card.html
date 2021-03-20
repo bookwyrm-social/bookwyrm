@@ -17,8 +17,9 @@
 {% endblock %}
 
 {% block card-footer %}
-<div class="card-footer-item is-flex-direction-column">
-    <button class="button is-danger is-light is-block set-display" data-id="hide-{{ year }}-reading-goal" data-value="true">{% trans "Dismiss message" %}</button>
+<form class="card-footer-item is-flex-direction-column" method="post" action="{% url 'hide-goal' %}">
+    {% csrf_token %}
+    <button type="submit" class="button is-danger is-light is-block set-display" >{% trans "Dismiss message" %}</button>
     <p class="help">{% blocktrans with path=request.user.local_path %}You can set or change your reading goal any time from your <a href="{{ path }}">profile page</a>{% endblocktrans %}</p>
-</div>
+</form>
 {% endblock %}

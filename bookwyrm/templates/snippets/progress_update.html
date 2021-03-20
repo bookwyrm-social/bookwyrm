@@ -22,7 +22,7 @@
             </div>
         </div>
         {% if readthrough.progress_mode == 'PG' and book.pages %}
-        <p class="help">{% blocktrans %}of {{ book.pages }} pages{% endblocktrans %}</p>
+        <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
         {% endif %}
     </div>
 </form>

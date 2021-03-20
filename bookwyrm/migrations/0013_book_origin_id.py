@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0012_attachment'),
+        ("bookwyrm", "0012_attachment"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='book',
-            name='origin_id',
+            model_name="book",
+            name="origin_id",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

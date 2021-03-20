@@ -35,42 +35,37 @@
     </div>
 
     <div class="columns">
-        <div class="column is-one-fifth">
+        <div class="column is-one-fifth is-clipped">
             {% include 'snippets/book_cover.html' with book=book size=large %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
             {% include 'snippets/shelve_button/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
-            <div class="box p-2">
-                <h3 class="title is-6 mb-1">{% trans "Add cover" %}</h3>
-                <form name="add-cover" method="POST" action="/upload-cover/{{ book.id }}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <label class="label">
-                        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover" required>
-                    </label>
-                    <button class="button is-small is-primary" type="submit">{% trans "Add" %}</button>
-                </form>
+            <div class="block">
+                {% trans "Add cover" as button_text %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
+                {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
             </div>
             {% endif %}
 
             <section class="content">
                 <dl>
                     {% if book.isbn_13 %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "ISBN:" %}</dt>
                         <dd>{{ book.isbn_13 }}</dd>
                     </div>
                     {% endif %}
 
                     {% if book.oclc_number %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "OCLC Number:" %}</dt>
                         <dd>{{ book.oclc_number }}</dd>
                     </div>
                     {% endif %}
 
                     {% if book.asin %}
-                    <div class="is-flex is-justify-content-space-between">
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
                         <dt>{% trans "ASIN:" %}</dt>
                         <dd>{{ book.asin }}</dd>
                     </div>
@@ -78,13 +73,22 @@
                 </dl>
 
                 <p>
-                {% if book.physical_format and not book.pages %}
-                {{ book.physical_format | title }}
-                {% elif book.physical_format and book.pages %}
-                {% blocktrans with format=book.physical_format|title pages=book.pages %}{{ format }}, {{ pages }} pages{% endblocktrans %}
-                {% elif book.pages %}
-                {% blocktrans with pages=book.pages %}{{ pages }} pages{% endblocktrans %}
-                {% endif %}
+                    {% if book.physical_format and not book.pages %}
+                    {{ book.physical_format | title }}
+                    {% elif book.physical_format and book.pages %}
+                    {% blocktrans with format=book.physical_format|title pages=book.pages %}{{ format }}, {{ pages }} pages{% endblocktrans %}
+                    {% elif book.pages %}
+                    {% blocktrans with pages=book.pages %}{{ pages }} pages{% endblocktrans %}
+                    {% endif %}
+                </p>
+                <p>
+                    {% if book.published_date and book.publishers %}
+                    {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
+                    {% elif book.published_date %}
+                    {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
+                    {% elif book.publishers %}
+                    {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
+                    {% endif %}
                 </p>
 
                 {% if book.openlibrary_key %}
@@ -224,7 +228,7 @@
             </section>
             {% endif %}
 
-            {% if lists.exists %}
+            {% if lists.exists or request.user.list_set.exists %}
             <section class="content block">
                 <h2 class="title is-5">{% trans "Lists" %}</h2>
                 <ul>
@@ -232,6 +236,26 @@
                 <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
                 {% endfor %}
                 </ul>
+
+                {% if request.user.list_set.exists %}
+                <form name="list-add" method="post" action="{% url 'list-add-book' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <label class="label" for="id_list">{% trans "Add to list" %}</label>
+                    <div class="field has-addons">
+                        <div class="select control">
+                            <select name="list" id="id_list">
+                                {% for list in user.list_set.all %}
+                                <option value="{{ list.id }}">{{ list.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-link">{% trans "Add" %}</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </section>
             {% endif %}
         </div>

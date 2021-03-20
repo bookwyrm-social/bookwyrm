@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0045_auto_20210210_2114'),
+        ("bookwyrm", "0045_auto_20210210_2114"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='privacy_policy',
-            field=models.TextField(default='Add a privacy policy here.'),
+            model_name="sitesettings",
+            name="privacy_policy",
+            field=models.TextField(default="Add a privacy policy here."),
         ),
     ]
