@@ -2,6 +2,7 @@ from django.http import JsonResponse
 
 from .base_activity import ActivityEncoder
 
+
 class ActivitypubResponse(JsonResponse):
     """
     A class to be used in any place that's serializing responses for
