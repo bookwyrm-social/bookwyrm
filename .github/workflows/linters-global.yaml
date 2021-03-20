@@ -19,3 +19,5 @@ jobs:
 
       - name: EditorConfig lint
         uses: greut/eclint-action@v0
+        with:
+          args: '-show_all_errors -exclude static/js/tabs.js'
