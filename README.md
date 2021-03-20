@@ -234,12 +234,12 @@ Backups are named `backup__%Y-%m-%d.sql`.
 
 The db service has an optional script for periodically pruning the backups directory so that all recent daily backups are kept, but for older backups, only weekly or monthly backups are kept.
 To enable this script:
- - Uncomment the final line in `postgres-docker/cronfile`
- - rebuild your instance `docker-compose up --build`
+- Uncomment the final line in `postgres-docker/cronfile`
+- rebuild your instance `docker-compose up --build`
 
 You can copy backups from the backups volume to your host machine with `docker cp`:
- - Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
- - Run `docker cp <container_name>:/backups <host machine path>`
+- Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
+- Run `docker cp <container_name>:/backups <host machine path>`
 
 ### Port Conflicts
 
@@ -248,15 +248,15 @@ This means that, depending on what else you are running on your host machine, yo
 
 If this occurs, you will need to change your configuration to run services on different ports.
 This may require one or more changes the following files:
- - `docker-compose.yml`
- - `nginx/default.conf`
- - `.env` (You create this file yourself during setup)
+- `docker-compose.yml`
+- `nginx/default.conf`
+- `.env` (You create this file yourself during setup)
 
 E.g., If you need Redis to run on a different port:
- - In `docker-compose.yml`:
+- In `docker-compose.yml`:
     - In `services` -> `redis` -> `command`, add `--port YOUR_PORT` to the command
     - In `services` -> `redis` -> `ports`, change `6379:6379` to your port
- - In `.env`, update `REDIS_PORT`
+- In `.env`, update `REDIS_PORT`
 
 If you are already running a web-server on your machine, you will need to set up a reverse-proxy.
 
@@ -268,11 +268,11 @@ The default BookWyrm configuration already has an nginx server that proxies requ
 The static files are stored in a Docker volume that several BookWyrm services access, so it is not recommended to remove this server completely.
 
 To run BookWyrm behind a reverse-proxy, make the following changes:
- - In `nginx/default.conf`:
+- In `nginx/default.conf`:
     - Comment out the two default servers
     - Uncomment the server labeled Reverse-Proxy server
     - Replace `your-domain.com` with your domain name
- - In `docker-compose.yml`:
+- In `docker-compose.yml`:
     - In `services` -> `nginx` -> `ports`, comment out the default ports and add `- 8001:8001`
     - In `services` -> `nginx` -> `volumes`, comment out the two volumes that begin `./certbot/`
     - In `services`, comment out the `certbot` service
@@ -288,35 +288,35 @@ Before you can set up nginx, you will need to locate your nginx configuration di
 See [nginx's guide](http://nginx.org/en/docs/beginners_guide.html) for details.
 
 To set up your server:
- - In you `nginx.conf` file, ensure that `include servers/*;` isn't commented out.
- - In your nginx `servers` directory, create a new file named after your domain containing the following information:
-   ```nginx
-   server {
-      server_name your-domain.com www.your-domain.com;
+- In you `nginx.conf` file, ensure that `include servers/*;` isn't commented out.
+- In your nginx `servers` directory, create a new file named after your domain containing the following information:
+    ```nginx
+    server {
+        server_name your-domain.com www.your-domain.com;
 
-      location / {
-          proxy_pass http://localhost:8000;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $host;
-      }
+        location / {
+            proxy_pass http://localhost:8000;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $host;
+        }
 
-      location /images/ {
-          proxy_pass http://localhost:8001;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $host;
-      }
+        location /images/ {
+            proxy_pass http://localhost:8001;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $host;
+        }
 
-      location /static/ {
-          proxy_pass http://localhost:8001;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $host;
-      }
+        location /static/ {
+            proxy_pass http://localhost:8001;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header Host $host;
+        }
 
-      listen [::]:80 ssl;
-      listen 80 ssl;
-   }
-   ```
- - run `sudo certbot run --nginx --email YOUR_EMAIL -d your-domain.com -d www.your-domain.com`
- - restart nginx
+        listen [::]:80 ssl;
+        listen 80 ssl;
+    }
+    ```
+- run `sudo certbot run --nginx --email YOUR_EMAIL -d your-domain.com -d www.your-domain.com`
+- restart nginx
 
 If everything worked correctly, your BookWyrm instance should now be externally accessible.
