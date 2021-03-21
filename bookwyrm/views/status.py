@@ -13,6 +13,7 @@ from bookwyrm.settings import DOMAIN
 from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger
+from .reading import edit_readthrough
 
 
 # pylint: disable= no-self-use
@@ -64,6 +65,10 @@ class CreateStatus(View):
             status.quote = to_markdown(status.quote)
 
         status.save(created=True)
+
+        # update a readthorugh, if needed
+        edit_readthrough(request)
+
         return redirect(request.headers.get("Referer", "/"))
 
 

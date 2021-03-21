@@ -76,7 +76,7 @@ class ReviewForm(CustomForm):
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ["user", "book", "content", "content_warning", "sensitive", "privacy"]
+        fields = ["user", "book", "content", "content_warning", "sensitive", "privacy", "progress", "mode"]
 
 
 class QuotationForm(CustomForm):
