@@ -213,17 +213,6 @@ Congrats! You did it, go to your domain and enjoy the fruits of your labors.
     ```
     - Go to the site settings (`/settings/site-settings` on your domain) and configure your instance name, description, code of conduct, and toggle whether registration is open on your instance
 
-
-## Book data
-The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
-
-There are three concepts in the book data model:
-- `Book`, an abstract, high-level concept that could mean either a `Work` or an `Edition`. No data is saved as a `Book`, it serves as shared model for `Work` and `Edition`
-- `Work`, the theoretical umbrella concept of a book that encompasses every edition of the book, and
-- `Edition`, a concrete, actually published version of a book
- 
-Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
-
 ### Backups
 
 BookWyrm's db service dumps a backup copy of its database to its `/backups` directory daily at midnight UTC.
@@ -237,6 +226,15 @@ To enable this script:
 You can copy backups from the backups volume to your host machine with `docker cp`:
 - Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
 - Run `docker cp <container_name>:/backups <host machine path>`
+
+### Updating your instance
+
+When there are changes available in the production branch, you can install and get them running on your instance using the command `./bw-dev update`. This does a number of things:
+- `git pull` gets the updated code from the git repository. If there are conflicts, you may need to run `git pull` separately and resolve the conflicts before trying the `./bw-dev update` script again.
+- `docker-compose build` rebuilds the images, which ensures that the correct packages are installed. This step takes a long time and is only needed when the dependencies (including pip `requirements.txt` packages) have changed, so you can comment it out if you want a quicker update path and don't mind un-commenting it as needed.
+- `docker-compose exec web python manage.py migrate` runs the database migrations in Django
+- `docker-compose exec web python manage.py collectstatic --no-input` loads any updated static files (such as the JavaScript and CSS)
+- `docker-compose restart` reloads the docker containers
 
 ### Port Conflicts
 
@@ -317,3 +315,14 @@ To set up your server:
 - restart nginx
 
 If everything worked correctly, your BookWyrm instance should now be externally accessible.
+
+
+## Book data
+The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
+
+There are three concepts in the book data model:
+- `Book`, an abstract, high-level concept that could mean either a `Work` or an `Edition`. No data is saved as a `Book`, it serves as shared model for `Work` and `Edition`
+- `Work`, the theoretical umbrella concept of a book that encompasses every edition of the book, and
+- `Edition`, a concrete, actually published version of a book
+
+Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
