@@ -60,6 +60,11 @@ urlpatterns = [
         name="settings-invite-requests",
     ),
     re_path(
+        r"^settings/requests/ignore?$",
+        views.ignore_invite_request,
+        name="settings-invite-requests-ignore",
+    ),
+    re_path(
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),

@@ -79,6 +79,7 @@ class InviteRequest(BookWyrmModel):
         SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
     )
     invite_sent = models.BooleanField(default=False)
+    ignored = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         """ don't create a request for a registered email """

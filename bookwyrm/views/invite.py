@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
@@ -85,20 +86,28 @@ class ManageInviteRequests(View):
 
     def get(self, request):
         """ view a list of requests """
+        ignored = request.GET.get("ignored", False)
         try:
             page = int(request.GET.get("page", 1))
         except ValueError:
             page = 1
 
         paginated = Paginator(
-            models.InviteRequest.objects.all().order_by("-created_date"),
+            models.InviteRequest.objects.filter(
+                ignored=ignored
+            ).order_by("-created_date"),
             PAGE_LENGTH,
         )
 
         data = {
+            "ignored": ignored,
             "requests": paginated.page(page),
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)
+
+    def post(self, request):
+        """ send out an invite """
+
 
 
 class InviteRequest(View):
@@ -118,3 +127,8 @@ class InviteRequest(View):
             "books": helpers.get_discover_books(),
         }
         return TemplateResponse(request, "discover/discover.html", data)
+
+
+@require_POST
+def ignore_invite_request(request):
+    """ ok """

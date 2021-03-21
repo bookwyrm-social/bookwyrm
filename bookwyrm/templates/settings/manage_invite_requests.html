@@ -25,6 +25,7 @@
             <th>{% trans "Date" %}</th>
             <th>{% trans "Email" %}</th>
             <th>{% trans "Status" %}</th>
+            <th>{% trans "Action" %}</th>
         </tr>
         {% if not requests %}
         <tr><td colspan="4">{% trans "No requests" %}</td></tr>
@@ -33,7 +34,33 @@
         <tr>
             <td>{{ req.created_date | naturaltime }}</td>
             <td>{{ req.email }}</td>
-            <td>{% trans "Pending" %}</td>
+            <td>
+                {% if req.invite.times_used %}
+                {% trans "Accepted" %}
+                {% elif req.invite %}
+                {% trans "Sent" %}
+                {% else %}
+                {% trans "Requested" %}
+                {% endif %}
+            </td>
+            <td>
+                {% if req.invite and not req.invite.times_used %}
+                <button class="button is-danger is-light is-small">{% trans "Revoke invite" %}</button>
+                {% else %}
+                <div class="field is-grouped">
+                    <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="invite-request" value="{{ req.id }}">
+                        <button type="submit" class="button is-link is-light is-small">{% trans "Send invite" %}</button>
+                    </form>
+
+                    <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
+                        <input type="hidden" name="invite-request" value="{{ req.id }}">
+                        <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
+                    </form>
+                </div>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
