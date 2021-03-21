@@ -9,7 +9,6 @@ import responses
 
 from bookwyrm import models, importer
 from bookwyrm.goodreads_import import GoodreadsImporter
-from bookwyrm import importer
 from bookwyrm.settings import DOMAIN
 
 
@@ -17,8 +16,8 @@ class GoodreadsImport(TestCase):
     """ importing from goodreads csv """
 
     def setUp(self):
-        self.importer = GoodreadsImporter()
         """ use a test csv """
+        self.importer = GoodreadsImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         self.user = models.User.objects.create_user(

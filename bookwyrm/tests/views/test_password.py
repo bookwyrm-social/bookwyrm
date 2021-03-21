@@ -42,7 +42,8 @@ class PasswordViews(TestCase):
         request = self.factory.post("", {"email": "aa@bb.ccc"})
         view = views.PasswordResetRequest.as_view()
         resp = view(request)
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        resp.render()
 
         request = self.factory.post("", {"email": "mouse@mouse.com"})
         with patch("bookwyrm.emailing.send_email.delay"):

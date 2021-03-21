@@ -3,6 +3,7 @@ import datetime
 from collections import defaultdict
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
 from django.utils import timezone
@@ -200,6 +201,19 @@ class ExpiryWidget(widgets.Select):
             return selected_string  # "This will raise
 
         return timezone.now() + interval
+
+
+class InviteRequestForm(CustomForm):
+    def clean(self):
+        """ make sure the email isn't in use by a registered user """
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if email and models.User.objects.filter(email=email).exists():
+            self.add_error("email", _("A user with this email already exists."))
+
+    class Meta:
+        model = models.InviteRequest
+        fields = ["email"]
 
 
 class CreateInviteForm(CustomForm):

@@ -49,10 +49,28 @@ urlpatterns = [
     # admin
     re_path(r"^settings/site-settings", views.Site.as_view(), name="settings-site"),
     re_path(
+        r"^settings/email-preview",
+        views.site.email_preview,
+        name="settings-email-preview",
+    ),
+    re_path(
         r"^settings/federation", views.Federation.as_view(), name="settings-federation"
     ),
     re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
+    ),
+    re_path(
+        r"^settings/requests/?$",
+        views.ManageInviteRequests.as_view(),
+        name="settings-invite-requests",
+    ),
+    re_path(
+        r"^settings/requests/ignore?$",
+        views.ignore_invite_request,
+        name="settings-invite-requests-ignore",
+    ),
+    re_path(
+        r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
     # moderation
@@ -74,8 +92,8 @@ urlpatterns = [
     ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
-    re_path(r"^about/?$", views.About.as_view()),
-    path("", views.Home.as_view()),
+    re_path(r"^about/?$", views.About.as_view(), name="about"),
+    path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view()),
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     # feeds
