@@ -47,20 +47,18 @@
             {% for book in shelf.books %}
             <div class="suggested-tabs card" role="tabpanel" id="book-{{ book.id }}"{% if shelf_counter != 1 or not forloop.first %} hidden{% endif %} aria-labelledby="tab-book-{{ book.id }}">
                 <div class="card-header">
-                    <p class="card-header-title">
-                        <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-                    </p>
+                    <div class="card-header-title">
+                        <div>
+                            <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
+                            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                        </div>
+                    </div>
                     <div class="card-header-icon is-hidden-tablet">
                         {% trans "Close" as button_text %}
                         {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
                     </div>
                 </div>
                 <div class="card-content">
-                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
-                {% active_shelf book as active_shelf %}
-                {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
-                {% include 'snippets/progress_update.html' with readthrough=book.latest_readthrough %}
-                {% endif %}
                 {% include 'snippets/create_status.html' with book=book %}
                 </div>
             </div>

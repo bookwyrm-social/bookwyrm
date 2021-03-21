@@ -13,7 +13,15 @@
     {% endif %}
     <div class="control">
         {% if type != 'reply' and type != 'direct'  %}
-        <label class="label" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        <label class="label" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">
+            {% if type == 'comment' %}
+            {% trans "Comment:" %}
+            {% elif type == 'quotation' %}
+            {% trans "Quote:" %}
+            {% elif type == 'review' %}
+            {% trans "Review:" %}
+            {% endif %}
+        </label>
         {% endif %}
 
         {% if type == 'review' %}
@@ -44,6 +52,33 @@
         <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
         <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
+    </div>
+    {% elif type == 'comment' %}
+    <div class="control">
+        {% active_shelf book as active_shelf %}
+        {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
+
+        {% with readthrough=book.latest_readthrough %}
+        <div class="field">
+            <input type="hidden" name="id" value="{{ readthrough.id }}"/>
+            <label class="label" for="progress-{{ uuid }}">{% trans "Progress:" %}</label>
+            <div class="field has-addons mb-0">
+                <div class="control">
+                    <input aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{{ readthrough.progress|default:'' }}" id="progress-{{ uuid }}">
+                </div>
+                <div class="control select">
+                    <select name="progress_mode" aria-label="Progress mode">
+                        <option value="PG" {% if readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
+                        <option value="PCT" {% if readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+                    </select>
+                </div>
+            </div>
+            {% if readthrough.progress_mode == 'PG' and book.pages %}
+            <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+        {% endwith %}
+        {% endif %}
     </div>
     {% endif %}
     <input type="checkbox" class="hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">

@@ -1,0 +1,46 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Update progress" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form action="{% url 'edit-readthrough' %}" method="POST">
+{% endblock %}
+
+{% block modal-body %}
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ readthrough.id }}"/>
+<div class="field">
+    <label class="label is-align-self-center mb-0 pr-2" for="progress">{% trans "Progress:" %}</label>
+    <div class="field has-addons mb-0">
+        <div class="control">
+            <input
+                aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
+                class="input"
+                type="number"
+                min="0"
+                name="progress"
+                size="3"
+                value="{{ readthrough.progress|default:'' }}">
+        </div>
+        <div class="control select">
+            <select name="progress_mode" aria-label="Progress mode">
+                <option value="PG" {% if readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
+                <option value="PCT" {% if readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+            </select>
+        </div>
+    </div>
+    {% if readthrough.progress_mode == 'PG' and book.pages %}
+    <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+<button class="button is-success" type="submit">{% trans "Save" %}</button>
+{% trans "Cancel" as button_text %}
+{% include 'snippets/toggle/toggle_button.html' with text=button_text %}
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}
