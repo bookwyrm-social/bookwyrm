@@ -16,7 +16,8 @@
         <ul class="menu-list">
             <li>
                 {% url 'settings-invites' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
+                {% url 'settings-invite-requests' as alt_url %}
+                <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
             <li>
                 {% url 'settings-reports' as url %}

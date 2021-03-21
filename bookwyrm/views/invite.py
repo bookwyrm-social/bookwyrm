@@ -130,4 +130,11 @@ class InviteRequest(View):
 
 @require_POST
 def ignore_invite_request(request):
-    """ ok """
+    """ hide an invite request """
+    invite_request = get_object_or_404(
+        models.InviteRequest, id=request.POST.get("invite-request")
+    )
+
+    invite_request.ignored = not invite_request.ignored
+    invite_request.save()
+    return redirect("settings-invite-requests")

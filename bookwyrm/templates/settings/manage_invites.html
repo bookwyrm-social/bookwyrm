@@ -6,13 +6,13 @@
 
 <div class="tabs">
     <ul>
-        {% url 'settings-invites' as url %}
-        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Invites" %}</a>
-        </li>
         {% url 'settings-invite-requests' as url %}
         <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
             <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
         </li>
     </ul>
 </div>

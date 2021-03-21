@@ -6,19 +6,25 @@
 
 <div class="tabs">
     <ul>
-        {% url 'settings-invites' as url %}
-        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Invites" %}</a>
-        </li>
         {% url 'settings-invite-requests' as url %}
         <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
             <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
         </li>
     </ul>
 </div>
 
 <section class="block">
-    <h2 class="title is-4">{% trans "Invite Requests" %}</h2>
+    <h2 class="title is-4">
+        {% if ignored %}
+        {% trans "Ignored Invite Requests" %}
+        {% else %}
+        {% trans "Invite Requests" %}
+        {% endif %}
+    </h2>
 
     <table class="table is-striped">
         <tr>
@@ -55,8 +61,13 @@
                     </form>
 
                     <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
+                        {% csrf_token %}
                         <input type="hidden" name="invite-request" value="{{ req.id }}">
+                        {% if not req.ignored %}
                         <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
+                        {% else %}
+                        <button type="submit" class="button is-danger is-light is-small">{% trans "Un-gnore" %}</button>
+                        {% endif %}
                     </form>
                 </div>
                 {% endif %}
@@ -65,5 +76,11 @@
         {% endfor %}
     </table>
     {% include 'snippets/pagination.html' with page=requests path=request.path %}
+
+    {% if ignored %}
+    <p><a href="{% url 'settings-invite-requests' %}">{% trans "Back to pending requests" %}</a></p>
+    {% else %}
+    <p><a href="{% url 'settings-invite-requests' %}?ignored=True">{% trans "View ignored requests" %}</a></p>
+    {% endif %}
 </section>
 {% endblock %}
