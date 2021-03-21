@@ -235,7 +235,7 @@ class Comment(Status):
     progress = models.IntegerField(
         validators=[MinValueValidator(0)], null=True, blank=True
     )
-    mode = models.CharField(
+    progress_mode = models.CharField(
         max_length=3,
         choices=ProgressMode.choices,
         default=ProgressMode.PAGE,

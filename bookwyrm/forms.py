@@ -84,7 +84,7 @@ class CommentForm(CustomForm):
             "sensitive",
             "privacy",
             "progress",
-            "mode",
+            "progress_mode",
         ]
 
 
