@@ -14,6 +14,7 @@ from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
 from .fields import image_serializer
+from .readthrough import ProgressMode
 from . import fields
 
 
@@ -227,6 +228,19 @@ class Comment(Status):
 
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
+    )
+
+    # this is it's own field instead of a foreign key to the progress update
+    # so that the update can be deleted without impacting the status
+    progress = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
+    progress_mode = models.CharField(
+        max_length=3,
+        choices=ProgressMode.choices,
+        default=ProgressMode.PAGE,
+        null=True,
+        blank=True,
     )
 
     @property

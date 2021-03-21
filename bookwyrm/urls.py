@@ -183,7 +183,7 @@ urlpatterns = [
     re_path(r"^shelve/?$", views.shelve),
     re_path(r"^unshelve/?$", views.unshelve),
     # reading progress
-    re_path(r"^edit-readthrough/?$", views.edit_readthrough),
+    re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
     re_path(r"^create-readthrough/?$", views.create_readthrough),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),

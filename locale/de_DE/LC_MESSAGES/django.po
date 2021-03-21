@@ -73,7 +73,7 @@ msgstr "Deutsch"
 
 #: bookwyrm/settings.py:144
 msgid "Spanish"
-msgstr ""
+msgstr "Spanisch"
 
 #: bookwyrm/settings.py:145
 msgid "French"
@@ -139,7 +139,7 @@ msgstr "%(pages)s Seiten"
 #: bookwyrm/templates/book/book.html:86
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
-msgstr ""
+msgstr "Am %(date)s von %(publisher)s veröffentlicht."
 
 #: bookwyrm/templates/book/book.html:88
 #, fuzzy, python-format
@@ -150,7 +150,7 @@ msgstr "Veröffentlichungsdatum:"
 #: bookwyrm/templates/book/book.html:90
 #, python-format
 msgid "Published by %(publisher)s."
-msgstr ""
+msgstr "Veröffentlicht von %(publisher)s."
 
 #: bookwyrm/templates/book/book.html:95
 msgid "View on OpenLibrary"
@@ -283,7 +283,7 @@ msgstr "Cover hinzufügen"
 #: bookwyrm/templates/book/cover_modal.html:23
 #: bookwyrm/templates/book/edit_book.html:169
 msgid "Load cover from url:"
-msgstr ""
+msgstr "Cover von URL laden:"
 
 #: bookwyrm/templates/book/edit_book.html:5
 #: bookwyrm/templates/book/edit_book.html:11
@@ -316,12 +316,12 @@ msgstr "Zuletzt bearbeitet von:"
 
 #: bookwyrm/templates/book/edit_book.html:40
 msgid "Confirm Book Info"
-msgstr ""
+msgstr "Buchinfo bestätigen"
 
 #: bookwyrm/templates/book/edit_book.html:47
 #, python-format
 msgid "Is \"%(name)s\" an existing author?"
-msgstr ""
+msgstr "Existiert \"%(name)s\" bereits als Autor:in?"
 
 #: bookwyrm/templates/book/edit_book.html:52
 #, fuzzy, python-format
@@ -331,20 +331,20 @@ msgstr "\"<em>%(book_title)s</em>\" beginnen"
 
 #: bookwyrm/templates/book/edit_book.html:55
 msgid "This is a new author"
-msgstr ""
+msgstr "Neue:r Autor:in"
 
 #: bookwyrm/templates/book/edit_book.html:61
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr ""
+msgstr "Neu als Autor:in erstellen: %(name)s"
 
 #: bookwyrm/templates/book/edit_book.html:67
 msgid "Is this an edition of an existing work?"
-msgstr ""
+msgstr "Ist das eine Edition eines vorhandenen Werkes?"
 
 #: bookwyrm/templates/book/edit_book.html:71
 msgid "This is a new work"
-msgstr ""
+msgstr "Dies ist ein neues Werk."
 
 #: bookwyrm/templates/book/edit_book.html:77
 #: bookwyrm/templates/password_reset.html:30
@@ -385,7 +385,7 @@ msgstr "Veröffentlicht"
 
 #: bookwyrm/templates/book/edit_book.html:119
 msgid "Separate multiple publishers with commas."
-msgstr ""
+msgstr "Mehrere Herausgeber:innen durch Kommata trennen"
 
 #: bookwyrm/templates/book/edit_book.html:125
 msgid "First published date:"
@@ -729,7 +729,7 @@ msgstr "Laden fehlgeschlagen"
 #: bookwyrm/templates/import_status.html:44
 #, python-format
 msgid "Jump to the bottom of the list to select the %(failed_count)s items which failed to import."
-msgstr ""
+msgstr "Zum Ende der Liste springen, um die %(failed_count)s Einträge, deren Import fehlschlug, auszuwählen."
 
 #: bookwyrm/templates/import_status.html:79
 msgid "Select all"
@@ -882,7 +882,7 @@ msgstr "Admin kontaktieren"
 #: bookwyrm/templates/layout.html:202
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
-msgstr ""
+msgstr "%(site_name)s auf <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a> unterstützen"
 
 #: bookwyrm/templates/layout.html:206
 msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
@@ -1046,11 +1046,11 @@ msgstr "Mehr über diese Seite"
 #: bookwyrm/templates/moderation/report_preview.html:6
 #, python-format
 msgid "Report #%(report_id)s: %(username)s"
-msgstr ""
+msgstr "Meldung #%(report_id)s: %(username)s"
 
 #: bookwyrm/templates/moderation/report.html:10
 msgid "Back to reports"
-msgstr ""
+msgstr "Zurück zu den Meldungen"
 
 #: bookwyrm/templates/moderation/report.html:18
 #, fuzzy
@@ -1072,15 +1072,15 @@ msgstr "Direktnachricht senden"
 
 #: bookwyrm/templates/moderation/report.html:27
 msgid "Deactivate user"
-msgstr ""
+msgstr "Nutzer:in deaktivieren"
 
 #: bookwyrm/templates/moderation/report.html:29
 msgid "Reactivate user"
-msgstr ""
+msgstr "Nutzer:in reaktivieren"
 
 #: bookwyrm/templates/moderation/report.html:36
 msgid "Moderator Comments"
-msgstr ""
+msgstr "Moderator:innenkommentare"
 
 #: bookwyrm/templates/moderation/report.html:54
 #: bookwyrm/templates/snippets/create_status.html:12
@@ -1096,11 +1096,11 @@ msgstr "Post löschen"
 
 #: bookwyrm/templates/moderation/report.html:61
 msgid "No statuses reported"
-msgstr ""
+msgstr "Keine Beiträge gemeldet"
 
 #: bookwyrm/templates/moderation/report.html:67
 msgid "Statuses has been deleted"
-msgstr ""
+msgstr "Beiträge wurden gelöscht"
 
 #: bookwyrm/templates/moderation/report_modal.html:6
 #, fuzzy, python-format
@@ -1111,7 +1111,7 @@ msgstr "Listen: %(username)s"
 #: bookwyrm/templates/moderation/report_modal.html:21
 #, python-format
 msgid "This report will be sent to %(site_name)s's moderators for review."
-msgstr ""
+msgstr "Diese Meldung wird an die Moderator:innen von %(site_name)s weitergeletiet."
 
 #: bookwyrm/templates/moderation/report_modal.html:22
 #, fuzzy
@@ -1121,11 +1121,11 @@ msgstr "Mehr über diese Seite"
 
 #: bookwyrm/templates/moderation/report_modal.html:31
 msgid "Submit"
-msgstr ""
+msgstr "Absenden"
 
 #: bookwyrm/templates/moderation/report_preview.html:13
 msgid "No notes provided"
-msgstr ""
+msgstr "Keine Notizen angegeben."
 
 #: bookwyrm/templates/moderation/report_preview.html:20
 #, fuzzy, python-format
@@ -1135,11 +1135,11 @@ msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/moderation/report_preview.html:30
 msgid "Re-open"
-msgstr ""
+msgstr "Wiedereröffnen"
 
 #: bookwyrm/templates/moderation/report_preview.html:32
 msgid "Resolve"
-msgstr ""
+msgstr "Lösen"
 
 #: bookwyrm/templates/moderation/reports.html:4
 #: bookwyrm/templates/moderation/reports.html:5
@@ -1273,7 +1273,7 @@ msgstr "Dein <a href=\"/import/%(related_id)s\">Import</a> ist abgeschlossen."
 #: bookwyrm/templates/notifications.html:113
 #, python-format
 msgid "A new <a href=\"%(path)s\">report</a> needs moderation."
-msgstr ""
+msgstr "Eine neue <a href=\"%(path)s\">Meldung</a> muss moderiert werden."
 
 #: bookwyrm/templates/notifications.html:139
 msgid "You're all caught up!"
@@ -1345,7 +1345,7 @@ msgstr "Bio:"
 
 #: bookwyrm/templates/preferences/edit_user.html:46
 msgid "Show set reading goal prompt in feed:"
-msgstr ""
+msgstr "Angegebenes Leseziel im Feed anzeigen."
 
 #: bookwyrm/templates/preferences/edit_user.html:52
 msgid "Manually approve followers:"
