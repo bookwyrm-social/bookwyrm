@@ -17,13 +17,13 @@
     <div class="field has-addons mb-0">
         <div class="control">
             <input
-             aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
-             class="input"
-             type="number"
-             min="0"
-             name="progress"
-             size="3"
-             value="{{ readthrough.progress|default:'' }}">
+                aria-label="{% if readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}"
+                class="input"
+                type="number"
+                min="0"
+                name="progress"
+                size="3"
+                value="{{ readthrough.progress|default:'' }}">
         </div>
         <div class="control select">
             <select name="progress_mode" aria-label="Progress mode">
