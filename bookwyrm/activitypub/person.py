@@ -30,5 +30,5 @@ class Person(ActivityObject):
     icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
-    discoverable: str = True
+    discoverable: str = False
     type: str = "Person"
