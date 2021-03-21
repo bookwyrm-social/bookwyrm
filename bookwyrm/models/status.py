@@ -232,9 +232,15 @@ class Comment(Status):
 
     # this is it's own field instead of a foreign key to the progress update
     # so that the update can be deleted without impacting the status
-    progress = models.IntegerField(validators=[MinValueValidator(0)], null=True, blank=True)
+    progress = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
     mode = models.CharField(
-        max_length=3, choices=ProgressMode.choices, default=ProgressMode.PAGE, null=True, blank=True
+        max_length=3,
+        choices=ProgressMode.choices,
+        default=ProgressMode.PAGE,
+        null=True,
+        blank=True,
     )
 
     @property
