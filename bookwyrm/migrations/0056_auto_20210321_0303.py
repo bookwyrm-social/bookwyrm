@@ -8,29 +8,52 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0055_auto_20210321_0101'),
+        ("bookwyrm", "0055_auto_20210321_0101"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='allow_invite_requests',
+            model_name="sitesettings",
+            name="allow_invite_requests",
             field=models.BooleanField(default=True),
         ),
         migrations.CreateModel(
-            name='InviteRequest',
+            name="InviteRequest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('updated_date', models.DateTimeField(auto_now=True)),
-                ('remote_id', bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id])),
-                ('email', models.EmailField(max_length=255, unique=True)),
-                ('invite_sent', models.BooleanField(default=False)),
-                ('ignored', models.BooleanField(default=False)),
-                ('invite', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bookwyrm.siteinvite')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_date", models.DateTimeField(auto_now_add=True)),
+                ("updated_date", models.DateTimeField(auto_now=True)),
+                (
+                    "remote_id",
+                    bookwyrm.models.fields.RemoteIdField(
+                        max_length=255,
+                        null=True,
+                        validators=[bookwyrm.models.fields.validate_remote_id],
+                    ),
+                ),
+                ("email", models.EmailField(max_length=255, unique=True)),
+                ("invite_sent", models.BooleanField(default=False)),
+                ("ignored", models.BooleanField(default=False)),
+                (
+                    "invite",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="bookwyrm.siteinvite",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

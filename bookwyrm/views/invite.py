@@ -93,9 +93,9 @@ class ManageInviteRequests(View):
             page = 1
 
         paginated = Paginator(
-            models.InviteRequest.objects.filter(
-                ignored=ignored
-            ).order_by("-created_date"),
+            models.InviteRequest.objects.filter(ignored=ignored).order_by(
+                "-created_date"
+            ),
             PAGE_LENGTH,
         )
 
@@ -107,7 +107,6 @@ class ManageInviteRequests(View):
 
     def post(self, request):
         """ send out an invite """
-
 
 
 class InviteRequest(View):
