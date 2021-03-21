@@ -15,8 +15,8 @@
         <h2 class="menu-label">{% trans "Manage Users" %}</h2>
         <ul class="menu-list">
             <li>
-                {% url 'settings-invites' as url %}
-                {% url 'settings-invite-requests' as alt_url %}
+                {% url 'settings-invite-requests' as url %}
+                {% url 'settings-invites' as alt_url %}
                 <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
             </li>
             <li>

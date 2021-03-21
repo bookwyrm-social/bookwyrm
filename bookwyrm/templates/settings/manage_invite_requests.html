@@ -49,27 +49,29 @@
                 {% trans "Requested" %}
                 {% endif %}
             </td>
-            <td>
-                {% if req.invite and not req.invite.times_used %}
-                <button class="button is-danger is-light is-small">{% trans "Revoke invite" %}</button>
-                {% else %}
-                <div class="field is-grouped">
-                    <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="invite-request" value="{{ req.id }}">
-                        <button type="submit" class="button is-link is-light is-small">{% trans "Send invite" %}</button>
-                    </form>
+            <td class="field is-grouped">
+                <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.invite %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Send invite" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Re-send invite" %}</button>
+                    {% endif %}
+                </form>
 
-                    <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="invite-request" value="{{ req.id }}">
-                        {% if not req.ignored %}
-                        <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
-                        {% else %}
-                        <button type="submit" class="button is-danger is-light is-small">{% trans "Un-gnore" %}</button>
-                        {% endif %}
-                    </form>
-                </div>
+                {% if req.invite and not req.invite.times_used %}
+                {# <button class="button is-danger is-light is-small">{% trans "Revoke invite" %}</button> #}
+                {% else %}
+                <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.ignored %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Un-gnore" %}</button>
+                    {% endif %}
+                </form>
                 {% endif %}
             </td>
         </tr>

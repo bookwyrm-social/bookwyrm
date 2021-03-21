@@ -6,6 +6,16 @@ from bookwyrm import models
 from bookwyrm.tasks import app
 
 
+def invite_email(invite_request):
+    """ send out an invite code """
+    site = models.SiteSettings.objects.get()
+    data = {
+        "site_name": site.name,
+        "invite_link": invite_request.invite.link,
+    }
+    send_email.delay(invite_request.email, "invite", data)
+
+
 def password_reset_email(reset_code):
     """ generate a password reset email """
     site = models.SiteSettings.objects.get()

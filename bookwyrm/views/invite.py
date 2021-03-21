@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
+from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
 from . import helpers
 
@@ -107,6 +107,18 @@ class ManageInviteRequests(View):
 
     def post(self, request):
         """ send out an invite """
+        invite_request = get_object_or_404(
+            models.InviteRequest, id=request.POST.get("invite-request")
+        )
+        # allows re-sending invites
+        invite_request.invite, _ = models.SiteInvite.objects.get_or_create(
+            use_limit=1,
+            user=request.user,
+        )
+
+        invite_request.save()
+        emailing.invite_email(invite_request)
+        return redirect('settings-invite-requests')
 
 
 class InviteRequest(View):
