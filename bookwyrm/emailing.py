@@ -1,5 +1,6 @@
 """ send emails """
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
 
 from bookwyrm import models
 from bookwyrm.tasks import app
@@ -7,21 +8,27 @@ from bookwyrm.tasks import app
 
 def password_reset_email(reset_code):
     """ generate a password reset email """
-    site = models.SiteSettings.get()
-    send_email.delay(
-        reset_code.user.email,
-        "Reset your password on %s" % site.name,
-        "Your password reset link: %s" % reset_code.link,
-    )
+    site = models.SiteSettings.objects.get()
+    data = {
+        "site_name": site.name,
+        "reset_link": reset_code.link,
+    }
+    send_email.delay(reset_code.user.email, "password_reset", data)
 
 
 @app.task
-def send_email(recipient, subject, message):
+def send_email(recipient, message_name, data):
     """ use a task to send the email """
-    send_mail(
-        subject,
-        message,
-        None,  # sender will be the config default
-        [recipient],
-        fail_silently=False,
-    )
+    subject = get_template(
+        "email/{}/subject.html".format(message_name)
+    ).render(data).strip()
+    html_content = get_template(
+        "email/{}/html_content.html".format(message_name)
+    ).render(data).strip()
+    text_content = get_template(
+        "email/{}/text_content.html".format(message_name)
+    ).render(data).strip()
+
+    email = EmailMultiAlternatives(subject, text_content, None, [recipient])
+    email.attach_alternative(html_content, "text/html")
+    email.send()
