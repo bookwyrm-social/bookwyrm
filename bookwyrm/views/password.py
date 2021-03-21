@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 
 from bookwyrm import models
@@ -28,7 +29,8 @@ class PasswordResetRequest(View):
         try:
             user = models.User.objects.get(email=email)
         except models.User.DoesNotExist:
-            return redirect("/password-reset")
+            data = {"error": _("No user with that email address was found.")}
+            return TemplateResponse(request, "password_reset_request.html", data)
 
         # remove any existing password reset cods for this user
         models.PasswordReset.objects.filter(user=user).all().delete()
@@ -36,7 +38,7 @@ class PasswordResetRequest(View):
         # create a new reset code
         code = models.PasswordReset.objects.create(user=user)
         password_reset_email(code)
-        data = {"message": "Password reset link sent to %s" % email}
+        data = {"message": _("A password reset link sent to %s" % email)}
         return TemplateResponse(request, "password_reset_request.html", data)
 
 

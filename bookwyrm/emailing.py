@@ -27,34 +27,37 @@ def invite_email(invite_request):
     """ send out an invite code """
     data = email_data()
     data["invite_link"] = invite_request.invite.link
-    send_email.delay(invite_request.email, "invite", data)
+    send_email.delay(invite_request.email, *format_email("invite", data))
 
 
 def password_reset_email(reset_code):
     """ generate a password reset email """
     data = email_data()
     data["reset_link"] = reset_code.link
-    data["user"] = reset_code.user.diplay_name
-    send_email.delay(reset_code.user.email, "password_reset", data)
+    data["user"] = reset_code.user.display_name
+    send_email.delay(reset_code.user.email, *format_email("password_reset", data))
 
-
-@app.task
-def send_email(recipient, message_name, data):
-    """ use a task to send the email """
+def format_email(email_name, data):
+    """ render the email templates """
     subject = (
-        get_template("email/{}/subject.html".format(message_name)).render(data).strip()
+        get_template("email/{}/subject.html".format(email_name)).render(data).strip()
     )
     html_content = (
-        get_template("email/{}/html_content.html".format(message_name))
+        get_template("email/{}/html_content.html".format(email_name))
         .render(data)
         .strip()
     )
     text_content = (
-        get_template("email/{}/text_content.html".format(message_name))
+        get_template("email/{}/text_content.html".format(email_name))
         .render(data)
         .strip()
     )
+    return (subject, html_content, text_content)
 
+
+@app.task
+def send_email(recipient, subject, html_content, text_content):
+    """ use a task to send the email """
     email = EmailMultiAlternatives(subject, text_content, None, [recipient])
     email.attach_alternative(html_content, "text/html")
     email.send()
