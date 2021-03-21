@@ -5,7 +5,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, models
+from bookwyrm import emailing, forms, models
 
 
 # pylint: disable= no-self-use
@@ -33,3 +33,17 @@ class Site(View):
         form.save()
 
         return redirect("settings-site")
+
+
+@login_required
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def email_preview(request):
+    """ for development, renders and example email template """
+    template = request.GET.get('email')
+    data = emailing.email_data()
+    data["subject_path"] = "email/{}/subject.html".format(template)
+    data["html_content_path"] = "email/{}/html_content.html".format(template)
+    data["text_content_path"] = "email/{}/text_content.html".format(template)
+    data["reset_link"] = "https://example.com/link"
+    data["invite_link"] = "https://example.com/link"
+    return TemplateResponse(request, "email/preview.html", data)

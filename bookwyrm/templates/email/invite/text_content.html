@@ -1,2 +1,10 @@
+{% extends 'email/text_layout.html' %}
 {% load i18n %}
-{% blocktrans %}Join {{ site_name }}: {{ invite_link }}{% endblocktrans %}
+{% block content %}
+{% blocktrans %}You're invited to join {{ site_name }}! Click the link below to create an account.{% endblocktrans %}
+
+{{ invite_link }}
+
+{% trans "Learn more about this instance:" %} https://{{ domain }}{% url 'about' %}
+
+{% endblock %}

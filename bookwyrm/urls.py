@@ -49,6 +49,11 @@ urlpatterns = [
     # admin
     re_path(r"^settings/site-settings", views.Site.as_view(), name="settings-site"),
     re_path(
+        r"^settings/email-preview",
+        views.site.email_preview,
+        name="settings-email-preview",
+    ),
+    re_path(
         r"^settings/federation", views.Federation.as_view(), name="settings-federation"
     ),
     re_path(
@@ -87,8 +92,8 @@ urlpatterns = [
     ),
     re_path(r"^report/?$", views.make_report, name="report"),
     # landing pages
-    re_path(r"^about/?$", views.About.as_view()),
-    path("", views.Home.as_view()),
+    re_path(r"^about/?$", views.About.as_view(), name="about"),
+    path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view()),
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     # feeds
