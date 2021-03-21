@@ -1,0 +1,88 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% block header %}{% trans "Invite Requests" %}{% endblock %}
+{% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-invite-requests' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
+        </li>
+    </ul>
+</div>
+
+<section class="block">
+    <h2 class="title is-4">
+        {% if ignored %}
+        {% trans "Ignored Invite Requests" %}
+        {% else %}
+        {% trans "Invite Requests" %}
+        {% endif %}
+    </h2>
+
+    <table class="table is-striped">
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Email" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        {% if not requests %}
+        <tr><td colspan="4">{% trans "No requests" %}</td></tr>
+        {% endif %}
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.created_date | naturaltime }}</td>
+            <td>{{ req.email }}</td>
+            <td>
+                {% if req.invite.times_used %}
+                {% trans "Accepted" %}
+                {% elif req.invite %}
+                {% trans "Sent" %}
+                {% else %}
+                {% trans "Requested" %}
+                {% endif %}
+            </td>
+            <td class="field is-grouped">
+                <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.invite %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Send invite" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Re-send invite" %}</button>
+                    {% endif %}
+                </form>
+
+                {% if req.invite and not req.invite.times_used %}
+                {# <button class="button is-danger is-light is-small">{% trans "Revoke invite" %}</button> #}
+                {% else %}
+                <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.ignored %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Un-gnore" %}</button>
+                    {% endif %}
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include 'snippets/pagination.html' with page=requests path=request.path %}
+
+    {% if ignored %}
+    <p><a href="{% url 'settings-invite-requests' %}">{% trans "Back to pending requests" %}</a></p>
+    {% else %}
+    <p><a href="{% url 'settings-invite-requests' %}?ignored=True">{% trans "View ignored requests" %}</a></p>
+    {% endif %}
+</section>
+{% endblock %}

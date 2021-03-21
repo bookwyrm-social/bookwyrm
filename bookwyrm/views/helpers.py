@@ -2,7 +2,7 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db.models import Q
+from django.db.models import Max, Q
 
 from bookwyrm import activitypub, models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -216,3 +216,20 @@ def is_blocked(viewer, user):
     if viewer.is_authenticated and viewer in user.blocks.all():
         return True
     return False
+
+
+def get_discover_books():
+    """ list of books for the discover page """
+    return list(
+        set(
+            models.Edition.objects.filter(
+                review__published_date__isnull=False,
+                review__deleted=False,
+                review__user__local=True,
+                review__privacy__in=["public", "unlisted"],
+            )
+            .exclude(cover__exact="")
+            .annotate(Max("review__published_date"))
+            .order_by("-review__published_date__max")[:6]
+        )
+    )
