@@ -11,9 +11,9 @@ def email_data():
     """ fields every email needs """
     site = models.SiteSettings.objects.get()
     if site.logo_small:
-        logo_path = '/images/{}'.format(site.logo_small.url)
+        logo_path = "/images/{}".format(site.logo_small.url)
     else:
-        logo_path = '/static/images/logo-small.png'
+        logo_path = "/static/images/logo-small.png"
 
     return {
         "site_name": site.name,
@@ -36,6 +36,7 @@ def password_reset_email(reset_code):
     data["reset_link"] = reset_code.link
     data["user"] = reset_code.user.display_name
     send_email.delay(reset_code.user.email, *format_email("password_reset", data))
+
 
 def format_email(email_name, data):
     """ render the email templates """

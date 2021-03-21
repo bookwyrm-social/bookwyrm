@@ -39,7 +39,7 @@ class Site(View):
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def email_preview(request):
     """ for development, renders and example email template """
-    template = request.GET.get('email')
+    template = request.GET.get("email")
     data = emailing.email_data()
     data["subject_path"] = "email/{}/subject.html".format(template)
     data["html_content_path"] = "email/{}/html_content.html".format(template)
