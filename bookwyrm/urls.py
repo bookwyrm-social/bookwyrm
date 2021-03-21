@@ -54,6 +54,9 @@ urlpatterns = [
     re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
+    re_path(
+        r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
+    ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
     # moderation
     re_path(r"^settings/reports/?$", views.Reports.as_view(), name="settings-reports"),

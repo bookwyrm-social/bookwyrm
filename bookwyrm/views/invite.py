@@ -9,6 +9,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
+from . import helpers
 
 
 # pylint: disable= no-self-use
@@ -77,3 +78,22 @@ class Invite(View):
         return TemplateResponse(request, "invite.html", data)
 
     # post handling is in views.authentication.Register
+
+
+class InviteRequest(View):
+    """ prospective users sign up here """
+
+    def post(self, request):
+        """ create a request """
+        form = forms.InviteRequestForm(request.POST)
+        received = False
+        if form.is_valid():
+            received = True
+            form.save()
+
+        data = {
+            "request_form": form,
+            "request_received": received,
+            "books": helpers.get_discover_books(),
+        }
+        return TemplateResponse(request, "discover/discover.html", data)
