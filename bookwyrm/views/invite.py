@@ -118,7 +118,7 @@ class ManageInviteRequests(View):
 
         invite_request.save()
         emailing.invite_email(invite_request)
-        return redirect('settings-invite-requests')
+        return redirect("settings-invite-requests")
 
 
 class InviteRequest(View):

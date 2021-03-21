@@ -29,15 +29,19 @@ def password_reset_email(reset_code):
 @app.task
 def send_email(recipient, message_name, data):
     """ use a task to send the email """
-    subject = get_template(
-        "email/{}/subject.html".format(message_name)
-    ).render(data).strip()
-    html_content = get_template(
-        "email/{}/html_content.html".format(message_name)
-    ).render(data).strip()
-    text_content = get_template(
-        "email/{}/text_content.html".format(message_name)
-    ).render(data).strip()
+    subject = (
+        get_template("email/{}/subject.html".format(message_name)).render(data).strip()
+    )
+    html_content = (
+        get_template("email/{}/html_content.html".format(message_name))
+        .render(data)
+        .strip()
+    )
+    text_content = (
+        get_template("email/{}/text_content.html".format(message_name))
+        .render(data)
+        .strip()
+    )
 
     email = EmailMultiAlternatives(subject, text_content, None, [recipient])
     email.attach_alternative(html_content, "text/html")

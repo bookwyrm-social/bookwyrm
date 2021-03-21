@@ -101,14 +101,15 @@ class InviteViews(TestCase):
         """ send an invite """
         req = models.InviteRequest.objects.create(email="fish@example.com")
 
-        view = views.InviteRequest.as_view()
-        request = self.factory.post("", {"id": req.id})
+        view = views.ManageInviteRequests.as_view()
+        request = self.factory.post("", {"invite-request": req.id})
         request.user = self.local_user
         request.user.is_superuser = True
 
         with patch("bookwyrm.emailing.send_email.delay") as mock:
             view(request)
             self.assertEqual(mock.call_count, 1)
+        req.refresh_from_db()
         self.assertIsNotNone(req.invite)
 
     def test_ignore_invite_request(self):
