@@ -13,7 +13,7 @@ from .goal import Goal, hide_goal
 from .import_data import Import, ImportStatus
 from .inbox import Inbox
 from .interaction import Favorite, Unfavorite, Boost, Unboost
-from .invite import ManageInvites, Invite, InviteRequest
+from .invite import ManageInvites, Invite, InviteRequest, ManageInviteRequests
 from .isbn import Isbn
 from .landing import About, Home, Discover
 from .list import Lists, List, Curate, UserLists

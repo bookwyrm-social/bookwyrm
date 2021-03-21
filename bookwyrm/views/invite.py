@@ -80,6 +80,27 @@ class Invite(View):
     # post handling is in views.authentication.Register
 
 
+class ManageInviteRequests(View):
+    """ grant invites like the benevolent lord you are """
+
+    def get(self, request):
+        """ view a list of requests """
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+
+        paginated = Paginator(
+            models.InviteRequest.objects.all().order_by("-created_date"),
+            PAGE_LENGTH,
+        )
+
+        data = {
+            "requests": paginated.page(page),
+        }
+        return TemplateResponse(request, "settings/manage_invite_requests.html", data)
+
+
 class InviteRequest(View):
     """ prospective users sign up here """
 

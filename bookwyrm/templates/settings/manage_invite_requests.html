@@ -1,0 +1,42 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% block header %}{% trans "Invite Requests" %}{% endblock %}
+{% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
+        </li>
+        {% url 'settings-invite-requests' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+    </ul>
+</div>
+
+<section class="block">
+    <h2 class="title is-4">{% trans "Invite Requests" %}</h2>
+
+    <table class="table is-striped">
+        <tr>
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Email" %}</th>
+            <th>{% trans "Status" %}</th>
+        </tr>
+        {% if not requests %}
+        <tr><td colspan="4">{% trans "No requests" %}</td></tr>
+        {% endif %}
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.created_date | naturaltime }}</td>
+            <td>{{ req.email }}</td>
+            <td>{% trans "Pending" %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include 'snippets/pagination.html' with page=requests path=request.path %}
+</section>
+{% endblock %}

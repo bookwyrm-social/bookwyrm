@@ -55,6 +55,11 @@ urlpatterns = [
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
     re_path(
+        r"^settings/requests/?$",
+        views.ManageInviteRequests.as_view(),
+        name="settings-invite-requests",
+    ),
+    re_path(
         r"^invite-request/?$", views.InviteRequest.as_view(), name="invite-request"
     ),
     re_path(r"^invite/(?P<code>[A-Za-z0-9]+)/?$", views.Invite.as_view()),
