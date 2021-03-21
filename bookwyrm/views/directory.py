@@ -23,7 +23,7 @@ class Directory(View):
             discoverable=True,
             bookwyrm_user=True,
             is_active=True,
-        ).order_by('-last_active_date')
+        ).order_by("-last_active_date")
         paginated = Paginator(users, 12)
 
         data = {
