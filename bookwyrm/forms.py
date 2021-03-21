@@ -202,6 +202,12 @@ class ExpiryWidget(widgets.Select):
         return timezone.now() + interval
 
 
+class InviteRequestForm(CustomForm):
+    class Meta:
+        model = models.InviteRequest
+        fields = ["email"]
+
+
 class CreateInviteForm(CustomForm):
     class Meta:
         model = models.SiteInvite

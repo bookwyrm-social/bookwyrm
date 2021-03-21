@@ -3,10 +3,11 @@ import base64
 import datetime
 
 from Crypto import Random
-from django.db import models
+from django.db import models, IntegrityError
 from django.utils import timezone
 
 from bookwyrm.settings import DOMAIN
+from .base_model import BookWyrmModel
 from .user import User
 
 
@@ -24,6 +25,7 @@ class SiteSettings(models.Model):
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
     allow_registration = models.BooleanField(default=True)
+    allow_invite_requests = models.BooleanField(default=True)
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
     favicon = models.ImageField(upload_to="logos/", null=True, blank=True)
@@ -67,6 +69,22 @@ class SiteInvite(models.Model):
     def link(self):
         """ formats the invite link """
         return "https://{}/invite/{}".format(DOMAIN, self.code)
+
+
+class InviteRequest(BookWyrmModel):
+    """ prospective users can request an invite """
+
+    email = models.EmailField(max_length=255, unique=True)
+    invite = models.ForeignKey(
+        SiteInvite, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    invite_sent = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        """ don't create a request for a registered email """
+        if User.objects.filter(email=self.email).exists():
+            raise IntegrityError()
+        super().save(*args, **kwargs)
 
 
 def get_passowrd_reset_expiry():
