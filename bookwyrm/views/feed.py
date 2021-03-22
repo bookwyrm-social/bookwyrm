@@ -28,19 +28,22 @@ class Feed(View):
         except ValueError:
             page = 1
 
-        if tab == "home":
-            activities = get_activity_feed(request.user, following_only=True)
+        try:
+            tab_title = {
+                'home': _("Home"),
+                "local": _("Local"),
+                "federated": _("Federated")
+            }[tab]
+        except KeyError:
+            tab = 'home'
             tab_title = _("Home")
-        elif tab == "local":
-            activities = get_activity_feed(
-                request.user, privacy=["public", "followers"], local_only=True
-            )
-            tab_title = _("Local")
-        else:
-            activities = get_activity_feed(
-                request.user, privacy=["public", "followers"]
-            )
-            tab_title = _("Federated")
+
+        activities = models.status.get_activity_stream(
+            request.user, tab,
+            (1 - page) * PAGE_LENGTH,
+            page * PAGE_LENGTH
+        )
+
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {
