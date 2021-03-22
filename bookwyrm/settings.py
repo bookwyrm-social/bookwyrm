@@ -92,6 +92,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
+# redis
+REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
+REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
