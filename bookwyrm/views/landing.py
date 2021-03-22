@@ -2,7 +2,7 @@
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm import forms, models
+from bookwyrm import forms
 from .feed import Feed
 from . import helpers
 

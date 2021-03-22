@@ -83,18 +83,18 @@
                 </a>
                 <ul class="navbar-dropdown" id="navbar-dropdown">
                     <li>
-                        <a href="/direct-messages" class="navbar-item">
+                        <a href="{% url 'direct-messages' %}" class="navbar-item">
                             {% trans "Direct Messages" %}
                         </a>
                     </li>
                     <li>
-                        <a href="/user/{{request.user.localname}}" class="navbar-item">
+                        <a href="{{ request.user.local_path }}" class="navbar-item">
                             {% trans 'Profile' %}
                         </a>
                     </li>
                     <li>
-                        <a href="/preferences/profile" class="navbar-item">
-                            {% trans 'Settings' %}
+                        <a href="{% url 'directory' %}" class="navbar-item">
+                            {% trans 'Directory' %}
                         </a>
                     </li>
                     <li>
@@ -102,12 +102,17 @@
                             {% trans 'Import Books' %}
                         </a>
                     </li>
+                    <li>
+                        <a href="/preferences/profile" class="navbar-item">
+                            {% trans 'Settings' %}
+                        </a>
+                    </li>
                     {% if perms.bookwyrm.create_invites or perms.bookwyrm.edit_instance_settings%}
                     <li class="navbar-divider" role="presentation"></li>
                     {% endif %}
                     {% if perms.bookwyrm.create_invites %}
                     <li>
-                        <a href="{% url 'settings-invites' %}" class="navbar-item">
+                        <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
                             {% trans 'Invites' %}
                         </a>
                     </li>

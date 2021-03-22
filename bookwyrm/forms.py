@@ -3,7 +3,6 @@ import datetime
 from collections import defaultdict
 
 from django import forms
-from django.core.exceptions import ValidationError
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
 from django.utils import timezone
@@ -130,8 +129,9 @@ class EditUserForm(CustomForm):
             "name",
             "email",
             "summary",
-            "manually_approves_followers",
             "show_goal",
+            "manually_approves_followers",
+            "discoverable",
         ]
         help_texts = {f: None for f in fields}
 

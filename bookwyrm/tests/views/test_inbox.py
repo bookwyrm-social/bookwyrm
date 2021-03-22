@@ -789,6 +789,7 @@ class Inbox(TestCase):
         self.assertEqual(user.name, "MOUSE?? MOUSE!!")
         self.assertEqual(user.username, "mouse@example.com")
         self.assertEqual(user.localname, "mouse")
+        self.assertTrue(user.discoverable)
 
     def test_handle_update_edition(self):
         """ update an existing edition """
