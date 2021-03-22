@@ -19,7 +19,7 @@
 </div>
 
 {# announcements and system messages #}
-{% if request.user.show_goal and not goal and tab == 'home' %}
+{% if request.user.show_goal and not goal and tab == 'home' and not activities.number > 1 %}
 {% now 'Y' as year %}
 <section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
@@ -31,9 +31,10 @@
 {% if not activities %}
 <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
 {% endif %}
+
 {% for activity in activities %}
 <div class="block">
-{% include 'snippets/status/status.html' with status=activity %}
+    {% include 'snippets/status/status.html' with status=activity %}
 </div>
 {% endfor %}
 
