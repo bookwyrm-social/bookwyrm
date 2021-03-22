@@ -4,6 +4,7 @@ from .author import Author, EditAuthor
 from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
+from .directory import Directory
 from .error import not_found_page, server_error_page
 from .federation import Federation
 from .feed import DirectMessage, Feed, Replies, Status
