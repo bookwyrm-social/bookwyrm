@@ -77,7 +77,7 @@ class User(TestCase):
         self.assertEqual(activity["inbox"], self.user.inbox)
         self.assertEqual(activity["outbox"], self.user.outbox)
         self.assertEqual(activity["bookwyrmUser"], False)
-        self.assertEqual(activity["discoverable"], True)
+        self.assertEqual(activity["discoverable"], False)
         self.assertEqual(activity["type"], "Person")
 
     def test_activitypub_outbox(self):
