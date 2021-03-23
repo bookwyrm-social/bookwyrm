@@ -11,7 +11,7 @@ from django.views import View
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
-from .helpers import get_activity_feed, get_user_from_username
+from .helpers import get_user_from_username, privacy_filter
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
@@ -58,7 +58,13 @@ class DirectMessage(View):
         except ValueError:
             page = 1
 
-        queryset = models.Status.objects
+        # remove fancy subclasses of status, keep just good ol' notes
+        queryset = models.Status.objects.filter(
+            review__isnull=True,
+            comment__isnull=True,
+            quotation__isnull=True,
+            generatednote__isnull=True,
+        )
 
         user = None
         if username:
@@ -69,8 +75,8 @@ class DirectMessage(View):
         if user:
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
-        activities = get_activity_feed(
-            request.user, privacy=["direct"], queryset=queryset
+        activities = privacy_filter(
+            request.user, queryset, privacy_levels=["direct"]
         )
 
         paginated = Paginator(activities, PAGE_LENGTH)

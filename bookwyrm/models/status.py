@@ -5,8 +5,6 @@ import re
 from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q
-from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
