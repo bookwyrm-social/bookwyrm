@@ -8,6 +8,7 @@ from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
     """ viewing and creating statuses """
 
@@ -40,7 +41,7 @@ class StatusViews(TestCase):
             parent_work=work,
         )
 
-    def test_handle_status(self):
+    def test_handle_status(self, _):
         """ create a status """
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
@@ -53,23 +54,22 @@ class StatusViews(TestCase):
         )
         request = self.factory.post("", form.data)
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, "comment")
+
+        view(request, "comment")
         status = models.Comment.objects.get()
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
 
-    def test_handle_status_reply(self):
+    def test_handle_status_reply(self, _):
         """ create a status in reply to an existing status """
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True
         )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            parent = models.Status.objects.create(
-                content="parent status", user=self.local_user
-            )
+        parent = models.Status.objects.create(
+            content="parent status", user=self.local_user
+        )
         form = forms.ReplyForm(
             {
                 "content": "hi",
@@ -80,14 +80,14 @@ class StatusViews(TestCase):
         )
         request = self.factory.post("", form.data)
         request.user = user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, "reply")
+
+        view(request, "reply")
         status = models.Status.objects.get(user=user)
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, user)
         self.assertEqual(models.Notification.objects.get().user, self.local_user)
 
-    def test_handle_status_mentions(self):
+    def test_handle_status_mentions(self, _):
         """ @mention a user in a post """
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
@@ -104,8 +104,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, "comment")
+        view(request, "comment")
         status = models.Status.objects.get()
         self.assertEqual(list(status.mention_users.all()), [user])
         self.assertEqual(models.Notification.objects.get().user, user)
@@ -113,7 +112,7 @@ class StatusViews(TestCase):
             status.content, '<p>hi <a href="%s">@rat</a></p>' % user.remote_id
         )
 
-    def test_handle_status_reply_with_mentions(self):
+    def test_handle_status_reply_with_mentions(self, _):
         """ reply to a post with an @mention'ed user """
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
@@ -130,8 +129,7 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, "comment")
+        view(request, "comment")
         status = models.Status.objects.get()
 
         form = forms.ReplyForm(
@@ -144,8 +142,8 @@ class StatusViews(TestCase):
         )
         request = self.factory.post("", form.data)
         request.user = user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, "reply")
+
+        view(request, "reply")
 
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, "<p>right</p>")
@@ -154,7 +152,7 @@ class StatusViews(TestCase):
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
-    def test_find_mentions(self):
+    def test_find_mentions(self, _):
         """ detect and look up @ mentions of users """
         user = models.User.objects.create_user(
             "nutria@%s" % DOMAIN,
@@ -200,7 +198,7 @@ class StatusViews(TestCase):
             ("@nutria@%s" % DOMAIN, user),
         )
 
-    def test_format_links(self):
+    def test_format_links(self, _):
         """ find and format urls into a tags """
         url = "http://www.fish.com/"
         self.assertEqual(
@@ -223,7 +221,7 @@ class StatusViews(TestCase):
             "?q=arkady+strugatsky&mode=everything</a>" % url,
         )
 
-    def test_to_markdown(self):
+    def test_to_markdown(self, _):
         """ this is mostly handled in other places, but nonetheless """
         text = "_hi_ and http://fish.com is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
@@ -232,33 +230,31 @@ class StatusViews(TestCase):
             '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
         )
 
-    def test_to_markdown_link(self):
+    def test_to_markdown_link(self, _):
         """ this is mostly handled in other places, but nonetheless """
         text = "[hi](http://fish.com) is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
-    def test_handle_delete_status(self):
+    def test_handle_delete_status(self, mock):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Status.objects.create(user=self.local_user, content="hi")
+        status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
-            view(request, status.id)
-            activity = json.loads(mock.call_args_list[0][0][1])
-            self.assertEqual(activity["type"], "Delete")
-            self.assertEqual(activity["object"]["type"], "Tombstone")
+
+        view(request, status.id)
+        activity = json.loads(mock.call_args_list[0][0][1])
+        self.assertEqual(activity["type"], "Delete")
+        self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 
-    def test_handle_delete_status_permission_denied(self):
+    def test_handle_delete_status_permission_denied(self, _):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Status.objects.create(user=self.local_user, content="hi")
+        status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
@@ -268,20 +264,18 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_handle_delete_status_moderator(self):
+    def test_handle_delete_status_moderator(self, mock):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Status.objects.create(user=self.local_user, content="hi")
+        status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
         request.user.is_superuser = True
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
-            view(request, status.id)
-            activity = json.loads(mock.call_args_list[0][0][1])
-            self.assertEqual(activity["type"], "Delete")
-            self.assertEqual(activity["object"]["type"], "Tombstone")
+        view(request, status.id)
+        activity = json.loads(mock.call_args_list[0][0][1])
+        self.assertEqual(activity["type"], "Delete")
+        self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
         self.assertTrue(status.deleted)
