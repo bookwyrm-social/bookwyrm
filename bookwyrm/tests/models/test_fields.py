@@ -185,7 +185,8 @@ class ActivitypubFields(TestCase):
         self.assertEqual(model_instance.privacy_field, "unlisted")
 
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
-    def test_privacy_field_set_activity_from_field(self, _):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_privacy_field_set_activity_from_field(self, *_):
         """ translate between to/cc fields and privacy """
         user = User.objects.create_user(
             "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
