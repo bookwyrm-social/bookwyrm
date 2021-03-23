@@ -14,6 +14,8 @@ from bookwyrm import views
 from bookwyrm.activitypub import ActivitypubResponse
 
 
+@patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
+@patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class FeedViews(TestCase):
     """ activity feed, statuses, dms """
 
@@ -34,7 +36,7 @@ class FeedViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
-    def test_feed(self):
+    def test_feed(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Feed.as_view()
         request = self.factory.get("")
@@ -44,7 +46,7 @@ class FeedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_status_page(self):
+    def test_status_page(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Status.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -64,7 +66,7 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_status_page_with_image(self):
+    def test_status_page_with_image(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Status.as_view()
 
@@ -100,7 +102,7 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_replies_page(self):
+    def test_replies_page(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Replies.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -120,7 +122,7 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_direct_messages_page(self):
+    def test_direct_messages_page(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.DirectMessage.as_view()
         request = self.factory.get("")
@@ -130,7 +132,7 @@ class FeedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_get_suggested_book(self):
+    def test_get_suggested_book(self, *_):
         """ gets books the ~*~ algorithm ~*~ thinks you want to post about """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(
