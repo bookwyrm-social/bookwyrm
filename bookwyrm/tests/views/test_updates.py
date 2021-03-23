@@ -47,9 +47,9 @@ class UpdateViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        with patch('bookwyrm.activitystreams.ActivityStream.get_unread_count') as mock:
+        with patch("bookwyrm.activitystreams.ActivityStream.get_unread_count") as mock:
             mock.return_value = 3
-            result = views.get_unread_status_count(request, 'home')
+            result = views.get_unread_status_count(request, "home")
 
         self.assertIsInstance(result, JsonResponse)
         data = json.loads(result.getvalue())

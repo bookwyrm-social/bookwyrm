@@ -4,14 +4,16 @@ from django.http import JsonResponse
 
 from bookwyrm import activitystreams
 
+
 @login_required
 def get_notification_count(request):
     """ any notifications waiting? """
-    return JsonResponse({
-        "count": request.user.notification_set.filter(
-            read=False
-        ).count(),
-    })
+    return JsonResponse(
+        {
+            "count": request.user.notification_set.filter(read=False).count(),
+        }
+    )
+
 
 @login_required
 def get_unread_status_count(request, stream):
@@ -19,6 +21,4 @@ def get_unread_status_count(request, stream):
     stream = activitystreams.streams.get(stream)
     if not stream:
         return JsonResponse({})
-    return JsonResponse({
-        "count": stream.get_unread_count(request.user)
-    })
+    return JsonResponse({"count": stream.get_unread_count(request.user)})
