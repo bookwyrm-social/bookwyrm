@@ -26,17 +26,20 @@
     </ul>
 </div>
 
+{# announcements and system messages #}
+{% if not activities.number > 1 %}
 <a href="{{ request.path }}" class="hidden notification is-primary is-block" data-poll-wrapper>
     {% blocktrans %}load <span data-poll="stream/{{ tab }}">0</span> unread status(es){% endblocktrans %}
 </a>
 
-{# announcements and system messages #}
-{% if request.user.show_goal and not goal and tab == 'home' and not activities.number > 1 %}
+{% if request.user.show_goal and not goal and tab == 'home' %}
 {% now 'Y' as year %}
 <section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
     <hr>
 </section>
+{% endif %}
+
 {% endif %}
 
 {# activity feed #}
