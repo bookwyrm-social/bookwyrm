@@ -187,9 +187,12 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
     if not issubclass(sender, models.Status):
         return
 
-    if not created and instance.deleted:
+    if instance.deleted:
         for stream in streams.values():
             stream.remove_status(instance)
+        return
+
+    if not created:
         return
 
     # iterates through Home, Local, Federated
@@ -197,12 +200,21 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         stream.add_status(instance)
 
 
+@receiver(signals.post_delete, sender=models.Boost)
+# pylint: disable=unused-argument
+def remove_boost_on_delete(sender, instance, *args, **kwargs):
+    """ boosts are deleted """
+    # we're only interested in new statuses
+    for stream in streams.values():
+        stream.remove_status(instance)
+
+
 @receiver(signals.post_save, sender=models.UserFollows)
 # pylint: disable=unused-argument
 def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     """ add a newly followed user's statuses to feeds """
-    if not created:
-        return  # idk when this would ever happen though
+    if not created or not instance.user_subject.local:
+        return
     HomeStream().add_user_statuses(instance.user_subject, instance.user_object)
 
 
@@ -210,6 +222,8 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
 # pylint: disable=unused-argument
 def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """ remove statuses from a feed on unfollow """
+    if not instance.user_subject.local:
+        return
     HomeStream().remove_user_statuses(instance.user_subject, instance.user_object)
 
 
@@ -218,10 +232,30 @@ def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
 def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """ remove statuses from all feeds on block """
     # blocks apply ot all feeds
-    for stream in streams.values():
-        # and in both directions
-        stream.remove_user_statuses(instance.user_subject, instance.user_object)
-        stream.remove_user_statuses(instance.user_object, instance.user_subject)
+    if instance.user_subject.local:
+        for stream in streams.values():
+            stream.remove_user_statuses(instance.user_subject, instance.user_object)
+
+    # and in both directions
+    if instance.user_object.local:
+        for stream in streams.values():
+            stream.remove_user_statuses(instance.user_object, instance.user_subject)
+
+
+@receiver(signals.post_delete, sender=models.UserBlocks)
+# pylint: disable=unused-argument
+def add_statuses_on_unblock(sender, instance, *args, **kwargs):
+    """ remove statuses from all feeds on block """
+    public_streams = [LocalStream(), FederatedStream()]
+    # add statuses back to streams with statuses from anyone
+    if instance.user_subject.local:
+        for stream in public_streams:
+            stream.add_user_statuses(instance.user_subject, instance.user_object)
+
+    # add statuses back to streams with statuses from anyone
+    if instance.user_object.local:
+        for stream in public_streams:
+            stream.add_user_statuses(instance.user_object, instance.user_subject)
 
 
 @receiver(signals.post_save, sender=models.User)
