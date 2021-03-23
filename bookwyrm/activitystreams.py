@@ -98,8 +98,14 @@ class ActivityStream(ABC):
             Q(id__in=status.user.blocks.all()) | Q(blocks=status.user)  # not blocked
         )
 
+        # only visible to the poster and mentioned users
+        if status.privacy == "direct":
+            audience = audience.filter(
+                Q(id=status.user.id)  # if the user is the post's author
+                | Q(id__in=status.mention_users.all())  # if the user is mentioned
+            )
         # only visible to the poster's followers and tagged users
-        if status.privacy == "followers":
+        elif status.privacy == "followers":
             audience = audience.filter(
                 Q(id=status.user.id)  # if the user is the post's author
                 | Q(following=status.user)  # if the user is following the author
@@ -125,7 +131,6 @@ class HomeStream(ActivityStream):
         return audience.filter(
             Q(id=status.user.id)  # if the user is the post's author
             | Q(following=status.user)  # if the user is following the author
-            | Q(id__in=status.mention_users.all())  # or the user is mentioned
         )
 
     def stream_statuses(self, user):
@@ -144,7 +149,7 @@ class LocalStream(ActivityStream):
 
     def stream_users(self, status):
         # this stream wants no part in non-public statuses
-        if status.privacy != "public":
+        if status.privacy != "public" or not status.user.local:
             return None
         return super().stream_users(status)
 
