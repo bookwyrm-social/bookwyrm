@@ -75,9 +75,7 @@ class DirectMessage(View):
         if user:
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
-        activities = privacy_filter(
-            request.user, queryset, privacy_levels=["direct"]
-        )
+        activities = privacy_filter(request.user, queryset, privacy_levels=["direct"])
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)

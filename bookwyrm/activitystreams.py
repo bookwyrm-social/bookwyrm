@@ -67,7 +67,7 @@ class ActivityStream(ABC):
     def stream_users(self, status):  # pylint: disable=no-self-use
         """ given a status, what users should see it """
         # direct messages don't appeard in feeds, direct comments/reviews/etc do
-        if status.privacy == "direct" and status.status_type == 'Note':
+        if status.privacy == "direct" and status.status_type == "Note":
             return None
 
         # everybody who could plausibly see this status
