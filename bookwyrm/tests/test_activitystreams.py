@@ -4,6 +4,8 @@ from django.test import TestCase
 from bookwyrm import activitystreams, models
 
 
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class Activitystreams(TestCase):
     """ using redis to build activity streams """
 
@@ -34,7 +36,7 @@ class Activitystreams(TestCase):
 
         self.test_stream = TestStream()
 
-    def test_activitystream_class_ids(self):
+    def test_activitystream_class_ids(self, *_):
         """ the abstract base class for stream objects """
         self.assertEqual(
             self.test_stream.stream_id(self.local_user),
@@ -45,8 +47,7 @@ class Activitystreams(TestCase):
             "{}-test-unread".format(self.local_user.id),
         )
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users(self, _):
+    def test_abstractstream_stream_users(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -57,8 +58,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.local_user in users)
         self.assertTrue(self.another_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users_direct(self, _):
+    def test_abstractstream_stream_users_direct(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user,
@@ -81,8 +81,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
         self.assertFalse(self.remote_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users_followers_remote_user(self, _):
+    def test_abstractstream_stream_users_followers_remote_user(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user,
@@ -92,8 +91,7 @@ class Activitystreams(TestCase):
         users = self.test_stream.stream_users(status)
         self.assertFalse(users.exists())
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users_followers_self(self, _):
+    def test_abstractstream_stream_users_followers_self(self, *_):
         """ get a list of users that should see a status """
         status = models.Comment.objects.create(
             user=self.local_user,
@@ -106,8 +104,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
         self.assertFalse(self.remote_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users_followers_with_mention(self, _):
+    def test_abstractstream_stream_users_followers_with_mention(self, *_):
         """ get a list of users that should see a status """
         status = models.Comment.objects.create(
             user=self.remote_user,
@@ -122,8 +119,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
         self.assertFalse(self.remote_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_abstractstream_stream_users_followers_with_relationship(self, _):
+    def test_abstractstream_stream_users_followers_with_relationship(self, *_):
         """ get a list of users that should see a status """
         self.remote_user.followers.add(self.local_user)
         status = models.Comment.objects.create(
@@ -137,8 +133,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
         self.assertFalse(self.remote_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_homestream_stream_users(self, _):
+    def test_homestream_stream_users(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -146,8 +141,7 @@ class Activitystreams(TestCase):
         users = activitystreams.HomeStream().stream_users(status)
         self.assertFalse(users.exists())
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_homestream_stream_users_with_mentions(self, _):
+    def test_homestream_stream_users_with_mentions(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -157,8 +151,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.local_user in users)
         self.assertFalse(self.another_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_homestream_stream_users_with_relationship(self, _):
+    def test_homestream_stream_users_with_relationship(self, *_):
         """ get a list of users that should see a status """
         self.remote_user.followers.add(self.local_user)
         status = models.Status.objects.create(
@@ -168,8 +161,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.local_user in users)
         self.assertFalse(self.another_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_localstream_stream_users_remote_status(self, _):
+    def test_localstream_stream_users_remote_status(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -177,8 +169,7 @@ class Activitystreams(TestCase):
         users = activitystreams.LocalStream().stream_users(status)
         self.assertIsNone(users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_localstream_stream_users_local_status(self, _):
+    def test_localstream_stream_users_local_status(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.local_user, content="hi", privacy="public"
@@ -187,8 +178,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.local_user in users)
         self.assertTrue(self.another_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_localstream_stream_users_unlisted(self, _):
+    def test_localstream_stream_users_unlisted(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.local_user, content="hi", privacy="unlisted"
@@ -196,8 +186,7 @@ class Activitystreams(TestCase):
         users = activitystreams.LocalStream().stream_users(status)
         self.assertIsNone(users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_federatedstream_stream_users(self, _):
+    def test_federatedstream_stream_users(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -206,8 +195,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.local_user in users)
         self.assertTrue(self.another_user in users)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_federatedstream_stream_users_unlisted(self, _):
+    def test_federatedstream_stream_users_unlisted(self, *_):
         """ get a list of users that should see a status """
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="unlisted"
