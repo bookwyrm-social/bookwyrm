@@ -9,9 +9,9 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views import View
 
-from bookwyrm import forms, models
+from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.settings import PAGE_LENGTH
+from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from .helpers import get_activity_feed, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
@@ -28,21 +28,16 @@ class Feed(View):
         except ValueError:
             page = 1
 
-        try:
-            tab_title = {
-                'home': _("Home"),
-                "local": _("Local"),
-                "federated": _("Federated")
-            }[tab]
-        except KeyError:
+        if not tab in STREAMS:
             tab = 'home'
-            tab_title = _("Home")
 
-        activities = models.status.get_activity_stream(
-            request.user, tab,
-            (1 - page) * PAGE_LENGTH,
-            page * PAGE_LENGTH
-        )
+        tab_title = {
+            'home': _("Home"),
+            "local": _("Local"),
+            "federated": _("Federated")
+        }[tab]
+
+        activities = activitystreams.streams[tab].get_activity_stream(request.user)
 
         paginated = Paginator(activities, PAGE_LENGTH)
 

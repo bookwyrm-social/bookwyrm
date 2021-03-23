@@ -10,19 +10,14 @@ from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
-import redis
 
-from bookwyrm import activitypub, settings
+from bookwyrm import activitypub
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
 from .fields import image_serializer
 from .readthrough import ProgressMode
 from . import fields
-
-r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
-)
 
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
@@ -121,7 +116,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):
+    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
             try:
@@ -390,71 +385,3 @@ class Boost(ActivityMixin, Status):
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
-
-
-@receiver(models.signals.post_save)
-# pylint: disable=unused-argument
-def update_feeds(sender, instance, created, *args, **kwargs):
-    """ add statuses to activity feeds """
-    # we're only interested in new statuses that aren't dms
-    if not created or not issubclass(sender, Status) or instance.privacy == 'direct':
-        return
-
-    user = instance.user
-
-    community = user.__class__.objects.filter(
-        local=True # we only manage timelines for local users
-    ).exclude(
-        Q(id__in=user.blocks.all()) | Q(blocks=user)  # not blocked
-    )
-
-    # ------ home timeline: users you follow and yourself
-    friends = community.filter(
-        Q(id=user.id) | Q(following=user)
-    )
-    add_status(friends, instance, 'home')
-
-    # local and federated timelines only get public statuses
-    if instance.privacy != 'public':
-        return
-
-    # ------ federated timeline: to anyone, anywhere
-    add_status(community, instance, 'federated')
-
-    # if the author is a remote user, it doesn't go on the local timeline
-    if not user.local:
-        return
-
-    # ------ local timeline: to anyone, anywhere
-    add_status(community, instance, 'local')
-
-
-def add_status(users, status, feed_name):
-    """ add a status to users' feeds """
-    # we want to do this as a bulk operation
-    pipeline = r.pipeline()
-    value = {status.id: status.published_date.timestamp()}
-    for user in users:
-        feed_id = '{}-{}'.format(user.id, feed_name)
-        unread_feed_id = '{}-unread'.format(feed_id)
-
-        # add the status to the feed
-        pipeline.zadd(feed_id, value)
-
-        # add to the unread status count
-        pipeline.incr(unread_feed_id)
-    pipeline.execute()
-
-
-def get_activity_stream(user, feed_name, start, end):
-    """ load the ids for statuses to be displayed """
-    feed_id = '{}-{}'.format(user.id, feed_name)
-    unread_feed_id = '{}-unread'.format(feed_id)
-
-    # clear unreads for this feed
-    r.set(unread_feed_id, 0)
-
-    statuses = r.zrange(feed_id, start, end)
-    return Status.objects.select_subclasses().filter(
-        id__in=statuses
-    ).order_by('-published_date')
