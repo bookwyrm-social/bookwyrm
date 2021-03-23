@@ -26,28 +26,24 @@ class ActivityStream(ABC):
 
     def add_status(self, status):
         """ add a status to users' feeds """
-        value = self.get_value(status)
         # we want to do this as a bulk operation, hence "pipeline"
         pipeline = r.pipeline()
         for user in self.stream_users(status):
             # add the status to the feed
-            pipeline.zadd(self.stream_id(user), value)
+            pipeline.lpush(self.stream_id(user), status.id)
+            pipeline.ltrim(self.stream_id(user), 0, settings.MAX_STREAM_LENGTH)
 
             # add to the unread status count
             pipeline.incr(self.unread_id(user))
         # and go!
         pipeline.execute()
 
-    def get_value(self, status):  # pylint: disable=no-self-use
-        """ the status id and the rank (ie, published date) """
-        return {status.id: status.published_date.timestamp()}
-
     def get_activity_stream(self, user):
         """ load the ids for statuses to be displayed """
         # clear unreads for this feed
         r.set(self.unread_id(user), 0)
 
-        statuses = r.zrevrange(self.stream_id(user), 0, -1)
+        statuses = r.lrange(self.stream_id(user), 0, -1)
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
@@ -61,7 +57,7 @@ class ActivityStream(ABC):
 
         stream_id = self.stream_id(user)
         for status in statuses.all()[: settings.MAX_STREAM_LENGTH]:
-            pipeline.zadd(stream_id, self.get_value(status))
+            pipeline.lpush(stream_id, status.id)
         pipeline.execute()
 
     def stream_users(self, status):  # pylint: disable=no-self-use
