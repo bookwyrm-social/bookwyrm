@@ -134,7 +134,8 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
-    def test_handle_reading_status_to_read(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_to_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="to-read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -146,7 +147,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "wants to read")
 
-    def test_handle_reading_status_reading(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_reading(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="reading")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -158,7 +160,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "started reading")
 
-    def test_handle_reading_status_read(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -170,7 +173,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "finished reading")
 
-    def test_handle_reading_status_other(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_other(self, _):
         """ posts shelve activities """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             views.helpers.handle_reading_status(
@@ -178,7 +182,8 @@ class ViewsHelpers(TestCase):
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
 
-    def test_object_visible_to_user(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user(self, _):
         """ does a user have permission to view an object """
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
@@ -206,7 +211,8 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    def test_object_visible_to_user_follower(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user_follower(self, _):
         """ what you can see if you follow a user """
         self.remote_user.followers.add(self.local_user)
         obj = models.Status.objects.create(
@@ -225,7 +231,8 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    def test_object_visible_to_user_blocked(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user_blocked(self, _):
         """ you can't see it if they block you """
         self.remote_user.blocks.add(self.local_user)
         obj = models.Status.objects.create(
