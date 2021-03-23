@@ -5,6 +5,7 @@ from django.test.client import RequestFactory
 
 from bookwyrm import models, views
 
+
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class InteractionViews(TestCase):
     """ viewing and creating statuses """
@@ -146,8 +147,11 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
         broadcast_mock.call_count = 0
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_status"
+        ) as redis_mock:
             view(request, status.id)
             self.assertEqual(broadcast_mock.call_count, 1)
+            self.assertTrue(redis_mock.called)
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)

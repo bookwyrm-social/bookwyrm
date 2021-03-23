@@ -159,7 +159,6 @@ class StatusViews(TestCase):
             view(request, "reply")
             self.assertTrue(redis_mock.called)
 
-
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, "<p>right</p>")
         self.assertEqual(reply.user, user)
