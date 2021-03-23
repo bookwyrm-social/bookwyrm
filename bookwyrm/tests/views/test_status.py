@@ -55,7 +55,10 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request, "comment")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            view(request, "comment")
+            self.assertTrue(redis_mock.called)
+
         status = models.Comment.objects.get()
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, self.local_user)
@@ -67,9 +70,10 @@ class StatusViews(TestCase):
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True
         )
-        parent = models.Status.objects.create(
-            content="parent status", user=self.local_user
-        )
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            parent = models.Status.objects.create(
+                content="parent status", user=self.local_user
+            )
         form = forms.ReplyForm(
             {
                 "content": "hi",
@@ -81,7 +85,10 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        view(request, "reply")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            view(request, "reply")
+            self.assertTrue(redis_mock.called)
+
         status = models.Status.objects.get(user=user)
         self.assertEqual(status.content, "<p>hi</p>")
         self.assertEqual(status.user, user)
@@ -104,7 +111,10 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request, "comment")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            view(request, "comment")
+            self.assertTrue(redis_mock.called)
+
         status = models.Status.objects.get()
         self.assertEqual(list(status.mention_users.all()), [user])
         self.assertEqual(models.Notification.objects.get().user, user)
@@ -129,7 +139,9 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request, "comment")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            view(request, "comment")
+            self.assertTrue(redis_mock.called)
         status = models.Status.objects.get()
 
         form = forms.ReplyForm(
@@ -143,7 +155,10 @@ class StatusViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = user
 
-        view(request, "reply")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            view(request, "reply")
+            self.assertTrue(redis_mock.called)
+
 
         reply = models.Status.replies(status).first()
         self.assertEqual(reply.content, "<p>right</p>")
@@ -239,13 +254,18 @@ class StatusViews(TestCase):
     def test_handle_delete_status(self, mock):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        status = models.Status.objects.create(user=self.local_user, content="hi")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.local_user
 
-        view(request, status.id)
-        activity = json.loads(mock.call_args_list[0][0][1])
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_status"
+        ) as redis_mock:
+            view(request, status.id)
+            self.assertTrue(redis_mock.called)
+        activity = json.loads(mock.call_args_list[1][0][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()
@@ -254,7 +274,8 @@ class StatusViews(TestCase):
     def test_handle_delete_status_permission_denied(self, _):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        status = models.Status.objects.create(user=self.local_user, content="hi")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
@@ -267,14 +288,19 @@ class StatusViews(TestCase):
     def test_handle_delete_status_moderator(self, mock):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
-        status = models.Status.objects.create(user=self.local_user, content="hi")
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
         self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
         request.user.is_superuser = True
 
-        view(request, status.id)
-        activity = json.loads(mock.call_args_list[0][0][1])
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_status"
+        ) as redis_mock:
+            view(request, status.id)
+            self.assertTrue(redis_mock.called)
+        activity = json.loads(mock.call_args_list[1][0][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
         status.refresh_from_db()

@@ -184,7 +184,12 @@ streams = {
 def add_status_on_create(sender, instance, created, *args, **kwargs):
     """ add newly created statuses to activity feeds """
     # we're only interested in new statuses
-    if not created or not issubclass(sender, models.Status):
+    if not issubclass(sender, models.Status):
+        return
+
+    if not created and instance.deleted:
+        for stream in streams.values():
+            stream.remove_status(instance)
         return
 
     # iterates through Home, Local, Federated
