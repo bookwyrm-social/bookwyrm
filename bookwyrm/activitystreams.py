@@ -38,6 +38,27 @@ class ActivityStream(ABC):
         # and go!
         pipeline.execute()
 
+    def remove_status(self, status):
+        """ remove a status from all feeds """
+        pipeline = r.pipeline()
+        for user in self.stream_users(status):
+            pipeline.lrem(self.stream_id(user), -1, status.id)
+        pipeline.execute()
+
+    def add_user_statuses(self, user, viewer):
+        """ add a user's statuses to another user's feed """
+        pipeline = r.pipeline()
+        for status in user.status_set.objects.all()[: settings.MAX_STREAM_LENGTH]:
+            pipeline.lpush(self.stream_id(viewer), status.id)
+        pipeline.execute()
+
+    def remove_user_statuses(self, user, viewer):
+        """ remove a user's status from another user's feed """
+        pipeline = r.pipeline()
+        for status in user.status_set.objects.all()[: settings.MAX_STREAM_LENGTH]:
+            pipeline.lrem(self.stream_id(viewer), status.id)
+        pipeline.execute()
+
     def get_activity_stream(self, user):
         """ load the ids for statuses to be displayed """
         # clear unreads for this feed
