@@ -217,3 +217,14 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
         # and in both directions
         stream.remove_user_statuses(instance.user_subject, instance.user_object)
         stream.remove_user_statuses(instance.user_object, instance.user_subject)
+
+
+@receiver(signals.post_save, sender=models.User)
+# pylint: disable=unused-argument
+def populate_feed_on_account_create(sender, instance, created, *args, **kwargs):
+    """ build a user's feeds when they join """
+    if not created or not instance.local:
+        return
+
+    for stream in streams.values():
+        stream.populate_stream(instance)
