@@ -28,7 +28,7 @@ class Feed(View):
             page = 1
 
         if not tab in STREAMS:
-            tab = 'home'
+            tab = "home"
 
         activities = activitystreams.streams[tab].get_activity_stream(request.user)
 
