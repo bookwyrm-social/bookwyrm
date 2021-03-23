@@ -1,8 +1,7 @@
 """ access the activity streams stored in redis """
 from abc import ABC
 from django.dispatch import receiver
-from django.db.models import signals
-from django.db.models import Q
+from django.db.models import signals, Q
 import redis
 
 from bookwyrm import models, settings
@@ -45,18 +44,18 @@ class ActivityStream(ABC):
             pipeline.lrem(self.stream_id(user), -1, status.id)
         pipeline.execute()
 
-    def add_user_statuses(self, user, viewer):
+    def add_user_statuses(self, viewer, user):
         """ add a user's statuses to another user's feed """
         pipeline = r.pipeline()
-        for status in user.status_set.objects.all()[: settings.MAX_STREAM_LENGTH]:
+        for status in user.status_set.all()[: settings.MAX_STREAM_LENGTH]:
             pipeline.lpush(self.stream_id(viewer), status.id)
         pipeline.execute()
 
-    def remove_user_statuses(self, user, viewer):
+    def remove_user_statuses(self, viewer, user):
         """ remove a user's status from another user's feed """
         pipeline = r.pipeline()
-        for status in user.status_set.objects.all()[: settings.MAX_STREAM_LENGTH]:
-            pipeline.lrem(self.stream_id(viewer), status.id)
+        for status in user.status_set.all()[: settings.MAX_STREAM_LENGTH]:
+            pipeline.lrem(self.stream_id(viewer), -1, status.id)
         pipeline.execute()
 
     def get_activity_stream(self, user):
@@ -182,15 +181,39 @@ streams = {
 
 @receiver(signals.post_save)
 # pylint: disable=unused-argument
-def update_feeds(sender, instance, created, *args, **kwargs):
-    """ add statuses to activity feeds """
-    # we're only interested in new statuses that aren't dms
-    if (
-        not created
-        or not issubclass(sender, models.Status)
-        or instance.privacy == "direct"
-    ):
+def add_status_on_create(sender, instance, created, *args, **kwargs):
+    """ add newly created statuses to activity feeds """
+    # we're only interested in new statuses
+    if not created or not issubclass(sender, models.Status):
         return
 
+    # iterates through Home, Local, Federated
     for stream in streams.values():
         stream.add_status(instance)
+
+
+@receiver(signals.post_save, sender=models.UserFollows)
+# pylint: disable=unused-argument
+def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
+    """ add a newly followed user's statuses to feeds """
+    if not created:
+        return  # idk when this would ever happen though
+    HomeStream().add_user_statuses(instance.user_subject, instance.user_object)
+
+
+@receiver(signals.post_delete, sender=models.UserFollows)
+# pylint: disable=unused-argument
+def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
+    """ remove statuses from a feed on unfollow """
+    HomeStream().remove_user_statuses(instance.user_subject, instance.user_object)
+
+
+@receiver(signals.post_save, sender=models.UserBlocks)
+# pylint: disable=unused-argument
+def remove_statuses_on_block(sender, instance, *args, **kwargs):
+    """ remove statuses from all feeds on block """
+    # blocks apply ot all feeds
+    for stream in streams.values():
+        # and in both directions
+        stream.remove_user_statuses(instance.user_subject, instance.user_object)
+        stream.remove_user_statuses(instance.user_object, instance.user_subject)
