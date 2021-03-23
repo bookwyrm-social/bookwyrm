@@ -37,7 +37,8 @@ urlpatterns = [
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),
     # polling updates
-    re_path("^api/updates/notifications/?$", views.Updates.as_view()),
+    re_path("^api/updates/notifications/?$", views.get_notification_count),
+    re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
     # authentication
     re_path(r"^login/?$", views.Login.as_view()),
     re_path(r"^register/?$", views.Register.as_view()),

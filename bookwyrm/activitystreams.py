@@ -70,6 +70,10 @@ class ActivityStream(ABC):
             .order_by("-published_date")
         )
 
+    def get_unread_count(self, user):
+        """ get the unread status count for this user's feed """
+        return int(r.get(self.unread_id(user)))
+
     def populate_stream(self, user):
         """ go from zero to a timeline """
         pipeline = r.pipeline()

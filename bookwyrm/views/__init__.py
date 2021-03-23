@@ -33,6 +33,6 @@ from .shelf import shelve, unshelve
 from .site import Site
 from .status import CreateStatus, DeleteStatus
 from .tag import Tag, AddTag, RemoveTag
-from .updates import Updates
+from .updates import get_notification_count, get_unread_status_count
 from .user import User, EditUser, Followers, Following
 from .wellknown import webfinger, nodeinfo_pointer, nodeinfo, instance_info, peers
