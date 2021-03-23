@@ -6,7 +6,6 @@ from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext as _
 from django.views import View
 
 from bookwyrm import activitystreams, forms, models
@@ -31,12 +30,6 @@ class Feed(View):
         if not tab in STREAMS:
             tab = 'home'
 
-        tab_title = {
-            'home': _("Home"),
-            "local": _("Local"),
-            "federated": _("Federated")
-        }[tab]
-
         activities = activitystreams.streams[tab].get_activity_stream(request.user)
 
         paginated = Paginator(activities, PAGE_LENGTH)
@@ -47,7 +40,6 @@ class Feed(View):
                 "user": request.user,
                 "activities": paginated.page(page),
                 "tab": tab,
-                "tab_title": tab_title,
                 "goal_form": forms.GoalForm(),
                 "path": "/%s" % tab,
             },

@@ -3,7 +3,15 @@
 {% load bookwyrm_tags %}
 {% block panel %}
 
-<h1 class="title">{% blocktrans %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
+<h1 class="title">
+    {% if tab == 'home' %}
+    {% trans "Home Timeline" %}
+    {% elif tab == 'local' %}
+    {% trans "Local Timeline" %}
+    {% else %}
+    {% trans "Federated Timeline" %}
+    {% endif %}
+</h1>
 <div class="tabs">
     <ul>
         <li class="{% if tab == 'home' %}is-active{% endif %}"{% if tab == 'home' %} aria-current="page"{% endif %}>
