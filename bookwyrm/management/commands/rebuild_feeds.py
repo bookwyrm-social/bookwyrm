@@ -8,9 +8,11 @@ r = redis.Redis(
     host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
 )
 
+
 def erase_feeds():
     """ throw the whole redis away """
     r.flushall()
+
 
 def create_feeds():
     """ build all the fields for all the users """

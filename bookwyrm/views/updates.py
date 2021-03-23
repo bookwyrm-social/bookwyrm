@@ -16,7 +16,7 @@ def get_notification_count(request):
 
 
 @login_required
-def get_unread_status_count(request, stream='home'):
+def get_unread_status_count(request, stream="home"):
     """ any unread statuses for this feed? """
     stream = activitystreams.streams.get(stream)
     if not stream:
