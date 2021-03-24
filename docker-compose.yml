@@ -45,11 +45,20 @@ services:
     depends_on:
       - db
       - celery_worker
+      - redis_activity
     networks:
       - main
     ports:
       - 8000:8000
-  redis:
+  redis_activity:
+    image: redis
+    env_file: .env
+    ports:
+      - 6378:6378
+    networks:
+      - main
+    restart: on-failure
+  redis_broker:
     image: redis
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
@@ -72,7 +81,7 @@ services:
       - media_volume:/app/images
     depends_on:
       - db
-      - redis
+      - redis_broker
     restart: on-failure
   flower:
     build: .
@@ -84,7 +93,7 @@ services:
       - main
     depends_on:
       - db
-      - redis
+      - redis_broker
     restart: on-failure
     ports:
        - 8888:8888

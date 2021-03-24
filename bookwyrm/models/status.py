@@ -114,7 +114,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):
+    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
             try:
