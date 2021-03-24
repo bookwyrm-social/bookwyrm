@@ -191,6 +191,7 @@ class Like(Verb):
 class Announce(Verb):
     """ boosting a status """
 
+    published: str
     object: str
     type: str = "Announce"
 
