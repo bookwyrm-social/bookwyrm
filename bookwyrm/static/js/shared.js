@@ -61,9 +61,9 @@ function polling(el, delay) {
 
 function updateCountElement(el, data) {
     const currentCount = el.innerText;
-    const count = data[el.getAttribute('data-poll')];
+    const count = data.count;
     if (count != currentCount) {
-        addRemoveClass(el, 'hidden', count < 1);
+        addRemoveClass(el.closest('[data-poll-wrapper]'), 'hidden', count < 1);
         el.innerText = count;
     }
 }

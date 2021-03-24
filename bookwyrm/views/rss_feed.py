@@ -1,7 +1,7 @@
 """ serialize user's posts in rss feed """
 
 from django.contrib.syndication.views import Feed
-from .helpers import get_activity_feed, get_user_from_username
+from .helpers import get_user_from_username, privacy_filter
 
 # pylint: disable=no-self-use, unused-argument
 class RssFeed(Feed):
@@ -24,10 +24,10 @@ class RssFeed(Feed):
 
     def items(self, obj):
         """ the user's activity feed """
-        return get_activity_feed(
+        return privacy_filter(
             obj,
-            privacy=["public", "unlisted"],
-            queryset=obj.status_set.select_subclasses(),
+            obj.status_set.select_subclasses(),
+            privacy_levels=["public", "unlisted"],
         )
 
     def item_link(self, item):

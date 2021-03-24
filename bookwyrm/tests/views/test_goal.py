@@ -102,7 +102,8 @@ class GoalViews(TestCase):
         result = view(request, self.local_user.localname, 2020)
         self.assertEqual(result.status_code, 404)
 
-    def test_create_goal(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_create_goal(self, _):
         """ create a new goal """
         view = views.Goal.as_view()
         request = self.factory.post(
