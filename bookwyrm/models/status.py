@@ -58,6 +58,10 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [("attachments", "attachment", "id")]
     deserialize_reverse_fields = [("attachments", "attachment")]
 
+    class Meta:
+        """ default sorting """
+        ordering = ("-published_date",)
+
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
