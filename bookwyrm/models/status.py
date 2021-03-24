@@ -299,13 +299,10 @@ class Review(Status):
     @property
     def pure_name(self):
         """ clarify review names for mastodon serialization """
-        if self.rating:
-            return 'Review of "{}" ({:d} stars): {}'.format(
-                self.book.title,
-                self.rating,
-                self.name,
-            )
-        return 'Review of "{}": {}'.format(self.book.title, self.name)
+        template = get_template("snippets/generated_status/review_pure_name.html")
+        return template.render(
+            {"book": self.book, "rating": self.rating, "name": self.name}
+        ).strip()
 
     @property
     def pure_content(self):
