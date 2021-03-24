@@ -448,3 +448,8 @@ class IntegerField(ActivitypubFieldMixin, models.IntegerField):
 
 class DecimalField(ActivitypubFieldMixin, models.DecimalField):
     """ activitypub-aware boolean field """
+
+    def field_to_activity(self, value):
+        if not value:
+            return None
+        return float(value)
