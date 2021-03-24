@@ -76,7 +76,6 @@ Web backend
 - [ActivityPub](http://activitypub.rocks/) federation
 - [Celery](http://celeryproject.org/) task queuing
 - [Redis](https://redis.io/) task backend
-- [Redis (again)](https://redis.io/) activity stream manager
 
 Front end
 - Django templates
@@ -236,11 +235,6 @@ When there are changes available in the production branch, you can install and g
 - `docker-compose exec web python manage.py migrate` runs the database migrations in Django
 - `docker-compose exec web python manage.py collectstatic --no-input` loads any updated static files (such as the JavaScript and CSS)
 - `docker-compose restart` reloads the docker containers
-
-### Re-building activity streams
-
-If something goes awry with user timelines, and you want to re-create them en mass, there's a management command for that:
-`docker-compose run --rm web python manage.py rebuild_feeds`
 
 ### Port Conflicts
 

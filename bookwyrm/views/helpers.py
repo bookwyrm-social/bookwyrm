@@ -59,11 +59,6 @@ def object_visible_to_user(viewer, obj):
 def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     """ filter objects that have "user" and "privacy" fields """
     privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
-    # if there'd a deleted field, exclude deleted items
-    try:
-        queryset = queryset.filter(deleted=False)
-    except FieldError:
-        pass
 
     # exclude blocks from both directions
     if not viewer.is_anonymous:
@@ -103,6 +98,54 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
             )
         except FieldError:
             queryset = queryset.exclude(~Q(user=viewer), privacy="direct")
+
+    return queryset
+
+
+def get_activity_feed(
+    user, privacy=None, local_only=False, following_only=False, queryset=None
+):
+    """ get a filtered queryset of statuses """
+    if queryset is None:
+        queryset = models.Status.objects.select_subclasses()
+
+    # exclude deleted
+    queryset = queryset.exclude(deleted=True).order_by("-published_date")
+
+    # apply privacy filters
+    queryset = privacy_filter(user, queryset, privacy, following_only=following_only)
+
+    # only show dms if we only want dms
+    if privacy == ["direct"]:
+        # dms are direct statuses not related to books
+        queryset = queryset.filter(
+            review__isnull=True,
+            comment__isnull=True,
+            quotation__isnull=True,
+            generatednote__isnull=True,
+        )
+    else:
+        try:
+            queryset = queryset.exclude(
+                review__isnull=True,
+                comment__isnull=True,
+                quotation__isnull=True,
+                generatednote__isnull=True,
+                privacy="direct",
+            )
+        except FieldError:
+            # if we're looking at a subtype of Status (like Review)
+            pass
+
+    # filter for only local status
+    if local_only:
+        queryset = queryset.filter(user__local=True)
+
+    # remove statuses that have boosts in the same queryset
+    try:
+        queryset = queryset.filter(~Q(boosters__in=queryset))
+    except ValueError:
+        pass
 
     return queryset
 

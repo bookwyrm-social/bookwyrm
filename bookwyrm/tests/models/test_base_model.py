@@ -27,18 +27,18 @@ class BaseModel(TestCase):
         expected = instance.get_remote_id()
         self.assertEqual(expected, "https://%s/user/mouse/bookwyrmmodel/1" % DOMAIN)
 
-    def test_set_remote_id(self):
+    def test_execute_after_save(self):
         """ this function sets remote ids after creation """
         # using Work because it BookWrymModel is abstract and this requires save
         # Work is a relatively not-fancy model.
         instance = models.Work.objects.create(title="work title")
         instance.remote_id = None
-        base_model.set_remote_id(None, instance, True)
+        base_model.execute_after_save(None, instance, True)
         self.assertEqual(
             instance.remote_id, "https://%s/book/%d" % (DOMAIN, instance.id)
         )
 
         # shouldn't set remote_id if it's not created
         instance.remote_id = None
-        base_model.set_remote_id(None, instance, False)
+        base_model.execute_after_save(None, instance, False)
         self.assertIsNone(instance.remote_id)

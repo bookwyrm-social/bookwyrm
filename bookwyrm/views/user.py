@@ -16,8 +16,8 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter, object_visible_to_user
+from .helpers import get_activity_feed, get_user_from_username, is_api_request
+from .helpers import is_blocked, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -72,9 +72,9 @@ class User(View):
                 break
 
         # user's posts
-        activities = privacy_filter(
+        activities = get_activity_feed(
             request.user,
-            user.status_set.select_subclasses(),
+            queryset=user.status_set.select_subclasses(),
         )
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(

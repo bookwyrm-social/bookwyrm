@@ -203,8 +203,7 @@ class GoodreadsImport(TestCase):
         self.assertEqual(readthrough.finish_date.month, 10)
         self.assertEqual(readthrough.finish_date.day, 25)
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_handle_imported_book_review(self, _):
+    def test_handle_imported_book_review(self):
         """ goodreads review import """
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
