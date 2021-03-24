@@ -306,7 +306,7 @@ class Review(Status):
         """ clarify review names for mastodon serialization """
         template = get_template("snippets/generated_status/review_pure_name.html")
         return template.render(
-            {"book": self.book, "rating": int(self.rating), "name": self.name}
+            {"book": self.book, "rating": self.rating, "name": self.name}
         ).strip()
 
     @property
@@ -329,7 +329,7 @@ class ReviewRating(Review):
     @property
     def pure_content(self):
         template = get_template("snippets/generated_status/rating.html")
-        return template.render({"book": self.book, "rating": int(self.rating)}).strip()
+        return template.render({"book": self.book, "rating": self.rating}).strip()
 
     activity_serializer = activitypub.Rating
     pure_type = "Note"
