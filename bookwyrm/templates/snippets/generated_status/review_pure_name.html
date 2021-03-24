@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if rating %}
+
+{% blocktrans with book_title=book.title rating=rating|floatformat:"0" review_title=name count counter=rating %}Review of <em>{{ book_title }}</em> ({{ rating }} star): {{ review_title }}{% plural %}Review of <em>{{ book_title }}</em> ({{ rating }} stars): {{ review_title }}{% endblocktrans %}
+
+{% else %}
+
+{% blocktrans with book_title=book.title review_title=name %}Review of <em>{{ book_title }}</em>: {{ review_title }}{% endblocktrans %}
+
+{% endif %}
