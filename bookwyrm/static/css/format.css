@@ -34,6 +34,29 @@ html {
 .hidden {
     display: none !important;
 }
+.hidden.transition-y, .hidden.transition-x {
+    display: block !important;
+    visibility: hidden !important;
+    height: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+.transition-x {
+    transition-property: width, margin-left, margin-right, padding-left, padding-right;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+@media (prefers-reduced-motion: reduce) {
+    .transition-x, .transition-y {
+        transition-duration: 0.001ms !important;
+    }
+}
 
 /* --- STARS --- */
 .rate-stars button.icon {
