@@ -275,7 +275,30 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], 'Review of "%s" (3 stars): Review name' % self.book.title
+            activity["name"],
+            "Review of <em>%s</em> (3 stars): Review name" % self.book.title,
+        )
+        self.assertEqual(activity["content"], "test content")
+        self.assertEqual(activity["attachment"][0].type, "Document")
+        self.assertEqual(
+            activity["attachment"][0].url,
+            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+        )
+        self.assertEqual(activity["attachment"][0].name, "Test Edition")
+
+    def test_review_to_pure_activity_no_rating(self, *_):
+        """ subclass of the base model version with a "pure" serializer """
+        status = models.Review.objects.create(
+            name="Review name",
+            content="test content",
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity(pure=True)
+        self.assertEqual(activity["id"], status.remote_id)
+        self.assertEqual(activity["type"], "Article")
+        self.assertEqual(
+            activity["name"], "Review of <em>%s</em>: Review name" % self.book.title
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
