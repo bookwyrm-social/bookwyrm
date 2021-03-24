@@ -80,113 +80,6 @@ class ViewsHelpers(TestCase):
         request.headers = {"Accept": "Praise"}
         self.assertFalse(views.helpers.is_api_request(request))
 
-    def test_get_activity_feed(self):
-        """ loads statuses """
-        rat = models.User.objects.create_user(
-            "rat", "rat@rat.rat", "password", local=True
-        )
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            public_status = models.Comment.objects.create(
-                content="public status", book=self.book, user=self.local_user
-            )
-            direct_status = models.Status.objects.create(
-                content="direct", user=self.local_user, privacy="direct"
-            )
-
-            rat_public = models.Status.objects.create(content="blah blah", user=rat)
-            rat_unlisted = models.Status.objects.create(
-                content="blah blah", user=rat, privacy="unlisted"
-            )
-            remote_status = models.Status.objects.create(
-                content="blah blah", user=self.remote_user
-            )
-            followers_status = models.Status.objects.create(
-                content="blah", user=rat, privacy="followers"
-            )
-            rat_mention = models.Status.objects.create(
-                content="blah blah blah", user=rat, privacy="followers"
-            )
-            rat_mention.mention_users.set([self.local_user])
-
-        statuses = views.helpers.get_activity_feed(
-            self.local_user,
-            privacy=["public", "unlisted", "followers"],
-            following_only=True,
-            queryset=models.Comment.objects,
-        )
-        self.assertEqual(len(statuses), 1)
-        self.assertEqual(statuses[0], public_status)
-
-        statuses = views.helpers.get_activity_feed(
-            self.local_user, privacy=["public", "followers"], local_only=True
-        )
-        self.assertEqual(len(statuses), 2)
-        self.assertEqual(statuses[1], public_status)
-        self.assertEqual(statuses[0], rat_public)
-
-        statuses = views.helpers.get_activity_feed(self.local_user, privacy=["direct"])
-        self.assertEqual(len(statuses), 1)
-        self.assertEqual(statuses[0], direct_status)
-
-        statuses = views.helpers.get_activity_feed(
-            self.local_user,
-            privacy=["public", "followers"],
-        )
-        self.assertEqual(len(statuses), 3)
-        self.assertEqual(statuses[2], public_status)
-        self.assertEqual(statuses[1], rat_public)
-        self.assertEqual(statuses[0], remote_status)
-
-        statuses = views.helpers.get_activity_feed(
-            self.local_user,
-            privacy=["public", "unlisted", "followers"],
-            following_only=True,
-        )
-        self.assertEqual(len(statuses), 2)
-        self.assertEqual(statuses[1], public_status)
-        self.assertEqual(statuses[0], rat_mention)
-
-        rat.followers.add(self.local_user)
-        statuses = views.helpers.get_activity_feed(
-            self.local_user,
-            privacy=["public", "unlisted", "followers"],
-            following_only=True,
-        )
-        self.assertEqual(len(statuses), 5)
-        self.assertEqual(statuses[4], public_status)
-        self.assertEqual(statuses[3], rat_public)
-        self.assertEqual(statuses[2], rat_unlisted)
-        self.assertEqual(statuses[1], followers_status)
-        self.assertEqual(statuses[0], rat_mention)
-
-    def test_get_activity_feed_blocks(self):
-        """ feed generation with blocked users """
-        rat = models.User.objects.create_user(
-            "rat", "rat@rat.rat", "password", local=True
-        )
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            public_status = models.Comment.objects.create(
-                content="public status", book=self.book, user=self.local_user
-            )
-            rat_public = models.Status.objects.create(content="blah blah", user=rat)
-
-            statuses = views.helpers.get_activity_feed(
-                self.local_user, privacy=["public"]
-            )
-            self.assertEqual(len(statuses), 2)
-
-        # block relationship
-        rat.blocks.add(self.local_user)
-        statuses = views.helpers.get_activity_feed(self.local_user, privacy=["public"])
-        self.assertEqual(len(statuses), 1)
-        self.assertEqual(statuses[0], public_status)
-
-        statuses = views.helpers.get_activity_feed(rat, privacy=["public"])
-        self.assertEqual(len(statuses), 1)
-        self.assertEqual(statuses[0], rat_public)
-
     def test_is_bookwyrm_request(self):
         """ checks if a request came from a bookwyrm instance """
         request = self.factory.get("", {"q": "Test Book"})
@@ -241,7 +134,8 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
-    def test_handle_reading_status_to_read(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_to_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="to-read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -253,7 +147,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "wants to read")
 
-    def test_handle_reading_status_reading(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_reading(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="reading")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -265,7 +160,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "started reading")
 
-    def test_handle_reading_status_read(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -277,7 +173,8 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "finished reading")
 
-    def test_handle_reading_status_other(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_reading_status_other(self, _):
         """ posts shelve activities """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             views.helpers.handle_reading_status(
@@ -285,7 +182,8 @@ class ViewsHelpers(TestCase):
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
 
-    def test_object_visible_to_user(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user(self, _):
         """ does a user have permission to view an object """
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
@@ -313,7 +211,8 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    def test_object_visible_to_user_follower(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user_follower(self, _):
         """ what you can see if you follow a user """
         self.remote_user.followers.add(self.local_user)
         obj = models.Status.objects.create(
@@ -332,7 +231,8 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    def test_object_visible_to_user_blocked(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_object_visible_to_user_blocked(self, _):
         """ you can't see it if they block you """
         self.remote_user.blocks.add(self.local_user)
         obj = models.Status.objects.create(
