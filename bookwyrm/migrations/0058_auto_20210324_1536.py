@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0057_user_discoverable'),
+        ("bookwyrm", "0057_user_discoverable"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='status',
-            options={'ordering': ('-published_date',)},
+            name="status",
+            options={"ordering": ("-published_date",)},
         ),
     ]

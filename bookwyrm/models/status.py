@@ -60,6 +60,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     class Meta:
         """ default sorting """
+
         ordering = ("-published_date",)
 
     def save(self, *args, **kwargs):
