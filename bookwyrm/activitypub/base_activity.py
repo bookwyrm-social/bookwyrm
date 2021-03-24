@@ -253,7 +253,7 @@ def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     if model:  # a bonus check we can do if we already know the model
         result = model.find_existing_by_remote_id(remote_id)
         if result and not refresh:
-            return result
+            return result if not get_activity else result.to_activity_dataclass()
 
     # load the data and create the object
     try:
@@ -269,7 +269,7 @@ def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
     # check for existing items with shared unique identifiers
     result = model.find_existing(data)
     if result and not refresh:
-        return result
+        return result if not get_activity else result.to_activity_dataclass()
 
     item = model.activity_serializer(**data)
     # if we're refreshing, "result" will be set and we'll update it
