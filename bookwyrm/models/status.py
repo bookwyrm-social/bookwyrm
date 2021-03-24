@@ -349,7 +349,7 @@ class Boost(ActivityMixin, Status):
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
-        if not self.boosted_status.user.local:
+        if not self.boosted_status.user.local or self.boosted_status.user == self.user:
             return
 
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
