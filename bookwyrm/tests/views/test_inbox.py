@@ -559,6 +559,9 @@ class Inbox(TestCase):
             "id": "%s/boost" % self.status.remote_id,
             "actor": self.remote_user.remote_id,
             "object": self.status.remote_id,
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "published": "Mon, 25 May 2020 19:31:20 GMT",
         }
         with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
             discarder.return_value = False
@@ -607,6 +610,9 @@ class Inbox(TestCase):
                 "id": boost.remote_id,
                 "actor": self.remote_user.remote_id,
                 "object": self.status.remote_id,
+                "to": ["https://www.w3.org/ns/activitystreams#public"],
+                "cc": ["https://example.com/user/mouse/followers"],
+                "published": "Mon, 25 May 2020 19:31:20 GMT",
             },
         }
         with patch(
@@ -614,6 +620,7 @@ class Inbox(TestCase):
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
+        self.assertFalse(models.Boost.objects.exists())
 
     def test_handle_unboost_unknown_boost(self):
         """ undo a boost """
