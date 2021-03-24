@@ -19,7 +19,6 @@ from bookwyrm.activitypub import ActivitySerializerError
 from bookwyrm import models
 
 
-@patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class BaseActivity(TestCase):
     """ the super class for model-linked activitypub dataclasses """
 
@@ -44,24 +43,24 @@ class BaseActivity(TestCase):
         image.save(output, format=image.format)
         self.image_data = output.getvalue()
 
-    def test_init(self, _):
+    def test_init(self):
         """ simple successfuly init """
         instance = ActivityObject(id="a", type="b")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))
 
-    def test_init_missing(self, _):
+    def test_init_missing(self):
         """ init with missing required params """
         with self.assertRaises(ActivitySerializerError):
             ActivityObject()
 
-    def test_init_extra_fields(self, _):
+    def test_init_extra_fields(self):
         """ init ignoring additional fields """
         instance = ActivityObject(id="a", type="b", fish="c")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))
 
-    def test_init_default_field(self, _):
+    def test_init_default_field(self):
         """ replace an existing required field with a default field """
 
         @dataclass(init=False)
@@ -74,7 +73,7 @@ class BaseActivity(TestCase):
         self.assertEqual(instance.id, "a")
         self.assertEqual(instance.type, "TestObject")
 
-    def test_serialize(self, _):
+    def test_serialize(self):
         """ simple function for converting dataclass to dict """
         instance = ActivityObject(id="a", type="b")
         serialized = instance.serialize()
@@ -83,7 +82,7 @@ class BaseActivity(TestCase):
         self.assertEqual(serialized["type"], "b")
 
     @responses.activate
-    def test_resolve_remote_id(self, _):
+    def test_resolve_remote_id(self):
         """ look up or load remote data """
         # existing item
         result = resolve_remote_id("http://example.com/a/b", model=models.User)
@@ -105,14 +104,14 @@ class BaseActivity(TestCase):
         self.assertEqual(result.remote_id, "https://example.com/user/mouse")
         self.assertEqual(result.name, "MOUSE?? MOUSE!!")
 
-    def test_to_model_invalid_model(self, _):
+    def test_to_model_invalid_model(self):
         """ catch mismatch between activity type and model type """
         instance = ActivityObject(id="a", type="b")
         with self.assertRaises(ActivitySerializerError):
             instance.to_model(model=models.User)
 
     @responses.activate
-    def test_to_model_image(self, _):
+    def test_to_model_image(self):
         """ update an image field """
         activity = activitypub.Person(
             id=self.user.remote_id,
@@ -145,7 +144,7 @@ class BaseActivity(TestCase):
         self.assertEqual(self.user.name, "New Name")
         self.assertEqual(self.user.key_pair.public_key, "hi")
 
-    def test_to_model_many_to_many(self, _):
+    def test_to_model_many_to_many(self):
         """ annoying that these all need special handling """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(
@@ -176,7 +175,7 @@ class BaseActivity(TestCase):
         self.assertEqual(status.mention_books.first(), book)
 
     @responses.activate
-    def test_to_model_one_to_many(self, _):
+    def test_to_model_one_to_many(self):
         """these are reversed relationships, where the secondary object
         keys the primary object but not vice versa"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -215,7 +214,7 @@ class BaseActivity(TestCase):
         self.assertIsNone(status.attachments.first())
 
     @responses.activate
-    def test_set_related_field(self, _):
+    def test_set_related_field(self):
         """ celery task to add back-references to created objects """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(

@@ -6,12 +6,13 @@ from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 
-from bookwyrm import activitystreams, forms, models
+from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
-from bookwyrm.settings import PAGE_LENGTH, STREAMS
-from .helpers import get_user_from_username, privacy_filter
+from bookwyrm.settings import PAGE_LENGTH
+from .helpers import get_activity_feed, get_user_from_username
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
@@ -27,11 +28,19 @@ class Feed(View):
         except ValueError:
             page = 1
 
-        if not tab in STREAMS:
-            tab = "home"
-
-        activities = activitystreams.streams[tab].get_activity_stream(request.user)
-
+        if tab == "home":
+            activities = get_activity_feed(request.user, following_only=True)
+            tab_title = _("Home")
+        elif tab == "local":
+            activities = get_activity_feed(
+                request.user, privacy=["public", "followers"], local_only=True
+            )
+            tab_title = _("Local")
+        else:
+            activities = get_activity_feed(
+                request.user, privacy=["public", "followers"]
+            )
+            tab_title = _("Federated")
         paginated = Paginator(activities, PAGE_LENGTH)
 
         data = {
@@ -40,6 +49,7 @@ class Feed(View):
                 "user": request.user,
                 "activities": paginated.page(page),
                 "tab": tab,
+                "tab_title": tab_title,
                 "goal_form": forms.GoalForm(),
                 "path": "/%s" % tab,
             },
@@ -58,13 +68,7 @@ class DirectMessage(View):
         except ValueError:
             page = 1
 
-        # remove fancy subclasses of status, keep just good ol' notes
-        queryset = models.Status.objects.filter(
-            review__isnull=True,
-            comment__isnull=True,
-            quotation__isnull=True,
-            generatednote__isnull=True,
-        )
+        queryset = models.Status.objects
 
         user = None
         if username:
@@ -75,7 +79,9 @@ class DirectMessage(View):
         if user:
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
 
-        activities = privacy_filter(request.user, queryset, privacy_levels=["direct"])
+        activities = get_activity_feed(
+            request.user, privacy=["direct"], queryset=queryset
+        )
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)

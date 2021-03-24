@@ -26,30 +26,28 @@ class RssFeedView(TestCase):
         )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-                self.review = models.Review.objects.create(
-                    name="Review name",
-                    content="test content",
-                    rating=3,
-                    user=self.user,
-                    book=self.book,
-                )
+            self.review = models.Review.objects.create(
+                name="Review name",
+                content="test content",
+                rating=3,
+                user=self.user,
+                book=self.book,
+            )
 
-                self.quote = models.Quotation.objects.create(
-                    quote="a sickening sense",
-                    content="test content",
-                    user=self.user,
-                    book=self.book,
-                )
+            self.quote = models.Quotation.objects.create(
+                quote="a sickening sense",
+                content="test content",
+                user=self.user,
+                book=self.book,
+            )
 
-                self.generatednote = models.GeneratedNote.objects.create(
-                    content="test content", user=self.user
-                )
+            self.generatednote = models.GeneratedNote.objects.create(
+                content="test content", user=self.user
+            )
 
         self.factory = RequestFactory()
 
-    @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
-    def test_rss_feed(self, _):
+    def test_rss_feed(self):
         """ load an rss feed """
         view = rss_feed.RssFeed()
         request = self.factory.get("/user/rss_user/rss")

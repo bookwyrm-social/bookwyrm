@@ -19,7 +19,8 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import is_api_request, get_edition, privacy_filter
+from .helpers import is_api_request, get_activity_feed, get_edition
+from .helpers import privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -52,7 +53,7 @@ class Book(View):
 
         # all reviews for the book
         reviews = models.Review.objects.filter(book__in=work.editions.all())
-        reviews = privacy_filter(request.user, reviews)
+        reviews = get_activity_feed(request.user, queryset=reviews)
 
         # the reviews to show
         paginated = Paginator(

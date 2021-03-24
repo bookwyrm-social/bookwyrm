@@ -1,5 +1,4 @@
 """ test for app action functionality """
-from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -31,8 +30,7 @@ class LandingViews(TestCase):
         view = views.Home.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream"):
-            result = view(request)
+        result = view(request)
         self.assertEqual(result.status_code, 200)
         result.render()
 

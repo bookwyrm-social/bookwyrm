@@ -3,10 +3,12 @@ import json
 from unittest.mock import patch
 
 from django.http import JsonResponse
+from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
 from bookwyrm import models, views
+from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import DOMAIN
 
 

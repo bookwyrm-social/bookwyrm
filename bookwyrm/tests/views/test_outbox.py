@@ -11,7 +11,6 @@ from bookwyrm.settings import USER_AGENT
 
 
 # pylint: disable=too-many-public-methods
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class OutboxView(TestCase):
     """ sends out activities """
 
@@ -33,19 +32,19 @@ class OutboxView(TestCase):
             parent_work=work,
         )
 
-    def test_outbox(self, _):
+    def test_outbox(self):
         """ returns user's statuses """
         request = self.factory.get("")
         result = views.Outbox.as_view()(request, "mouse")
         self.assertIsInstance(result, JsonResponse)
 
-    def test_outbox_bad_method(self, _):
+    def test_outbox_bad_method(self):
         """ can't POST to outbox """
         request = self.factory.post("")
         result = views.Outbox.as_view()(request, "mouse")
         self.assertEqual(result.status_code, 405)
 
-    def test_outbox_unknown_user(self, _):
+    def test_outbox_unknown_user(self):
         """ should 404 for unknown and remote users """
         request = self.factory.post("")
         result = views.Outbox.as_view()(request, "beepboop")
@@ -53,9 +52,9 @@ class OutboxView(TestCase):
         result = views.Outbox.as_view()(request, "rat")
         self.assertEqual(result.status_code, 405)
 
-    def test_outbox_privacy(self, _):
+    def test_outbox_privacy(self):
         """ don't show dms et cetera in outbox """
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Status.objects.create(
                 content="PRIVATE!!", user=self.local_user, privacy="direct"
             )
@@ -76,9 +75,9 @@ class OutboxView(TestCase):
         self.assertEqual(data["type"], "OrderedCollection")
         self.assertEqual(data["totalItems"], 2)
 
-    def test_outbox_filter(self, _):
+    def test_outbox_filter(self):
         """ if we only care about reviews, only get reviews """
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Review.objects.create(
                 content="look at this",
                 name="hi",
@@ -102,9 +101,9 @@ class OutboxView(TestCase):
         self.assertEqual(data["type"], "OrderedCollection")
         self.assertEqual(data["totalItems"], 1)
 
-    def test_outbox_bookwyrm_request_true(self, _):
+    def test_outbox_bookwyrm_request_true(self):
         """ should differentiate between bookwyrm and outside requests """
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Review.objects.create(
                 name="hi",
                 content="look at this",
@@ -120,9 +119,9 @@ class OutboxView(TestCase):
         self.assertEqual(len(data["orderedItems"]), 1)
         self.assertEqual(data["orderedItems"][0]["type"], "Review")
 
-    def test_outbox_bookwyrm_request_false(self, _):
+    def test_outbox_bookwyrm_request_false(self):
         """ should differentiate between bookwyrm and outside requests """
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Review.objects.create(
                 name="hi",
                 content="look at this",
