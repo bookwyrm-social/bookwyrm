@@ -248,7 +248,9 @@ def get_model_from_type(activity_type):
     return model[0]
 
 
-def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
+def resolve_remote_id(
+    remote_id, model=None, refresh=False, save=True, get_activity=False
+):
     """ take a remote_id and return an instance, creating if necessary """
     if model:  # a bonus check we can do if we already know the model
         result = model.find_existing_by_remote_id(remote_id)
@@ -272,5 +274,8 @@ def resolve_remote_id(remote_id, model=None, refresh=False, save=True):
         return result
 
     item = model.activity_serializer(**data)
+    if get_activity:
+        return item
+
     # if we're refreshing, "result" will be set and we'll update it
     return item.to_model(model=model, instance=result, save=save)
