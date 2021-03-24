@@ -1,13 +1,28 @@
-FROM python:3.9
+FROM python:3.9.2-slim-buster
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1 \
+    LANG=C.UTF-8 \
+    APP_DIR=/app \
+    DOCKERIZED=true
 
-RUN mkdir /app /app/static /app/images
+RUN mkdir $APP_DIR
 
-WORKDIR /app
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y \
+        bash gettext libgettextpo-dev libjpeg-dev zlib1g-dev \
+        python3-dev python3-setuptools gcc libpq-dev\
+    && apt-get clean \
+    && pip install --upgrade pip \
+    && pip install -I poetry
 
-COPY requirements.txt /app/
-RUN pip install -r requirements.txt --no-cache-dir
-RUN apt-get update && apt-get install -y gettext libgettextpo-dev && apt-get clean
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+RUN mkdir $APP_DIR/static $APP_DIR/images
 
-COPY ./bookwyrm ./celerywyrm /app/
+WORKDIR $APP_DIR
+
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --no-dev
+
+COPY ./bookwyrm ./celerywyrm ${APP_DIR}/
+

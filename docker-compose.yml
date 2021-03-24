@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   nginx:
@@ -23,7 +23,13 @@ services:
   web:
     build: .
     env_file: .env
-    command: python manage.py runserver 0.0.0.0:8000
+    command:
+      - poetry
+      - run
+      - python
+      - manage.py
+      - runserver
+      - 0.0.0.0:8000
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -36,6 +42,7 @@ services:
       - main
     ports:
       - 8000:8000
+    working_dir: /app
   redis_activity:
     image: redis
     env_file: .env
@@ -57,7 +64,13 @@ services:
     build: .
     networks:
       - main
-    command: celery -A celerywyrm worker -l info
+    command:
+      - poetry
+      - run
+      - celery
+      - worker
+      - -A=celerywyrm
+      - --loglevel=INFO
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -66,9 +79,10 @@ services:
       - db
       - redis_broker
     restart: on-failure
+    working_dir: /app
   flower:
     build: .
-    command: flower --port=8888
+    command: poetry run flower --port=8888
     env_file: .env
     environment:
       - CELERY_BROKER_URL=${CELERY_BROKER}
@@ -80,6 +94,7 @@ services:
     restart: on-failure
     ports:
       - 8888:8888
+    working_dir: /app
 volumes:
   pgdata:
   static_volume:

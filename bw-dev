@@ -31,12 +31,12 @@ function execweb {
 }
 
 function initdb {
-    execweb python manage.py migrate
-    execweb python manage.py initdb
+    execweb poetry run python manage.py migrate
+    execweb poetry run python manage.py initdb
 }
 
 function makeitblack {
-    docker-compose run --rm web black celerywyrm bookwyrm
+    docker-compose run --rm web poetry run black celerywyrm bookwyrm
 }
 
 CMD=$1
@@ -64,17 +64,17 @@ case "$CMD" in
         clean
         ;;
     makemigrations)
-        execweb python manage.py makemigrations "$@"
+        execweb poetry run python manage.py makemigrations "$@"
         ;;
     migrate)
-        execweb python manage.py rename_app fedireads bookwyrm
-        execweb python manage.py migrate "$@"
+        execweb poetry run python manage.py rename_app fedireads bookwyrm
+        execweb poetry run python manage.py migrate "$@"
         ;;
     bash)
         execweb bash
         ;;
     shell)
-        execweb python manage.py shell
+        execweb poetry run python manage.py shell
         ;;
     dbshell)
         execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
@@ -86,13 +86,13 @@ case "$CMD" in
         execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        execweb pytest --no-cov-on-fail "$@"
+        execweb poetry run pytest --no-cov-on-fail "$@"
         ;;
     test_report)
         execweb coverage report
         ;;
     collectstatic)
-        execweb python manage.py collectstatic --no-input
+        execweb poetry run python manage.py collectstatic --no-input
         ;;
     makemessages)
         execweb django-admin makemessages --no-wrap --ignore=venv3 $@
