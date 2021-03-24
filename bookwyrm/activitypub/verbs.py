@@ -1,5 +1,5 @@
 """ undo wrapper activity """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
 
@@ -192,6 +192,8 @@ class Announce(Verb):
     """ boosting a status """
 
     published: str
+    to: List[str] = field(default_factory=lambda: [])
+    cc: List[str] = field(default_factory=lambda: [])
     object: str
     type: str = "Announce"
 

@@ -370,7 +370,7 @@ class Boost(ActivityMixin, Status):
         """ the user field is "actor" here instead of "attributedTo" """
         super().__init__(*args, **kwargs)
 
-        reserve_fields = ["user", "boosted_status", "published_date"]
+        reserve_fields = ["user", "boosted_status", "published_date", "privacy"]
         self.simple_fields = [f for f in self.simple_fields if f.name in reserve_fields]
         self.activity_fields = self.simple_fields
         self.many_to_many_fields = []
