@@ -28,10 +28,6 @@ function initdb {
     execweb python manage.py initdb
 }
 
-function makeitblack {
-    docker-compose run --rm web black celerywyrm bookwyrm
-}
-
 CMD=$1
 shift
 

@@ -52,6 +52,9 @@ services:
       - 8000:8000
   redis_activity:
     image: redis
+    command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD}
+    volumes:
+      - ./redis.conf:/etc/redis/redis.conf
     env_file: .env
     ports:
       - 6378:6378
@@ -60,7 +63,7 @@ services:
     restart: on-failure
   redis_broker:
     image: redis
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_BROKER_PASSWORD}
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
     env_file: .env
