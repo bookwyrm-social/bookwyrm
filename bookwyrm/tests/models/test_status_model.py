@@ -278,7 +278,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            "Review of <em>%s</em> (3 stars): Review name" % self.book.title,
+            'Review of "%s" (3 stars): Review name' % self.book.title,
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
@@ -300,7 +300,7 @@ class Status(TestCase):
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
-            activity["name"], "Review of <em>%s</em>: Review name" % self.book.title
+            activity["name"], 'Review of "%s": Review name' % self.book.title
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
