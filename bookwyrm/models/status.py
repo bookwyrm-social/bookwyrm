@@ -123,12 +123,14 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
             try:
-                boosted = activitypub.resolve_remote_id(activity.object, save=False)
+                boosted = activitypub.resolve_remote_id(
+                    activity.object, get_activity=True
+                )
             except activitypub.ActivitySerializerError:
                 # if we can't load the status, definitely ignore it
                 return True
             # keep the boost if we would keep the status
-            return cls.ignore_activity(boosted.to_activity_dataclass())
+            return cls.ignore_activity(boosted)
 
         # keep if it if it's a custom type
         if activity.type != "Note":
@@ -375,7 +377,7 @@ class Boost(ActivityMixin, Status):
         """ the user field is "actor" here instead of "attributedTo" """
         super().__init__(*args, **kwargs)
 
-        reserve_fields = ["user", "boosted_status"]
+        reserve_fields = ["user", "boosted_status", "published_date", "privacy"]
         self.simple_fields = [f for f in self.simple_fields if f.name in reserve_fields]
         self.activity_fields = self.simple_fields
         self.many_to_many_fields = []

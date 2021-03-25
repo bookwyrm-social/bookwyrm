@@ -441,6 +441,9 @@ class Status(TestCase):
             id="http://www.faraway.com/boost/12",
             actor=self.remote_user.remote_id,
             object="http://fish.com/nothing",
+            published="2021-03-24T18:59:41.841208+00:00",
+            cc="",
+            to="",
         )
 
         responses.add(responses.GET, "http://fish.com/nothing", status=404)
