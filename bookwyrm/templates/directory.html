@@ -42,13 +42,13 @@
 
         <span class="column is-narrow pb-0">
             {% trans "Show filters" as text %}
-            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon="arrow-down" class="is-small" %}
+            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon="arrow-down" class="is-small" focus="filters" %}
             {% trans "Hide filters" as text %}
             {% include 'snippets/toggle/close_button.html' with text=text controls_text="filters" icon="x" class="is-small" %}
         </span>
     </h2>
 
-    <form class="hidden mt-3" id="filters" method-"get" action="{% url 'directory' %}">
+    <form class="hidden mt-3" id="filters" method-"get" action="{% url 'directory' %}" tabindex="0">
         <div class="columns">
             <div class="column is-flex">
                 <div class="box is-flex-grow-1">
