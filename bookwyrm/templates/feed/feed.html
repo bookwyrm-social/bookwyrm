@@ -28,7 +28,7 @@
 
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
-<a href="{{ request.path }}" class="hidden notification is-primary is-block" data-poll-wrapper>
+<a href="{{ request.path }}" class="transition-y hidden notification is-primary is-block" data-poll-wrapper>
     {% blocktrans %}load <span data-poll="stream/{{ tab }}">0</span> unread status(es){% endblocktrans %}
 </a>
 

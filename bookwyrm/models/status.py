@@ -58,6 +58,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [("attachments", "attachment", "id")]
     deserialize_reverse_fields = [("attachments", "attachment")]
 
+    class Meta:
+        """ default sorting """
+
+        ordering = ("-published_date",)
+
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
@@ -118,12 +123,14 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
             try:
-                boosted = activitypub.resolve_remote_id(activity.object, save=False)
+                boosted = activitypub.resolve_remote_id(
+                    activity.object, get_activity=True
+                )
             except activitypub.ActivitySerializerError:
                 # if we can't load the status, definitely ignore it
                 return True
             # keep the boost if we would keep the status
-            return cls.ignore_activity(boosted.to_activity_dataclass())
+            return cls.ignore_activity(boosted)
 
         # keep if it if it's a custom type
         if activity.type != "Note":
@@ -344,7 +351,7 @@ class Boost(ActivityMixin, Status):
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
-        if not self.boosted_status.user.local:
+        if not self.boosted_status.user.local or self.boosted_status.user == self.user:
             return
 
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)

@@ -95,6 +95,23 @@ class InteractionViews(TestCase):
         self.assertEqual(notification.related_user, self.remote_user)
         self.assertEqual(notification.related_status, status)
 
+    def test_handle_self_boost(self, _):
+        """ boost your own status """
+        view = views.Boost.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Status.objects.create(user=self.local_user, content="hi")
+
+            view(request, status.id)
+
+        boost = models.Boost.objects.get()
+        self.assertEqual(boost.boosted_status, status)
+        self.assertEqual(boost.user, self.local_user)
+        self.assertEqual(boost.privacy, "public")
+
+        self.assertFalse(models.Notification.objects.exists())
+
     def test_handle_boost_unlisted(self, _):
         """ boost a status """
         view = views.Boost.as_view()
@@ -135,23 +152,21 @@ class InteractionViews(TestCase):
             view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
 
-    def test_handle_unboost(self, broadcast_mock):
+    def test_handle_unboost(self, _):
         """ undo a boost """
         view = views.Unboost.as_view()
         request = self.factory.post("")
-        request.user = self.local_user
+        request.user = self.remote_user
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
             views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
-        broadcast_mock.call_count = 0
         with patch(
             "bookwyrm.activitystreams.ActivityStream.remove_status"
         ) as redis_mock:
             view(request, status.id)
-            self.assertEqual(broadcast_mock.call_count, 1)
             self.assertTrue(redis_mock.called)
         self.assertEqual(models.Boost.objects.count(), 0)
         self.assertEqual(models.Notification.objects.count(), 0)
