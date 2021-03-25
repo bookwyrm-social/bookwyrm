@@ -40,36 +40,48 @@
         </span>
     </h2>
 
-    <div class="hidden mt-3" id="filters">
+    <form class="hidden mt-3" id="filters" method-"get" action="{% url 'directory' %}">
         <div class="columns">
-            <div class="column">
-                <legend class="label">User type</legend>
-                <div class="box">
-                    <label class="label"><input type="radio" class="radio"> {% trans "BookWyrm instances" %}</label>
-                    <label class="label"><input type="radio" class="radio"> {% trans "All services" %}</label>
+            <div class="column is-flex">
+                <div class="box is-flex-grow-1">
+                    <legend class="label">{% trans "User type" %}</legend>
+                    <label class="is-block">
+                        <input type="radio" class="radio" name="software" value="bookwyrm" {% if not request.GET.sort or  request.GET.software == 'bookwyrm' %}checked{% endif %}>
+                        {% trans "BookWyrm users" %}
+                    </label>
+                    <label class="is-block">
+                        <input type="radio" class="radio" name="software" value="all" {% if request.GET.software == 'all' %}checked{% endif %}>
+                        {% trans "All known users" %}
+                    </label>
                 </div>
             </div>
-            <div class="column">
-                <legend class="label">Community</legend>
-                <div class="box">
-                    <label class="label"><input type="radio" class="radio"> Local users</label>
-                    <label class="label"><input type="radio" class="radio"> Federated community</label>
+            <div class="column is-flex">
+                <div class="box is-flex-grow-1">
+                    <legend class="label">{% trans "Community" %}</legend>
+                    <label class="is-block">
+                        <input type="radio" class="radio" name="scope" value="local" {% if request.GET.scope == "local" %}checked{% endif %}>
+                        {% trans "Local users" %}
+                    </label>
+                    <label class="is-block">
+                        <input type="radio" class="radio" name="scope" value="federated" {% if not request.GET.sort or request.GET.scope == "federated" %}checked{% endif %}>
+                        {% trans "Federated community" %}
+                    </label>
                 </div>
             </div>
-            <div class="column">
-                <legend class="label">Order by</legend>
-                <div class="box">
+            <div class="column is-flex">
+                <div class="box is-flex-grow-1">
+                    <legend class="label">{% trans "Order by" %}</legend>
                     <div class="select">
-                        <select>
-                            <option checked>Suggested</option>
-                            <option>Recently active</option>
+                        <select name="sort">
+                            <option value="suggested" {% if not request.GET.sort or request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Suggested" %}</option>
+                            <option value="recent" {% if request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Recently active" %}</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
         <button class="button is-primary">{% trans "Apply filters" %}</button>
-    </div>
+    </form>
 </div>
 
 <div class="columns is-multiline">
@@ -97,12 +109,14 @@
                 </div>
             </div>
             <footer class="card-footer content">
+                {% if user != request.user %}
                 <div class="card-footer-item">
                     <div class="has-text-centered">
-                        <p class="title is-6 mb-0">{{ user.shelfbook_set.count }}</p>
-                        <p class="help">{% trans "books shelved" %}</p>
+                        <p class="title is-6 mb-0">{{ user.mutuals }}</p>
+                        <p class="help">{% trans "followers you follow" %}</p>
                     </div>
                 </div>
+                {% endif %}
                 <div class="card-footer-item">
                     <div class="has-text-centered">
                         <p class="title is-6 mb-0">{{ user.status_set.count|intword }}</p>

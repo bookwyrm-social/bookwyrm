@@ -1,6 +1,7 @@
 """ who all's here? """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
@@ -20,11 +21,31 @@ class Directory(View):
         except ValueError:
             page = 1
 
+        # filters
+        filters = {}
+        software = request.GET.get("software")
+        if software == "bookwyrm":
+            filters["bookwyrm_user"] = True
+        scope = request.GET.get("scope")
+        if scope == "local":
+            filters["local"] = True
+
         users = models.User.objects.filter(
-            discoverable=True,
-            bookwyrm_user=True,
-            is_active=True,
-        ).order_by("-last_active_date")
+            discoverable=True, is_active=True, **filters
+        ).annotate(
+            mutuals=Count(
+                "following",
+                filter=Q(
+                    ~Q(id=request.user.id), following__in=request.user.following.all()
+                ),
+            )
+        )
+        sort = request.GET.get("sort")
+        if sort == "recent":
+            users = users.order_by("-last_active_date")
+        else:
+            users = users.order_by("-mutuals", "-last_active_date")
+
         paginated = Paginator(users, 12)
 
         data = {
