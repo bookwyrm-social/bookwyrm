@@ -70,9 +70,9 @@
             </div>
             <div class="column is-flex">
                 <div class="box is-flex-grow-1">
-                    <legend class="label">{% trans "Order by" %}</legend>
+                    <label class="label" for="id_sort">{% trans "Order by" %}</label>
                     <div class="select">
-                        <select name="sort">
+                        <select name="sort" id="id_sort">
                             <option value="suggested" {% if not request.GET.sort or request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Suggested" %}</option>
                             <option value="recent" {% if request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Recently active" %}</option>
                         </select>
