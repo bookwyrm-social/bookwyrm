@@ -5,7 +5,10 @@ import redis
 from bookwyrm import activitystreams, models, settings
 
 r = redis.Redis(
-    host=settings.REDIS_ACTIVITY_HOST, port=settings.REDIS_ACTIVITY_PORT, db=0
+    host=settings.REDIS_ACTIVITY_HOST,
+    port=settings.REDIS_ACTIVITY_PORT,
+    password=settings.REDIS_ACTIVITY_PASSWORD,
+    db=0,
 )
 
 
