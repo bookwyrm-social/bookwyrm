@@ -16,7 +16,7 @@
 <div class="box has-text-centered content">
     {% url 'settings-profile' as path %}
     <p>
-        {% trans "Make your profile discoverable so other BookWyrm users can find you." %}
+        {% trans "Make your profile discoverable to other BookWyrm users." %}
     </p>
     <form name="directory" method="POST" action="{% url 'directory' %}">
         {% csrf_token %}
