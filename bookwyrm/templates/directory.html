@@ -13,8 +13,8 @@
 </header>
 
 {% if not request.user.discoverable %}
-<div class="box has-text-centered content">
-    {% url 'settings-profile' as path %}
+<div class="box has-text-centered content" data-hide="hide-join-directory"><div class="columns">
+    <div class="column">
     <p>
         {% trans "Make your profile discoverable to other BookWyrm users." %}
     </p>
@@ -22,10 +22,18 @@
         {% csrf_token %}
         <button class="button is-primary" type="submit">Join Directory</button>
         <p class="help">
-            {% blocktrans %}You can opt-out at any time in your <a href="{{ path }}">profile settings</a>{% endblocktrans %}
+            {% url 'settings-profile' as path %}
+            {% blocktrans %}You can opt-out at any time in your <a href="{{ path }}">profile settings.</a>{% endblocktrans %}
         </p>
     </form>
-</div>
+    </div>
+    <div class="column is-narrow">
+        {% trans "Dismiss message" as button_text %}
+        <button type="button" class="delete set-display" data-id="hide-join-directory" data-value="true">
+            <span>Dismiss message</span>
+        </button>
+    </div>
+</div></div>
 {% endif %}
 
 <div class="notification content">
@@ -142,4 +150,8 @@
     {% include 'snippets/pagination.html' with page=users path="/directory" %}
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/localstorage.js"></script>
 {% endblock %}
