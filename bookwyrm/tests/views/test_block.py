@@ -7,6 +7,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class BlockViews(TestCase):
     """ view user and edit profile """
 
@@ -32,7 +33,7 @@ class BlockViews(TestCase):
             )
         models.SiteSettings.objects.create()
 
-    def test_block_get(self):
+    def test_block_get(self, _):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Block.as_view()
         request = self.factory.get("")
@@ -42,20 +43,19 @@ class BlockViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_block_post(self):
+    def test_block_post(self, _):
         """ create a "block" database entry from an activity """
         view = views.Block.as_view()
         self.local_user.followers.add(self.remote_user)
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.UserFollowRequest.objects.create(
-                user_subject=self.local_user, user_object=self.remote_user
-            )
+        models.UserFollowRequest.objects.create(
+            user_subject=self.local_user, user_object=self.remote_user
+        )
         self.assertTrue(models.UserFollows.objects.exists())
         self.assertTrue(models.UserFollowRequest.objects.exists())
 
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.activitystreams.ActivityStream.remove_user_statuses"):
             view(request, self.remote_user.id)
         block = models.UserBlocks.objects.get()
         self.assertEqual(block.user_subject, self.local_user)
@@ -64,13 +64,13 @@ class BlockViews(TestCase):
         self.assertFalse(models.UserFollows.objects.exists())
         self.assertFalse(models.UserFollowRequest.objects.exists())
 
-    def test_unblock(self):
+    def test_unblock(self, _):
         """ undo a block """
         self.local_user.blocks.add(self.remote_user)
         request = self.factory.post("")
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.activitystreams.ActivityStream.add_user_statuses"):
             views.block.unblock(request, self.remote_user.id)
 
         self.assertFalse(models.UserBlocks.objects.exists())

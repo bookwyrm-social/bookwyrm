@@ -1,5 +1,4 @@
 """ testing import """
-from collections import namedtuple
 import csv
 import pathlib
 from unittest.mock import patch
@@ -16,8 +15,8 @@ class LibrarythingImport(TestCase):
     """ importing from librarything tsv """
 
     def setUp(self):
-        self.importer = LibrarythingImporter()
         """ use a test tsv """
+        self.importer = LibrarythingImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
 
         # Librarything generates latin encoded exports...
@@ -200,7 +199,8 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.finish_date.month, 5)
         self.assertEqual(readthrough.finish_date.day, 8)
 
-    def test_handle_imported_book_review(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_imported_book_review(self, _):
         """ librarything review import """
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
