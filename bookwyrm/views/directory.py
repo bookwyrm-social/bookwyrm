@@ -36,4 +36,4 @@ class Directory(View):
         """ join the directory """
         request.user.discoverable = True
         request.user.save()
-        return redirect('directory')
+        return redirect("directory")
