@@ -1,6 +1,7 @@
 """ who all's here? """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -30,3 +31,9 @@ class Directory(View):
             "users": paginated.page(page),
         }
         return TemplateResponse(request, "directory.html", data)
+
+    def post(self, request):
+        """ join the directory """
+        request.user.discoverable = True
+        request.user.save()
+        return redirect('directory')

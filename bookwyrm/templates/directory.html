@@ -11,6 +11,23 @@
         {% trans "Directory" %}
     </h1>
 </header>
+
+{% if not request.user.discoverable %}
+<div class="box has-text-centered content">
+    {% url 'settings-profile' as path %}
+    <p>
+        {% trans "Make your profile discoverable so other BookWyrm users can find you." %}
+    </p>
+    <form name="directory" method="POST" action="{% url 'directory' %}">
+        {% csrf_token %}
+        <button class="button is-primary" type="submit">Join Directory</button>
+        <p class="help">
+            {% blocktrans %}You can opt-out at any time in your <a href="{{ path }}">profile settings</a>{% endblocktrans %}
+        </p>
+    </form>
+</div>
+{% endif %}
+
 <div class="columns is-multiline">
     {% for user in users %}
     <div class="column is-one-third">
