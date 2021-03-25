@@ -82,6 +82,9 @@
         </div>
         <button class="button is-primary">{% trans "Apply filters" %}</button>
     </form>
+    {% if request.GET %}
+    <a class="help" href="{% url 'directory' %}">{% trans "Clear filters" %}</a>
+    {% endif %}
 </div>
 
 <div class="columns is-multiline">
