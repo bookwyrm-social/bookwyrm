@@ -34,20 +34,23 @@ class Feed(View):
 
         paginated = Paginator(activities, PAGE_LENGTH)
 
-        suggested_users = models.User.objects.filter(
-            ~Q(id__in=request.user.following.all()),
-            ~Q(id=request.user.id),
-            discoverable=True,
-            is_active=True,
-            bookwyrm_user=True,
-        ).annotate(
-            mutuals=Count(
-                "following",
-                filter=Q(
-                    following__in=request.user.following.all()
-                ),
+        suggested_users = (
+            models.User.objects.filter(
+                ~Q(id__in=request.user.following.all()),
+                ~Q(id=request.user.id),
+                discoverable=True,
+                is_active=True,
+                bookwyrm_user=True,
             )
-        ).order_by("-mutuals", "-last_active_date").all()[:5]
+            .annotate(
+                mutuals=Count(
+                    "following",
+                    filter=Q(following__in=request.user.following.all()),
+                )
+            )
+            .order_by("-mutuals", "-last_active_date")
+            .all()[:5]
+        )
 
         data = {
             **feed_page_data(request.user),
