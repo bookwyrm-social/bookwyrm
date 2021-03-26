@@ -24,7 +24,7 @@ class Directory(View):
         # filters
         filters = {}
         software = request.GET.get("software")
-        if software == "bookwyrm":
+        if not software or software == "bookwyrm":
             filters["bookwyrm_user"] = True
         scope = request.GET.get("scope")
         if scope == "local":
