@@ -67,7 +67,7 @@ class Activitystreams(TestCase):
         )
         status.mention_users.add(self.local_user)
         users = self.test_stream.stream_users(status)
-        self.assertIsNone(users)
+        self.assertEqual(users, [])
 
         status = models.Comment.objects.create(
             user=self.remote_user,
@@ -167,7 +167,7 @@ class Activitystreams(TestCase):
             user=self.remote_user, content="hi", privacy="public"
         )
         users = activitystreams.LocalStream().stream_users(status)
-        self.assertIsNone(users)
+        self.assertEqual(users, [])
 
     def test_localstream_stream_users_local_status(self, *_):
         """ get a list of users that should see a status """
@@ -184,7 +184,7 @@ class Activitystreams(TestCase):
             user=self.local_user, content="hi", privacy="unlisted"
         )
         users = activitystreams.LocalStream().stream_users(status)
-        self.assertIsNone(users)
+        self.assertEqual(users, [])
 
     def test_federatedstream_stream_users(self, *_):
         """ get a list of users that should see a status """
@@ -201,4 +201,4 @@ class Activitystreams(TestCase):
             user=self.remote_user, content="hi", privacy="unlisted"
         )
         users = activitystreams.FederatedStream().stream_users(status)
-        self.assertIsNone(users)
+        self.assertEqual(users, [])
