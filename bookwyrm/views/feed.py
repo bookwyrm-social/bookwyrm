@@ -1,7 +1,7 @@
 """ non-interactive pages """
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -34,11 +34,27 @@ class Feed(View):
 
         paginated = Paginator(activities, PAGE_LENGTH)
 
+        suggested_users = models.User.objects.filter(
+            ~Q(id__in=request.user.following.all()),
+            ~Q(id=request.user.id),
+            discoverable=True,
+            is_active=True,
+            bookwyrm_user=True,
+        ).annotate(
+            mutuals=Count(
+                "following",
+                filter=Q(
+                    following__in=request.user.following.all()
+                ),
+            )
+        ).order_by("-mutuals", "-last_active_date").all()[:5]
+
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
                 "activities": paginated.page(page),
+                "suggested_users": suggested_users,
                 "tab": tab,
                 "goal_form": forms.GoalForm(),
                 "path": "/%s" % tab,

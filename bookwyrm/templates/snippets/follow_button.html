@@ -4,16 +4,12 @@
 {% include 'snippets/block_button.html' %}
 {% else %}
 
-<div class="field has-addons">
+<div class="field{% if not minimal %} has-addons{% else %} mb-0{% endif %}">
     <div class="control">
         <form action="{% url 'follow' %}" method="POST" class="interaction follow-{{ user.id }} {% if request.user in user.followers.all or request.user in user.follower_requests.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ user.username }}">
-            {% if user.manually_approves_followers %}
-                <button class="button is-small is-link" type="submit">{% trans "Send follow request" %}</button>
-            {% else %}
-                <button class="button is-small is-link" type="submit">{% trans "Follow" %}</button>
-            {% endif %}
+            <button class="button is-small{% if not minimal %} is-link{% endif %}" type="submit">{% trans "Follow" %}</button>
         </form>
         <form action="{% url 'unfollow' %}" method="POST" class="interaction follow-{{ user.id }} {% if not request.user in user.followers.all and not request.user in user.follower_requests.all %}hidden{%endif %}" data-id="follow-{{ user.id }}">
             {% csrf_token %}
@@ -25,8 +21,10 @@
             {% endif %}
         </form>
     </div>
+    {% if not minimal %}
     <div class="control">
         {% include 'snippets/user_options.html' with user=user class="is-small" %}
     </div>
+    {% endif %}
 </div>
 {% endif %}
