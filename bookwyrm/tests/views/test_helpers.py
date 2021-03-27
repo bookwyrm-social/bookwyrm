@@ -161,7 +161,6 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "started reading")
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_reading_status_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="read")
@@ -174,7 +173,6 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "finished reading")
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_reading_status_other(self, _):
         """ posts shelve activities """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
