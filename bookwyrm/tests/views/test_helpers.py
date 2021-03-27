@@ -269,10 +269,11 @@ class ViewsHelpers(TestCase):
             models.ShelfBook.objects.create(
                 user=self.local_user,
                 book=self.book,
-                shelf=self.local_user.shelf_set.first()
+                shelf=self.local_user.shelf_set.first(),
             )
             models.ShelfBook.objects.create(
-                user=user_1, book=self.book, shelf=user_1.shelf_set.first())
+                user=user_1, book=self.book, shelf=user_1.shelf_set.first()
+            )
 
         result = views.helpers.get_suggested_users(self.local_user)
         self.assertEqual(result.count(), 3)
