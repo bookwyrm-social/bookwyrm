@@ -194,25 +194,26 @@ def get_discover_books():
 
 def get_suggested_users(user, *args, **kwargs):
     """ Users, annotated with things they have in common """
-    return models.User.objects.filter(
-        discoverable=True, is_active=True, *args, **kwargs
-    ).exclude(
-        Q(id__in=user.blocks.all()) | Q(blocks=user)
-    ).annotate(
-        mutuals=Count(
-            "following",
-            filter=Q(
-                ~Q(id=user.id),
-                ~Q(id__in=user.following.all()),
-                following__in=user.following.all()
+    return (
+        models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
+        .exclude(Q(id__in=user.blocks.all()) | Q(blocks=user))
+        .annotate(
+            mutuals=Count(
+                "following",
+                filter=Q(
+                    ~Q(id=user.id),
+                    ~Q(id__in=user.following.all()),
+                    following__in=user.following.all(),
+                ),
             ),
-        ),
-        shared_books=Count(
-            "shelfbook",
-            filter=Q(
-                ~Q(id=user.id),
-                shelfbook__book__parent_work__in=[
-                    s.book.parent_work for s in user.shelfbook_set.all()]
-            )
+            shared_books=Count(
+                "shelfbook",
+                filter=Q(
+                    ~Q(id=user.id),
+                    shelfbook__book__parent_work__in=[
+                        s.book.parent_work for s in user.shelfbook_set.all()
+                    ],
+                ),
+            ),
         )
     )
