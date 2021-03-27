@@ -91,7 +91,7 @@ class ActivityStream(ABC):
         """ given a status, what users should see it """
         # direct messages don't appeard in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
-            return None
+            return []
 
         # everybody who could plausibly see this status
         audience = models.User.objects.filter(
@@ -153,7 +153,7 @@ class LocalStream(ActivityStream):
     def stream_users(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public" or not status.user.local:
-            return None
+            return []
         return super().stream_users(status)
 
     def stream_statuses(self, user):
@@ -173,7 +173,7 @@ class FederatedStream(ActivityStream):
     def stream_users(self, status):
         # this stream wants no part in non-public statuses
         if status.privacy != "public":
-            return None
+            return []
         return super().stream_users(status)
 
     def stream_statuses(self, user):
