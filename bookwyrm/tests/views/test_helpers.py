@@ -10,6 +10,7 @@ from bookwyrm import models, views
 from bookwyrm.settings import USER_AGENT
 
 
+@patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class ViewsHelpers(TestCase):
     """ viewing and creating statuses """
 
@@ -21,6 +22,7 @@ class ViewsHelpers(TestCase):
             "mouse@mouse.com",
             "mouseword",
             local=True,
+            discoverable=True,
             localname="mouse",
             remote_id="https://example.com/users/mouse",
         )
@@ -37,6 +39,7 @@ class ViewsHelpers(TestCase):
                 "ratword",
                 local=False,
                 remote_id="https://example.com/users/rat",
+                discoverable=True,
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
@@ -48,12 +51,12 @@ class ViewsHelpers(TestCase):
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
 
-    def test_get_edition(self):
+    def test_get_edition(self, _):
         """ given an edition or a work, returns an edition """
         self.assertEqual(views.helpers.get_edition(self.book.id), self.book)
         self.assertEqual(views.helpers.get_edition(self.work.id), self.book)
 
-    def test_get_user_from_username(self):
+    def test_get_user_from_username(self, _):
         """ works for either localname or username """
         self.assertEqual(
             views.helpers.get_user_from_username(self.local_user, "mouse"),
@@ -66,7 +69,7 @@ class ViewsHelpers(TestCase):
         with self.assertRaises(models.User.DoesNotExist):
             views.helpers.get_user_from_username(self.local_user, "mojfse@example.com")
 
-    def test_is_api_request(self):
+    def test_is_api_request(self, _):
         """ should it return html or json """
         request = self.factory.get("/path")
         request.headers = {"Accept": "application/json"}
@@ -80,7 +83,7 @@ class ViewsHelpers(TestCase):
         request.headers = {"Accept": "Praise"}
         self.assertFalse(views.helpers.is_api_request(request))
 
-    def test_is_bookwyrm_request(self):
+    def test_is_bookwyrm_request(self, _):
         """ checks if a request came from a bookwyrm instance """
         request = self.factory.get("", {"q": "Test Book"})
         self.assertFalse(views.helpers.is_bookwyrm_request(request))
@@ -95,7 +98,7 @@ class ViewsHelpers(TestCase):
         request = self.factory.get("", {"q": "Test Book"}, HTTP_USER_AGENT=USER_AGENT)
         self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
-    def test_existing_user(self):
+    def test_existing_user(self, _):
         """ simple database lookup by username """
         result = views.helpers.handle_remote_webfinger("@mouse@local.com")
         self.assertEqual(result, self.local_user)
@@ -104,7 +107,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(result, self.local_user)
 
     @responses.activate
-    def test_load_user(self):
+    def test_load_user(self, _):
         """ find a remote user using webfinger """
         username = "mouse@example.com"
         wellknown = {
@@ -134,7 +137,6 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_reading_status_to_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -147,7 +149,6 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "wants to read")
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_reading_status_reading(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="reading")
@@ -182,7 +183,6 @@ class ViewsHelpers(TestCase):
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user(self, _):
         """ does a user have permission to view an object """
         obj = models.Status.objects.create(
@@ -211,7 +211,6 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_follower(self, _):
         """ what you can see if you follow a user """
         self.remote_user.followers.add(self.local_user)
@@ -231,7 +230,6 @@ class ViewsHelpers(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_blocked(self, _):
         """ you can't see it if they block you """
         self.remote_user.blocks.add(self.local_user)
@@ -244,3 +242,49 @@ class ViewsHelpers(TestCase):
             name="test", user=self.remote_user, privacy="unlisted"
         )
         self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
+
+    def test_get_suggested_users(self, _):
+        """ list of people you might know """
+        user_1 = models.User.objects.create_user(
+            "nutria@local.com",
+            "nutria@nutria.com",
+            "nutriaword",
+            local=True,
+            localname="nutria",
+            discoverable=True,
+        )
+        user_2 = models.User.objects.create_user(
+            "fish@local.com",
+            "fish@fish.com",
+            "fishword",
+            local=True,
+            localname="fish",
+        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            # 1 shared follow
+            self.local_user.following.add(user_2)
+            user_1.following.add(user_2)
+
+            # 1 shared book
+            models.ShelfBook.objects.create(
+                user=self.local_user,
+                book=self.book,
+                shelf=self.local_user.shelf_set.first()
+            )
+            models.ShelfBook.objects.create(
+                user=user_1, book=self.book, shelf=user_1.shelf_set.first())
+
+        result = views.helpers.get_suggested_users(self.local_user)
+        self.assertEqual(result.count(), 3)
+        self.assertTrue(user_1 in result)
+        self.assertFalse(user_2 in result)
+        self.assertTrue(self.local_user in result)
+        self.assertTrue(self.remote_user in result)
+
+        user_1_annotated = result.get(id=user_1.id)
+        self.assertEqual(user_1_annotated.mutuals, 1)
+        self.assertEqual(user_1_annotated.shared_books, 1)
+
+        remote_user_annotated = result.get(id=self.remote_user.id)
+        self.assertEqual(remote_user_annotated.mutuals, 0)
+        self.assertEqual(remote_user_annotated.shared_books, 0)
