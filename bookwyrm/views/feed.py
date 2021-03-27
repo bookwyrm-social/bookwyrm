@@ -11,7 +11,7 @@ from django.views import View
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
-from .helpers import get_user_from_username, privacy_filter
+from .helpers import get_user_from_username, privacy_filter, get_suggested_users
 from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
 
 
@@ -34,23 +34,9 @@ class Feed(View):
 
         paginated = Paginator(activities, PAGE_LENGTH)
 
-        suggested_users = (
-            models.User.objects.filter(
-                ~Q(id__in=request.user.following.all()),
-                ~Q(id=request.user.id),
-                discoverable=True,
-                is_active=True,
-                bookwyrm_user=True,
-            )
-            .annotate(
-                mutuals=Count(
-                    "following",
-                    filter=Q(following__in=request.user.following.all()),
-                )
-            )
-            .order_by("-mutuals", "-last_active_date")
-            .all()[:5]
-        )
+        suggested_users = get_suggested_users(
+            request.user, ~Q(id=request.user.id), bookwyrm_user=True
+        ).order_by("-mutuals", "-last_active_date").all()[:5]
 
         data = {
             **feed_page_data(request.user),

@@ -2,7 +2,7 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db.models import Max, Q
+from django.db.models import Count, Max, Q
 
 from bookwyrm import activitypub, models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -188,5 +188,31 @@ def get_discover_books():
             .exclude(cover__exact="")
             .annotate(Max("review__published_date"))
             .order_by("-review__published_date__max")[:6]
+        )
+    )
+
+
+def get_suggested_users(user, *args, **kwargs):
+    """ Users, annotated with things they have in common """
+    return models.User.objects.filter(
+        discoverable=True, is_active=True, *args, **kwargs
+    ).exclude(
+        Q(id__in=user.blocks.all()) | Q(blocks=user)
+    ).annotate(
+        mutuals=Count(
+            "following",
+            filter=Q(
+                ~Q(id=user.id),
+                ~Q(id__in=user.following.all()),
+                following__in=user.following.all()
+            ),
+        ),
+        shared_books=Count(
+            "shelfbook",
+            filter=Q(
+                ~Q(id=user.id),
+                shelfbook__book__parent_work__in=[
+                    s.book.parent_work for s in user.shelfbook_set.all()]
+            )
         )
     )
