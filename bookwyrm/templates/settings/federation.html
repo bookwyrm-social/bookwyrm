@@ -1,5 +1,6 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
+{% block title %}{% trans "Federated Servers" %}{% endblock %}
 
 {% block header %}{% trans "Federated Servers" %}{% endblock %}
 
@@ -13,7 +14,7 @@
     </tr>
     {% for server in servers %}
     <tr>
-        <td>{{ server.server_name }}</td>
+        <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
         <td>{{ server.application_type }} ({{ server.application_version }})</td>
         <td>{{ server.status }}</td>
     </tr>
