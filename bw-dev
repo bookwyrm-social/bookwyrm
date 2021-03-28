@@ -109,7 +109,10 @@ case "$CMD" in
     black)
         makeitblack
         ;;
+    populate_feeds)
+        execweb python manage.py populate_streams
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds"
         ;;
 esac
