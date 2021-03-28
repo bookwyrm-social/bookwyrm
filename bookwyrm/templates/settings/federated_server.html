@@ -33,7 +33,7 @@
             <dt>{% trans "Users:" %}</dt>
             <dd>
                 {{ users.count }}
-                {# {% if server.user_set.count %}(<a href="{% url 'settings-users' server=server.id %}">{% trans "View all users" %}</a>){% endif %} #}
+                {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
             </dd>
         </div>
         <div class="is-flex">
