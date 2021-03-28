@@ -13,6 +13,7 @@ def erase_streams():
     """ throw the whole redis away """
     r.flushall()
 
+
 class Command(BaseCommand):
     """ delete activity streams for all users """
 
