@@ -2,6 +2,7 @@
 import json
 from unittest.mock import patch
 import pathlib
+from django.db.models import Q
 from django.test import TestCase
 from django.test.client import RequestFactory
 import responses
@@ -287,3 +288,48 @@ class ViewsHelpers(TestCase):
         remote_user_annotated = result.get(id=self.remote_user.id)
         self.assertEqual(remote_user_annotated.mutuals, 0)
         self.assertEqual(remote_user_annotated.shared_books, 0)
+
+    def test_get_suggested_users_counts(self, _):
+        """ correct counting for multiple shared attributed """
+        user_1 = models.User.objects.create_user(
+            "nutria@local.com",
+            "nutria@nutria.com",
+            "nutriaword",
+            local=True,
+            localname="nutria",
+            discoverable=True,
+        )
+        for i in range(3):
+            user = models.User.objects.create_user(
+                "{:d}@local.com".format(i),
+                "{:d}@nutria.com".format(i),
+                "password",
+                local=True,
+                localname=i,
+            )
+            user.followers.add(user_1)
+            user.followers.add(self.local_user)
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            for i in range(3):
+                book = models.Edition.objects.create(
+                    title=i,
+                    parent_work=models.Work.objects.create(title=i),
+                )
+                models.ShelfBook.objects.create(
+                    user=self.local_user,
+                    book=book,
+                    shelf=self.local_user.shelf_set.first(),
+                )
+                models.ShelfBook.objects.create(
+                    user=user_1, book=book, shelf=user_1.shelf_set.first()
+                )
+
+        result = views.helpers.get_suggested_users(
+            self.local_user,
+            ~Q(id=self.local_user.id),
+            ~Q(followers=self.local_user),
+        )
+        self.assertEqual(result.count(), 2)
+        user_1_annotated = result.get(id=user_1.id)
+        self.assertEqual(user_1_annotated.mutuals, 3)
