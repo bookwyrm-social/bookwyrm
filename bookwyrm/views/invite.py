@@ -101,6 +101,7 @@ class ManageInviteRequests(View):
 
         data = {
             "ignored": ignored,
+            "count": paginated.count,
             "requests": paginated.page(page),
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)
