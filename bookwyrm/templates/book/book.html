@@ -40,7 +40,9 @@
                 {% include 'snippets/book_cover.html' with book=book size=large %}
                 {% include 'snippets/rate_action.html' with user=request.user book=book %}
             </div>
-            {% include 'snippets/shelve_button/shelve_button.html' %}
+            <div class="mb-3">
+                {% include 'snippets/shelve_button/shelve_button.html' %}
+            </div>
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="block">
