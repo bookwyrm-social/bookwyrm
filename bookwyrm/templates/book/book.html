@@ -35,9 +35,11 @@
     </div>
 
     <div class="columns">
-        <div class="column is-one-fifth is-clipped">
-            {% include 'snippets/book_cover.html' with book=book size=large %}
-            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+        <div class="column is-one-fifth">
+            <div class="is-clipped">
+                {% include 'snippets/book_cover.html' with book=book size=large %}
+                {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            </div>
             {% include 'snippets/shelve_button/shelve_button.html' %}
 
             {% if request.user.is_authenticated and not book.cover %}
@@ -48,7 +50,7 @@
             </div>
             {% endif %}
 
-            <section class="content">
+            <section class="content is-clipped">
                 <dl>
                     {% if book.isbn_13 %}
                     <div class="is-flex is-justify-content-space-between is-align-items-center">
