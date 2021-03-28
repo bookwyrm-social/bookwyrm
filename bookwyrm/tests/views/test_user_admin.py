@@ -6,7 +6,7 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-class FederationViews(TestCase):
+class UserAdminViews(TestCase):
     """ every response to a get request, html or json """
 
     def setUp(self):
@@ -21,26 +21,13 @@ class FederationViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
-    def test_federation_page(self):
+    def test_user_admin_page(self):
         """ there are so many views, this just makes sure it LOADS """
-        view = views.Federation.as_view()
+        view = views.UserAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
         result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        result.render()
-        self.assertEqual(result.status_code, 200)
-
-    def test_server_page(self):
-        """ there are so many views, this just makes sure it LOADS """
-        server = models.FederatedServer.objects.create(server_name="hi.there.com")
-        view = views.FederatedServer.as_view()
-        request = self.factory.get("")
-        request.user = self.local_user
-        request.user.is_superuser = True
-
-        result = view(request, server.id)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
