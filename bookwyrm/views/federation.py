@@ -1,11 +1,13 @@
 """ manage federated servers """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
+from bookwyrm.settings import PAGE_LENGTH
 
 
 # pylint: disable= no-self-use
@@ -18,9 +20,15 @@ class Federation(View):
     """ what servers do we federate with """
 
     def get(self, request):
-        """ edit form """
+        """ list of servers """
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+
         servers = models.FederatedServer.objects.all()
-        data = {"servers": servers}
+        paginated = Paginator(servers, PAGE_LENGTH)
+        data = {"servers": paginated.page(page)}
         return TemplateResponse(request, "settings/federation.html", data)
 
 

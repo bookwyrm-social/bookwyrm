@@ -21,4 +21,5 @@
     {% endfor %}
 </table>
 
+{% include 'snippets/pagination.html' with page=servers path=request.path %}
 {% endblock %}
