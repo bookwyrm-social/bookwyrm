@@ -1,4 +1,4 @@
-""" Delete and re-create user feeds """
+""" Re-create user streams """
 from django.core.management.base import BaseCommand
 import redis
 
@@ -12,13 +12,8 @@ r = redis.Redis(
 )
 
 
-def erase_feeds():
-    """ throw the whole redis away """
-    r.flushall()
-
-
-def create_feeds():
-    """ build all the fields for all the users """
+def populate_streams():
+    """ build all the streams for all the users """
     users = models.User.objects.filter(
         local=True,
         is_active=True,
@@ -29,11 +24,10 @@ def create_feeds():
 
 
 class Command(BaseCommand):
-    """ start all over with user feeds """
+    """ start all over with user streams """
 
-    help = "Delete and re-create all the user feeds"
+    help = "Populate streams for all users"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
         """ run feed builder """
-        erase_feeds()
-        create_feeds()
+        populate_streams()

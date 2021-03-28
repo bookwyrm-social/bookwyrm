@@ -76,7 +76,10 @@ case "$CMD" in
         docker-compose exec web python manage.py collectstatic --no-input
         docker-compose restart
         ;;
+    populate_feeds)
+        execweb python manage.py populate_streams
+        ;;
     *)
-        echo "Unrecognised command. Try: build, up, initdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, update"
+        echo "Unrecognised command. Try: build, up, initdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, update, populate_feeds"
         ;;
 esac

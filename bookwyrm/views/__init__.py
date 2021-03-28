@@ -6,7 +6,7 @@ from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .directory import Directory
 from .error import not_found_page, server_error_page
-from .federation import Federation
+from .federation import Federation, FederatedServer
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
@@ -35,4 +35,5 @@ from .status import CreateStatus, DeleteStatus
 from .tag import Tag, AddTag, RemoveTag
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, EditUser, Followers, Following
+from .user_admin import UserAdmin
 from .wellknown import webfinger, nodeinfo_pointer, nodeinfo, instance_info, peers

@@ -1,0 +1,68 @@
+{% extends 'settings/admin_layout.html' %}
+{% block title %}{{ server.server_name }}{% endblock %}
+{% load i18n %}
+
+{% block header %}
+{{ server.server_name }}
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+{% endblock %}
+
+{% block panel %}
+<section class="block content">
+    <h2 class="title is-4">{% trans "Details" %}</h2>
+    <dl>
+        <div class="is-flex">
+            <dt>{% trans "Software:" %}</dt>
+            <dd>{{ server.application_type }}</dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Version:" %}</dt>
+            <dd>{{ server.application_version }}</dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Status:" %}</dt>
+            <dd>Federated</dd>
+        </div>
+    </dl>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Activity" %}</h2>
+    <dl>
+        <div class="is-flex">
+            <dt>{% trans "Users:" %}</dt>
+            <dd>
+                {{ users.count }}
+                {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
+            </dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Reports:" %}</dt>
+            <dd>
+                {{ reports.count }}
+                {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
+            </dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Followed by us:" %}</dt>
+            <dd>
+                {{ followed_by_us.count }}
+            </dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Followed by them:" %}</dt>
+            <dd>
+                {{ followed_by_them.count }}
+            </dd>
+        </div>
+        <div class="is-flex">
+            <dt>{% trans "Blocked by us:" %}</dt>
+            <dd>
+                {{ blocked_by_us.count }}
+            </dd>
+        </div>
+    </dl>
+</section>
+
+{% endblock %}
+

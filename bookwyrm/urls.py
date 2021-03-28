@@ -54,8 +54,16 @@ urlpatterns = [
         views.site.email_preview,
         name="settings-email-preview",
     ),
+    re_path(r"^settings/users", views.UserAdmin.as_view(), name="settings-users"),
     re_path(
-        r"^settings/federation", views.Federation.as_view(), name="settings-federation"
+        r"^settings/federation/?$",
+        views.Federation.as_view(),
+        name="settings-federation",
+    ),
+    re_path(
+        r"^settings/federation/(?P<server>\d+)/?$",
+        views.FederatedServer.as_view(),
+        name="settings-federated-server",
     ),
     re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
