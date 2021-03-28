@@ -1,6 +1,7 @@
 """ manage user """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -25,7 +26,13 @@ class UserAdmin(View):
         except ValueError:
             page = 1
 
-        users = models.User.objects.all()
+        filters = {}
+        server = request.GET.get("server")
+        if server:
+            server = get_object_or_404(models.FederatedServer, id=server)
+            filters["federated_server"] = server
+
+        users = models.User.objects.filter(**filters).all()
 
         sort = request.GET.get("sort", "-created_date")
         sort_fields = [
@@ -39,5 +46,5 @@ class UserAdmin(View):
             users = users.order_by(sort)
 
         paginated = Paginator(users, PAGE_LENGTH)
-        data = {"users": paginated.page(page), "sort": sort}
+        data = {"users": paginated.page(page), "sort": sort, "server": server}
         return TemplateResponse(request, "settings/user_admin.html", data)

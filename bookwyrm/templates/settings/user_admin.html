@@ -2,7 +2,14 @@
 {% load i18n %}
 {% block title %}{% trans "Users" %}{% endblock %}
 
-{% block header %}{% trans "Users" %}{% endblock %}
+{% block header %}
+{% if server %}
+{% blocktrans with server_name=server.server_name %}Users: <small>{{ server_name }}</small>{% endblocktrans %}
+<a href="{% url 'settings-users' %}" class="help has-text-weight-normal">Clear filters</a>
+{% else %}
+{% trans "Users" %}
+{% endif %}
+{% endblock %}
 
 {% block panel %}
 
