@@ -28,8 +28,8 @@ class Federation(View):
 
         servers = models.FederatedServer.objects.all()
 
-        sort = request.GET.get('sort')
-        sort_fields = ['created_date', 'application_type', 'server_name']
+        sort = request.GET.get("sort")
+        sort_fields = ["created_date", "application_type", "server_name"]
         if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             servers = servers.order_by(sort)
 
