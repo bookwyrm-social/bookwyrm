@@ -1,8 +1,21 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Reports" %}{% endblock %}
-{% block header %}{% trans "Reports" %}{% endblock %}
+{% block title %}
+{% if server %}
+{% blocktrans with server_name=server.server_name %}Reports: {{ server_name }}{% endblocktrans %}
+{% else %}
+{% trans "Reports" %}
+{% endif %}
+{% endblock %}
+{% block header %}
+{% if server %}
+{% blocktrans with server_name=server.server_name %}Reports: <small>{{ server_name }}</small>{% endblocktrans %}
+<a href="{% url 'settings-reports' %}" class="help has-text-weight-normal">Clear filters</a>
+{% else %}
+{% trans "Reports" %}
+{% endif %}
+{% endblock %}
 
 {% block panel %}
 <div class="tabs">
@@ -17,6 +30,10 @@
 </div>
 
 <div class="block">
+    {% if not reports %}
+    <em>{% trans "No reports found." %}</em>
+    {% endif %}
+
     {% for report in reports %}
     <div class="block">
         {% include 'moderation/report_preview.html' with report=report %}
