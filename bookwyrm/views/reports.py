@@ -24,10 +24,18 @@ class Reports(View):
 
     def get(self, request):
         """ view current reports """
+        filters = {}
+
         resolved = request.GET.get("resolved") == "true"
+        server = request.GET.get("server")
+        if server:
+            server = get_object_or_404(models.FederatedServer, id=server)
+            filters["user__federated_server"] = server
+        filters["resolved"] = resolved
         data = {
             "resolved": resolved,
-            "reports": models.Report.objects.filter(resolved=resolved),
+            "server": server,
+            "reports": models.Report.objects.filter(**filters),
         }
         return TemplateResponse(request, "moderation/reports.html", data)
 
