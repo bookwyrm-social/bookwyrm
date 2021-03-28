@@ -27,8 +27,14 @@ class Federation(View):
             page = 1
 
         servers = models.FederatedServer.objects.all()
+
+        sort = request.GET.get('sort')
+        sort_fields = ['created_date', 'application_type', 'server_name']
+        if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            servers = servers.order_by(sort)
+
         paginated = Paginator(servers, PAGE_LENGTH)
-        data = {"servers": paginated.page(page)}
+        data = {"servers": paginated.page(page), "sort": sort}
         return TemplateResponse(request, "settings/federation.html", data)
 
 

@@ -8,13 +8,25 @@
 
 <table class="table is-striped">
     <tr>
-        <th>{% trans "Server name" %}</th>
-        <th>{% trans "Software" %}</th>
+        {% url 'settings-federation' as url %}
+        <th>
+            {% trans "Server name" as text %}
+            {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Date federated" as text %}
+            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Software" as text %}
+            {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+        </th>
         <th>{% trans "Status" %}</th>
     </tr>
     {% for server in servers %}
     <tr>
         <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
+        <td>{{ server.created_date }}</td>
         <td>{{ server.application_type }} ({{ server.application_version }})</td>
         <td>{{ server.status }}</td>
     </tr>
