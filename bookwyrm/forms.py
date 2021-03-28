@@ -132,6 +132,7 @@ class EditUserForm(CustomForm):
             "show_goal",
             "manually_approves_followers",
             "discoverable",
+            "preferred_timezone",
         ]
         help_texts = {f: None for f in fields}
 

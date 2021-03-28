@@ -1,5 +1,7 @@
 """ the good stuff! the books! """
+from datetime import datetime
 import dateutil.parser
+import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
@@ -123,6 +125,12 @@ def create_readthrough(request):
     return redirect(request.headers.get("Referer", "/"))
 
 
+def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    start_date = dateutil.parser.parse(date_str, ignoretz=True)
+    return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
+
+
 def update_readthrough(request, book=None, create=True):
     """ updates but does not save dates on a readthrough """
     try:
@@ -141,16 +149,18 @@ def update_readthrough(request, book=None, create=True):
     start_date = request.POST.get("start_date")
     if start_date:
         try:
-            start_date = timezone.make_aware(dateutil.parser.parse(start_date))
-            readthrough.start_date = start_date
+            readthrough.start_date = load_date_in_user_tz_as_utc(
+                start_date, request.user
+            )
         except ParserError:
             pass
 
     finish_date = request.POST.get("finish_date")
     if finish_date:
         try:
-            finish_date = timezone.make_aware(dateutil.parser.parse(finish_date))
-            readthrough.finish_date = finish_date
+            readthrough.finish_date = load_date_in_user_tz_as_utc(
+                finish_date, request.user
+            )
         except ParserError:
             pass
 
