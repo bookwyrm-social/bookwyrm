@@ -205,7 +205,7 @@ def get_suggested_users(user, *args, **kwargs):
                     ~Q(id__in=user.following.all()),
                     following__in=user.following.all(),
                 ),
-                distinct=True
+                distinct=True,
             ),
             shared_books=Count(
                 "shelfbook",
@@ -215,7 +215,7 @@ def get_suggested_users(user, *args, **kwargs):
                         s.book.parent_work for s in user.shelfbook_set.all()
                     ],
                 ),
-                distinct=True
+                distinct=True,
             ),
         )
     )
