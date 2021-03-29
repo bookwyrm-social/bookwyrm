@@ -2,7 +2,7 @@
 <nav class="pagination" aria-label="pagination">
     {% if page.has_previous %}
     <p class="pagination-previous">
-        <a href="{{ path }}?page={{ page.previous_page_number }}{{ anchor }}">
+    <a href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}">
             <span class="icon icon-arrow-left"></span>
             {% trans "Previous" %}
         </a>
@@ -11,7 +11,7 @@
 
     {% if page.has_next %}
     <p class="pagination-next">
-    <a href="{{ path }}?page={{ page.next_page_number }}{{ anchor }}">
+    <a href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}">
             {% trans "Next" %}
             <span class="icon icon-arrow-right"></span>
         </a>
