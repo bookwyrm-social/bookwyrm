@@ -266,7 +266,9 @@ class Editions(View):
             "editions": editions.filter(**filters).all(),
             "work": work,
             "languages": languages,
-            "formats": set(e.physical_format.lower() for e in editions if e),
+            "formats": set(
+                e.physical_format.lower() for e in editions if e.physical_format
+            ),
         }
         return TemplateResponse(request, "book/editions.html", data)
 
