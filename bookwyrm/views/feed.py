@@ -89,7 +89,7 @@ class DirectMessage(View):
 
         activities = privacy_filter(
             request.user, queryset, privacy_levels=["direct"]
-        ).order_by('-published_date')
+        ).order_by("-published_date")
 
         paginated = Paginator(activities, PAGE_LENGTH)
         activity_page = paginated.page(page)
