@@ -84,6 +84,11 @@ class ViewsHelpers(TestCase):
         request.headers = {"Accept": "Praise"}
         self.assertFalse(views.helpers.is_api_request(request))
 
+    def test_is_api_request_no_headers(self, _):
+        """ should it return html or json """
+        request = self.factory.get("/path")
+        self.assertFalse(views.helpers.is_api_request(request))
+
     def test_is_bookwyrm_request(self, _):
         """ checks if a request came from a bookwyrm instance """
         request = self.factory.get("", {"q": "Test Book"})

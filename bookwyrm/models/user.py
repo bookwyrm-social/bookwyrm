@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
@@ -104,6 +105,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     manually_approves_followers = fields.BooleanField(default=False)
     show_goal = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
+    preferred_timezone = models.CharField(
+        choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
+        default=str(pytz.utc),
+        max_length=255,
+    )
 
     name_field = "username"
 

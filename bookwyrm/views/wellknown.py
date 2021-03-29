@@ -3,6 +3,7 @@
 from dateutil.relativedelta import relativedelta
 from django.http import HttpResponseNotFound
 from django.http import JsonResponse
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
@@ -118,3 +119,9 @@ def peers(_):
     """ list of federated servers this instance connects with """
     names = models.FederatedServer.objects.values_list("server_name", flat=True)
     return JsonResponse(list(names), safe=False)
+
+
+@require_GET
+def host_meta(request):
+    """ meta of the host """
+    return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})
