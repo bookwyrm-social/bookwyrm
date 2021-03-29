@@ -2,7 +2,7 @@
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, re_path
-
+from django.views.generic.base import TemplateView
 
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
@@ -27,12 +27,17 @@ handler404 = "bookwyrm.views.not_found_page"
 handler500 = "bookwyrm.views.server_error_page"
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view()),
     re_path(r"%s/inbox/?$" % local_user_path, views.Inbox.as_view()),
     re_path(r"%s/outbox/?$" % local_user_path, views.Outbox.as_view()),
-    re_path(r"^.well-known/webfinger/?$", views.webfinger),
-    re_path(r"^.well-known/nodeinfo/?$", views.nodeinfo_pointer),
+    re_path(r"^\.well-known/webfinger/?$", views.webfinger),
+    re_path(r"^\.well-known/nodeinfo/?$", views.nodeinfo_pointer),
+    re_path(r"^\.well-known/host-meta/?$", views.host_meta),
     re_path(r"^nodeinfo/2\.0/?$", views.nodeinfo),
     re_path(r"^api/v1/instance/?$", views.instance_info),
     re_path(r"^api/v1/instance/peers/?$", views.peers),

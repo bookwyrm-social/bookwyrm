@@ -21,7 +21,7 @@ def get_user_from_username(viewer, username):
 
 def is_api_request(request):
     """ check whether a request is asking for html or data """
-    return "json" in request.headers.get("Accept") or request.path[-5:] == ".json"
+    return "json" in request.headers.get("Accept", "") or request.path[-5:] == ".json"
 
 
 def is_bookwyrm_request(request):
