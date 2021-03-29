@@ -257,7 +257,7 @@ class Editions(View):
             "editions": work.editions.order_by("-edition_rank").all(),
             "work": work,
         }
-        return TemplateResponse(request, "editions.html", data)
+        return TemplateResponse(request, "book/editions.html", data)
 
 
 @login_required
