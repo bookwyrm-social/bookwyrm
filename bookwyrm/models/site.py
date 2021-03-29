@@ -83,7 +83,7 @@ class InviteRequest(BookWyrmModel):
 
     def save(self, *args, **kwargs):
         """ don't create a request for a registered email """
-        if User.objects.filter(email=self.email).exists():
+        if not self.id and User.objects.filter(email=self.email).exists():
             raise IntegrityError()
         super().save(*args, **kwargs)
 
