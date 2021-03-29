@@ -61,10 +61,12 @@
         {% url 'directory' as path %}
         <p class="help">{% blocktrans %}Your account will show up in the <a href="{{ path }}">directory</a>, and may be recommended to other BookWyrm users.{% endblocktrans %}</p>
     </div>
-    <div>
-        <label class="dropdown label" for="id_preferred_timezone">{% trans "Preferred Timezone: " %}</label>
-        {{ form.preferred_timezone }}
+    <div class="block">
+        <label class="label" for="id_preferred_timezone">{% trans "Preferred Timezone: " %}</label>
+        <div class="select">
+            {{ form.preferred_timezone }}
+        </div>
     </div>
-    <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+    <div class="block"><button class="button is-primary" type="submit">{% trans "Save" %}</button></div>
 </form>
 {% endblock %}
