@@ -1,5 +1,6 @@
 """ shelf views"""
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -9,6 +10,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
+from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_edition, get_user_from_username
 from .helpers import handle_reading_status
 
@@ -23,6 +25,11 @@ class Shelf(View):
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
+
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
 
         if shelf_identifier:
             shelf = user.shelf_set.get(identifier=shelf_identifier)
@@ -49,10 +56,11 @@ class Shelf(View):
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
-        books = (
+        paginated = Paginator(
             models.ShelfBook.objects.filter(user=user, shelf=shelf)
             .order_by("-updated_date")
-            .all()
+            .all(),
+            PAGE_LENGTH,
         )
 
         data = {
@@ -60,7 +68,7 @@ class Shelf(View):
             "is_self": is_self,
             "shelves": shelves.all(),
             "shelf": shelf,
-            "books": [b.book for b in books],
+            "books": paginated.page(page),
         }
 
         return TemplateResponse(request, "user/shelf.html", data)
