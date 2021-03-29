@@ -250,6 +250,11 @@ class Editions(View):
         """ list of editions of a book """
         work = get_object_or_404(models.Work, id=book_id)
 
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
         filters = {}
@@ -262,8 +267,9 @@ class Editions(View):
         editions = work.editions.order_by("-edition_rank").all()
         languages = set(sum([e.languages for e in editions], []))
 
+        paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
         data = {
-            "editions": editions.filter(**filters).all(),
+            "editions": paginated.page(page),
             "work": work,
             "languages": languages,
             "formats": set(

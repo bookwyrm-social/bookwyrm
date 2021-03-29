@@ -33,4 +33,8 @@
     </div>
     {% endfor %}
 </div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=editions path=request.path %}
+</div>
 {% endblock %}
