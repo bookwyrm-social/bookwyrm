@@ -3,6 +3,7 @@
 
 {% with book.id|uuid as uuid %}
 {% active_shelf book as active_shelf %}
+{% latest_read_through book request.user as readthrough %}
 <div class="field has-addons mb-0">
     {% if switch_mode and active_shelf.book != book %}
     <div class="control">
@@ -20,7 +21,6 @@
 
 {% include 'snippets/shelve_button/start_reading_modal.html' with book=active_shelf.book controls_text="start-reading" controls_uid=uuid %}
 
-{% latest_read_through book request.user as readthrough %}
 {% include 'snippets/shelve_button/finish_reading_modal.html' with book=active_shelf.book controls_text="finish-reading" controls_uid=uuid readthrough=readthrough %}
 
 {% include 'snippets/shelve_button/progress_update_modal.html' with book=shelf_book.book controls_text="progress-update" controls_uid=uuid readthrough=readthrough %}
