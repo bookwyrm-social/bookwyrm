@@ -252,11 +252,18 @@ class Editions(View):
 
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
+        filters = {}
+
+        if request.GET.get("language"):
+            filters["languages__contains"] = [request.GET.get("language")]
+        if request.GET.get("format"):
+            filters["physical_format__iexact"] = request.GET.get("format")
+
         editions = work.editions.order_by("-edition_rank").all()
         languages = set(sum([e.languages for e in editions], []))
 
         data = {
-            "editions": editions,
+            "editions": editions.filter(**filters).all(),
             "work": work,
             "languages": languages,
             "formats": set(e.physical_format.lower() for e in editions),
