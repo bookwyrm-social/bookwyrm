@@ -131,6 +131,8 @@ class HomeStream(ActivityStream):
 
     def stream_users(self, status):
         audience = super().stream_users(status)
+        if not audience:
+            return []
         return audience.filter(
             Q(id=status.user.id)  # if the user is the post's author
             | Q(following=status.user)  # if the user is following the author
