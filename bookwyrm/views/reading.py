@@ -7,7 +7,6 @@ from dateutil.parser import ParserError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
