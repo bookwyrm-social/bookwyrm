@@ -1,0 +1,14 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<legend class="label">{% trans "User type" %}</legend>
+<label class="is-block">
+    <input type="radio" class="radio" name="software" value="bookwyrm" {% if not request.GET.sort or  request.GET.software == 'bookwyrm' %}checked{% endif %}>
+    {% trans "BookWyrm users" %}
+</label>
+<label class="is-block">
+    <input type="radio" class="radio" name="software" value="all" {% if request.GET.software == 'all' %}checked{% endif %}>
+    {% trans "All known users" %}
+</label>
+{% endblock %}

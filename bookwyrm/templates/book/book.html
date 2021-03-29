@@ -76,24 +76,7 @@
                     {% endif %}
                 </dl>
 
-                <p>
-                    {% if book.physical_format and not book.pages %}
-                    {{ book.physical_format | title }}
-                    {% elif book.physical_format and book.pages %}
-                    {% blocktrans with format=book.physical_format|title pages=book.pages %}{{ format }}, {{ pages }} pages{% endblocktrans %}
-                    {% elif book.pages %}
-                    {% blocktrans with pages=book.pages %}{{ pages }} pages{% endblocktrans %}
-                    {% endif %}
-                </p>
-                <p>
-                    {% if book.published_date and book.publishers %}
-                    {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
-                    {% elif book.published_date %}
-                    {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
-                    {% elif book.publishers %}
-                    {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
-                    {% endif %}
-                </p>
+                {% include 'book/publisher_info.html' with book=book %}
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
