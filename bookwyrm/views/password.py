@@ -56,7 +56,7 @@ class PasswordReset(View):
         except models.PasswordReset.DoesNotExist:
             raise PermissionDenied
 
-        return TemplateResponse(request, "password_reset.html")
+        return TemplateResponse(request, "password_reset.html", {"code": code})
 
     def post(self, request, code):
         """ allow a user to change their password through an emailed token """
