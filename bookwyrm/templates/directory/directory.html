@@ -36,64 +36,7 @@
 </div></div>
 {% endif %}
 
-<div class="notification content">
-    <h2 class="columns is-mobile mb-0">
-        <span class="column pb-0">Filters</span>
-
-        <span class="column is-narrow pb-0">
-            {% trans "Show filters" as text %}
-            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon="arrow-down" class="is-small" focus="filters" %}
-            {% trans "Hide filters" as text %}
-            {% include 'snippets/toggle/close_button.html' with text=text controls_text="filters" icon="x" class="is-small" %}
-        </span>
-    </h2>
-
-    <form class="hidden mt-3" id="filters" method-"get" action="{% url 'directory' %}" tabindex="0">
-        <div class="columns">
-            <div class="column is-flex">
-                <div class="box is-flex-grow-1">
-                    <legend class="label">{% trans "User type" %}</legend>
-                    <label class="is-block">
-                        <input type="radio" class="radio" name="software" value="bookwyrm" {% if not request.GET.sort or  request.GET.software == 'bookwyrm' %}checked{% endif %}>
-                        {% trans "BookWyrm users" %}
-                    </label>
-                    <label class="is-block">
-                        <input type="radio" class="radio" name="software" value="all" {% if request.GET.software == 'all' %}checked{% endif %}>
-                        {% trans "All known users" %}
-                    </label>
-                </div>
-            </div>
-            <div class="column is-flex">
-                <div class="box is-flex-grow-1">
-                    <legend class="label">{% trans "Community" %}</legend>
-                    <label class="is-block">
-                        <input type="radio" class="radio" name="scope" value="local" {% if request.GET.scope == "local" %}checked{% endif %}>
-                        {% trans "Local users" %}
-                    </label>
-                    <label class="is-block">
-                        <input type="radio" class="radio" name="scope" value="federated" {% if not request.GET.sort or request.GET.scope == "federated" %}checked{% endif %}>
-                        {% trans "Federated community" %}
-                    </label>
-                </div>
-            </div>
-            <div class="column is-flex">
-                <div class="box is-flex-grow-1">
-                    <label class="label" for="id_sort">{% trans "Order by" %}</label>
-                    <div class="select">
-                        <select name="sort" id="id_sort">
-                            <option value="suggested" {% if not request.GET.sort or request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Suggested" %}</option>
-                            <option value="recent" {% if request.GET.sort == "suggested" %}checked{% endif %}>{% trans "Recently active" %}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button class="button is-primary">{% trans "Apply filters" %}</button>
-    </form>
-    {% if request.GET %}
-    <a class="help" href="{% url 'directory' %}">{% trans "Clear filters" %}</a>
-    {% endif %}
-</div>
+{% include 'directory/filters.html' %}
 
 <div class="columns is-multiline">
     {% for user in users %}

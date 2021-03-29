@@ -41,7 +41,7 @@ class Directory(View):
         data = {
             "users": paginated.page(page),
         }
-        return TemplateResponse(request, "directory.html", data)
+        return TemplateResponse(request, "directory/directory.html", data)
 
     def post(self, request):
         """ join the directory """
