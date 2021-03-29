@@ -42,7 +42,7 @@ class ReadingViews(TestCase):
 
     def test_start_reading(self, _):
         """ begin a book """
-        shelf = self.local_user.shelf_set.get(identifier="reading")
+        shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READING)
         self.assertFalse(shelf.books.exists())
         self.assertFalse(models.Status.objects.exists())
 
@@ -73,7 +73,7 @@ class ReadingViews(TestCase):
 
     def test_start_reading_reshelf(self, _):
         """ begin a book """
-        to_read_shelf = self.local_user.shelf_set.get(identifier="to-read")
+        to_read_shelf = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(
                 shelf=to_read_shelf, book=self.book, user=self.local_user
@@ -93,7 +93,7 @@ class ReadingViews(TestCase):
 
     def test_finish_reading(self, _):
         """ begin a book """
-        shelf = self.local_user.shelf_set.get(identifier="read")
+        shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READ_FINISHED)
         self.assertFalse(shelf.books.exists())
         self.assertFalse(models.Status.objects.exists())
         readthrough = models.ReadThrough.objects.create(

@@ -1,4 +1,5 @@
 """ shelf views"""
+from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -126,7 +127,7 @@ def delete_shelf(request, shelf_id):
 @login_required
 @require_POST
 def shelve(request):
-    """ put a  on a user's shelf """
+    """ put a book on a user's shelf """
     book = get_edition(request.POST.get("book"))
 
     desired_shelf = models.Shelf.objects.filter(
@@ -135,21 +136,50 @@ def shelve(request):
     if not desired_shelf:
         return HttpResponseNotFound()
 
-    if request.POST.get("reshelve", True):
+    change_from_current_identifier = request.POST.get("change-shelf-from")
+    if change_from_current_identifier is not None:
+        current_shelf = models.Shelf.objects.get(
+            user=request.user, identifier=change_from_current_identifier
+        )
+        handle_unshelve(book, current_shelf)
+
+    # A book can be on multiple shelves, but only on one read status shelf at a time
+    if desired_shelf.identifier in models.Shelf.READ_STATUS_IDENTIFIERS:
+        current_read_status_shelfbook = (
+            models.ShelfBook.objects.select_related("shelf")
+            .filter(
+                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+                user=request.user,
+                book=book,
+            )
+            .first()
+        )
+        if current_read_status_shelfbook is not None:
+            if (
+                current_read_status_shelfbook.shelf.identifier
+                != desired_shelf.identifier
+            ):
+                handle_unshelve(book, current_read_status_shelfbook.shelf)
+            else:  # It is already on the shelf
+                return redirect(request.headers.get("Referer", "/"))
+
+        models.ShelfBook.objects.create(
+            book=book, shelf=desired_shelf, user=request.user
+        )
+        if desired_shelf.identifier == models.Shelf.TO_READ and request.POST.get(
+            "post-status"
+        ):
+            privacy = request.POST.get("privacy") or desired_shelf.privacy
+            handle_reading_status(request.user, desired_shelf, book, privacy=privacy)
+    else:
         try:
-            current_shelf = models.Shelf.objects.get(user=request.user, edition=book)
-            handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
+            models.ShelfBook.objects.create(
+                book=book, shelf=desired_shelf, user=request.user
+            )
+        # The book is already on this shelf. Might be good to alert, or reject the action?
+        except IntegrityError:
             pass
-    models.ShelfBook.objects.create(book=book, shelf=desired_shelf, user=request.user)
-
-    # post about "want to read" shelves
-    if desired_shelf.identifier == "to-read" and request.POST.get("post-status"):
-        privacy = request.POST.get("privacy") or desired_shelf.privacy
-        handle_reading_status(request.user, desired_shelf, book, privacy=privacy)
-
-    return redirect("/")
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
@@ -159,12 +189,12 @@ def unshelve(request):
     book = models.Edition.objects.get(id=request.POST["book"])
     current_shelf = models.Shelf.objects.get(id=request.POST["shelf"])
 
-    handle_unshelve(request.user, book, current_shelf)
+    handle_unshelve(book, current_shelf)
     return redirect(request.headers.get("Referer", "/"))
 
 
 # pylint: disable=unused-argument
-def handle_unshelve(user, book, shelf):
+def handle_unshelve(book, shelf):
     """ unshelve a book """
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()

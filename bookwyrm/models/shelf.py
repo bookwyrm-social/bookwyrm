@@ -11,6 +11,12 @@ from . import fields
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
     """ a list of books owned by a user """
 
+    TO_READ = "to-read"
+    READING = "reading"
+    READ_FINISHED = "read"
+
+    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED)
+
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
     user = fields.ForeignKey(
