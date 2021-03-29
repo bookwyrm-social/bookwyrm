@@ -113,7 +113,7 @@ class ActivityStream(ABC):
                 Q(id=status.user.id)  # if the user is the post's author
                 | Q(following=status.user)  # if the user is following the author
             )
-        return audience
+        return audience.distinct()
 
     def stream_statuses(self, user):  # pylint: disable=no-self-use
         """ given a user, what statuses should they see on this stream """
@@ -134,7 +134,7 @@ class HomeStream(ActivityStream):
         return audience.filter(
             Q(id=status.user.id)  # if the user is the post's author
             | Q(following=status.user)  # if the user is following the author
-        )
+        ).distinct()
 
     def stream_statuses(self, user):
         return privacy_filter(
