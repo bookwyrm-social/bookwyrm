@@ -1,5 +1,6 @@
 {% extends 'user/user_layout.html' %}
 {% load bookwyrm_tags %}
+{% load humanize %}
 {% load i18n %}
 
 {% block header %}
@@ -63,7 +64,76 @@
 
 <div class="block">
     <div>
-        {% include 'snippets/shelf.html' with shelf=shelf books=books ratings=ratings %}
+        {% if books|length > 0 %}
+        <div class="scroll-x">
+        <table class="table is-striped is-fullwidth">
+
+        <tr class="book-preview">
+            <th>{% trans "Cover" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Author" %}</th>
+            <th>{% trans "Shelved" %}</th>
+            <th>{% trans "Started" %}</th>
+            <th>{% trans "Finished" %}</th>
+            {% if ratings %}<th>{% trans "Rating" %}</th>{% endif %}
+            {% if shelf.user == request.user %}
+            <th aria-hidden="true"></th>
+            {% endif %}
+        </tr>
+        {% for book in books %}
+        {% with book=book.book %}
+        <tr class="book-preview">
+            <td>
+                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
+            </td>
+            <td>
+                <a href="{{ book.local_path }}">{{ book.title }}</a>
+            </td>
+            <td>
+                {% include 'snippets/authors.html' %}
+            </td>
+            <td>
+                {{ book.created_date | naturalday }}
+            </td>
+            {% latest_read_through book user as read_through %}
+            <td>
+                {{ read_through.start_date | naturalday |default_if_none:""}}
+            </td>
+            <td>
+                {{ read_through.finish_date | naturalday |default_if_none:""}}
+            </td>
+            {% if ratings %}
+            <td>
+                {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
+            </td>
+            {% endif %}
+            {% if shelf.user == request.user %}
+            <td>
+                {% include 'snippets/shelf_selector.html' with current=shelf %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        </table>
+        </div>
+        {% else %}
+        <p>{% trans "This shelf is empty." %}</p>
+        {% if shelf.editable %}
+        <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            <button class="button is-danger is-light" type="submit">
+                {% trans "Delete shelf" %}
+            </button>
+        </form>
+        {% endif %}
+
+        {% endif %}
+
     </div>
+</div>
+<div>
+    {% include 'snippets/pagination.html' with page=books path=request.path %}
 </div>
 {% endblock %}
