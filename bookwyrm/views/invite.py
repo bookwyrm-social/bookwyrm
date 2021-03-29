@@ -111,13 +111,13 @@ class ManageInviteRequests(View):
         invite_request = get_object_or_404(
             models.InviteRequest, id=request.POST.get("invite-request")
         )
-        # allows re-sending invites
-        invite_request.invite, _ = models.SiteInvite.objects.get_or_create(
-            use_limit=1,
-            user=request.user,
-        )
-
-        invite_request.save()
+        # only create a new invite if one doesn't exist already (resending)
+        if not invite_request.invite:
+            invite_request.invite = models.SiteInvite.objects.create(
+                use_limit=1,
+                user=request.user,
+            )
+            invite_request.save()
         emailing.invite_email(invite_request)
         return redirect("settings-invite-requests")
 
