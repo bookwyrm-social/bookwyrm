@@ -252,10 +252,14 @@ class Editions(View):
 
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
+        editions = work.editions.order_by("-edition_rank").all()
+        languages = set(sum([e.languages for e in editions], []))
 
         data = {
-            "editions": work.editions.order_by("-edition_rank").all(),
+            "editions": editions,
             "work": work,
+            "languages": languages,
+            "formats": set(e.physical_format.lower() for e in editions),
         }
         return TemplateResponse(request, "book/editions.html", data)
 

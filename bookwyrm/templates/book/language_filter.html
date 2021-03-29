@@ -1,0 +1,13 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<label class="label is-block" for="id_language">{% trans "Language:" %}</label>
+<div class="select">
+    <select id="language" name="language">
+        {% for language in languages %}
+        <option value="{{ language }}">{{ language }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endblock %}

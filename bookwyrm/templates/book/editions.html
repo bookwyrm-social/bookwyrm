@@ -7,7 +7,11 @@
 {% block content %}
 <div class="block">
     <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work.title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
+</div>
 
+{% include 'book/edition_filters.html' %}
+
+<div class="block">
     {% for book in editions %}
     <div class="columns">
         <div class="column is-2">
@@ -30,4 +34,3 @@
     {% endfor %}
 </div>
 {% endblock %}
-
