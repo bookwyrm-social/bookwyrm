@@ -2,7 +2,7 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 
-from bookwyrm import models
+from bookwyrm import models, settings
 from bookwyrm.tasks import app
 from bookwyrm.settings import DOMAIN
 
@@ -59,6 +59,8 @@ def format_email(email_name, data):
 @app.task
 def send_email(recipient, subject, html_content, text_content):
     """ use a task to send the email """
-    email = EmailMultiAlternatives(subject, text_content, None, [recipient])
+    email = EmailMultiAlternatives(
+        subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient]
+    )
     email.attach_alternative(html_content, "text/html")
     email.send()
