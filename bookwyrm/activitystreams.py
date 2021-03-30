@@ -195,15 +195,7 @@ streams = {
 def add_status_on_create(sender, instance, created, *args, **kwargs):
     """ add newly created statuses to activity feeds """
     # we're only interested in new statuses
-    if not issubclass(sender, models.Status):
-        return
-
-    if instance.deleted:
-        for stream in streams.values():
-            stream.remove_status(instance)
-        return
-
-    if not created:
+    if not issubclass(sender, models.Status) or not created:
         return
 
     # iterates through Home, Local, Federated
@@ -211,11 +203,13 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         stream.add_status(instance)
 
 
-@receiver(signals.post_delete, sender=models.Boost)
+@receiver(signals.post_delete)
 # pylint: disable=unused-argument
-def remove_boost_on_delete(sender, instance, *args, **kwargs):
-    """ boosts are deleted """
-    # we're only interested in new statuses
+def remove_status_on_delete(sender, instance, *args, **kwargs):
+    """ statuses are deleted sometimes """
+    if not issubclass(sender, models.Status):
+        return
+
     for stream in streams.values():
         stream.remove_status(instance)
 

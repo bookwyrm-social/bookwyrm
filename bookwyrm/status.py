@@ -6,13 +6,6 @@ from bookwyrm import models
 from bookwyrm.sanitize_html import InputHtmlParser
 
 
-def delete_status(status):
-    """ replace the status with a tombstone """
-    status.deleted = True
-    status.deleted_date = timezone.now()
-    status.save()
-
-
 def create_generated_note(user, content, mention_books=None, privacy="public"):
     """ a note created by the app about user activity """
     # sanitize input html

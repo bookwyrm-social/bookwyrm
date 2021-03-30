@@ -63,11 +63,7 @@
     <ul>
         {% for status in report.statuses.select_subclasses.all %}
         <li>
-            {% if status.deleted %}
-            <em>{% trans "Statuses has been deleted" %}</em>
-            {% else %}
             {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
-            {% endif %}
         </li>
         {% endfor %}
     </ul>

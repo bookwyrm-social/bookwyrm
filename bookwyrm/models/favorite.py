@@ -14,10 +14,10 @@ class Favorite(ActivityMixin, BookWyrmModel):
     """ fav'ing a post """
 
     user = fields.ForeignKey(
-        "User", on_delete=models.PROTECT, activitypub_field="actor"
+        "User", on_delete=models.CASCADE, activitypub_field="actor"
     )
     status = fields.ForeignKey(
-        "Status", on_delete=models.PROTECT, activitypub_field="object"
+        "Status", on_delete=models.CASCADE, activitypub_field="object"
     )
 
     activity_serializer = activitypub.Like

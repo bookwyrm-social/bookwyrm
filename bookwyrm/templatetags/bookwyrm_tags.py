@@ -65,7 +65,6 @@ def get_replies(status):
     return (
         models.Status.objects.filter(
             reply_parent=status,
-            deleted=False,
         )
         .select_subclasses()
         .all()[:10]

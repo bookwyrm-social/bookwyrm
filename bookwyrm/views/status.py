@@ -10,7 +10,6 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
-from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger
 from .reading import edit_readthrough
@@ -84,7 +83,7 @@ class DeleteStatus(View):
             return HttpResponseBadRequest()
 
         # perform deletion
-        delete_status(status)
+        status.delete()
         return redirect(request.headers.get("Referer", "/"))
 
 

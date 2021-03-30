@@ -109,6 +109,13 @@ class ActivitypubMixin:
         # there OUGHT to be only one match
         return match.first()
 
+    def delete(self, *args, broadcast=True, **kwargs):
+        """ nevermind, throw that activity in the trash """
+        user = self.user if hasattr(self, "user") else self.user_subject
+        if broadcast and user.local:
+            self.broadcast(self.to_delete_activity(), user)
+        super().delete(*args, **kwargs)
+
     def broadcast(self, activity, sender, software=None):
         """ send out an activity """
         broadcast_task.delay(
@@ -175,7 +182,7 @@ class ObjectMixin(ActivitypubMixin):
     """ add this mixin for object models that are AP serializable """
 
     def save(self, *args, created=None, **kwargs):
-        """ broadcast created/updated/deleted objects as appropriate """
+        """ broadcast created/updated objects as appropriate """
         broadcast = kwargs.get("broadcast", True)
         # this bonus kwarg woul cause an error in the base save method
         if "broadcast" in kwargs:
@@ -224,11 +231,7 @@ class ObjectMixin(ActivitypubMixin):
         if not user or not user.local:
             return
 
-        # is this a deletion?
-        if hasattr(self, "deleted") and self.deleted:
-            activity = self.to_delete_activity(user)
-        else:
-            activity = self.to_update_activity(user)
+        activity = self.to_update_activity(user)
         self.broadcast(activity, user)
 
     def to_create_activity(self, user, **kwargs):
@@ -264,7 +267,7 @@ class ObjectMixin(ActivitypubMixin):
             actor=user.remote_id,
             to=["%s/followers" % user.remote_id],
             cc=["https://www.w3.org/ns/activitystreams#Public"],
-            object=self,
+            object=self.to_activity_dataclass(deleted=True),
         ).serialize()
 
     def to_update_activity(self, user):
@@ -358,13 +361,6 @@ class CollectionItemMixin(ActivitypubMixin):
         activity = self.to_add_activity()
         self.broadcast(activity, self.user)
 
-    def delete(self, *args, **kwargs):
-        """ broadcast a remove activity """
-        activity = self.to_remove_activity()
-        super().delete(*args, **kwargs)
-        if self.user.local:
-            self.broadcast(activity, self.user)
-
     def to_add_activity(self):
         """ AP for shelving a book"""
         object_field = getattr(self, self.object_field)
@@ -376,7 +372,7 @@ class CollectionItemMixin(ActivitypubMixin):
             target=collection_field.remote_id,
         ).serialize()
 
-    def to_remove_activity(self):
+    def to_delete_activity(self):
         """ AP for un-shelving a book"""
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
@@ -398,14 +394,7 @@ class ActivityMixin(ActivitypubMixin):
         if broadcast and user.local:
             self.broadcast(self.to_activity(), user)
 
-    def delete(self, *args, broadcast=True, **kwargs):
-        """ nevermind, undo that activity """
-        user = self.user if hasattr(self, "user") else self.user_subject
-        if broadcast and user.local:
-            self.broadcast(self.to_undo_activity(), user)
-        super().delete(*args, **kwargs)
-
-    def to_undo_activity(self):
+    def to_delete_activity(self):
         """ undo an action """
         user = self.user if hasattr(self, "user") else self.user_subject
         return activitypub.Undo(

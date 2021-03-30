@@ -37,8 +37,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     published_date = fields.DateTimeField(
         default=timezone.now, activitypub_field="published"
     )
-    deleted = models.BooleanField(default=False)
-    deleted_date = models.DateTimeField(blank=True, null=True)
     favorites = models.ManyToManyField(
         "User",
         symmetrical=False,
@@ -49,7 +47,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     reply_parent = fields.ForeignKey(
         "self",
         null=True,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         activitypub_field="inReplyTo",
     )
     objects = InheritanceManager()
@@ -68,9 +66,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         super().save(*args, **kwargs)
 
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
-
-        if self.deleted:
-            notification_model.objects.filter(related_status=self).delete()
 
         if (
             self.reply_parent
@@ -95,16 +90,6 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
                 related_user=self.user,
                 related_status=self,
             )
-
-    def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
-        """ "delete" a status """
-        if hasattr(self, "boosted_status"):
-            # okay but if it's a boost really delete it
-            super().delete(*args, **kwargs)
-            return
-        self.deleted = True
-        self.deleted_date = timezone.now()
-        self.save()
 
     @property
     def recipients(self):
@@ -179,14 +164,13 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             **kwargs
         ).serialize()
 
-    def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
+    # pylint: disable=arguments-differ
+    def to_activity_dataclass(self, deleted=False, pure=False):
         """ return tombstone if the status is deleted """
-        if self.deleted:
+        if deleted:
             return activitypub.Tombstone(
                 id=self.remote_id,
                 url=self.remote_id,
-                deleted=self.deleted_date.isoformat(),
-                published=self.deleted_date.isoformat(),
             )
         activity = ActivitypubMixin.to_activity_dataclass(self)
         activity.replies = self.to_replies()
@@ -342,7 +326,7 @@ class Boost(ActivityMixin, Status):
 
     boosted_status = fields.ForeignKey(
         "Status",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="boosters",
         activitypub_field="object",
     )
@@ -361,17 +345,6 @@ class Boost(ActivityMixin, Status):
             related_user=self.user,
             notification_type="BOOST",
         )
-
-    def delete(self, *args, **kwargs):
-        """ delete and un-notify """
-        notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
-        notification_model.objects.filter(
-            user=self.boosted_status.user,
-            related_status=self.boosted_status,
-            related_user=self.user,
-            notification_type="BOOST",
-        ).delete()
-        super().delete(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
         """ the user field is "actor" here instead of "attributedTo" """

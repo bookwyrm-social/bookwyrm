@@ -11,6 +11,7 @@ from .image import Image
 class Tombstone(ActivityObject):
     """ the placeholder for a deleted status """
 
+    url: str = None
     type: str = "Tombstone"
 
     def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument

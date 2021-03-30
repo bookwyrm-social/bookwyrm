@@ -59,11 +59,6 @@ def object_visible_to_user(viewer, obj):
 def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     """ filter objects that have "user" and "privacy" fields """
     privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
-    # if there'd a deleted field, exclude deleted items
-    try:
-        queryset = queryset.filter(deleted=False)
-    except FieldError:
-        pass
 
     # exclude blocks from both directions
     if not viewer.is_anonymous:
@@ -181,7 +176,6 @@ def get_discover_books():
         set(
             models.Edition.objects.filter(
                 review__published_date__isnull=False,
-                review__deleted=False,
                 review__user__local=True,
                 review__privacy__in=["public", "unlisted"],
             )
