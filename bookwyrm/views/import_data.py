@@ -9,7 +9,8 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, goodreads_import, librarything_import, models
+from bookwyrm import forms, models
+from bookwyrm.importers import Importer, LibrarythingImporter, GoodreadsImporter
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
@@ -40,10 +41,10 @@ class Import(View):
 
             importer = None
             if source == "LibraryThing":
-                importer = librarything_import.LibrarythingImporter()
+                importer = LibrarythingImporter()
             else:
                 # Default : GoodReads
-                importer = goodreads_import.GoodreadsImporter()
+                importer = GoodreadsImporter()
 
             try:
                 job = importer.create_job(
@@ -89,10 +90,11 @@ class ImportStatus(View):
         for item in request.POST.getlist("import_item"):
             items.append(get_object_or_404(models.ImportItem, id=item))
 
-        job = goodreads_import.create_retry_job(
+        importer = Importer()
+        job = importer.create_retry_job(
             request.user,
             job,
             items,
         )
-        goodreads_import.start_import(job)
+        importer.start_import(job)
         return redirect("/import/%d" % job.id)
