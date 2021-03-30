@@ -8,7 +8,8 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.importers import importer, GoodreadsImporter
+from bookwyrm.importers import GoodreadsImporter
+from bookwyrm.importers.importer import import_data, handle_imported_book
 from bookwyrm.settings import DOMAIN
 
 
@@ -18,7 +19,7 @@ class GoodreadsImport(TestCase):
     def setUp(self):
         """ use a test csv """
         self.importer = GoodreadsImporter()
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
         self.user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "password", local=True
@@ -81,7 +82,7 @@ class GoodreadsImport(TestCase):
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
         MockTask = namedtuple("Task", ("id"))
         mock_task = MockTask(7)
-        with patch("bookwyrm.importer.import_data.delay") as start:
+        with patch("bookwyrm.importers.importer.import_data.delay") as start:
             start.return_value = mock_task
             self.importer.start_import(import_job)
         import_job.refresh_from_db()
@@ -97,8 +98,8 @@ class GoodreadsImport(TestCase):
             "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
         ) as resolve:
             resolve.return_value = book
-            with patch("bookwyrm.importer.handle_imported_book"):
-                importer.import_data(self.importer.service, import_job.id)
+            with patch("bookwyrm.importers.importer.handle_imported_book"):
+                import_data(self.importer.service, import_job.id)
 
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         self.assertEqual(import_item.book.id, book.id)
@@ -109,7 +110,7 @@ class GoodreadsImport(TestCase):
         self.assertIsNone(shelf.books.first())
 
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         csv_file = open(datafile, "r")
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
@@ -119,7 +120,7 @@ class GoodreadsImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -143,7 +144,7 @@ class GoodreadsImport(TestCase):
             models.ShelfBook.objects.create(shelf=shelf, user=self.user, book=self.book)
 
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         csv_file = open(datafile, "r")
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
@@ -153,7 +154,7 @@ class GoodreadsImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -173,7 +174,7 @@ class GoodreadsImport(TestCase):
         """ re-importing books """
         shelf = self.user.shelf_set.filter(identifier="read").first()
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         csv_file = open(datafile, "r")
         for index, entry in enumerate(list(csv.DictReader(csv_file))):
             entry = self.importer.parse_fields(entry)
@@ -183,10 +184,10 @@ class GoodreadsImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -207,7 +208,7 @@ class GoodreadsImport(TestCase):
     def test_handle_imported_book_review(self, _):
         """ goodreads review import """
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         csv_file = open(datafile, "r")
         entry = list(csv.DictReader(csv_file))[2]
         entry = self.importer.parse_fields(entry)
@@ -216,7 +217,7 @@ class GoodreadsImport(TestCase):
         )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, True, "unlisted"
             )
         review = models.Review.objects.get(book=self.book, user=self.user)
@@ -230,7 +231,7 @@ class GoodreadsImport(TestCase):
     def test_handle_imported_book_reviews_disabled(self):
         """ goodreads review import """
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/goodreads.csv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/goodreads.csv")
         csv_file = open(datafile, "r")
         entry = list(csv.DictReader(csv_file))[2]
         entry = self.importer.parse_fields(entry)
@@ -239,7 +240,7 @@ class GoodreadsImport(TestCase):
         )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "unlisted"
             )
         self.assertFalse(
