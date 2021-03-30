@@ -168,7 +168,7 @@ class ActivitypubMixin:
             recipients += list(shared_inboxes) + list(inboxes)
         return recipients
 
-    def to_activity_dataclass(self):
+    def to_activity_dataclass(self, **kwargs):
         """ convert from a model to an activity """
         activity = generate_activity(self)
         return self.activity_serializer(**activity)
@@ -260,12 +260,12 @@ class ObjectMixin(ActivitypubMixin):
             signature=signature,
         ).serialize()
 
-    def to_delete_activity(self, user):
+    def to_delete_activity(self):
         """ notice of deletion """
         return activitypub.Delete(
             id=self.remote_id + "/activity",
-            actor=user.remote_id,
-            to=["%s/followers" % user.remote_id],
+            actor=self.user.remote_id,
+            to=["%s/followers" % self.user.remote_id],
             cc=["https://www.w3.org/ns/activitystreams#Public"],
             object=self.to_activity_dataclass(deleted=True),
         ).serialize()
