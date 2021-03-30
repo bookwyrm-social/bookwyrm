@@ -50,8 +50,7 @@ class ImportViews(TestCase):
         """ retry failed items """
         view = views.ImportStatus.as_view()
         import_job = models.ImportJob.objects.create(
-            user=self.local_user,
-            privacy="unlisted"
+            user=self.local_user, privacy="unlisted"
         )
         request = self.factory.post("")
         request.user = self.local_user
