@@ -111,9 +111,10 @@ class ActivitypubMixin:
 
     def delete(self, *args, broadcast=True, **kwargs):
         """ nevermind, throw that activity in the trash """
-        user = self.user if hasattr(self, "user") else self.user_subject
-        if broadcast and user.local:
-            self.broadcast(self.to_delete_activity(), user)
+        if hasattr(self, "to_delete_activity"):
+            user = self.user if hasattr(self, "user") else self.user_subject
+            if broadcast and user.local:
+                self.broadcast(self.to_delete_activity(), user)
         super().delete(*args, **kwargs)
 
     def broadcast(self, activity, sender, software=None):

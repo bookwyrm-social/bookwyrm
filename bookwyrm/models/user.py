@@ -152,7 +152,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         queryset = (
             queryset.filter(
                 user=self,
-                deleted=False,
                 privacy__in=["public", "unlisted"],
             )
             .select_subclasses()

@@ -346,6 +346,17 @@ class Boost(ActivityMixin, Status):
             notification_type="BOOST",
         )
 
+    def delete(self, *args, **kwargs):
+        """ delete and un-notify """
+        notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
+        notification_model.objects.filter(
+            user=self.boosted_status.user,
+            related_status=self.boosted_status,
+            related_user=self.user,
+            notification_type="BOOST",
+        ).delete()
+        super().delete(*args, **kwargs)
+
     def __init__(self, *args, **kwargs):
         """ the user field is "actor" here instead of "attributedTo" """
         super().__init__(*args, **kwargs)

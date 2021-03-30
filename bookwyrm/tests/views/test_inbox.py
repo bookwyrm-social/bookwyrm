@@ -434,7 +434,6 @@ class Inbox(TestCase):
         self.status.user = self.remote_user
         self.status.save(broadcast=False)
 
-        self.assertFalse(self.status.deleted)
         activity = {
             "type": "Delete",
             "to": ["https://www.w3.org/ns/activitystreams#Public"],
@@ -448,10 +447,7 @@ class Inbox(TestCase):
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
-        status = models.Status.objects.get()
-        self.assertTrue(status.deleted)
-        self.assertIsInstance(status.deleted_date, datetime)
+        self.assertFalse(models.Status.objects.exists())
 
     def test_handle_delete_status_notifications(self):
         """ remove a status with related notifications """
@@ -466,7 +462,6 @@ class Inbox(TestCase):
         notif = models.Notification.objects.create(
             user=self.local_user, notification_type="MENTION"
         )
-        self.assertFalse(self.status.deleted)
         self.assertEqual(models.Notification.objects.count(), 2)
         activity = {
             "type": "Delete",
@@ -481,10 +476,8 @@ class Inbox(TestCase):
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        # deletion doens't remove the status, it turns it into a tombstone
-        status = models.Status.objects.get()
-        self.assertTrue(status.deleted)
-        self.assertIsInstance(status.deleted_date, datetime)
+
+        self.assertFalse(models.Status.objects.exists())
 
         # notifications should be truly deleted
         self.assertEqual(models.Notification.objects.count(), 1)
