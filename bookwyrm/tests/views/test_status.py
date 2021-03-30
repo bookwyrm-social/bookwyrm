@@ -251,11 +251,10 @@ class StatusViews(TestCase):
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
     def test_handle_delete_status(self, mock):
-        """ marks a status as deleted """
+        """ delete a status """
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
-        self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.local_user
 
@@ -267,29 +266,25 @@ class StatusViews(TestCase):
         activity = json.loads(mock.call_args_list[1][0][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
-        status.refresh_from_db()
-        self.assertTrue(status.deleted)
+        self.assertFalse(models.Status.objects.filter(id=status.id).exists())
 
     def test_handle_delete_status_permission_denied(self, _):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
-        self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
 
         view(request, status.id)
 
-        status.refresh_from_db()
-        self.assertFalse(status.deleted)
+        self.assertTrue(models.Status.objects.filter(id=status.id).exists())
 
     def test_handle_delete_status_moderator(self, mock):
         """ marks a status as deleted """
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
-        self.assertFalse(status.deleted)
         request = self.factory.post("")
         request.user = self.remote_user
         request.user.is_superuser = True
@@ -302,5 +297,4 @@ class StatusViews(TestCase):
         activity = json.loads(mock.call_args_list[1][0][1])
         self.assertEqual(activity["type"], "Delete")
         self.assertEqual(activity["object"]["type"], "Tombstone")
-        status.refresh_from_db()
-        self.assertTrue(status.deleted)
+        self.assertFalse(models.Status.objects.filter(id=status.id).exists())
