@@ -1,5 +1,5 @@
 """ handle reading a csv from goodreads """
-from bookwyrm.importer import Importer
+from . import Importer
 
 
 class GoodreadsImporter(Importer):

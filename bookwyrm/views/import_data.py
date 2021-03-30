@@ -9,8 +9,8 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, goodreads_import, librarything_import, models
-from bookwyrm.importer import Importer
+from bookwyrm import forms, models
+from bookwyrm.importers import Importer, LibrarythingImporter, GoodreadsImporter
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
@@ -41,10 +41,10 @@ class Import(View):
 
             importer = None
             if source == "LibraryThing":
-                importer = librarything_import.LibrarythingImporter()
+                importer = LibrarythingImporter()
             else:
                 # Default : GoodReads
-                importer = goodreads_import.GoodreadsImporter()
+                importer = GoodreadsImporter()
 
             try:
                 job = importer.create_job(

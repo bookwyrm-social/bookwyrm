@@ -2,7 +2,7 @@
 import re
 import math
 
-from bookwyrm.importer import Importer
+from . import Importer
 
 
 class LibrarythingImporter(Importer):
