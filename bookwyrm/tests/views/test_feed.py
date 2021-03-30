@@ -66,6 +66,18 @@ class FeedViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
+    def test_status_page_not_found(self, *_):
+        """ there are so many views, this just makes sure it LOADS """
+        view = views.Status.as_view()
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.feed.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, "mouse", 12345)
+
+        self.assertEqual(result.status_code, 404)
+
     def test_status_page_with_image(self, *_):
         """ there are so many views, this just makes sure it LOADS """
         view = views.Status.as_view()
