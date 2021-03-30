@@ -45,3 +45,22 @@ class ImportViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_retry_import(self):
+        """ retry failed items """
+        view = views.ImportStatus.as_view()
+        import_job = models.ImportJob.objects.create(
+            user=self.local_user, privacy="unlisted"
+        )
+        request = self.factory.post("")
+        request.user = self.local_user
+
+        with patch("bookwyrm.importers.Importer.start_import"):
+            view(request, import_job.id)
+
+        self.assertEqual(models.ImportJob.objects.count(), 2)
+        retry_job = models.ImportJob.objects.last()
+
+        self.assertTrue(retry_job.retry)
+        self.assertEqual(retry_job.user, self.local_user)
+        self.assertEqual(retry_job.privacy, "unlisted")

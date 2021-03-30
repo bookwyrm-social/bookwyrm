@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 class Importer:
+    """ Generic class for csv data import from an outside service """
+
     service = "Unknown"
     delimiter = ","
     encoding = "UTF-8"
@@ -29,10 +31,12 @@ class Importer:
             self.save_item(job, index, entry)
         return job
 
-    def save_item(self, job, index, data):
+    def save_item(self, job, index, data):  # pylint: disable=no-self-use
+        """ creates and saves an import item """
         ImportItem(job=job, index=index, data=data).save()
 
     def parse_fields(self, entry):
+        """ updates csv data with additional info """
         entry.update({"import_source": self.service})
         return entry
 

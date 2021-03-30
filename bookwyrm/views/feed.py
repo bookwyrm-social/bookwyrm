@@ -115,7 +115,7 @@ class Status(View):
             status = models.Status.objects.select_subclasses().get(
                 id=status_id, deleted=False
             )
-        except ValueError:
+        except (ValueError, models.Status.DoesNotExist):
             return HttpResponseNotFound()
 
         # the url should have the poster's username in it
