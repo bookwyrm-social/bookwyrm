@@ -14,7 +14,13 @@
                 {% endfor %}
             </div>
             <div class="card-content is-flex-grow-0">
-                {% if list.description %}{{ list.description | to_markdown | safe | truncatewords_html:20 }}{% endif %}
+                <div {% if list.description %}title="{{ list.description }}"{% endif %}>
+                {% if list.description %}
+                    {{ list.description|to_markdown|safe|truncatechars_html:30 }}
+                {% else %}
+                &nbsp;
+                {% endif %}
+                </div>
                 <p class="subtitle help">
                     {% include 'lists/created_text.html' with list=list %}
                 </p>
