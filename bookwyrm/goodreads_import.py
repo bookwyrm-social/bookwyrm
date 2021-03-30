@@ -1,14 +1,16 @@
 """ handle reading a csv from goodreads """
 from bookwyrm.importer import Importer
 
-# GoodReads is the default importer, thus Importer follows its structure. For a more complete example of overriding see librarything_import.py
-
 
 class GoodreadsImporter(Importer):
+    """ GoodReads is the default importer, thus Importer follows its structure.
+    For a more complete example of overriding see librarything_import.py """
+
     service = "GoodReads"
 
-    def parse_fields(self, data):
-        data.update({"import_source": self.service})
+    def parse_fields(self, entry):
+        """ handle the specific fields in goodreads csvs """
+        entry.update({"import_source": self.service})
         # add missing 'Date Started' field
-        data.update({"Date Started": None})
-        return data
+        entry.update({"Date Started": None})
+        return entry

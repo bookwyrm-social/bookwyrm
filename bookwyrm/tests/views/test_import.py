@@ -45,3 +45,6 @@ class ImportViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_retry_import(self):
+        """ retry failed items """
