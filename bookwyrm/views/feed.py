@@ -112,9 +112,7 @@ class Status(View):
         """ display a particular status (and replies, etc) """
         try:
             user = get_user_from_username(request.user, username)
-            status = models.Status.objects.select_subclasses().get(
-                id=status_id
-            )
+            status = models.Status.objects.select_subclasses().get(id=status_id)
         except (ValueError, models.Status.DoesNotExist):
             return HttpResponseNotFound()
 
