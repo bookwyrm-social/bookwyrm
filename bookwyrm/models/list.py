@@ -1,6 +1,7 @@
 """ make a list of books!! """
 from django.apps import apps
 from django.db import models
+from django.utils import timezone
 
 from bookwyrm import activitypub
 from bookwyrm.settings import DOMAIN
@@ -79,6 +80,10 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
         """ create a notification too """
         created = not bool(self.id)
         super().save(*args, **kwargs)
+        # tick the updated date on the parent list
+        self.book_list.updated_date = timezone.now()
+        self.book_list.save(broadcast=False)
+
         list_owner = self.book_list.user
         # create a notification if somoene ELSE added to a local user's list
         if created and list_owner.local and list_owner != self.user:
