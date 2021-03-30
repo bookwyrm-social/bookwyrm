@@ -28,11 +28,15 @@ class Lists(View):
             page = 1
 
         # hide lists with no approved books
-        lists = models.List.objects.annotate(
-            item_count=Count("listitem", filter=Q(listitem__approved=True))
-        ).filter(
-            item_count__gt=0
-        ).order_by("-updated_date").distinct().all()
+        lists = (
+            models.List.objects.annotate(
+                item_count=Count("listitem", filter=Q(listitem__approved=True))
+            )
+            .filter(item_count__gt=0)
+            .order_by("-updated_date")
+            .distinct()
+            .all()
+        )
 
         lists = privacy_filter(
             request.user, lists, privacy_levels=["public", "followers"]
