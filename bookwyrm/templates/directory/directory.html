@@ -44,9 +44,9 @@
         <div class="card block">
             <div class="card-content">
                 <div class="media">
-                    <span class="media-left">
+                    <a href="{{ user.local_path }}" class="media-left">
                         {% include 'snippets/avatar.html' with user=user large=True %}
-                    </span>
+                    </a>
                     <div class="media-content">
                         <a href="{{ user.local_path }}" class="is-block mb-2">
                             <span class="title is-4 is-block">{{ user.display_name }}</span>

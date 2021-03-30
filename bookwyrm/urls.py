@@ -23,8 +23,6 @@ status_path = r"%s/(%s)/(?P<status_id>\d+)" % (user_path, "|".join(status_types)
 
 book_path = r"^book/(?P<book_id>\d+)"
 
-handler404 = "bookwyrm.views.not_found_page"
-handler500 = "bookwyrm.views.server_error_page"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
