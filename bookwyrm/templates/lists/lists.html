@@ -1,17 +1,19 @@
 {% extends 'layout.html' %}
+{% load bookwyrm_tags %}
 {% load i18n %}
 
 {% block title %}{% trans "Lists" %}{% endblock %}
 
 {% block content %}
 
-<header class="block">
-    <h1 class="title">{% trans "Lists" %}</h1>
-</header>
-{% if request.user.is_authenticated and not lists.has_previous %}
 <header class="block columns is-mobile">
     <div class="column">
-        <h2 class="title">{% trans "Your lists" %}</h2>
+        <h1 class="title">
+            {% trans "Lists" %}
+            {% if request.user.is_authenticated %}
+            <a class="help has-text-weight-normal" href="{% url 'user-lists' request.user|username %}">Your lists</a>
+            {% endif %}
+        </h1>
     </div>
     <div class="column is-narrow">
         {% trans "Create List" as button_text %}
@@ -23,23 +25,11 @@
     {% include 'lists/create_form.html' with controls_text="create-list" %}
 </div>
 
-<section class="block content">
-    {% if request.user.list_set.exists %}
-    {% include 'lists/list_items.html' with lists=request.user.list_set.all|slice:4 %}
-    {% endif %}
-
-    {% if request.user.list_set.count > 4 %}
-    <a href="{% url 'user-lists' request.user.localname %}">{% blocktrans with size=request.user.list_set.count %}See all {{ size }} lists{% endblocktrans %}</a>
-    {% endif %}
-</section>
-{% endif %}
-
-
 {% if lists %}
 <section class="block content">
-    <h2 class="title">{% trans "Recent Lists" %}</h2>
     {% include 'lists/list_items.html' with lists=lists %}
 </section>
+
 <div>
     {% include 'snippets/pagination.html' with page=lists path=path %}
 </div>

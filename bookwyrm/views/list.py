@@ -27,17 +27,17 @@ class Lists(View):
         except ValueError:
             page = 1
 
-        user = request.user if request.user.is_authenticated else None
         # hide lists with no approved books
         lists = (
-            models.List.objects.filter(
-                ~Q(user=user),
+            models.List.objects.annotate(
+                item_count=Count("listitem", filter=Q(listitem__approved=True))
             )
-            .annotate(item_count=Count("listitem", filter=Q(listitem__approved=True)))
             .filter(item_count__gt=0)
+            .order_by("-updated_date")
             .distinct()
             .all()
         )
+
         lists = privacy_filter(
             request.user, lists, privacy_levels=["public", "followers"]
         )
