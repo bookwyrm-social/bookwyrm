@@ -7,7 +7,8 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.importers import importer, LibrarythingImporter
+from bookwyrm.importers import LibrarythingImporter
+from bookwyrm.importers.importer import import_data, handle_imported_book
 from bookwyrm.settings import DOMAIN
 
 
@@ -17,7 +18,7 @@ class LibrarythingImport(TestCase):
     def setUp(self):
         """ use a test tsv """
         self.importer = LibrarythingImporter()
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
 
         # Librarything generates latin encoded exports...
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
@@ -87,8 +88,8 @@ class LibrarythingImport(TestCase):
             "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
         ) as resolve:
             resolve.return_value = book
-            with patch("bookwyrm.importer.handle_imported_book"):
-                importer.import_data(self.importer.service, import_job.id)
+            with patch("bookwyrm.importers.importer.handle_imported_book"):
+                import_data(self.importer.service, import_job.id)
 
         import_item = models.ImportItem.objects.get(job=import_job, index=0)
         self.assertEqual(import_item.book.id, book.id)
@@ -99,7 +100,7 @@ class LibrarythingImport(TestCase):
         self.assertIsNone(shelf.books.first())
 
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
         for index, entry in enumerate(
             list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))
@@ -111,7 +112,7 @@ class LibrarythingImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -135,7 +136,7 @@ class LibrarythingImport(TestCase):
             models.ShelfBook.objects.create(shelf=shelf, user=self.user, book=self.book)
 
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
         for index, entry in enumerate(
             list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))
@@ -147,7 +148,7 @@ class LibrarythingImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -167,7 +168,7 @@ class LibrarythingImport(TestCase):
         """ re-importing books """
         shelf = self.user.shelf_set.filter(identifier="read").first()
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
         for index, entry in enumerate(
             list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))
@@ -179,10 +180,10 @@ class LibrarythingImport(TestCase):
             break
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "public"
             )
 
@@ -203,7 +204,7 @@ class LibrarythingImport(TestCase):
     def test_handle_imported_book_review(self, _):
         """ librarything review import """
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
         entry = list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))[0]
         entry = self.importer.parse_fields(entry)
@@ -212,7 +213,7 @@ class LibrarythingImport(TestCase):
         )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, True, "unlisted"
             )
         review = models.Review.objects.get(book=self.book, user=self.user)
@@ -226,7 +227,7 @@ class LibrarythingImport(TestCase):
     def test_handle_imported_book_reviews_disabled(self):
         """ librarything review import """
         import_job = models.ImportJob.objects.create(user=self.user)
-        datafile = pathlib.Path(__file__).parent.joinpath("data/librarything.tsv")
+        datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
         entry = list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))[2]
         entry = self.importer.parse_fields(entry)
@@ -235,7 +236,7 @@ class LibrarythingImport(TestCase):
         )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            importer.handle_imported_book(
+            handle_imported_book(
                 self.importer.service, self.user, import_item, False, "unlisted"
             )
         self.assertFalse(
