@@ -31,7 +31,7 @@ class Importer:
             self.save_item(job, index, entry)
         return job
 
-    def save_item(self, job, index, data):# pylint: disable=no-self-use
+    def save_item(self, job, index, data):  # pylint: disable=no-self-use
         """ creates and saves an import item """
         ImportItem(job=job, index=index, data=data).save()
 

@@ -3,8 +3,8 @@ from bookwyrm.importer import Importer
 
 
 class GoodreadsImporter(Importer):
-    """ GoodReads is the default importer, thus Importer follows its structure.
-    For a more complete example of overriding see librarything_import.py """
+    """GoodReads is the default importer, thus Importer follows its structure.
+    For a more complete example of overriding see librarything_import.py"""
 
     service = "GoodReads"
 
