@@ -4,7 +4,7 @@
 {% block panel %}
 <div class="block">
     <h2 class="title is-4">{% trans "What are you reading?" %}</h2>
-    <form class="field has-addons" method="get" action="{% url 'get-started' %}">
+    <form class="field has-addons" method="get" action="{% url 'get-started-books' %}">
         <div class="control">
             <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a book' %}" aria-lable="{% trans 'Search for a book' %}">
             {% if request.GET.query and not book_results %}

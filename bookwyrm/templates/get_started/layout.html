@@ -19,10 +19,12 @@
         </section>
 
         <footer class="modal-card-foot is-flex is-justify-content-flex-end">
-            <a href="{{ next }}" class="button">
+            {% if next %}
+            <a href="{% url next %}" class="button">
                 <span>{% trans "Skip this step" %}</span>
                 <span class="icon icon-arrow-right" aria-hidden="true"></span>
             </a>
+            {% endif %}
         </footer>
     </div>
     <a href="/" class="modal-close is-large" aria-label="close"></a>

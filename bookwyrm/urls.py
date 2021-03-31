@@ -110,7 +110,21 @@ urlpatterns = [
     re_path(r"^notifications/?$", views.Notifications.as_view()),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
     # Get started
-    re_path(r"^get-started/?$", views.GetStarted.as_view(), name="get-started"),
+    re_path(
+        r"^get-started/?$",
+        views.GetStartedProfile.as_view(),
+        name="get-started-profile",
+    ),
+    re_path(
+        r"^get-started/books/?$",
+        views.GetStartedBooks.as_view(),
+        name="get-started-books",
+    ),
+    re_path(
+        r"^get-started/users/?$",
+        views.GetStartedUsers.as_view(),
+        name="get-started-users",
+    ),
     # feeds
     re_path(r"^(?P<tab>home|local|federated)/?$", views.Feed.as_view()),
     re_path(

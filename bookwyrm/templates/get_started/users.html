@@ -1,0 +1,11 @@
+{% extends 'get_started/layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Who to follow" %}</h2>
+
+    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+</div>
+{% endblock %}
+
