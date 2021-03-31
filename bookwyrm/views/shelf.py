@@ -1,4 +1,6 @@
 """ shelf views"""
+from collections import namedtuple
+
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -6,6 +8,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.http import require_POST
 
@@ -13,14 +16,14 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_edition, get_user_from_username
-from .helpers import handle_reading_status
+from .helpers import handle_reading_status, privacy_filter, object_visible_to_user
 
 
 # pylint: disable= no-self-use
 class Shelf(View):
     """ shelf page """
 
-    def get(self, request, username, shelf_identifier):
+    def get(self, request, username, shelf_identifier=None):
         """ display a shelf """
         try:
             user = get_user_from_username(request.user, username)
@@ -32,35 +35,30 @@ class Shelf(View):
         except ValueError:
             page = 1
 
+        shelves = privacy_filter(request.user, user.shelf_set)
+
+        # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
             shelf = user.shelf_set.get(identifier=shelf_identifier)
+            if not object_visible_to_user(request.user, shelf):
+                return HttpResponseNotFound()
+        # this is a constructed "all books" view, with a fake "shelf" obj
         else:
-            shelf = user.shelf_set.first()
+            FakeShelf = namedtuple(
+                "Shelf", ("identifier", "name", "user", "books", "privacy")
+            )
+            books = models.Edition.objects.filter(
+                shelfbook__shelf__in=shelves.all()
+            ).distinct()
+            shelf = FakeShelf("all", _("All books"), user, books, "public")
 
         is_self = request.user == user
-
-        shelves = user.shelf_set
-        if not is_self:
-            follower = user.followers.filter(id=request.user.id).exists()
-            # make sure the user has permission to view the shelf
-            if shelf.privacy == "direct" or (
-                shelf.privacy == "followers" and not follower
-            ):
-                return HttpResponseNotFound()
-
-            # only show other shelves that should be visible
-            if follower:
-                shelves = shelves.filter(privacy__in=["public", "followers"])
-            else:
-                shelves = shelves.filter(privacy="public")
 
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         paginated = Paginator(
-            models.ShelfBook.objects.filter(user=user, shelf=shelf)
-            .order_by("-updated_date")
-            .all(),
+            shelf.books.order_by("-updated_date").all(),
             PAGE_LENGTH,
         )
 
@@ -93,11 +91,6 @@ class Shelf(View):
             return redirect(shelf.local_path)
         shelf = form.save()
         return redirect(shelf.local_path)
-
-
-def user_shelves_page(request, username):
-    """ default shelf """
-    return Shelf.as_view()(request, username, None)
 
 
 @login_required
@@ -176,7 +169,8 @@ def shelve(request):
             models.ShelfBook.objects.create(
                 book=book, shelf=desired_shelf, user=request.user
             )
-        # The book is already on this shelf. Might be good to alert, or reject the action?
+        # The book is already on this shelf.
+        # Might be good to alert, or reject the action?
         except IntegrityError:
             pass
     return redirect(request.headers.get("Referer", "/"))

@@ -3,14 +3,14 @@
 {% load humanize %}
 {% load i18n %}
 
+{% block title %}
+{% include 'user/books_header.html' %}
+{% endblock %}
+
 {% block header %}
 <header class="columns">
     <h1 class="title">
-        {% if is_self %}
-        {% trans "Your Shelves" %}
-        {% else %}
-        {% blocktrans with username=user.display_name %}{{ username }}: Shelves{% endblocktrans %}
-        {% endif %}
+        {% include 'user/books_header.html' %}
     </h1>
 </header>
 {% endblock %}
@@ -20,10 +20,13 @@
     <div class="column">
         <div class="tabs">
             <ul>
+            <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
+                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>{% trans "All books" %}</a>
+            </li>
             {% for shelf_tab in shelves %}
             <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
-                </li>
+                <a href="{{ shelf_tab.local_path }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
+            </li>
             {% endfor %}
             </ul>
         </div>
@@ -50,7 +53,7 @@
             </span>
         </h2>
     </div>
-    {% if is_self %}
+    {% if is_self and shelf.id %}
     <div class="column is-narrow">
         {% trans "Edit shelf" as button_text %}
         {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
@@ -81,7 +84,6 @@
             {% endif %}
         </tr>
         {% for book in books %}
-        {% with book=book.book %}
         <tr class="book-preview">
             <td>
                 <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
@@ -113,13 +115,12 @@
             </td>
             {% endif %}
         </tr>
-        {% endwith %}
         {% endfor %}
         </table>
         </div>
         {% else %}
         <p>{% trans "This shelf is empty." %}</p>
-        {% if shelf.editable %}
+        {% if shelf.id and shelf.editable %}
         <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
             {% csrf_token %}
             <input type="hidden" name="user" value="{{ request.user.id }}">
