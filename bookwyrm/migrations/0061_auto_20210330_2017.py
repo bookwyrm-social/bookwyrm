@@ -21,5 +21,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(delete_statuses),
+        migrations.RunPython(delete_statuses, lambda x, y: None),
     ]
