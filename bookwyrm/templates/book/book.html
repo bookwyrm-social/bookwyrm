@@ -165,32 +165,11 @@
                 {% include 'snippets/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
-            {% endif %}
 
-            {% if request.user.is_authenticated %}
             <section class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </section>
-
-            <section class="block">
-                <form name="tag" action="/tag/" method="post">
-                    <label for="tags" class="is-3">{% trans "Tags" %}</label>
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    <input id="tags" class="input" type="text" name="name">
-                    <button class="button" type="submit">{% trans "Add tag" %}</button>
-                </form>
-            </section>
             {% endif %}
-
-            <div class="block">
-                <div class="field is-grouped is-grouped-multiline">
-                {% for tag in tags %}
-                    {% include 'snippets/tag.html' with book=book tag=tag user_tags=user_tags %}
-                {% endfor %}
-                </div>
-            </div>
-
         </div>
         <div class="column is-one-fifth">
             {% if book.subjects %}
