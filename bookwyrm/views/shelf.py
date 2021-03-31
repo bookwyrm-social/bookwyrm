@@ -102,7 +102,7 @@ def create_shelf(request):
         return redirect(request.headers.get("Referer", "/"))
 
     shelf = form.save()
-    return redirect("/user/%s/shelf/%s" % (request.user.localname, shelf.identifier))
+    return redirect(shelf.local_path)
 
 
 @login_required
@@ -114,7 +114,7 @@ def delete_shelf(request, shelf_id):
         return HttpResponseBadRequest()
 
     shelf.delete()
-    return redirect("/user/%s/shelves" % request.user.localname)
+    return redirect("user-shelves", request.user.localname)
 
 
 @login_required

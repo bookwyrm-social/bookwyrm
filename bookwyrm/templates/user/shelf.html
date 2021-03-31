@@ -111,7 +111,12 @@
             {% endif %}
             {% if shelf.user == request.user %}
             <td>
-                {% include 'snippets/shelf_selector.html' with current=shelf %}
+                {% if not shelf.id %}
+                {% active_shelf book as current %}
+                {% include 'snippets/shelf_selector.html' with current=current.shelf class="is-small" %}
+                {% else %}
+                {% include 'snippets/shelf_selector.html' with current=shelf class="is-small" %}
+                {% endif %}
             </td>
             {% endif %}
         </tr>
