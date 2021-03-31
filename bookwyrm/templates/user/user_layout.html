@@ -42,7 +42,7 @@
     {% endif %}
 </div>
 {% with user|username as username %}
-{% if 'user/'|add:username|add:'/shelf' not in request.path  and 'user/'|add:username|add:'/shelves' not in request.path %}
+{% if 'user/'|add:username|add:'/books' not in request.path %}
 <nav class="tabs">
     <ul>
         {% url 'user-feed' user|username as url %}

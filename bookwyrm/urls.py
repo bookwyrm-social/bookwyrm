@@ -138,16 +138,8 @@ urlpatterns = [
         views.Following.as_view(),
         name="user-following",
     ),
-    re_path(r"%s/shelves/?$" % user_path, views.user_shelves_page, name="user-shelves"),
-    re_path(r"%s/lists/?$" % user_path, views.UserLists.as_view(), name="user-lists"),
-    # goals
-    re_path(
-        r"%s/goal/(?P<year>\d{4})/?$" % user_path,
-        views.Goal.as_view(),
-        name="user-goal",
-    ),
-    re_path(r"^hide-goal/?$", views.hide_goal, name="hide-goal"),
     # lists
+    re_path(r"%s/lists/?$" % user_path, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
     re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
@@ -159,6 +151,28 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
+    # shelf
+    re_path(r"%s/books/?$" % user_path, views.user_shelves_page, name="user-shelves"),
+    re_path(
+        r"^%s/books/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
+        views.Shelf.as_view(),
+        name="shelf",
+    ),
+    re_path(
+        r"^%s/books/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
+        views.Shelf.as_view(),
+    ),
+    re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
+    re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),
+    re_path(r"^shelve/?$", views.shelve),
+    re_path(r"^unshelve/?$", views.unshelve),
+    # goals
+    re_path(
+        r"%s/goal/(?P<year>\d{4})/?$" % user_path,
+        views.Goal.as_view(),
+        name="user-goal",
+    ),
+    re_path(r"^hide-goal/?$", views.hide_goal, name="hide-goal"),
     # preferences
     re_path(r"^preferences/profile/?$", views.EditUser.as_view(), name="prefs-profile"),
     re_path(r"^preferences/password/?$", views.ChangePassword.as_view()),
@@ -199,20 +213,6 @@ urlpatterns = [
     re_path(r"^tag/(?P<tag_id>.+)/?$", views.Tag.as_view()),
     re_path(r"^tag/?$", views.AddTag.as_view()),
     re_path(r"^untag/?$", views.RemoveTag.as_view()),
-    # shelf
-    re_path(
-        r"^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
-        views.Shelf.as_view(),
-        name="shelf",
-    ),
-    re_path(
-        r"^%s/shelf/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
-        views.Shelf.as_view(),
-    ),
-    re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
-    re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),
-    re_path(r"^shelve/?$", views.shelve),
-    re_path(r"^unshelve/?$", views.unshelve),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
