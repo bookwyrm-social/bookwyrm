@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load humanize %}
+
+{% block title %}{% trans "Welcome" %}{% endblock %}
+
+{% block content %}
+{% with site_name=site.name %}
+<div class="modal is-active" role="dialog" aria-modal="true">
+    <div class="modal-background"></div>
+    <div class="modal-card is-fullwidth">
+        <header class="modal-card-head">
+            <h1 class="modal-card-title">
+                {% trans "Getting Started" %}
+            </h1>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <div class="block">
+                <h2 class="title is-4">{% trans "What are you reading?" %}</h2>
+                <form class="field has-addons" method="get" action="{% url 'get-started' %}">
+                    <div class="control">
+                        <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a book' %}" aria-lable="{% trans 'Search for a book' %}">
+                        {% if request.GET.query and not book_results %}
+                        <p class="help">{% blocktrans %}Sorry, books were found. You can add books when you start using {{ site_name }}{% endblocktrans %}</p>
+                        {% endif %}
+                    </div>
+                    <div class="control">
+                        <button class="button" type="submit">
+                            <span class="icon icon-search" title="{% trans 'Search' %}">
+                                <span class="is-sr-only">{% trans "Search" %}</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <form class="block">
+                <h3 class="title is-5">{% trans "Suggested Books" %}</h3>
+                <div class="columns scroll-x">
+                    {% if book_results %}
+                    <div class="column is-narrow content">
+                        <p class="help mb-0">Search results</p>
+                        <div class="columns">
+                            {% for book in book_results %}
+                            <div class="column is-narrow is-clipped">
+                                {% include 'snippets/book_cover.html' with book=book %}
+                                <div class="select is-small">
+                                    <select>
+                                        <option>-</option>
+                                        {% for shelf in request.user.shelf_set.all %}
+                                        <option>{{ shelf.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="column is-narrow content">
+                        <p class="help mb-0">
+                            {% blocktrans %}Popular on {{ site_name }}{% endblocktrans %}
+                        </p>
+                        <div class="columns">
+                            {% for book in popular_books %}
+                            <div class="column is-narrow is-clipped">
+                                {% include 'snippets/book_cover.html' with book=book %}
+                                <div class="select is-small">
+                                    <select>
+                                        <option>-</option>
+                                        {% for shelf in request.user.shelf_set.all %}
+                                        <option>{{ shelf.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+            </form>
+        </section>
+
+        <footer class="modal-card-foot is-flex is-justify-content-flex-end">
+            <button class="button">
+                <span>{% trans "Skip this step" %}</span>
+                <span class="icon icon-arrow-right" aria-hidden="true"></span>
+            </button>
+        </footer>
+    </div>
+    <a href="/" class="modal-close is-large" aria-label="close"></a>
+</div>
+{% endwith %}
+{% endblock %}
+
