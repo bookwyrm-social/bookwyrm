@@ -1,5 +1,6 @@
 {% extends 'user/user_layout.html' %}
 {% load i18n %}
+{% load bookwyrm_tags %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -43,7 +44,7 @@
         </div>
         {% endfor %}
     </div>
-    <small><a href="{{ user.local_path }}/shelves">{% trans "View all books" %}</a></small>
+    <small><a href="{% url 'user-shelves' user|username %}">{% trans "View all books" %}</a></small>
 </div>
 {% endif %}
 

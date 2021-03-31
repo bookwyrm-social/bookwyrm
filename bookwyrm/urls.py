@@ -161,7 +161,7 @@ urlpatterns = [
     re_path(
         r"^%s/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
         views.Shelf.as_view(),
-        name="shelf"
+        name="shelf",
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
     re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),
