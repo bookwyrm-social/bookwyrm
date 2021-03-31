@@ -1,0 +1,6 @@
+{% load i18n %}
+{% if is_self %}
+{% trans "Your books" %}
+{% else %}
+{% blocktrans with username=user.display_name %}{{ username }}'s books{% endblocktrans %}
+{% endif %}

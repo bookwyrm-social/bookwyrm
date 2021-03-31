@@ -49,7 +49,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     def get_remote_id(self):
         """ shelf identifier instead of id """
         base_path = self.user.remote_id
-        return "%s/shelf/%s" % (base_path, self.identifier)
+        return "%s/books/%s" % (base_path, self.identifier)
 
     class Meta:
         """ user/shelf unqiueness """

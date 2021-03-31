@@ -27,7 +27,7 @@ class Shelf(TestCase):
         shelf = models.Shelf.objects.create(
             name="Test Shelf", identifier="test-shelf", user=self.local_user
         )
-        expected_id = "https://%s/user/mouse/shelf/test-shelf" % settings.DOMAIN
+        expected_id = "https://%s/user/mouse/books/test-shelf" % settings.DOMAIN
         self.assertEqual(shelf.get_remote_id(), expected_id)
         models.Shelf.broadcast = real_broadcast
 
