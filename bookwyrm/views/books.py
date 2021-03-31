@@ -289,18 +289,19 @@ def upload_cover(request, book_id):
     url = request.POST.get("cover-url")
     if url:
         image = set_cover_from_url(url)
-        book.cover.save(*image)
+        if image:
+            book.cover.save(*image)
 
-        return redirect("/book/%d" % book.id)
+        return redirect("{:s}?cover_error=True".format(book.local_path))
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid() or not form.files.get("cover"):
-        return redirect("/book/%d" % book.id)
+        return redirect(book.local_path)
 
     book.cover = form.files["cover"]
     book.save()
 
-    return redirect("/book/%s" % book.id)
+    return redirect(book.local_path)
 
 
 def set_cover_from_url(url):
