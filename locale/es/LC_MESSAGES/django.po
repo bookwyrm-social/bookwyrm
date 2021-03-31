@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-31 09:22-0700\n"
+"POT-Creation-Date: 2021-03-31 10:36-0700\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -413,7 +413,7 @@ msgid "John Doe, Jane Smith"
 msgstr ""
 
 #: bookwyrm/templates/book/edit_book.html:155
-#: bookwyrm/templates/user/shelf.html:72
+#: bookwyrm/templates/user/shelf.html:75
 msgid "Cover"
 msgstr "Portada:"
 
@@ -857,18 +857,18 @@ msgid "There are no books here right now! Try searching for a book to get starte
 msgstr "¡No hay ningún libro aqui ahorita! Busca a un libro para empezar"
 
 #: bookwyrm/templates/feed/feed_layout.html:23
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "To Read"
 msgstr "Para leer"
 
 #: bookwyrm/templates/feed/feed_layout.html:24
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "Currently Reading"
 msgstr "Leyendo actualmente"
 
 #: bookwyrm/templates/feed/feed_layout.html:25
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "Read"
 msgstr "Leer"
 
@@ -996,12 +996,12 @@ msgstr "Libro"
 
 #: bookwyrm/templates/import_status.html:115
 #: bookwyrm/templates/snippets/create_status_form.html:10
-#: bookwyrm/templates/user/shelf.html:73
+#: bookwyrm/templates/user/shelf.html:76
 msgid "Title"
 msgstr "Título"
 
 #: bookwyrm/templates/import_status.html:118
-#: bookwyrm/templates/user/shelf.html:74
+#: bookwyrm/templates/user/shelf.html:77
 msgid "Author"
 msgstr "Autor/Autora"
 
@@ -2023,7 +2023,7 @@ msgid "Review:"
 msgstr "Reseña"
 
 #: bookwyrm/templates/snippets/create_status_form.html:29
-#: bookwyrm/templates/user/shelf.html:78
+#: bookwyrm/templates/user/shelf.html:81
 msgid "Rating"
 msgstr "Calificación"
 
@@ -2493,7 +2493,8 @@ msgid "Update shelf"
 msgstr "Actualizar estante"
 
 #: bookwyrm/templates/user/followers.html:7
-#: bookwyrm/templates/user/following.html:7 bookwyrm/templates/user/user.html:9
+#: bookwyrm/templates/user/following.html:7
+#: bookwyrm/templates/user/user.html:10
 msgid "User Profile"
 msgstr "Perfil de usuario"
 
@@ -2524,62 +2525,68 @@ msgstr "Listas: %(username)s"
 msgid "Create list"
 msgstr "Crear lista"
 
-#: bookwyrm/templates/user/shelf.html:34
+#: bookwyrm/templates/user/shelf.html:24 bookwyrm/views/shelf.py:53
+#, fuzzy
+#| msgid "books"
+msgid "All books"
+msgstr "libros"
+
+#: bookwyrm/templates/user/shelf.html:37
 msgid "Create shelf"
 msgstr "Crear estante"
 
-#: bookwyrm/templates/user/shelf.html:55
+#: bookwyrm/templates/user/shelf.html:58
 msgid "Edit shelf"
 msgstr "Editar estante"
 
-#: bookwyrm/templates/user/shelf.html:75
+#: bookwyrm/templates/user/shelf.html:78
 msgid "Shelved"
 msgstr "Archivado"
 
-#: bookwyrm/templates/user/shelf.html:76
+#: bookwyrm/templates/user/shelf.html:79
 msgid "Started"
 msgstr "Empezado"
 
-#: bookwyrm/templates/user/shelf.html:77
+#: bookwyrm/templates/user/shelf.html:80
 msgid "Finished"
 msgstr "Terminado"
 
-#: bookwyrm/templates/user/shelf.html:121
+#: bookwyrm/templates/user/shelf.html:122
 msgid "This shelf is empty."
 msgstr "Este estante está vacio."
 
-#: bookwyrm/templates/user/shelf.html:127
+#: bookwyrm/templates/user/shelf.html:128
 msgid "Delete shelf"
 msgstr "Eliminar estante"
 
-#: bookwyrm/templates/user/user.html:15
+#: bookwyrm/templates/user/user.html:16
 msgid "Edit profile"
 msgstr "Editar perfil"
 
-#: bookwyrm/templates/user/user.html:33
+#: bookwyrm/templates/user/user.html:34
 #, fuzzy, python-format
 #| msgid "See all %(size)s"
 msgid "View all %(size)s"
 msgstr "Ver %(size)s"
 
-#: bookwyrm/templates/user/user.html:46
+#: bookwyrm/templates/user/user.html:47
 msgid "View all books"
 msgstr ""
 
-#: bookwyrm/templates/user/user.html:58
+#: bookwyrm/templates/user/user.html:59
 #, python-format
 msgid "Set a reading goal for %(year)s"
 msgstr "Establecer una meta de lectura para %(year)s"
 
-#: bookwyrm/templates/user/user.html:64
+#: bookwyrm/templates/user/user.html:65
 msgid "User Activity"
 msgstr "Actividad de usuario"
 
-#: bookwyrm/templates/user/user.html:67
+#: bookwyrm/templates/user/user.html:68
 msgid "RSS feed"
 msgstr "Feed RSS"
 
-#: bookwyrm/templates/user/user.html:78
+#: bookwyrm/templates/user/user.html:79
 msgid "No activities yet!"
 msgstr "¡Aún no actividades!"
 

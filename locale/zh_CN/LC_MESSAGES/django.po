@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-31 09:22-0700\n"
+"POT-Creation-Date: 2021-03-31 10:36-0700\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -397,7 +397,7 @@ msgid "John Doe, Jane Smith"
 msgstr "张三, 李四"
 
 #: bookwyrm/templates/book/edit_book.html:155
-#: bookwyrm/templates/user/shelf.html:72
+#: bookwyrm/templates/user/shelf.html:75
 msgid "Cover"
 msgstr "封面"
 
@@ -838,18 +838,18 @@ msgid "There are no books here right now! Try searching for a book to get starte
 msgstr "现在这里还没有任何书目！尝试着从搜索某本书开始吧"
 
 #: bookwyrm/templates/feed/feed_layout.html:23
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "To Read"
 msgstr "想读"
 
 #: bookwyrm/templates/feed/feed_layout.html:24
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "Currently Reading"
 msgstr "在读"
 
 #: bookwyrm/templates/feed/feed_layout.html:25
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
-#: bookwyrm/templates/user/shelf.html:25
+#: bookwyrm/templates/user/shelf.html:28
 msgid "Read"
 msgstr "读过"
 
@@ -977,12 +977,12 @@ msgstr "书目"
 
 #: bookwyrm/templates/import_status.html:115
 #: bookwyrm/templates/snippets/create_status_form.html:10
-#: bookwyrm/templates/user/shelf.html:73
+#: bookwyrm/templates/user/shelf.html:76
 msgid "Title"
 msgstr "标题"
 
 #: bookwyrm/templates/import_status.html:118
-#: bookwyrm/templates/user/shelf.html:74
+#: bookwyrm/templates/user/shelf.html:77
 msgid "Author"
 msgstr "作者"
 
@@ -1992,7 +1992,7 @@ msgid "Review:"
 msgstr "书评"
 
 #: bookwyrm/templates/snippets/create_status_form.html:29
-#: bookwyrm/templates/user/shelf.html:78
+#: bookwyrm/templates/user/shelf.html:81
 msgid "Rating"
 msgstr "评价"
 
@@ -2450,7 +2450,8 @@ msgid "Update shelf"
 msgstr "更新书架"
 
 #: bookwyrm/templates/user/followers.html:7
-#: bookwyrm/templates/user/following.html:7 bookwyrm/templates/user/user.html:9
+#: bookwyrm/templates/user/following.html:7
+#: bookwyrm/templates/user/user.html:10
 msgid "User Profile"
 msgstr "用户个人资料"
 
@@ -2481,62 +2482,68 @@ msgstr "列表: %(username)s"
 msgid "Create list"
 msgstr "创建列表"
 
-#: bookwyrm/templates/user/shelf.html:34
+#: bookwyrm/templates/user/shelf.html:24 bookwyrm/views/shelf.py:53
+#, fuzzy
+#| msgid "books"
+msgid "All books"
+msgstr "书目"
+
+#: bookwyrm/templates/user/shelf.html:37
 msgid "Create shelf"
 msgstr "创建书架"
 
-#: bookwyrm/templates/user/shelf.html:55
+#: bookwyrm/templates/user/shelf.html:58
 msgid "Edit shelf"
 msgstr "编辑书架"
 
-#: bookwyrm/templates/user/shelf.html:75
+#: bookwyrm/templates/user/shelf.html:78
 msgid "Shelved"
 msgstr "已上架"
 
-#: bookwyrm/templates/user/shelf.html:76
+#: bookwyrm/templates/user/shelf.html:79
 msgid "Started"
 msgstr "已开始"
 
-#: bookwyrm/templates/user/shelf.html:77
+#: bookwyrm/templates/user/shelf.html:80
 msgid "Finished"
 msgstr "已完成"
 
-#: bookwyrm/templates/user/shelf.html:121
+#: bookwyrm/templates/user/shelf.html:122
 msgid "This shelf is empty."
 msgstr "此书架是空的。"
 
-#: bookwyrm/templates/user/shelf.html:127
+#: bookwyrm/templates/user/shelf.html:128
 msgid "Delete shelf"
 msgstr "删除书架"
 
-#: bookwyrm/templates/user/user.html:15
+#: bookwyrm/templates/user/user.html:16
 msgid "Edit profile"
 msgstr "编辑个人资料"
 
-#: bookwyrm/templates/user/user.html:33
+#: bookwyrm/templates/user/user.html:34
 #, fuzzy, python-format
 #| msgid "See all %(size)s"
 msgid "View all %(size)s"
 msgstr "查看所有 %(size)s 本"
 
-#: bookwyrm/templates/user/user.html:46
+#: bookwyrm/templates/user/user.html:47
 msgid "View all books"
 msgstr ""
 
-#: bookwyrm/templates/user/user.html:58
+#: bookwyrm/templates/user/user.html:59
 #, python-format
 msgid "Set a reading goal for %(year)s"
 msgstr "设定 %(year)s 的阅读目标"
 
-#: bookwyrm/templates/user/user.html:64
+#: bookwyrm/templates/user/user.html:65
 msgid "User Activity"
 msgstr "用户活动"
 
-#: bookwyrm/templates/user/user.html:67
+#: bookwyrm/templates/user/user.html:68
 msgid "RSS feed"
 msgstr "RSS 流"
 
-#: bookwyrm/templates/user/user.html:78
+#: bookwyrm/templates/user/user.html:79
 msgid "No activities yet!"
 msgstr "还没有活动！"
 
