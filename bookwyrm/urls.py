@@ -154,13 +154,14 @@ urlpatterns = [
     # shelf
     re_path(r"%s/books/?$" % user_path, views.user_shelves_page, name="user-shelves"),
     re_path(
-        r"^%s/books/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
+        r"^%s/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
         views.Shelf.as_view(),
         name="shelf",
     ),
     re_path(
-        r"^%s/books/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
+        r"^%s/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
         views.Shelf.as_view(),
+        name="shelf"
     ),
     re_path(r"^create-shelf/?$", views.create_shelf, name="shelf-create"),
     re_path(r"^delete-shelf/(?P<shelf_id>\d+)?$", views.delete_shelf),

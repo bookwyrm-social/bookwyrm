@@ -22,7 +22,7 @@
             <ul>
             {% for shelf_tab in shelves %}
             <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
-                <a href="/user/{{ user | username }}/shelf/{{ shelf_tab.identifier }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
+                <a href="{{ shelf_tab.local_path }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
                 </li>
             {% endfor %}
             </ul>
