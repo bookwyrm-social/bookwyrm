@@ -7,6 +7,7 @@ html {
 .image {
     overflow: hidden;
 }
+
 .navbar .logo {
     max-height: 50px;
 }
@@ -21,25 +22,33 @@ html {
 }
 
 /* --- SHELVING --- */
+
+/** @todo Replace icons with SVG symbols.
+    @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
 .shelf-option:disabled > *::after {
-    font-family: "icomoon";
+    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
     content: "\e918";
     margin-left: 0.5em;
 }
 
 /* --- TOGGLES --- */
-.toggle-button[aria-pressed=true], .toggle-button[aria-pressed=true]:hover {
+.toggle-button[aria-pressed=true],
+.toggle-button[aria-pressed=true]:hover {
     background-color: hsl(171, 100%, 41%);
     color: white;
 }
-.hide-active[aria-pressed=true], .hide-inactive[aria-pressed=false] {
+
+.hide-active[aria-pressed=true],
+.hide-inactive[aria-pressed=false] {
     display: none;
 }
 
 .hidden {
     display: none !important;
 }
-.hidden.transition-y, .hidden.transition-x {
+
+.hidden.transition-y,
+.hidden.transition-x {
     display: block !important;
     visibility: hidden !important;
     height: 0;
@@ -47,18 +56,22 @@ html {
     margin: 0;
     padding: 0;
 }
+
 .transition-y {
     transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
     transition-duration: 0.5s;
     transition-timing-function: ease;
 }
+
 .transition-x {
     transition-property: width, margin-left, margin-right, padding-left, padding-right;
     transition-duration: 0.5s;
     transition-timing-function: ease;
 }
+
 @media (prefers-reduced-motion: reduce) {
-    .transition-x, .transition-y {
+    .transition-x,
+    .transition-y {
         transition-duration: 0.001ms !important;
     }
 }
@@ -71,36 +84,46 @@ html {
     margin: 0;
     display: inline;
 }
-.rate-stars:hover .icon:before {
+
+.rate-stars:hover .icon::before {
     content: '\e9d9';
 }
-.rate-stars form:hover ~ form .icon:before{
+
+.rate-stars form:hover ~ form .icon::before {
     content: '\e9d7';
 }
 
-/* stars in a review form */
-.form-rate-stars:hover .icon:before {
+/** stars in a review form
+ *
+ * @todo Simplify the logic for those icons.
+ */
+.form-rate-stars input + .icon.icon::before {
     content: '\e9d9';
 }
-.form-rate-stars input + .icon:before {
+
+.form-rate-stars:hover .icon.icon::before {
     content: '\e9d9';
 }
-.form-rate-stars input:checked + .icon:before {
+
+.form-rate-stars input:checked + .icon.icon::before {
     content: '\e9d9';
 }
-.form-rate-stars input:checked + * ~ .icon:before {
-    content: '\e9d7';
-}
-.form-rate-stars:hover label.icon:before {
-    content: '\e9d9';
-}
-.form-rate-stars label.icon:hover:before {
-    content: '\e9d9';
-}
-.form-rate-stars label.icon:hover ~ label.icon:before{
+
+.form-rate-stars input:checked + * ~ .icon.icon::before {
     content: '\e9d7';
 }
 
+.form-rate-stars:hover label.icon.icon::before {
+    content: '\e9d9';
+}
+
+.form-rate-stars label.icon:hover::before {
+    content: '\e9d9';
+}
+
+.form-rate-stars label.icon:hover ~ label.icon.icon::before {
+    content: '\e9d7';
+}
 
 /* --- BOOK COVERS --- */
 .cover-container {
@@ -108,46 +131,46 @@ html {
     width: max-content;
     max-width: 250px;
 }
+
 .cover-container.is-large {
     height: max-content;
     max-width: 330px;
 }
+
 .cover-container.is-large img {
     max-height: 500px;
     height: auto;
 }
+
 .cover-container.is-medium {
     height: 150px;
 }
+
 .cover-container.is-small {
     height: 100px;
 }
+
 @media only screen and (max-width: 768px) {
     .cover-container {
         height: 200px;
         width: max-content;
     }
+
     .cover-container.is-medium {
         height: 100px;
     }
 }
 
-.cover-container.is-medium .no-cover div {
-    font-size: 0.9em;
-    padding: 0.3em;
-}
-.cover-container.is-small .no-cover div {
-    font-size: 0.7em;
-    padding: 0.1em;
-}
 .book-cover {
     height: 100%;
     object-fit: scale-down;
 }
+
 .no-cover {
     position: relative;
     white-space: normal;
 }
+
 .no-cover div {
     position: absolute;
     padding: 1em;
@@ -157,38 +180,51 @@ html {
     text-align: center;
 }
 
+.cover-container.is-medium .no-cover div {
+    font-size: 0.9em;
+    padding: 0.3em;
+}
+
+.cover-container.is-small .no-cover div {
+    font-size: 0.7em;
+    padding: 0.1em;
+}
 
 /* --- AVATAR --- */
 .avatar {
     vertical-align: middle;
     display: inline;
 }
+
 .is-32x32 {
     min-width: 32px;
     min-height: 32px;
 }
+
 .is-96x96 {
     min-width: 96px;
     min-height: 96px;
 }
-
-
 
 /* --- QUOTES --- */
 .quote blockquote {
     position: relative;
     padding-left: 2em;
 }
-.quote blockquote:before, .quote blockquote:after {
+
+.quote blockquote::before,
+.quote blockquote::after {
     font-family: 'icomoon';
     position: absolute;
 }
-.quote blockquote:before {
+
+.quote blockquote::before {
     content: "\e906";
     top: 0;
     left: 0;
 }
-.quote blockquote:after {
+
+.quote blockquote::after {
     content: "\e905";
     right: 0;
 }

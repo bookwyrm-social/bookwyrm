@@ -12,7 +12,7 @@
     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
-        <input type="hidden" name="change-shelf-from" value={{ current.identifier }}>
+        <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
         <button class="button is-fullwidth is-small" type="submit">{{ shelf.name }}</button>
     </form>

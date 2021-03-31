@@ -1,3 +1,5 @@
+/* globals setDisplay TabGroup toggleAllCheckboxes updateDisplay */
+
 // set up javascript listeners
 window.onload = function() {
     // buttons that display or hide content
@@ -93,7 +95,7 @@ function toggleAction(e) {
 
     // show/hide container
     var container = document.getElementById('hide-' + targetId);
-    if (!!container) {
+    if (container) {
         addRemoveClass(container, 'hidden', pressed);
     }
 
