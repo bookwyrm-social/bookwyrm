@@ -151,8 +151,8 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
-    # shelf
-    re_path(r"%s/books/?$" % user_path, views.user_shelves_page, name="user-shelves"),
+    # Uyser books
+    re_path(r"%s/books/?$" % user_path, views.Shelf.as_view(), name="user-shelves"),
     re_path(
         r"^%s/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
         views.Shelf.as_view(),
