@@ -291,35 +291,18 @@ class ActivitypubMixins(TestCase):
         with self.assertRaises(Success):
             UpdateObjectModel(id=1, last_edited_by=self.local_user).save()
 
-    def test_object_save_delete(self, _):
-        """ should create delete activities when objects are deleted by flag """
-
-        class ActivitySuccess(Exception):
-            """ this means we got to the right method """
-
-        class DeletableObjectModel(ObjectMixin, base_model.BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
-
-            user = models.fields.ForeignKey("User", on_delete=db.models.CASCADE)
-            deleted = models.fields.BooleanField()
-
-            def save(self, *args, **kwargs):
-                with patch("django.db.models.Model.save"):
-                    super().save(*args, **kwargs)
-
-            def to_delete_activity(self, user):
-                raise ActivitySuccess()
-
-        with self.assertRaises(ActivitySuccess):
-            DeletableObjectModel(id=1, user=self.local_user, deleted=True).save()
-
     def test_to_delete_activity(self, _):
         """ wrapper for Delete activity """
-        MockSelf = namedtuple("Self", ("remote_id", "to_activity"))
-        mock_self = MockSelf(
-            "https://example.com/status/1", lambda *args: self.object_mock
+        MockSelf = namedtuple(
+            "Self", ("remote_id", "user", "to_activity", "to_activity_dataclass")
         )
-        activity = ObjectMixin.to_delete_activity(mock_self, self.local_user)
+        mock_self = MockSelf(
+            "https://example.com/status/1",
+            self.local_user,
+            lambda *args: self.object_mock,
+            lambda *args, **kwargs: self.object_mock,
+        )
+        activity = ObjectMixin.to_delete_activity(mock_self)
         self.assertEqual(activity["id"], "https://example.com/status/1/activity")
         self.assertEqual(activity["actor"], self.local_user.remote_id)
         self.assertEqual(activity["type"], "Delete")
@@ -343,19 +326,4 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(
             activity["to"], ["https://www.w3.org/ns/activitystreams#Public"]
         )
-        self.assertIsInstance(activity["object"], dict)
-
-    # Activity mixin
-    def test_to_undo_activity(self, _):
-        """ and again, for Undo """
-        MockSelf = namedtuple("Self", ("remote_id", "to_activity", "user"))
-        mock_self = MockSelf(
-            "https://example.com/status/1",
-            lambda *args: self.object_mock,
-            self.local_user,
-        )
-        activity = ActivityMixin.to_undo_activity(mock_self)
-        self.assertEqual(activity["id"], "https://example.com/status/1#undo")
-        self.assertEqual(activity["actor"], self.local_user.remote_id)
-        self.assertEqual(activity["type"], "Undo")
         self.assertIsInstance(activity["object"], dict)

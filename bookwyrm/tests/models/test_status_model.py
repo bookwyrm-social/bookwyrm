@@ -114,20 +114,6 @@ class Status(TestCase):
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["sensitive"], False)
 
-    def test_status_to_activity_tombstone(self, *_):
-        """ subclass of the base model version with a "pure" serializer """
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_status"):
-            status = models.Status.objects.create(
-                content="test content",
-                user=self.local_user,
-                deleted=True,
-                deleted_date=timezone.now(),
-            )
-        activity = status.to_activity()
-        self.assertEqual(activity["id"], status.remote_id)
-        self.assertEqual(activity["type"], "Tombstone")
-        self.assertFalse(hasattr(activity, "content"))
-
     def test_status_to_pure_activity(self, *_):
         """ subclass of the base model version with a "pure" serializer """
         status = models.Status.objects.create(

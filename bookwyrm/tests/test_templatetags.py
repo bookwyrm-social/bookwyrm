@@ -85,19 +85,11 @@ class TemplateTags(TestCase):
             second_child = models.Status.objects.create(
                 reply_parent=parent, user=self.user, content="hi"
             )
-            with patch("bookwyrm.activitystreams.ActivityStream.remove_status"):
-                third_child = models.Status.objects.create(
-                    reply_parent=parent,
-                    user=self.user,
-                    deleted=True,
-                    deleted_date=timezone.now(),
-                )
 
         replies = bookwyrm_tags.get_replies(parent)
         self.assertEqual(len(replies), 2)
         self.assertTrue(first_child in replies)
         self.assertTrue(second_child in replies)
-        self.assertFalse(third_child in replies)
 
     def test_get_parent(self, _):
         """ get the reply parent of a status """

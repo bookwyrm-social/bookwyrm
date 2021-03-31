@@ -17,7 +17,7 @@ def delete_statuses(app_registry, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0060_auto_20210330_1958'),
+        ("bookwyrm", "0060_auto_20210330_1958"),
     ]
 
     operations = [

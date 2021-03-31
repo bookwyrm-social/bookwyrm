@@ -49,7 +49,7 @@ class List(TestCase):
         self.assertEqual(add_activity["object"]["id"], book.remote_id)
         self.assertEqual(add_activity["target"], self.list.remote_id)
 
-        remove_activity = item.to_remove_activity()
+        remove_activity = item.to_delete_activity()
         self.assertEqual(remove_activity["actor"], self.user.remote_id)
         self.assertEqual(remove_activity["object"]["id"], book.remote_id)
         self.assertEqual(remove_activity["target"], self.list.remote_id)
