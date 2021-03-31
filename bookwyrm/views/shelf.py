@@ -44,11 +44,13 @@ class Shelf(View):
                 return HttpResponseNotFound()
         # this is a constructed "all books" view, with a fake "shelf" obj
         else:
-            FakeShelf = namedtuple("Shelf", ("identifier", "name", "user", "books"))
+            FakeShelf = namedtuple(
+                "Shelf", ("identifier", "name", "user", "books", "privacy")
+            )
             books = models.Edition.objects.filter(
                 shelfbook__shelf__in=shelves.all()
             ).distinct()
-            shelf = FakeShelf("all", _("All books"), user, books)
+            shelf = FakeShelf("all", _("All books"), user, books, "public")
 
         is_self = request.user == user
 
