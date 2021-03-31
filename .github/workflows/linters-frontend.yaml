@@ -1,0 +1,24 @@
+# @url https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: Frontend Linters
+
+on:
+  push:
+    branches: [ main, ci ]
+    paths:
+      - 'static/**'
+  pull_request:
+    branches: [ main, ci ]
+
+jobs:
+  linters:
+    name: linters
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: stylelinter
+        uses: actions-hub/stylelint@v1.1.3
+        env:
+          PATTERN: "*.css"
