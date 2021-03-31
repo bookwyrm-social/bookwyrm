@@ -45,7 +45,7 @@
             {% csrf_token %}
             <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
             <input type="hidden" name="shelf" value="{{ active_shelf.shelf.id }}">
-            <button class="button is-fullwidth is-small is-danger is-light" type="submit">{% trans "Unshelve" %}</button>
+            <button class="button is-fullwidth is-small is-danger is-light" type="submit">{% blocktrans with name=active_shelf.shelf.name %}Remove from {{ name }}{% endblocktrans %}</button>
         </form>
     </div>
 </li>

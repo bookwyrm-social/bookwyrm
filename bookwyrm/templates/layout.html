@@ -55,7 +55,7 @@
         <div class="navbar-start">
             {% if request.user.is_authenticated %}
             <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                {% trans "Your shelves" %}
+                {% trans "Your books" %}
             </a>
             <a href="/#feed" class="navbar-item">
                 {% trans "Feed" %}

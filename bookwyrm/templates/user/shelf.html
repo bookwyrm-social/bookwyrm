@@ -3,14 +3,14 @@
 {% load humanize %}
 {% load i18n %}
 
+{% block title %}
+{% include 'user/books_header.html' %}
+{% endblock %}
+
 {% block header %}
 <header class="columns">
     <h1 class="title">
-        {% if is_self %}
-        {% trans "Your Shelves" %}
-        {% else %}
-        {% blocktrans with username=user.display_name %}{{ username }}: Shelves{% endblocktrans %}
-        {% endif %}
+        {% include 'user/books_header.html' %}
     </h1>
 </header>
 {% endblock %}
