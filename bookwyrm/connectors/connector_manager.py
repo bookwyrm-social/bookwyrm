@@ -15,6 +15,8 @@ class ConnectorException(HTTPError):
 
 def search(query, min_confidence=0.1):
     """ find books based on arbitary keywords """
+    if not query:
+        return []
     results = []
 
     # Have we got a ISBN ?
