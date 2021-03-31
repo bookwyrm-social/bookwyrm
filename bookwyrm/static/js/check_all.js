@@ -1,4 +1,4 @@
-// Toggle all checkboxes.
+/* exported toggleAllCheckboxes */
 
 /**
  * Toggle all descendant checkboxes of a target.

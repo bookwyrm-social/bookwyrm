@@ -1,5 +1,5 @@
 # @url https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-name: Lint Project
+name: Lint project globally
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
     branches: [ main, ci ]
 
 jobs:
-  linters:
-    name: linters
+  lint:
+    name: Lint with EditorConfig.
     runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job

@@ -1,3 +1,6 @@
+/* exported updateDisplay */
+/* globals addRemoveClass */
+
 // set javascript listeners
 function updateDisplay(e) {
     // used in set reading goal
