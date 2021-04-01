@@ -18,7 +18,23 @@
             {% block panel %}{% endblock %}
         </section>
 
-        <footer class="modal-card-foot is-flex is-justify-content-flex-end">
+        <footer class="modal-card-foot is-flex is-justify-content-space-between">
+            <nav class="breadcrumb mb-0" aria-label="breadcrumbs">
+                <ul>
+                    {% url 'get-started-profile' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Create profile" %}</a>
+                    </li>
+                    {% url 'get-started-books' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Add books" %}</a>
+                    </li>
+                    {% url 'get-started-users' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Find friends" %}</a>
+                    </li>
+                </ul>
+            </nav>
             {% if next %}
             <a href="{% url next %}" class="button">
                 <span>{% trans "Skip this step" %}</span>

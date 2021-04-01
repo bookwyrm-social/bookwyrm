@@ -111,7 +111,7 @@ urlpatterns = [
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
     # Get started
     re_path(
-        r"^get-started/?$",
+        r"^get-started/profile/?$",
         views.GetStartedProfile.as_view(),
         name="get-started-profile",
     ),
