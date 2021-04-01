@@ -1,6 +1,7 @@
 """ Helping new users figure out the lay of the land """
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -8,6 +9,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
 from .helpers import get_suggested_users
+from .user import save_user_form
 
 
 # pylint: disable= no-self-use
@@ -18,10 +20,21 @@ class GetStartedProfile(View):
     def get(self, request):
         """ basic profile info """
         data = {
-            "form": forms.EditUserForm(instance=request.user),
+            "form": forms.LimitedEditUserForm(instance=request.user),
             "next": "get-started-books",
         }
         return TemplateResponse(request, "get_started/profile.html", data)
+
+    def post(self, request):
+        """ update your profile """
+        form = forms.LimitedEditUserForm(
+            request.POST, request.FILES, instance=request.user
+        )
+        if not form.is_valid():
+            data = {"form": form, "next": "get-started-books"}
+            return TemplateResponse(request, "get_started/profile.html", data)
+        save_user_form(form)
+        return redirect('get-started-books')
 
 
 @method_decorator(login_required, name="dispatch")

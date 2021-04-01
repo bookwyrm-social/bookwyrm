@@ -163,20 +163,25 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = form.save(commit=False)
-
-        if "avatar" in form.files:
-            # crop and resize avatar upload
-            image = Image.open(form.files["avatar"])
-            image = crop_avatar(image)
-
-            # set the name to a hash
-            extension = form.files["avatar"].name.split(".")[-1]
-            filename = "%s.%s" % (uuid4(), extension)
-            user.avatar.save(filename, image, save=False)
-        user.save()
+        save_user_form(form)
 
         return redirect(user.local_path)
+
+def save_user_form(form):
+    """ special handling for the user form """
+    user = form.save(commit=False)
+
+    if "avatar" in form.files:
+        # crop and resize avatar upload
+        image = Image.open(form.files["avatar"])
+        image = crop_avatar(image)
+
+        # set the name to a hash
+        extension = form.files["avatar"].name.split(".")[-1]
+        filename = "%s.%s" % (uuid4(), extension)
+        user.avatar.save(filename, image, save=False)
+    user.save()
+    return user
 
 
 def crop_avatar(image):

@@ -1,10 +1,10 @@
 """ test for app action functionality """
+from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models
-from bookwyrm import views
+from bookwyrm import forms, models, views
 
 
 class GetStartedViews(TestCase):
@@ -41,6 +41,21 @@ class GetStartedViews(TestCase):
 
     def test_profile_view_post(self):
         """ save basic user details """
+        view = views.GetStartedProfile.as_view()
+        form = forms.LimitedEditUserForm(instance=self.local_user)
+        form.data["name"] = "New Name"
+        form.data["discoverable"] = "True"
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        self.assertIsNone(self.local_user.name)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
+        self.assertEqual(self.local_user.name, "New Name")
+        self.assertTrue(self.local_user.discoverable)
 
     def test_books_view(self):
         """ there are so many views, this just makes sure it LOADS """
