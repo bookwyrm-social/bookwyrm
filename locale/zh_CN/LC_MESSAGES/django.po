@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-01 12:22-0700\n"
+"POT-Creation-Date: 2021-04-01 13:14-0700\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -479,9 +479,10 @@ msgid "Published by %(publisher)s."
 msgstr "由 %(publisher)s 出版。"
 
 #: bookwyrm/templates/components/inline_form.html:8
+#: bookwyrm/templates/components/modal.html:11
 #: bookwyrm/templates/feed/feed_layout.html:57
-#: bookwyrm/templates/get_started/layout.html:15
-#: bookwyrm/templates/get_started/layout.html:48
+#: bookwyrm/templates/get_started/layout.html:19
+#: bookwyrm/templates/get_started/layout.html:52
 msgid "Close"
 msgstr "关闭"
 
@@ -920,36 +921,40 @@ msgstr "没有找到书目"
 msgid "Save &amp; continue"
 msgstr ""
 
-#: bookwyrm/templates/get_started/layout.html:13
-#, fuzzy
-#| msgid "Started"
-msgid "Getting Started"
-msgstr "已开始"
+#: bookwyrm/templates/get_started/layout.html:14
+#, fuzzy, python-format
+#| msgid "About %(site_name)s"
+msgid "Welcome to %(site_name)s!"
+msgstr "关于 %(site_name)s"
 
-#: bookwyrm/templates/get_started/layout.html:26
+#: bookwyrm/templates/get_started/layout.html:16
+msgid "These are some first steps to get you started."
+msgstr ""
+
+#: bookwyrm/templates/get_started/layout.html:30
 #: bookwyrm/templates/get_started/profile.html:6
 #, fuzzy
 #| msgid "View user profile"
 msgid "Create your profile"
 msgstr "查看用户个人资料"
 
-#: bookwyrm/templates/get_started/layout.html:30
+#: bookwyrm/templates/get_started/layout.html:34
 #, fuzzy
 #| msgid "Add Books"
 msgid "Add books"
 msgstr "添加书目"
 
-#: bookwyrm/templates/get_started/layout.html:34
+#: bookwyrm/templates/get_started/layout.html:38
 #, fuzzy
 #| msgid "Friendly"
 msgid "Find friends"
 msgstr "友好"
 
-#: bookwyrm/templates/get_started/layout.html:40
+#: bookwyrm/templates/get_started/layout.html:44
 msgid "Skip this step"
 msgstr ""
 
-#: bookwyrm/templates/get_started/layout.html:44
+#: bookwyrm/templates/get_started/layout.html:48
 #, fuzzy
 #| msgid "Finished"
 msgid "Finish"
@@ -2688,6 +2693,11 @@ msgstr "已经存在使用该用户名的用户。"
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Started"
+#~ msgid "Getting Started"
+#~ msgstr "已开始"
 
 #, fuzzy, python-format
 #~| msgid "No users found for \"%(query)s\""
