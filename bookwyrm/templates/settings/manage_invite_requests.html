@@ -26,6 +26,8 @@
         {% endif %} ({{ count }})
     </h2>
 
+    {% include 'settings/invite_request_filters.html' %}
+
     <table class="table is-striped">
         {% url 'settings-invite-requests' as url %}
         <tr>

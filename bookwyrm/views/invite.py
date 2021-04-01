@@ -1,8 +1,11 @@
 """ invites when registration is closed """
+from functools import reduce
+import operator
 from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -100,8 +103,28 @@ class ManageInviteRequests(View):
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
+        requests = models.InviteRequest.objects.filter(ignored=ignored).order_by(sort)
+
+        status_filters = [
+            s
+            for s in request.GET.getlist("status")
+            if s in ["requested", "sent", "accepted"]
+        ]
+
+        filters = []
+        if "requested" in status_filters:
+            filters.append({"invite__isnull": True})
+        if "sent" in status_filters:
+            filters.append({"invite__isnull": False})
+        if "accepted" in status_filters:
+            filters.append({"invite__isnull": False, "invite__times_used__gte": 1})
+
+        requests = requests.filter(
+            reduce(operator.or_, (Q(**f) for f in filters))
+        ).distinct()
+
         paginated = Paginator(
-            models.InviteRequest.objects.filter(ignored=ignored).order_by(sort),
+            requests,
             PAGE_LENGTH,
         )
 
