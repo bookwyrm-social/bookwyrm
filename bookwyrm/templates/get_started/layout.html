@@ -40,6 +40,8 @@
                 <span>{% trans "Skip this step" %}</span>
                 <span class="icon icon-arrow-right" aria-hidden="true"></span>
             </a>
+            {% else %}
+            <a href="/" class="button is-primary">{% trans "Finish" %}</a>
             {% endif %}
         </footer>
     </div>

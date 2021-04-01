@@ -114,6 +114,5 @@ class GetStartedUsers(View):
         )
         data = {
             "suggested_users": suggested_users,
-            "next": "get-started-profile",
         }
         return TemplateResponse(request, "get_started/users.html", data)
