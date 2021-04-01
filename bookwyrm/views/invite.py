@@ -1,9 +1,12 @@
 """ invites when registration is closed """
+from urllib.parse import urlencode
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -98,9 +101,7 @@ class ManageInviteRequests(View):
             sort = "-created_date"
 
         paginated = Paginator(
-            models.InviteRequest.objects.filter(ignored=ignored).order_by(
-                sort
-            ),
+            models.InviteRequest.objects.filter(ignored=ignored).order_by(sort),
             PAGE_LENGTH,
         )
 
@@ -125,7 +126,11 @@ class ManageInviteRequests(View):
             )
             invite_request.save()
         emailing.invite_email(invite_request)
-        return redirect("settings-invite-requests")
+        return redirect(
+            "{:s}?{:s}".format(
+                reverse("settings-invite-requests"), urlencode(request.GET.dict())
+            )
+        )
 
 
 class InviteRequest(View):

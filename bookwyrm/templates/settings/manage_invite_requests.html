@@ -57,7 +57,7 @@
                 {% endif %}
             </td>
             <td class="field is-grouped">
-                <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
+                <form name="send-invite" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="invite-request" value="{{ req.id }}">
                     {% if not req.invite %}
