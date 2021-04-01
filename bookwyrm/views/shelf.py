@@ -39,7 +39,10 @@ class Shelf(View):
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
-            shelf = user.shelf_set.get(identifier=shelf_identifier)
+            try:
+                shelf = user.shelf_set.get(identifier=shelf_identifier)
+            except models.Shelf.DoesNotExist:
+                return HttpResponseNotFound()
             if not object_visible_to_user(request.user, shelf):
                 return HttpResponseNotFound()
         # this is a constructed "all books" view, with a fake "shelf" obj
