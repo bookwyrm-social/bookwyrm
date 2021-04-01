@@ -6,7 +6,7 @@
     <h2 class="title is-4">{% trans "What are you reading?" %}</h2>
     <form class="field has-addons" method="get" action="{% url 'get-started-books' %}">
         <div class="control">
-            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a book' %}" aria-lable="{% trans 'Search for a book' %}">
+            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a book' %}" aria-label="{% trans 'Search for a book' %}">
             {% if request.GET.query and not book_results %}
             <p class="help">{% blocktrans %}Sorry, books were found. You can add books when you start using {{ site_name }}{% endblocktrans %}</p>
             {% endif %}
@@ -21,7 +21,7 @@
     </form>
 </div>
 
-<form class="block">
+<form class="block" name="add-books" method="post" action="{% url 'get-started-books' %}">
     <h3 class="title is-5">{% trans "Suggested Books" %}</h3>
     <div class="columns scroll-x">
         {% if book_results %}
@@ -29,17 +29,7 @@
             <p class="help mb-0">Search results</p>
             <div class="columns">
                 {% for book in book_results %}
-                <div class="column is-narrow is-clipped">
-                    {% include 'snippets/book_cover.html' with book=book %}
-                    <div class="select is-small">
-                        <select>
-                            <option>-</option>
-                            {% for shelf in request.user.shelf_set.all %}
-                            <option>{{ shelf.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+                {% include 'get_started/book_preview.html' %}
                 {% endfor %}
             </div>
         </div>
@@ -50,17 +40,7 @@
             </p>
             <div class="columns">
                 {% for book in popular_books %}
-                <div class="column is-narrow is-clipped">
-                    {% include 'snippets/book_cover.html' with book=book %}
-                    <div class="select is-small">
-                        <select>
-                            <option>-</option>
-                            {% for shelf in request.user.shelf_set.all %}
-                            <option>{{ shelf.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+                {% include 'get_started/book_preview.html' %}
                 {% endfor %}
             </div>
         </div>

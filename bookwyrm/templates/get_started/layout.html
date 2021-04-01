@@ -5,11 +5,11 @@
 
 {% block content %}
 {% with site_name=site.name %}
-<div class="modal is-active" role="dialog" aria-modal="true">
+<div class="modal is-active" role="dialog" aria-modal="true" aria-labelledby="get-started-header">
     <div class="modal-background"></div>
     <div class="modal-card is-fullwidth">
         <header class="modal-card-head">
-            <h1 class="modal-card-title">
+            <h1 class="modal-card-title" id="get-started-header">
                 {% trans "Getting Started" %}
             </h1>
             <button class="delete" aria-label="close"></button>
