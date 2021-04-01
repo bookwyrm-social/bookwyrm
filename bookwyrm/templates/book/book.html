@@ -49,6 +49,9 @@
                 {% trans "Add cover" as button_text %}
                 {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
                 {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
+                {% if request.GET.cover_error %}
+                <p class="help is-danger">{% trans "Failed to load cover" %}</p>
+                {% endif %}
             </div>
             {% endif %}
 
