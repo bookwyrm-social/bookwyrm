@@ -119,9 +119,10 @@ class ManageInviteRequests(View):
         if "accepted" in status_filters:
             filters.append({"invite__isnull": False, "invite__times_used__gte": 1})
 
-        requests = requests.filter(
-            reduce(operator.or_, (Q(**f) for f in filters))
-        ).distinct()
+        if filters:
+            requests = requests.filter(
+                reduce(operator.or_, (Q(**f) for f in filters))
+            ).distinct()
 
         paginated = Paginator(
             requests,
