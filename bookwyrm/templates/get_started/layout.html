@@ -9,8 +9,12 @@
     <div class="modal-background"></div>
     <div class="modal-card is-fullwidth">
         <header class="modal-card-head">
+            <img class="image logo mr-2" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" aria-hidden="true">
             <h1 class="modal-card-title" id="get-started-header">
-                {% trans "Getting Started" %}
+                {% blocktrans %}Welcome to {{ site_name }}!{% endblocktrans %}
+                <span class="subtitle is-block">
+                    {% trans "These are some first steps to get you started." %}
+                </span>
             </h1>
             <a href="/" class="delete" aria-label="{% trans 'Close' %}"></a>
         </header>
