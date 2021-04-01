@@ -25,6 +25,9 @@ class GetStartedViews(TestCase):
             title="Example Edition",
             remote_id="https://example.com/book/1",
         )
+        models.Connector.objects.create(
+            identifier="self", connector_file="self_connector", local=True
+        )
         models.SiteSettings.objects.create()
 
     def test_profile_view(self):
@@ -68,6 +71,36 @@ class GetStartedViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_books_view_with_query(self):
+        """ there are so many views, this just makes sure it LOADS """
+        view = views.GetStartedBooks.as_view()
+        request = self.factory.get("?query=Example")
+        request.user = self.local_user
+
+        result = view(request)
+
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+    def test_books_view_post(self):
+        """ shelve some books """
+        view = views.GetStartedBooks.as_view()
+        data = {self.book.id: self.local_user.shelf_set.first().id}
+        request = self.factory.post("", data)
+        request.user = self.local_user
+
+        self.assertFalse(self.local_user.shelfbook_set.exists())
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
+
+        shelfbook = self.local_user.shelfbook_set.first()
+        self.assertEqual(shelfbook.book, self.book)
+        self.assertEqual(shelfbook.user, self.local_user)
 
     def test_users_view(self):
         """ there are so many views, this just makes sure it LOADS """

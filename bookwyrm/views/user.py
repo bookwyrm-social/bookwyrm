@@ -167,6 +167,7 @@ class EditUser(View):
 
         return redirect(user.local_path)
 
+
 def save_user_form(form):
     """ special handling for the user form """
     user = form.save(commit=False)

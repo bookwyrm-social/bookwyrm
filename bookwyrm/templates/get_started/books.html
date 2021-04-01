@@ -22,8 +22,9 @@
 </div>
 
 <form class="block" name="add-books" method="post" action="{% url 'get-started-books' %}">
+    {% csrf_token %}
     <h3 class="title is-5">{% trans "Suggested Books" %}</h3>
-    <div class="columns scroll-x">
+    <fieldset name="books" class="columns scroll-x">
         {% if book_results %}
         <div class="column is-narrow content">
             <p class="help mb-0">Search results</p>
@@ -34,6 +35,7 @@
             </div>
         </div>
         {% endif %}
+        {% if popular_books %}
         <div class="column is-narrow content">
             <p class="help mb-0">
                 {% blocktrans %}Popular on {{ site_name }}{% endblocktrans %}
@@ -44,7 +46,11 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+        {% endif %}
+        {% if not book_results and not popular_books %}
+        <p><em>{% trans "No books found" %}</em></p>
+        {% endif %}
+    </fieldset>
     <button type="submit" class="button is-primary">{% trans "Save &amp; continue" %}</button>
 </form>
 {% endblock %}
