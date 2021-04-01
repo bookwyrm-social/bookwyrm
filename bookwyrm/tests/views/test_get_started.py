@@ -113,3 +113,15 @@ class GetStartedViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_users_view_with_query(self):
+        """ there are so many views, this just makes sure it LOADS """
+        view = views.GetStartedUsers.as_view()
+        request = self.factory.get("?query=rat")
+        request.user = self.local_user
+
+        result = view(request)
+
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
