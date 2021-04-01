@@ -26,11 +26,20 @@
         {% endif %} ({{ count }})
     </h2>
 
+    {% include 'settings/invite_request_filters.html' %}
+
     <table class="table is-striped">
+        {% url 'settings-invite-requests' as url %}
         <tr>
-            <th>{% trans "Date" %}</th>
+            <th>
+                {% trans "Date" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
             <th>{% trans "Email" %}</th>
-            <th>{% trans "Status" %}</th>
+            <th>
+                {% trans "Status" as text %}
+                {% include 'snippets/table-sort-header.html' with field="invite__times_used" sort=sort text=text %}
+            </th>
             <th>{% trans "Action" %}</th>
         </tr>
         {% if not requests %}
@@ -50,7 +59,7 @@
                 {% endif %}
             </td>
             <td class="field is-grouped">
-                <form name="send-invite" method="post" action="{% url 'settings-invite-requests' %}">
+                <form name="send-invite" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="invite-request" value="{{ req.id }}">
                     {% if not req.invite %}
