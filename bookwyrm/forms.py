@@ -137,6 +137,19 @@ class EditUserForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class LimitedEditUserForm(CustomForm):
+    class Meta:
+        model = models.User
+        fields = [
+            "avatar",
+            "name",
+            "summary",
+            "manually_approves_followers",
+            "discoverable",
+        ]
+        help_texts = {f: None for f in fields}
+
+
 class TagForm(CustomForm):
     class Meta:
         model = models.Tag
