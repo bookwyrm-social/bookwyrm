@@ -163,7 +163,7 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        save_user_form(form)
+        user = save_user_form(form)
 
         return redirect(user.local_path)
 
