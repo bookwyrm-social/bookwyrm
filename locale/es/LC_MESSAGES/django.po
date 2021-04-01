@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-01 12:22-0700\n"
+"POT-Creation-Date: 2021-04-01 13:14-0700\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -496,9 +496,10 @@ msgid "Published by %(publisher)s."
 msgstr ""
 
 #: bookwyrm/templates/components/inline_form.html:8
+#: bookwyrm/templates/components/modal.html:11
 #: bookwyrm/templates/feed/feed_layout.html:57
-#: bookwyrm/templates/get_started/layout.html:15
-#: bookwyrm/templates/get_started/layout.html:48
+#: bookwyrm/templates/get_started/layout.html:19
+#: bookwyrm/templates/get_started/layout.html:52
 msgid "Close"
 msgstr "Cerrar"
 
@@ -939,36 +940,40 @@ msgstr "No se encontró ningún libro"
 msgid "Save &amp; continue"
 msgstr ""
 
-#: bookwyrm/templates/get_started/layout.html:13
-#, fuzzy
-#| msgid "Started"
-msgid "Getting Started"
-msgstr "Empezado"
+#: bookwyrm/templates/get_started/layout.html:14
+#, fuzzy, python-format
+#| msgid "About %(site_name)s"
+msgid "Welcome to %(site_name)s!"
+msgstr "Sobre %(site_name)s"
 
-#: bookwyrm/templates/get_started/layout.html:26
+#: bookwyrm/templates/get_started/layout.html:16
+msgid "These are some first steps to get you started."
+msgstr ""
+
+#: bookwyrm/templates/get_started/layout.html:30
 #: bookwyrm/templates/get_started/profile.html:6
 #, fuzzy
 #| msgid "User Profile"
 msgid "Create your profile"
 msgstr "Perfil de usuario"
 
-#: bookwyrm/templates/get_started/layout.html:30
+#: bookwyrm/templates/get_started/layout.html:34
 #, fuzzy
 #| msgid "Add Books"
 msgid "Add books"
 msgstr "Agregar libros"
 
-#: bookwyrm/templates/get_started/layout.html:34
+#: bookwyrm/templates/get_started/layout.html:38
 #, fuzzy
 #| msgid "Friendly"
 msgid "Find friends"
 msgstr "Amigable"
 
-#: bookwyrm/templates/get_started/layout.html:40
+#: bookwyrm/templates/get_started/layout.html:44
 msgid "Skip this step"
 msgstr ""
 
-#: bookwyrm/templates/get_started/layout.html:44
+#: bookwyrm/templates/get_started/layout.html:48
 #, fuzzy
 #| msgid "Finished"
 msgid "Finish"
@@ -2732,6 +2737,11 @@ msgstr "Ya existe un usuario con ese nombre."
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Started"
+#~ msgid "Getting Started"
+#~ msgstr "Empezado"
 
 #, fuzzy, python-format
 #~| msgid "No users found for \"%(query)s\""
