@@ -24,11 +24,11 @@
 <form class="block" name="add-books" method="post" action="{% url 'get-started-books' %}">
     {% csrf_token %}
     <h3 class="title is-5">{% trans "Suggested Books" %}</h3>
-    <fieldset name="books" class="columns scroll-x">
+    <fieldset name="books" class="columns scroll-x is-mobile">
         {% if book_results %}
         <div class="column is-narrow content">
             <p class="help mb-0">Search results</p>
-            <div class="columns">
+            <div class="columns is-mobile">
                 {% for book in book_results %}
                 {% include 'get_started/book_preview.html' %}
                 {% endfor %}
@@ -40,7 +40,7 @@
             <p class="help mb-0">
                 {% blocktrans %}Popular on {{ site_name }}{% endblocktrans %}
             </p>
-            <div class="columns">
+            <div class="columns is-mobile">
                 {% for book in popular_books %}
                 {% include 'get_started/book_preview.html' %}
                 {% endfor %}
