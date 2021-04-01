@@ -129,7 +129,7 @@ class GetStartedUsers(View):
                     bookwyrm_user=True,
                 )
                 .order_by("shared_books", "-mutuals", "-last_active_date")
-                .all()[:5 - user_results.count()]
+                .all()[: 5 - user_results.count()]
             )
         data = {
             "suggested_users": list(user_results) + list(suggested_users),
