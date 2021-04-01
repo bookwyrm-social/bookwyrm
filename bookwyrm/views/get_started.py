@@ -2,6 +2,8 @@
 import re
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models.functions import Greatest
 from django.db.models import Count, Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
@@ -102,17 +104,34 @@ class GetStartedUsers(View):
 
     def get(self, request):
         """ basic profile info """
-        suggested_users = (
-            get_suggested_users(
-                request.user,
-                ~Q(id=request.user.id),
-                ~Q(followers=request.user),
-                bookwyrm_user=True,
+        query = request.GET.get("query")
+        user_results = (
+            models.User.viewer_aware_objects(request.user)
+            .annotate(
+                similarity=Greatest(
+                    TrigramSimilarity("username", query),
+                    TrigramSimilarity("localname", query),
+                )
             )
-            .order_by("shared_books", "-mutuals", "-last_active_date")
-            .all()[:5]
+            .filter(
+                similarity__gt=0.5,
+            )
+            .order_by("-similarity")[:5]
         )
+
+        if user_results.count() < 5:
+            suggested_users = (
+                get_suggested_users(
+                    request.user,
+                    ~Q(id=request.user.id),
+                    ~Q(followers=request.user),
+                    ~Q(id__in=user_results),
+                    bookwyrm_user=True,
+                )
+                .order_by("shared_books", "-mutuals", "-last_active_date")
+                .all()[:5 - user_results.count()]
+            )
         data = {
-            "suggested_users": suggested_users,
+            "suggested_users": list(user_results) + list(suggested_users),
         }
         return TemplateResponse(request, "get_started/users.html", data)
