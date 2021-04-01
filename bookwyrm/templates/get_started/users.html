@@ -10,7 +10,7 @@
         <div class="control">
             <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a user' %}" aria-label="{% trans 'Search for a user' %}">
             {% if request.GET.query and not user_results %}
-            <p class="help">{% trans "Sorry, no users were found" %}</p>
+            <p class="help">{% blocktrans with query=request.GET.query %}No users found for "{{ query }}"{% endblocktrans %}</p>
             {% endif %}
         </div>
         <div class="control">
