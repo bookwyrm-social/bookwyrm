@@ -111,7 +111,7 @@ class Register(View):
             invite.save()
 
         login(request, user)
-        return redirect("/")
+        return redirect("get-started-profile")
 
 
 @method_decorator(login_required, name="dispatch")
