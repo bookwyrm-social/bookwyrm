@@ -92,9 +92,14 @@ class ManageInviteRequests(View):
         except ValueError:
             page = 1
 
+        sort = request.GET.get("sort")
+        sort_fields = ["created_date", "invite__times_used"]
+        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            sort = "-created_date"
+
         paginated = Paginator(
             models.InviteRequest.objects.filter(ignored=ignored).order_by(
-                "-created_date"
+                sort
             ),
             PAGE_LENGTH,
         )
@@ -103,6 +108,7 @@ class ManageInviteRequests(View):
             "ignored": ignored,
             "count": paginated.count,
             "requests": paginated.page(page),
+            "sort": sort,
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)
 

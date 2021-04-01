@@ -27,10 +27,17 @@
     </h2>
 
     <table class="table is-striped">
+        {% url 'settings-invite-requests' as url %}
         <tr>
-            <th>{% trans "Date" %}</th>
+            <th>
+                {% trans "Date" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
             <th>{% trans "Email" %}</th>
-            <th>{% trans "Status" %}</th>
+            <th>
+                {% trans "Status" as text %}
+                {% include 'snippets/table-sort-header.html' with field="invite__times_used" sort=sort text=text %}
+            </th>
             <th>{% trans "Action" %}</th>
         </tr>
         {% if not requests %}
