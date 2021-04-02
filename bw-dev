@@ -109,7 +109,7 @@ case "$CMD" in
     black)
         makeitblack
         ;;
-    populate_feeds)
+    populate_streams)
         execweb python manage.py populate_streams
         ;;
     *)
