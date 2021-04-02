@@ -21,9 +21,9 @@ class Person(ActivityObject):
 
     preferredUsername: str
     inbox: str
-    outbox: str
-    followers: str
     publicKey: PublicKey
+    followers: str = None
+    outbox: str = None
     endpoints: Dict = None
     name: str = None
     summary: str = None
