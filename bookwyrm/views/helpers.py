@@ -206,6 +206,7 @@ def get_suggested_users(user):
         .all()[:5]
     )
 
+
 def get_annotated_users(user, *args, **kwargs):
     """ Users, annotated with things they have in common """
     return (
