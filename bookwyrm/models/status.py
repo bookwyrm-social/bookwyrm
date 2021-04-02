@@ -71,6 +71,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         if self.deleted:
             notification_model.objects.filter(related_status=self).delete()
+            return
 
         if (
             self.reply_parent

@@ -120,17 +120,8 @@ class GetStartedUsers(View):
         )
 
         if user_results.count() < 5:
-            suggested_users = (
-                get_suggested_users(
-                    request.user,
-                    ~Q(id=request.user.id),
-                    ~Q(followers=request.user),
-                    ~Q(id__in=user_results),
-                    bookwyrm_user=True,
-                )
-                .order_by("shared_books", "-mutuals", "-last_active_date")
-                .all()[: 5 - user_results.count()]
-            )
+            suggested_users = get_suggested_users(request.user)
+
         data = {
             "suggested_users": list(user_results) + list(suggested_users),
         }

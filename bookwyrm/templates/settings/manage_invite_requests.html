@@ -79,6 +79,8 @@
                 {# accepted #}
                 {% if req.invite.invitees.exists %}
                 <a href="{{ req.invite.invitees.first.local_path }}">@{{ req.invite.invitees.first.localname }}</a>
+                {% else %}
+                &nbsp;
                 {% endif %}
                 {% else %}
                 <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
