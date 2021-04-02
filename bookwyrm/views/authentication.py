@@ -108,6 +108,7 @@ class Register(View):
         )
         if invite:
             invite.times_used += 1
+            invite.invitees.add(user)
             invite.save()
 
         login(request, user)
