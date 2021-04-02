@@ -39,6 +39,7 @@ class Feed(View):
                 request.user,
                 ~Q(id=request.user.id),
                 ~Q(followers=request.user),
+                ~Q(follower_requests=request.user),
                 bookwyrm_user=True,
             )
             .order_by("-mutuals", "-last_active_date")
