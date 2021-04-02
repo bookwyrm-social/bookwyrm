@@ -11,7 +11,10 @@
         </span>
     </h2>
 
-    <form class="hidden mt-3" id="filters" method-"get" action="{{ request.path }}" tabindex="0">
+    <form class="hidden mt-3" id="filters" method="get" action="{{ request.path }}" tabindex="0">
+        {% if sort %}
+        <input type="hidden" name="sort" value="{{ sort }}">
+        {% endif %}
         <div class="columns">
             {% block filter_fields %}
             {% endblock %}

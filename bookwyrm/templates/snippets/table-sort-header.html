@@ -1,5 +1,5 @@
 {% load i18n %}
-<a href="{{ url }}?sort={% if sort == field %}-{% endif %}{{ field }}">
+<a href="{{ url }}?sort={% if sort == field %}-{% endif %}{{ field }}{% for k, v in request.GET.items %}{% if k != "sort" %}&{{ k }}={{ v }}{% endif %}{% endfor %}">
     {{ text }}
     {% if sort == field %}
     <span class="icon icon-arrow-up">
