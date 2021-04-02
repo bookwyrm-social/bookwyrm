@@ -3,6 +3,9 @@ import importlib
 import re
 from urllib.parse import urlparse
 
+from django.dispatch import receiver
+from django.db.models import signals
+
 from requests import HTTPError
 
 from bookwyrm import models
@@ -44,6 +47,7 @@ def search(query, min_confidence=0.1):
             except (HTTPError, ConnectorException):
                 continue
 
+        # if the search results look the same, ignore them
         result_set = [r for r in result_set if dedup_slug(r) not in result_index]
         # `|=` concats two sets. WE ARE GETTING FANCY HERE
         result_index |= set(dedup_slug(r) for r in result_set)
@@ -85,7 +89,7 @@ def get_connectors():
 
 
 def get_or_create_connector(remote_id):
-    """ get the connector related to the author's server """
+    """ get the connector related to the object's server """
     url = urlparse(remote_id)
     identifier = url.netloc
     if not identifier:
@@ -122,3 +126,11 @@ def load_connector(connector_info):
         "bookwyrm.connectors.%s" % connector_info.connector_file
     )
     return connector.Connector(connector_info.identifier)
+
+
+@receiver(signals.post_save, sender="bookwyrm.FederatedServer")
+# pylint: disable=unused-argument
+def create_connector(sender, instance, created, *args, **kwargs):
+    """ create a connector to an external bookwyrm server """
+    if instance.application_type == "bookwyrm":
+        get_or_create_connector("https://{:s}".format(instance.server_name))
