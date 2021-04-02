@@ -58,6 +58,7 @@ class SiteInvite(models.Model):
     use_limit = models.IntegerField(blank=True, null=True)
     times_used = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    invitees = models.ManyToManyField(User, related_name="invitees")
 
     def valid(self):
         """ make sure it hasn't expired or been used """
