@@ -182,10 +182,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             **kwargs
         )
 
-    def to_activity(self):
+    def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
-        activity_object = super().to_activity()
+        activity_object = super().to_activity(**kwargs)
         activity_object["@context"] = [
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
@@ -293,10 +293,10 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
 
-    def to_activity(self):
+    def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
-        activity_object = super().to_activity()
+        activity_object = super().to_activity(**kwargs)
         del activity_object["@context"]
         del activity_object["type"]
         return activity_object
