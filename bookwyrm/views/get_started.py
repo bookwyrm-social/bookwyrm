@@ -53,7 +53,7 @@ class GetStartedBooks(View):
     def get(self, request):
         """ info about a book """
         query = request.GET.get("query")
-        book_results = []
+        book_results = popular_books = []
         if query:
             book_results = connector_manager.local_search(query, raw=True)[:5]
         if len(book_results) < 5:
