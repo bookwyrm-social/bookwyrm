@@ -50,7 +50,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         null=True,
         blank=True,
     )
-    outbox = fields.RemoteIdField(unique=True)
+    outbox = fields.RemoteIdField(unique=True, null=True)
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
@@ -360,7 +360,7 @@ def set_remote_server(user_id):
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
     user.save(broadcast=False)
-    if user.bookwyrm_user:
+    if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 
 
