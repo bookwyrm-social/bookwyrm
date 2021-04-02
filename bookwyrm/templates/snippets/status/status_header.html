@@ -38,6 +38,6 @@
 
 {% if status.progress %}
 <p class="help">
-    ({% if status.progress_mode == 'PG' %}page {{ status.progress }}{%else %}{{ status.progress }}%{% endif %})
+({% if status.progress_mode == 'PG' %}{% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %}{% else %}{{ status.progress }}%{% endif %})
 </p>
 {% endif %}

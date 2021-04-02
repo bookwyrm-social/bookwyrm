@@ -192,7 +192,22 @@ def get_discover_books():
     )
 
 
-def get_suggested_users(user, *args, **kwargs):
+def get_suggested_users(user):
+    """ bookwyrm users you don't already know """
+    return (
+        get_annotated_users(
+            user,
+            ~Q(id=user.id),
+            ~Q(followers=user),
+            ~Q(follower_requests=user),
+            bookwyrm_user=True,
+        )
+        .order_by("-mutuals", "-last_active_date")
+        .all()[:5]
+    )
+
+
+def get_annotated_users(user, *args, **kwargs):
     """ Users, annotated with things they have in common """
     return (
         models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)

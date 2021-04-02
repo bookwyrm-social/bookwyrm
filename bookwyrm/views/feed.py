@@ -34,16 +34,7 @@ class Feed(View):
 
         paginated = Paginator(activities, PAGE_LENGTH)
 
-        suggested_users = (
-            get_suggested_users(
-                request.user,
-                ~Q(id=request.user.id),
-                ~Q(followers=request.user),
-                bookwyrm_user=True,
-            )
-            .order_by("-mutuals", "-last_active_date")
-            .all()[:5]
-        )
+        suggested_users = get_suggested_users(request.user)
 
         data = {
             **feed_page_data(request.user),
