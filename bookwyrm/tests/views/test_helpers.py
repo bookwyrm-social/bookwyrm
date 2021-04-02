@@ -247,7 +247,7 @@ class ViewsHelpers(TestCase):
         )
         self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
 
-    def test_get_suggested_users(self, _):
+    def test_get_annotated_users(self, _):
         """ list of people you might know """
         user_1 = models.User.objects.create_user(
             "nutria@local.com",
@@ -279,7 +279,7 @@ class ViewsHelpers(TestCase):
                 user=user_1, book=self.book, shelf=user_1.shelf_set.first()
             )
 
-        result = views.helpers.get_suggested_users(self.local_user)
+        result = views.helpers.get_annotated_users(self.local_user)
         self.assertEqual(result.count(), 3)
         self.assertTrue(user_1 in result)
         self.assertFalse(user_2 in result)
@@ -294,7 +294,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(remote_user_annotated.mutuals, 0)
         self.assertEqual(remote_user_annotated.shared_books, 0)
 
-    def test_get_suggested_users_counts(self, _):
+    def test_get_annotated_users_counts(self, _):
         """ correct counting for multiple shared attributed """
         user_1 = models.User.objects.create_user(
             "nutria@local.com",
@@ -330,7 +330,7 @@ class ViewsHelpers(TestCase):
                     user=user_1, book=book, shelf=user_1.shelf_set.first()
                 )
 
-        result = views.helpers.get_suggested_users(
+        result = views.helpers.get_annotated_users(
             self.local_user,
             ~Q(id=self.local_user.id),
             ~Q(followers=self.local_user),
