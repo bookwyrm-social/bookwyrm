@@ -7,17 +7,15 @@
 
 {% block dropdown-list %}
 {% for shelf in request.user.shelf_set.all %}
-{% if shelf.identifier != current.identifier %}
 <li role="menuitem">
     <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small" type="submit">{{ shelf.name }}</button>
+        <button class="button is-fullwidth is-small shelf-option" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
     </form>
 </li>
-{% endif %}
 {% endfor %}
 <li class="navbar-divider" role="presentation"></li>
 <li>
