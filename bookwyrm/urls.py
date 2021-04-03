@@ -202,6 +202,7 @@ urlpatterns = [
     re_path(r"%s/replies(.json)?/?$" % status_path, views.Replies.as_view()),
     re_path(r"^post/(?P<status_type>\w+)/?$", views.CreateStatus.as_view()),
     re_path(r"^delete-status/(?P<status_id>\d+)/?$", views.DeleteStatus.as_view()),
+    re_path(r"^redraft-status/(?P<status_id>\d+)/?$", views.DeleteAndRedraft.as_view()),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view()),
     re_path(r"^unfavorite/(?P<status_id>\d+)/?$", views.Unfavorite.as_view()),
