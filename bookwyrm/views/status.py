@@ -107,8 +107,8 @@ class DeleteAndRedraft(View):
         if status.user != request.user and not request.user.has_perm("moderate_post"):
             return HttpResponseBadRequest()
 
-        # TODO: get the correct form (maybe a generic form)
-        data = {"form": forms.StatusForm(instance=status)}
+
+        data = {"form": forms.get_form_from_status(status)}
         if hasattr(status, "book"):
             data["book"] = status.book
 
