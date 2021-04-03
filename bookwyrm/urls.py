@@ -203,6 +203,11 @@ urlpatterns = [
         r"%s/replies(.json)?/?$" % status_path, views.Replies.as_view(), name="replies"
     ),
     re_path(
+        r"^post/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
         r"^post/(?P<status_type>\w+)/?$",
         views.CreateStatus.as_view(),
         name="create-status",

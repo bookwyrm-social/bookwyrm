@@ -12,7 +12,6 @@ from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
 from bookwyrm.utils import regex
-from .feed import feed_page_data
 from .helpers import handle_remote_webfinger
 from .reading import edit_readthrough
 
@@ -21,6 +20,12 @@ from .reading import edit_readthrough
 @method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
     """ the view for *posting* """
+
+    def get(self, request):
+        """ compose view (used for delete-and-redraft """
+        book = get_object_or_404(models.Edition, id=request.GET.get("book"))
+        data = {"book": book}
+        return TemplateResponse(request, "compose.html", data)
 
     def post(self, request, status_type):
         """ create  status of whatever type """
@@ -103,14 +108,13 @@ class DeleteAndRedraft(View):
             return HttpResponseBadRequest()
 
         # TODO: get the correct form (maybe a generic form)
-        redraft_form = forms.StatusForm(instance=status)
+        data = {"form": forms.StatusForm(instance=status)}
+        if hasattr(status, "book"):
+            data["book"] = status.book
 
         # perform deletion
         status.delete()
-        data = feed_page_data(request.user)
-        # TODO: set up the correct edit state
-        data["redraft_form"] = redraft_form
-        return TemplateResponse(request, "feed/feed.html")
+        return TemplateResponse(request, "compose.html", data)
 
 
 def find_mentions(content):
