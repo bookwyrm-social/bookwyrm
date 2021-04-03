@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from markdown import markdown
@@ -10,8 +11,8 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
-from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
+from .feed import feed_page_data
 from .helpers import handle_remote_webfinger
 from .reading import edit_readthrough
 
@@ -72,6 +73,7 @@ class CreateStatus(View):
         return redirect(request.headers.get("Referer", "/"))
 
 
+@method_decorator(login_required, name="dispatch")
 class DeleteStatus(View):
     """ tombstone that bad boy """
 
@@ -84,8 +86,31 @@ class DeleteStatus(View):
             return HttpResponseBadRequest()
 
         # perform deletion
-        delete_status(status)
+        status.delete()
         return redirect(request.headers.get("Referer", "/"))
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteAndRedraft(View):
+    """ delete a status but let the user re-create it """
+
+    def post(self, request, status_id):
+        """ delete and tombstone a status """
+        status = get_object_or_404(models.Status, id=status_id)
+
+        # don't let people delete other people's statuses
+        if status.user != request.user and not request.user.has_perm("moderate_post"):
+            return HttpResponseBadRequest()
+
+        # TODO: get the correct form (maybe a generic form)
+        redraft_form = forms.StatusForm(instance=status)
+
+        # perform deletion
+        status.delete()
+        data = feed_page_data(request.user)
+        # TODO: set up the correct edit state
+        data['redraft_form'] = redraft_form
+        return TemplateResponse(request, 'feed/feed.html')
 
 
 def find_mentions(content):
