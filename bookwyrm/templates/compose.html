@@ -8,6 +8,7 @@
     <h1>{% trans "Compose status" %}</h1>
 </header>
 
+{% with 0|uuid as uuid %}
 <div class="box columns">
     {% if book %}
     <div class="column is-one-third">
@@ -18,13 +19,13 @@
     </div>
     {% endif %}
     <div class="column is-two-thirds">
-        {% if not form %}
+        {% if not draft %}
         {% include 'snippets/create_status.html' %}
         {% else %}
         {% include 'snippets/create_status_form.html' %}
         {% endif %}
     </div>
 </div>
-
+{{ form.ap_p }}
+{% endwith %}
 {% endblock %}
-

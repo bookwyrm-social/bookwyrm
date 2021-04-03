@@ -121,20 +121,6 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
-def get_form_from_status(status):
-    """ form-ify a status (for delete and redraft) """
-    if isinstance(status, models.Review):
-        return ReviewForm(instance=status)
-    if isinstance(status, models.Comment):
-        return CommentForm(instance=status)
-    if isinstance(status, models.Quotation):
-        return QuotationForm(instance=status)
-    if status.reply_parent:
-        return ReplyForm(instance=status)
-    else:
-        return StatusForm(instance=status)
-
-
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User

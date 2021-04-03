@@ -75,7 +75,7 @@ class CreateStatus(View):
         # update a readthorugh, if needed
         edit_readthrough(request)
 
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
 @method_decorator(login_required, name="dispatch")
@@ -101,16 +101,24 @@ class DeleteAndRedraft(View):
 
     def post(self, request, status_id):
         """ delete and tombstone a status """
-        status = get_object_or_404(models.Status, id=status_id)
-
-        # don't let people delete other people's statuses
-        if status.user != request.user and not request.user.has_perm("moderate_post"):
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
+        if isinstance(status, models.GeneratedNote):
             return HttpResponseBadRequest()
 
+        # don't let people redraft other people's statuses
+        if status.user != request.user:
+            return HttpResponseBadRequest()
 
-        data = {"form": forms.get_form_from_status(status)}
+        data = {
+            "draft": status,
+            "type": status.status_type.lower(),
+        }
         if hasattr(status, "book"):
             data["book"] = status.book
+        elif status.mention_books:
+            data["book"] = status.mention_books.first()
 
         # perform deletion
         status.delete()
