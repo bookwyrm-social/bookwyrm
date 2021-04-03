@@ -90,7 +90,9 @@ class ActivityStream(ABC):
         for status in statuses.all()[: settings.MAX_STREAM_LENGTH]:
             pipeline.zadd(stream_id, self.get_value(status))
 
-        pipeline.zremrangebyrank(stream_id, settings.MAX_STREAM_LENGTH, -1)
+        # only trim the stream if statuses were added
+        if statuses.exists():
+            pipeline.zremrangebyrank(stream_id, settings.MAX_STREAM_LENGTH, -1)
         pipeline.execute()
 
     def stream_users(self, status):  # pylint: disable=no-self-use
@@ -280,7 +282,7 @@ def add_statuses_on_unblock(sender, instance, *args, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument
-def populate_feed_on_account_create(sender, instance, created, *args, **kwargs):
+def populate_streams_on_account_create(sender, instance, created, *args, **kwargs):
     """ build a user's feeds when they join """
     if not created or not instance.local:
         return
