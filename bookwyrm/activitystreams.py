@@ -57,7 +57,9 @@ class ActivityStream(ABC):
         for status in statuses:
             pipeline.zadd(self.stream_id(viewer), self.get_value(status))
         if statuses:
-            pipeline.zremrangebyrank(self.stream_id(user), settings.MAX_STREAM_LENGTH, -1)
+            pipeline.zremrangebyrank(
+                self.stream_id(user), settings.MAX_STREAM_LENGTH, -1
+            )
         pipeline.execute()
 
     def remove_user_statuses(self, viewer, user):
