@@ -53,9 +53,11 @@ class ActivityStream(ABC):
     def add_user_statuses(self, viewer, user):
         """ add a user's statuses to another user's feed """
         pipeline = r.pipeline()
-        for status in user.status_set.all()[: settings.MAX_STREAM_LENGTH]:
+        statuses = user.status_set.all()[: settings.MAX_STREAM_LENGTH]
+        for status in statuses:
             pipeline.zadd(self.stream_id(viewer), self.get_value(status))
-        pipeline.zremrangebyrank(self.stream_id(user), settings.MAX_STREAM_LENGTH, -1)
+        if statuses:
+            pipeline.zremrangebyrank(self.stream_id(user), settings.MAX_STREAM_LENGTH, -1)
         pipeline.execute()
 
     def remove_user_statuses(self, viewer, user):
