@@ -109,8 +109,8 @@ class DeleteAndRedraft(View):
         status.delete()
         data = feed_page_data(request.user)
         # TODO: set up the correct edit state
-        data['redraft_form'] = redraft_form
-        return TemplateResponse(request, 'feed/feed.html')
+        data["redraft_form"] = redraft_form
+        return TemplateResponse(request, "feed/feed.html")
 
 
 def find_mentions(content):
