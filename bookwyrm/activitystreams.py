@@ -47,7 +47,7 @@ class ActivityStream(ABC):
         """ remove a status from all feeds """
         pipeline = r.pipeline()
         for user in self.stream_users(status):
-            pipeline.lrem(self.stream_id(user), -1, status.id)
+            pipeline.zrem(self.stream_id(user), -1, status.id)
         pipeline.execute()
 
     def add_user_statuses(self, viewer, user):
