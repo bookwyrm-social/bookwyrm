@@ -83,13 +83,13 @@ case "$CMD" in
         docker-compose restart celery_worker
         ;;
     test)
-        execweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
+        execweb poetry run coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
         execweb poetry run pytest --no-cov-on-fail "$@"
         ;;
     test_report)
-        execweb coverage report
+        execweb poetry run coverage report
         ;;
     collectstatic)
         execweb poetry run python manage.py collectstatic --no-input
@@ -110,7 +110,7 @@ case "$CMD" in
         makeitblack
         ;;
     populate_feeds)
-        execweb python manage.py populate_streams
+        execweb poetry run python manage.py populate_streams
         ;;
     *)
         echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds"
