@@ -27,16 +27,8 @@
         {% if type == 'review' %}
         <fieldset>
             <legend class="is-sr-only">{% trans "Rating" %}</legend>
-            <div class="field is-grouped stars form-rate-stars">
-                <label class="is-sr-only" for="no-rating-{{ book.id }}">{% trans "No rating" %}</label>
-                <input class="is-sr-only" type="radio" name="rating" value="" id="no-rating-{{ book.id }}" {% if not draft or not draft.rating %}checked{% endif %}>
-                {% for i in '12345'|make_list %}
-                <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}" {% if draft and draft.rating == forloop.counter %}checked{% endif %}>
-                <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
-                    <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
-                </label>
-                {% endfor %}
-            </div>
+
+            {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
         </fieldset>
         {% endif %}
 

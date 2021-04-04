@@ -122,12 +122,18 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="mb-2"><label class="label" for="id_first_published_date">{% trans "First published date:" %}</label> {{ form.first_published_date }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
+                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if book.first_published_date %} value="{{ book.first_published_date|date:'Y-m-d' }}"{% endif %}>
+                </p>
                 {% for error in form.first_published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="mb-2"><label class="label" for="id_published_date">{% trans "Published date:" %}</label> {{ form.published_date }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
+                    <input type="date" name="published_date" class="input" id="id_published_date"{% if book.published_date %} value="{{ book.published_date|date:'Y-m-d' }}"{% endif %}>
+                </p>
                 {% for error in form.published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
