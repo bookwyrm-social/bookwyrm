@@ -80,52 +80,34 @@ html {
     }
 }
 
-/* --- STARS --- */
-.rate-stars button.icon {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    display: inline;
+/** Stars in a review form
+ *
+ * Specificity makes hovering taking over checked inputs.
+ *
+ * \e9d9: filled star
+ * \e9d7: empty star;
+ ******************************************************************************/
+
+.form-rate-stars {
+    width: max-content;
 }
 
-.rate-stars:hover .icon::before {
+/* All stars are visually filled by default. */
+.form-rate-stars .icon::before {
     content: '\e9d9';
 }
 
-.rate-stars form:hover ~ form .icon::before {
+/* Icons directly following inputs that follow the checked input are emptied. */
+.form-rate-stars input:checked ~ input + .icon::before {
     content: '\e9d7';
 }
 
-/** stars in a review form
- *
- * @todo Simplify the logic for those icons.
- */
-.form-rate-stars input + .icon.icon::before {
-    content: '\e9d9';
-}
-
+/* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
 .form-rate-stars:hover .icon.icon::before {
     content: '\e9d9';
 }
 
-.form-rate-stars input:checked + .icon.icon::before {
-    content: '\e9d9';
-}
-
-.form-rate-stars input:checked + * ~ .icon.icon::before {
-    content: '\e9d7';
-}
-
-.form-rate-stars:hover label.icon.icon::before {
-    content: '\e9d9';
-}
-
-.form-rate-stars label.icon:hover::before {
-    content: '\e9d9';
-}
-
-.form-rate-stars label.icon:hover ~ label.icon.icon::before {
+.form-rate-stars .icon:hover ~ .icon::before {
     content: '\e9d7';
 }
 
