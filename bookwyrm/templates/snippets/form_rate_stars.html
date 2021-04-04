@@ -13,7 +13,7 @@
         type="radio"
         name="rating"
         value="0"
-        {% if book|user_rating:user == 0 %}checked{% endif %}
+        {% if default_rating == 0 or not default_rating %}checked{% endif %}
     >
 
     <label class="is-sr-only" for="{{ type|slugify }}-{{ book.id }}-no-rating">
@@ -27,13 +27,13 @@
             type="radio"
             name="rating"
             value="{{ forloop.counter }}"
-            {% if book|user_rating:user == forloop.counter %}checked{% endif %}
+            {% if default_rating == forloop.counter %}checked{% endif %}
         />
 
         <label
             class="
                 icon
-                {% if forloop.counter <= book|user_rating:user %}
+                {% if forloop.counter <= default_rating %}
                 icon-star-full
                 {% else %}
                 icon-star-empty

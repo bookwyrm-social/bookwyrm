@@ -9,7 +9,7 @@
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="privacy" value="public">
 
-        {% include 'snippets/form_rate_stars.html' with book=book classes='mb-1 has-text-warning-dark' %}
+        {% include 'snippets/form_rate_stars.html' with book=book classes='mb-1 has-text-warning-dark' default_rating=book|user_rating:request.user %}
 
         <div class="field has-addons hidden">
             <div class="control">

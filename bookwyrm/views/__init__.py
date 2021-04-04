@@ -31,7 +31,7 @@ from .shelf import Shelf
 from .shelf import create_shelf, delete_shelf
 from .shelf import shelve, unshelve
 from .site import Site
-from .status import CreateStatus, DeleteStatus
+from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
 from .tag import Tag, AddTag, RemoveTag
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, EditUser, Followers, Following
