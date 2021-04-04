@@ -63,7 +63,7 @@
                 {% trans "Requested" %}
                 {% endif %}
             </td>
-            <td class="field is-grouped">
+            <td><div class="field is-grouped">
                 {# no invite OR invite not yet used #}
                 {% if not req.invite.times_used %}
                 <form name="send-invite" method="post">
@@ -98,7 +98,7 @@
                     {% endif %}
                 </form>
                 {% endif %}
-            </td>
+            </div></td>
         </tr>
         {% endfor %}
     </table>
