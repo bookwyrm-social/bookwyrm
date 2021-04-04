@@ -1,16 +1,8 @@
 """ Handle user activity """
 from django.db import transaction
-from django.utils import timezone
 
 from bookwyrm import models
 from bookwyrm.sanitize_html import InputHtmlParser
-
-
-def delete_status(status):
-    """ replace the status with a tombstone """
-    status.deleted = True
-    status.deleted_date = timezone.now()
-    status.save()
 
 
 def create_generated_note(user, content, mention_books=None, privacy="public"):

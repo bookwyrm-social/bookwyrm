@@ -99,7 +99,11 @@ class ManageInviteRequests(View):
             page = 1
 
         sort = request.GET.get("sort")
-        sort_fields = ["created_date", "invite__times_used"]
+        sort_fields = [
+            "created_date",
+            "invite__times_used",
+            "invite__invitees__created_date",
+        ]
         if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
             sort = "-created_date"
 
@@ -115,7 +119,7 @@ class ManageInviteRequests(View):
         if "requested" in status_filters:
             filters.append({"invite__isnull": True})
         if "sent" in status_filters:
-            filters.append({"invite__isnull": False})
+            filters.append({"invite__isnull": False, "invite__times_used": 0})
         if "accepted" in status_filters:
             filters.append({"invite__isnull": False, "invite__times_used__gte": 1})
 

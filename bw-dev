@@ -76,7 +76,7 @@ case "$CMD" in
         docker-compose exec web python manage.py collectstatic --no-input
         docker-compose restart
         ;;
-    populate_feeds)
+    populate_streams)
         execweb python manage.py populate_streams
         ;;
     *)

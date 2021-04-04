@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from markdown import markdown
@@ -10,7 +11,6 @@ from markdown import markdown
 from bookwyrm import forms, models
 from bookwyrm.sanitize_html import InputHtmlParser
 from bookwyrm.settings import DOMAIN
-from bookwyrm.status import delete_status
 from bookwyrm.utils import regex
 from .helpers import handle_remote_webfinger
 from .reading import edit_readthrough
@@ -20,6 +20,12 @@ from .reading import edit_readthrough
 @method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
     """ the view for *posting* """
+
+    def get(self, request):
+        """ compose view (used for delete-and-redraft """
+        book = get_object_or_404(models.Edition, id=request.GET.get("book"))
+        data = {"book": book}
+        return TemplateResponse(request, "compose.html", data)
 
     def post(self, request, status_type):
         """ create  status of whatever type """
@@ -69,9 +75,10 @@ class CreateStatus(View):
         # update a readthorugh, if needed
         edit_readthrough(request)
 
-        return redirect(request.headers.get("Referer", "/"))
+        return redirect("/")
 
 
+@method_decorator(login_required, name="dispatch")
 class DeleteStatus(View):
     """ tombstone that bad boy """
 
@@ -84,8 +91,42 @@ class DeleteStatus(View):
             return HttpResponseBadRequest()
 
         # perform deletion
-        delete_status(status)
+        status.delete()
         return redirect(request.headers.get("Referer", "/"))
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteAndRedraft(View):
+    """ delete a status but let the user re-create it """
+
+    def post(self, request, status_id):
+        """ delete and tombstone a status """
+        status = get_object_or_404(
+            models.Status.objects.select_subclasses(), id=status_id
+        )
+        if isinstance(status, (models.GeneratedNote, models.ReviewRating)):
+            return HttpResponseBadRequest()
+
+        # don't let people redraft other people's statuses
+        if status.user != request.user:
+            return HttpResponseBadRequest()
+
+        status_type = status.status_type.lower()
+        if status.reply_parent:
+            status_type = "reply"
+
+        data = {
+            "draft": status,
+            "type": status_type,
+        }
+        if hasattr(status, "book"):
+            data["book"] = status.book
+        elif status.mention_books:
+            data["book"] = status.mention_books.first()
+
+        # perform deletion
+        status.delete()
+        return TemplateResponse(request, "compose.html", data)
 
 
 def find_mentions(content):

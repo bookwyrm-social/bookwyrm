@@ -197,11 +197,31 @@ urlpatterns = [
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
     # statuses
-    re_path(r"%s(.json)?/?$" % status_path, views.Status.as_view()),
-    re_path(r"%s/activity/?$" % status_path, views.Status.as_view()),
-    re_path(r"%s/replies(.json)?/?$" % status_path, views.Replies.as_view()),
-    re_path(r"^post/(?P<status_type>\w+)/?$", views.CreateStatus.as_view()),
-    re_path(r"^delete-status/(?P<status_id>\d+)/?$", views.DeleteStatus.as_view()),
+    re_path(r"%s(.json)?/?$" % status_path, views.Status.as_view(), name="status"),
+    re_path(r"%s/activity/?$" % status_path, views.Status.as_view(), name="status"),
+    re_path(
+        r"%s/replies(.json)?/?$" % status_path, views.Replies.as_view(), name="replies"
+    ),
+    re_path(
+        r"^post/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
+        r"^post/(?P<status_type>\w+)/?$",
+        views.CreateStatus.as_view(),
+        name="create-status",
+    ),
+    re_path(
+        r"^delete-status/(?P<status_id>\d+)/?$",
+        views.DeleteStatus.as_view(),
+        name="delete-status",
+    ),
+    re_path(
+        r"^redraft-status/(?P<status_id>\d+)/?$",
+        views.DeleteAndRedraft.as_view(),
+        name="redraft",
+    ),
     # interact
     re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view()),
     re_path(r"^unfavorite/(?P<status_id>\d+)/?$", views.Unfavorite.as_view()),
