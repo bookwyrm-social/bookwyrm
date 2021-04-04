@@ -40,6 +40,7 @@ class StatusViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
+        models.SiteSettings.objects.create()
 
     def test_handle_status(self, _):
         """ create a status """
@@ -165,6 +166,61 @@ class StatusViews(TestCase):
         # the mentioned user in the parent post is only included if @'ed
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
+
+    def test_delete_and_redraft(self, _):
+        """ delete and re-draft a status """
+        view = views.DeleteAndRedraft.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Comment.objects.create(
+                content="hi", book=self.book, user=self.local_user
+            )
+
+        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+            result = view(request, status.id)
+            self.assertTrue(mock.called)
+        result.render()
+
+        # make sure it was deleted
+        status.refresh_from_db()
+        self.assertTrue(status.deleted)
+
+    def test_delete_and_redraft_invalid_status_type_rating(self, _):
+        """ you can't redraft generated statuses """
+        view = views.DeleteAndRedraft.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.ReviewRating.objects.create(
+                book=self.book, rating=2.0, user=self.local_user
+            )
+
+        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+            result = view(request, status.id)
+            self.assertFalse(mock.called)
+        self.assertEqual(result.status_code, 400)
+
+        status.refresh_from_db()
+        self.assertFalse(status.deleted)
+
+    def test_delete_and_redraft_invalid_status_type_generated_note(self, _):
+        """ you can't redraft generated statuses """
+        view = views.DeleteAndRedraft.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.GeneratedNote.objects.create(
+                content="hi", user=self.local_user
+            )
+
+        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+            result = view(request, status.id)
+            self.assertFalse(mock.called)
+        self.assertEqual(result.status_code, 400)
+
+        status.refresh_from_db()
+        self.assertFalse(status.deleted)
 
     def test_find_mentions(self, _):
         """ detect and look up @ mentions of users """
