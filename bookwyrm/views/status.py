@@ -104,7 +104,7 @@ class DeleteAndRedraft(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        if isinstance(status, models.GeneratedNote):
+        if isinstance(status, (models.GeneratedNote, models.Rating)):
             return HttpResponseBadRequest()
 
         # don't let people redraft other people's statuses
