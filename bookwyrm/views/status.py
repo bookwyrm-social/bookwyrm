@@ -113,7 +113,7 @@ class DeleteAndRedraft(View):
 
         status_type = status.status_type.lower()
         if status.reply_parent:
-            status_type = 'reply'
+            status_type = "reply"
 
         data = {
             "draft": status,
