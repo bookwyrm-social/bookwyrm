@@ -57,7 +57,7 @@
         {% for book in goal.books %}
         <div class="column is-one-fifth">
             <div class="is-clipped">
-                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
+                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
             </div>
         </div>
         {% endfor %}
