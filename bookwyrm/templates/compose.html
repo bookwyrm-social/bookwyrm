@@ -19,6 +19,10 @@
     </div>
     {% endif %}
     <div class="column is-two-thirds">
+        {% if draft.reply_parent %}
+        {% include 'snippets/status/status.html' with status=draft.reply_parent no_interact=True %}
+        {% endif %}
+
         {% if not draft %}
         {% include 'snippets/create_status.html' %}
         {% else %}
@@ -26,6 +30,5 @@
         {% endif %}
     </div>
 </div>
-{{ form.ap_p }}
 {% endwith %}
 {% endblock %}

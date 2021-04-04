@@ -27,7 +27,8 @@
             {% trans "Delete status" %}
         </button>
     </form>
-
+    {% elif no_interact %}
+    {# nothing here #}
     {% elif request.user.is_authenticated %}
     <div class="field has-addons">
         <div class="control">

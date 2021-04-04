@@ -104,16 +104,20 @@ class DeleteAndRedraft(View):
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
-        if isinstance(status, (models.GeneratedNote, models.Rating)):
+        if isinstance(status, (models.GeneratedNote, models.ReviewRating)):
             return HttpResponseBadRequest()
 
         # don't let people redraft other people's statuses
         if status.user != request.user:
             return HttpResponseBadRequest()
 
+        status_type = status.status_type.lower()
+        if status.reply_parent:
+            status_type = 'reply'
+
         data = {
             "draft": status,
-            "type": status.status_type.lower(),
+            "type": status_type,
         }
         if hasattr(status, "book"):
             data["book"] = status.book
