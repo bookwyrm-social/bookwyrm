@@ -1,12 +1,26 @@
 {% load i18n %}
 <nav class="pagination" aria-label="pagination">
-    <a class="pagination-previous {% if not page.has_previous %}is-disabled{% endif %}" {% if page.has_previous %}href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}"{% endif %}>
-        <span class="icon icon-arrow-left"></span>
+    <a
+        class="pagination-previous {% if not page.has_previous %}is-disabled{% endif %}"
+        {% if page.has_previous %}
+        href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}"
+        {% else %}
+        aria-hidden="true"
+        {% endif %}>
+
+        <span class="icon icon-arrow-left" aria-hidden="true"></span>
         {% trans "Previous" %}
     </a>
 
-    <a class="pagination-next {% if not page.has_next %}is-disabled{% endif %}" {% if page.has_next %}href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}"{% endif %}>
+    <a
+        class="pagination-next {% if not page.has_next %}is-disabled{% endif %}"
+        {% if page.has_next %}
+        href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}"
+        {% else %}
+        aria-hidden="true"
+        {% endif %}>
+
         {% trans "Next" %}
-        <span class="icon icon-arrow-right"></span>
+        <span class="icon icon-arrow-right" aria-hidden="true"></span>
     </a>
 </nav>
