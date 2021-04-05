@@ -56,7 +56,9 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
 
         view(request, server.id)
+        server.refresh_from_db()
         self.assertEqual(server.status, "blocked")
 
         view(request, server.id)
+        server.refresh_from_db()
         self.assertEqual(server.status, "federated")
