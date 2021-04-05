@@ -85,7 +85,9 @@ class TemplateTags(TestCase):
             second_child = models.Status.objects.create(
                 reply_parent=parent, user=self.user, content="hi"
             )
-            with patch("bookwyrm.activitystreams.ActivityStream.remove_status"):
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+            ):
                 third_child = models.Status.objects.create(
                     reply_parent=parent,
                     user=self.user,

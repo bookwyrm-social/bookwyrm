@@ -164,7 +164,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)

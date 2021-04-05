@@ -116,7 +116,9 @@ class Status(TestCase):
 
     def test_status_to_activity_tombstone(self, *_):
         """ subclass of the base model version with a "pure" serializer """
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_status"):
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+        ):
             status = models.Status.objects.create(
                 content="test content",
                 user=self.local_user,
