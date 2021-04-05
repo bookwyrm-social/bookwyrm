@@ -98,7 +98,7 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
 REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
 
-MAX_STREAM_LENGTH = 3  # int(env("MAX_STREAM_LENGTH", 200))
+MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 STREAMS = ["home", "local", "federated"]
 
 # Database
