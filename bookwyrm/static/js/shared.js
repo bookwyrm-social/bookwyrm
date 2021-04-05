@@ -1,4 +1,4 @@
-/* globals setDisplay TabGroup toggleAllCheckboxes updateDisplay */
+/* globals setDisplay TabGroup updateDisplay */
 
 // set up javascript listeners
 window.onload = function() {
@@ -36,13 +36,6 @@ window.onload = function() {
     // update localstorage
     Array.from(document.getElementsByClassName('set-display'))
         .forEach(t => t.onclick = updateDisplay);
-
-    // Toggle all checkboxes.
-    document
-        .querySelectorAll('[data-action="toggle-all"]')
-        .forEach(input => {
-            input.addEventListener('change', toggleAllCheckboxes);
-        });
 };
 
 function back(e) {
