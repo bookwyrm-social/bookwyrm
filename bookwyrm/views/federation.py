@@ -1,7 +1,7 @@
 """ manage federated servers """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -61,3 +61,10 @@ class FederatedServer(View):
             ),
         }
         return TemplateResponse(request, "settings/federated_server.html", data)
+
+    def post(self, request, server):  # pylint: disable=unused-argument
+        """ (un)block a server """
+        server = get_object_or_404(models.FederatedServer, id=server)
+        server.status = "blocked" if server.status == "federated" else "federated"
+        server.save()
+        return redirect("settings-federated-server", server.id)
