@@ -16,8 +16,8 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import get_activity_feed, get_user_from_username, is_api_request
-from .helpers import is_blocked, object_visible_to_user
+from .helpers import get_user_from_username, is_api_request
+from .helpers import is_blocked, privacy_filter, object_visible_to_user
 
 
 # pylint: disable= no-self-use
@@ -72,9 +72,9 @@ class User(View):
                 break
 
         # user's posts
-        activities = get_activity_feed(
+        activities = privacy_filter(
             request.user,
-            queryset=user.status_set.select_subclasses(),
+            user.status_set.select_subclasses(),
         )
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
@@ -163,20 +163,26 @@ class EditUser(View):
             data = {"form": form, "user": request.user}
             return TemplateResponse(request, "preferences/edit_user.html", data)
 
-        user = form.save(commit=False)
-
-        if "avatar" in form.files:
-            # crop and resize avatar upload
-            image = Image.open(form.files["avatar"])
-            image = crop_avatar(image)
-
-            # set the name to a hash
-            extension = form.files["avatar"].name.split(".")[-1]
-            filename = "%s.%s" % (uuid4(), extension)
-            user.avatar.save(filename, image, save=False)
-        user.save()
+        user = save_user_form(form)
 
         return redirect(user.local_path)
+
+
+def save_user_form(form):
+    """ special handling for the user form """
+    user = form.save(commit=False)
+
+    if "avatar" in form.files:
+        # crop and resize avatar upload
+        image = Image.open(form.files["avatar"])
+        image = crop_avatar(image)
+
+        # set the name to a hash
+        extension = form.files["avatar"].name.split(".")[-1]
+        filename = "%s.%s" % (uuid4(), extension)
+        user.avatar.save(filename, image, save=False)
+    user.save()
+    return user
 
 
 def crop_avatar(image):

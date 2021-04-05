@@ -108,10 +108,11 @@ class Register(View):
         )
         if invite:
             invite.times_used += 1
+            invite.invitees.add(user)
             invite.save()
 
         login(request, user)
-        return redirect("/")
+        return redirect("get-started-profile")
 
 
 @method_decorator(login_required, name="dispatch")

@@ -1,11 +1,12 @@
 """ the good stuff! the books! """
+from datetime import datetime
 import dateutil.parser
+import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
@@ -19,7 +20,9 @@ from .shelf import handle_unshelve
 def start_reading(request, book_id):
     """ begin reading a book """
     book = get_edition(book_id)
-    shelf = models.Shelf.objects.filter(identifier="reading", user=request.user).first()
+    reading_shelf = models.Shelf.objects.filter(
+        identifier=models.Shelf.READING, user=request.user
+    ).first()
 
     # create a readthrough
     readthrough = update_readthrough(request, book=book)
@@ -29,20 +32,27 @@ def start_reading(request, book_id):
         # create a progress update if we have a page
         readthrough.create_update()
 
-    # shelve the book
-    if request.POST.get("reshelve", True):
-        try:
-            current_shelf = models.Shelf.objects.get(user=request.user, edition=book)
-            handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
-            pass
-    models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
+    current_status_shelfbook = (
+        models.ShelfBook.objects.select_related("shelf")
+        .filter(
+            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+            user=request.user,
+            book=book,
+        )
+        .first()
+    )
+    if current_status_shelfbook is not None:
+        if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
+            handle_unshelve(book, current_status_shelfbook.shelf)
+        else:  # It already was on the shelf
+            return redirect(request.headers.get("Referer", "/"))
+
+    models.ShelfBook.objects.create(book=book, shelf=reading_shelf, user=request.user)
 
     # post about it (if you want)
     if request.POST.get("post-status"):
         privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, shelf, book, privacy)
+        handle_reading_status(request.user, reading_shelf, book, privacy)
 
     return redirect(request.headers.get("Referer", "/"))
 
@@ -52,27 +62,38 @@ def start_reading(request, book_id):
 def finish_reading(request, book_id):
     """ a user completed a book, yay """
     book = get_edition(book_id)
-    shelf = models.Shelf.objects.filter(identifier="read", user=request.user).first()
+    finished_read_shelf = models.Shelf.objects.filter(
+        identifier=models.Shelf.READ_FINISHED, user=request.user
+    ).first()
 
     # update or create a readthrough
     readthrough = update_readthrough(request, book=book)
     if readthrough:
         readthrough.save()
 
-    # shelve the book
-    if request.POST.get("reshelve", True):
-        try:
-            current_shelf = models.Shelf.objects.get(user=request.user, edition=book)
-            handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
-            pass
-    models.ShelfBook.objects.create(book=book, shelf=shelf, user=request.user)
+    current_status_shelfbook = (
+        models.ShelfBook.objects.select_related("shelf")
+        .filter(
+            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+            user=request.user,
+            book=book,
+        )
+        .first()
+    )
+    if current_status_shelfbook is not None:
+        if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
+            handle_unshelve(book, current_status_shelfbook.shelf)
+        else:  # It already was on the shelf
+            return redirect(request.headers.get("Referer", "/"))
+
+    models.ShelfBook.objects.create(
+        book=book, shelf=finished_read_shelf, user=request.user
+    )
 
     # post about it (if you want)
     if request.POST.get("post-status"):
         privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, shelf, book, privacy)
+        handle_reading_status(request.user, finished_read_shelf, book, privacy)
 
     return redirect(request.headers.get("Referer", "/"))
 
@@ -123,6 +144,12 @@ def create_readthrough(request):
     return redirect(request.headers.get("Referer", "/"))
 
 
+def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    start_date = dateutil.parser.parse(date_str, ignoretz=True)
+    return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
+
+
 def update_readthrough(request, book=None, create=True):
     """ updates but does not save dates on a readthrough """
     try:
@@ -141,16 +168,18 @@ def update_readthrough(request, book=None, create=True):
     start_date = request.POST.get("start_date")
     if start_date:
         try:
-            start_date = timezone.make_aware(dateutil.parser.parse(start_date))
-            readthrough.start_date = start_date
+            readthrough.start_date = load_date_in_user_tz_as_utc(
+                start_date, request.user
+            )
         except ParserError:
             pass
 
     finish_date = request.POST.get("finish_date")
     if finish_date:
         try:
-            finish_date = timezone.make_aware(dateutil.parser.parse(finish_date))
-            readthrough.finish_date = finish_date
+            readthrough.finish_date = load_date_in_user_tz_as_utc(
+                finish_date, request.user
+            )
         except ParserError:
             pass
 

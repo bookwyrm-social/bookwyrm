@@ -1,10 +1,10 @@
 """ non-interactive pages """
-from django.db.models import Max
 from django.template.response import TemplateResponse
 from django.views import View
 
-from bookwyrm import forms, models
+from bookwyrm import forms
 from .feed import Feed
+from . import helpers
 
 
 # pylint: disable= no-self-use
@@ -33,20 +33,9 @@ class Discover(View):
 
     def get(self, request):
         """ tiled book activity page """
-        books = (
-            models.Edition.objects.filter(
-                review__published_date__isnull=False,
-                review__deleted=False,
-                review__user__local=True,
-                review__privacy__in=["public", "unlisted"],
-            )
-            .exclude(cover__exact="")
-            .annotate(Max("review__published_date"))
-            .order_by("-review__published_date__max")[:6]
-        )
-
         data = {
             "register_form": forms.RegisterForm(),
-            "books": list(set(books)),
+            "request_form": forms.InviteRequestForm(),
+            "books": helpers.get_discover_books(),
         }
         return TemplateResponse(request, "discover/discover.html", data)

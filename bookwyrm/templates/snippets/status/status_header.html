@@ -35,3 +35,9 @@
 {% elif status.mention_books %}
 <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
 {% endif %}
+
+{% if status.progress %}
+<p class="help">
+({% if status.progress_mode == 'PG' %}{% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %}{% else %}{{ status.progress }}%{% endif %})
+</p>
+{% endif %}

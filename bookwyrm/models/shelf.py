@@ -11,6 +11,12 @@ from . import fields
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
     """ a list of books owned by a user """
 
+    TO_READ = "to-read"
+    READING = "reading"
+    READ_FINISHED = "read"
+
+    READ_STATUS_IDENTIFIERS = (TO_READ, READING, READ_FINISHED)
+
     name = fields.CharField(max_length=100)
     identifier = models.CharField(max_length=100)
     user = fields.ForeignKey(
@@ -31,9 +37,13 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
         """ set the identifier """
         super().save(*args, **kwargs)
         if not self.identifier:
-            slug = re.sub(r"[^\w]", "", self.name).lower()
-            self.identifier = "%s-%d" % (slug, self.id)
-            super().save(*args, **kwargs)
+            self.identifier = self.get_identifier()
+            super().save(*args, **kwargs, broadcast=False)
+
+    def get_identifier(self):
+        """ custom-shelf-123 for the url """
+        slug = re.sub(r"[^\w]", "", self.name).lower()
+        return "{:s}-{:d}".format(slug, self.id)
 
     @property
     def collection_queryset(self):
@@ -43,7 +53,8 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     def get_remote_id(self):
         """ shelf identifier instead of id """
         base_path = self.user.remote_id
-        return "%s/shelf/%s" % (base_path, self.identifier)
+        identifier = self.identifier or self.get_identifier()
+        return "%s/books/%s" % (base_path, identifier)
 
     class Meta:
         """ user/shelf unqiueness """

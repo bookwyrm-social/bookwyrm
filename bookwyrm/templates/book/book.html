@@ -35,20 +35,27 @@
     </div>
 
     <div class="columns">
-        <div class="column is-one-fifth is-clipped">
-            {% include 'snippets/book_cover.html' with book=book size=large %}
-            {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            {% include 'snippets/shelve_button/shelve_button.html' %}
+        <div class="column is-one-fifth">
+            <div class="is-clipped">
+                {% include 'snippets/book_cover.html' with book=book size=large %}
+                {% include 'snippets/rate_action.html' with user=request.user book=book %}
+            </div>
+            <div class="mb-3">
+                {% include 'snippets/shelve_button/shelve_button.html' %}
+            </div>
 
             {% if request.user.is_authenticated and not book.cover %}
             <div class="block">
                 {% trans "Add cover" as button_text %}
                 {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
                 {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
+                {% if request.GET.cover_error %}
+                <p class="help is-danger">{% trans "Failed to load cover" %}</p>
+                {% endif %}
             </div>
             {% endif %}
 
-            <section class="content">
+            <section class="content is-clipped">
                 <dl>
                     {% if book.isbn_13 %}
                     <div class="is-flex is-justify-content-space-between is-align-items-center">
@@ -72,24 +79,7 @@
                     {% endif %}
                 </dl>
 
-                <p>
-                    {% if book.physical_format and not book.pages %}
-                    {{ book.physical_format | title }}
-                    {% elif book.physical_format and book.pages %}
-                    {% blocktrans with format=book.physical_format|title pages=book.pages %}{{ format }}, {{ pages }} pages{% endblocktrans %}
-                    {% elif book.pages %}
-                    {% blocktrans with pages=book.pages %}{{ pages }} pages{% endblocktrans %}
-                    {% endif %}
-                </p>
-                <p>
-                    {% if book.published_date and book.publishers %}
-                    {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
-                    {% elif book.published_date %}
-                    {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
-                    {% elif book.publishers %}
-                    {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
-                    {% endif %}
-                </p>
+                {% include 'book/publisher_info.html' with book=book %}
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
@@ -178,32 +168,11 @@
                 {% include 'snippets/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
-            {% endif %}
 
-            {% if request.user.is_authenticated %}
             <section class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </section>
-
-            <section class="block">
-                <form name="tag" action="/tag/" method="post">
-                    <label for="tags" class="is-3">{% trans "Tags" %}</label>
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    <input id="tags" class="input" type="text" name="name">
-                    <button class="button" type="submit">{% trans "Add tag" %}</button>
-                </form>
-            </section>
             {% endif %}
-
-            <div class="block">
-                <div class="field is-grouped is-grouped-multiline">
-                {% for tag in tags %}
-                    {% include 'snippets/tag.html' with book=book tag=tag user_tags=user_tags %}
-                {% endfor %}
-                </div>
-            </div>
-
         </div>
         <div class="column is-one-fifth">
             {% if book.subjects %}
@@ -295,4 +264,8 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/tabs.js"></script>
 {% endblock %}

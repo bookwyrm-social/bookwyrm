@@ -1,0 +1,16 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<label class="label is-block" for="id_language">{% trans "Language:" %}</label>
+<div class="select">
+    <select id="id_language" name="language">
+        <option value="">{% trans "Any" %}</option>
+        {% for language in languages %}
+        <option value="{{ language }}" {% if request.GET.language == language %}selected{% endif %}>
+            {{ language }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+{% endblock %}

@@ -1,3 +1,5 @@
+/* globals setDisplay TabGroup toggleAllCheckboxes updateDisplay */
+
 // set up javascript listeners
 window.onload = function() {
     // buttons that display or hide content
@@ -61,9 +63,9 @@ function polling(el, delay) {
 
 function updateCountElement(el, data) {
     const currentCount = el.innerText;
-    const count = data[el.getAttribute('data-poll')];
+    const count = data.count;
     if (count != currentCount) {
-        addRemoveClass(el, 'hidden', count < 1);
+        addRemoveClass(el.closest('[data-poll-wrapper]'), 'hidden', count < 1);
         el.innerText = count;
     }
 }
@@ -93,7 +95,7 @@ function toggleAction(e) {
 
     // show/hide container
     var container = document.getElementById('hide-' + targetId);
-    if (!!container) {
+    if (container) {
         addRemoveClass(container, 'hidden', pressed);
     }
 

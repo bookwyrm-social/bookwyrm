@@ -139,7 +139,6 @@ def time_since(date):
     if not isinstance(date, datetime):
         return ""
     now = timezone.now()
-    delta = now - date
 
     if date < (now - relativedelta(weeks=1)):
         formatter = "%b %-d"

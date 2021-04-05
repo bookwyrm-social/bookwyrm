@@ -2,36 +2,62 @@
 {% load i18n %}
 {% load bookwyrm_tags %}
 
+{% with status_type=request.GET.status_type %}
 <div class="tab-group">
     <div class="tabs is-boxed" role="tablist">
         <ul>
-            <li class="is-active">
-                <a href="#review-{{ book.id }}" id="tab-review-{{ book.id }}" role="tab" aria-selected="true" aria-controls="review-{{ book.id }}" data-category="tab-option-{{ book.id }}">{% trans "Review" %}</a>
+            <li class="{% if status_type == 'review' or not status_type %}is-active{% endif %}">
+                <a
+                    href="{{ request.path }}?status_type=review&book={{ book.id }}"
+                    id="tab-review-{{ book.id }}"
+                    role="tab"
+                    aria-selected="{% if status_type == 'review' or not status_type %}true{% else %}false{% endif %}"
+                    aria-controls="review-{{ book.id }}"
+                    data-category="tab-option-{{ book.id }}">
+                    {% trans "Review" %}
+                </a>
             </li>
-            <li>
-                <a href="#comment-{{ book.id}}" id="tab-comment-{{ book.id }}" role="tab" aria-selected="false" aria-controls="comment-{{ book.id}}" data-category="tab-option-{{ book.id }}">{% trans "Comment" %}</a>
+            <li class="{% if status_type == 'comment' %}is-active{% endif %}">
+                <a
+                    href="{{ request.path }}?status_type=comment&book={{ book.id}}"
+                    id="tab-comment-{{ book.id }}"
+                    role="tab"
+                    aria-selected="{% if status_type == 'comment' %}true{% else %}false{% endif %}"
+                    aria-controls="comment-{{ book.id}}"
+                    data-category="tab-option-{{ book.id }}">
+                    {% trans "Comment" %}
+                </a>
             </li>
-            <li>
-                <a href="#quote-{{ book.id }}" id="tab-quote-{{ book.id }}" role="tab" aria-selected="false" aria-controls="quote-{{ book.id }}" data-category="tab-option-{{ book.id }}">{% trans "Quote" %}</a>
+            <li class="{% if status_type == 'quote' %}is-active{% endif %}">
+                <a
+                    href="{{ request.path }}?status_type=quote&book={{ book.id }}"
+                    id="tab-quote-{{ book.id }}"
+                    role="tab"
+                    aria-selected="{% if status_type == 'quote' %}true{% else %}false{% endif %}"
+                    aria-controls="quote-{{ book.id }}"
+                    data-category="tab-option-{{ book.id }}">
+                    {% trans "Quote" %}
+                </a>
             </li>
         </ul>
     </div>
 
-    <div class="tab-option-{{ book.id }}" id="review-{{ book.id }}" role="tabpanel" aria-labelledby="tab-review-{{ book.id }}">
+    <div class="tab-option-{{ book.id }}" id="review-{{ book.id }}" role="tabpanel" aria-labelledby="tab-review-{{ book.id }}" {% if status_type and status_type != "review" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
         {% include 'snippets/create_status_form.html' with type='review' %}
         {% endwith %}
     </div>
 
-    <div class="tab-option-{{ book.id }}" id="comment-{{ book.id }}" role="tabpanel" aria-labelledby="tab-comment-{{ book.id }}" hidden>
+    <div class="tab-option-{{ book.id }}" id="comment-{{ book.id }}" role="tabpanel" aria-labelledby="tab-comment-{{ book.id }}" {% if status_type != "comment" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
         {% include 'snippets/create_status_form.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
         {% endwith %}
     </div>
 
-    <div class="tab-option-{{ book.id }}" id="quote-{{ book.id }}" role="tabpanel" aria-labelledby="tab-quote-{{ book.id }}" hidden>
+    <div class="tab-option-{{ book.id }}" id="quote-{{ book.id }}" role="tabpanel" aria-labelledby="tab-quote-{{ book.id }}" {% if status_type != "quote" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
         {% include 'snippets/create_status_form.html' with type="quotation" placeholder="An excerpt from '"|add:book.title|add:"'" %}
         {% endwith %}
     </div>
 </div>
+{% endwith %}

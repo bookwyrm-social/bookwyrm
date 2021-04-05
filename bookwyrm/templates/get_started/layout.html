@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Welcome" %}{% endblock %}
+
+{% block content %}
+{% with site_name=site.name %}
+<div class="modal is-active" role="dialog" aria-modal="true" aria-labelledby="get-started-header">
+    <div class="modal-background"></div>
+    <div class="modal-card is-fullwidth">
+        <header class="modal-card-head">
+            <img class="image logo mr-2" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" aria-hidden="true">
+            <h1 class="modal-card-title" id="get-started-header">
+                {% blocktrans %}Welcome to {{ site_name }}!{% endblocktrans %}
+                <span class="subtitle is-block">
+                    {% trans "These are some first steps to get you started." %}
+                </span>
+            </h1>
+            <a href="/" class="delete" aria-label="{% trans 'Close' %}"></a>
+        </header>
+        <section class="modal-card-body">
+            {% block panel %}{% endblock %}
+        </section>
+
+        <footer class="modal-card-foot is-flex is-justify-content-space-between">
+            <nav class="breadcrumb mb-0" aria-label="breadcrumbs">
+                <ul>
+                    {% url 'get-started-profile' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Create your profile" %}</a>
+                    </li>
+                    {% url 'get-started-books' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Add books" %}</a>
+                    </li>
+                    {% url 'get-started-users' as url %}
+                    <li {% if request.path in url %}class="is-active"{% endif %}>
+                        <a {% if request.path in url %}aria-current="page"{% endif %} href="{{ url }}">{% trans "Find friends" %}</a>
+                    </li>
+                </ul>
+            </nav>
+            {% if next %}
+            <a href="{% url next %}" class="button">
+                <span>{% trans "Skip this step" %}</span>
+                <span class="icon icon-arrow-right" aria-hidden="true"></span>
+            </a>
+            {% else %}
+            <a href="/" class="button is-primary">{% trans "Finish" %}</a>
+            {% endif %}
+        </footer>
+    </div>
+    <a href="/" class="modal-close is-large" aria-label="{% trans 'Close' %}"></a>
+</div>
+{% endwith %}
+{% endblock %}
+
+

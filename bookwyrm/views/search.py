@@ -31,7 +31,7 @@ class Search(View):
             return JsonResponse([r.json() for r in book_results], safe=False)
 
         # use webfinger for mastodon style account@domain.com username
-        if re.match(r"\B%s" % regex.full_username, query):
+        if query and re.match(regex.full_username, query):
             handle_remote_webfinger(query)
 
         # do a  user search
@@ -73,6 +73,6 @@ class Search(View):
             "book_results": book_results,
             "user_results": user_results,
             "list_results": list_results,
-            "query": query,
+            "query": query or "",
         }
         return TemplateResponse(request, "search_results.html", data)

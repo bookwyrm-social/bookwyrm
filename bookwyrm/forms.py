@@ -6,7 +6,7 @@ from django import forms
 from django.forms import ModelForm, PasswordInput, widgets
 from django.forms.widgets import Textarea
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 
@@ -76,7 +76,16 @@ class ReviewForm(CustomForm):
 class CommentForm(CustomForm):
     class Meta:
         model = models.Comment
-        fields = ["user", "book", "content", "content_warning", "sensitive", "privacy"]
+        fields = [
+            "user",
+            "book",
+            "content",
+            "content_warning",
+            "sensitive",
+            "privacy",
+            "progress",
+            "progress_mode",
+        ]
 
 
 class QuotationForm(CustomForm):
@@ -120,8 +129,23 @@ class EditUserForm(CustomForm):
             "name",
             "email",
             "summary",
-            "manually_approves_followers",
             "show_goal",
+            "manually_approves_followers",
+            "discoverable",
+            "preferred_timezone",
+        ]
+        help_texts = {f: None for f in fields}
+
+
+class LimitedEditUserForm(CustomForm):
+    class Meta:
+        model = models.User
+        fields = [
+            "avatar",
+            "name",
+            "summary",
+            "manually_approves_followers",
+            "discoverable",
         ]
         help_texts = {f: None for f in fields}
 
@@ -191,6 +215,19 @@ class ExpiryWidget(widgets.Select):
             return selected_string  # "This will raise
 
         return timezone.now() + interval
+
+
+class InviteRequestForm(CustomForm):
+    def clean(self):
+        """ make sure the email isn't in use by a registered user """
+        cleaned_data = super().clean()
+        email = cleaned_data.get("email")
+        if email and models.User.objects.filter(email=email).exists():
+            self.add_error("email", _("A user with this email already exists."))
+
+    class Meta:
+        model = models.InviteRequest
+        fields = ["email"]
 
 
 class CreateInviteForm(CustomForm):

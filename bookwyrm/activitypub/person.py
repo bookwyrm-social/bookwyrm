@@ -21,14 +21,14 @@ class Person(ActivityObject):
 
     preferredUsername: str
     inbox: str
-    outbox: str
-    followers: str
     publicKey: PublicKey
+    followers: str = None
+    outbox: str = None
     endpoints: Dict = None
     name: str = None
     summary: str = None
     icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
-    discoverable: str = True
+    discoverable: str = False
     type: str = "Person"

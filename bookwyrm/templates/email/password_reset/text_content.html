@@ -1,0 +1,9 @@
+{% extends 'email/text_layout.html' %}
+{% load i18n %}
+{% block content %}
+{% blocktrans %}You requested to reset your {{ site_name }} password. Click the link below to set a new password and log in to your account.{% endblocktrans %}
+
+{{ reset_link }}
+
+{% trans "If you didn't request to reset your password, you can ignore this email." %}
+{% endblock %}

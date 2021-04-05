@@ -1,0 +1,54 @@
+{% spaceless %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+
+<div class="
+    field is-grouped
+    stars form-rate-stars
+    {% if classes %}{{classes}}{% endif%}
+">
+    <input
+        id="{{ type|slugify }}-{{ book.id }}-no-rating"
+        class="is-sr-only"
+        type="radio"
+        name="rating"
+        value="0"
+        {% if default_rating == 0 or not default_rating %}checked{% endif %}
+    >
+
+    <label class="is-sr-only" for="{{ type|slugify }}-{{ book.id }}-no-rating">
+        {% trans "No rating" %}
+    </label>
+
+    {% for i in '12345'|make_list %}
+        <input
+            id="{{ type|slugify }}-book{{ book.id }}-star-{{ forloop.counter }}"
+            class="is-sr-only"
+            type="radio"
+            name="rating"
+            value="{{ forloop.counter }}"
+            {% if default_rating == forloop.counter %}checked{% endif %}
+        />
+
+        <label
+            class="
+                icon
+                {% if forloop.counter <= default_rating %}
+                icon-star-full
+                {% else %}
+                icon-star-empty
+                {% endif %}
+            "
+            for="{{ type|slugify }}-book{{ book.id }}-star-{{ forloop.counter }}"
+        >
+            <span class="is-sr-only">
+                {% blocktranslate trimmed count rating=forloop.counter %}
+                    {{ rating }} star
+                {% plural %}
+                    {{ rating }} stars
+                {% endblocktranslate %}
+            </span>
+        </label>
+    {% endfor %}
+</div>
+{% endspaceless %}

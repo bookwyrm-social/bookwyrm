@@ -7,6 +7,8 @@ from .base_model import BookWyrmModel
 
 
 class ProgressMode(models.TextChoices):
+    """ types of prgress available """
+
     PAGE = "PG", "page"
     PERCENT = "PCT", "percent"
 
@@ -32,10 +34,12 @@ class ReadThrough(BookWyrmModel):
         super().save(*args, **kwargs)
 
     def create_update(self):
+        """ add update to the readthrough """
         if self.progress:
             return self.progressupdate_set.create(
                 user=self.user, progress=self.progress, mode=self.progress_mode
             )
+        return None
 
 
 class ProgressUpdate(BookWyrmModel):

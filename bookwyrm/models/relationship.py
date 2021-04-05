@@ -62,7 +62,7 @@ class UserFollows(ActivityMixin, UserRelationship):
 
     status = "follows"
 
-    def to_activity(self):
+    def to_activity(self):  # pylint: disable=arguments-differ
         """ overrides default to manually set serializer """
         return activitypub.Follow(**generate_activity(self))
 

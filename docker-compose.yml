@@ -1,79 +1,88 @@
 version: '3'
 
 services:
-    nginx:
-        image: nginx:latest
-        ports:
-            - 1333:80
-        depends_on:
-            - web
-        networks:
-            - main
-        volumes:
-            - ./nginx:/etc/nginx/conf.d
-            - static_volume:/app/static
-            - media_volume:/app/images
-    db:
-        image: postgres
-        env_file: .env
-        volumes:
-          - pgdata:/var/lib/postgresql/data
-        networks:
-            - main
-    web:
-        build: .
-        env_file: .env
-        command: python manage.py runserver 0.0.0.0:8000
-        volumes:
-            - .:/app
-            - static_volume:/app/static
-            - media_volume:/app/images
-        depends_on:
-            - db
-            - celery_worker
-        networks:
-            - main
-        ports:
-            - 8000:8000
-    redis:
-        image: redis
-        env_file: .env
-        ports:
-          - 6379:6379
-        networks:
-            - main
-        restart: on-failure
-    celery_worker:
-        env_file: .env
-        build: .
-        networks:
-            - main
-        command: celery -A celerywyrm worker -l info
-        volumes:
-            - .:/app
-            - static_volume:/app/static
-            - media_volume:/app/images
-        depends_on:
-            - db
-            - redis
-        restart: on-failure
-    flower:
-        build: .
-        command: flower --port=8888
-        env_file: .env
-        environment:
-            - CELERY_BROKER_URL=${CELERY_BROKER}
-        networks:
-            - main
-        depends_on:
-            - db
-            - redis
-        restart: on-failure
-        ports:
-             - 8888:8888
+  nginx:
+    image: nginx:latest
+    ports:
+      - 1333:80
+    depends_on:
+      - web
+    networks:
+      - main
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/app/static
+      - media_volume:/app/images
+  db:
+    image: postgres
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - main
+  web:
+    build: .
+    env_file: .env
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/images
+    depends_on:
+      - db
+      - celery_worker
+      - redis_activity
+    networks:
+      - main
+    ports:
+      - 8000:8000
+  redis_activity:
+    image: redis
+    env_file: .env
+    ports:
+      - 6378:6378
+    networks:
+      - main
+    restart: on-failure
+  redis_broker:
+    image: redis
+    env_file: .env
+    ports:
+      - 6379:6379
+    networks:
+      - main
+    restart: on-failure
+  celery_worker:
+    env_file: .env
+    build: .
+    networks:
+      - main
+    command: celery -A celerywyrm worker -l info
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/images
+    depends_on:
+      - db
+      - redis_broker
+    restart: on-failure
+  flower:
+    build: .
+    command: flower --port=8888
+    env_file: .env
+    environment:
+      - CELERY_BROKER_URL=${CELERY_BROKER}
+    networks:
+      - main
+    depends_on:
+      - db
+      - redis_broker
+    restart: on-failure
+    ports:
+      - 8888:8888
 volumes:
-    pgdata:
-    static_volume:
-    media_volume:
+  pgdata:
+  static_volume:
+  media_volume:
 networks:
-    main:
+  main:

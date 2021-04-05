@@ -7,6 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
+import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
@@ -49,7 +50,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         null=True,
         blank=True,
     )
-    outbox = fields.RemoteIdField(unique=True)
+    outbox = fields.RemoteIdField(unique=True, null=True)
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
@@ -103,6 +104,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     last_active_date = models.DateTimeField(auto_now=True)
     manually_approves_followers = fields.BooleanField(default=False)
     show_goal = models.BooleanField(default=True)
+    discoverable = fields.BooleanField(default=False)
+    preferred_timezone = models.CharField(
+        choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
+        default=str(pytz.utc),
+        max_length=255,
+    )
 
     name_field = "username"
 
@@ -175,10 +182,10 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             **kwargs
         )
 
-    def to_activity(self):
+    def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
-        activity_object = super().to_activity()
+        activity_object = super().to_activity(**kwargs)
         activity_object["@context"] = [
             "https://www.w3.org/ns/activitystreams",
             "https://w3id.org/security/v1",
@@ -286,10 +293,10 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
             self.private_key, self.public_key = create_key_pair()
         return super().save(*args, **kwargs)
 
-    def to_activity(self):
+    def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
-        activity_object = super().to_activity()
+        activity_object = super().to_activity(**kwargs)
         del activity_object["@context"]
         del activity_object["type"]
         return activity_object
@@ -353,7 +360,7 @@ def set_remote_server(user_id):
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
     user.save(broadcast=False)
-    if user.bookwyrm_user:
+    if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 
 

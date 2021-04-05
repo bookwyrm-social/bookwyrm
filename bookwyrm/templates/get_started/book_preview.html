@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="column is-narrow is-clipped has-text-centered">
+    {% include 'snippets/book_cover.html' with book=book %}
+    <label class="label" for="id_shelve_{{ book.id }}">
+    <div class="select is-small">
+        <select name="{{ book.id }}" aria-label="{% blocktrans with book_title=book.title %}Have you read {{ book_title }}?{% endblocktrans %}">
+            <option disabled selected value>Add to your books</option>
+            {% for shelf in request.user.shelf_set.all %}
+            <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+

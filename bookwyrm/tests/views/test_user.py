@@ -145,6 +145,7 @@ class UserViews(TestCase):
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
         form.data["email"] = "wow@email.com"
+        form.data["preferred_timezone"] = "UTC"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
@@ -164,6 +165,7 @@ class UserViews(TestCase):
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
         form.data["email"] = "wow@email.com"
+        form.data["preferred_timezone"] = "UTC"
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
         )

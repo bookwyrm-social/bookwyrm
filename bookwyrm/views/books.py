@@ -19,8 +19,7 @@ from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
 from bookwyrm.connectors.abstract_connector import get_image
 from bookwyrm.settings import PAGE_LENGTH
-from .helpers import is_api_request, get_activity_feed, get_edition
-from .helpers import privacy_filter
+from .helpers import is_api_request, get_edition, privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -53,7 +52,7 @@ class Book(View):
 
         # all reviews for the book
         reviews = models.Review.objects.filter(book__in=work.editions.all())
-        reviews = get_activity_feed(request.user, queryset=reviews)
+        reviews = privacy_filter(request.user, reviews)
 
         # the reviews to show
         paginated = Paginator(
@@ -251,14 +250,33 @@ class Editions(View):
         """ list of editions of a book """
         work = get_object_or_404(models.Work, id=book_id)
 
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
+        filters = {}
 
+        if request.GET.get("language"):
+            filters["languages__contains"] = [request.GET.get("language")]
+        if request.GET.get("format"):
+            filters["physical_format__iexact"] = request.GET.get("format")
+
+        editions = work.editions.order_by("-edition_rank").all()
+        languages = set(sum([e.languages for e in editions], []))
+
+        paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
         data = {
-            "editions": work.editions.order_by("-edition_rank").all(),
+            "editions": paginated.page(page),
             "work": work,
+            "languages": languages,
+            "formats": set(
+                e.physical_format.lower() for e in editions if e.physical_format
+            ),
         }
-        return TemplateResponse(request, "editions.html", data)
+        return TemplateResponse(request, "book/editions.html", data)
 
 
 @login_required
@@ -271,18 +289,19 @@ def upload_cover(request, book_id):
     url = request.POST.get("cover-url")
     if url:
         image = set_cover_from_url(url)
-        book.cover.save(*image)
+        if image:
+            book.cover.save(*image)
 
-        return redirect("/book/%d" % book.id)
+        return redirect("{:s}?cover_error=True".format(book.local_path))
 
     form = forms.CoverForm(request.POST, request.FILES, instance=book)
     if not form.is_valid() or not form.files.get("cover"):
-        return redirect("/book/%d" % book.id)
+        return redirect(book.local_path)
 
     book.cover = form.files["cover"]
     book.save()
 
-    return redirect("/book/%s" % book.id)
+    return redirect(book.local_path)
 
 
 def set_cover_from_url(url):

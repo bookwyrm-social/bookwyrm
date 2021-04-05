@@ -1,3 +1,5 @@
+/* exported TabGroup */
+
 /*
 * The content below is licensed according to the W3C Software License at
 * https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
@@ -59,7 +61,9 @@ class TabGroup {
     }
 
     initPanels() {
-        let selectedPanelId = this.tablist.querySelector('[role="tab"][aria-selected="true"]').getAttribute("aria-controls");
+        let selectedPanelId = this.tablist
+            .querySelector('[role="tab"][aria-selected="true"]')
+            .getAttribute("aria-controls");
         for(let panel of this.panels) {
             if(panel.getAttribute("id") !== selectedPanelId) {
                 panel.setAttribute("hidden", "");

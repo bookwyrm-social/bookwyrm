@@ -14,6 +14,7 @@ from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
 from .fields import image_serializer
+from .readthrough import ProgressMode
 from . import fields
 
 
@@ -57,6 +58,11 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     serialize_reverse_fields = [("attachments", "attachment", "id")]
     deserialize_reverse_fields = [("attachments", "attachment")]
 
+    class Meta:
+        """ default sorting """
+
+        ordering = ("-published_date",)
+
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
@@ -65,6 +71,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
         if self.deleted:
             notification_model.objects.filter(related_status=self).delete()
+            return
 
         if (
             self.reply_parent
@@ -113,16 +120,18 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return list(set(mentions))
 
     @classmethod
-    def ignore_activity(cls, activity):
+    def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
         """ keep notes if they are replies to existing statuses """
         if activity.type == "Announce":
             try:
-                boosted = activitypub.resolve_remote_id(activity.object, save=False)
+                boosted = activitypub.resolve_remote_id(
+                    activity.object, get_activity=True
+                )
             except activitypub.ActivitySerializerError:
                 # if we can't load the status, definitely ignore it
                 return True
             # keep the boost if we would keep the status
-            return cls.ignore_activity(boosted.to_activity_dataclass())
+            return cls.ignore_activity(boosted)
 
         # keep if it if it's a custom type
         if activity.type != "Note":
@@ -229,6 +238,19 @@ class Comment(Status):
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
     )
 
+    # this is it's own field instead of a foreign key to the progress update
+    # so that the update can be deleted without impacting the status
+    progress = models.IntegerField(
+        validators=[MinValueValidator(0)], null=True, blank=True
+    )
+    progress_mode = models.CharField(
+        max_length=3,
+        choices=ProgressMode.choices,
+        default=ProgressMode.PAGE,
+        null=True,
+        blank=True,
+    )
+
     @property
     def pure_content(self):
         """ indicate the book in question for mastodon (or w/e) users """
@@ -285,13 +307,10 @@ class Review(Status):
     @property
     def pure_name(self):
         """ clarify review names for mastodon serialization """
-        if self.rating:
-            return 'Review of "{}" ({:d} stars): {}'.format(
-                self.book.title,
-                self.rating,
-                self.name,
-            )
-        return 'Review of "{}": {}'.format(self.book.title, self.name)
+        template = get_template("snippets/generated_status/review_pure_name.html")
+        return template.render(
+            {"book": self.book, "rating": self.rating, "name": self.name}
+        ).strip()
 
     @property
     def pure_content(self):
@@ -333,7 +352,7 @@ class Boost(ActivityMixin, Status):
     def save(self, *args, **kwargs):
         """ save and notify """
         super().save(*args, **kwargs)
-        if not self.boosted_status.user.local:
+        if not self.boosted_status.user.local or self.boosted_status.user == self.user:
             return
 
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
@@ -359,7 +378,7 @@ class Boost(ActivityMixin, Status):
         """ the user field is "actor" here instead of "attributedTo" """
         super().__init__(*args, **kwargs)
 
-        reserve_fields = ["user", "boosted_status"]
+        reserve_fields = ["user", "boosted_status", "published_date", "privacy"]
         self.simple_fields = [f for f in self.simple_fields if f.name in reserve_fields]
         self.activity_fields = self.simple_fields
         self.many_to_many_fields = []

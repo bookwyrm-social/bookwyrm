@@ -25,6 +25,7 @@ EMAIL_PORT = env("EMAIL_PORT", 587)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = env("EMAIL_USE_TLS", True)
+DEFAULT_FROM_EMAIL = "admin@{:s}".format(env("DOMAIN"))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "bookwyrm.timezone_middleware.TimezoneMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -92,6 +94,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bookwyrm.wsgi.application"
 
+# redis/activity streams settings
+REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
+REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
+
+MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
+STREAMS = ["home", "local", "federated"]
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases

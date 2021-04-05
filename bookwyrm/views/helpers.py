@@ -2,7 +2,7 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db.models import Q
+from django.db.models import Count, Max, Q
 
 from bookwyrm import activitypub, models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -21,7 +21,7 @@ def get_user_from_username(viewer, username):
 
 def is_api_request(request):
     """ check whether a request is asking for html or data """
-    return "json" in request.headers.get("Accept") or request.path[-5:] == ".json"
+    return "json" in request.headers.get("Accept", "") or request.path[-5:] == ".json"
 
 
 def is_bookwyrm_request(request):
@@ -59,6 +59,11 @@ def object_visible_to_user(viewer, obj):
 def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
     """ filter objects that have "user" and "privacy" fields """
     privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
+    # if there'd a deleted field, exclude deleted items
+    try:
+        queryset = queryset.filter(deleted=False)
+    except FieldError:
+        pass
 
     # exclude blocks from both directions
     if not viewer.is_anonymous:
@@ -98,54 +103,6 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
             )
         except FieldError:
             queryset = queryset.exclude(~Q(user=viewer), privacy="direct")
-
-    return queryset
-
-
-def get_activity_feed(
-    user, privacy=None, local_only=False, following_only=False, queryset=None
-):
-    """ get a filtered queryset of statuses """
-    if queryset is None:
-        queryset = models.Status.objects.select_subclasses()
-
-    # exclude deleted
-    queryset = queryset.exclude(deleted=True).order_by("-published_date")
-
-    # apply privacy filters
-    queryset = privacy_filter(user, queryset, privacy, following_only=following_only)
-
-    # only show dms if we only want dms
-    if privacy == ["direct"]:
-        # dms are direct statuses not related to books
-        queryset = queryset.filter(
-            review__isnull=True,
-            comment__isnull=True,
-            quotation__isnull=True,
-            generatednote__isnull=True,
-        )
-    else:
-        try:
-            queryset = queryset.exclude(
-                review__isnull=True,
-                comment__isnull=True,
-                quotation__isnull=True,
-                generatednote__isnull=True,
-                privacy="direct",
-            )
-        except FieldError:
-            # if we're looking at a subtype of Status (like Review)
-            pass
-
-    # filter for only local status
-    if local_only:
-        queryset = queryset.filter(user__local=True)
-
-    # remove statuses that have boosts in the same queryset
-    try:
-        queryset = queryset.filter(~Q(boosters__in=queryset))
-    except ValueError:
-        pass
 
     return queryset
 
@@ -216,3 +173,64 @@ def is_blocked(viewer, user):
     if viewer.is_authenticated and viewer in user.blocks.all():
         return True
     return False
+
+
+def get_discover_books():
+    """ list of books for the discover page """
+    return list(
+        set(
+            models.Edition.objects.filter(
+                review__published_date__isnull=False,
+                review__deleted=False,
+                review__user__local=True,
+                review__privacy__in=["public", "unlisted"],
+            )
+            .exclude(cover__exact="")
+            .annotate(Max("review__published_date"))
+            .order_by("-review__published_date__max")[:6]
+        )
+    )
+
+
+def get_suggested_users(user):
+    """ bookwyrm users you don't already know """
+    return (
+        get_annotated_users(
+            user,
+            ~Q(id=user.id),
+            ~Q(followers=user),
+            ~Q(follower_requests=user),
+            bookwyrm_user=True,
+        )
+        .order_by("-mutuals", "-last_active_date")
+        .all()[:5]
+    )
+
+
+def get_annotated_users(user, *args, **kwargs):
+    """ Users, annotated with things they have in common """
+    return (
+        models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
+        .exclude(Q(id__in=user.blocks.all()) | Q(blocks=user))
+        .annotate(
+            mutuals=Count(
+                "following",
+                filter=Q(
+                    ~Q(id=user.id),
+                    ~Q(id__in=user.following.all()),
+                    following__in=user.following.all(),
+                ),
+                distinct=True,
+            ),
+            shared_books=Count(
+                "shelfbook",
+                filter=Q(
+                    ~Q(id=user.id),
+                    shelfbook__book__parent_work__in=[
+                        s.book.parent_work for s in user.shelfbook_set.all()
+                    ],
+                ),
+                distinct=True,
+            ),
+        )
+    )

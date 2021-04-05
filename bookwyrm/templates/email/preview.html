@@ -1,0 +1,19 @@
+<html>
+<body>
+    <div>
+        <strong>Subject:</strong> {% include subject_path %}
+    </div>
+    <hr>
+
+    <strong>Html email:</strong>
+    <div style="border: 1px solid #c0c0c0; margin: 2em; padding: 1em;">
+        {% include html_content_path %}
+    </div>
+    <hr>
+
+    <strong>Text email:</strong>
+    <div style="border: 1px solid #c0c0c0; margin: 2em; padding: 1em; white-space: pre;">
+        {% include text_content_path %}
+    </div>
+</body>
+</html>

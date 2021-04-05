@@ -1,14 +1,22 @@
 """ invites when registration is closed """
+from functools import reduce
+import operator
+from urllib.parse import urlencode
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
+from bookwyrm import emailing, forms, models
 from bookwyrm.settings import PAGE_LENGTH
+from . import helpers
 
 
 # pylint: disable= no-self-use
@@ -77,3 +85,108 @@ class Invite(View):
         return TemplateResponse(request, "invite.html", data)
 
     # post handling is in views.authentication.Register
+
+
+class ManageInviteRequests(View):
+    """ grant invites like the benevolent lord you are """
+
+    def get(self, request):
+        """ view a list of requests """
+        ignored = request.GET.get("ignored", False)
+        try:
+            page = int(request.GET.get("page", 1))
+        except ValueError:
+            page = 1
+
+        sort = request.GET.get("sort")
+        sort_fields = [
+            "created_date",
+            "invite__times_used",
+            "invite__invitees__created_date",
+        ]
+        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            sort = "-created_date"
+
+        requests = models.InviteRequest.objects.filter(ignored=ignored).order_by(sort)
+
+        status_filters = [
+            s
+            for s in request.GET.getlist("status")
+            if s in ["requested", "sent", "accepted"]
+        ]
+
+        filters = []
+        if "requested" in status_filters:
+            filters.append({"invite__isnull": True})
+        if "sent" in status_filters:
+            filters.append({"invite__isnull": False, "invite__times_used": 0})
+        if "accepted" in status_filters:
+            filters.append({"invite__isnull": False, "invite__times_used__gte": 1})
+
+        if filters:
+            requests = requests.filter(
+                reduce(operator.or_, (Q(**f) for f in filters))
+            ).distinct()
+
+        paginated = Paginator(
+            requests,
+            PAGE_LENGTH,
+        )
+
+        data = {
+            "ignored": ignored,
+            "count": paginated.count,
+            "requests": paginated.page(page),
+            "sort": sort,
+        }
+        return TemplateResponse(request, "settings/manage_invite_requests.html", data)
+
+    def post(self, request):
+        """ send out an invite """
+        invite_request = get_object_or_404(
+            models.InviteRequest, id=request.POST.get("invite-request")
+        )
+        # only create a new invite if one doesn't exist already (resending)
+        if not invite_request.invite:
+            invite_request.invite = models.SiteInvite.objects.create(
+                use_limit=1,
+                user=request.user,
+            )
+            invite_request.save()
+        emailing.invite_email(invite_request)
+        return redirect(
+            "{:s}?{:s}".format(
+                reverse("settings-invite-requests"), urlencode(request.GET.dict())
+            )
+        )
+
+
+class InviteRequest(View):
+    """ prospective users sign up here """
+
+    def post(self, request):
+        """ create a request """
+        form = forms.InviteRequestForm(request.POST)
+        received = False
+        if form.is_valid():
+            received = True
+            form.save()
+
+        data = {
+            "request_form": form,
+            "request_received": received,
+            "books": helpers.get_discover_books(),
+        }
+        return TemplateResponse(request, "discover/discover.html", data)
+
+
+@require_POST
+def ignore_invite_request(request):
+    """ hide an invite request """
+    invite_request = get_object_or_404(
+        models.InviteRequest, id=request.POST.get("invite-request")
+    )
+
+    invite_request.ignored = not invite_request.ignored
+    invite_request.save()
+    return redirect("settings-invite-requests")

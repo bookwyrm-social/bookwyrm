@@ -55,11 +55,9 @@
     </h2>
     <div class="columns is-multiline">
         {% for book in goal.books %}
-        <div class="column is-narrow">
-            <div class="box">
-                <a href="{{ book.book.local_path }}">
-                    {% include 'discover/small-book.html' with book=book.book rating=goal.ratings %}
-                </a>
+        <div class="column is-one-fifth">
+            <div class="is-clipped">
+                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
             </div>
         </div>
         {% endfor %}

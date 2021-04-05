@@ -1,9 +1,18 @@
 {% extends 'feed/feed_layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load humanize %}
 {% block panel %}
 
-<h1 class="title">{% blocktrans %}{{ tab_title }} Timeline{% endblocktrans %}</h1>
+<h1 class="title">
+    {% if tab == 'home' %}
+    {% trans "Home Timeline" %}
+    {% elif tab == 'local' %}
+    {% trans "Local Timeline" %}
+    {% else %}
+    {% trans "Federated Timeline" %}
+    {% endif %}
+</h1>
 <div class="tabs">
     <ul>
         <li class="{% if tab == 'home' %}is-active{% endif %}"{% if tab == 'home' %} aria-current="page"{% endif %}>
@@ -19,6 +28,11 @@
 </div>
 
 {# announcements and system messages #}
+{% if not activities.number > 1 %}
+<a href="{{ request.path }}" class="transition-y hidden notification is-primary is-block" data-poll-wrapper>
+    {% blocktrans %}load <span data-poll="stream/{{ tab }}">0</span> unread status(es){% endblocktrans %}
+</a>
+
 {% if request.user.show_goal and not goal and tab == 'home' %}
 {% now 'Y' as year %}
 <section class="block">
@@ -27,13 +41,25 @@
 </section>
 {% endif %}
 
+{% endif %}
+
 {# activity feed #}
 {% if not activities %}
 <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
 {% endif %}
+
 {% for activity in activities %}
+
+{% if not activities.number > 1 and forloop.counter0 == 2 and suggested_users %}
+{# suggested users on the first page, two statuses down #}
+<section class="block">
+    <h2 class="title is-5">{% trans "Who to follow" %}</h2>
+    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+    <a class="help" href="{% url 'directory' %}">View directory <span class="icon icon-arrow-right"></a>
+</section>
+{% endif %}
 <div class="block">
-{% include 'snippets/status/status.html' with status=activity %}
+    {% include 'snippets/status/status.html' with status=activity %}
 </div>
 {% endfor %}
 

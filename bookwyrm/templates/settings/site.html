@@ -80,6 +80,10 @@
             {{ site_form.allow_registration }}
         </div>
         <div class="control">
+            <label class="label" for="id_allow_invite_requests">{% trans "Allow invite requests:" %}
+            {{ site_form.allow_invite_requests }}
+        </div>
+        <div class="control">
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ site_form.registration_closed_text }}
         </div>
