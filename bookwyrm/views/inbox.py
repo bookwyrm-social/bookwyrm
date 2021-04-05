@@ -68,6 +68,8 @@ def is_blocked_user_agent(request):
     """ check if a request is from a blocked server based on user agent """
     # check user agent
     user_agent = request.headers.get("User-Agent")
+    if not user_agent:
+        return False
     domain = re.match(regex.domain, user_agent)
     if not domain:
         # idk, we'll try again later with the actor
