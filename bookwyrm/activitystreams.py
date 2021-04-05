@@ -39,7 +39,7 @@ class ActivityStream(ABC):
             # add the status to the feed
             pipeline.zadd(self.stream_id(user), value)
             pipeline.zremrangebyrank(
-                self.stream_id(user), settings.MAX_STREAM_LENGTH, -1
+                self.stream_id(user), 0, -1 * settings.MAX_STREAM_LENGTH
             )
             # add to the unread status count
             pipeline.incr(self.unread_id(user))
@@ -61,7 +61,7 @@ class ActivityStream(ABC):
             pipeline.zadd(self.stream_id(viewer), self.get_value(status))
         if statuses:
             pipeline.zremrangebyrank(
-                self.stream_id(user), settings.MAX_STREAM_LENGTH, -1
+                self.stream_id(user), 0, -1 * settings.MAX_STREAM_LENGTH
             )
         pipeline.execute()
 
@@ -99,7 +99,9 @@ class ActivityStream(ABC):
 
         # only trim the stream if statuses were added
         if statuses.exists():
-            pipeline.zremrangebyrank(stream_id, settings.MAX_STREAM_LENGTH, -1)
+            pipeline.zremrangebyrank(
+                self.stream_id(user), 0, -1 * settings.MAX_STREAM_LENGTH
+            )
         pipeline.execute()
 
     def stream_users(self, status):  # pylint: disable=no-self-use
