@@ -218,7 +218,7 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
 
 @receiver(signals.post_delete, sender=models.UserFollows)
 # pylint: disable=unused-argument
-def remove_objectes_on_unfollow(sender, instance, *args, **kwargs):
+def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """ remove statuses from a feed on unfollow """
     if not instance.user_subject.local:
         return
@@ -227,7 +227,7 @@ def remove_objectes_on_unfollow(sender, instance, *args, **kwargs):
 
 @receiver(signals.post_save, sender=models.UserBlocks)
 # pylint: disable=unused-argument
-def remove_objectes_on_block(sender, instance, *args, **kwargs):
+def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """ remove statuses from all feeds on block """
     # blocks apply ot all feeds
     if instance.user_subject.local:
