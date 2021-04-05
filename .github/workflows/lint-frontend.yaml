@@ -3,12 +3,14 @@ name: Lint Frontend
 
 on:
   push:
-    branches: [ main, ci ]
+    branches: [ main, ci, frontend ]
     paths:
       - '.github/workflows/**'
       - 'static/**'
+      - '.eslintrc'
+      - '.stylelintrc'
   pull_request:
-    branches: [ main, ci ]
+    branches: [ main, ci, frontend ]
 
 jobs:
   lint:
