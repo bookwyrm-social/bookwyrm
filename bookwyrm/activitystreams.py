@@ -104,7 +104,7 @@ class ActivityStream(RedisStore):
         )
 
     def get_objects_for_store(self, store):
-        user = models.User.objects.get(id=store.split('-')[0])
+        user = models.User.objects.get(id=store.split("-")[0])
         return self.get_statuses_for_user(user)
 
 

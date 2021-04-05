@@ -11,6 +11,7 @@ r = redis.Redis(
 
 class RedisStore(ABC):
     """ sets of ranked, related objects, like statuses for a user's feed """
+
     max_length = settings.MAX_STREAM_LENGTH
 
     def get_value(self, obj):
@@ -26,9 +27,7 @@ class RedisStore(ABC):
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
-            pipeline.zremrangebyrank(
-                store, 0, -1 * self.max_length
-            )
+            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         if not execute:
             return pipeline
         # and go!
@@ -44,18 +43,16 @@ class RedisStore(ABC):
     def bulk_add_objects_to_store(self, objs, store):
         """ add a list of objects to a given store """
         pipeline = r.pipeline()
-        for obj in objs[:self.max_length]:
+        for obj in objs[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
         if objs:
-            pipeline.zremrangebyrank(
-                store, 0, -1 * self.max_length
-            )
+            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
     def bulk_remove_objects_from_store(self, objs, store):
         """ remoev a list of objects from a given store """
         pipeline = r.pipeline()
-        for obj in objs[:self.max_length]:
+        for obj in objs[: self.max_length]:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
@@ -68,14 +65,12 @@ class RedisStore(ABC):
         pipeline = r.pipeline()
         queryset = self.get_objects_for_store(store)
 
-        for obj in queryset[:self.max_length]:
+        for obj in queryset[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
 
         # only trim the store if objects were added
         if queryset.exists():
-            pipeline.zremrangebyrank(
-                store, 0, -1 * self.max_length
-            )
+            pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
 
     @abstractmethod
