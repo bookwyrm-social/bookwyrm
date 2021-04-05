@@ -6,8 +6,8 @@
     <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link type="text/css" rel="stylesheet" href="/static/css/bulma.min.css">
-    <link type="text/css" rel="stylesheet" href="/static/css/format.css">
     <link type="text/css" rel="stylesheet" href="/static/css/icons.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/bookwyrm.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
 
@@ -212,7 +212,7 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="/static/js/shared.js"></script>
+<script src="/static/js/bookwyrm.js"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
