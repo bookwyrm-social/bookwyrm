@@ -60,7 +60,7 @@ class ActivityStream(RedisStore):
         """ get the unread status count for this user's feed """
         return int(r.get(self.unread_id(user)) or 0)
 
-    def populate_streamse(self, user):
+    def populate_streams(self, user):
         """ go from zero to a timeline """
         super().populate_store(self.stream_id(user))
 
