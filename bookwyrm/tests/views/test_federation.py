@@ -44,3 +44,19 @@ class FederationViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_server_page_post(self):
+        """ block and unblock a server """
+        server = models.FederatedServer.objects.create(server_name="hi.there.com")
+        self.assertEqual(server.status, "federated")
+
+        view = views.FederatedServer.as_view()
+        request = self.factory.post("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        view(request, server.id)
+        self.assertEqual(server.status, "blocked")
+
+        view(request, server.id)
+        self.assertEqual(server.status, "federated")

@@ -70,7 +70,8 @@ def is_blocked_user_agent(request):
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
         return False
-    domain = re.match(regex.domain, user_agent)
+    url = re.search(r"+https?://{:s}/?".format(regex.domain), user_agent)
+    domain = urlparse(url).netloc
     if not domain:
         # idk, we'll try again later with the actor
         return False
@@ -89,7 +90,7 @@ def is_blocked_activity(activity_json):
 
 def is_blocked(domain):
     """ is this domain blocked? """
-    return models.FederatedServer.object.filter(
+    return models.FederatedServer.objects.filter(
         server_name=domain, status="blocked"
     ).exists()
 

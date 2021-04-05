@@ -955,9 +955,9 @@ class Inbox(TestCase):
     def test_is_blocked_activity(self):
         """ check for blocked servers """
         activity = {"actor": "https://mastodon.social/user/whaatever/else"}
-        self.assertFalse(views.inbox.is_blocked_user_agent(activity))
+        self.assertFalse(views.inbox.is_blocked_activity(activity))
 
         models.FederatedServer.objects.create(
             server_name="mastodon.social", status="blocked"
         )
-        self.assertTrue(views.inbox.is_blocked_user_agent(activity))
+        self.assertTrue(views.inbox.is_blocked_activity(activity))
