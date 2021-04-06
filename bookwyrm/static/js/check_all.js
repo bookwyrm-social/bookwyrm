@@ -13,7 +13,7 @@
 
         document
             .querySelectorAll(`#${mainCheckbox.dataset.target} [type="checkbox"]`)
-            .forEach(checkbox => {checkbox.checked = mainCheckbox.checked;});
+            .forEach(checkbox => checkbox.checked = mainCheckbox.checked);
     }
 
     document
