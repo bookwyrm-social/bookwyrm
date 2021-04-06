@@ -263,6 +263,7 @@ class SearchResult:
     title: str
     key: str
     connector: object
+    view_link: str = None
     author: str = None
     year: str = None
     cover: str = None
@@ -284,7 +285,7 @@ class Mapping:
     """ associate a local database field with a field in an external dataset """
 
     def __init__(self, local_field, remote_field=None, formatter=None):
-        noop = lambda x: x
+        noop = lambda x, *_: x
 
         self.local_field = local_field
         self.remote_field = remote_field or local_field

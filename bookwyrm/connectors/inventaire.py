@@ -11,9 +11,11 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
+        get_remote_id = lambda a, *args: self.base_url + a
         self.book_mappings = [
             Mapping("title", remote_field="wdt:P1476", formatter=get_claim),
-            Mapping("id", remote_field="id"),
+            Mapping("id", remote_field="key", formatter=get_remote_id),
+            Mapping("inventaireId", remote_field="id"),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_claim),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_claim),
@@ -35,6 +37,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=search_result.get("label"),
             key="{:s}{:s}".format(self.books_url, search_result.get("uri")),
+            view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
             cover=cover,
             connector=self,
         )

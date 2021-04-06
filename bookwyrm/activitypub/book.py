@@ -25,7 +25,7 @@ class Book(ActivityObject):
     publishedDate: str = ""
 
     openlibraryKey: str = None
-    inventiareId: str = None
+    inventaireId: str = None
     librarythingKey: str = None
     goodreadsKey: str = None
 
@@ -70,7 +70,7 @@ class Author(ActivityObject):
     aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ""
     openlibraryKey: str = None
-    inventiareId: str = None
+    inventaireId: str = None
     librarythingKey: str = None
     goodreadsKey: str = None
     wikipediaLink: str = ""
