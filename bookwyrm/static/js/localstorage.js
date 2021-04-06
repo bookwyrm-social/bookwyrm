@@ -3,32 +3,43 @@
 
 let LocalStorageTools = new class {
     constructor() {
-        // display based on localstorage vars
         document.querySelectorAll('[data-hide]')
             .forEach(t => this.setDisplay(t));
 
-        // update localstorage
         document.querySelectorAll('.set-display')
             .forEach(t => t.addEventListener('click', this.updateDisplay.bind(this)));
     }
 
-    // set javascript listeners
-    updateDisplay(e) {
+    /**
+     * Update localStorage, then display content based on keys in localStorage.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    updateDisplay(event) {
         // used in set reading goal
-        let key = e.target.dataset.id;
-        let value = e.target.dataset.value;
+        let key = event.target.dataset.id;
+        let value = event.target.dataset.value;
 
         window.localStorage.setItem(key, value);
 
         document.querySelectorAll('[data-hide="' + key + '"]')
-            .forEach(t => this.setDisplay(t));
+            .forEach(node => this.setDisplay(node));
     }
 
-    setDisplay(el) {
+    /**
+     * Toggle display of a DOM node based on its value in the localStorage.
+     *
+     * @param {object} node - DOM node to toggle.
+     *
+     * @return {undefined}
+     */
+    setDisplay(node) {
         // used in set reading goal
-        let key = el.dataset.hide;
+        let key = node.dataset.hide;
         let value = window.localStorage.getItem(key);
 
-        BookWyrm.addRemoveClass(el, 'hidden', value);
+        BookWyrm.addRemoveClass(node, 'hidden', value);
     }
 }

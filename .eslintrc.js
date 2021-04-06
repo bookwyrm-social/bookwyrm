@@ -29,7 +29,25 @@ module.exports = {
 
         // Stylistic Issues
         "arrow-spacing": "error",
+        "capitalized-comments": [
+            "warn",
+            "always",
+            {
+                "ignoreConsecutiveComments": true
+            },
+        ],
         "keyword-spacing": "error",
+        "lines-around-comment": [
+            "error",
+            {
+                "beforeBlockComment": true,
+                "beforeLineComment": true,
+                "allowBlockStart": true,
+                "allowClassStart": true,
+                "allowObjectStart": true,
+                "allowArrayStart": true,
+            },
+        ],
         "no-multiple-empty-lines": [
             "error",
             {

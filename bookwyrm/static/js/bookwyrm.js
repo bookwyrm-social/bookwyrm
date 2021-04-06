@@ -49,13 +49,28 @@ let BookWyrm = new class {
             .forEach(liveArea => this.polling(liveArea));
     }
 
-    back(e) {
-        e.preventDefault();
+    /**
+     * Go back in browser history.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    back(event) {
+        event.preventDefault();
         history.back();
     }
 
+    /**
+     * Update a counter with recurring requests to the API
+     *
+     * @param  {Object} counter - DOM node
+     * @param  {int}    delay   - frequency for polling in ms
+     *
+     * @return {undefined}
+     */
     polling(counter, delay) {
-        let poller = this;
+        const bookwyrm = this;
 
         delay = delay || 10000;
         delay += (Math.random() * 1000);
@@ -63,27 +78,51 @@ let BookWyrm = new class {
         setTimeout(function() {
             fetch('/api/updates/' + counter.dataset.poll)
                 .then(response => response.json())
-                .then(data => poller.updateCountElement(counter, data));
-            poller.polling(counter, delay * 1.25);
+                .then(data => bookwyrm.updateCountElement(counter, data));
+
+            bookwyrm.polling(counter, delay * 1.25);
         }, delay, counter);
     }
 
-    updateCountElement(el, data) {
-        const currentCount = el.innerText;
+    /**
+     * Update a counter.
+     *
+     * @param  {object} counter - DOM node
+     * @param  {object} data    - json formatted response from a fetch
+     *
+     * @return {undefined}
+     */
+    updateCountElement(counter, data) {
+        const currentCount = counter.innerText;
         const count = data.count;
 
         if (count != currentCount) {
-            this.addRemoveClass(el.closest('[data-poll-wrapper]'), 'hidden', count < 1);
-            el.innerText = count;
+            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'hidden', count < 1);
+            counter.innerText = count;
         }
     }
 
-    revealForm(e) {
-        let hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
+    /**
+     * Toggle form.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    revealForm(event) {
+        let trigger = event.currentTarget;
+        let hidden = trigger.closest('.hidden-form').querySelectorAll('.hidden')[0];
 
         this.addRemoveClass(hidden, 'hidden', !hidden);
     }
 
+    /**
+     * Execute actions on targets based on triggers.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
     toggleAction(event) {
         let trigger = event.currentTarget;
         let pressed = trigger.getAttribute('aria-pressed') == 'false';
@@ -103,21 +142,21 @@ let BookWyrm = new class {
             this.addRemoveClass(target, 'is-active', pressed);
         }
 
-        // show/hide container
+        // Show/hide container.
         let container = document.getElementById('hide-' + targetId);
 
         if (container) {
             this.addRemoveClass(container, 'hidden', pressed);
         }
 
-        // set checkbox, if appropriate
+        // Check checkbox, if appropriate.
         let checkbox = trigger.dataset['controls-checkbox'];
 
         if (checkbox) {
             document.getElementById(checkbox).checked = !!pressed;
         }
 
-        // set focus, if appropriate
+        // Set focus, if appropriate.
         let focus = trigger.dataset['focus-target'];
 
         if (focus) {
@@ -128,25 +167,45 @@ let BookWyrm = new class {
         }
     }
 
-    // @todo Only update status if the promise is successful.
-    interact(e) {
-        e.preventDefault();
+    /**
+     * Make a request and update the UI accordingly.
+     * This function is used for boosts and favourites.
+     *
+     * @todo Only update status if the promise is successful.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    interact(event) {
+        event.preventDefault();
 
-        let identifier = e.target.dataset.id;
-
-        this.ajaxPost(e.target);
+        this.ajaxPost(event.target);
 
         // @todo This probably should be done with IDs.
-        document.querySelectorAll(`.${identifier}`)
-            .forEach(t => this.addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
+        document.querySelectorAll(`.${event.target.dataset.id}`)
+            .forEach(node => this.addRemoveClass(
+                node,
+                'hidden',
+                node.className.indexOf('hidden') == -1
+            ));
     }
 
-    toggleMenu(e) {
-        let el = e.currentTarget;
-        let expanded = el.getAttribute('aria-expanded') == 'false';
-        let targetId = el.dataset.controls;
+    /**
+     * Handle ARIA states on toggled menus.
+     *
+     * @note This function seems to be redundant and conflicts with toggleAction.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    toggleMenu(event) {
+        let trigger = event.currentTarget;
+        let expanded = trigger.getAttribute('aria-expanded') == 'false';
+        let targetId = trigger.dataset.controls;
 
-        el.setAttribute('aria-expanded', expanded);
+        trigger.setAttribute('aria-expanded', expanded);
 
         if (targetId) {
             let target = document.getElementById(targetId);
@@ -155,6 +214,13 @@ let BookWyrm = new class {
         }
     }
 
+    /**
+     * Submit a form using POST.
+     *
+     * @param  {object} form - Form to be submitted
+     *
+     * @return {undefined}
+     */
     ajaxPost(form) {
         fetch(form.action, {
             method : "POST",
