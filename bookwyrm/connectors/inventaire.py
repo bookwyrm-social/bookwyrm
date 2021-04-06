@@ -10,47 +10,59 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
+        get_first = lambda a, *args: a[0]
         get_remote_id_list = lambda a, *_: [self.get_remote_id(v) for v in a]
         self.book_mappings = [
-            Mapping("title", remote_field="wdt:P1476", formatter=get_claim),
-            Mapping("subtitle", remote_field="wdt:P1680", formatter=get_claim),
+            Mapping("title", remote_field="wdt:P1476", formatter=get_first),
+            Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
             Mapping("id", remote_field="uri", formatter=self.get_remote_id),
-            Mapping("authors", remote_field="wdt:P50", formatter=get_remote_id_list),
+            # Mapping("authors", remote_field="wdt:P50", formatter=get_remote_id_list),
             Mapping("inventaireId", remote_field="uri"),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
-            Mapping("isbn13", remote_field="wdt:P212", formatter=get_claim),
-            Mapping("isbn10", remote_field="wdt:P957", formatter=get_claim),
-            Mapping("languages", remote_field="wdt:P407", formatter=get_language),
-            Mapping("publishers", remote_field="wdt:P123", formatter=resolve_key),
-            Mapping("publishedDate", remote_field="wdt:P577", formatter=get_claim),
-            Mapping("pages", remote_field="wdt:P1104", formatter=get_claim),
-            Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_claim),
-            Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_claim),
-            Mapping("subjectPlaces", remote_field="wdt:P840", formatter=resolve_key),
-            Mapping("subjects", remote_field="wdt:P921", formatter=resolve_key),
-            Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_claim),
-            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_claim),
-            Mapping("asin", remote_field="wdt:P5749", formatter=get_claim),
+            Mapping("isbn13", remote_field="wdt:P212", formatter=get_first),
+            Mapping("isbn10", remote_field="wdt:P957", formatter=get_first),
+            # Mapping("languages", remote_field="wdt:P407", formatter=get_language),
+            # Mapping("publishers", remote_field="wdt:P123", formatter=resolve_key),
+            Mapping("publishedDate", remote_field="wdt:P577", formatter=get_first),
+            Mapping("pages", remote_field="wdt:P1104", formatter=get_first),
+            Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_first),
+            Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_first),
+            # Mapping("subjectPlaces", remote_field="wdt:P840", formatter=resolve_key),
+            # Mapping("subjects", remote_field="wdt:P921", formatter=resolve_key),
+            Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_first),
+            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
+            Mapping("asin", remote_field="wdt:P5749", formatter=get_first),
         ]
         # TODO: P136: genre, P268 bnf id, P674 characters, P950 bne
 
     def get_remote_id(self, value, *_):
         """ convert an id/uri into a url """
-        return '{:s}?action=by-uris&uris={:s}'.format(self.books_url, value)
+        return "{:s}?action=by-uris&uris={:s}".format(self.books_url, value)
 
     def get_book_data(self, remote_id):
         data = get_data(remote_id)
         extracted = list(data.get("entities").values())
-        return extracted[0] if extracted else {}
+        try:
+            data = extracted[0]
+        except KeyError:
+            raise ConnectorException("Invalid book data")
+        # flatten the data so that images, uri, and claims are on the same level
+        return {
+            **data.get("claims"),
+            "uri": data.get("uri"),
+            "image": data.get("image"),
+        }
 
     def parse_search_data(self, data):
-        return data.get('results')
+        return data.get("results")
 
     def format_search_result(self, search_result):
         images = search_result.get("image")
-        cover = "{:s}/img/entities/{:s}".format(
-            self.covers_url, images[0]
-        ) if images else None
+        cover = (
+            "{:s}/img/entities/{:s}".format(self.covers_url, images[0])
+            if images
+            else None
+        )
         return SearchResult(
             title=search_result.get("label"),
             key="{:s}?action=by-uris&uris={:s}".format(
@@ -89,7 +101,6 @@ class Connector(AbstractConnector):
             raise ConnectorException("Invalid book data")
         return self.get_book_data(self.get_remote_id(uri))
 
-
     def get_authors_from_data(self, data):
         return []
 
@@ -97,7 +108,7 @@ class Connector(AbstractConnector):
         return
 
     def get_cover_url(self, cover_blob, *_):
-        """ format the relative cover url into an absolute one:
+        """format the relative cover url into an absolute one:
         {"url": "/img/entities/e794783f01b9d4f897a1ea9820b96e00d346994f"}
         """
         cover_id = cover_blob[0].get("url")
@@ -106,13 +117,10 @@ class Connector(AbstractConnector):
         return "%s%s" % (self.covers_url, cover_id)
 
 
-def get_claim(data, claim_key):
-    """ all the metadata is in a "claims" dict with a buncha wikidata keys """
-    return data.get('claims', {}).get(claim_key)
-
 def get_language(wikidata_key, *_):
     """ who here speaks "wd:Q150" """
     return wikidata_key  # TODO
+
 
 def resolve_key(wikidata_key, *_):
     """ cool, it's "wd:Q3156592" now what the heck does that mean """
