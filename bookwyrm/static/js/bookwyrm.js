@@ -9,25 +9,29 @@ let BookWyrm = new class {
     }
 
     initEventListeners() {
-        // buttons that display or hide content
         document.querySelectorAll('[data-controls]')
-            .forEach(button => button.addEventListener('click', this.toggleAction.bind(this)));
+            .forEach(button => button.addEventListener(
+                'click',
+                this.toggleAction.bind(this))
+            );
 
-        // javascript interactions (boost/fav)
         document.querySelectorAll('.interaction')
-            .forEach(button => button.addEventListener('submit', this.interact.bind(this)));
+            .forEach(button => button.addEventListener(
+                'submit',
+                this.interact.bind(this))
+            );
 
-        // handle aria settings on menus
-        document.querySelectorAll('.pulldown-menu')
-            .forEach(button => button.addEventListener('click', this.toggleMenu.bind(this)));
-
-        // hidden submit button in a form
         document.querySelectorAll('.hidden-form input')
-            .forEach(button => button.addEventListener('change', this.revealForm.bind(this)));
+            .forEach(button => button.addEventListener(
+                'change',
+                this.revealForm.bind(this))
+            );
 
-        // browser back behavior
         document.querySelectorAll('[data-back]')
-            .forEach(button => button.addEventListener('click', this.back));
+            .forEach(button => button.addEventListener(
+                'click',
+                this.back)
+            );
     }
 
     /**
@@ -125,45 +129,48 @@ let BookWyrm = new class {
      */
     toggleAction(event) {
         let trigger = event.currentTarget;
-        let pressed = trigger.getAttribute('aria-pressed') == 'false';
+        let pressed = trigger.getAttribute('aria-pressed') === 'false';
         let targetId = trigger.dataset.controls;
 
-        // Un‑press all triggers controlling the same target.
+        // Toggle pressed status on all triggers controlling the same target.
         document.querySelectorAll('[data-controls="' + targetId + '"]')
-            .forEach(triggers => triggers.setAttribute(
+            .forEach(otherTrigger => otherTrigger.setAttribute(
                 'aria-pressed',
-                (triggers.getAttribute('aria-pressed') == 'false'))
-            );
+                otherTrigger.getAttribute('aria-pressed') === 'false'
+            ));
 
-        if (targetId) {
+        // @todo Find a better way to handle the exception.
+        if (targetId && ! trigger.classList.contains('pulldown-menu')) {
             let target = document.getElementById(targetId);
 
             this.addRemoveClass(target, 'hidden', !pressed);
             this.addRemoveClass(target, 'is-active', pressed);
         }
 
+        // Show/hide pulldown-menus.
+        if (trigger.classList.contains('pulldown-menu')) {
+            this.toggleMenu(trigger, targetId);
+        }
+
         // Show/hide container.
         let container = document.getElementById('hide-' + targetId);
 
         if (container) {
-            this.addRemoveClass(container, 'hidden', pressed);
+            this.toggleContainer(container, pressed);
         }
 
         // Check checkbox, if appropriate.
         let checkbox = trigger.dataset['controls-checkbox'];
 
         if (checkbox) {
-            document.getElementById(checkbox).checked = !!pressed;
+            this.toggleCheckbox(checkbox, pressed);
         }
 
         // Set focus, if appropriate.
         let focus = trigger.dataset['focus-target'];
 
         if (focus) {
-            let focusEl = document.getElementById(focus);
-
-            focusEl.focus();
-            setTimeout(function() { focusEl.selectionStart = focusEl.selectionEnd = 10000; }, 0);
+            this.toggleFocus(focus);
         }
     }
 
@@ -192,7 +199,7 @@ let BookWyrm = new class {
     }
 
     /**
-     * Handle ARIA states on toggled menus.
+     * Show or hide menus.
      *
      * @note This function seems to be redundant and conflicts with toggleAction.
      *
@@ -200,10 +207,8 @@ let BookWyrm = new class {
      *
      * @return {undefined}
      */
-    toggleMenu(event) {
-        let trigger = event.currentTarget;
+    toggleMenu(trigger, targetId) {
         let expanded = trigger.getAttribute('aria-expanded') == 'false';
-        let targetId = trigger.dataset.controls;
 
         trigger.setAttribute('aria-expanded', expanded);
 
@@ -212,6 +217,47 @@ let BookWyrm = new class {
 
             this.addRemoveClass(target, 'is-active', expanded);
         }
+    }
+
+    /**
+     * Show or hide generic containers.
+     *
+     * @param  {object}  container - DOM node
+     * @param  {boolean} pressed   - Is the trigger pressed?
+     *
+     * @return {undefined}
+     */
+    toggleContainer(container, pressed) {
+        this.addRemoveClass(container, 'hidden', pressed);
+    }
+
+    /**
+     * Check or uncheck a checbox.
+     *
+     * @param  {object}  checkbox - DOM node
+     * @param  {boolean} pressed  - Is the trigger pressed?
+     *
+     * @return {undefined}
+     */
+    toggleCheckbox(checkbox, pressed) {
+        document.getElementById(checkbox).checked = !!pressed;
+    }
+
+    /**
+     * Give the focus to an element.
+     *
+     * @param  {string} nodeId - ID of the DOM node to focus (button, link…)
+     *
+     * @return {undefined}
+     */
+    toggleFocus(nodeId) {
+        let node = document.getElementById(nodeId);
+
+        node.focus();
+
+        setTimeout(function() {
+            node.selectionStart = node.selectionEnd = 10000;
+        }, 0);
     }
 
     /**
