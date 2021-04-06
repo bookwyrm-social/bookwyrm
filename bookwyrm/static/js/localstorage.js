@@ -18,3 +18,11 @@ function setDisplay(el) {
     var value = window.localStorage.getItem(key);
     addRemoveClass(el, 'hidden', value);
 }
+
+// display based on localstorage vars
+document.querySelectorAll('[data-hide]')
+    .forEach(t => setDisplay(t));
+
+// update localstorage
+Array.from(document.getElementsByClassName('set-display'))
+    .forEach(t => t.onclick = updateDisplay);
