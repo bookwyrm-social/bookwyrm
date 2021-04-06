@@ -444,7 +444,7 @@ class Inbox(TestCase):
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
@@ -477,7 +477,7 @@ class Inbox(TestCase):
             "object": {"id": self.status.remote_id, "type": "Tombstone"},
         }
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
@@ -666,7 +666,7 @@ class Inbox(TestCase):
             },
         }
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
