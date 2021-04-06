@@ -1,8 +1,6 @@
 """ inventaire data connector """
-from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import get_data
-from .connector_manager import ConnectorException
 
 
 class Connector(AbstractConnector):
@@ -25,6 +23,11 @@ class Connector(AbstractConnector):
             Mapping("pages", remote_field="wdt:P1104", formatter=get_claim),
             Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_claim),
         ]
+
+    def get_book_data(self, remote_id):
+        data = get_data(remote_id)
+        extracted = list(data.get("entities").values())
+        return extracted[0] if extracted else {}
 
     def parse_search_data(self, data):
         return data.get('results')
@@ -49,7 +52,7 @@ class Connector(AbstractConnector):
         """ beep bloop """
 
     def is_work_data(self, data):
-        return True
+        return data.get("type") == "work"
 
     def get_edition_from_work_data(self, data):
         return {}

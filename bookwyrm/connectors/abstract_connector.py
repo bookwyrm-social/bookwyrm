@@ -44,7 +44,7 @@ class AbstractMinimalConnector(ABC):
         if min_confidence:
             params["min_confidence"] = min_confidence
 
-        data = get_data(
+        data = self.get_search_data(
             "%s%s" % (self.search_url, query),
             params=params,
         )
@@ -57,7 +57,7 @@ class AbstractMinimalConnector(ABC):
     def isbn_search(self, query):
         """ isbn search """
         params = {}
-        data = get_data(
+        data = self.get_search_data(
             "%s%s" % (self.isbn_search_url, query),
             params=params,
         )
@@ -117,7 +117,7 @@ class AbstractConnector(AbstractMinimalConnector):
             return existing
 
         # load the json
-        data = get_data(remote_id)
+        data = self.get_book_data(remote_id)
         mapped_data = dict_from_mappings(data, self.book_mappings)
         if self.is_work_data(data):
             try:
@@ -150,6 +150,14 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
+    def get_book_data(self, remote_id):
+        """ this allows connectors to override the default behavior """
+        return get_data(remote_id)
+
+    def get_search_data(self, remote_id):
+        """ this allows connectors to override the default behavior """
+        return get_data(remote_id)
+
     def create_edition_from_data(self, work, edition_data):
         """ if we already have the work, we're ready """
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
@@ -176,7 +184,7 @@ class AbstractConnector(AbstractMinimalConnector):
         if existing:
             return existing
 
-        data = get_data(remote_id)
+        data = self.get_book_data(remote_id)
 
         mapped_data = dict_from_mappings(data, self.author_mappings)
         activity = activitypub.Author(**mapped_data)
