@@ -15,8 +15,8 @@ let LocalStorageTools = new class {
     // set javascript listeners
     updateDisplay(e) {
         // used in set reading goal
-        let key = e.target.getAttribute('data-id');
-        let value = e.target.getAttribute('data-value');
+        let key = e.target.dataset.id;
+        let value = e.target.dataset.value;
 
         window.localStorage.setItem(key, value);
 
@@ -26,7 +26,7 @@ let LocalStorageTools = new class {
 
     setDisplay(el) {
         // used in set reading goal
-        let key = el.getAttribute('data-hide');
+        let key = el.dataset.hide;
         let value = window.localStorage.getItem(key);
 
         BookWyrm.addRemoveClass(el, 'hidden', value);

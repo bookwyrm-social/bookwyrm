@@ -54,18 +54,18 @@ let BookWyrm = new class {
         history.back();
     }
 
-    polling(el, delay) {
+    polling(counter, delay) {
         let poller = this;
 
         delay = delay || 10000;
         delay += (Math.random() * 1000);
 
         setTimeout(function() {
-            fetch('/api/updates/' + el.getAttribute('data-poll'))
+            fetch('/api/updates/' + counter.dataset.poll)
                 .then(response => response.json())
-                .then(data => poller.updateCountElement(el, data));
-            poller.polling(el, delay * 1.25);
-        }, delay, el);
+                .then(data => poller.updateCountElement(counter, data));
+            poller.polling(counter, delay * 1.25);
+        }, delay, counter);
     }
 
     updateCountElement(el, data) {
@@ -84,15 +84,17 @@ let BookWyrm = new class {
         this.addRemoveClass(hidden, 'hidden', !hidden);
     }
 
-    toggleAction(e) {
-        let el = e.currentTarget;
-        let pressed = el.getAttribute('aria-pressed') == 'false';
-        let targetId = el.getAttribute('data-controls');
+    toggleAction(event) {
+        let trigger = event.currentTarget;
+        let pressed = trigger.getAttribute('aria-pressed') == 'false';
+        let targetId = trigger.dataset.controls;
 
+        // Un‑press all triggers controlling the same target.
         document.querySelectorAll('[data-controls="' + targetId + '"]')
-            .forEach(t => {
-                t.setAttribute('aria-pressed', (t.getAttribute('aria-pressed') == 'false'))
-            });
+            .forEach(triggers => triggers.setAttribute(
+                'aria-pressed',
+                (triggers.getAttribute('aria-pressed') == 'false'))
+            );
 
         if (targetId) {
             let target = document.getElementById(targetId);
@@ -109,14 +111,14 @@ let BookWyrm = new class {
         }
 
         // set checkbox, if appropriate
-        let checkbox = el.getAttribute('data-controls-checkbox');
+        let checkbox = trigger.dataset['controls-checkbox'];
 
         if (checkbox) {
             document.getElementById(checkbox).checked = !!pressed;
         }
 
         // set focus, if appropriate
-        let focus = el.getAttribute('data-focus-target');
+        let focus = trigger.dataset['focus-target'];
 
         if (focus) {
             let focusEl = document.getElementById(focus);
@@ -130,7 +132,7 @@ let BookWyrm = new class {
     interact(e) {
         e.preventDefault();
 
-        let identifier = e.target.getAttribute('data-id');
+        let identifier = e.target.dataset.id;
 
         this.ajaxPost(e.target);
 
@@ -142,7 +144,7 @@ let BookWyrm = new class {
     toggleMenu(e) {
         let el = e.currentTarget;
         let expanded = el.getAttribute('aria-expanded') == 'false';
-        let targetId = el.getAttribute('data-controls');
+        let targetId = el.dataset.controls;
 
         el.setAttribute('aria-expanded', expanded);
 
