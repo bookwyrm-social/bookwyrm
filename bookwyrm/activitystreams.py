@@ -19,12 +19,12 @@ class ActivityStream(RedisStore):
         return "{}-unread".format(self.stream_id(user))
 
     def get_rank(self, obj):  # pylint: disable=no-self-use
-        """ the sort rank of a status, which is published date """
+        """ statuses are sorted by date published """
         return obj.published_date.timestamp()
 
     def add_status(self, status):
         """ add a status to users' feeds """
-        # the pipeline contains all the addp-to-stream activities
+        # the pipeline contains all the add-to-stream activities
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
         for user in self.get_audience(status):
@@ -36,11 +36,13 @@ class ActivityStream(RedisStore):
 
     def add_user_statuses(self, viewer, user):
         """ add a user's statuses to another user's feed """
+        # only add the statuses that the viewer should be able to see (ie, not dms)
         statuses = privacy_filter(viewer, user.status_set.all())
         self.bulk_add_objects_to_store(statuses, self.stream_id(viewer))
 
     def remove_user_statuses(self, viewer, user):
         """ remove a user's status from another user's feed """
+        # remove all so that followers only statuses are removed
         statuses = user.status_set.all()
         self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer))
 
@@ -49,7 +51,7 @@ class ActivityStream(RedisStore):
         # clear unreads for this feed
         r.set(self.unread_id(user), 0)
 
-        statuses = super().get_store(self.stream_id(user))
+        statuses = self.get_store(self.stream_id(user))
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
@@ -62,7 +64,7 @@ class ActivityStream(RedisStore):
 
     def populate_streams(self, user):
         """ go from zero to a timeline """
-        super().populate_store(self.stream_id(user))
+        self.populate_store(self.stream_id(user))
 
     def get_audience(self, status):  # pylint: disable=no-self-use
         """ given a status, what users should see it """
