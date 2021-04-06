@@ -3,42 +3,50 @@
 
 let BookWyrm = new class {
     constructor() {
-        this.initOnLoad();
+        this.initOnDOMLoaded();
+        this.initReccuringTasks();
         this.initEventListeners();
     }
 
     initEventListeners() {
         // buttons that display or hide content
         document.querySelectorAll('[data-controls]')
-            .forEach(t => t.onclick = this.toggleAction.bind(this));
+            .forEach(button => button.onclick = this.toggleAction.bind(this));
 
         // javascript interactions (boost/fav)
         document.querySelectorAll('.interaction')
-            .forEach(t => t.onsubmit = this.interact.bind(this));
+            .forEach(button => button.onsubmit = this.interact.bind(this));
 
         // handle aria settings on menus
         document.querySelectorAll('.pulldown-menu')
-            .forEach(t => t.onclick = this.toggleMenu.bind(this));
+            .forEach(button => button.onclick = this.toggleMenu.bind(this));
 
         // hidden submit button in a form
         document.querySelectorAll('.hidden-form input')
-            .forEach(t => t.onchange = this.revealForm.bind(this));
-
-        // polling
-        document.querySelectorAll('[data-poll]')
-            .forEach(el => this.polling(el));
+            .forEach(button => button.onchange = this.revealForm.bind(this));
 
         // browser back behavior
         document.querySelectorAll('[data-back]')
-            .forEach(t => t.onclick = this.back);
+            .forEach(button => button.onclick = this.back);
     }
 
-    initOnLoad(){
-        // set up javascript listeners
-        window.onload = function() {
+    /**
+     * Execute code once the DOM is loaded.
+     */
+    initOnDOMLoaded() {
+        window.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.tab-group')
-                .forEach(t => new TabGroup(t));
-        };
+                .forEach(tabs => new TabGroup(tabs));
+        });
+    }
+
+    /**
+     * Execute recurring tasks.
+     */
+    initReccuringTasks() {
+        // Polling
+        document.querySelectorAll('[data-poll]')
+            .forEach(liveArea => this.polling(liveArea));
     }
 
     back(e) {
