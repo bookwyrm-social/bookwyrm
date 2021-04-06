@@ -175,30 +175,6 @@ let BookWyrm = new class {
     }
 
     /**
-     * Make a request and update the UI accordingly.
-     * This function is used for boosts and favourites.
-     *
-     * @todo Only update status if the promise is successful.
-     *
-     * @param  {Event} event
-     *
-     * @return {undefined}
-     */
-    interact(event) {
-        event.preventDefault();
-
-        this.ajaxPost(event.target);
-
-        // @todo This probably should be done with IDs.
-        document.querySelectorAll(`.${event.target.dataset.id}`)
-            .forEach(node => this.addRemoveClass(
-                node,
-                'hidden',
-                node.className.indexOf('hidden') == -1
-            ));
-    }
-
-    /**
      * Show or hide menus.
      *
      * @note This function seems to be redundant and conflicts with toggleAction.
@@ -258,6 +234,30 @@ let BookWyrm = new class {
         setTimeout(function() {
             node.selectionStart = node.selectionEnd = 10000;
         }, 0);
+    }
+
+    /**
+     * Make a request and update the UI accordingly.
+     * This function is used for boosts and favourites.
+     *
+     * @todo Only update status if the promise is successful.
+     *
+     * @param  {Event} event
+     *
+     * @return {undefined}
+     */
+    interact(event) {
+        event.preventDefault();
+
+        this.ajaxPost(event.target);
+
+        // @todo This probably should be done with IDs.
+        document.querySelectorAll(`.${event.target.dataset.id}`)
+            .forEach(node => this.addRemoveClass(
+                node,
+                'hidden',
+                node.className.indexOf('hidden') == -1
+            ));
     }
 
     /**
