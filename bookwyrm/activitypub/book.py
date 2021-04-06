@@ -24,9 +24,10 @@ class Book(ActivityObject):
     firstPublishedDate: str = ""
     publishedDate: str = ""
 
-    openlibraryKey: str = ""
-    librarythingKey: str = ""
-    goodreadsKey: str = ""
+    openlibraryKey: str = None
+    inventiareId: str = None
+    librarythingKey: str = None
+    goodreadsKey: str = None
 
     cover: Image = None
     type: str = "Book"
@@ -68,8 +69,9 @@ class Author(ActivityObject):
     died: str = None
     aliases: List[str] = field(default_factory=lambda: [])
     bio: str = ""
-    openlibraryKey: str = ""
-    librarythingKey: str = ""
-    goodreadsKey: str = ""
+    openlibraryKey: str = None
+    inventiareId: str = None
+    librarythingKey: str = None
+    goodreadsKey: str = None
     wikipediaLink: str = ""
     type: str = "Author"
