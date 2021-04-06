@@ -116,6 +116,8 @@ If you edit the CSS or JavaScript, you will need to run Django's `collectstatic`
 ./bw-dev collectstatic
 ```
 
+If you have [installed yarn](https://yarnpkg.com/getting-started/install), you can run `yarn watch:static` to automatically run the previous script every time a change occurs in _bookwyrm/static_ directory.
+
 ### Working with translations and locale files
 Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
 
