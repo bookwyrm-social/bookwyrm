@@ -11,23 +11,23 @@ let BookWyrm = new class {
     initEventListeners() {
         // buttons that display or hide content
         document.querySelectorAll('[data-controls]')
-            .forEach(button => button.onclick = this.toggleAction.bind(this));
+            .forEach(button => button.addEventListener('click', this.toggleAction.bind(this)));
 
         // javascript interactions (boost/fav)
         document.querySelectorAll('.interaction')
-            .forEach(button => button.onsubmit = this.interact.bind(this));
+            .forEach(button => button.addEventListener('submit', this.interact.bind(this)));
 
         // handle aria settings on menus
         document.querySelectorAll('.pulldown-menu')
-            .forEach(button => button.onclick = this.toggleMenu.bind(this));
+            .forEach(button => button.addEventListener('click', this.toggleMenu.bind(this)));
 
         // hidden submit button in a form
         document.querySelectorAll('.hidden-form input')
-            .forEach(button => button.onchange = this.revealForm.bind(this));
+            .forEach(button => button.addEventListener('change', this.revealForm.bind(this)));
 
         // browser back behavior
         document.querySelectorAll('[data-back]')
-            .forEach(button => button.onclick = this.back);
+            .forEach(button => button.addEventListener('click', this.back));
     }
 
     /**

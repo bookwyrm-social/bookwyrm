@@ -9,7 +9,7 @@ let LocalStorageTools = new class {
 
         // update localstorage
         document.querySelectorAll('.set-display')
-            .forEach(t => t.onclick = this.updateDisplay.bind(this));
+            .forEach(t => t.addEventListener('click', this.updateDisplay.bind(this)));
     }
 
     // set javascript listeners
