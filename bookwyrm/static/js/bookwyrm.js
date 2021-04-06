@@ -7,11 +7,11 @@ window.onload = function() {
         .forEach(t => t.onclick = toggleAction);
 
     // javascript interactions (boost/fav)
-    Array.from(document.getElementsByClassName('interaction'))
+    document.querySelectorAll('.interaction')
         .forEach(t => t.onsubmit = interact);
 
     // handle aria settings on menus
-    Array.from(document.getElementsByClassName('pulldown-menu'))
+    document.querySelectorAll('.pulldown-menu')
         .forEach(t => t.onclick = toggleMenu);
 
     // hidden submit button in a form
@@ -26,7 +26,7 @@ window.onload = function() {
     document.querySelectorAll('[data-back]')
         .forEach(t => t.onclick = back);
 
-    Array.from(document.getElementsByClassName('tab-group'))
+    document.querySelectorAll('.tab-group')
         .forEach(t => new TabGroup(t));
 };
 
@@ -103,7 +103,9 @@ function interact(e) {
     e.preventDefault();
     ajaxPost(e.target);
     var identifier = e.target.getAttribute('data-id');
-    Array.from(document.getElementsByClassName(identifier))
+    // @todo This should be `querySelector`, unless there are duplicated IDs,
+    //       which is a problem in itself.
+    document.querySelectorAll(`#${identifier}`)
         .forEach(t => addRemoveClass(t, 'hidden', t.className.indexOf('hidden') == -1));
 }
 

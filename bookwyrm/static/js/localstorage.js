@@ -24,5 +24,5 @@ document.querySelectorAll('[data-hide]')
     .forEach(t => setDisplay(t));
 
 // update localstorage
-Array.from(document.getElementsByClassName('set-display'))
+document.querySelectorAll('.set-display')
     .forEach(t => t.onclick = updateDisplay);
