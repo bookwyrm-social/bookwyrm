@@ -608,8 +608,8 @@ class Inbox(TestCase):
                 "summary": "",
                 "tag": [],
                 "sensitive": False,
-                "@context": "https://www.w3.org/ns/activitystreams"
-            }
+                "@context": "https://www.w3.org/ns/activitystreams",
+            },
         )
 
         with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
