@@ -56,9 +56,9 @@ class RedisStore(ABC):
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store):  # pylint: disable=no-self-use
+    def get_store(self, store, **kwargs):  # pylint: disable=no-self-use
         """ load the values in a store """
-        return r.zrevrange(store, 0, -1)
+        return r.zrevrange(store, 0, -1, **kwargs)
 
     def populate_store(self, store):
         """ go from zero to a store """

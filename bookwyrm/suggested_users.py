@@ -11,7 +11,7 @@ from bookwyrm.views.helpers import get_annotated_users
 class SuggestedUsers(RedisStore):
     """ suggested users for a user """
 
-    max_length = 30
+    max_length = 10
 
     def get_rank(self, obj):
         """ get computed rank """
@@ -57,6 +57,19 @@ class SuggestedUsers(RedisStore):
     def rerank_user_suggestions(self, user):
         """ update the ranks of the follows suggested to a user """
         self.populate_store(self.store_id(user))
+
+    def get_suggestions(self, user):
+        """ get suggestions """
+        values = self.get_store(self.store_id(user), withscores=True)
+        results = []
+        # annotate users with mutuals and shared book counts
+        for user_id, rank in values[:5]:
+            counts = self.get_counts_from_rank(rank)
+            user = models.User.objects.get(id=user_id)
+            user.mutuals = counts["mutuals"]
+            user.shared_books = counts["shared_books"]
+            results.append(user)
+        return results
 
 
 suggested_users = SuggestedUsers()
