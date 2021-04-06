@@ -296,6 +296,6 @@ class Mapping:
         if not value:
             return None
         try:
-            return self.formatter(value)
+            return self.formatter(value, self.remote_field)
         except:  # pylint: disable=bare-except
             return None
