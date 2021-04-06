@@ -81,9 +81,7 @@ let BookWyrm = new class {
     revealForm(e) {
         let hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
 
-        if (hidden) {
-            this.removeClass(hidden, 'hidden');
-        }
+        this.addRemoveClass(hidden, 'hidden', !hidden);
     }
 
     toggleAction(e) {
@@ -162,37 +160,19 @@ let BookWyrm = new class {
         });
     }
 
-    addRemoveClass(el, classname, bool) {
-        if (bool) {
-            this.addClass(el, classname);
+    /**
+     * Add or remove a class based on a boolean condition.
+     *
+     * @param  {object}  node      - DOM node to change class on
+     * @param  {string}  classname - Name of the class
+     * @param  {boolean} add       - Add?
+     * @return {undefined}
+     */
+    addRemoveClass(node, classname, add) {
+        if (add) {
+            node.classList.add(classname);
         } else {
-            this.removeClass(el, classname);
+            node.classList.remove(classname);
         }
-    }
-
-    addClass(el, classname) {
-        let classes = el.className.split(' ');
-
-        if (classes.indexOf(classname) > -1) {
-            return;
-        }
-
-        el.className = classes.concat(classname).join(' ');
-    }
-
-    removeClass(el, className) {
-        let classes = [];
-
-        if (el.className) {
-            classes = el.className.split(' ');
-        }
-
-        const idx = classes.indexOf(className);
-
-        if (idx > -1) {
-            classes.splice(idx, 1);
-        }
-
-        el.className = classes.join(' ');
     }
 }
