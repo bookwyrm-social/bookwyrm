@@ -573,6 +573,56 @@ class Inbox(TestCase):
         self.assertEqual(notification.related_status, self.status)
 
     @responses.activate
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_boost_remote_status(self, redis_mock):
+        """ boost a status """
+        work = models.Work.objects.create(title="work title")
+        book = models.Edition.objects.create(
+            title="Test",
+            remote_id="https://bookwyrm.social/book/37292",
+            parent_work=work,
+        )
+        self.assertEqual(models.Notification.objects.count(), 0)
+        activity = {
+            "type": "Announce",
+            "id": "%s/boost" % self.status.remote_id,
+            "actor": self.remote_user.remote_id,
+            "object": "https://remote.com/status/1",
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "published": "Mon, 25 May 2020 19:31:20 GMT",
+        }
+        responses.add(
+            responses.GET,
+            "https://remote.com/status/1",
+            json={
+                "id": "https://remote.com/status/1",
+                "type": "Comment",
+                "published": "2021-04-05T18:04:59.735190+00:00",
+                "attributedTo": self.remote_user.remote_id,
+                "content": "<p>a comment</p>",
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": ["https://b875df3d118b.ngrok.io/user/mouse/followers"],
+                "inReplyTo": "",
+                "inReplyToBook": book.remote_id,
+                "summary": "",
+                "tag": [],
+                "sensitive": False,
+                "@context": "https://www.w3.org/ns/activitystreams"
+            }
+        )
+
+        with patch("bookwyrm.models.status.Status.ignore_activity") as discarder:
+            discarder.return_value = False
+            views.inbox.activity_task(activity)
+            self.assertTrue(redis_mock.called)
+
+        boost = models.Boost.objects.get()
+        self.assertEqual(boost.boosted_status.remote_id, "https://remote.com/status/1")
+        self.assertEqual(boost.boosted_status.comment.status_type, "Comment")
+        self.assertEqual(boost.boosted_status.comment.book, book)
+
+    @responses.activate
     def test_handle_discarded_boost(self):
         """ test a boost of a mastodon status that will be discarded """
         status = models.Status(
