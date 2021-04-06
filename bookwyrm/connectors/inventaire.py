@@ -9,11 +9,14 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
-        get_remote_id = lambda a, *args: self.base_url + a
+        get_remote_id = lambda a, *args: self.books_url + a
+        get_remote_id_list = lambda a, *_: [get_remote_id(v) for v in a]
         self.book_mappings = [
             Mapping("title", remote_field="wdt:P1476", formatter=get_claim),
-            Mapping("id", remote_field="key", formatter=get_remote_id),
-            Mapping("inventaireId", remote_field="id"),
+            Mapping("subtitle", remote_field="wdt:P1680", formatter=get_claim),
+            Mapping("id", remote_field="uri", formatter=get_remote_id),
+            Mapping("authors", remote_field="wdt:P50", formatter=get_remote_id_list),
+            Mapping("inventaireId", remote_field="uri"),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_claim),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_claim),
@@ -22,7 +25,14 @@ class Connector(AbstractConnector):
             Mapping("publishedDate", remote_field="wdt:P577", formatter=get_claim),
             Mapping("pages", remote_field="wdt:P1104", formatter=get_claim),
             Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_claim),
+            Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_claim),
+            Mapping("subjectPlaces", remote_field="wdt:P840", formatter=resolve_key),
+            Mapping("subjects", remote_field="wdt:P921", formatter=resolve_key),
+            Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_claim),
+            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_claim),
+            Mapping("asin", remote_field="wdt:P5749", formatter=get_claim),
         ]
+        # TODO: P136: genre, P268 bnf id, P674 characters, P950 bne
 
     def get_book_data(self, remote_id):
         data = get_data(remote_id)
