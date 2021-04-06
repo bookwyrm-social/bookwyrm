@@ -15,8 +15,9 @@ let LocalStorageTools = new class {
     // set javascript listeners
     updateDisplay(e) {
         // used in set reading goal
-        var key = e.target.getAttribute('data-id');
-        var value = e.target.getAttribute('data-value');
+        let key = e.target.getAttribute('data-id');
+        let value = e.target.getAttribute('data-value');
+
         window.localStorage.setItem(key, value);
 
         document.querySelectorAll('[data-hide="' + key + '"]')
@@ -25,8 +26,9 @@ let LocalStorageTools = new class {
 
     setDisplay(el) {
         // used in set reading goal
-        var key = el.getAttribute('data-hide');
-        var value = window.localStorage.getItem(key);
+        let key = el.getAttribute('data-hide');
+        let value = window.localStorage.getItem(key);
+
         BookWyrm.addRemoveClass(el, 'hidden', value);
     }
 }

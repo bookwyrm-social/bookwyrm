@@ -56,8 +56,10 @@ let BookWyrm = new class {
 
     polling(el, delay) {
         let poller = this;
+
         delay = delay || 10000;
         delay += (Math.random() * 1000);
+
         setTimeout(function() {
             fetch('/api/updates/' + el.getAttribute('data-poll'))
                 .then(response => response.json())
@@ -69,6 +71,7 @@ let BookWyrm = new class {
     updateCountElement(el, data) {
         const currentCount = el.innerText;
         const count = data.count;
+
         if (count != currentCount) {
             this.addRemoveClass(el.closest('[data-poll-wrapper]'), 'hidden', count < 1);
             el.innerText = count;
@@ -76,52 +79,62 @@ let BookWyrm = new class {
     }
 
     revealForm(e) {
-        var hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
+        let hidden = e.currentTarget.closest('.hidden-form').getElementsByClassName('hidden')[0];
+
         if (hidden) {
             this.removeClass(hidden, 'hidden');
         }
     }
 
     toggleAction(e) {
-        var el = e.currentTarget;
-        var pressed = el.getAttribute('aria-pressed') == 'false';
+        let el = e.currentTarget;
+        let pressed = el.getAttribute('aria-pressed') == 'false';
+        let targetId = el.getAttribute('data-controls');
 
-        var targetId = el.getAttribute('data-controls');
         document.querySelectorAll('[data-controls="' + targetId + '"]')
-            .forEach(t => t.setAttribute('aria-pressed', (t.getAttribute('aria-pressed') == 'false')));
+            .forEach(t => {
+                t.setAttribute('aria-pressed', (t.getAttribute('aria-pressed') == 'false'))
+            });
 
         if (targetId) {
-            var target = document.getElementById(targetId);
+            let target = document.getElementById(targetId);
+
             this.addRemoveClass(target, 'hidden', !pressed);
             this.addRemoveClass(target, 'is-active', pressed);
         }
 
         // show/hide container
-        var container = document.getElementById('hide-' + targetId);
+        let container = document.getElementById('hide-' + targetId);
+
         if (container) {
             this.addRemoveClass(container, 'hidden', pressed);
         }
 
         // set checkbox, if appropriate
-        var checkbox = el.getAttribute('data-controls-checkbox');
+        let checkbox = el.getAttribute('data-controls-checkbox');
+
         if (checkbox) {
             document.getElementById(checkbox).checked = !!pressed;
         }
 
         // set focus, if appropriate
-        var focus = el.getAttribute('data-focus-target');
+        let focus = el.getAttribute('data-focus-target');
+
         if (focus) {
-            var focusEl = document.getElementById(focus);
+            let focusEl = document.getElementById(focus);
+
             focusEl.focus();
-            setTimeout(function(){ focusEl.selectionStart = focusEl.selectionEnd = 10000; }, 0);
+            setTimeout(function() { focusEl.selectionStart = focusEl.selectionEnd = 10000; }, 0);
         }
     }
 
     // @todo Only update status if the promise is successful.
     interact(e) {
         e.preventDefault();
+
+        let identifier = e.target.getAttribute('data-id');
+
         this.ajaxPost(e.target);
-        var identifier = e.target.getAttribute('data-id');
 
         // @todo This probably should be done with IDs.
         document.querySelectorAll(`.${identifier}`)
@@ -129,12 +142,15 @@ let BookWyrm = new class {
     }
 
     toggleMenu(e) {
-        var el = e.currentTarget;
-        var expanded = el.getAttribute('aria-expanded') == 'false';
+        let el = e.currentTarget;
+        let expanded = el.getAttribute('aria-expanded') == 'false';
+        let targetId = el.getAttribute('data-controls');
+
         el.setAttribute('aria-expanded', expanded);
-        var targetId = el.getAttribute('data-controls');
+
         if (targetId) {
-            var target = document.getElementById(targetId);
+            let target = document.getElementById(targetId);
+
             this.addRemoveClass(target, 'is-active', expanded);
         }
     }
@@ -155,22 +171,28 @@ let BookWyrm = new class {
     }
 
     addClass(el, classname) {
-        var classes = el.className.split(' ');
+        let classes = el.className.split(' ');
+
         if (classes.indexOf(classname) > -1) {
             return;
         }
+
         el.className = classes.concat(classname).join(' ');
     }
 
     removeClass(el, className) {
-        var classes = [];
+        let classes = [];
+
         if (el.className) {
             classes = el.className.split(' ');
         }
+
         const idx = classes.indexOf(className);
+
         if (idx > -1) {
             classes.splice(idx, 1);
         }
+
         el.className = classes.join(' ');
     }
 }
