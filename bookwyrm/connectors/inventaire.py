@@ -1,6 +1,7 @@
 """ inventaire data connector """
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import get_data
+from .connector_manager import ConnectorException
 
 
 class Connector(AbstractConnector):
@@ -9,12 +10,11 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
-        get_remote_id = lambda a, *args: self.books_url + a
-        get_remote_id_list = lambda a, *_: [get_remote_id(v) for v in a]
+        get_remote_id_list = lambda a, *_: [self.get_remote_id(v) for v in a]
         self.book_mappings = [
             Mapping("title", remote_field="wdt:P1476", formatter=get_claim),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_claim),
-            Mapping("id", remote_field="uri", formatter=get_remote_id),
+            Mapping("id", remote_field="uri", formatter=self.get_remote_id),
             Mapping("authors", remote_field="wdt:P50", formatter=get_remote_id_list),
             Mapping("inventaireId", remote_field="uri"),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
@@ -34,6 +34,10 @@ class Connector(AbstractConnector):
         ]
         # TODO: P136: genre, P268 bnf id, P674 characters, P950 bne
 
+    def get_remote_id(self, value, *_):
+        """ convert an id/uri into a url """
+        return '{:s}?action=by-uris&uris={:s}'.format(self.books_url, value)
+
     def get_book_data(self, remote_id):
         data = get_data(remote_id)
         extracted = list(data.get("entities").values())
@@ -49,7 +53,9 @@ class Connector(AbstractConnector):
         ) if images else None
         return SearchResult(
             title=search_result.get("label"),
-            key="{:s}{:s}".format(self.books_url, search_result.get("uri")),
+            key="{:s}?action=by-uris&uris={:s}".format(
+                self.books_url, search_result.get("uri")
+            ),
             view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
             cover=cover,
             connector=self,
@@ -65,11 +71,24 @@ class Connector(AbstractConnector):
         return data.get("type") == "work"
 
     def get_edition_from_work_data(self, data):
-        return {}
+        value = data.get("uri")
+        url = "{:s}?action=reverse-claims&property=P629&value={:s}".format(
+            self.books_url, value
+        )
+        data = get_data(url)
+        try:
+            uri = data["uris"][0]
+        except KeyError:
+            raise ConnectorException("Invalid book data")
+        return self.get_book_data(self.get_remote_id(uri))
 
     def get_work_from_edition_data(self, data):
-        # P629
-        return {}
+        try:
+            uri = data["claims"]["wdt:P629"]
+        except KeyError:
+            raise ConnectorException("Invalid book data")
+        return self.get_book_data(self.get_remote_id(uri))
+
 
     def get_authors_from_data(self, data):
         return []
