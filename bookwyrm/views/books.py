@@ -176,8 +176,18 @@ class EditBook(View):
             # we have to make sure the dates are passed in as datetime, they're currently a string
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
-            formcopy["first_published_date"] = datetime.strptime(formcopy["first_published_date"], "%Y-%m-%d")
-            formcopy["published_date"] = datetime.strptime(formcopy["published_date"], "%Y-%m-%d")
+            try:
+                formcopy["first_published_date"] = datetime.strptime(
+                    formcopy["first_published_date"], "%Y-%m-%d"
+                )
+            except MultiValueDictKeyError:
+                pass
+            try:
+                formcopy["published_date"] = datetime.strptime(
+                    formcopy["published_date"], "%Y-%m-%d"
+                )
+            except MultiValueDictKeyError:
+                pass
             data["form"].data = formcopy
             return TemplateResponse(request, "book/edit_book.html", data)
 
