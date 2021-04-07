@@ -95,7 +95,7 @@ class Connector(AbstractConnector):
             url = "%s%s" % (self.base_url, author_id)
             yield self.get_or_create_author(url)
 
-    def get_cover_url(self, cover_blob, *_, size="L"):
+    def get_cover_url(self, cover_blob, size="L"):
         """ ask openlibrary for the cover """
         if not cover_blob:
             return None
@@ -181,19 +181,19 @@ def ignore_edition(edition_data):
     return True
 
 
-def get_description(description_blob, *_):
+def get_description(description_blob):
     """ descriptions can be a string or a dict """
     if isinstance(description_blob, dict):
         return description_blob.get("value")
     return description_blob
 
 
-def get_openlibrary_key(key, *_):
+def get_openlibrary_key(key):
     """ convert /books/OL27320736M into OL27320736M """
     return key.split("/")[-1]
 
 
-def get_languages(language_blob, *_):
+def get_languages(language_blob):
     """ /language/eng -> English """
     langs = []
     for lang in language_blob:
@@ -201,7 +201,7 @@ def get_languages(language_blob, *_):
     return langs
 
 
-def pick_default_edition(options, *_):
+def pick_default_edition(options):
     """ favor physical copies with covers in english """
     if not options:
         return None

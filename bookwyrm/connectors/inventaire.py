@@ -10,32 +10,45 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
-        get_first = lambda a, *args: a[0]
-        get_remote_id_list = lambda a, *_: [self.get_remote_id(v) for v in a]
+        get_first = lambda a: a[0]
+        shared_mappings = [
+            Mapping("id", remote_field="uri", formatter=self.get_remote_id),
+            Mapping("bnfId", remote_field="wdt:P268", formatter=get_first),
+            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
+            Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_first),
+        ]
         self.book_mappings = [
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
-            Mapping("id", remote_field="uri", formatter=self.get_remote_id),
-            # Mapping("authors", remote_field="wdt:P50", formatter=get_remote_id_list),
             Mapping("inventaireId", remote_field="uri"),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_first),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_first),
+            Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_first),
+            Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_first),
             # Mapping("languages", remote_field="wdt:P407", formatter=get_language),
             # Mapping("publishers", remote_field="wdt:P123", formatter=resolve_key),
             Mapping("publishedDate", remote_field="wdt:P577", formatter=get_first),
             Mapping("pages", remote_field="wdt:P1104", formatter=get_first),
-            Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_first),
-            Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_first),
             # Mapping("subjectPlaces", remote_field="wdt:P840", formatter=resolve_key),
             # Mapping("subjects", remote_field="wdt:P921", formatter=resolve_key),
-            Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_first),
-            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
             Mapping("asin", remote_field="wdt:P5749", formatter=get_first),
-        ]
-        # TODO: P136: genre, P268 bnf id, P674 characters, P950 bne
+        ] + shared_mappings
+        # TODO: P136: genre, P674 characters, P950 bne
 
-    def get_remote_id(self, value, *_):
+        self.author_mappings = [
+            Mapping("id", remote_field="uri", formatter=self.get_remote_id),
+            Mapping("name", remote_field="label", formatter=get_language_code),
+            Mapping("goodreadsKey", remote_field="wdt:P2963", formatter=get_first),
+            Mapping("isni", remote_field="wdt:P213", formatter=get_first),
+            Mapping("viafId", remote_field="wdt:P214", formatter=get_first),
+            Mapping("gutenberg_id", remote_field="wdt:P1938", formatter=get_first),
+            Mapping("born", remote_field="wdt:P569", formatter=get_first),
+            Mapping("died", remote_field="wdt:P570", formatter=get_first),
+        ] + shared_mappings
+
+
+    def get_remote_id(self, value):
         """ convert an id/uri into a url """
         return "{:s}?action=by-uris&uris={:s}".format(self.books_url, value)
 
@@ -102,7 +115,9 @@ class Connector(AbstractConnector):
         return self.get_book_data(self.get_remote_id(uri))
 
     def get_authors_from_data(self, data):
-        return []
+        authors = data.get("wdt:P50")
+        for author in authors:
+            yield self.get_or_create_author(self.get_remote_id(author))
 
     def expand_book_data(self, book):
         return
@@ -117,11 +132,15 @@ class Connector(AbstractConnector):
         return "%s%s" % (self.covers_url, cover_id)
 
 
-def get_language(wikidata_key, *_):
+def get_language(wikidata_key):
     """ who here speaks "wd:Q150" """
     return wikidata_key  # TODO
 
 
-def resolve_key(wikidata_key, *_):
+def resolve_key(wikidata_key):
     """ cool, it's "wd:Q3156592" now what the heck does that mean """
     return wikidata_key  # TODO
+
+def get_language_code(options, code="en"):
+    """ when there are a bunch of translation but we need a single field """
+    return options.get(code)

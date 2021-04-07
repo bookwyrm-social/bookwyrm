@@ -150,11 +150,11 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
-    def get_book_data(self, remote_id):
+    def get_book_data(self, remote_id):  # pylint: disable=no-self-use
         """ this allows connectors to override the default behavior """
         return get_data(remote_id)
 
-    def get_search_data(self, remote_id):
+    def get_search_data(self, remote_id):  # pylint: disable=no-self-use
         """ this allows connectors to override the default behavior """
         return get_data(remote_id)
 
@@ -293,7 +293,7 @@ class Mapping:
     """ associate a local database field with a field in an external dataset """
 
     def __init__(self, local_field, remote_field=None, formatter=None):
-        noop = lambda x, *_: x
+        noop = lambda x: x
 
         self.local_field = local_field
         self.remote_field = remote_field or local_field
@@ -305,6 +305,6 @@ class Mapping:
         if not value:
             return None
         try:
-            return self.formatter(value, self.remote_field)
+            return self.formatter(value)
         except:  # pylint: disable=bare-except
             return None

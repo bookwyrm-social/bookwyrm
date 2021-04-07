@@ -28,6 +28,9 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     goodreads_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    bnf_id = fields.CharField(  # Bibliothèque nationale de France
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
 
     last_edited_by = models.ForeignKey("User", on_delete=models.PROTECT, null=True)
 
