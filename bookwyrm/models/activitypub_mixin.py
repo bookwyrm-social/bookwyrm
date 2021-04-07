@@ -370,7 +370,7 @@ class CollectionItemMixin(ActivitypubMixin):
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id=self.remote_id,
+            id=self.get_remote_id(),
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
@@ -381,7 +381,7 @@ class CollectionItemMixin(ActivitypubMixin):
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id=self.remote_id,
+            id=self.get_remote_id(),
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
