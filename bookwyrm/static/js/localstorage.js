@@ -14,7 +14,6 @@ let LocalStorageTools = new class {
      * Update localStorage, then display content based on keys in localStorage.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     updateDisplay(event) {
@@ -32,7 +31,6 @@ let LocalStorageTools = new class {
      * Toggle display of a DOM node based on its value in the localStorage.
      *
      * @param {object} node - DOM node to toggle.
-     *
      * @return {undefined}
      */
     setDisplay(node) {

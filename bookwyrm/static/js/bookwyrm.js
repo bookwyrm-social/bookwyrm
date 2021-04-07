@@ -57,7 +57,6 @@ let BookWyrm = new class {
      * Go back in browser history.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     back(event) {
@@ -67,10 +66,10 @@ let BookWyrm = new class {
 
     /**
      * Update a counter with recurring requests to the API
+     * The delay is slightly randomized and increased on each cycle.
      *
      * @param  {Object} counter - DOM node
      * @param  {int}    delay   - frequency for polling in ms
-     *
      * @return {undefined}
      */
     polling(counter, delay) {
@@ -93,7 +92,6 @@ let BookWyrm = new class {
      *
      * @param  {object} counter - DOM node
      * @param  {object} data    - json formatted response from a fetch
-     *
      * @return {undefined}
      */
     updateCountElement(counter, data) {
@@ -110,7 +108,6 @@ let BookWyrm = new class {
      * Toggle form.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     revealForm(event) {
@@ -124,7 +121,6 @@ let BookWyrm = new class {
      * Execute actions on targets based on triggers.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     toggleAction(event) {
@@ -178,7 +174,6 @@ let BookWyrm = new class {
      * Show or hide menus.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     toggleMenu(trigger, targetId) {
@@ -198,7 +193,6 @@ let BookWyrm = new class {
      *
      * @param  {object}  container - DOM node
      * @param  {boolean} pressed   - Is the trigger pressed?
-     *
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
@@ -210,7 +204,6 @@ let BookWyrm = new class {
      *
      * @param  {object}  checkbox - DOM node
      * @param  {boolean} pressed  - Is the trigger pressed?
-     *
      * @return {undefined}
      */
     toggleCheckbox(checkbox, pressed) {
@@ -219,12 +212,9 @@ let BookWyrm = new class {
 
     /**
      * Give the focus to an element.
-     *
-     * This is useful with modals: the focus needs to go back to the element that
-     * was focused before opening the modal.
+     * Only move the focus based on user interactions.
      *
      * @param  {string} nodeId - ID of the DOM node to focus (button, link…)
-     *
      * @return {undefined}
      */
     toggleFocus(nodeId) {
@@ -242,7 +232,6 @@ let BookWyrm = new class {
      * This function is used for boosts and favourites.
      *
      * @param  {Event} event
-     *
      * @return {undefined}
      */
     interact(event) {
@@ -292,7 +281,6 @@ let BookWyrm = new class {
      * Submit a form using POST.
      *
      * @param  {object} form - Form to be submitted
-     *
      * @return {Promise}
      */
     ajaxPost(form) {
