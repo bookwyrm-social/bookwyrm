@@ -95,6 +95,18 @@ def init_connectors():
     )
 
     Connector.objects.create(
+        identifier="inventaire.io",
+        name="Inventaire",
+        connector_file="inventaire",
+        base_url="https://inventaire.io/entity/",
+        books_url="https://inventaire.io/api/entities",
+        covers_url="https://inventaire.io",
+        search_url="https://inventaire.io/api/search?types=works&types=works&search=",
+        isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
+        priority=3,
+    )
+
+    Connector.objects.create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
