@@ -1,0 +1,39 @@
+{% load i18n %}
+
+{% csrf_token %}
+
+<div class="columns">
+    <div class="column is-half">
+        <p>
+            <label class="label" for="id_server_name">{% trans "Instance:" %}</label>
+            <input type="text" name="server_name" maxlength="255" class="input" required="" id="id_server_name" value="{{ form.server_name.value|default:'' }}" placeholder="domain.com">
+        </p>
+        <p>
+            <label class="label" for="id_status">{% trans "Status:" %}</label>
+            <div class="select">
+                <select name="status" class="" id="id_status">
+                    <option value="federated" {% if form.status.value == "federated" or not form.status.value %}selected=""{% endif %}>Federated</option>
+                    <option value="blocked" {% if form.status.value == "blocked" %}selected{% endif %}>Blocked</option>
+                </select>
+            </div>
+        </p>
+    </div>
+    <div class="column is-half">
+        <p>
+            <label class="label" for="id_application_type">{% trans "Software:" %}</label>
+            <input type="text" name="application_type" maxlength="255" class="input" id="id_application_type" value="{{ form.application_type.value|default:'' }}">
+        </p>
+        <p>
+            <label class="label" for="id_application_version">{% trans "Version:" %}</label>
+            <input type="text" name="application_version" maxlength="255" class="input" id="id_application_version" value="{{ form.application_version.value|default:'' }}">
+        </p>
+    </div>
+</div>
+<p>
+    <label class="label" for="id_notes">{% trans "Notes:" %}</label>
+    <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">
+        {{ form.notes.value|default:'' }}
+    </textarea>
+</p>
+
+<button type="submit" class="button is-primary">{% trans "Save" %}</button>

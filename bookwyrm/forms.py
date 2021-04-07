@@ -286,4 +286,4 @@ class ReportForm(CustomForm):
 class ServerForm(CustomForm):
     class Meta:
         model = models.FederatedServer
-        exclude = []
+        exclude = ["remote_id"]
