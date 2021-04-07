@@ -34,8 +34,29 @@ class Federation(View):
             servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
-        data = {"servers": paginated.page(page), "sort": sort, "form": forms.ServerForm}
+
+        data = {
+            "servers": paginated.page(page), "sort": sort, "form": forms.ServerForm()
+        }
         return TemplateResponse(request, "settings/federation.html", data)
+
+
+class EditFederatedServer(View):
+    """ manually add a server """
+
+    def get(self, request):
+        """ add server form """
+        data = {"form": forms.ServerForm()}
+        return TemplateResponse(request, "settings/edit_server.html", data)
+
+    def post(self, request):
+        """ add a server from the admin panel """
+        form = forms.ServerForm(request.POST)
+        if not form.is_valid():
+            data = {"form": form}
+            return TemplateResponse(request, "settings/edit_server.html", data)
+        server = form.save()
+        return redirect("settings-federated-server", server.id)
 
 
 @method_decorator(login_required, name="dispatch")

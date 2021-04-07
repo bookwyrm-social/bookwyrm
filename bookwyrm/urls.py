@@ -69,6 +69,11 @@ urlpatterns = [
         name="settings-federated-server",
     ),
     re_path(
+        r"^settings/federation/edit/?$",
+        views.EditFederatedServer.as_view(),
+        name="settings-edit-federated-server",
+    ),
+    re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
     re_path(

@@ -1,0 +1,16 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Add server" %}{% endblock %}
+
+{% block header %}
+{% if form.server_name.value %}{{ form.server_name.value }}{% else %}{% trans "Add server" %}{% endif %}
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+{% endblock %}
+
+{% block panel %}
+
+<form method="POST" action="{% url 'settings-edit-federated-server' %}">
+    {% include 'settings/server_form.html' %}
+</form>
+
+{% endblock %}
