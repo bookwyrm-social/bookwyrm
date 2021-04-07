@@ -88,12 +88,18 @@
         <div class="column is-half">
             <section class="block">
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
-                <p class="mb-2"><label class="label" for="id_title">{% trans "Title:" %}</label> {{ form.title }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_title">{% trans "Title:" %}</label>
+                    <input type="text" name="title" value="{{ form.title.value }}" maxlength="255" class="input" required="" id="id_title">
+                </p>
                 {% for error in form.title.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="mb-2"><label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label> {{ form.subtitle }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label>
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value }}" maxlength="255" class="input" required="" id="id_subtitle">
+                </p>
                 {% for error in form.subtitle.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
