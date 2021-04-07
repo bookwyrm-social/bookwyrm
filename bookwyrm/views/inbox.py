@@ -70,7 +70,7 @@ def is_blocked_user_agent(request):
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
         return False
-    url = re.search(r"+https?://{:s}/?".format(regex.domain), user_agent)
+    url = re.search(r"https?://{:s}/?".format(regex.domain), user_agent).group()
     domain = urlparse(url).netloc
     if not domain:
         # idk, we'll try again later with the actor

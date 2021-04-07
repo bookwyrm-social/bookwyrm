@@ -89,8 +89,10 @@
         {% csrf_token %}
         {% if server.status != 'blocked' %}
         <button class="button is-danger">{% trans "Block" %}</button>
+        <p class="help">{% trans "All users from this instance will be deactivated." %}</p>
         {% else %}
         <button class="button">{% trans "Un-block" %}</button>
+        <p class="help">{% trans "All users from this instance will be re-activated." %}</p>
         {% endif %}
     </form>
 </section>

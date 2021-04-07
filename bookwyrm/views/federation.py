@@ -36,7 +36,9 @@ class Federation(View):
         paginated = Paginator(servers, PAGE_LENGTH)
 
         data = {
-            "servers": paginated.page(page), "sort": sort, "form": forms.ServerForm()
+            "servers": paginated.page(page),
+            "sort": sort,
+            "form": forms.ServerForm(),
         }
         return TemplateResponse(request, "settings/federation.html", data)
 
@@ -93,4 +95,11 @@ class FederatedServer(View):
         server = get_object_or_404(models.FederatedServer, id=server)
         server.status = "blocked" if server.status == "federated" else "federated"
         server.save()
+
+        # TODO: there needs to be differentiation between types of deactivated users
+        if server.status == "blocked":
+            server.user_set.update(is_active=False)
+        else:
+            server.user_set.update(is_active=True)
+
         return redirect("settings-federated-server", server.id)
