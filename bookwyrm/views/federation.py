@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -34,7 +34,7 @@ class Federation(View):
             servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
-        data = {"servers": paginated.page(page), "sort": sort}
+        data = {"servers": paginated.page(page), "sort": sort, "form": forms.ServerForm}
         return TemplateResponse(request, "settings/federation.html", data)
 
 

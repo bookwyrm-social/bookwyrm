@@ -281,3 +281,9 @@ class ReportForm(CustomForm):
     class Meta:
         model = models.Report
         fields = ["user", "reporter", "statuses", "note"]
+
+
+class ServerForm(CustomForm):
+    class Meta:
+        model = models.FederatedServer
+        exclude = []

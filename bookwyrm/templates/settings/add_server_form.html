@@ -1,0 +1,15 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Add server" %}
+{% endblock %}
+
+{% block form %}
+<form>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+</form>
+{% endblock %}
+

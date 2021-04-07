@@ -4,7 +4,16 @@
 
 {% block header %}{% trans "Federated Servers" %}{% endblock %}
 
+{% block edit-button %}
+{% trans "Add server" as button_text %}
+{% include 'snippets/toggle/open_button.html' with controls_text="add-server" icon="plus" text=button_text focus="add-server-header" %}
+{% endblock%}
+
 {% block panel %}
+
+<div class="block">
+    {% include 'settings/add_server_form.html' with controls_text="add-server" %}
+</div>
 
 <table class="table is-striped">
     <tr>
