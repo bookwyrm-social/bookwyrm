@@ -179,7 +179,11 @@ class AbstractConnector(AbstractMinimalConnector):
         data = get_data(remote_id)
 
         mapped_data = dict_from_mappings(data, self.author_mappings)
-        activity = activitypub.Author(**mapped_data)
+        try:
+            activity = activitypub.Author(**mapped_data)
+        except activitypub.ActivitySerializerError:
+            return None
+
         # this will dedupe
         return activity.to_model(model=models.Author)
 

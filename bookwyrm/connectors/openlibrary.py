@@ -93,7 +93,10 @@ class Connector(AbstractConnector):
             # this id is "/authors/OL1234567A"
             author_id = author_blob["key"]
             url = "%s%s" % (self.base_url, author_id)
-            yield self.get_or_create_author(url)
+            author = self.get_or_create_author(url)
+            if not author:
+                continue
+            yield author
 
     def get_cover_url(self, cover_blob, size="L"):
         """ ask openlibrary for the cover """

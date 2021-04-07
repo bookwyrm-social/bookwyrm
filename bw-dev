@@ -14,6 +14,9 @@ trap - EXIT
 
 # show commands as they're executed
 set -x
+function runweb {
+    docker-compose run --rm web "$@"
+}
 
 function execdb {
     docker-compose exec db $@
@@ -45,17 +48,16 @@ case "$CMD" in
         initdb
         ;;
     makemigrations)
-        execweb python manage.py makemigrations "$@"
+        runweb python manage.py makemigrations "$@"
         ;;
     migrate)
-        execweb python manage.py rename_app fedireads bookwyrm
-        execweb python manage.py migrate "$@"
+        runweb python manage.py migrate "$@"
         ;;
     bash)
-        execweb bash
+        runweb bash
         ;;
     shell)
-        execweb python manage.py shell
+        runweb python manage.py shell
         ;;
     dbshell)
         execdb psql -U ${POSTGRES_USER} ${POSTGRES_DB}
@@ -64,7 +66,7 @@ case "$CMD" in
         docker-compose restart celery_worker
         ;;
     collectstatic)
-        execweb python manage.py collectstatic --no-input
+        runweb python manage.py collectstatic --no-input
         ;;
     build)
         docker-compose build
@@ -77,7 +79,7 @@ case "$CMD" in
         docker-compose restart
         ;;
     populate_streams)
-        execweb python manage.py populate_streams
+        runweb python manage.py populate_streams
         ;;
     *)
         echo "Unrecognised command. Try: build, up, initdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, update, populate_feeds"
