@@ -20,60 +20,67 @@
 {% endblock %}
 
 {% block panel %}
-<section class="block content">
-    <h2 class="title is-4">{% trans "Details" %}</h2>
-    <dl>
-        <div class="is-flex">
-            <dt>{% trans "Software:" %}</dt>
-            <dd>{{ server.application_type }}</dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Version:" %}</dt>
-            <dd>{{ server.application_version }}</dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Status:" %}</dt>
-            <dd>{{ server.status }}</dd>
-        </div>
-    </dl>
-</section>
+<div class="columns">
+    <section class="column is-half content">
+        <h2 class="title is-4">{% trans "Details" %}</h2>
+        <dl>
+            <div class="is-flex">
+                <dt>{% trans "Software:" %}</dt>
+                <dd>{{ server.application_type }}</dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Version:" %}</dt>
+                <dd>{{ server.application_version }}</dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Status:" %}</dt>
+                <dd>{{ server.status }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="column is-half content">
+        <h2 class="title is-4">{% trans "Activity" %}</h2>
+        <dl>
+            <div class="is-flex">
+                <dt>{% trans "Users:" %}</dt>
+                <dd>
+                    {{ users.count }}
+                    {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Reports:" %}</dt>
+                <dd>
+                    {{ reports.count }}
+                    {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Followed by us:" %}</dt>
+                <dd>
+                    {{ followed_by_us.count }}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Followed by them:" %}</dt>
+                <dd>
+                    {{ followed_by_them.count }}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Blocked by us:" %}</dt>
+                <dd>
+                    {{ blocked_by_us.count }}
+                </dd>
+            </div>
+        </dl>
+    </section>
+</div>
 
 <section class="block content">
-    <h2 class="title is-4">{% trans "Activity" %}</h2>
-    <dl>
-        <div class="is-flex">
-            <dt>{% trans "Users:" %}</dt>
-            <dd>
-                {{ users.count }}
-                {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
-            </dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Reports:" %}</dt>
-            <dd>
-                {{ reports.count }}
-                {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.id }}">{% trans "View all" %}</a>){% endif %}
-            </dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Followed by us:" %}</dt>
-            <dd>
-                {{ followed_by_us.count }}
-            </dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Followed by them:" %}</dt>
-            <dd>
-                {{ followed_by_them.count }}
-            </dd>
-        </div>
-        <div class="is-flex">
-            <dt>{% trans "Blocked by us:" %}</dt>
-            <dd>
-                {{ blocked_by_us.count }}
-            </dd>
-        </div>
-    </dl>
+    <h2 class="title is-4">{% trans "Notes" %}</h2>
+    <p>{{ server.notes }}</p>
 </section>
 
 <section class="block content">
