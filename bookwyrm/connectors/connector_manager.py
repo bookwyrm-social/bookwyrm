@@ -40,8 +40,9 @@ def search(query, min_confidence=0.1):
             else:
                 try:
                     result_set = connector.isbn_search(isbn)
-                except (HTTPError, ConnectorException):
-                    pass
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.exception(e)
+                    continue
 
         # if no isbn search or results, we fallback to generic search
         if result_set in (None, []):
