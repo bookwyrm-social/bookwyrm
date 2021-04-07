@@ -25,16 +25,6 @@ html {
     min-width: 75% !important;
 }
 
-/* --- "disabled" for non-buttons --- */
-.is-disabled {
-    background-color: #dbdbdb;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    color: #7a7a7a;
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 /* --- SHELVING --- */
 
 /** @todo Replace icons with SVG symbols.
@@ -55,10 +45,6 @@ html {
 .hide-active[aria-pressed=true],
 .hide-inactive[aria-pressed=false] {
     display: none;
-}
-
-.hidden {
-    display: none !important;
 }
 
 .hidden.transition-y,
@@ -251,4 +237,18 @@ html {
     .is-processing .icon::before {
         animation-duration: 1.5s;
     }
+}
+
+/* States
+ ******************************************************************************/
+
+/* "disabled" for non-buttons */
+
+.is-disabled {
+    background-color: #dbdbdb;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    color: #7a7a7a;
+    opacity: 0.5;
+    cursor: not-allowed;
 }

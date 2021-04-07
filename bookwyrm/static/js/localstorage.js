@@ -38,6 +38,6 @@ let LocalStorageTools = new class {
         let key = node.dataset.hide;
         let value = window.localStorage.getItem(key);
 
-        BookWyrm.addRemoveClass(node, 'hidden', value);
+        BookWyrm.addRemoveClass(node, 'is-hidden', value);
     }
 }

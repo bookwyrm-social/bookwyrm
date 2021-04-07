@@ -24,7 +24,7 @@
                         {% if readthrough.progress %}
                         {% trans "Show all updates" as button_text %}
                         {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="updates" controls_uid=readthrough.id class="is-small" %}
-                        <ul id="updates-{{ readthrough.id }}" class="hidden">
+                        <ul id="updates-{{ readthrough.id }}" class="is-hidden">
                             {% for progress_update in readthrough.progress_updates %}
                             <li>
                                 <form name="delete-update" action="/delete-progressupdate" method="POST">
@@ -67,7 +67,7 @@
     </div>
 </div>
 
-<div class="box hidden" id="edit-readthrough-{{ readthrough.id }}" tabindex="0">
+<div class="box is-hidden" id="edit-readthrough-{{ readthrough.id }}" tabindex="0">
     <h3 class="title is-5">{% trans "Edit read dates" %}</h3>
     <form name="edit-readthrough" action="/edit-readthrough" method="post">
         {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}

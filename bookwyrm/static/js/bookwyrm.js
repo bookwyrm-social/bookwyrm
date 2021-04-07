@@ -99,7 +99,7 @@ let BookWyrm = new class {
         const count = data.count;
 
         if (count != currentCount) {
-            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'hidden', count < 1);
+            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);
             counter.innerText = count;
         }
     }
@@ -112,9 +112,9 @@ let BookWyrm = new class {
      */
     revealForm(event) {
         let trigger = event.currentTarget;
-        let hidden = trigger.closest('.hidden-form').querySelectorAll('.hidden')[0];
+        let hidden = trigger.closest('.hidden-form').querySelectorAll('.is-hidden')[0];
 
-        this.addRemoveClass(hidden, 'hidden', !hidden);
+        this.addRemoveClass(hidden, 'is-hidden', !hidden);
     }
 
     /**
@@ -139,7 +139,7 @@ let BookWyrm = new class {
         if (targetId && ! trigger.classList.contains('pulldown-menu')) {
             let target = document.getElementById(targetId);
 
-            this.addRemoveClass(target, 'hidden', !pressed);
+            this.addRemoveClass(target, 'is-hidden', !pressed);
             this.addRemoveClass(target, 'is-active', pressed);
         }
 
@@ -196,7 +196,7 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleContainer(container, pressed) {
-        this.addRemoveClass(container, 'hidden', pressed);
+        this.addRemoveClass(container, 'is-hidden', pressed);
     }
 
     /**
@@ -260,8 +260,8 @@ let BookWyrm = new class {
             .then(function() {
                 allTriggers.forEach(node => bookwyrm.addRemoveClass(
                     node,
-                    'hidden',
-                    node.className.indexOf('hidden') == -1
+                    'is-hidden',
+                    node.className.indexOf('is-hidden') == -1
                 ));
             })
             .catch(error => {
@@ -272,7 +272,7 @@ let BookWyrm = new class {
                 allTriggers.forEach(node => bookwyrm.addRemoveClass(
                     node,
                     'has-error',
-                    node.className.indexOf('hidden') == -1
+                    node.className.indexOf('is-hidden') == -1
                 ));
             });
     }

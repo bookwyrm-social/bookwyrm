@@ -134,7 +134,7 @@
                             <span class="is-sr-only">{% trans "Notifications" %}</span>
                         </span>
                     </span>
-                    <span class="{% if not request.user|notification_count %}hidden {% endif %}tag is-danger is-medium transition-x" data-poll-wrapper>
+                    <span class="{% if not request.user|notification_count %}is-hidden {% endif %}tag is-danger is-medium transition-x" data-poll-wrapper>
                         <span data-poll="notifications">{{ request.user | notification_count }}</span>
                     </span>
                 </a>

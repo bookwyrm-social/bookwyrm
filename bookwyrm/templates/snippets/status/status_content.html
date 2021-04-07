@@ -20,7 +20,7 @@
     </div>
     {% endif %}
 
-    <div{% if status.content_warning %} class="hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
+    <div{% if status.content_warning %} class="is-hidden" id="show-status-cw-{{ status.id }}"{% endif %}>
         {% if status.content_warning %}
         {% trans "Show less" as button_text %}
         {% include 'snippets/toggle/close_button.html' with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
