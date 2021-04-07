@@ -3,7 +3,6 @@ html {
     scroll-padding-top: 20%;
 }
 
-/* --- --- */
 .image {
     overflow: hidden;
 }
@@ -25,7 +24,8 @@ html {
     min-width: 75% !important;
 }
 
-/* --- SHELVING --- */
+/** Shelving
+ ******************************************************************************/
 
 /** @todo Replace icons with SVG symbols.
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
@@ -35,7 +35,9 @@ html {
     margin-left: 0.5em;
 }
 
-/* --- TOGGLES --- */
+/** Toggles
+ ******************************************************************************/
+
 .toggle-button[aria-pressed=true],
 .toggle-button[aria-pressed=true]:hover {
     background-color: hsl(171, 100%, 41%);
@@ -107,7 +109,9 @@ html {
     content: '\e9d7';
 }
 
-/* --- BOOK COVERS --- */
+/** Book covers
+ ******************************************************************************/
+
 .cover-container {
     height: 250px;
     width: max-content;
@@ -172,7 +176,9 @@ html {
     padding: 0.1em;
 }
 
-/* --- AVATAR --- */
+/** Avatars
+ ******************************************************************************/
+
 .avatar {
     vertical-align: middle;
     display: inline;
@@ -188,7 +194,9 @@ html {
     min-height: 96px;
 }
 
-/* --- QUOTES --- */
+/** Quotes
+ ******************************************************************************/
+
 .quote blockquote {
     position: relative;
     padding-left: 2em;
