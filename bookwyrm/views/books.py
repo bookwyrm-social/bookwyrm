@@ -1,4 +1,5 @@
 """ the good stuff! the books! """
+from datetime import datetime
 from uuid import uuid4
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -172,6 +173,12 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
+            # we have to make sure the dates are passed in as datetime, they're currently a string
+            # QueryDicts are immutable, we need to copy
+            formcopy = data["form"].data.copy()
+            formcopy["first_published_date"] = datetime.strptime(formcopy["first_published_date"], "%Y-%m-%d")
+            formcopy["published_date"] = datetime.strptime(formcopy["published_date"], "%Y-%m-%d")
+            data["form"].data = formcopy
             return TemplateResponse(request, "book/edit_book.html", data)
 
         remove_authors = request.POST.getlist("remove_authors")
