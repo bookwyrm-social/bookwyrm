@@ -14,7 +14,6 @@ class Connector(AbstractConnector):
         shared_mappings = [
             Mapping("id", remote_field="uri", formatter=self.get_remote_id),
             Mapping("bnfId", remote_field="wdt:P268", formatter=get_first),
-            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
             Mapping("openlibraryKey", remote_field="wdt:P648", formatter=get_first),
         ]
         self.book_mappings = [
@@ -24,6 +23,7 @@ class Connector(AbstractConnector):
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_first),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_first),
+            Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
             Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_first),
             Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_first),
             # Mapping("languages", remote_field="wdt:P407", formatter=get_language),
@@ -38,7 +38,7 @@ class Connector(AbstractConnector):
 
         self.author_mappings = [
             Mapping("id", remote_field="uri", formatter=self.get_remote_id),
-            Mapping("name", remote_field="label", formatter=get_language_code),
+            Mapping("name", remote_field="labels", formatter=get_language_code),
             Mapping("goodreadsKey", remote_field="wdt:P2963", formatter=get_first),
             Mapping("isni", remote_field="wdt:P213", formatter=get_first),
             Mapping("viafId", remote_field="wdt:P214", formatter=get_first),
@@ -62,8 +62,7 @@ class Connector(AbstractConnector):
         # flatten the data so that images, uri, and claims are on the same level
         return {
             **data.get("claims"),
-            "uri": data.get("uri"),
-            "image": data.get("image"),
+            **{k: data.get(k) for k in ["uri", "image", "labels"]},
         }
 
     def parse_search_data(self, data):

@@ -68,6 +68,10 @@ class AbstractMinimalConnector(ABC):
             results.append(self.format_isbn_search_result(doc))
         return results
 
+    def get_search_data(self, remote_id, **kwargs):  # pylint: disable=no-self-use
+        """ this allows connectors to override the default behavior """
+        return get_data(remote_id, **kwargs)
+
     @abstractmethod
     def get_or_create_book(self, remote_id):
         """ pull up a book record by whatever means possible """
@@ -151,10 +155,6 @@ class AbstractConnector(AbstractMinimalConnector):
         return edition
 
     def get_book_data(self, remote_id):  # pylint: disable=no-self-use
-        """ this allows connectors to override the default behavior """
-        return get_data(remote_id)
-
-    def get_search_data(self, remote_id):  # pylint: disable=no-self-use
         """ this allows connectors to override the default behavior """
         return get_data(remote_id)
 
