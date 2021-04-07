@@ -26,12 +26,14 @@ class Connector(AbstractConnector):
             Mapping("oclcNumber", remote_field="wdt:P5331", formatter=get_first),
             Mapping("goodreadsKey", remote_field="wdt:P2969", formatter=get_first),
             Mapping("librarythingKey", remote_field="wdt:P1085", formatter=get_first),
-            # Mapping("languages", remote_field="wdt:P407", formatter=get_language),
-            # Mapping("publishers", remote_field="wdt:P123", formatter=resolve_key),
+            Mapping("languages", remote_field="wdt:P407", formatter=self.resolve_keys),
+            Mapping("publishers", remote_field="wdt:P123", formatter=self.resolve_keys),
             Mapping("publishedDate", remote_field="wdt:P577", formatter=get_first),
             Mapping("pages", remote_field="wdt:P1104", formatter=get_first),
-            # Mapping("subjectPlaces", remote_field="wdt:P840", formatter=resolve_key),
-            # Mapping("subjects", remote_field="wdt:P921", formatter=resolve_key),
+            Mapping(
+                "subjectPlaces", remote_field="wdt:P840", formatter=self.resolve_keys
+            ),
+            Mapping("subjects", remote_field="wdt:P921", formatter=self.resolve_keys),
             Mapping("asin", remote_field="wdt:P5749", formatter=get_first),
         ] + shared_mappings
         # TODO: P136: genre, P674 characters, P950 bne
@@ -130,15 +132,17 @@ class Connector(AbstractConnector):
             return None
         return "%s%s" % (self.covers_url, cover_id)
 
+    def resolve_keys(self, keys):
+        """ cool, it's "wd:Q3156592" now what the heck does that mean """
+        results = []
+        for uri in keys:
+            try:
+                data = self.get_book_data(self.get_remote_id(uri))
+            except ConnectorException:
+                continue
+            results.append(get_language_code(data.get("labels")))
+        return results
 
-def get_language(wikidata_key):
-    """ who here speaks "wd:Q150" """
-    return wikidata_key  # TODO
-
-
-def resolve_key(wikidata_key):
-    """ cool, it's "wd:Q3156592" now what the heck does that mean """
-    return wikidata_key  # TODO
 
 def get_language_code(options, code="en"):
     """ when there are a bunch of translation but we need a single field """
