@@ -177,7 +177,9 @@ class StatusViews(TestCase):
                 content="hi", book=self.book, user=self.local_user
             )
 
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+        ) as mock:
             result = view(request, status.id)
             self.assertTrue(mock.called)
         result.render()
@@ -196,7 +198,9 @@ class StatusViews(TestCase):
                 book=self.book, rating=2.0, user=self.local_user
             )
 
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+        ) as mock:
             result = view(request, status.id)
             self.assertFalse(mock.called)
         self.assertEqual(result.status_code, 400)
@@ -214,7 +218,9 @@ class StatusViews(TestCase):
                 content="hi", user=self.local_user
             )
 
-        with patch("bookwyrm.activitystreams.ActivityStream.remove_status") as mock:
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+        ) as mock:
             result = view(request, status.id)
             self.assertFalse(mock.called)
         self.assertEqual(result.status_code, 400)
@@ -316,7 +322,7 @@ class StatusViews(TestCase):
         request.user = self.local_user
 
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)
@@ -351,7 +357,7 @@ class StatusViews(TestCase):
         request.user.is_superuser = True
 
         with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_status"
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
         ) as redis_mock:
             view(request, status.id)
             self.assertTrue(redis_mock.called)

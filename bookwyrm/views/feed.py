@@ -31,7 +31,6 @@ class Feed(View):
             tab = "home"
 
         activities = activitystreams.streams[tab].get_activity_stream(request.user)
-
         paginated = Paginator(activities, PAGE_LENGTH)
 
         suggested_users = get_suggested_users(request.user)

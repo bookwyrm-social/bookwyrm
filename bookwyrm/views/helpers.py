@@ -138,7 +138,7 @@ def handle_remote_webfinger(query):
                     user = activitypub.resolve_remote_id(
                         link["href"], model=models.User
                     )
-                except KeyError:
+                except (KeyError, activitypub.ActivitySerializerError):
                     return None
     return user
 

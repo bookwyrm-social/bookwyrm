@@ -1,5 +1,6 @@
 """ activitypub model functionality """
 from base64 import b64encode
+from collections import namedtuple
 from functools import reduce
 import json
 import operator
@@ -25,6 +26,15 @@ from bookwyrm.models.fields import ImageField, ManyToManyField
 logger = logging.getLogger(__name__)
 # I tried to separate these classes into mutliple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
+
+PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
+
+
+def set_activity_from_property_field(activity, obj, field):
+    """ assign a model property value to the activity json """
+    activity[field[1]] = getattr(obj, field[0])
+
+
 class ActivitypubMixin:
     """ add this mixin for models that are AP serializable """
 
@@ -52,6 +62,11 @@ class ActivitypubMixin:
         self.activity_fields = (
             self.image_fields + self.many_to_many_fields + self.simple_fields
         )
+        if hasattr(self, "property_fields"):
+            self.activity_fields += [
+                PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
+                for f in self.property_fields
+            ]
 
         # these are separate to avoid infinite recursion issues
         self.deserialize_reverse_fields = (
@@ -370,7 +385,7 @@ class CollectionItemMixin(ActivitypubMixin):
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id=self.remote_id,
+            id=self.get_remote_id(),
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
@@ -381,7 +396,7 @@ class CollectionItemMixin(ActivitypubMixin):
         object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id=self.remote_id,
+            id=self.get_remote_id(),
             actor=self.user.remote_id,
             object=object_field,
             target=collection_field.remote_id,
@@ -430,7 +445,7 @@ def generate_activity(obj):
         ) in obj.serialize_reverse_fields:
             related_field = getattr(obj, model_field_name)
             activity[activity_field_name] = unfurl_related_field(
-                related_field, sort_field
+                related_field, sort_field=sort_field
             )
 
     if not activity.get("id"):
@@ -440,7 +455,7 @@ def generate_activity(obj):
 
 def unfurl_related_field(related_field, sort_field=None):
     """ load reverse lookups (like public key owner or Status attachment """
-    if hasattr(related_field, "all"):
+    if sort_field and hasattr(related_field, "all"):
         return [
             unfurl_related_field(i) for i in related_field.order_by(sort_field).all()
         ]
