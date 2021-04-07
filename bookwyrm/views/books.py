@@ -2,6 +2,7 @@
 from datetime import datetime
 from uuid import uuid4
 
+from dateutil.parser import parse as dateparse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.postgres.search import SearchRank, SearchVector
 from django.core.files.base import ContentFile
@@ -178,15 +179,13 @@ class EditBook(View):
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
             try:
-                formcopy["first_published_date"] = datetime.strptime(
-                    formcopy["first_published_date"], "%Y-%m-%d"
+                formcopy["first_published_date"] = dateparse(
+                    formcopy["first_published_date"]
                 )
             except MultiValueDictKeyError:
                 pass
             try:
-                formcopy["published_date"] = datetime.strptime(
-                    formcopy["published_date"], "%Y-%m-%d"
-                )
+                formcopy["published_date"] = dateparse(formcopy["published_date"])
             except MultiValueDictKeyError:
                 pass
             data["form"].data = formcopy
