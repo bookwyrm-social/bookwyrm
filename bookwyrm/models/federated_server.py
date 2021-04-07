@@ -19,8 +19,9 @@ class FederatedServer(BookWyrmModel):
         max_length=255, default="federated", choices=FederationStatus.choices
     )
     # is it mastodon, bookwyrm, etc
-    application_type = models.CharField(max_length=255, null=True)
-    application_version = models.CharField(max_length=255, null=True)
+    application_type = models.CharField(max_length=255, null=True, blank=True)
+    application_version = models.CharField(max_length=255, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def block(self):
         """ block a server """
