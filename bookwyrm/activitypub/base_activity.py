@@ -265,7 +265,8 @@ def resolve_remote_id(
             "Could not connect to host for remote_id in: %s" % (remote_id)
         )
     # determine the model implicitly, if not provided
-    if not model:
+    # or if it's a model with subclasses like Status, check again
+    if not model or hasattr(model.objects, "select_subclasses"):
         model = get_model_from_type(data.get("type"))
 
     # check for existing items with shared unique identifiers

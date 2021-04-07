@@ -233,7 +233,7 @@ class InviteRequestForm(CustomForm):
 class CreateInviteForm(CustomForm):
     class Meta:
         model = models.SiteInvite
-        exclude = ["code", "user", "times_used"]
+        exclude = ["code", "user", "times_used", "invitees"]
         widgets = {
             "expiry": ExpiryWidget(
                 choices=[

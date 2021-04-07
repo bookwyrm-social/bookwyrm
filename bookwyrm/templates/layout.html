@@ -70,7 +70,7 @@
         {% if request.user.is_authenticated %}
             <div class="navbar-item has-dropdown is-hoverable">
                 <a
-                    href="{{ user.local_path }}"
+                    href="{{ request.user.local_path }}"
                     class="navbar-link pulldown-menu"
                     role="button"
                     aria-expanded="false"
