@@ -1,4 +1,5 @@
 """ inventaire data connector """
+from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import get_data
 from .connector_manager import ConnectorException
@@ -95,12 +96,15 @@ class Connector(AbstractConnector):
     def is_work_data(self, data):
         return data.get("type") == "work"
 
-    def get_edition_from_work_data(self, data):
-        value = data.get("uri")
+    def load_edition_data(self, work_uri):
+        """ get a list of editions for a work """
         url = "{:s}?action=reverse-claims&property=P629&value={:s}".format(
-            self.books_url, value
+            self.books_url, work_uri
         )
-        data = get_data(url)
+        return get_data(url)
+
+    def get_edition_from_work_data(self, data):
+        data = self.load_edition_data(data.get("uri"))
         try:
             uri = data["uris"][0]
         except KeyError:
@@ -120,7 +124,20 @@ class Connector(AbstractConnector):
             yield self.get_or_create_author(self.get_remote_id(author))
 
     def expand_book_data(self, book):
-        return
+        work = book
+        # go from the edition to the work, if necessary
+        if isinstance(book, models.Edition):
+            work = book.parent_work
+
+        try:
+            edition_options = self.load_edition_data(work.inventaire_id)
+        except ConnectorException:
+            # who knows, man
+            return
+
+        for edition_uri in edition_options.get("uris"):
+            remote_id = self.get_remote_id(edition_uri)
+            self.get_or_create_book(remote_id)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:
