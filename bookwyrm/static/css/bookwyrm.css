@@ -224,3 +224,31 @@ html {
     content: "\e905";
     right: 0;
 }
+
+/** Animations and transitions
+ ******************************************************************************/
+
+@keyframes beating {
+    0% { font-size: 100%; }
+    25% { font-size: 125%; }
+    100% { font-size: 75%; }
+}
+
+@keyframes turning {
+    from { transform: rotateZ(0deg); }
+    to { transform: rotateZ(360deg); }
+}
+
+.is-processing .icon-heart::before {
+    animation: beating 0.5s infinite alternate ease-in-out;
+}
+
+.is-processing .icon-boost::before {
+    animation: turning 0.5s infinite ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .is-processing .icon::before {
+        animation-duration: 1.5s;
+    }
+}

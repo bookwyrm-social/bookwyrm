@@ -241,8 +241,6 @@ let BookWyrm = new class {
      * Make a request and update the UI accordingly.
      * This function is used for boosts and favourites.
      *
-     * @todo Only update status if the promise is successful.
-     *
      * @param  {Event} event
      *
      * @return {undefined}
@@ -250,15 +248,44 @@ let BookWyrm = new class {
     interact(event) {
         event.preventDefault();
 
-        this.ajaxPost(event.target);
+        const bookwyrm = this;
 
-        // @todo This probably should be done with IDs.
-        document.querySelectorAll(`.${event.target.dataset.id}`)
-            .forEach(node => this.addRemoveClass(
-                node,
-                'hidden',
-                node.className.indexOf('hidden') == -1
-            ));
+        let allTriggers = document.querySelectorAll(`.${event.target.dataset.id}`);
+
+        // Change icon to show ongoing activity on the current UI.
+        allTriggers.forEach(node => bookwyrm.addRemoveClass(
+            node,
+            'is-processing',
+            true
+        ));
+
+        this.ajaxPost(event.target)
+            .finally(() => {
+                // Change icon to remove ongoing activity on the current UI.
+                allTriggers.forEach(node => bookwyrm.addRemoveClass(
+                    node,
+                    'is-processing',
+                    false
+                ));
+            })
+            .then(function() {
+                allTriggers.forEach(node => bookwyrm.addRemoveClass(
+                    node,
+                    'hidden',
+                    node.className.indexOf('hidden') == -1
+                ));
+            })
+            .catch(error => {
+                // @todo Display a notification in the UI instead.
+                //       For now, the absence of change will be enough.
+                console.warn('Request failed:', error);
+
+                allTriggers.forEach(node => bookwyrm.addRemoveClass(
+                    node,
+                    'has-error',
+                    node.className.indexOf('hidden') == -1
+                ));
+            });
     }
 
     /**
@@ -266,10 +293,10 @@ let BookWyrm = new class {
      *
      * @param  {object} form - Form to be submitted
      *
-     * @return {undefined}
+     * @return {Promise}
      */
     ajaxPost(form) {
-        fetch(form.action, {
+        return fetch(form.action, {
             method : "POST",
             body: new FormData(form)
         });
