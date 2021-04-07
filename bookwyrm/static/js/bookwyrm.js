@@ -177,8 +177,6 @@ let BookWyrm = new class {
     /**
      * Show or hide menus.
      *
-     * @note This function seems to be redundant and conflicts with toggleAction.
-     *
      * @param  {Event} event
      *
      * @return {undefined}
@@ -221,6 +219,9 @@ let BookWyrm = new class {
 
     /**
      * Give the focus to an element.
+     *
+     * This is useful with modals: the focus needs to go back to the element that
+     * was focused before opening the modal.
      *
      * @param  {string} nodeId - ID of the DOM node to focus (button, link…)
      *
