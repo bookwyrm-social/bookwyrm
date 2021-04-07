@@ -98,7 +98,7 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """ get a list of editions for a work """
-        url = "{:s}?action=reverse-claims&property=P629&value={:s}".format(
+        url = "{:s}?action=reverse-claims&property=wdt:P629&value={:s}".format(
             self.books_url, work_uri
         )
         return get_data(url)
@@ -119,7 +119,7 @@ class Connector(AbstractConnector):
         return self.get_book_data(self.get_remote_id(uri))
 
     def get_authors_from_data(self, data):
-        authors = data.get("wdt:P50")
+        authors = data.get("wdt:P50", [])
         for author in authors:
             yield self.get_or_create_author(self.get_remote_id(author))
 
