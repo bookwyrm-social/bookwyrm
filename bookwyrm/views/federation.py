@@ -44,16 +44,21 @@ class Federation(View):
 class EditFederatedServer(View):
     """ manually add a server """
 
-    def get(self, request):
+    def get(self, request, server=None):
         """ add server form """
-        data = {"form": forms.ServerForm()}
+        if server:
+            server = get_object_or_404(models.FederatedServer, id=server)
+        data = {"form": forms.ServerForm(instance=server), "server": server}
         return TemplateResponse(request, "settings/edit_server.html", data)
 
-    def post(self, request):
+    def post(self, request, server=None):
         """ add a server from the admin panel """
-        form = forms.ServerForm(request.POST)
+        if server:
+            server = get_object_or_404(models.FederatedServer, id=server)
+
+        form = forms.ServerForm(request.POST, instance=server)
         if not form.is_valid():
-            data = {"form": form}
+            data = {"form": form, "server": server}
             return TemplateResponse(request, "settings/edit_server.html", data)
         server = form.save()
         return redirect("settings-federated-server", server.id)

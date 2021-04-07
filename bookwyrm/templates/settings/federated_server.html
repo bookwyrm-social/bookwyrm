@@ -11,6 +11,14 @@
 <a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
 {% endblock %}
 
+{% block edit-button %}
+<a href="{% url 'settings-edit-federated-server' server.id %}">
+    <span class="icon icon-pencil" title="{% trans 'Edit server' %}">
+        <span class="is-sr-only">{% trans "Edit server" %}</span>
+    </span>
+</a>
+{% endblock %}
+
 {% block panel %}
 <section class="block content">
     <h2 class="title is-4">{% trans "Details" %}</h2>
