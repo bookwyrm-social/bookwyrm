@@ -49,7 +49,6 @@ class Connector(AbstractConnector):
             Mapping("died", remote_field="wdt:P570", formatter=get_first),
         ] + shared_mappings
 
-
     def get_remote_id(self, value):
         """ convert an id/uri into a url """
         return "{:s}?action=by-uris&uris={:s}".format(self.books_url, value)

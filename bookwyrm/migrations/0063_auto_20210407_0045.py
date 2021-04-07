@@ -7,43 +7,57 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0062_auto_20210406_1731'),
+        ("bookwyrm", "0062_auto_20210406_1731"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='author',
-            name='bnf_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="bnf_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='gutenberg_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="gutenberg_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='inventaire_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="inventaire_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='isni',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="isni",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='author',
-            name='viaf_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="author",
+            name="viaf_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='bnf_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="book",
+            name="bnf_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
         migrations.AddField(
-            model_name='book',
-            name='inventaire_id',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=255, null=True),
+            model_name="book",
+            name="inventaire_id",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=255, null=True
+            ),
         ),
     ]
