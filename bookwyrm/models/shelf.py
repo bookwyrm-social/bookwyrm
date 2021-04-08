@@ -68,9 +68,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
-    shelf = models.ForeignKey(
-        "Shelf", on_delete=models.PROTECT
-    )
+    shelf = models.ForeignKey("Shelf", on_delete=models.PROTECT)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )

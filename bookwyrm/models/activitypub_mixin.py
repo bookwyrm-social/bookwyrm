@@ -359,6 +359,20 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
+    @property
+    def privacy(self):
+        """ inherit the privacy of the list, or direct if pending """
+        collection_field = getattr(self, self.collection_field)
+        if self.approved:
+            return collection_field.privacy
+        return "direct"
+
+    @property
+    def recipients(self):
+        """ the owner of the list is a direct recipient """
+        collection_field = getattr(self, self.collection_field)
+        return [collection_field.user]
+
     def save(self, *args, broadcast=True, **kwargs):
         """ broadcast updated """
         # first off, we want to save normally no matter what

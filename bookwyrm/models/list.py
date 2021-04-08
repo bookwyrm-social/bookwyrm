@@ -61,9 +61,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
-    book_list = models.ForeignKey(
-        "List", on_delete=models.CASCADE
-    )
+    book_list = models.ForeignKey("List", on_delete=models.CASCADE)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
