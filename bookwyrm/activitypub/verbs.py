@@ -4,7 +4,7 @@ from typing import List
 from django.apps import apps
 
 from .base_activity import ActivityObject, Signature, resolve_remote_id
-from .book import Edition
+from .ordered_collection import CollectionItem
 
 
 @dataclass(init=False)
@@ -141,12 +141,9 @@ class Reject(Verb):
 class Add(Verb):
     """Add activity """
 
-    target: str
-    object: Edition
+    target: ActivityObject
+    object: CollectionItem
     type: str = "Add"
-    notes: str = None
-    order: int = 0
-    approved: bool = True
 
     def action(self):
         """ add obj to collection """
@@ -159,10 +156,9 @@ class Add(Verb):
 
 
 @dataclass(init=False)
-class Remove(Verb):
+class Remove(Add):
     """Remove activity """
 
-    target: ActivityObject
     type: str = "Remove"
 
     def action(self):
