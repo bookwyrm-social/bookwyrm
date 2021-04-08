@@ -58,7 +58,7 @@ class InboxRemove(TestCase):
             "type": "Remove",
             "actor": "https://example.com/users/rat",
             "object": {
-                "actor": self.local_user.remote_id,
+                "actor": self.remote_user.remote_id,
                 "type": "ShelfItem",
                 "book": self.book.remote_id,
                 "id": shelfbook.remote_id,
@@ -88,7 +88,7 @@ class InboxRemove(TestCase):
             "type": "Remove",
             "actor": "https://example.com/users/rat",
             "object": {
-                "actor": self.local_user.remote_id,
+                "actor": self.remote_user.remote_id,
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": listitem.remote_id,

@@ -13,15 +13,15 @@ class InboxAdd(TestCase):
 
     def setUp(self):
         """ basic user and book data """
-        self.local_user = models.User.objects.create_user(
+        local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
             "mouseword",
             local=True,
             localname="mouse",
         )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        local_user.remote_id = "https://example.com/user/mouse"
+        local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -52,10 +52,10 @@ class InboxAdd(TestCase):
             "type": "Add",
             "actor": "https://example.com/users/rat",
             "object": {
-                "actor": self.local_user.remote_id,
+                "actor": self.remote_user.remote_id,
                 "type": "ShelfItem",
                 "book": self.book.remote_id,
-                "id": "https://bookwyrm.social/listbook/6189",
+                "id": "https://bookwyrm.social/shelfbook/6189",
             },
             "target": "https://bookwyrm.social/user/mouse/shelf/to-read",
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -90,7 +90,7 @@ class InboxAdd(TestCase):
             "type": "Add",
             "actor": "https://example.com/users/rat",
             "object": {
-                "actor": self.local_user.remote_id,
+                "actor": self.remote_user.remote_id,
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": "https://bookwyrm.social/listbook/6189",
