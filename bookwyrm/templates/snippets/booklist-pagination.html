@@ -1,0 +1,58 @@
+{% load i18n %}
+{% if page.has_other_pages %}
+<nav class="pagination is-small" aria-label="pagination">
+    <a
+        class="pagination-previous {% if not page.has_previous %}is-disabled{% endif %}"
+        {% if page.has_previous %}
+        href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}"
+        {% else %}
+        aria-hidden="true"
+        {% endif %}>
+
+        <span class="icon icon-arrow-left" aria-hidden="true"></span>
+        {% trans "Previous" %}
+    </a>
+    <a
+        class="pagination-next {% if not page.has_next %}is-disabled{% endif %}"
+        {% if page.has_next %}
+        href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}"
+        {% else %}
+        aria-hidden="true"
+        {% endif %}>
+
+        {% trans "Next" %}
+        <span class="icon icon-arrow-right" aria-hidden="true"></span>
+    </a>
+    <ul class="pagination-list">
+        {% if page.number == 2 %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}">{{ page.previous_page_number }}</a>
+        {% elif page.number == 3 %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number|add:-1 }}{{ anchor }}">{{ page.previous_page_number|add:-1 }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}">{{ page.previous_page_number }}</a>
+        {% elif page.number == 4 %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number|add:-2 }}{{ anchor }}">{{ page.previous_page_number|add:-2 }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number|add:-1 }}{{ anchor }}">{{ page.previous_page_number|add:-1 }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}">{{ page.previous_page_number }}</a>
+        {% elif page.number > 4 %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page=1{{ anchor }}">1</a>
+            <span class="pagination-ellipsis">&hellip;</span>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.previous_page_number }}{{ anchor }}">{{ page.previous_page_number }}</a>
+        {% endif %}
+    <a class="pagination-link is-link" disabled href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.number }}{{ anchor }}">{{ page.number }}</a>
+        {% if page.number|add:1 == page.paginator.num_pages %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}">{{ page.next_page_number }}</a>
+        {% elif page.number|add:2 == page.paginator.num_pages %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}">{{ page.next_page_number }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number|add:1 }}{{ anchor }}">{{ page.next_page_number|add:1 }}</a>
+        {% elif page.number|add:3 == page.paginator.num_pages %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}">{{ page.next_page_number }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number|add:1 }}{{ anchor }}">{{ page.next_page_number|add:1 }}</a>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number|add:2 }}{{ anchor }}">{{ page.next_page_number|add:2 }}</a>
+        {% elif page.number|add:3 < page.paginator.num_pages %}
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page.next_page_number }}{{ anchor }}">{{ page.next_page_number }}</a>
+            <span class="pagination-ellipsis">&hellip;</span>
+            <a class="pagination-link" href="{% url 'list' list.id %}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ items.paginator.num_pages }}{{ anchor }}">{{ items.paginator.num_pages }}</a>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

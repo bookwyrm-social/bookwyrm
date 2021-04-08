@@ -39,6 +39,18 @@ class ListViews(TestCase):
             remote_id="https://example.com/book/1",
             parent_work=work,
         )
+        work_two = models.Work.objects.create(title="Labori")
+        self.book_two = models.Edition.objects.create(
+            title="Example Edition 2",
+            remote_id="https://example.com/book/2",
+            parent_work=work_two,
+        )
+        work_three = models.Work.objects.create(title="Trabajar")
+        self.book_three = models.Edition.objects.create(
+            title="Example Edition 3",
+            remote_id="https://example.com/book/3",
+            parent_work=work_three,
+        )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
@@ -194,6 +206,7 @@ class ListViews(TestCase):
                 user=self.local_user,
                 book=self.book,
                 approved=False,
+                order=1,
             )
 
         request = self.factory.post(
@@ -228,6 +241,7 @@ class ListViews(TestCase):
                 user=self.local_user,
                 book=self.book,
                 approved=False,
+                order=1,
             )
 
         request = self.factory.post(
@@ -267,6 +281,145 @@ class ListViews(TestCase):
         self.assertEqual(item.book, self.book)
         self.assertEqual(item.user, self.local_user)
         self.assertTrue(item.approved)
+
+    def test_add_two_books(self):
+        """
+        Putting two books on the list. The first should have an order value of
+        1 and the second should have an order value of 2.
+        """
+        request_one = self.factory.post(
+            "",
+            {
+                "book": self.book.id,
+                "list": self.list.id,
+            },
+        )
+        request_one.user = self.local_user
+
+        request_two = self.factory.post(
+            "",
+            {
+                "book": self.book_two.id,
+                "list": self.list.id,
+            },
+        )
+        request_two.user = self.local_user
+        views.list.add_book(request_one)
+        views.list.add_book(request_two)
+
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[0].order, 1)
+        self.assertEqual(items[1].order, 2)
+
+    def test_add_three_books_and_remove_second(self):
+        """
+        Put three books on a list and then remove the one in the middle. The
+        ordering of the list should adjust to not have a gap.
+        """
+        request_one = self.factory.post(
+            "",
+            {
+                "book": self.book.id,
+                "list": self.list.id,
+            },
+        )
+        request_one.user = self.local_user
+
+        request_two = self.factory.post(
+            "",
+            {
+                "book": self.book_two.id,
+                "list": self.list.id,
+            },
+        )
+        request_two.user = self.local_user
+
+        request_three = self.factory.post(
+            "",
+            {
+                "book": self.book_three.id,
+                "list": self.list.id,
+            },
+        )
+        request_three.user = self.local_user
+
+        views.list.add_book(request_one)
+        views.list.add_book(request_two)
+        views.list.add_book(request_three)
+
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[2].book, self.book_three)
+        self.assertEqual(items[0].order, 1)
+        self.assertEqual(items[1].order, 2)
+        self.assertEqual(items[2].order, 3)
+
+        remove_request = self.factory.post("", {"item": items[1].id})
+        remove_request.user = self.local_user
+        views.list.remove_book(remove_request, self.list.id)
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[1].book, self.book_three)
+        self.assertEqual(items[0].order, 1)
+        self.assertEqual(items[1].order, 2)
+
+    def test_add_three_books_and_move_last_to_first(self):
+        """
+        Put three books on the list and move the last book to the first
+        position.
+        """
+        request_one = self.factory.post(
+            "",
+            {
+                "book": self.book.id,
+                "list": self.list.id,
+            },
+        )
+        request_one.user = self.local_user
+
+        request_two = self.factory.post(
+            "",
+            {
+                "book": self.book_two.id,
+                "list": self.list.id,
+            },
+        )
+        request_two.user = self.local_user
+
+        request_three = self.factory.post(
+            "",
+            {
+                "book": self.book_three.id,
+                "list": self.list.id,
+            },
+        )
+        request_three.user = self.local_user
+
+        views.list.add_book(request_one)
+        views.list.add_book(request_two)
+        views.list.add_book(request_three)
+
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[2].book, self.book_three)
+        self.assertEqual(items[0].order, 1)
+        self.assertEqual(items[1].order, 2)
+        self.assertEqual(items[2].order, 3)
+
+        set_position_request = self.factory.post("", {"position": 1})
+        set_position_request.user = self.local_user
+        views.list.set_book_position(set_position_request, items[2].id)
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book_three)
+        self.assertEqual(items[1].book, self.book)
+        self.assertEqual(items[2].book, self.book_two)
+        self.assertEqual(items[0].order, 1)
+        self.assertEqual(items[1].order, 2)
+        self.assertEqual(items[2].order, 3)
 
     def test_add_book_outsider(self):
         """ put a book on a list """
@@ -358,6 +511,7 @@ class ListViews(TestCase):
                 book_list=self.list,
                 user=self.local_user,
                 book=self.book,
+                order=1,
             )
         self.assertTrue(self.list.listitem_set.exists())
 
@@ -377,9 +531,7 @@ class ListViews(TestCase):
         """ take an item off a list """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             item = models.ListItem.objects.create(
-                book_list=self.list,
-                user=self.local_user,
-                book=self.book,
+                book_list=self.list, user=self.local_user, book=self.book, order=1
             )
         self.assertTrue(self.list.listitem_set.exists())
         request = self.factory.post(

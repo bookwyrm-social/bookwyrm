@@ -51,6 +51,7 @@ class List(TestCase):
             book_list=book_list,
             book=self.book,
             user=self.local_user,
+            order=1,
         )
 
         self.assertTrue(item.approved)
@@ -65,7 +66,11 @@ class List(TestCase):
             )
 
         item = models.ListItem.objects.create(
-            book_list=book_list, book=self.book, user=self.local_user, approved=False
+            book_list=book_list,
+            book=self.book,
+            user=self.local_user,
+            approved=False,
+            order=1,
         )
 
         self.assertFalse(item.approved)

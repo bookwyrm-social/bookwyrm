@@ -3,7 +3,7 @@ import datetime
 from collections import defaultdict
 
 from django import forms
-from django.forms import ModelForm, PasswordInput, widgets
+from django.forms import ModelForm, PasswordInput, widgets, ChoiceField
 from django.forms.widgets import Textarea
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -287,3 +287,20 @@ class ServerForm(CustomForm):
     class Meta:
         model = models.FederatedServer
         exclude = ["remote_id"]
+
+
+class SortListForm(forms.Form):
+    sort_by = ChoiceField(
+        choices=(
+            ("order", _("List Order")),
+            ("title", _("Book Title")),
+            ("rating", _("Rating")),
+        ),
+        label=_("Sort By"),
+    )
+    direction = ChoiceField(
+        choices=(
+            ("ascending", _("Ascending")),
+            ("descending", _("Descending")),
+        ),
+    )

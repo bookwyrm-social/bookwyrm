@@ -94,6 +94,7 @@ class InboxAdd(TestCase):
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": "https://bookwyrm.social/listbook/6189",
+                "order": 1,
             },
             "target": "https://bookwyrm.social/user/mouse/list/to-read",
             "@context": "https://www.w3.org/ns/activitystreams",
