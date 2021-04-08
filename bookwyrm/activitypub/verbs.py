@@ -145,6 +145,13 @@ class Add(Verb):
     object: CollectionItem
     type: str = "Add"
 
+    def action(self):
+        """ figure out the target to assign the item to a collection  """
+        target = resolve_remote_id(self.target)
+        item = self.object.to_model(save=False)
+        setattr(item, item.collection_field, target)
+        item.save()
+
 
 @dataclass(init=False)
 class Remove(Add):
@@ -154,7 +161,7 @@ class Remove(Add):
 
     def action(self):
         """ find and remove the activity object """
-        obj = self.object.to_model(model=model, save=False, allow_create=False)
+        obj = self.object.to_model(save=False, allow_create=False)
         obj.delete()
 
 
