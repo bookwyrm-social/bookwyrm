@@ -52,6 +52,7 @@ class InboxAdd(TestCase):
             "type": "Add",
             "actor": "https://example.com/users/rat",
             "object": {
+                "actor": self.local_user.remote_id,
                 "type": "ShelfItem",
                 "book": self.book.remote_id,
                 "id": "https://bookwyrm.social/listbook/6189",
