@@ -90,7 +90,7 @@
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
                 <p class="mb-2">
                     <label class="label" for="id_title">{% trans "Title:" %}</label>
-                    <input type="text" name="title" value="{{ form.title.value }}" maxlength="255" class="input" required="" id="id_title">
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title">
                 </p>
                 {% for error in form.title.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -98,7 +98,7 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label>
-                    <input type="text" name="subtitle" value="{{ form.subtitle.value }}" maxlength="255" class="input" required="" id="id_subtitle">
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" required="" id="id_subtitle">
                 </p>
                 {% for error in form.subtitle.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
