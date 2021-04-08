@@ -156,14 +156,14 @@ let BookWyrm = new class {
         }
 
         // Check checkbox, if appropriate.
-        let checkbox = trigger.dataset['controls-checkbox'];
+        let checkbox = trigger.dataset.controlsCheckbox;
 
         if (checkbox) {
             this.toggleCheckbox(checkbox, pressed);
         }
 
         // Set focus, if appropriate.
-        let focus = trigger.dataset['focus-target'];
+        let focus = trigger.dataset.focusTarget;
 
         if (focus) {
             this.toggleFocus(focus);
