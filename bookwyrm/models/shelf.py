@@ -32,7 +32,6 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     )
 
     activity_serializer = activitypub.Shelf
-    collection_field = "shelf"
 
     def save(self, *args, **kwargs):
         """ set the identifier """
@@ -67,16 +66,17 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
     """ many to many join table for books and shelves """
 
     book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="object"
+        "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
-    shelf = fields.ForeignKey(
-        "Shelf", on_delete=models.PROTECT, activitypub_field="target"
+    shelf = models.ForeignKey(
+        "Shelf", on_delete=models.PROTECT
     )
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
 
     activity_serializer = activitypub.ShelfItem
+    collection_field = "shelf"
 
     def save(self, *args, **kwargs):
         if not self.user:

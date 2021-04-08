@@ -59,10 +59,10 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     """ ok """
 
     book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="object"
+        "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
-    book_list = fields.ForeignKey(
-        "List", on_delete=models.CASCADE, activitypub_field="target"
+    book_list = models.ForeignKey(
+        "List", on_delete=models.CASCADE
     )
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"

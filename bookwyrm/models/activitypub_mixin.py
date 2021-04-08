@@ -361,12 +361,11 @@ class CollectionItemMixin(ActivitypubMixin):
 
     def save(self, *args, broadcast=True, **kwargs):
         """ broadcast updated """
-        created = not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
-        # these shouldn't be edited, only created and deleted
-        if not broadcast or not created or not self.user.local:
+        # list items can be updateda, normally you would only broadcast on created
+        if not broadcast or not self.user.local:
             return
 
         # adding an obj to the collection
@@ -384,7 +383,7 @@ class CollectionItemMixin(ActivitypubMixin):
         """ AP for shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id=self.get_remote_id(),
+            id="{:s}#add".format(collection_field.remote_id),
             actor=user.remote_id,
             object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
@@ -394,7 +393,7 @@ class CollectionItemMixin(ActivitypubMixin):
         """ AP for un-shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id=self.get_remote_id(),
+            id="{:s}#remove".format(collection_field.remote_id),
             actor=user.remote_id,
             object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
