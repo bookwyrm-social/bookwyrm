@@ -98,7 +98,7 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label>
-                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" required="" id="id_subtitle">
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle">
                 </p>
                 {% for error in form.subtitle.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
