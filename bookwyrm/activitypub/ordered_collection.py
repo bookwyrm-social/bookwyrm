@@ -55,6 +55,7 @@ class OrderedCollectionPage(ActivityObject):
 @dataclass(init=False)
 class CollectionItem(ActivityObject):
     """ an item in a collection """
+
     actor: str
     type: str = "CollectionItem"
 
@@ -62,6 +63,7 @@ class CollectionItem(ActivityObject):
 @dataclass(init=False)
 class ListItem(CollectionItem):
     """ a book on a list """
+
     book: str
     notes: str = None
     approved: bool = True
@@ -72,5 +74,6 @@ class ListItem(CollectionItem):
 @dataclass(init=False)
 class ShelfItem(CollectionItem):
     """ a book on a list """
+
     book: str
     type: str = "ShelfItem"
