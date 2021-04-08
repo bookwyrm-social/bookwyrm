@@ -15,6 +15,15 @@ class Inbox(TestCase):
     def setUp(self):
         """ basic user and book data """
         self.client = Client()
+        local_user = models.User.objects.create_user(
+            "mouse@example.com",
+            "mouse@mouse.com",
+            "mouseword",
+            local=True,
+            localname="mouse",
+        )
+        local_user.remote_id = "https://example.com/user/mouse"
+        local_user.save(broadcast=False)
         self.create_json = {
             "id": "hi",
             "type": "Create",
