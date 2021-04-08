@@ -58,18 +58,11 @@ class Inbox(View):
 def activity_task(activity_json):
     """ do something with this json we think is legit """
     # lets see if the activitypub module can make sense of this json
-    try:
-        activity = activitypub.parse(activity_json)
-    except activitypub.ActivitySerializerError:
-        return
+    activity = activitypub.parse(activity_json)
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)
-    try:
-        activity.action()
-    except activitypub.ActivitySerializerError:
-        # this is raised if the activity is discarded
-        return
+    activity.action()
 
 
 def has_valid_signature(request, activity):
