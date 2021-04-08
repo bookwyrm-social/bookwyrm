@@ -238,45 +238,20 @@ let BookWyrm = new class {
         event.preventDefault();
 
         const bookwyrm = this;
-        const trigger = event.submitter;
-        const target = event.currentTarget;
-        const forms = document.querySelectorAll(`.${target.dataset.id}`);
+        const form = event.currentTarget;
+        const relatedforms = document.querySelectorAll(`.${form.dataset.id}`);
 
-        // Change icon to show ongoing activity on the current UI.
-        // Disable the element used to submit the form to prevent duplicated requests.
-        // @todo Ideally, disable all potential ways to submit this specific form.
-        forms.forEach(form => {
-            bookwyrm.addRemoveClass(form, 'is-processing', true);
-            trigger.setAttribute('disabled', null);
+        // Toggle class on all related forms.
+        relatedforms.forEach(relatedForm => bookwyrm.addRemoveClass(
+            relatedForm,
+            'is-hidden',
+            relatedForm.className.indexOf('is-hidden') == -1
+        ));
+
+        this.ajaxPost(form).catch(error => {
+            // @todo Display a notification in the UI instead.
+            console.warn('Request failed:', error);
         });
-
-        this.ajaxPost(target)
-            .finally(() => {
-                // Change icon to remove ongoing activity on the current UI.
-                // Enable back the element used to submit the form.
-                forms.forEach(form => {
-                    bookwyrm.addRemoveClass(form, 'is-processing', false);
-                    trigger.removeAttribute('disabled');
-                });
-            })
-            .then(function() {
-                forms.forEach(form => bookwyrm.addRemoveClass(
-                    form,
-                    'is-hidden',
-                    form.className.indexOf('is-hidden') == -1
-                ));
-            })
-            .catch(error => {
-                // @todo Display a notification in the UI instead.
-                //       For now, the absence of change will be enough.
-                console.warn('Request failed:', error);
-
-                forms.forEach(form => bookwyrm.addRemoveClass(
-                    form,
-                    'has-error',
-                    form.className.indexOf('is-hidden') == -1
-                ));
-            });
     }
 
     /**
