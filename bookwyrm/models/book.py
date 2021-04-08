@@ -53,14 +53,14 @@ class Book(BookDataModel):
     connector = models.ForeignKey("Connector", on_delete=models.PROTECT, null=True)
 
     # book/work metadata
-    title = fields.CharField(max_length=255)
+    title = fields.TextField(max_length=255)
     sort_title = fields.CharField(max_length=255, blank=True, null=True)
-    subtitle = fields.CharField(max_length=255, blank=True, null=True)
+    subtitle = fields.TextField(max_length=255, blank=True, null=True)
     description = fields.HtmlField(blank=True, null=True)
     languages = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
-    series = fields.CharField(max_length=255, blank=True, null=True)
+    series = fields.TextField(max_length=255, blank=True, null=True)
     series_number = fields.CharField(max_length=255, blank=True, null=True)
     subjects = fields.ArrayField(
         models.CharField(max_length=255), blank=True, null=True, default=list

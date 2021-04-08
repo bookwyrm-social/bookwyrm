@@ -112,6 +112,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     )
 
     name_field = "username"
+    property_fields = [("following_link", "following")]
+
+    @property
+    def following_link(self):
+        """ just how to find out the following info """
+        return "{:s}/following".format(self.remote_id)
 
     @property
     def alt_text(self):

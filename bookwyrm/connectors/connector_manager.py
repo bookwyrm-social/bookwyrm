@@ -1,5 +1,6 @@
 """ interface with whatever connectors the app has """
 import importlib
+import logging
 import re
 from urllib.parse import urlparse
 
@@ -10,6 +11,8 @@ from requests import HTTPError
 
 from bookwyrm import models
 from bookwyrm.tasks import app
+
+logger = logging.getLogger(__name__)
 
 
 class ConnectorException(HTTPError):
@@ -37,14 +40,17 @@ def search(query, min_confidence=0.1):
             else:
                 try:
                     result_set = connector.isbn_search(isbn)
-                except (HTTPError, ConnectorException):
-                    pass
+                except Exception as e:  # pylint: disable=broad-except
+                    logger.exception(e)
+                    continue
 
         # if no isbn search or results, we fallback to generic search
         if result_set in (None, []):
             try:
                 result_set = connector.search(query, min_confidence=min_confidence)
-            except (HTTPError, ConnectorException):
+            except Exception as e:  # pylint: disable=broad-except
+                # we don't want *any* error to crash the whole search page
+                logger.exception(e)
                 continue
 
         # if the search results look the same, ignore them
