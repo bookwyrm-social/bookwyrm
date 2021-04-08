@@ -245,11 +245,6 @@ urlpatterns = [
     # author
     re_path(r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view()),
     re_path(r"^author/(?P<author_id>\d+)/edit/?$", views.EditAuthor.as_view()),
-    # tags
-    re_path(r"^tag/(?P<tag_id>.+)\.json/?$", views.Tag.as_view()),
-    re_path(r"^tag/(?P<tag_id>.+)/?$", views.Tag.as_view()),
-    re_path(r"^tag/?$", views.AddTag.as_view()),
-    re_path(r"^untag/?$", views.RemoveTag.as_view()),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
