@@ -97,10 +97,9 @@ class InboxActivities(TestCase):
             "type": "Add",
             "actor": "https://example.com/users/rat",
             "object": {
-                "type": "Edition",
-                "title": "Test Title",
-                "work": work.remote_id,
-                "id": "https://bookwyrm.social/book/37292",
+                "type": "ListItem",
+                "book": self.edition.remote_id,
+                "id": "https://bookwyrm.social/listbook/6189",
             },
             "target": "https://bookwyrm.social/user/mouse/list/to-read",
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -108,8 +107,10 @@ class InboxActivities(TestCase):
         views.inbox.activity_task(activity)
 
         booklist = models.List.objects.get()
+        listitem = models.ListItem.objects.get()
         self.assertEqual(booklist.name, "Test List")
         self.assertEqual(booklist.books.first(), book)
+        self.assertEqual(listitem.remote_id, "https://bookwyrm.social/listbook/6189")
 
     @responses.activate
     def test_handle_tag_book(self):
