@@ -229,7 +229,7 @@ let BookWyrm = new class {
 
     /**
      * Make a request and update the UI accordingly.
-     * This function is used for boosts and favourites.
+     * This function is used for boosts, favourites, follows and unfollows.
      *
      * @param  {Event} event
      * @return {undefined}
@@ -238,30 +238,32 @@ let BookWyrm = new class {
         event.preventDefault();
 
         const bookwyrm = this;
-
-        let allTriggers = document.querySelectorAll(`.${event.target.dataset.id}`);
+        const trigger = event.submitter;
+        const target = event.currentTarget;
+        const forms = document.querySelectorAll(`.${target.dataset.id}`);
 
         // Change icon to show ongoing activity on the current UI.
-        allTriggers.forEach(node => bookwyrm.addRemoveClass(
-            node,
-            'is-processing',
-            true
-        ));
+        // Disable the element used to submit the form to prevent duplicated requests.
+        // @todo Ideally, disable all potential ways to submit this specific form.
+        forms.forEach(form => {
+            bookwyrm.addRemoveClass(form, 'is-processing', true);
+            trigger.setAttribute('disabled', null);
+        });
 
-        this.ajaxPost(event.target)
+        this.ajaxPost(target)
             .finally(() => {
                 // Change icon to remove ongoing activity on the current UI.
-                allTriggers.forEach(node => bookwyrm.addRemoveClass(
-                    node,
-                    'is-processing',
-                    false
-                ));
+                // Enable back the element used to submit the form.
+                forms.forEach(form => {
+                    bookwyrm.addRemoveClass(form, 'is-processing', false);
+                    trigger.removeAttribute('disabled');
+                });
             })
             .then(function() {
-                allTriggers.forEach(node => bookwyrm.addRemoveClass(
-                    node,
+                forms.forEach(form => bookwyrm.addRemoveClass(
+                    form,
                     'is-hidden',
-                    node.className.indexOf('is-hidden') == -1
+                    form.className.indexOf('is-hidden') == -1
                 ));
             })
             .catch(error => {
@@ -269,10 +271,10 @@ let BookWyrm = new class {
                 //       For now, the absence of change will be enough.
                 console.warn('Request failed:', error);
 
-                allTriggers.forEach(node => bookwyrm.addRemoveClass(
-                    node,
+                forms.forEach(form => bookwyrm.addRemoveClass(
+                    form,
                     'has-error',
-                    node.className.indexOf('is-hidden') == -1
+                    form.className.indexOf('is-hidden') == -1
                 ));
             });
     }
