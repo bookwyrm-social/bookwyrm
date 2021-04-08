@@ -25,7 +25,6 @@ class InboxActivities(TestCase):
 
         models.SiteSettings.objects.create()
 
-
     def test_handle_unshelve_book(self):
         """ remove a book from a shelf """
         work = models.Work.objects.create(title="work title")

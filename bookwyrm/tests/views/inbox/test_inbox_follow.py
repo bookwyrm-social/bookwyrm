@@ -34,7 +34,6 @@ class InboxRelationships(TestCase):
 
         models.SiteSettings.objects.create()
 
-
     def test_handle_follow(self):
         """ remote user wants to follow local user """
         activity = {

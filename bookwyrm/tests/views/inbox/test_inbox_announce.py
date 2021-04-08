@@ -50,7 +50,6 @@ class InboxActivities(TestCase):
         }
         models.SiteSettings.objects.create()
 
-
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_boost(self, _):
         """ boost a status """

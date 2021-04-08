@@ -35,7 +35,6 @@ class InboxActivities(TestCase):
 
         models.SiteSettings.objects.create()
 
-
     def test_handle_add_book_to_shelf(self):
         """ shelving a book """
         work = models.Work.objects.create(title="work title")

@@ -49,7 +49,6 @@ class InboxActivities(TestCase):
         }
         models.SiteSettings.objects.create()
 
-
     def test_handle_delete_status(self):
         """ remove a status """
         self.assertFalse(self.status.deleted)

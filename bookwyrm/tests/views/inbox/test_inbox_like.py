@@ -49,7 +49,6 @@ class InboxActivities(TestCase):
         }
         models.SiteSettings.objects.create()
 
-
     def test_handle_favorite(self):
         """ fav a status """
         activity = {

@@ -34,7 +34,6 @@ class InboxUpdate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-
     def test_handle_update_list(self):
         """ a new list """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
