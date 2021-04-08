@@ -64,6 +64,7 @@ class ActivitypubMixin:
         )
         if hasattr(self, "property_fields"):
             self.activity_fields += [
+                # pylint: disable=cell-var-from-loop
                 PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
                 for f in self.property_fields
             ]
@@ -356,8 +357,7 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 class CollectionItemMixin(ActivitypubMixin):
     """ for items that are part of an (Ordered)Collection """
 
-    activity_serializer = activitypub.Add
-    object_field = collection_field = None
+    activity_serializer = activitypub.CollectionItem
 
     def save(self, *args, broadcast=True, **kwargs):
         """ broadcast updated """
@@ -370,35 +370,33 @@ class CollectionItemMixin(ActivitypubMixin):
             return
 
         # adding an obj to the collection
-        activity = self.to_add_activity()
+        activity = self.to_add_activity(self.user)
         self.broadcast(activity, self.user)
 
     def delete(self, *args, **kwargs):
         """ broadcast a remove activity """
-        activity = self.to_remove_activity()
+        activity = self.to_remove_activity(self.user)
         super().delete(*args, **kwargs)
         if self.user.local:
             self.broadcast(activity, self.user)
 
-    def to_add_activity(self):
+    def to_add_activity(self, user):
         """ AP for shelving a book"""
-        object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
             id=self.get_remote_id(),
-            actor=self.user.remote_id,
-            object=object_field,
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 
-    def to_remove_activity(self):
+    def to_remove_activity(self, user):
         """ AP for un-shelving a book"""
-        object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
             id=self.get_remote_id(),
-            actor=self.user.remote_id,
-            object=object_field,
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 

@@ -32,6 +32,7 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     )
 
     activity_serializer = activitypub.Shelf
+    collection_field = "shelf"
 
     def save(self, *args, **kwargs):
         """ set the identifier """
@@ -75,9 +76,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
 
-    activity_serializer = activitypub.Add
-    object_field = "book"
-    collection_field = "shelf"
+    activity_serializer = activitypub.ShelfItem
 
     def save(self, *args, **kwargs):
         if not self.user:
