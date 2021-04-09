@@ -6,8 +6,7 @@
     {% with format=book.physical_format pages=book.pages %}
         {% if format %}
             {% comment %}
-                @todo The bookFormat property is limited to a list of values
-                      whereas the book edition is free text.
+                @todo The bookFormat property is limited to a list of values whereas the book edition is free text.
                 @see https://schema.org/bookFormat
             {% endcomment %}
             <meta itemprop="bookFormat" content="{{ format }}">
@@ -49,8 +48,7 @@
         {% endif %}
 
         {% comment %}
-            @todo The publisher property needs to be an Organization or a Person.
-                  We’ll be using Thing which is the more generic ancestor.
+            @todo The publisher property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.
             @see https://schema.org/Publisher
         {% endcomment %}
         {% if book.publishers %}
