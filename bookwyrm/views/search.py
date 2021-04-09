@@ -34,7 +34,7 @@ class Search(View):
         if query and re.match(regex.full_username, query):
             handle_remote_webfinger(query)
 
-        # do a  user search
+        # do a user search
         user_results = (
             models.User.viewer_aware_objects(request.user)
             .annotate(
