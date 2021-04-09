@@ -136,6 +136,9 @@ class InboxActivities(TestCase):
             "id": "http://www.faraway.com/boost/12",
             "actor": self.remote_user.remote_id,
             "object": status.remote_id,
+            "to": ["https://www.w3.org/ns/activitystreams#public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "published": "Mon, 25 May 2020 19:31:20 GMT",
         }
         responses.add(
             responses.GET, status.remote_id, json=status.to_activity(), status=200
