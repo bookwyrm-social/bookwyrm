@@ -112,6 +112,9 @@ class ViewsHelpers(TestCase):
         result = views.helpers.handle_remote_webfinger("mouse@local.com")
         self.assertEqual(result, self.local_user)
 
+        result = views.helpers.handle_remote_webfinger("mOuSe@loCal.cOm")
+        self.assertEqual(result, self.local_user)
+
     @responses.activate
     def test_load_user(self, _):
         """ find a remote user using webfinger """

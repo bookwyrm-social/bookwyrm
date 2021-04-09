@@ -23,6 +23,7 @@ class Person(ActivityObject):
     inbox: str
     publicKey: PublicKey
     followers: str = None
+    following: str = None
     outbox: str = None
     endpoints: Dict = None
     name: str = None

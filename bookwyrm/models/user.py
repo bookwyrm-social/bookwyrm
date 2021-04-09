@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -54,7 +55,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
-    localname = models.CharField(
+    localname = CICharField(
         max_length=255,
         null=True,
         unique=True,
@@ -112,6 +113,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     )
 
     name_field = "username"
+    property_fields = [("following_link", "following")]
+
+    @property
+    def following_link(self):
+        """ just how to find out the following info """
+        return "{:s}/following".format(self.remote_id)
 
     @property
     def alt_text(self):

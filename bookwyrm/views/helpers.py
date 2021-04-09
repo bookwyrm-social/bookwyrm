@@ -124,7 +124,7 @@ def handle_remote_webfinger(query):
         return None
 
     try:
-        user = models.User.objects.get(username=query)
+        user = models.User.objects.get(username__iexact=query)
     except models.User.DoesNotExist:
         url = "https://%s/.well-known/webfinger?resource=acct:%s" % (domain, query)
         try:
@@ -138,7 +138,7 @@ def handle_remote_webfinger(query):
                     user = activitypub.resolve_remote_id(
                         link["href"], model=models.User
                     )
-                except KeyError:
+                except (KeyError, activitypub.ActivitySerializerError):
                     return None
     return user
 
