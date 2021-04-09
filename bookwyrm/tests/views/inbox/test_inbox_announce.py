@@ -188,6 +188,7 @@ class InboxActivities(TestCase):
                 "id": "http://fake.com/unknown/boost",
                 "actor": self.remote_user.remote_id,
                 "object": self.status.remote_id,
+                "published": "Mon, 25 May 2020 19:31:20 GMT",
             },
         }
         views.inbox.activity_task(activity)
