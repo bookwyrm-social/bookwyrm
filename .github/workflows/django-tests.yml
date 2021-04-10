@@ -65,4 +65,4 @@ jobs:
         EMAIL_HOST_PASSWORD: ""
         EMAIL_USE_TLS: true
       run: |
-        python manage.py test
+        python manage.py test -v 2
