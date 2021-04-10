@@ -146,6 +146,15 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
+    def test_user_on_blocked_server(self, _):
+        """ find a remote user using webfinger """
+        models.FederatedServer.objects.create(
+            server_name="example.com", status="blocked"
+        )
+
+        result = views.helpers.handle_remote_webfinger("@mouse@example.com")
+        self.assertIsNone(result)
+
     def test_handle_reading_status_to_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="to-read")
