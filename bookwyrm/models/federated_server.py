@@ -27,3 +27,14 @@ class FederatedServer(BookWyrmModel):
         """ block a server """
         self.status = "blocked"
         self.save()
+
+        # deactivate all associated users
+        self.user_set.update(is_active=False)
+
+    def unblock(self):
+        """ unblock a server """
+        self.status = "federated"
+        self.save()
+
+        # TODO: only reactivate users as appropriate
+        self.user_set.update(is_active=True)

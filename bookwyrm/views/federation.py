@@ -87,15 +87,7 @@ class FederatedServer(View):
         return TemplateResponse(request, "settings/federated_server.html", data)
 
     def post(self, request, server):  # pylint: disable=unused-argument
-        """ (un)block a server """
+        """ block a server """
         server = get_object_or_404(models.FederatedServer, id=server)
-        server.status = "blocked" if server.status == "federated" else "federated"
-        server.save()
-
-        # TODO: there needs to be differentiation between types of deactivated users
-        if server.status == "blocked":
-            server.user_set.update(is_active=False)
-        else:
-            server.user_set.update(is_active=True)
-
+        server.block()
         return redirect("settings-federated-server", server.id)
