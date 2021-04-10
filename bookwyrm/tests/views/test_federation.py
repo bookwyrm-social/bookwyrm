@@ -57,7 +57,7 @@ class FederationViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_server_page_post(self):
-        """ block and unblock a server """
+        """ block a server """
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
         self.remote_user.save()
@@ -71,11 +71,10 @@ class FederationViews(TestCase):
 
         view(request, server.id)
         server.refresh_from_db()
+        self.remote_user.refresh_from_db()
         self.assertEqual(server.status, "blocked")
-
-        view(request, server.id)
-        server.refresh_from_db()
-        self.assertEqual(server.status, "federated")
+        # and the user was deactivated
+        self.assertFalse(self.remote_user.is_active)
 
     def test_add_view_get(self):
         """ there are so many views, this just makes sure it LOADS """
