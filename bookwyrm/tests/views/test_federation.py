@@ -56,7 +56,7 @@ class FederationViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_server_page_post(self):
+    def test_server_page_block(self):
         """ block a server """
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
@@ -75,6 +75,27 @@ class FederationViews(TestCase):
         self.assertEqual(server.status, "blocked")
         # and the user was deactivated
         self.assertFalse(self.remote_user.is_active)
+
+    def test_server_page_unblock(self):
+        """ unblock a server """
+        server = models.FederatedServer.objects.create(
+            server_name="hi.there.com", status="blocked"
+        )
+        self.remote_user.federated_server = server
+        self.remote_user.is_active = False
+        self.remote_user.save()
+
+        request = self.factory.post("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        views.federation.unblock_server(request, server.id)
+        server.refresh_from_db()
+        self.remote_user.refresh_from_db()
+        self.assertEqual(server.status, "federated")
+        # and the user was re-activated
+        self.assertTrue(self.remote_user.is_active)
+
 
     def test_add_view_get(self):
         """ there are so many views, this just makes sure it LOADS """

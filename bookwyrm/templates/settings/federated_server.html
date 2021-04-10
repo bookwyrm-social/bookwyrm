@@ -84,12 +84,11 @@
         <p class="help">{% trans "All users from this instance will be deactivated." %}</p>
     </form>
     {% else %}
-    {% comment %}
     <form class="block" method="post" action="{% url 'settings-federated-server-unblock' server.id %}">
+        {% csrf_token %}
         <button class="button">{% trans "Un-block" %}</button>
         <p class="help">{% trans "All users from this instance will be re-activated." %}</p>
     </form>
-    {% endcomment %}
     {% endif %}
 </section>
 

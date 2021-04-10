@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
@@ -91,3 +92,14 @@ class FederatedServer(View):
         server = get_object_or_404(models.FederatedServer, id=server)
         server.block()
         return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+# pylint: disable=unused-argument
+def unblock_server(request, server):
+    """ unblock a server """
+    server = get_object_or_404(models.FederatedServer, id=server)
+    server.unblock()
+    return redirect("settings-federated-server", server.id)

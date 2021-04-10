@@ -69,6 +69,11 @@ urlpatterns = [
         name="settings-federated-server",
     ),
     re_path(
+        r"^settings/federation/(?P<server>\d+)/unblock?$",
+        views.federation.unblock_server,
+        name="settings-federated-server-unblock",
+    ),
+    re_path(
         r"^settings/federation/add/?$",
         views.AddFederatedServer.as_view(),
         name="settings-add-federated-server",
