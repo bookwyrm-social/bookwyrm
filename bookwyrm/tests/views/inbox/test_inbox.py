@@ -6,7 +6,7 @@ from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.test import TestCase, Client
 from django.test.client import RequestFactory
 
-from bookwyrm import models
+from bookwyrm import models, views
 
 
 # pylint: disable=too-many-public-methods
