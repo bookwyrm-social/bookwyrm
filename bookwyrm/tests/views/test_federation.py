@@ -85,24 +85,25 @@ class FederationViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        result = view(request, server=None)
+        result = view(request)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
 
     def test_add_view_post_create(self):
-        """ create or edit a server """
+        """ create a server entry """
         form = forms.ServerForm()
         form.data["server_name"] = "remote.server"
-        form.data["software"] = "coolsoft"
+        form.data["application_type"] = "coolsoft"
+        form.data["status"] = "blocked"
 
         view = views.AddFederatedServer.as_view()
         request = self.factory.post("", form.data)
         request.user = self.local_user
         request.user.is_superuser = True
 
-        view(request, server=None)
+        view(request)
         server = models.FederatedServer.objects.get()
         self.assertEqual(server.server_name, "remote.server")
-        self.assertEqual(server.software, "coolsoft")
-        self.assertEqual(server.status, "federated")
+        self.assertEqual(server.application_type, "coolsoft")
+        self.assertEqual(server.status, "blocked")
