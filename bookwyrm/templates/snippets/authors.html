@@ -1,1 +1,17 @@
-{% for author in book.authors.all %}<a href="/author/{{ author.id }}" class="author">{{ author.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+{% spaceless %}
+{% comment %}
+    @todo The author property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.
+    @see https://schema.org/Author
+{% endcomment %}
+{% for author in book.authors.all %}
+    <a
+        href="/author/{{ author.id }}"
+        class="author"
+        itemprop="author"
+        itemscope
+        itemtype="https://schema.org/Thing"
+    ><span
+        itemprop="name"
+    >{{ author.name }}<span></a>{% if not forloop.last %}, {% endif %}
+{% endfor %}
+{% endspaceless %}
