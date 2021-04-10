@@ -60,7 +60,7 @@
     <div
         {% if status.content_warning %}
             id="show-status-cw-{{ status.id }}"
-            class="hidden"
+            class="is-hidden"
         {% endif %}
     >
         {% if status.content_warning %}
@@ -73,7 +73,7 @@
 
         {% if status.quote %}
             <div class="quote block">
-                <blockquote dir="auto" class="mb-2">{{ status.quote | safe }}</blockquote>
+                <blockquote dir="auto" class="content mb-2">{{ status.quote | safe }}</blockquote>
 
                 <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
             </div>
