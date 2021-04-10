@@ -170,7 +170,7 @@ class EditBook(View):
 
         # either of the above cases requires additional confirmation
         if add_author or not book:
-            # creting a book or adding an author to a book needs another step
+            # creating a book or adding an author to a book needs another step
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
@@ -182,6 +182,8 @@ class EditBook(View):
                     formcopy["first_published_date"]
                 )
             except (MultiValueDictKeyError, ValueError):
+                # either form didn't have the data, or strptime failed
+                # let the template handle it
                 pass
             try:
                 formcopy["published_date"] = dateparse(formcopy["published_date"])

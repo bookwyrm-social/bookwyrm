@@ -73,7 +73,9 @@ class Book(BookDataModel):
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
     first_published_date = fields.DateTimeField(blank=True, null=True)
+    first_published_year_only = fields.BooleanField(default=False)
     published_date = fields.DateTimeField(blank=True, null=True)
+    published_year_only = fields.BooleanField(default=False)
 
     objects = InheritanceManager()
 

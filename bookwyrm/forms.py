@@ -181,6 +181,15 @@ class EditionForm(CustomForm):
             "subject_places",  # TODO
             "connector",
         ]
+    def __init__(self, data=None, *args, **kwargs):
+        #print(data)
+        if data and data.get('first_published_year_only', None):
+            mutable = data._mutable
+            data._mutable = True
+            data['first_published_date'] += '-01-01'
+            data['published_date'] += '-01-01'
+            data._mutable = mutable
+        super().__init__(data, *args, **kwargs)
 
 
 class AuthorForm(CustomForm):

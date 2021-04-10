@@ -4,6 +4,45 @@
 
 {% block title %}{% if book %}{% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}{% else %}{% trans "Add Book" %}{% endif %}{% endblock %}
 
+{% block scripts %}
+<script defer>
+ document.getElementById("id_first_published_year_only")
+         .addEventListener(
+             "input",
+             setToYearOnly(
+                 "id_first_published_date",
+                 "label_first_published_date",
+                 "label_first_published_year_only"),
+             {passive: true});
+ document.getElementById("id_published_year_only")
+         .addEventListener(
+             "input",
+             setToYearOnly(
+                 "id_published_date",
+                 "label_published_date",
+                 "label_published_year_only"),
+             {passive: true});
+ function setToYearOnly(date_input_id, date_label_id, year_label_id) {
+     function setFirstPublishedToYearOnly(event) {
+         let first_published_date_input = document.getElementById(date_input_id);
+         let first_published_date_label = document.getElementById(date_label_id);
+         let first_published_year_label = document.getElementById(year_label_id);
+         // potential HACK: older ie browsers require a different method call: https://gist.github.com/tzi/2953155#file-important-js-L5
+         if (event.target.checked) {
+             first_published_date_label.setAttribute("style", "display: none !important");
+             first_published_year_label.setAttribute("style", "display: block");
+             first_published_date_input.type = "number";
+         } else {
+             first_published_date_label.setAttribute("style", "display: block");
+             first_published_year_label.setAttribute("style", "display: none !important");
+             first_published_date_input.type = "date";
+         }
+     }
+     return setFirstPublishedToYearOnly;
+ }
+</script>
+{% endblock %}
+
 {% block content %}
 <header class="block">
     <h1 class="title level-left">
@@ -129,16 +168,24 @@
                 {% endfor %}
 
                 <p class="mb-2">
-                    <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
-                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
+                    <label class="label" for="id_first_published_date" id="label_first_published_date">{% trans "First published date:" %}</label>
+                    <label class="label" for="id_first_published_date" id="label_first_published_year_only" style="display: none;">{% trans "First published year:" %}</label>
+                    <label class="label is-inline-block" for="id_first_published_year_only">{% trans "Year only:" %}</label>
+                    <input type="checkbox" name="first_published_year_only" class="checkbox" id="id_first_published_year_only"{% if form.first_published_year_only.value %} checked{% endif %}>
+                    <input
+                        {% if form.first_published_year_only.value %}type="number"{% else %}type="date"{% endif %} name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_year_only.value and form.first_published_date.value%} value="{{ form.first_published_date.value|date:'Y' }}"{% elif form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
                 </p>
                 {% for error in form.first_published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
                 <p class="mb-2">
-                    <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
-                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %}>
+                    <label class="label" for="id_published_date" id="label_published_date">{% trans "Published date:" %}</label>
+                    <label class="label" for="id_published_date" id="label_published_year_only" style="display: none;">{% trans "Published year:" %}</label>
+                    <label class="label is-inline-block" for="id_published_year_only">{% trans "Year only:" %}</label>
+                    <input type="checkbox" name="published_year_only" class="checkbox" id="id_published_year_only"{% if form.published_year_only.value %} checked{% endif %}>
+                    <input
+                        {% if form.published_year_only.value %}type="number"{% else %}type="date"{% endif %} name="published_date" class="input" id="id_published_date"{% if form.published_year_only.value and form.published_date.value%} value="{{ form.published_date.value|date:'Y' }}"{% elif form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d' }}"{% endif %}>
                 </p>
                 {% for error in form.published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>

@@ -15,10 +15,18 @@
 {% endif %}
 <p>
     {% if book.published_date and book.publishers %}
-    {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
+      {% if book.published_year_only %}
+        {% blocktrans with date=book.published_date|date:'Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
+      {% else %}
+        {% blocktrans with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
+      {% endif %}
     {% elif book.published_date %}
-    {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
+      {% if book.published_year_only %}
+        {% blocktrans with date=book.published_date|date:'Y' %}Published {{ date }}{% endblocktrans %}
+      {% else %}
+        {% blocktrans with date=book.published_date|date:'M jS Y' %}Published {{ date }}{% endblocktrans %}
+      {% endif %}
     {% elif book.publishers %}
-    {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
+      {% blocktrans with publisher=book.publishers|join:', ' %}Published by {{ publisher }}.{% endblocktrans %}
     {% endif %}
 </p>
