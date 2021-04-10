@@ -96,7 +96,6 @@ class FederationViews(TestCase):
         # and the user was re-activated
         self.assertTrue(self.remote_user.is_active)
 
-
     def test_add_view_get(self):
         """ there are so many views, this just makes sure it LOADS """
         # create mode
