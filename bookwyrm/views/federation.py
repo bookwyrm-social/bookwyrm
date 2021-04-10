@@ -30,8 +30,9 @@ class Federation(View):
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]
-        if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
-            servers = servers.order_by(sort)
+        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            sort = "created_date"
+        servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
 
@@ -43,24 +44,19 @@ class Federation(View):
         return TemplateResponse(request, "settings/federation.html", data)
 
 
-class EditFederatedServer(View):
+class AddFederatedServer(View):
     """ manually add a server """
 
-    def get(self, request, server=None):
+    def get(self, request):
         """ add server form """
-        if server:
-            server = get_object_or_404(models.FederatedServer, id=server)
-        data = {"form": forms.ServerForm(instance=server), "server": server}
+        data = {"form": forms.ServerForm()}
         return TemplateResponse(request, "settings/edit_server.html", data)
 
-    def post(self, request, server=None):
+    def post(self, request):
         """ add a server from the admin panel """
-        if server:
-            server = get_object_or_404(models.FederatedServer, id=server)
-
-        form = forms.ServerForm(request.POST, instance=server)
+        form = forms.ServerForm(request.POST)
         if not form.is_valid():
-            data = {"form": form, "server": server}
+            data = {"form": form}
             return TemplateResponse(request, "settings/edit_server.html", data)
         server = form.save()
         return redirect("settings-federated-server", server.id)

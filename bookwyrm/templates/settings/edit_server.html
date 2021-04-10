@@ -3,13 +3,13 @@
 {% block title %}{% trans "Add server" %}{% endblock %}
 
 {% block header %}
-{% if server %}{{ server.server_name }}{% else %}{% trans "Add server" %}{% endif %}
+{% trans "Add server" %}
 <a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
 {% endblock %}
 
 {% block panel %}
 
-<form method="POST" action="{% url 'settings-edit-federated-server' server.id %}">
+<form method="POST" action="{% url 'settings-add-federated-server' %}">
     {% csrf_token %}
     <div class="columns">
         <div class="column is-half">
