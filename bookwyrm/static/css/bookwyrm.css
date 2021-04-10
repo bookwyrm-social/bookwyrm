@@ -49,8 +49,8 @@ html {
     display: none;
 }
 
-.hidden.transition-y,
-.hidden.transition-x {
+.transition-x.is-hidden,
+.transition-y.is-hidden {
     display: block !important;
     visibility: hidden !important;
     height: 0;
@@ -59,16 +59,18 @@ html {
     padding: 0;
 }
 
+.transition-x,
 .transition-y {
-    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
     transition-duration: 0.5s;
     transition-timing-function: ease;
 }
 
 .transition-x {
     transition-property: width, margin-left, margin-right, padding-left, padding-right;
-    transition-duration: 0.5s;
-    transition-timing-function: ease;
+}
+
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
 }
 
 @media (prefers-reduced-motion: reduce) {
