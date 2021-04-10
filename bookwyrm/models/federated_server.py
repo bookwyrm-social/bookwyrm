@@ -1,4 +1,5 @@
 """ connections to external ActivityPub servers """
+from urllib.parse import urlparse
 from django.db import models
 from .base_model import BookWyrmModel
 
@@ -38,3 +39,10 @@ class FederatedServer(BookWyrmModel):
 
         # TODO: only reactivate users as appropriate
         self.user_set.update(is_active=True)
+
+    @classmethod
+    def is_blocked(cls, url):
+        """ look up if a domain is blocked """
+        url = urlparse(url)
+        domain = url.netloc
+        return cls.objects.filter(server_name=domain, status="blocked").exists()

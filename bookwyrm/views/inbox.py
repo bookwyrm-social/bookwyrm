@@ -1,7 +1,7 @@
 """ incoming activities """
 import json
 import re
-from urllib.parse import urldefrag, urlparse
+from urllib.parse import urldefrag
 
 from django.http import HttpResponse, HttpResponseNotFound
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
@@ -71,11 +71,7 @@ def is_blocked_user_agent(request):
     if not user_agent:
         return False
     url = re.search(r"https?://{:s}/?".format(regex.domain), user_agent).group()
-    domain = urlparse(url).netloc
-    if not domain:
-        # idk, we'll try again later with the actor
-        return False
-    return is_blocked(domain)
+    return models.FederatedServer.is_blocked(url)
 
 
 def is_blocked_activity(activity_json):
@@ -84,15 +80,7 @@ def is_blocked_activity(activity_json):
     if not actor:
         # well I guess it's not even a valid activity so who knows
         return False
-    url = urlparse(actor)
-    return is_blocked(url.netloc)
-
-
-def is_blocked(domain):
-    """ is this domain blocked? """
-    return models.FederatedServer.objects.filter(
-        server_name=domain, status="blocked"
-    ).exists()
+    return models.FederatedServer.is_blocked(actor)
 
 
 @app.task
