@@ -1,5 +1,4 @@
 """ the good stuff! the books! """
-from datetime import datetime
 from uuid import uuid4
 
 from dateutil.parser import parse as dateparse
@@ -175,18 +174,18 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
-            # we have to make sure the dates are passed in as datetime, they're currently a string
+            # make sure the dates are passed in as datetime, they're currently a string
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
             try:
                 formcopy["first_published_date"] = dateparse(
                     formcopy["first_published_date"]
                 )
-            except MultiValueDictKeyError:
+            except (MultiValueDictKeyError, ValueError):
                 pass
             try:
                 formcopy["published_date"] = dateparse(formcopy["published_date"])
-            except MultiValueDictKeyError:
+            except (MultiValueDictKeyError, ValueError):
                 pass
             data["form"].data = formcopy
             return TemplateResponse(request, "book/edit_book.html", data)
