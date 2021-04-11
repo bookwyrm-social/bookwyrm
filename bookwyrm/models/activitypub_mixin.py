@@ -386,11 +386,11 @@ class CollectionItemMixin(ActivitypubMixin):
         activity = self.to_add_activity(self.user)
         self.broadcast(activity, self.user)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, broadcast=True, **kwargs):
         """ broadcast a remove activity """
         activity = self.to_remove_activity(self.user)
         super().delete(*args, **kwargs)
-        if self.user.local:
+        if self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
     def to_add_activity(self, user):
