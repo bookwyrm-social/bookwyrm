@@ -31,6 +31,36 @@ class BookWyrmModel(models.Model):
         """ how to link to this object in the local app """
         return self.get_remote_id().replace("https://%s" % DOMAIN, "")
 
+    def visible_to_user(self, viewer):
+        """ is a user authorized to view an object? """
+        # make sure this is an object with privacy owned by a user
+        if not hasattr(self, "user") or not hasattr(self, "privacy"):
+            return None
+
+        # viewer can't see it if the object's owner blocked them
+        if viewer in self.user.blocks.all():
+            return False
+
+        # you can see your own posts and any public or unlisted posts
+        if viewer == self.user or self.privacy in ["public", "unlisted"]:
+            return True
+
+        # you can see the followers only posts of people you follow
+        if (
+            self.privacy == "followers"
+            and self.user.followers.filter(id=viewer.id).first()
+        ):
+            return True
+
+        # you can see dms you are tagged in
+        if hasattr(self, "mention_users"):
+            if (
+                self.privacy == "direct"
+                and self.mention_users.filter(id=viewer.id).first()
+            ):
+                return True
+        return False
+
 
 @receiver(models.signals.post_save)
 # pylint: disable=unused-argument
