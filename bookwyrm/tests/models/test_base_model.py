@@ -1,4 +1,5 @@
 """ testing models """
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
@@ -8,6 +9,22 @@ from bookwyrm.settings import DOMAIN
 
 class BaseModel(TestCase):
     """ functionality shared across models """
+
+    def setUp(self):
+        """ shared data """
+        self.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+        )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
 
     def test_remote_id(self):
         """ these should be generated """
