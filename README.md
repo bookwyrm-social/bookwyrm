@@ -20,7 +20,7 @@ You can request an invite to https://bookwyrm.social by [email](mailto:mousereev
 
 
 ## Contributing
-See [contributing](https://github.com/mouse-reeve/bookwyrm/blob/main/README.md) for code, translation or monetary contributions.
+See [contributing](https://github.com/mouse-reeve/bookwyrm/blob/main/CONTRIBUTING.md) for code, translation or monetary contributions.
 
 ## About BookWyrm
 ### What it is and isn't
