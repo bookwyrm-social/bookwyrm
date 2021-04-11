@@ -111,7 +111,7 @@ class ActivityObject:
             and hasattr(model, "ignore_activity")
             and model.ignore_activity(self)
         ):
-            raise ActivitySerializerError()
+            return None
 
         # check for an existing instance
         instance = instance or model.find_existing(self.serialize())
