@@ -1,0 +1,213 @@
+# Installation instructions
+
+## Setting up the developer environment
+
+Set up the environment file:
+
+``` bash
+cp .env.example .env
+```
+
+For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
+
+You'll have to install the Docker and docker-compose. When you're ready, run:
+
+```bash
+docker-compose build
+docker-compose run --rm web python manage.py migrate
+docker-compose run --rm web python manage.py initdb
+docker-compose up
+```
+
+Once the build is complete, you can access the instance at `localhost:1333`
+
+### Editing static files
+If you edit the CSS or JavaScript, you will need to run Django's `collectstatic` command in order for your changes to have effect. You can do this by running:
+``` bash
+./bw-dev collectstatic
+```
+
+### Working with translations and locale files
+Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
+
+The application's language is set by a request header sent by your browser to the application, so to change the language of the application, you can change the default language requested by your browser.
+
+#### Adding a locale
+To start translation into a language which is currently supported, run the django-admin `makemessages` command with the language code for the language you want to add (like `de` for German, or `en-gb` for British English):
+``` bash
+./bw-dev makemessages -l <language code>
+```
+
+#### Editing a locale
+When you have a locale file, open the `django.po` in the directory for the language (for example, if you were adding German, `locale/de/LC_MESSAGES/django.po`. All the the text in the application will be shown in paired strings, with `msgid` as the original text, and `msgstr` as the translation (by default, this is set to an empty string, and will display the original text).
+
+Add your translations to the `msgstr` strings. As the messages in the application are updated, `gettext` will sometimes add best-guess fuzzy matched options for those translations. When a message is marked as fuzzy, it will not be used in the application, so be sure to remove it when you translate that line.
+
+When you're done, compile the locale by running:
+
+``` bash
+./bw-dev compilemessages
+```
+
+You can add the `-l <language code>` to only compile one language. When you refresh the application, you should see your translations at work.
+
+## Installing in Production
+
+This project is still young and isn't, at the moment, very stable, so please proceed with caution when running in production.
+
+### Server setup
+ - Get a domain name and set up DNS for your server
+ - Set your server up with appropriate firewalls for running a web application (this instruction set is tested against Ubuntu 20.04)
+ - Set up an email service (such as mailgun) and the appropriate SMTP/DNS settings
+ - Install Docker and docker-compose
+
+### Install and configure BookWyrm
+
+The `production` branch of BookWyrm contains a number of tools not on the `main` branch that are suited for running in production, such as `docker-compose` changes to update the default commands or configuration of containers, and individual changes to container config to enable things like SSL or regular backups.
+
+Instructions for running BookWyrm in production:
+
+ - Get the application code:
+  `git clone git@github.com:mouse-reeve/bookwyrm.git`
+ - Switch to the `production` branch
+  `git checkout production`
+ - Create your environment variables file
+  `cp .env.example .env`
+   - Add your domain, email address, SMTP credentials
+   - Set a secure redis password and secret key
+   - Set a secure database password for postgres
+ - Update your nginx configuration in `nginx/default.conf`
+   - Replace `your-domain.com` with your domain name
+   - If you aren't using the `www` subdomain, remove the www.your-domain.com version of the domain from the `server_name` in the first server block in `nginx/default.conf` and remove the `-d www.${DOMAIN}` flag at the end of the `certbot` command in `docker-compose.yml`.
+   - If you are running another web-server on your host machine, you will need to follow the [reverse-proxy instructions](#running-bookwyrm-behind-a-reverse-proxy)
+ - Run the application (this should also set up a Certbot ssl cert for your domain) with
+  `docker-compose up --build`, and make sure all the images build successfully
+    - If you are running other services on your host machine, you may run into errors where services fail when attempting to bind to a port.
+    See the [troubleshooting guide](#port-conflicts) for advice on resolving this.
+ - When docker has built successfully, stop the process with `CTRL-C`
+ - Comment out the `command: certonly...` line in `docker-compose.yml`, and uncomment the following line (`command: renew ...`) so that the certificate will be automatically renewed.
+ - Uncomment the https redirect and `server` block in `nginx/default.conf` (lines 17-48).
+ - Run docker-compose in the background with: `docker-compose up -d`
+ - Initialize the database with: `./bw-dev initdb`
+
+Congrats! You did it, go to your domain and enjoy the fruits of your labors.
+
+### Configure your instance
+ - Register a user account in the application UI
+ - Make your account a superuser (warning: do *not* use django's `createsuperuser` command)
+   - On your server, open the django shell
+    `./bw-dev shell`
+   - Load your user and make it a superuser
+    ```python
+    from bookwyrm import models
+    user = models.User.objects.get(id=1)
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
+    ```
+   - Go to the site settings (`/settings/site-settings` on your domain) and configure your instance name, description, code of conduct, and toggle whether registration is open on your instance
+
+
+## Book data
+The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
+
+There are three concepts in the book data model:
+ - `Book`, an abstract, high-level concept that could mean either a `Work` or an `Edition`. No data is saved as a `Book`, it serves as shared model for `Work` and `Edition`
+ - `Work`, the theoretical umbrella concept of a book that encompasses every edition of the book, and
+ - `Edition`, a concrete, actually published version of a book
+
+Whenever a user interacts with a book, they are interacting with a specific edition. Every work has a default edition, but the user can select other editions. Reviews aggregated for all editions of a work when you view an edition's page.
+
+### Backups
+
+BookWyrm's db service dumps a backup copy of its database to its `/backups` directory daily at midnight UTC.
+Backups are named `backup__%Y-%m-%d.sql`.
+
+The db service has an optional script for periodically pruning the backups directory so that all recent daily backups are kept, but for older backups, only weekly or monthly backups are kept.
+To enable this script:
+ - Uncomment the final line in `postgres-docker/cronfile`
+ - rebuild your instance `docker-compose up --build`
+
+You can copy backups from the backups volume to your host machine with `docker cp`:
+ - Run `docker-compose ps` to confirm the db service's full name (it's probably `bookwyrm_db_1`.
+ - Run `docker cp <container_name>:/backups <host machine path>`
+
+### Port Conflicts
+
+BookWyrm has multiple services that run on their default ports.
+This means that, depending on what else you are running on your host machine, you may run into errors when building or running BookWyrm when attempts to bind to those ports fail.
+
+If this occurs, you will need to change your configuration to run services on different ports.
+This may require one or more changes the following files:
+ - `docker-compose.yml`
+ - `nginx/default.conf`
+ - `.env` (You create this file yourself during setup)
+
+E.g., If you need Redis to run on a different port:
+ - In `docker-compose.yml`:
+    - In `services` -> `redis` -> `command`, add `--port YOUR_PORT` to the command
+    - In `services` -> `redis` -> `ports`, change `6379:6379` to your port
+ - In `.env`, update `REDIS_PORT`
+
+If you are already running a web-server on your machine, you will need to set up a reverse-proxy.
+
+#### Running BookWyrm Behind a Reverse-Proxy
+
+If you are running another web-server on your machine, you should have it handle proxying web requests to BookWyrm.
+
+The default BookWyrm configuration already has an nginx server that proxies requests to the django app that handles SSL and directly serves static files.
+The static files are stored in a Docker volume that several BookWyrm services access, so it is not recommended to remove this server completely.
+
+To run BookWyrm behind a reverse-proxy, make the following changes:
+ - In `nginx/default.conf`:
+    - Comment out the two default servers
+    - Uncomment the server labeled Reverse-Proxy server
+    - Replace `your-domain.com` with your domain name
+ - In `docker-compose.yml`:
+    - In `services` -> `nginx` -> `ports`, comment out the default ports and add `- 8001:8001`
+    - In `services` -> `nginx` -> `volumes`, comment out the two volumes that begin `./certbot/`
+    - In `services`, comment out the `certbot` service
+
+At this point, you can follow, the [setup](#server-setup) instructions as listed.
+Once docker is running, you can access your BookWyrm instance at `http://localhost:8001` (**NOTE:** your server is not accessible over `https`).
+
+Steps for setting up a reverse-proxy are server dependent.
+
+##### Nginx
+
+Before you can set up nginx, you will need to locate your nginx configuration directory, which is dependent on your platform and how you installed nginx.
+See [nginx's guide](http://nginx.org/en/docs/beginners_guide.html) for details.
+
+To set up your server:
+ - In you `nginx.conf` file, ensure that `include servers/*;` isn't commented out.
+ - In your nginx `servers` directory, create a new file named after your domain containing the following information:
+   ```nginx
+   server {
+      server_name your-domain.com www.your-domain.com;
+
+      location / {
+          proxy_pass http://localhost:8000;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $host;
+      }
+
+      location /images/ {
+          proxy_pass http://localhost:8001;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $host;
+      }
+
+      location /static/ {
+          proxy_pass http://localhost:8001;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $host;
+      }
+
+      listen [::]:80 ssl;
+      listen 80 ssl;
+   }
+   ```
+ - run `sudo certbot run --nginx --email YOUR_EMAIL -d your-domain.com -d www.your-domain.com`
+ - restart nginx
+
+If everything worked correctly, your BookWyrm instance should now be externally accessible.
