@@ -168,7 +168,7 @@ class Curate(View):
             suggestion.approved = True
             suggestion.save()
         else:
-            suggestion.delete()
+            suggestion.delete(broadcast=False)
         return redirect("list-curate", book_list.id)
 
 

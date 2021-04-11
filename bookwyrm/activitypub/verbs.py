@@ -4,7 +4,7 @@ from typing import List
 from django.apps import apps
 
 from .base_activity import ActivityObject, Signature, resolve_remote_id
-from .book import Edition
+from .ordered_collection import CollectionItem
 
 
 @dataclass(init=False)
@@ -141,37 +141,27 @@ class Reject(Verb):
 class Add(Verb):
     """Add activity """
 
-    target: str
-    object: Edition
+    target: ActivityObject
+    object: CollectionItem
     type: str = "Add"
-    notes: str = None
-    order: int = 0
-    approved: bool = True
 
     def action(self):
-        """ add obj to collection """
-        target = resolve_remote_id(self.target, refresh=False)
-        # we want to get the related field that isn't the book, this is janky af sorry
-        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
-            0
-        ].related_model
-        self.to_model(model=model)
+        """ figure out the target to assign the item to a collection  """
+        target = resolve_remote_id(self.target)
+        item = self.object.to_model(save=False)
+        setattr(item, item.collection_field, target)
+        item.save()
 
 
 @dataclass(init=False)
-class Remove(Verb):
+class Remove(Add):
     """Remove activity """
 
-    target: ActivityObject
     type: str = "Remove"
 
     def action(self):
         """ find and remove the activity object """
-        target = resolve_remote_id(self.target, refresh=False)
-        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
-            0
-        ].related_model
-        obj = self.to_model(model=model, save=False, allow_create=False)
+        obj = self.object.to_model(save=False, allow_create=False)
         obj.delete()
 
 
