@@ -35,11 +35,8 @@ class BaseModel(TestCase):
 
     def test_remote_id_with_user(self):
         """ format of remote id when there's a user object """
-        user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
         instance = base_model.BookWyrmModel()
-        instance.user = user
+        instance.user = self.local_user
         instance.id = 1
         expected = instance.get_remote_id()
         self.assertEqual(expected, "https://%s/user/mouse/bookwyrmmodel/1" % DOMAIN)
