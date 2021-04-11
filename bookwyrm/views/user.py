@@ -17,7 +17,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter, object_visible_to_user
+from .helpers import is_blocked, privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -80,7 +80,7 @@ class User(View):
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if not object_visible_to_user(request.user, goal):
+        if not goal.visible_to_user(request.user):
             goal = None
         data = {
             "user": user,

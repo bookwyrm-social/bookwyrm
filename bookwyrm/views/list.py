@@ -13,7 +13,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
-from .helpers import is_api_request, object_visible_to_user, privacy_filter
+from .helpers import is_api_request, privacy_filter
 from .helpers import get_user_from_username
 
 # pylint: disable=no-self-use
@@ -92,7 +92,7 @@ class List(View):
     def get(self, request, list_id):
         """ display a book list """
         book_list = get_object_or_404(models.List, id=list_id)
-        if not object_visible_to_user(request.user, book_list):
+        if not book_list.visible_to_user(request.user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -176,7 +176,7 @@ class Curate(View):
 def add_book(request):
     """ put a book on a list """
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
-    if not object_visible_to_user(request.user, book_list):
+    if not book_list.visible_to_user(request.user):
         return HttpResponseNotFound()
 
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))

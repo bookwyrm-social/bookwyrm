@@ -44,6 +44,66 @@ class ActivitypubMixins(TestCase):
             "published": "2020-12-04T17:52:22.623807+00:00",
         }
 
+    def test_object_visible_to_user(self, _):
+        """ does a user have permission to view an object """
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="public"
+        )
+        self.assertTrue(obj.visible_to_user(self.local_user))
+
+        obj = models.Shelf.objects.create(
+            name="test", user=self.remote_user, privacy="unlisted"
+        )
+        self.assertTrue(obj.visible_to_user(self.local_user))
+
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="followers"
+        )
+        self.assertFalse(obj.visible_to_user(self.local_user))
+
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="direct"
+        )
+        self.assertFalse(obj.visible_to_user(self.local_user))
+
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="direct"
+        )
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(obj.visible_to_user(self.local_user))
+
+    def test_object_visible_to_user_follower(self, _):
+        """ what you can see if you follow a user """
+        self.remote_user.followers.add(self.local_user)
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="followers"
+        )
+        self.assertTrue(obj.visible_to_user(self.local_user))
+
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="direct"
+        )
+        self.assertFalse(obj.visible_to_user(self.local_user))
+
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="direct"
+        )
+        obj.mention_users.add(self.local_user)
+        self.assertTrue(obj.visible_to_user(self.local_user))
+
+    def test_object_visible_to_user_blocked(self, _):
+        """ you can't see it if they block you """
+        self.remote_user.blocks.add(self.local_user)
+        obj = models.Status.objects.create(
+            content="hi", user=self.remote_user, privacy="public"
+        )
+        self.assertFalse(obj.visible_to_user(self.local_user))
+
+        obj = models.Shelf.objects.create(
+            name="test", user=self.remote_user, privacy="unlisted"
+        )
+        self.assertFalse(obj.visible_to_user(self.local_user))
+
     # ActivitypubMixin
     def test_to_activity(self, _):
         """ model to ActivityPub json """
