@@ -64,7 +64,7 @@ class FederationViews(TestCase):
 
         self.assertEqual(server.status, "federated")
 
-        view = views.FederatedServer.as_view()
+        view = views.federation.block_server
         request = self.factory.post("")
         request.user = self.local_user
         request.user.is_superuser = True

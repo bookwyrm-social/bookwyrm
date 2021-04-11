@@ -88,10 +88,22 @@ class FederatedServer(View):
         return TemplateResponse(request, "settings/federated_server.html", data)
 
     def post(self, request, server):  # pylint: disable=unused-argument
-        """ block a server """
+        """ update note """
         server = get_object_or_404(models.FederatedServer, id=server)
-        server.block()
+        server.notes = request.POST.get("notes")
+        server.save()
         return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+# pylint: disable=unused-argument
+def block_server(request, server):
+    """ block a server """
+    server = get_object_or_404(models.FederatedServer, id=server)
+    server.block()
+    return redirect("settings-federated-server", server.id)
 
 
 @login_required

@@ -71,14 +71,34 @@
 </div>
 
 <section class="block content">
-    <h2 class="title is-4">{% trans "Notes" %}</h2>
-    <p>{{ server.notes }}</p>
+    <header class="columns is-mobile">
+        <div class="column">
+            <h2 class="title is-4 mb-0">{% trans "Notes" %}</h2>
+        </div>
+        <div class="column is-narrow">
+            {% trans "Edit" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-notes" %}
+        </div>
+    </header>
+    {% if server.notes %}
+    <p id="hide-edit-notes">{{ server.notes }}</p>
+    {% endif %}
+    <form class="box is-hidden" method="POST" action="{% url 'settings-federated-server' server.id %}" id="edit-notes">
+        {% csrf_token %}
+        <p>
+            <label class="is-sr-only" for="id_notes">Notes:</label>
+            <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ server.notes|default:"" }}</textarea>
+        </p>
+        <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="edit-notes" %}
+    </form>
 </section>
 
 <section class="block content">
     <h2 class="title is-4">{% trans "Actions" %}</h2>
     {% if server.status != 'blocked' %}
-    <form class="block" method="post" action="{% url 'settings-federated-server' server.id %}">
+    <form class="block" method="post" action="{% url 'settings-federated-server-block' server.id %}">
         {% csrf_token %}
         <button class="button is-danger">{% trans "Block" %}</button>
         <p class="help">{% trans "All users from this instance will be deactivated." %}</p>

@@ -69,6 +69,11 @@ urlpatterns = [
         name="settings-federated-server",
     ),
     re_path(
+        r"^settings/federation/(?P<server>\d+)/block?$",
+        views.federation.block_server,
+        name="settings-federated-server-block",
+    ),
+    re_path(
         r"^settings/federation/(?P<server>\d+)/unblock?$",
         views.federation.unblock_server,
         name="settings-federated-server-unblock",
