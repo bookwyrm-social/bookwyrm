@@ -80,7 +80,7 @@ class User(View):
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if not goal.visible_to_user(request.user):
+        if goal and not goal.visible_to_user(request.user):
             goal = None
         data = {
             "user": user,
