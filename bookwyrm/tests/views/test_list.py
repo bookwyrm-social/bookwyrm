@@ -369,7 +369,8 @@ class ListViews(TestCase):
         )
         request.user = self.local_user
 
-        views.list.remove_book(request, self.list.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.remove_book(request, self.list.id)
         self.assertFalse(self.list.listitem_set.exists())
 
     def test_remove_book_unauthorized(self):
