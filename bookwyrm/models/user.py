@@ -138,7 +138,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def viewer_aware_objects(cls, viewer):
         """ the user queryset filtered for the context of the logged in user """
         queryset = cls.objects.filter(is_active=True)
-        if viewer.is_authenticated:
+        if viewer and viewer.is_authenticated:
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
