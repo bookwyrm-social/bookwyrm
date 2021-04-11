@@ -64,6 +64,7 @@ class ActivitypubMixin:
         )
         if hasattr(self, "property_fields"):
             self.activity_fields += [
+                # pylint: disable=cell-var-from-loop
                 PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
                 for f in self.property_fields
             ]
@@ -152,7 +153,7 @@ class ActivitypubMixin:
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.objects.filter(
+            queryset = user_model.viewer_aware_objects(user).filter(
                 local=False,
             )
             # filter users first by whether they're using the desired software
