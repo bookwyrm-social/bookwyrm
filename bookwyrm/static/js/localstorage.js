@@ -1,20 +1,43 @@
-/* exported updateDisplay */
-/* globals addRemoveClass */
+/* exported LocalStorageTools */
+/* globals BookWyrm */
 
-// set javascript listeners
-function updateDisplay(e) {
-    // used in set reading goal
-    var key = e.target.getAttribute('data-id');
-    var value = e.target.getAttribute('data-value');
-    window.localStorage.setItem(key, value);
+let LocalStorageTools = new class {
+    constructor() {
+        document.querySelectorAll('[data-hide]')
+            .forEach(t => this.setDisplay(t));
 
-    document.querySelectorAll('[data-hide="' + key + '"]')
-        .forEach(t => setDisplay(t));
-}
+        document.querySelectorAll('.set-display')
+            .forEach(t => t.addEventListener('click', this.updateDisplay.bind(this)));
+    }
 
-function setDisplay(el) {
-    // used in set reading goal
-    var key = el.getAttribute('data-hide');
-    var value = window.localStorage.getItem(key);
-    addRemoveClass(el, 'hidden', value);
+    /**
+     * Update localStorage, then display content based on keys in localStorage.
+     *
+     * @param  {Event} event
+     * @return {undefined}
+     */
+    updateDisplay(event) {
+        // used in set reading goal
+        let key = event.target.dataset.id;
+        let value = event.target.dataset.value;
+
+        window.localStorage.setItem(key, value);
+
+        document.querySelectorAll('[data-hide="' + key + '"]')
+            .forEach(node => this.setDisplay(node));
+    }
+
+    /**
+     * Toggle display of a DOM node based on its value in the localStorage.
+     *
+     * @param {object} node - DOM node to toggle.
+     * @return {undefined}
+     */
+    setDisplay(node) {
+        // used in set reading goal
+        let key = node.dataset.hide;
+        let value = window.localStorage.getItem(key);
+
+        BookWyrm.addRemoveClass(node, 'is-hidden', value);
+    }
 }

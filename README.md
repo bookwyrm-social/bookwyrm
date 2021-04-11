@@ -116,6 +116,8 @@ If you edit the CSS or JavaScript, you will need to run Django's `collectstatic`
 ./bw-dev collectstatic
 ```
 
+If you have [installed yarn](https://yarnpkg.com/getting-started/install), you can run `yarn watch:static` to automatically run the previous script every time a change occurs in _bookwyrm/static_ directory.
+
 ### Working with translations and locale files
 Text in the html files are wrapped in translation tags (`{% trans %}` and `{% blocktrans %}`), and Django generates locale files for all the strings in which you can add translations for the text. You can find existing translations in the `locale/` directory.
 
@@ -156,24 +158,6 @@ The `production` branch of BookWyrm contains a number of tools not on the `main`
 
 Instructions for running BookWyrm in production:
 
-- Get the application code:
-    `git clone git@github.com:mouse-reeve/bookwyrm.git`
-- Switch to the `production` branch
-    `git checkout production`
-- Create your environment variables file
-    `cp .env.example .env`
-    - Add your domain, email address, SMTP credentials
-    - Set a secure redis password and secret key
-    - Set a secure database password for postgres
-- Update your nginx configuration in `nginx/default.conf`
-    - Replace `your-domain.com` with your domain name
-- Run the application (this should also set up a Certbot ssl cert for your domain) with
-    `docker-compose up --build`, and make sure all the images build successfully
-- When docker has built successfully, stop the process with `CTRL-C`
-- Comment out the `command: certonly...` line in `docker-compose.yml`
-- Run docker-compose in the background with: `docker-compose up -d`
-- Initialize the database with: `./bw-dev initdb`
-- Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe location
 - Get the application code:
     `git clone git@github.com:mouse-reeve/bookwyrm.git`
 - Switch to the `production` branch

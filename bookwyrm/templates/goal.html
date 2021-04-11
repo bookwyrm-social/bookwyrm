@@ -20,7 +20,7 @@
     {% if user == request.user %}
     <div class="block">
         {% now 'Y' as year %}
-        <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
+        <section class="card {% if goal %}is-hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
                 <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
                     <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}

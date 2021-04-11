@@ -1,9 +1,19 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
-<a href="{{ status.user.local_path }}">
-{% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
-{{ status.user.display_name }}
-</a>
+<span
+    itemprop="author"
+    itemscope
+    itemtype="https://schema.org/Person"
+>
+    <a
+        href="{{ status.user.local_path }}"
+        itemprop="url"
+    >
+        {% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
+
+        <span itemprop="name">{{ status.user.display_name }}</span>
+    </a>
+</span>
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}

@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="control{% if not parent_status.content_warning and not draft.content_warning %} hidden{% endif %}" id="spoilers-{{ uuid }}">
+<div class="control{% if not parent_status.content_warning and not draft.content_warning %} is-hidden{% endif %}" id="spoilers-{{ uuid }}">
     <label class="is-sr-only" for="id_content_warning-{{ uuid }}">{% trans "Spoiler alert:" %}</label>
     <input
         type="text"
