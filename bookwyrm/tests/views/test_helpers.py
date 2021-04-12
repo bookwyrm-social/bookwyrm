@@ -146,6 +146,15 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
+    def test_user_on_blocked_server(self, _):
+        """ find a remote user using webfinger """
+        models.FederatedServer.objects.create(
+            server_name="example.com", status="blocked"
+        )
+
+        result = views.helpers.handle_remote_webfinger("@mouse@example.com")
+        self.assertIsNone(result)
+
     def test_handle_reading_status_to_read(self, _):
         """ posts shelve activities """
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -189,66 +198,6 @@ class ViewsHelpers(TestCase):
                 self.local_user, self.shelf, self.book, "public"
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
-
-    def test_object_visible_to_user(self, _):
-        """ does a user have permission to view an object """
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="public"
-        )
-        self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Shelf.objects.create(
-            name="test", user=self.remote_user, privacy="unlisted"
-        )
-        self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="followers"
-        )
-        self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="direct"
-        )
-        self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="direct"
-        )
-        obj.mention_users.add(self.local_user)
-        self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
-
-    def test_object_visible_to_user_follower(self, _):
-        """ what you can see if you follow a user """
-        self.remote_user.followers.add(self.local_user)
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="followers"
-        )
-        self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="direct"
-        )
-        self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="direct"
-        )
-        obj.mention_users.add(self.local_user)
-        self.assertTrue(views.helpers.object_visible_to_user(self.local_user, obj))
-
-    def test_object_visible_to_user_blocked(self, _):
-        """ you can't see it if they block you """
-        self.remote_user.blocks.add(self.local_user)
-        obj = models.Status.objects.create(
-            content="hi", user=self.remote_user, privacy="public"
-        )
-        self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
-
-        obj = models.Shelf.objects.create(
-            name="test", user=self.remote_user, privacy="unlisted"
-        )
-        self.assertFalse(views.helpers.object_visible_to_user(self.local_user, obj))
 
     def test_get_annotated_users(self, _):
         """ list of people you might know """

@@ -9,9 +9,8 @@ Social reading and reviewing, decentralized with ActivityPub
    - [What it is and isn't](#what-it-is-and-isnt)
    - [The role of federation](#the-role-of-federation)
    - [Features](#features)
- - [Setting up the developer environment](#setting-up-the-developer-environment)
- - [Installing in Production](#installing-in-production)
  - [Book data](#book-data)
+ - [Set up Bookwyrm](#set-up-bookwyrm)
 
 ## Joining BookWyrm
 BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://github.com/mouse-reeve/bookwyrm/blob/main/instances.md) list.
@@ -60,11 +59,12 @@ Since the project is still in its early stages, the features are growing every d
 
 ### The Tech Stack
 Web backend
- - [Django](https://www.djangoproject.com/) web server
- - [PostgreSQL](https://www.postgresql.org/) database
- - [ActivityPub](http://activitypub.rocks/) federation
- - [Celery](http://celeryproject.org/) task queuing
- - [Redis](https://redis.io/) task backend
+- [Django](https://www.djangoproject.com/) web server
+- [PostgreSQL](https://www.postgresql.org/) database
+- [ActivityPub](https://activitypub.rocks/) federation
+- [Celery](https://docs.celeryproject.org/) task queuing
+- [Redis](https://redis.io/) task backend
+- [Redis (again)](https://redis.io/) activity stream manager
 
 Front end
  - Django templates
@@ -72,11 +72,14 @@ Front end
  - Vanilla JavaScript, in moderation
 
 Deployment
- - [Docker](https://www.docker.com/) and docker-compose
- - [Gunicorn](https://gunicorn.org/) web runner
- - [Flower](https://github.com/mher/flower) celery monitoring
- - [Nginx](https://nginx.org/en/) HTTP server
+- [Docker](https://www.docker.com/) and docker-compose
+- [Gunicorn](https://gunicorn.org/) web runner
+- [Flower](https://github.com/mher/flower) celery monitoring
+- [Nginx](https://nginx.org/en/) HTTP server
+
+
+## Book data
+The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
 
 ## Set up Bookwyrm
-
 See the [installation instructions](https://github.com/mouse-reeve/bookwyrm/blob/main/INSTALLATION.md) on how to set up Bookwyrm in developer environment or production.
