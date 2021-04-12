@@ -91,10 +91,15 @@ Deployment
 
 ## Setting up the developer environment
 
-Set up the environment file:
+Set up the development environment file:
 
 ``` bash
-cp .env.example .env
+cp .env.dev.example .env
+```
+
+Set up nginx for development `nginx/default.conf`:
+``` bash
+cp nginx/development nginx/default.conf
 ```
 
 For most testing, you'll want to use ngrok. Remember to set the DOMAIN in `.env` to your ngrok domain.
@@ -108,7 +113,7 @@ docker-compose run --rm web python manage.py initdb
 docker-compose up
 ```
 
-Once the build is complete, you can access the instance at `localhost:1333`
+Once the build is complete, you can access the instance at `http://localhost:1333`
 
 ### Editing static files
 If you edit the CSS or JavaScript, you will need to run Django's `collectstatic` command in order for your changes to have effect. You can do this by running:
@@ -160,26 +165,35 @@ Instructions for running BookWyrm in production:
 
 - Get the application code:
     `git clone git@github.com:mouse-reeve/bookwyrm.git`
-- Switch to the `production` branch
+- Switch to the `production` branch:
     `git checkout production`
-- Create your environment variables file
-    `cp .env.example .env`
-    - Add your domain, email address, SMTP credentials
-    - Set a secure redis password and secret key
-    - Set a secure database password for postgres
+- Create your environment variables file, `cp .env.prod.example .env`, and update the following:
+    - `SECRET_KEY` | A difficult to guess, secret string of characers
+    - `DOMAIN` | Your web domain
+    - `EMAIL` | Email address to be used for certbot domain verification
+    - `POSTGRES_PASSWORD` | Set a secure password for the database
+    - `REDIS_ACTIVITY_PASSWORD` | Set a secure password for Redis Activity subsystem
+    - `REDIS_BROKER_PASSWORD` | Set a secure password for Redis queue broker subsystem
+    - `FLOWER_USER` | Your own username for accessing Flower queue monitor
+    - `FLOWER_PASSWORD` | Your own secure password for accessing Flower queue monitor
 - Update your nginx configuration in `nginx/default.conf`
     - Replace `your-domain.com` with your domain name
-    - If you aren't using the `www` subdomain, remove the www.your-domain.com version of the domain from the `server_name` in the first server block in `nginx/default.conf` and remove the `-d www.${DOMAIN}` flag at the end of the `certbot` command in `docker-compose.yml`.
-    - If you are running another web-server on your host machine, you will need to follow the [reverse-proxy instructions](#running-bookwyrm-behind-a-reverse-proxy)
+- Configure nginx
+    - Make a copy of the production template config and set it for use in nginx `cp nginx/production nginx/default.conf`
+    - Update `nginx/default.conf`:
+        - Replace `your-domain.com` with your domain name
+        - If you aren't using the `www` subdomain, remove the www.your-domain.com version of the domain from the `server_name` in the first server block in `nginx/default.conf` and remove the `-d www.${DOMAIN}` flag at the end of the `certbot` command in `docker-compose.yml`.
+        - If you are running another web-server on your host machine, you will need to follow the [reverse-proxy instructions](#running-bookwyrm-behind-a-reverse-proxy)
+- If you need to initialize your certbot for your domain, set `CERTBOT_INIT=true` in your `.env` file
 - Run the application (this should also set up a Certbot ssl cert for your domain) with
     `docker-compose up --build`, and make sure all the images build successfully
     - If you are running other services on your host machine, you may run into errors where services fail when attempting to bind to a port.
     See the [troubleshooting guide](#port-conflicts) for advice on resolving this.
 - When docker has built successfully, stop the process with `CTRL-C`
-- Comment out the `command: certonly...` line in `docker-compose.yml`, and uncomment the following line (`command: renew ...`) so that the certificate will be automatically renewed.
-- Uncomment the https redirect and `server` block in `nginx/default.conf` (lines 17-48).
+- If you set `CERTBOT_INIT=true` earlier, set it now as `CERTBOT_INIT=false` so that certbot runs in renew mode
 - Run docker-compose in the background with: `docker-compose up -d`
 - Initialize the database with: `./bw-dev initdb`
+- Set up schedule backups with cron that runs that `docker-compose exec db pg_dump -U <databasename>` and saves the backup to a safe location
 
 Congrats! You did it, go to your domain and enjoy the fruits of your labors.
 
