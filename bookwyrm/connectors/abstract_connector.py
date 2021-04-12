@@ -219,6 +219,12 @@ def dict_from_mappings(data, mappings):
 
 def get_data(url, params=None):
     """ wrapper for request.get """
+    # check if the url is blocked
+    if models.FederatedServer.is_blocked(url):
+        raise ConnectorException(
+            "Attempting to load data from blocked url: {:s}".format(url)
+        )
+
     try:
         resp = requests.get(
             url,
