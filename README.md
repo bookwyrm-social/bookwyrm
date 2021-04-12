@@ -73,8 +73,8 @@ Since the project is still in its early stages, the features are growing every d
 Web backend
 - [Django](https://www.djangoproject.com/) web server
 - [PostgreSQL](https://www.postgresql.org/) database
-- [ActivityPub](http://activitypub.rocks/) federation
-- [Celery](http://celeryproject.org/) task queuing
+- [ActivityPub](https://activitypub.rocks/) federation
+- [Celery](https://docs.celeryproject.org/) task queuing
 - [Redis](https://redis.io/) task backend
 - [Redis (again)](https://redis.io/) activity stream manager
 
