@@ -65,6 +65,11 @@ class AddFederatedServer(View):
         return redirect("settings-federated-server", server.id)
 
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.control_federation", raise_exception=True),
+    name="dispatch",
+)
 class ImportServerBlocklist(View):
     """ manually add a server """
 
