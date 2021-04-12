@@ -79,9 +79,7 @@ class ImportServerBlocklist(View):
 
     def post(self, request):
         """ add a server from the admin panel """
-        json_data = json.load(
-            request.FILES["json_file"]
-        )
+        json_data = json.load(request.FILES["json_file"])
         failed = []
         success_count = 0
         for item in json_data:

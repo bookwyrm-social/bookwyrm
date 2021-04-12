@@ -145,11 +145,12 @@ class FederationViews(TestCase):
 
         view = views.ImportServerBlocklist.as_view()
         request = self.factory.post(
-            "", {
+            "",
+            {
                 "json_file": SimpleUploadedFile(
                     "file.json", open("file.json", "rb").read()
                 )
-            }
+            },
         )
         request.user = self.local_user
         request.user.is_superuser = True
