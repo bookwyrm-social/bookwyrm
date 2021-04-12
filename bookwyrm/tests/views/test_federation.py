@@ -83,6 +83,7 @@ class FederationViews(TestCase):
         )
         self.remote_user.federated_server = server
         self.remote_user.is_active = False
+        self.remote_user.deactivation_reason = "domain_block"
         self.remote_user.save()
 
         request = self.factory.post("")
