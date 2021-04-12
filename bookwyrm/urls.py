@@ -84,6 +84,11 @@ urlpatterns = [
         name="settings-add-federated-server",
     ),
     re_path(
+        r"^settings/federation/import/?$",
+        views.ImportServerBlocklist.as_view(),
+        name="settings-import-blocklist",
+    ),
+    re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
     ),
     re_path(

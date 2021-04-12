@@ -1,6 +1,7 @@
 {% extends 'settings/admin_layout.html' %}
 {% block title %}{{ server.server_name }}{% endblock %}
 {% load i18n %}
+{% load bookwyrm_tags %}
 
 {% block header %}
 {{ server.server_name }}
@@ -81,7 +82,7 @@
         </div>
     </header>
     {% if server.notes %}
-    <p id="hide-edit-notes">{{ server.notes }}</p>
+    <p id="hide-edit-notes">{{ server.notes|to_markdown|safe }}</p>
     {% endif %}
     <form class="box is-hidden" method="POST" action="{% url 'settings-federated-server' server.id %}" id="edit-notes">
         {% csrf_token %}
