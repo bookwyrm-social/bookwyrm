@@ -24,6 +24,16 @@ from .federated_server import FederatedServer
 from . import fields, Review
 
 
+DeactivationReason = models.TextChoices(
+    "DeactivationReason",
+    [
+        "self_deletion",
+        "moderator_deletion",
+        "domain_block",
+    ],
+)
+
+
 class User(OrderedCollectionPageMixin, AbstractUser):
     """ a user who wants to read books """
 
@@ -110,6 +120,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         choices=[(str(tz), str(tz)) for tz in pytz.all_timezones],
         default=str(pytz.utc),
         max_length=255,
+    )
+    deactivation_reason = models.CharField(
+        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
     )
 
     name_field = "username"
