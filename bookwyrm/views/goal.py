@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.status import create_generated_note
-from .helpers import get_user_from_username, object_visible_to_user
+from .helpers import get_user_from_username
 
 
 # pylint: disable= no-self-use
@@ -26,7 +26,7 @@ class Goal(View):
         if not goal and user != request.user:
             return HttpResponseNotFound()
 
-        if goal and not object_visible_to_user(request.user, goal):
+        if goal and not goal.visible_to_user(request.user):
             return HttpResponseNotFound()
 
         data = {

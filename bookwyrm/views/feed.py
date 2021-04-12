@@ -12,7 +12,7 @@ from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from .helpers import get_user_from_username, privacy_filter, get_suggested_users
-from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
+from .helpers import is_api_request, is_bookwyrm_request
 
 
 # pylint: disable= no-self-use
@@ -113,7 +113,7 @@ class Status(View):
             return HttpResponseNotFound()
 
         # make sure the user is authorized to see the status
-        if not object_visible_to_user(request.user, status):
+        if not status.visible_to_user(request.user):
             return HttpResponseNotFound()
 
         if is_api_request(request):

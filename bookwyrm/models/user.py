@@ -24,6 +24,16 @@ from .federated_server import FederatedServer
 from . import fields, Review
 
 
+DeactivationReason = models.TextChoices(
+    "DeactivationReason",
+    [
+        "self_deletion",
+        "moderator_deletion",
+        "domain_block",
+    ],
+)
+
+
 class User(OrderedCollectionPageMixin, AbstractUser):
     """ a user who wants to read books """
 
@@ -111,6 +121,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         default=str(pytz.utc),
         max_length=255,
     )
+    deactivation_reason = models.CharField(
+        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+    )
 
     name_field = "username"
     property_fields = [("following_link", "following")]
@@ -138,7 +151,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def viewer_aware_objects(cls, viewer):
         """ the user queryset filtered for the context of the logged in user """
         queryset = cls.objects.filter(is_active=True)
-        if viewer.is_authenticated:
+        if viewer and viewer.is_authenticated:
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 

@@ -4,8 +4,15 @@
 
 {% block header %}{% trans "Federated Servers" %}{% endblock %}
 
-{% block panel %}
+{% block edit-button %}
+<a href="{% url 'settings-add-federated-server' %}">
+    <span class="icon icon-plus" title="{% trans 'Add server' %}">
+        <span class="is-sr-only">{% trans "Add server" %}</span>
+    </span>
+</a>
+{% endblock %}
 
+{% block panel %}
 <table class="table is-striped">
     <tr>
         {% url 'settings-federation' as url %}

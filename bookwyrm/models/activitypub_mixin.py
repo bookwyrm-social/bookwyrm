@@ -153,7 +153,7 @@ class ActivitypubMixin:
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.objects.filter(
+            queryset = user_model.viewer_aware_objects(user).filter(
                 local=False,
             )
             # filter users first by whether they're using the desired software

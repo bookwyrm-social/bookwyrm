@@ -1,12 +1,13 @@
 """ manage federated servers """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -30,12 +31,36 @@ class Federation(View):
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]
-        if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
-            servers = servers.order_by(sort)
+        if not sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            sort = "created_date"
+        servers = servers.order_by(sort)
 
         paginated = Paginator(servers, PAGE_LENGTH)
-        data = {"servers": paginated.page(page), "sort": sort}
+
+        data = {
+            "servers": paginated.page(page),
+            "sort": sort,
+            "form": forms.ServerForm(),
+        }
         return TemplateResponse(request, "settings/federation.html", data)
+
+
+class AddFederatedServer(View):
+    """ manually add a server """
+
+    def get(self, request):
+        """ add server form """
+        data = {"form": forms.ServerForm()}
+        return TemplateResponse(request, "settings/edit_server.html", data)
+
+    def post(self, request):
+        """ add a server from the admin panel """
+        form = forms.ServerForm(request.POST)
+        if not form.is_valid():
+            data = {"form": form}
+            return TemplateResponse(request, "settings/edit_server.html", data)
+        server = form.save()
+        return redirect("settings-federated-server", server.id)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -61,3 +86,32 @@ class FederatedServer(View):
             ),
         }
         return TemplateResponse(request, "settings/federated_server.html", data)
+
+    def post(self, request, server):  # pylint: disable=unused-argument
+        """ update note """
+        server = get_object_or_404(models.FederatedServer, id=server)
+        server.notes = request.POST.get("notes")
+        server.save()
+        return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+# pylint: disable=unused-argument
+def block_server(request, server):
+    """ block a server """
+    server = get_object_or_404(models.FederatedServer, id=server)
+    server.block()
+    return redirect("settings-federated-server", server.id)
+
+
+@login_required
+@require_POST
+@permission_required("bookwyrm.control_federation", raise_exception=True)
+# pylint: disable=unused-argument
+def unblock_server(request, server):
+    """ unblock a server """
+    server = get_object_or_404(models.FederatedServer, id=server)
+    server.unblock()
+    return redirect("settings-federated-server", server.id)
