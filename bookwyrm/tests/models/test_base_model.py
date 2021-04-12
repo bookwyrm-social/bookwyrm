@@ -57,6 +57,7 @@ class BaseModel(TestCase):
         base_model.set_remote_id(None, instance, False)
         self.assertIsNone(instance.remote_id)
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user(self, _):
         """ does a user have permission to view an object """
         obj = models.Status.objects.create(
@@ -85,6 +86,7 @@ class BaseModel(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(obj.visible_to_user(self.local_user))
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_follower(self, _):
         """ what you can see if you follow a user """
         self.remote_user.followers.add(self.local_user)
@@ -104,6 +106,7 @@ class BaseModel(TestCase):
         obj.mention_users.add(self.local_user)
         self.assertTrue(obj.visible_to_user(self.local_user))
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_blocked(self, _):
         """ you can't see it if they block you """
         self.remote_user.blocks.add(self.local_user)
