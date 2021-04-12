@@ -9,6 +9,19 @@
 
 {% block panel %}
 
+<div class="tabs">
+    <ul>
+        {% url 'settings-import-blocklist' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Import block list" %}</a>
+        </li>
+        {% url 'settings-add-federated-server' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Add server" %}</a>
+        </li>
+    </ul>
+</div>
+
 <form method="POST" action="{% url 'settings-add-federated-server' %}">
     {% csrf_token %}
     <div class="columns">
@@ -24,8 +37,8 @@
                 <label class="label" for="id_status">{% trans "Status:" %}</label>
                 <div class="select">
                     <select name="status" class="" id="id_status">
-                        <option value="federated" {% if form.status.value == "federated" or not form.status.value %}selected=""{% endif %}>{% trans "Federated" %}</option>
-                        <option value="blocked" {% if form.status.value == "blocked" %}selected{% endif %}>{% trans "Blocked" %}</option>
+                        <option value="federated" {% if form.status.value == "federated" %}selected=""{% endif %}>{% trans "Federated" %}</option>
+                        <option value="blocked" {% if form.status.value == "blocked" or not form.status.value %}selected{% endif %}>{% trans "Blocked" %}</option>
                     </select>
                 </div>
             </div>

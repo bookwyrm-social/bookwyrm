@@ -1,6 +1,8 @@
 """ manage federated servers """
+import json
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -61,6 +63,42 @@ class AddFederatedServer(View):
             return TemplateResponse(request, "settings/edit_server.html", data)
         server = form.save()
         return redirect("settings-federated-server", server.id)
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("bookwyrm.control_federation", raise_exception=True),
+    name="dispatch",
+)
+class ImportServerBlocklist(View):
+    """ manually add a server """
+
+    def get(self, request):
+        """ add server form """
+        return TemplateResponse(request, "settings/server_blocklist.html")
+
+    def post(self, request):
+        """ add a server from the admin panel """
+        json_data = json.load(request.FILES["json_file"])
+        failed = []
+        success_count = 0
+        for item in json_data:
+            server_name = item.get("instance")
+            if not server_name:
+                failed.append(item)
+                continue
+            info_link = item.get("url")
+
+            with transaction.atomic():
+                server, _ = models.FederatedServer.objects.get_or_create(
+                    server_name=server_name,
+                )
+                server.notes = info_link
+                server.save()
+                server.block()
+            success_count += 1
+        data = {"failed": failed, "succeeded": success_count}
+        return TemplateResponse(request, "settings/server_blocklist.html", data)
 
 
 @method_decorator(login_required, name="dispatch")

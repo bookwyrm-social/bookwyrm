@@ -32,27 +32,27 @@ Federation makes it possible to have small, self-determining communities, in con
 
 ### Features
 Since the project is still in its early stages, the features are growing every day, and there is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/bookwyrm/issues) to get the conversation going!
- - Posting about books
+- Posting about books
     - Compose reviews, with or without ratings, which are aggregated in the book page
     - Compose other kinds of statuses about books, such as:
-     - Comments on a book
-     - Quotes or excerpts
+        - Comments on a book
+        - Quotes or excerpts
     - Reply to statuses
     - View aggregate reviews of a book across connected BookWyrm instances
     - Differentiate local and federated reviews and rating in your activity feed
- - Track reading activity
+- Track reading activity
     - Shelve books on default "to-read," "currently reading," and "read" shelves
     - Create custom shelves
     - Store started reading/finished reading dates, as well as progress updates along the way
     - Update followers about reading activity (optionally, and with granular privacy controls)
     - Create lists of books which can be open to submissions from anyone, curated, or only edited by the creator
- - Federation with ActivityPub
+- Federation with ActivityPub
     - Broadcast and receive user statuses and activity
     - Share book data between instances to create a networked database of metadata
     - Identify shared books across instances and aggregate related content
     - Follow and interact with users across BookWyrm instances
     - Inter-operate with non-BookWyrm ActivityPub services (currently, Mastodon is supported)
- - Granular privacy controls
+- Granular privacy controls
     - Private, followers-only, and public privacy levels for posting, shelves, and lists
     - Option for users to manually approve followers
     - Allow blocking and flagging for moderation

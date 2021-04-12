@@ -1,5 +1,7 @@
 """ test for app action functionality """
+import json
 from unittest.mock import patch
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -127,3 +129,39 @@ class FederationViews(TestCase):
         self.assertEqual(server.server_name, "remote.server")
         self.assertEqual(server.application_type, "coolsoft")
         self.assertEqual(server.status, "blocked")
+
+    def test_import_blocklist(self):
+        """ load a json file with a list of servers to block """
+        server = models.FederatedServer.objects.create(server_name="hi.there.com")
+        self.remote_user.federated_server = server
+        self.remote_user.save()
+
+        data = [
+            {"instance": "server.name", "url": "https://explanation.url"},  # new server
+            {"instance": "hi.there.com", "url": "https://explanation.url"},  # existing
+            {"a": "b"},  # invalid
+        ]
+        json.dump(data, open("file.json", "w"))
+
+        view = views.ImportServerBlocklist.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "json_file": SimpleUploadedFile(
+                    "file.json", open("file.json", "rb").read()
+                )
+            },
+        )
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        view(request)
+        server.refresh_from_db()
+        self.remote_user.refresh_from_db()
+
+        self.assertEqual(models.FederatedServer.objects.count(), 2)
+        self.assertEqual(server.status, "blocked")
+        self.assertFalse(self.remote_user.is_active)
+        created = models.FederatedServer.objects.get(server_name="server.name")
+        self.assertEqual(created.status, "blocked")
+        self.assertEqual(created.notes, "https://explanation.url")
