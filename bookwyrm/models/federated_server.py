@@ -30,15 +30,18 @@ class FederatedServer(BookWyrmModel):
         self.save()
 
         # deactivate all associated users
-        self.user_set.update(is_active=False)
+        self.user_set.filter(is_active=True).update(
+            is_active=False, deactivation_reason="domain_block"
+        )
 
     def unblock(self):
         """ unblock a server """
         self.status = "federated"
         self.save()
 
-        # TODO: only reactivate users as appropriate
-        self.user_set.update(is_active=True)
+        self.user_set.filter(deactivation_reason="domain_block").update(
+            is_active=True, deactivation_reason=None
+        )
 
     @classmethod
     def is_blocked(cls, url):

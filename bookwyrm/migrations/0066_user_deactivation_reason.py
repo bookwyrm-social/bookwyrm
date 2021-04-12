@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0065_merge_20210411_1702'),
+        ("bookwyrm", "0065_merge_20210411_1702"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='deactivation_reason',
-            field=models.CharField(blank=True, choices=[('self_deletion', 'Self Deletion'), ('moderator_deletion', 'Moderator Deletion'), ('domain_block', 'Domain Block')], max_length=255, null=True),
+            model_name="user",
+            name="deactivation_reason",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("self_deletion", "Self Deletion"),
+                    ("moderator_deletion", "Moderator Deletion"),
+                    ("domain_block", "Domain Block"),
+                ],
+                max_length=255,
+                null=True,
+            ),
         ),
     ]
