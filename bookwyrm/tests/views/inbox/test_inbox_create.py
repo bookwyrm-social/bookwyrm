@@ -9,7 +9,7 @@ from bookwyrm import models, views
 
 
 # pylint: disable=too-many-public-methods
-class InboxActivities(TestCase):
+class InboxCreate(TestCase):
     """ readthrough tests """
 
     def setUp(self):

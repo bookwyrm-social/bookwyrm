@@ -4,8 +4,9 @@ from unittest.mock import patch
 
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.test import TestCase, Client
+from django.test.client import RequestFactory
 
-from bookwyrm import models
+from bookwyrm import models, views
 
 
 # pylint: disable=too-many-public-methods
@@ -15,6 +16,7 @@ class Inbox(TestCase):
     def setUp(self):
         """ basic user and book data """
         self.client = Client()
+        self.factory = RequestFactory()
         local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -106,3 +108,26 @@ class Inbox(TestCase):
                     "/inbox", json.dumps(activity), content_type="application/json"
                 )
         self.assertEqual(result.status_code, 200)
+
+    def test_is_blocked_user_agent(self):
+        """ check for blocked servers """
+        request = self.factory.post(
+            "",
+            HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
+        )
+        self.assertFalse(views.inbox.is_blocked_user_agent(request))
+
+        models.FederatedServer.objects.create(
+            server_name="mastodon.social", status="blocked"
+        )
+        self.assertTrue(views.inbox.is_blocked_user_agent(request))
+
+    def test_is_blocked_activity(self):
+        """ check for blocked servers """
+        activity = {"actor": "https://mastodon.social/user/whaatever/else"}
+        self.assertFalse(views.inbox.is_blocked_activity(activity))
+
+        models.FederatedServer.objects.create(
+            server_name="mastodon.social", status="blocked"
+        )
+        self.assertTrue(views.inbox.is_blocked_activity(activity))

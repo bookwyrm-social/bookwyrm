@@ -64,6 +64,7 @@ class ActivitypubMixin:
         )
         if hasattr(self, "property_fields"):
             self.activity_fields += [
+                # pylint: disable=cell-var-from-loop
                 PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
                 for f in self.property_fields
             ]
@@ -152,7 +153,7 @@ class ActivitypubMixin:
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.objects.filter(
+            queryset = user_model.viewer_aware_objects(user).filter(
                 local=False,
             )
             # filter users first by whether they're using the desired software
@@ -356,49 +357,59 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
 class CollectionItemMixin(ActivitypubMixin):
     """ for items that are part of an (Ordered)Collection """
 
-    activity_serializer = activitypub.Add
-    object_field = collection_field = None
+    activity_serializer = activitypub.CollectionItem
+
+    @property
+    def privacy(self):
+        """ inherit the privacy of the list, or direct if pending """
+        collection_field = getattr(self, self.collection_field)
+        if self.approved:
+            return collection_field.privacy
+        return "direct"
+
+    @property
+    def recipients(self):
+        """ the owner of the list is a direct recipient """
+        collection_field = getattr(self, self.collection_field)
+        return [collection_field.user]
 
     def save(self, *args, broadcast=True, **kwargs):
         """ broadcast updated """
-        created = not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
-        # these shouldn't be edited, only created and deleted
-        if not broadcast or not created or not self.user.local:
+        # list items can be updateda, normally you would only broadcast on created
+        if not broadcast or not self.user.local:
             return
 
         # adding an obj to the collection
-        activity = self.to_add_activity()
+        activity = self.to_add_activity(self.user)
         self.broadcast(activity, self.user)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, broadcast=True, **kwargs):
         """ broadcast a remove activity """
-        activity = self.to_remove_activity()
+        activity = self.to_remove_activity(self.user)
         super().delete(*args, **kwargs)
-        if self.user.local:
+        if self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
-    def to_add_activity(self):
+    def to_add_activity(self, user):
         """ AP for shelving a book"""
-        object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id=self.get_remote_id(),
-            actor=self.user.remote_id,
-            object=object_field,
+            id="{:s}#add".format(collection_field.remote_id),
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 
-    def to_remove_activity(self):
+    def to_remove_activity(self, user):
         """ AP for un-shelving a book"""
-        object_field = getattr(self, self.object_field)
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id=self.get_remote_id(),
-            actor=self.user.remote_id,
-            object=object_field,
+            id="{:s}#remove".format(collection_field.remote_id),
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 

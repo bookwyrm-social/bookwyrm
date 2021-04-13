@@ -1,4 +1,5 @@
 """ test for app action functionality """
+import json
 from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -120,8 +121,15 @@ class ShelfViews(TestCase):
             "", {"book": self.book.id, "shelf": self.shelf.identifier}
         )
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             views.shelve(request)
+
+        self.assertEqual(mock.call_count, 1)
+        activity = json.loads(mock.call_args[0][1])
+        self.assertEqual(activity["type"], "Add")
+
+        item = models.ShelfBook.objects.get()
+        self.assertEqual(activity["object"]["id"], item.remote_id)
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
@@ -170,10 +178,15 @@ class ShelfViews(TestCase):
             models.ShelfBook.objects.create(
                 book=self.book, user=self.local_user, shelf=self.shelf
             )
+        item = models.ShelfBook.objects.get()
+
         self.shelf.save()
         self.assertEqual(self.shelf.books.count(), 1)
         request = self.factory.post("", {"book": self.book.id, "shelf": self.shelf.id})
         request.user = self.local_user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             views.unshelve(request)
+        activity = json.loads(mock.call_args[0][1])
+        self.assertEqual(activity["type"], "Remove")
+        self.assertEqual(activity["object"]["id"], item.remote_id)
         self.assertEqual(self.shelf.books.count(), 0)

@@ -6,7 +6,14 @@
 {% block content %}
 
 <header class="block column is-offset-one-quarter pl-1">
-    <h1 class="title">{% block header %}{% endblock %}</h1>
+    <div class="columns is-mobile">
+        <div class="column">
+            <h1 class="title">{% block header %}{% endblock %}</h1>
+        </div>
+        <div class="column is-narrow">
+            {% block edit-button %}{% endblock %}
+        </div>
+    </div>
 </header>
 
 <div class="block columns">

@@ -16,7 +16,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_edition, get_user_from_username
-from .helpers import handle_reading_status, privacy_filter, object_visible_to_user
+from .helpers import handle_reading_status, privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -43,7 +43,7 @@ class Shelf(View):
                 shelf = user.shelf_set.get(identifier=shelf_identifier)
             except models.Shelf.DoesNotExist:
                 return HttpResponseNotFound()
-            if not object_visible_to_user(request.user, shelf):
+            if not shelf.visible_to_user(request.user):
                 return HttpResponseNotFound()
         # this is a constructed "all books" view, with a fake "shelf" obj
         else:

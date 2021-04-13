@@ -3,7 +3,6 @@ html {
     scroll-padding-top: 20%;
 }
 
-/* --- --- */
 .image {
     overflow: hidden;
 }
@@ -25,17 +24,8 @@ html {
     min-width: 75% !important;
 }
 
-/* --- "disabled" for non-buttons --- */
-.is-disabled {
-    background-color: #dbdbdb;
-    border-color: #dbdbdb;
-    box-shadow: none;
-    color: #7a7a7a;
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* --- SHELVING --- */
+/** Shelving
+ ******************************************************************************/
 
 /** @todo Replace icons with SVG symbols.
     @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
@@ -45,7 +35,9 @@ html {
     margin-left: 0.5em;
 }
 
-/* --- TOGGLES --- */
+/** Toggles
+ ******************************************************************************/
+
 .toggle-button[aria-pressed=true],
 .toggle-button[aria-pressed=true]:hover {
     background-color: hsl(171, 100%, 41%);
@@ -57,12 +49,8 @@ html {
     display: none;
 }
 
-.hidden {
-    display: none !important;
-}
-
-.hidden.transition-y,
-.hidden.transition-x {
+.transition-x.is-hidden,
+.transition-y.is-hidden {
     display: block !important;
     visibility: hidden !important;
     height: 0;
@@ -71,16 +59,18 @@ html {
     padding: 0;
 }
 
+.transition-x,
 .transition-y {
-    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
     transition-duration: 0.5s;
     transition-timing-function: ease;
 }
 
 .transition-x {
     transition-property: width, margin-left, margin-right, padding-left, padding-right;
-    transition-duration: 0.5s;
-    transition-timing-function: ease;
+}
+
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -121,7 +111,9 @@ html {
     content: '\e9d7';
 }
 
-/* --- BOOK COVERS --- */
+/** Book covers
+ ******************************************************************************/
+
 .cover-container {
     height: 250px;
     width: max-content;
@@ -186,7 +178,9 @@ html {
     padding: 0.1em;
 }
 
-/* --- AVATAR --- */
+/** Avatars
+ ******************************************************************************/
+
 .avatar {
     vertical-align: middle;
     display: inline;
@@ -202,25 +196,57 @@ html {
     min-height: 96px;
 }
 
-/* --- QUOTES --- */
-.quote blockquote {
+/** Statuses: Quotes
+ *
+ * \e906: icon-quote-open
+ * \e905: icon-quote-close
+ *
+ * The `content` class on the blockquote allows to apply styles to markdown
+ * generated HTML in the quote: https://bulma.io/documentation/elements/content/
+ *
+ * ```html
+ * <div class="quote block">
+ *     <blockquote dir="auto" class="content mb-2">
+ *         User generated quote in markdown…
+ *     </blockquote>
+ *
+ *     <p> — <a…>Book Title</a> by <a…class="author">Author</a></p>
+ * </div>
+ * ```
+ ******************************************************************************/
+
+.quote > blockquote {
     position: relative;
     padding-left: 2em;
 }
 
-.quote blockquote::before,
-.quote blockquote::after {
+.quote > blockquote::before,
+.quote > blockquote::after {
     font-family: 'icomoon';
     position: absolute;
 }
 
-.quote blockquote::before {
+.quote > blockquote::before {
     content: "\e906";
     top: 0;
     left: 0;
 }
 
-.quote blockquote::after {
+.quote > blockquote::after {
     content: "\e905";
     right: 0;
+}
+
+/* States
+ ******************************************************************************/
+
+/* "disabled" for non-buttons */
+
+.is-disabled {
+    background-color: #dbdbdb;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    color: #7a7a7a;
+    opacity: 0.5;
+    cursor: not-allowed;
 }

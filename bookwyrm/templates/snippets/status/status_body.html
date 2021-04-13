@@ -78,7 +78,7 @@
 {% block card-bonus %}
 {% if request.user.is_authenticated and not moderation_mode %}
 {% with status.id|uuid as uuid %}
-<section class="hidden" id="show-comment-{{ status.id }}">
+<section class="is-hidden" id="show-comment-{{ status.id }}">
     <div class="card-footer">
         <div class="card-footer-item">
             {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}
