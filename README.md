@@ -13,13 +13,13 @@ Social reading and reviewing, decentralized with ActivityPub
 - [Set up Bookwyrm](#set-up-bookwyrm)
 
 ## Joining BookWyrm
-BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://github.com/mouse-reeve/bookwyrm/blob/main/instances.md) list.
+BookWyrm is still a young piece of software, and isn't at the level of stability and feature-richness that you'd find in a production-ready application. But it does what it says on the box! If you'd like to join an instance, you can check out the [instances](https://docs.joinbookwyrm.com/instances.html) list.
 
-You can request an invite to https://bookwyrm.social by [email](mailto:mousereeve@riseup.net), [Mastodon direct message](https://friend.camp/@tripofmice), or [Twitter direct message](https://twitter.com/tripofmice).
+You can request an invite by entering your email address at https://bookwyrm.social.
 
 
 ## Contributing
-See [contributing](https://github.com/mouse-reeve/bookwyrm/blob/main/CONTRIBUTING.md) for code, translation or monetary contributions.
+See [contributing](https://docs.joinbookwyrm.com/contributing.html) for code, translation or monetary contributions.
 
 ## About BookWyrm
 ### What it is and isn't
@@ -31,7 +31,7 @@ BookWyrm is built on [ActivityPub](http://activitypub.rocks/). With ActivityPub,
 Federation makes it possible to have small, self-determining communities, in contrast to the monolithic service you find on GoodReads or Twitter. An instance can be focused on a particular interest, be just for a group of friends, or anything else that brings people together. Each community can choose which other instances they want to federate with, and moderate and run their community autonomously. Check out https://runyourown.social/ to get a sense of the philosophy and logistics behind small, high-trust social networks.
 
 ### Features
-Since the project is still in its early stages, the features are growing every day, and there is plenty of room for suggestions and ideas. Open an [issue](https://github.com/mouse-reeve/bookwyrm/issues) to get the conversation going!
+Since the project is still in its early stages, the features are growing every day, and there is plenty of room for suggestions and ideas. Open an [issue](https://github.com/bookwyrm-social/bookwyrm/issues) to get the conversation going!
 - Posting about books
     - Compose reviews, with or without ratings, which are aggregated in the book page
     - Compose other kinds of statuses about books, such as:
@@ -82,4 +82,4 @@ Deployment
 The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
 
 ## Set up Bookwyrm
-See the [installation instructions](https://github.com/mouse-reeve/bookwyrm/blob/main/INSTALLATION.md) on how to set up Bookwyrm in developer environment or production.
+See the [installation instructions](https://docs.joinbookwyrm.com/developer-environment.html) on how to set up Bookwyrm in developer environment or production.
