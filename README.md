@@ -82,4 +82,4 @@ Deployment
 The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
 
 ## Set up Bookwyrm
-The documentation website has instruction on how to set up Bookwyrm in [developer environment](https://docs.joinbookwyrm.com/developer-environment.html) or [production](https://docs.joinbookwyrm.com/installing-in-production.html).
+The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up Bookwyrm in [developer environment](https://docs.joinbookwyrm.com/developer-environment.html) or [production](https://docs.joinbookwyrm.com/installing-in-production.html).
