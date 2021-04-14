@@ -73,7 +73,7 @@ def is_blocked_user_agent(request):
     url = re.search(r"https?://{:s}/?".format(regex.domain), user_agent)
     if not url:
         return False
-    url = url.groups()
+    url = url.group()
     return models.FederatedServer.is_blocked(url)
 
 
