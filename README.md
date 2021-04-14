@@ -19,7 +19,7 @@ You can request an invite by entering your email address at https://bookwyrm.soc
 
 
 ## Contributing
-See [contributing](https://docs.joinbookwyrm.com/contributing.html) for code, translation or monetary contributions.
+See [contributing](https://docs.joinbookwyrm.com/how-to-contribute.html) for code, translation or monetary contributions.
 
 ## About BookWyrm
 ### What it is and isn't
@@ -82,4 +82,4 @@ Deployment
 The application is set up to share book and author data between instances, and get book data from arbitrary outside sources. Right now, the only connector is to OpenLibrary, but other connectors could be written.
 
 ## Set up Bookwyrm
-See the [installation instructions](https://docs.joinbookwyrm.com/developer-environment.html) on how to set up Bookwyrm in developer environment or production.
+The [documentation website](https://docs.joinbookwyrm.com/) has instruction on how to set up Bookwyrm in a [developer environment](https://docs.joinbookwyrm.com/developer-environment.html) or [production](https://docs.joinbookwyrm.com/installing-in-production.html).
