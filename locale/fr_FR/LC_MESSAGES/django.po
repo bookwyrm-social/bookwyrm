@@ -462,7 +462,7 @@ msgstr "%(pages)s pages"
 #: bookwyrm/templates/book/publisher_info.html:38
 #, python-format
 msgid "%(languages)s language"
-msgstr "%(languages)s langues"
+msgstr "Langue %(languages)s"
 
 #: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
@@ -526,8 +526,8 @@ msgstr "Rejeter le message"
 #: bookwyrm/templates/directory/directory.html:71
 msgid "follower you follow"
 msgid_plural "followers you follow"
-msgstr[0] "compte auquel vous êtes abonné(e)"
-msgstr[1] "comptes auxquels vous êtes abonné(e)"
+msgstr[0] "compte que vous suivez"
+msgstr[1] "comptes que vous suivez"
 
 #: bookwyrm/templates/directory/directory.html:78
 msgid "book on your shelves"
@@ -833,8 +833,8 @@ msgstr "Défi lecture pour %(year)s"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] "%(mutuals)s abonnement auxquel vous êtes abonné(e)"
-msgstr[1] "%(mutuals)s abonnements auxquels vous êtes abonné(e)"
+msgstr[0] "%(mutuals)s abonné·e que vous suivez"
+msgstr[1] "%(mutuals)s abonné·es que vous suivez"
 
 #: bookwyrm/templates/feed/suggested_users.html:19
 #, python-format
@@ -900,7 +900,7 @@ msgstr "Enregistrer &amp; continuer"
 #: bookwyrm/templates/get_started/layout.html:14
 #, python-format
 msgid "Welcome to %(site_name)s!"
-msgstr "Bienvenu(e) sur %(site_name)s !"
+msgstr "Bienvenue sur %(site_name)s !"
 
 #: bookwyrm/templates/get_started/layout.html:16
 msgid "These are some first steps to get you started."
@@ -949,7 +949,7 @@ msgstr "Avatar :"
 #: bookwyrm/templates/get_started/profile.html:42
 #: bookwyrm/templates/preferences/edit_user.html:52
 msgid "Manually approve followers:"
-msgstr "Autoriser les abonnements manuellement :"
+msgstr "Autoriser les abonné·es manuellement :"
 
 #: bookwyrm/templates/get_started/profile.html:48
 #: bookwyrm/templates/preferences/edit_user.html:58
@@ -1093,7 +1093,7 @@ msgstr "Titre"
 #: bookwyrm/templates/import_status.html:118
 #: bookwyrm/templates/user/shelf.html:77
 msgid "Author"
-msgstr "Auteur ou autrice"
+msgstr "Auteur·ice"
 
 #: bookwyrm/templates/import_status.html:141
 msgid "Imported"
@@ -1260,7 +1260,7 @@ msgstr "Fermée"
 
 #: bookwyrm/templates/lists/form.html:22
 msgid "Only you can add and remove books to this list"
-msgstr "Vous seul(e) pouvez ajouter ou retirer des livres dans cette liste"
+msgstr "Vous seulement pouvez ajouter ou retirer des livres dans cette liste"
 
 #: bookwyrm/templates/lists/form.html:26
 msgid "Curated"
@@ -1286,7 +1286,7 @@ msgstr "Cette liste est vide actuellement"
 #: bookwyrm/templates/lists/list.html:35
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
-msgstr "Ajoutée par <a href=\"%(user_path)s\">%(username)s</a>"
+msgstr "Ajouté par <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:41
 #: bookwyrm/templates/snippets/shelf_selector.html:26
@@ -1515,7 +1515,7 @@ msgstr "<a href=\"%(related_path)s\">a répondu</a> à votre <a href=\"%(parent_
 
 #: bookwyrm/templates/notifications.html:85
 msgid "followed you"
-msgstr "s’est abonné(e)"
+msgstr "vous suit"
 
 #: bookwyrm/templates/notifications.html:88
 msgid "sent you a follow request"
@@ -1803,17 +1803,17 @@ msgstr "Aucune demande"
 #: bookwyrm/templates/settings/manage_invite_requests.html:59
 #: bookwyrm/templates/settings/status_filter.html:16
 msgid "Accepted"
-msgstr "Accepté(e)s"
+msgstr "Acceptée(s)"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:61
 #: bookwyrm/templates/settings/status_filter.html:12
 msgid "Sent"
-msgstr "Envoyé(e)s"
+msgstr "Envoyée(s)"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:63
 #: bookwyrm/templates/settings/status_filter.html:8
 msgid "Requested"
-msgstr "Demandé(e)s"
+msgstr "Demandée(s)"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:73
 msgid "Send invite"
@@ -1821,7 +1821,7 @@ msgstr "Envoyer l’invitation"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:75
 msgid "Re-send invite"
-msgstr "Envoyer l’invitation de nouveau"
+msgstr "Envoyer l’invitation à nouveau"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:95
 msgid "Ignore"
@@ -2241,7 +2241,7 @@ msgstr "Non listé"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:12
 msgid "Followers-only"
-msgstr "Abonnemé(e)s uniquement"
+msgstr "Abonné·es uniquement"
 
 #: bookwyrm/templates/snippets/privacy_select.html:6
 msgid "Post privacy"
@@ -2250,7 +2250,7 @@ msgstr "Confidentialité du statut"
 #: bookwyrm/templates/snippets/privacy_select.html:16
 #: bookwyrm/templates/user/followers.html:13
 msgid "Followers"
-msgstr "Abonnements"
+msgstr "Abonné·es"
 
 #: bookwyrm/templates/snippets/rate_action.html:4
 msgid "Leave a rating"
@@ -2389,7 +2389,7 @@ msgstr "A envie de lire « <em>%(book_title)s</em> »"
 
 #: bookwyrm/templates/snippets/status/status.html:9
 msgid "boosted"
-msgstr "partagé"
+msgstr "a partagé"
 
 #: bookwyrm/templates/snippets/status/status_body.html:27
 #: bookwyrm/templates/snippets/status/status_options.html:18
@@ -2497,16 +2497,16 @@ msgstr "Profil"
 #: bookwyrm/templates/user/followers.html:29
 #, python-format
 msgid "%(username)s has no followers"
-msgstr "%(username)s n’a pas d’abonné(e)"
+msgstr "%(username)s n’a pas d’abonné·e"
 
 #: bookwyrm/templates/user/following.html:13
 msgid "Following"
-msgstr "Abonné(e) à"
+msgstr "Comptes suivis"
 
 #: bookwyrm/templates/user/following.html:29
 #, python-format
 msgid "%(username)s isn't following any users"
-msgstr "%(username)s n’est abonné(e) à personne"
+msgstr "%(username)s ne suit personne"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -2594,14 +2594,14 @@ msgstr "Livres"
 #: bookwyrm/templates/user/user_preview.html:13
 #, python-format
 msgid "Joined %(date)s"
-msgstr "Enregistré(e) %(date)s"
+msgstr "Membre depuis %(date)s"
 
 #: bookwyrm/templates/user/user_preview.html:15
 #, python-format
 msgid "%(counter)s follower"
 msgid_plural "%(counter)s followers"
-msgstr[0] "%(counter)s abonnement"
-msgstr[1] "%(counter)s abonnements"
+msgstr[0] "%(counter)s abonné·e"
+msgstr[1] "%(counter)s abonné·es"
 
 #: bookwyrm/templates/user/user_preview.html:16
 #, python-format
