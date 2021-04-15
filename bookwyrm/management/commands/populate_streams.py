@@ -17,7 +17,7 @@ def populate_streams():
     )
     for user in users:
         for stream in activitystreams.streams.values():
-            stream.populate_stream(user)
+            stream.populate_streams(user)
 
 
 class Command(BaseCommand):
