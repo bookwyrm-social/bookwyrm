@@ -53,7 +53,7 @@ services:
       - 8000:8000
   redis_activity:
     image: redis
-    command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD}
+    command: redis-server --requirepass ${REDIS_ACTIVITY_PASSWORD} --appendonly yes
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
     env_file: .env
@@ -62,9 +62,11 @@ services:
     networks:
       - main
     restart: on-failure
+    volumes:
+      - redis_activity_data:/data
   redis_broker:
     image: redis
-    command: redis-server --requirepass ${REDIS_BROKER_PASSWORD}
+    command: redis-server --requirepass ${REDIS_BROKER_PASSWORD} --appendonly yes
     volumes:
       - ./redis.conf:/etc/redis/redis.conf
     env_file: .env
@@ -73,6 +75,8 @@ services:
     networks:
       - main
     restart: on-failure
+    volumes:
+      - redis_broker_data:/data
   celery_worker:
     env_file: .env
     build: .
@@ -100,11 +104,13 @@ services:
       - redis_broker
     restart: on-failure
     ports:
-       - 8888:8888
+      - 8888:8888
 volumes:
   pgdata:
   backups:
   static_volume:
   media_volume:
+  redis_broker_data:
+  redis_activity_data:
 networks:
   main:
