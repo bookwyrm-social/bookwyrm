@@ -60,7 +60,7 @@ class Book(View):
         paginated = Paginator(
             reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
         )
-        reviews_page = paginated.page(page)
+        reviews_page = paginated.get_page(page)
 
         user_tags = readthroughs = user_shelves = other_edition_shelves = []
         if request.user.is_authenticated:
@@ -285,7 +285,7 @@ class Editions(View):
 
         paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
         data = {
-            "editions": paginated.page(page),
+            "editions": paginated.get_page(page),
             "work": work,
             "languages": languages,
             "formats": set(

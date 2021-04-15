@@ -40,7 +40,7 @@ class Federation(View):
         paginated = Paginator(servers, PAGE_LENGTH)
 
         data = {
-            "servers": paginated.page(page),
+            "servers": paginated.get_page(page),
             "sort": sort,
             "form": forms.ServerForm(),
         }

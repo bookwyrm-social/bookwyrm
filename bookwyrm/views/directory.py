@@ -39,7 +39,7 @@ class Directory(View):
         paginated = Paginator(users, 12)
 
         data = {
-            "users": paginated.page(page),
+            "users": paginated.get_page(page),
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

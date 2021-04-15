@@ -39,7 +39,7 @@ class Feed(View):
             **feed_page_data(request.user),
             **{
                 "user": request.user,
-                "activities": paginated.page(page),
+                "activities": paginated.get_page(page),
                 "suggested_users": suggested_users,
                 "tab": tab,
                 "goal_form": forms.GoalForm(),
@@ -82,7 +82,7 @@ class DirectMessage(View):
         ).order_by("-published_date")
 
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.page(page)
+        activity_page = paginated.get_page(page)
         data = {
             **feed_page_data(request.user),
             **{
