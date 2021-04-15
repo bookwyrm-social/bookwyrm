@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .base_activity import ActivityObject
-from .image import Image
+from .image import Document
 
 
 @dataclass(init=False)
@@ -28,7 +28,7 @@ class Book(ActivityObject):
     librarythingKey: str = ""
     goodreadsKey: str = ""
 
-    cover: Image = None
+    cover: Document = None
     type: str = "Book"
 
 
