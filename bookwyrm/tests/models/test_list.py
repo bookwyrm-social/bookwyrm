@@ -55,7 +55,7 @@ class List(TestCase):
 
         self.assertTrue(item.approved)
         self.assertEqual(item.privacy, "unlisted")
-        self.assertEqual(item.recipients, [self.local_user])
+        self.assertEqual(item.recipients, [])
 
     def test_list_item_pending(self, _):
         """ a list entry """
@@ -71,4 +71,4 @@ class List(TestCase):
         self.assertFalse(item.approved)
         self.assertEqual(item.book_list.privacy, "public")
         self.assertEqual(item.privacy, "direct")
-        self.assertEqual(item.recipients, [self.local_user])
+        self.assertEqual(item.recipients, [])
