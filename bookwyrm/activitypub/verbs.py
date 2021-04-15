@@ -40,7 +40,9 @@ class Delete(Verb):
     def action(self):
         """ find and delete the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
-        obj.delete()
+        if obj:
+            obj.delete()
+        # if we can't find it, we don't need to delete it because we don't have it
 
 
 @dataclass(init=False)
