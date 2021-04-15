@@ -43,7 +43,7 @@ class ManageInvites(View):
         )
 
         data = {
-            "invites": paginated.page(page),
+            "invites": paginated.get_page(page),
             "form": forms.CreateInviteForm(),
         }
         return TemplateResponse(request, "settings/manage_invites.html", data)
@@ -136,7 +136,7 @@ class ManageInviteRequests(View):
         data = {
             "ignored": ignored,
             "count": paginated.count,
-            "requests": paginated.page(page),
+            "requests": paginated.get_page(page),
             "sort": sort,
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)

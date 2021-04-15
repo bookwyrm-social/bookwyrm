@@ -524,7 +524,7 @@ def to_ordered_collection_page(
     """ serialize and pagiante a queryset """
     paginated = Paginator(queryset, PAGE_LENGTH)
 
-    activity_page = paginated.page(page)
+    activity_page = paginated.get_page(page)
     if id_only:
         items = [s.remote_id for s in activity_page.object_list]
     else:

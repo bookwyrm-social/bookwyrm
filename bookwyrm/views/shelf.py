@@ -70,7 +70,7 @@ class Shelf(View):
             "is_self": is_self,
             "shelves": shelves.all(),
             "shelf": shelf,
-            "books": paginated.page(page),
+            "books": paginated.get_page(page),
         }
 
         return TemplateResponse(request, "user/shelf.html", data)

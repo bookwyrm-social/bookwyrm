@@ -87,7 +87,7 @@ class User(View):
             "is_self": is_self,
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
-            "activities": paginated.page(page),
+            "activities": paginated.get_page(page),
             "goal": goal,
         }
 

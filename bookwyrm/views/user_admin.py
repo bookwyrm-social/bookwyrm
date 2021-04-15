@@ -46,5 +46,5 @@ class UserAdmin(View):
             users = users.order_by(sort)
 
         paginated = Paginator(users, PAGE_LENGTH)
-        data = {"users": paginated.page(page), "sort": sort, "server": server}
+        data = {"users": paginated.get_page(page), "sort": sort, "server": server}
         return TemplateResponse(request, "settings/user_admin.html", data)
