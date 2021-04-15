@@ -40,20 +40,26 @@ services:
       - 8000:8000
   redis_activity:
     image: redis
+    command: ["redis-server", "--appendonly", "yes"]
     env_file: .env
     ports:
       - 6378:6378
     networks:
       - main
     restart: on-failure
+    volumes:
+      - redis_activity_data:/data
   redis_broker:
     image: redis
+    command: ["redis-server", "--appendonly", "yes"]
     env_file: .env
     ports:
       - 6379:6379
     networks:
       - main
     restart: on-failure
+    volumes:
+      - redis_broker_data:/data
   celery_worker:
     env_file: .env
     build: .
@@ -86,5 +92,7 @@ volumes:
   pgdata:
   static_volume:
   media_volume:
+  redis_broker_data:
+  redis_activity_data:
 networks:
   main:
