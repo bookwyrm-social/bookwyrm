@@ -44,7 +44,7 @@ class Lists(View):
 
         paginated = Paginator(lists, 12)
         data = {
-            "lists": paginated.page(page),
+            "lists": paginated.get_page(page),
             "list_form": forms.ListForm(),
             "path": "/list",
         }
@@ -79,7 +79,7 @@ class UserLists(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "lists": paginated.page(page),
+            "lists": paginated.get_page(page),
             "list_form": forms.ListForm(),
             "path": user.local_path + "/lists",
         }
