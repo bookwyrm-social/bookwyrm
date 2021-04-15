@@ -1,4 +1,4 @@
-""" undo wrapper activity """
+""" activities that do things """
 from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
@@ -9,14 +9,13 @@ from .ordered_collection import CollectionItem
 
 @dataclass(init=False)
 class Verb(ActivityObject):
-    """generic fields for activities - maybe an unecessary level of
-    abstraction but w/e"""
+    """generic fields for activities """
 
     actor: str
     object: ActivityObject
 
     def action(self):
-        """ usually we just want to save, this can be overridden as needed """
+        """ usually we just want to update and save """
         self.object.to_model()
 
 
@@ -24,8 +23,8 @@ class Verb(ActivityObject):
 class Create(Verb):
     """ Create activity """
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     signature: Signature = None
     type: str = "Create"
 
@@ -34,8 +33,8 @@ class Create(Verb):
 class Delete(Verb):
     """ Create activity """
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
     def action(self):
@@ -48,7 +47,7 @@ class Delete(Verb):
 class Update(Verb):
     """ Update activity """
 
-    to: List
+    to: List[str]
     type: str = "Update"
 
     def action(self):
