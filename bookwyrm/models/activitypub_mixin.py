@@ -359,6 +359,10 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
+    def broadcast(self, activity, sender, software="bookwyrm"):
+        """ only send book collection updates to other bookwyrm instances """
+        super().broadcast(activity, sender, software=software)
+
     @property
     def privacy(self):
         """ inherit the privacy of the list, or direct if pending """
@@ -371,6 +375,9 @@ class CollectionItemMixin(ActivitypubMixin):
     def recipients(self):
         """ the owner of the list is a direct recipient """
         collection_field = getattr(self, self.collection_field)
+        if collection_field.user.local:
+            # don't broadcast to yourself
+            return []
         return [collection_field.user]
 
     def save(self, *args, broadcast=True, **kwargs):
