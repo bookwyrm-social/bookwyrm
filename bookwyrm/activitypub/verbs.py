@@ -16,7 +16,11 @@ class Verb(ActivityObject):
 
     def action(self):
         """ usually we just want to update and save """
-        self.object.to_model()
+        obj = self.object
+        # it may return None if the object is invalid in an expected way
+        # ie, Question type
+        if obj:
+            obj.to_model()
 
 
 @dataclass(init=False)
