@@ -336,7 +336,7 @@ def image_serializer(value, alt):
     else:
         return None
     url = "https://%s%s" % (DOMAIN, url)
-    return activitypub.Image(url=url, name=alt)
+    return activitypub.Document(url=url, name=alt)
 
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
