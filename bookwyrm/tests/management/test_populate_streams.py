@@ -30,13 +30,15 @@ class Activitystreams(TestCase):
             )
         self.book = models.Edition.objects.create(title="test book")
 
-    def test_activitystream_class_ids(self, _):
-        """ the abstract base class for stream objects """
+    def test_populate_streams(self, _):
+        """ make sure the function on the redis manager gets called """
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Comment.objects.create(
                 user=self.local_user, content="hi", book=self.book
             )
 
-        with patch("bookwyrm.activitystreams.ActivityStream.populate_store") as redis_mock:
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.populate_store"
+        ) as redis_mock:
             populate_streams()
         self.assertEqual(redis_mock.call_count, 6)  # 2 users x 3 streams
