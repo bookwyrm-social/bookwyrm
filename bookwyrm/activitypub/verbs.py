@@ -58,7 +58,9 @@ class Update(Verb):
 
     def action(self):
         """ update a model instance from the dataclass """
-        self.object.to_model(allow_create=False)
+        obj = self.object
+        if obj:
+            self.object.to_model(allow_create=False)
 
 
 @dataclass(init=False)
