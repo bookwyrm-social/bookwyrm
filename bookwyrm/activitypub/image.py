@@ -4,7 +4,7 @@ from .base_activity import ActivityObject
 
 
 @dataclass(init=False)
-class Image(ActivityObject):
+class Document(ActivityObject):
     """ image block """
 
     url: str

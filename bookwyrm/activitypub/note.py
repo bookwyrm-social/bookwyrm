@@ -4,7 +4,7 @@ from typing import Dict, List
 from django.apps import apps
 
 from .base_activity import ActivityObject, Link
-from .image import Image
+from .image import Document
 
 
 @dataclass(init=False)
@@ -32,7 +32,7 @@ class Note(ActivityObject):
     inReplyTo: str = ""
     summary: str = ""
     tag: List[Link] = field(default_factory=lambda: [])
-    attachment: List[Image] = field(default_factory=lambda: [])
+    attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
     type: str = "Note"
 

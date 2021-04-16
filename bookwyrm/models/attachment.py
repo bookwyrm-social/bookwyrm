@@ -33,4 +33,4 @@ class Image(Attachment):
     )
     caption = fields.TextField(null=True, blank=True, activitypub_field="name")
 
-    activity_serializer = activitypub.Image
+    activity_serializer = activitypub.Document
