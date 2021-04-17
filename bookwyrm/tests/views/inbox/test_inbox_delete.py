@@ -49,7 +49,7 @@ class InboxActivities(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_handle_delete_status(self):
+    def test_delete_status(self):
         """ remove a status """
         self.assertFalse(self.status.deleted)
         activity = {
@@ -70,7 +70,7 @@ class InboxActivities(TestCase):
         self.assertTrue(status.deleted)
         self.assertIsInstance(status.deleted_date, datetime)
 
-    def test_handle_delete_status_notifications(self):
+    def test_delete_status_notifications(self):
         """ remove a status with related notifications """
         models.Notification.objects.create(
             related_status=self.status,
@@ -104,3 +104,39 @@ class InboxActivities(TestCase):
         # notifications should be truly deleted
         self.assertEqual(models.Notification.objects.count(), 1)
         self.assertEqual(models.Notification.objects.get(), notif)
+
+    def test_delete_user(self):
+        """ delete a user """
+        self.assertTrue(
+            models.User.objects.get(username="rat@example.com").is_active
+        )
+        activity = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': 'https://example.com/users/test-user#delete',
+            'type': 'Delete',
+            'actor': 'https://example.com/users/test-user',
+            'to': ['https://www.w3.org/ns/activitystreams#Public'],
+            'object': 'https://example.com/users/test-user',
+        }
+
+        views.inbox.activity_task(activity)
+        self.assertFalse(
+            models.User.objects.get(username="rat@example.com").is_active
+        )
+
+
+    def test_delete_user_unknown(self):
+        """ don't worry about it if we don't know the user """
+        self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)
+        activity = {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            'id': 'https://example.com/users/test-user#delete',
+            'type': 'Delete',
+            'actor': 'https://example.com/users/test-user',
+            'to': ['https://www.w3.org/ns/activitystreams#Public'],
+            'object': 'https://example.com/users/test-user',
+        }
+
+        # nothing happens.
+        views.inbox.activity_task(activity)
+        self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)

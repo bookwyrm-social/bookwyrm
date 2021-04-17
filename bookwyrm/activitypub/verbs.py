@@ -16,11 +16,10 @@ class Verb(ActivityObject):
 
     def action(self):
         """ usually we just want to update and save """
-        obj = self.object
-        # it may return None if the object is invalid in an expected way
+        # self.object may return None if the object is invalid in an expected way
         # ie, Question type
-        if obj:
-            obj.to_model()
+        if self.object:
+            self.object.to_model()
 
 
 @dataclass(init=False)
@@ -43,7 +42,16 @@ class Delete(Verb):
 
     def action(self):
         """ find and delete the activity object """
-        obj = self.object.to_model(save=False, allow_create=False)
+        if not self.object:
+            return
+
+        if isinstance(self.object, str):
+            # Deleted users are passed as strings. Not wild about this fix
+            model = apps.get_model("bookwyrm.User")
+            obj = model.find_existing_by_remote_id(self.object)
+        else:
+            obj = self.object.to_model(save=False, allow_create=False)
+
         if obj:
             obj.delete()
         # if we can't find it, we don't need to delete it because we don't have it
@@ -58,8 +66,7 @@ class Update(Verb):
 
     def action(self):
         """ update a model instance from the dataclass """
-        obj = self.object
-        if obj:
+        if self.object:
             self.object.to_model(allow_create=False)
 
 
