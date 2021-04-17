@@ -98,8 +98,7 @@ def make_report(request):
     """ a user reports something """
     form = forms.ReportForm(request.POST)
     if not form.is_valid():
-        print(form.errors)
-        return redirect(request.headers.get("Referer", "/"))
+        raise ValueError(form.errors)
 
     form.save()
     return redirect(request.headers.get("Referer", "/"))
