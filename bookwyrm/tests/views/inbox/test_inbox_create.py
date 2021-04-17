@@ -6,6 +6,7 @@ from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models, views
+from bookwyrm.activitypub import ActivitySerializerError
 
 
 # pylint: disable=too-many-public-methods
@@ -51,7 +52,7 @@ class InboxCreate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_handle_create_status(self):
+    def test_create_status(self):
         """ the "it justs works" mode """
         self.assertEqual(models.Status.objects.count(), 1)
 
@@ -82,7 +83,7 @@ class InboxCreate(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Status.objects.count(), 2)
 
-    def test_handle_create_status_remote_note_with_mention(self):
+    def test_create_status_remote_note_with_mention(self):
         """ should only create it under the right circumstances """
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -105,7 +106,7 @@ class InboxCreate(TestCase):
         )
         self.assertEqual(models.Notification.objects.get().notification_type, "MENTION")
 
-    def test_handle_create_status_remote_note_with_reply(self):
+    def test_create_status_remote_note_with_reply(self):
         """ should only create it under the right circumstances """
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(models.Notification.objects.filter(user=self.local_user))
@@ -126,7 +127,7 @@ class InboxCreate(TestCase):
         self.assertTrue(models.Notification.objects.filter(user=self.local_user))
         self.assertEqual(models.Notification.objects.get().notification_type, "REPLY")
 
-    def test_handle_create_list(self):
+    def test_create_list(self):
         """ a new list """
         activity = self.create_json
         activity["object"] = {
@@ -149,3 +150,23 @@ class InboxCreate(TestCase):
         self.assertEqual(book_list.curation, "curated")
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
+
+    def test_create_unsupported_type(self):
+        """ ignore activities we know we can't handle """
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/status/887",
+            "type": "Question",
+        }
+        # just observer how it doesn't throw an error
+        views.inbox.activity_task(activity)
+
+    def test_create_unknown_type(self):
+        """ ignore activities we know we've never heard of """
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/status/887",
+            "type": "Threnody",
+        }
+        with self.assertRaises(ActivitySerializerError):
+            views.inbox.activity_task(activity)
