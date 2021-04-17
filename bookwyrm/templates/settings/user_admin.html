@@ -13,6 +13,8 @@
 
 {% block panel %}
 
+{% include 'settings/user_admin_filters.html' %}
+
 <table class="table is-striped">
     <tr>
         {% url 'settings-users' as url %}
