@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Dict
 
 from .base_activity import ActivityObject
-from .image import Document
+from .image import Image
 
 
 @dataclass(init=False)
@@ -28,7 +28,7 @@ class Person(ActivityObject):
     endpoints: Dict = None
     name: str = None
     summary: str = None
-    icon: Document = field(default_factory=lambda: {})
+    icon: Image = field(default_factory=lambda: {})
     bookwyrmUser: bool = False
     manuallyApprovesFollowers: str = False
     discoverable: str = False
