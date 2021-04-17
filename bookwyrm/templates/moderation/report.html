@@ -1,5 +1,6 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
+{% load bookwyrm_tags %}
 {% load humanize %}
 
 {% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
@@ -14,9 +15,62 @@
     {% include 'moderation/report_preview.html' with report=report %}
 </div>
 
+<div class="block columns">
+    <div class="column is-flex is-flex-direction-column">
+        <h4 class="title is-4">{% trans "User details" %}</h4>
+        <div class="box is-flex-grow-1">
+            {% include 'user/user_preview.html' with user=report.user %}
+            {% if report.user.summary %}
+            <div class="box content has-background-white-ter is-shadowless">
+                {{ report.user.summary | to_markdown | safe }}
+            </div>
+            {% endif %}
+
+            <p class="mt-2"><a href="{{ report.user.local_path }}">{% trans "View user profile" %}</a></p>
+        </div>
+    </div>
+    {% if not report.user.local %}
+    {% with server=report.user.federated_server %}
+    <div class="column is-half is-flex is-flex-direction-column">
+        <h4 class="title is-4">{% trans "Instance details" %}</h4>
+        <div class="box content is-flex-grow-1">
+            {% if server %}
+            <h5>{{ server.server_name }}</h5>
+            <dl>
+                <div class="is-flex">
+                    <dt>{% trans "Software:" %}</dt>
+                    <dd>{{ server.application_type }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Version:" %}</dt>
+                    <dd>{{ server.application_version }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Status:" %}</dt>
+                    <dd>{{ server.status }}</dd>
+                </div>
+            </dl>
+            {% if server.notes %}
+            <h5>{% trans "Notes" %}</h5>
+            <div class="box content has-background-white-ter is-shadowless">
+                {{ server.notes }}
+            </div>
+            {% endif %}
+
+            <p>
+                <a href="{% url 'settings-federated-server' server.id %}">{% trans "View instance" %}</a>
+            </p>
+            {% else %}
+            <em>{% trans "Not set" %}</em>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% endif %}
+</div>
+
 <div class="block content">
     <h3>{% trans "Actions" %}</h3>
-    <p><a href="{{ report.user.local_path }}">{% trans "View user profile" %}</a></p>
     <div class="is-flex">
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' report.user.username %}">{% trans "Send direct message" %}</a>
