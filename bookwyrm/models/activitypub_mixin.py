@@ -241,7 +241,11 @@ class ObjectMixin(ActivitypubMixin):
             return
 
         # is this a deletion?
-        if (hasattr(self, "deleted") and self.deleted) or hasattr(self, "is_active") and not self.is_active:
+        if (
+            (hasattr(self, "deleted") and self.deleted)
+            or hasattr(self, "is_active")
+            and not self.is_active
+        ):
             activity = self.to_delete_activity(user)
         else:
             activity = self.to_update_activity(user)

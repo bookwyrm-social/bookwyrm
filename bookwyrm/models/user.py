@@ -289,6 +289,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # skip the logic in this class's save()
         super().save(*args, **kwargs)
 
+    def to_activity(self, *args, **kwargs):
+        """ return a remote_id only if the user is inactive """
+        if not self.is_active:
+            return self.remote_id
+        return super().to_activity_dataclass(*args, **kwargs)
+
     @property
     def local_path(self):
         """ this model doesn't inherit bookwyrm model, so here we are """

@@ -107,34 +107,29 @@ class InboxActivities(TestCase):
 
     def test_delete_user(self):
         """ delete a user """
-        self.assertTrue(
-            models.User.objects.get(username="rat@example.com").is_active
-        )
+        self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': 'https://example.com/users/test-user#delete',
-            'type': 'Delete',
-            'actor': 'https://example.com/users/test-user',
-            'to': ['https://www.w3.org/ns/activitystreams#Public'],
-            'object': self.remote_user.remote_id,
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/test-user#delete",
+            "type": "Delete",
+            "actor": "https://example.com/users/test-user",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "object": self.remote_user.remote_id,
         }
 
         views.inbox.activity_task(activity)
-        self.assertFalse(
-            models.User.objects.get(username="rat@example.com").is_active
-        )
-
+        self.assertFalse(models.User.objects.get(username="rat@example.com").is_active)
 
     def test_delete_user_unknown(self):
         """ don't worry about it if we don't know the user """
         self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)
         activity = {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': 'https://example.com/users/test-user#delete',
-            'type': 'Delete',
-            'actor': 'https://example.com/users/test-user',
-            'to': ['https://www.w3.org/ns/activitystreams#Public'],
-            'object': 'https://example.com/users/test-user',
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/test-user#delete",
+            "type": "Delete",
+            "actor": "https://example.com/users/test-user",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "object": "https://example.com/users/test-user",
         }
 
         # nothing happens.
