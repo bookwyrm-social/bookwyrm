@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-09 21:53+0000\n"
+"POT-Creation-Date: 2021-04-17 13:26+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -59,29 +59,29 @@ msgstr "%(value)s n’est pas un nom de compte valide."
 
 #: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:152
 msgid "username"
-msgstr "nom du compte :"
+msgstr "nom du compte"
 
 #: bookwyrm/models/fields.py:170
 msgid "A user with that username already exists."
 msgstr "Ce nom est déjà associé à un compte."
 
-#: bookwyrm/settings.py:150
+#: bookwyrm/settings.py:152
 msgid "English"
 msgstr "English"
 
-#: bookwyrm/settings.py:151
+#: bookwyrm/settings.py:153
 msgid "German"
 msgstr "Deutsch"
 
-#: bookwyrm/settings.py:152
+#: bookwyrm/settings.py:154
 msgid "Spanish"
 msgstr "Español"
 
-#: bookwyrm/settings.py:153
+#: bookwyrm/settings.py:155
 msgid "French"
 msgstr "Français"
 
-#: bookwyrm/settings.py:154
+#: bookwyrm/settings.py:156
 msgid "Simplified Chinese"
 msgstr "简化字"
 
@@ -176,6 +176,8 @@ msgstr "Description :"
 #: bookwyrm/templates/book/edit_book.html:237
 #: bookwyrm/templates/edit_author.html:78 bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:70
+#: bookwyrm/templates/settings/edit_server.html:68
+#: bookwyrm/templates/settings/federated_server.html:93
 #: bookwyrm/templates/settings/site.html:93
 #: bookwyrm/templates/snippets/readthrough.html:75
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
@@ -189,6 +191,7 @@ msgstr "Enregistrer"
 #: bookwyrm/templates/book/edit_book.html:238
 #: bookwyrm/templates/edit_author.html:79
 #: bookwyrm/templates/moderation/report_modal.html:32
+#: bookwyrm/templates/settings/federated_server.html:94
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
 #: bookwyrm/templates/snippets/readthrough.html:76
@@ -444,37 +447,37 @@ msgstr "Tou(te)s"
 msgid "Language:"
 msgstr "Langue :"
 
-#: bookwyrm/templates/book/publisher_info.html:22
+#: bookwyrm/templates/book/publisher_info.html:21
 #, python-format
 msgid "%(format)s"
 msgstr "%(format)s"
 
-#: bookwyrm/templates/book/publisher_info.html:24
+#: bookwyrm/templates/book/publisher_info.html:23
 #, python-format
 msgid "%(format)s, %(pages)s pages"
 msgstr "%(format)s, %(pages)s pages"
 
-#: bookwyrm/templates/book/publisher_info.html:26
+#: bookwyrm/templates/book/publisher_info.html:25
 #, python-format
 msgid "%(pages)s pages"
 msgstr "%(pages)s pages"
 
-#: bookwyrm/templates/book/publisher_info.html:38
+#: bookwyrm/templates/book/publisher_info.html:37
 #, python-format
 msgid "%(languages)s language"
 msgstr "Langue : %(languages)s"
 
-#: bookwyrm/templates/book/publisher_info.html:65
+#: bookwyrm/templates/book/publisher_info.html:63
 #, python-format
 msgid "Published %(date)s by %(publisher)s."
 msgstr "Publié %(date)s par %(publisher)s."
 
-#: bookwyrm/templates/book/publisher_info.html:67
+#: bookwyrm/templates/book/publisher_info.html:65
 #, python-format
 msgid "Published %(date)s"
 msgstr "Publié %(date)s"
 
-#: bookwyrm/templates/book/publisher_info.html:69
+#: bookwyrm/templates/book/publisher_info.html:67
 #, python-format
 msgid "Published by %(publisher)s."
 msgstr "Publié par %(publisher)s."
@@ -776,6 +779,7 @@ msgid "Local"
 msgstr "Local"
 
 #: bookwyrm/templates/feed/feed.html:25
+#: bookwyrm/templates/settings/edit_server.html:40
 msgid "Federated"
 msgstr "Fédéré"
 
@@ -1022,6 +1026,7 @@ msgid "Privacy setting for imported reviews:"
 msgstr "Confidentialité des critiques importées :"
 
 #: bookwyrm/templates/import.html:48
+#: bookwyrm/templates/settings/server_blocklist.html:64
 msgid "Import"
 msgstr "Importer"
 
@@ -1145,7 +1150,7 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #: bookwyrm/templates/layout.html:111
-#: bookwyrm/templates/settings/admin_layout.html:24
+#: bookwyrm/templates/settings/admin_layout.html:31
 #: bookwyrm/templates/settings/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/manage_invites.html:3
 #: bookwyrm/templates/settings/manage_invites.html:15
@@ -1351,6 +1356,7 @@ msgid "Back to reports"
 msgstr "Retour aux signalements"
 
 #: bookwyrm/templates/moderation/report.html:18
+#: bookwyrm/templates/settings/federated_server.html:100
 msgid "Actions"
 msgstr "Actions"
 
@@ -1432,7 +1438,7 @@ msgstr "Signalements : %(server_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:16
-#: bookwyrm/templates/settings/admin_layout.html:28
+#: bookwyrm/templates/settings/admin_layout.html:35
 msgid "Reports"
 msgstr "Signalements"
 
@@ -1654,115 +1660,184 @@ msgstr "Aucune liste trouvée pour « %(query)s »"
 msgid "Administration"
 msgstr "Administration"
 
-#: bookwyrm/templates/settings/admin_layout.html:15
+#: bookwyrm/templates/settings/admin_layout.html:22
 msgid "Manage Users"
 msgstr "Gérer les comptes"
 
-#: bookwyrm/templates/settings/admin_layout.html:19
+#: bookwyrm/templates/settings/admin_layout.html:26
 #: bookwyrm/templates/settings/user_admin.html:3
 #: bookwyrm/templates/settings/user_admin.html:10
 msgid "Users"
 msgstr "Comptes"
 
-#: bookwyrm/templates/settings/admin_layout.html:32
+#: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
 msgid "Federated Servers"
 msgstr "Serveurs fédérés"
 
-#: bookwyrm/templates/settings/admin_layout.html:37
+#: bookwyrm/templates/settings/admin_layout.html:44
 msgid "Instance Settings"
 msgstr "Paramètres de l’instance"
 
-#: bookwyrm/templates/settings/admin_layout.html:41
+#: bookwyrm/templates/settings/admin_layout.html:48
 #: bookwyrm/templates/settings/site.html:4
 #: bookwyrm/templates/settings/site.html:6
 msgid "Site Settings"
 msgstr "Paramètres du site"
 
-#: bookwyrm/templates/settings/admin_layout.html:44
+#: bookwyrm/templates/settings/admin_layout.html:51
 #: bookwyrm/templates/settings/site.html:13
 msgid "Instance Info"
 msgstr "Information sur l’instance"
 
-#: bookwyrm/templates/settings/admin_layout.html:45
+#: bookwyrm/templates/settings/admin_layout.html:52
 #: bookwyrm/templates/settings/site.html:39
 msgid "Images"
 msgstr "Images"
 
-#: bookwyrm/templates/settings/admin_layout.html:46
+#: bookwyrm/templates/settings/admin_layout.html:53
 #: bookwyrm/templates/settings/site.html:59
 msgid "Footer Content"
 msgstr "Contenu du pied de page"
 
-#: bookwyrm/templates/settings/admin_layout.html:47
+#: bookwyrm/templates/settings/admin_layout.html:54
 #: bookwyrm/templates/settings/site.html:77
 msgid "Registration"
 msgstr "Enregistrement"
 
-#: bookwyrm/templates/settings/federated_server.html:7
+#: bookwyrm/templates/settings/edit_server.html:3
+#: bookwyrm/templates/settings/edit_server.html:6
+#: bookwyrm/templates/settings/edit_server.html:20
+#: bookwyrm/templates/settings/federation.html:9
+#: bookwyrm/templates/settings/federation.html:10
+#: bookwyrm/templates/settings/server_blocklist.html:3
+#: bookwyrm/templates/settings/server_blocklist.html:20
+#, fuzzy
+#| msgid "Add cover"
+msgid "Add server"
+msgstr "Ajouter une couverture"
+
+#: bookwyrm/templates/settings/edit_server.html:7
+#: bookwyrm/templates/settings/federated_server.html:12
+#: bookwyrm/templates/settings/server_blocklist.html:7
 msgid "Back to server list"
 msgstr "Retour à la liste des serveurs"
 
-#: bookwyrm/templates/settings/federated_server.html:12
-msgid "Details"
-msgstr "Détails"
+#: bookwyrm/templates/settings/edit_server.html:16
+#: bookwyrm/templates/settings/server_blocklist.html:16
+#, fuzzy
+#| msgid "Import book"
+msgid "Import block list"
+msgstr "Importer le livre"
 
-#: bookwyrm/templates/settings/federated_server.html:15
-msgid "Software:"
-msgstr "Logiciel :"
+#: bookwyrm/templates/settings/edit_server.html:30
+#, fuzzy
+#| msgid "Instance Name:"
+msgid "Instance:"
+msgstr "Nom de l’instance :"
 
-#: bookwyrm/templates/settings/federated_server.html:19
-msgid "Version:"
-msgstr "Description :"
-
-#: bookwyrm/templates/settings/federated_server.html:23
+#: bookwyrm/templates/settings/edit_server.html:37
+#: bookwyrm/templates/settings/federated_server.html:29
 msgid "Status:"
 msgstr "Statut :"
 
-#: bookwyrm/templates/settings/federated_server.html:30
+#: bookwyrm/templates/settings/edit_server.html:41
+#: bookwyrm/templates/settings/federated_server.html:9
+#, fuzzy
+#| msgid "Block"
+msgid "Blocked"
+msgstr "Bloquer"
+
+#: bookwyrm/templates/settings/edit_server.html:48
+#: bookwyrm/templates/settings/federated_server.html:21
+msgid "Software:"
+msgstr "Logiciel :"
+
+#: bookwyrm/templates/settings/edit_server.html:55
+#: bookwyrm/templates/settings/federated_server.html:25
+msgid "Version:"
+msgstr "Description :"
+
+#: bookwyrm/templates/settings/edit_server.html:64
+msgid "Notes:"
+msgstr "Remarques :"
+
+#: bookwyrm/templates/settings/federated_server.html:18
+msgid "Details"
+msgstr "Détails"
+
+#: bookwyrm/templates/settings/federated_server.html:36
 #: bookwyrm/templates/user/user_layout.html:50
 msgid "Activity"
 msgstr "Activité"
 
-#: bookwyrm/templates/settings/federated_server.html:33
+#: bookwyrm/templates/settings/federated_server.html:39
 msgid "Users:"
 msgstr "Comptes :"
 
-#: bookwyrm/templates/settings/federated_server.html:36
-#: bookwyrm/templates/settings/federated_server.html:43
+#: bookwyrm/templates/settings/federated_server.html:42
+#: bookwyrm/templates/settings/federated_server.html:49
 msgid "View all"
 msgstr "Voir tous"
 
-#: bookwyrm/templates/settings/federated_server.html:40
+#: bookwyrm/templates/settings/federated_server.html:46
 msgid "Reports:"
 msgstr "Signalements :"
 
-#: bookwyrm/templates/settings/federated_server.html:47
+#: bookwyrm/templates/settings/federated_server.html:53
 msgid "Followed by us:"
 msgstr "Suivi par nous :"
 
-#: bookwyrm/templates/settings/federated_server.html:53
+#: bookwyrm/templates/settings/federated_server.html:59
 msgid "Followed by them:"
 msgstr "Suivi par eux :"
 
-#: bookwyrm/templates/settings/federated_server.html:59
+#: bookwyrm/templates/settings/federated_server.html:65
 msgid "Blocked by us:"
 msgstr "Bloqués par nous :"
 
-#: bookwyrm/templates/settings/federation.html:13
+#: bookwyrm/templates/settings/federated_server.html:77
+msgid "Notes"
+msgstr "Remarques"
+
+#: bookwyrm/templates/settings/federated_server.html:80
+#, fuzzy
+#| msgid "Edit Book"
+msgid "Edit"
+msgstr "Modifier le livre"
+
+#: bookwyrm/templates/settings/federated_server.html:104
+#: bookwyrm/templates/snippets/block_button.html:5
+msgid "Block"
+msgstr "Bloquer"
+
+#: bookwyrm/templates/settings/federated_server.html:105
+msgid "All users from this instance will be deactivated."
+msgstr "Tous les comptes de cette instance seront désactivés."
+
+#: bookwyrm/templates/settings/federated_server.html:110
+#: bookwyrm/templates/snippets/block_button.html:10
+msgid "Un-block"
+msgstr "Débloquer"
+
+#: bookwyrm/templates/settings/federated_server.html:111
+msgid "All users from this instance will be re-activated."
+msgstr "Tous les comptes de cette instance seront réactivés."
+
+#: bookwyrm/templates/settings/federation.html:20
 msgid "Server name"
 msgstr "Nom du serveur"
 
-#: bookwyrm/templates/settings/federation.html:17
+#: bookwyrm/templates/settings/federation.html:24
 msgid "Date federated"
 msgstr "Date de fédération"
 
-#: bookwyrm/templates/settings/federation.html:21
+#: bookwyrm/templates/settings/federation.html:28
 msgid "Software"
 msgstr "Logiciel"
 
-#: bookwyrm/templates/settings/federation.html:24
+#: bookwyrm/templates/settings/federation.html:31
 #: bookwyrm/templates/settings/manage_invite_requests.html:44
 #: bookwyrm/templates/settings/status_filter.html:5
 #: bookwyrm/templates/settings/user_admin.html:32
@@ -1875,6 +1950,27 @@ msgstr "Nombre de fois utilisée"
 msgid "No active invites"
 msgstr "Aucune invitation active"
 
+#: bookwyrm/templates/settings/server_blocklist.html:6
+#, fuzzy
+#| msgid "Import Books"
+msgid "Import Blocklist"
+msgstr "Importer des livres"
+
+#: bookwyrm/templates/settings/server_blocklist.html:26
+#: bookwyrm/templates/snippets/goal_progress.html:5
+msgid "Success!"
+msgstr "Bravo !"
+
+#: bookwyrm/templates/settings/server_blocklist.html:30
+#, fuzzy
+#| msgid "Successfully imported"
+msgid "Successfully blocked:"
+msgstr "Importation réussie"
+
+#: bookwyrm/templates/settings/server_blocklist.html:32
+msgid "Failed:"
+msgstr "Échec :"
+
 #: bookwyrm/templates/settings/site.html:15
 msgid "Instance Name:"
 msgstr "Nom de l’instance :"
@@ -1963,14 +2059,6 @@ msgstr "Inactif"
 #: bookwyrm/templates/settings/user_admin.html:50
 msgid "Not set"
 msgstr "Non défini"
-
-#: bookwyrm/templates/snippets/block_button.html:5
-msgid "Block"
-msgstr "Bloquer"
-
-#: bookwyrm/templates/snippets/block_button.html:10
-msgid "Un-block"
-msgstr "Débloquer"
 
 #: bookwyrm/templates/snippets/book_cover.html:20
 #: bookwyrm/templates/snippets/search_result_text.html:10
@@ -2189,10 +2277,6 @@ msgstr "Publier sur le fil d’actualité"
 #: bookwyrm/templates/snippets/goal_form.html:30
 msgid "Set goal"
 msgstr "Valider ce défi"
-
-#: bookwyrm/templates/snippets/goal_progress.html:5
-msgid "Success!"
-msgstr "Bravo !"
 
 #: bookwyrm/templates/snippets/goal_progress.html:7
 #, python-format
