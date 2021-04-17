@@ -29,7 +29,7 @@ class Federation(View):
         except ValueError:
             page = 1
 
-        servers = models.FederatedServer.objects.all()
+        servers = models.FederatedServer.objects
 
         sort = request.GET.get("sort")
         sort_fields = ["created_date", "application_type", "server_name"]
