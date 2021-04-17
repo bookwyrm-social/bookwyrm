@@ -20,7 +20,7 @@ block_comment_end = */
 [{bw-dev,fr-dev,LICENSE}]
 max_line_length = off
 
-[*.{csv,json,html,md,mo,po,py,svg,tsv}]
+[*.{csv,json,html,md,po,py,svg,tsv}]
 max_line_length = off
 
 # `  ` at the end of a line is a line-break in markdown
@@ -32,10 +32,8 @@ indent_size = 2
 max_line_length = off
 
 # Computer generated files
-[{package.json,*.lock}]
+[{package.json,*.lock,*.mo}]
 indent_size = unset
 indent_style = unset
 max_line_length = unset
-
-[*.mo]
 insert_final_newline = unset
