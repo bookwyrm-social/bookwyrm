@@ -283,6 +283,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 editable=False,
             ).save(broadcast=False)
 
+    def delete(self, *args, **kwargs):
+        """ deactivate rather than delete a user """
+        self.is_active = False
+        # skip the logic in this class's save()
+        super().save(*args, **kwargs)
+
     @property
     def local_path(self):
         """ this model doesn't inherit bookwyrm model, so here we are """

@@ -116,7 +116,7 @@ class InboxActivities(TestCase):
             'type': 'Delete',
             'actor': 'https://example.com/users/test-user',
             'to': ['https://www.w3.org/ns/activitystreams#Public'],
-            'object': 'https://example.com/users/test-user',
+            'object': self.remote_user.remote_id,
         }
 
         views.inbox.activity_task(activity)
