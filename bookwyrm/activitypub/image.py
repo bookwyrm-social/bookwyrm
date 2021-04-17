@@ -12,7 +12,9 @@ class Document(ActivityObject):
     type: str = "Document"
     id: str = None
 
+
 @dataclass(init=False)
 class Image(Document):
     """ an image """
+
     type: str = "Image"
