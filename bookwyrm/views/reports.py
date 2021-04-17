@@ -29,8 +29,10 @@ class Reports(View):
         resolved = request.GET.get("resolved") == "true"
         server = request.GET.get("server")
         if server:
-            server = get_object_or_404(models.FederatedServer, id=server)
-            filters["user__federated_server"] = server
+            filters["user__federated_server__server_name"] = server
+        username = request.GET.get("username")
+        if username:
+            filters["user__username__icontains"] = username
         filters["resolved"] = resolved
         data = {
             "resolved": resolved,
