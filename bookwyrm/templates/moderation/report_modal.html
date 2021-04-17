@@ -15,7 +15,9 @@
 {% csrf_token %}
 <input type="hidden" name="reporter" value="{{ reporter.id }}">
 <input type="hidden" name="user" value="{{ user.id }}">
+{% if status %}
 <input type="hidden" name="statuses" value="{{ status.id }}">
+{% endif %}
 
 <section class="content">
     <p>{% blocktrans with site_name=site.name %}This report will be sent to {{ site_name }}'s moderators for review.{% endblocktrans %}</p>
