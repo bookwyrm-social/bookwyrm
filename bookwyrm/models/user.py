@@ -205,6 +205,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
+        if not self.is_active:
+            return self.remote_id
+
         activity_object = super().to_activity(**kwargs)
         activity_object["@context"] = [
             "https://www.w3.org/ns/activitystreams",
@@ -282,6 +285,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
+
+    def delete(self, *args, **kwargs):
+        """ deactivate rather than delete a user """
+        self.is_active = False
+        # skip the logic in this class's save()
+        super().save(*args, **kwargs)
 
     @property
     def local_path(self):
