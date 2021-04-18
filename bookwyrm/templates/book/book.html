@@ -67,31 +67,16 @@
             </div>
             {% endif %}
 
-            <section class="content is-clipped">
-                <dl>
-                    {% if book.isbn_13 %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "ISBN:" %}</dt>
-                        <dd itemprop="isbn">{{ book.isbn_13 }}</dd>
+            <section class="is-clipped">
+                {% with book=book %}
+                    <div class="content">
+                        {% include 'book/publisher_info.html' %}
                     </div>
-                    {% endif %}
 
-                    {% if book.oclc_number %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "OCLC Number:" %}</dt>
-                        <dd>{{ book.oclc_number }}</dd>
+                    <div class="my-3">
+                        {% include 'book/book_identifiers.html' %}
                     </div>
-                    {% endif %}
-
-                    {% if book.asin %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "ASIN:" %}</dt>
-                        <dd>{{ book.asin }}</dd>
-                    </div>
-                    {% endif %}
-                </dl>
-
-                {% include 'book/publisher_info.html' with book=book %}
+                {% endwith %}
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
