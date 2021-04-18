@@ -193,7 +193,7 @@ class ObjectMixin(ActivitypubMixin):
     def save(self, *args, created=None, **kwargs):
         """ broadcast created/updated/deleted objects as appropriate """
         broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg woul cause an error in the base save method
+        # this bonus kwarg would cause an error in the base save method
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
 
@@ -241,9 +241,7 @@ class ObjectMixin(ActivitypubMixin):
             return
 
         # is this a deletion?
-        if (hasattr(self, "deleted") and self.deleted) or (
-            hasattr(self, "is_active") and not self.is_active
-        ):
+        if hasattr(self, "deleted") and self.deleted:
             activity = self.to_delete_activity(user)
         else:
             activity = self.to_update_activity(user)

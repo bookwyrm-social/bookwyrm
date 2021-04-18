@@ -145,6 +145,11 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return self.name
         return self.localname or self.username
 
+    @property
+    def deleted(self):
+        """ for consistent naming """
+        return not self.is_active
+
     activity_serializer = activitypub.Person
 
     @classmethod
