@@ -1,4 +1,6 @@
 """ book list views"""
+from typing import Optional
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
@@ -140,7 +142,7 @@ class List(View):
                 .order_by(directional_sort_by)
             )
 
-        paginated = Paginator(items, 25)
+        paginated = Paginator(items, 12)
 
         if query and request.user.is_authenticated:
             # search for books
@@ -210,14 +212,17 @@ class Curate(View):
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"
         if approved:
+            # update the book and set it to be the last in the order of approved books, before any pending books
             suggestion.approved = True
-            current_order = suggestion.order
             order_max = (
-                book_list.listitem_set.aggregate(Max("order"))["order__max"] or 0
+                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                    "order__max"
+                ]
+                or 0
             ) + 1
             suggestion.order = order_max
+            increment_order_in_reverse(book_list.id, order_max)
             suggestion.save()
-            normalize_book_list_ordering(book_list.id, start=current_order)
         else:
             deleted_order = suggestion.order
             suggestion.delete(broadcast=False)
@@ -232,13 +237,17 @@ def add_book(request):
     if not book_list.visible_to_user(request.user):
         return HttpResponseNotFound()
 
-    order_max = book_list.listitem_set.aggregate(Max("order"))["order__max"] or 0
-
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     # do you have permission to add to the list?
     try:
         if request.user == book_list.user or book_list.curation == "open":
-            # go ahead and add it
+            # add the book at the latest order of approved books, before any pending books
+            order_max = (
+                book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
+                    "order__max"
+                ]
+            ) or 0
+            increment_order_in_reverse(book_list.id, order_max + 1)
             models.ListItem.objects.create(
                 book=book,
                 book_list=book_list,
@@ -246,7 +255,10 @@ def add_book(request):
                 order=order_max + 1,
             )
         elif book_list.curation == "curated":
-            # make a pending entry
+            # make a pending entry at the end of the list
+            order_max = (
+                book_list.listitem_set.aggregate(Max("order"))["order__max"]
+            ) or 0
             models.ListItem.objects.create(
                 approved=False,
                 book=book,
@@ -283,7 +295,8 @@ def remove_book(request, list_id):
 @require_POST
 def set_book_position(request, list_item_id):
     """
-    Action for when the list user manually specifies a list position, takes special care with the unique ordering per list
+    Action for when the list user manually specifies a list position, takes
+    special care with the unique ordering per list.
     """
     with transaction.atomic():
         list_item = get_object_or_404(models.ListItem, id=list_item_id)
@@ -298,7 +311,12 @@ def set_book_position(request, list_item_id):
             return HttpResponseBadRequest("position cannot be less than 1")
 
         book_list = list_item.book_list
-        order_max = book_list.listitem_set.aggregate(Max("order"))["order__max"]
+
+        # the max position to which a book may be set is the highest order for
+        # books which are approved
+        order_max = book_list.listitem_set.filter(approved=True).aggregate(
+            Max("order")
+        )["order__max"]
 
         if int_position > order_max:
             int_position = order_max
@@ -325,14 +343,17 @@ def set_book_position(request, list_item_id):
 
 
 @transaction.atomic
-def increment_order_in_reverse(book_list_id, start, end):
+def increment_order_in_reverse(
+    book_list_id: int, start: int, end: Optional[int] = None
+):
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
         return
-    items = book_list.listitem_set.filter(order__gte=start, order__lt=end).order_by(
-        "-order"
-    )
+    items = book_list.listitem_set.filter(order__gte=start)
+    if end is not None:
+        items = items.filter(order__lt=end)
+    items = items.order_by("-order")
     for item in items:
         item.order += 1
         item.save()

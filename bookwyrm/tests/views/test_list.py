@@ -51,6 +51,13 @@ class ListViews(TestCase):
             remote_id="https://example.com/book/3",
             parent_work=work_three,
         )
+        work_four = models.Work.objects.create(title="Travailler")
+        self.book_four = models.Edition.objects.create(
+            title="Example Edition 4",
+            remote_id="https://example.com/book/4",
+            parent_work=work_four,
+        )
+
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.list = models.List.objects.create(
                 name="Test List", user=self.local_user
@@ -368,6 +375,117 @@ class ListViews(TestCase):
         self.assertEqual(items[1].book, self.book_three)
         self.assertEqual(items[0].order, 1)
         self.assertEqual(items[1].order, 2)
+
+    def test_adding_book_with_a_pending_book(self):
+        """
+        When a list contains any pending books, the pending books should have
+        be at the end of the list by order. If a book is added while a book is
+        pending, its order should precede the pending books.
+        """
+        request = self.factory.post(
+            "",
+            {
+                "book": self.book_three.id,
+                "list": self.list.id,
+            },
+        )
+        request.user = self.local_user
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.rat,
+                book=self.book_two,
+                approved=False,
+                order=2,
+            )
+            views.list.add_book(request)
+
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[0].order, 1)
+        self.assertTrue(items[0].approved)
+
+        self.assertEqual(items[1].book, self.book_three)
+        self.assertEqual(items[1].order, 2)
+        self.assertTrue(items[1].approved)
+
+        self.assertEqual(items[2].book, self.book_two)
+        self.assertEqual(items[2].order, 3)
+        self.assertFalse(items[2].approved)
+
+    def test_approving_one_pending_book_from_multiple(self):
+        """
+        When a list contains any pending books, the pending books should have
+        be at the end of the list by order. If a pending book is approved, then
+        its order should be at the end of the approved books and before the
+        remaining pending books.
+        """
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book,
+                approved=True,
+                order=1,
+            )
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.local_user,
+                book=self.book_two,
+                approved=True,
+                order=2,
+            )
+            models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.rat,
+                book=self.book_three,
+                approved=False,
+                order=3,
+            )
+            to_be_approved = models.ListItem.objects.create(
+                book_list=self.list,
+                user=self.rat,
+                book=self.book_four,
+                approved=False,
+                order=4,
+            )
+
+        view = views.Curate.as_view()
+        request = self.factory.post(
+            "",
+            {
+                "item": to_be_approved.id,
+                "approved": "true",
+            },
+        )
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.list.id)
+
+        items = self.list.listitem_set.order_by("order").all()
+        self.assertEqual(items[0].book, self.book)
+        self.assertEqual(items[0].order, 1)
+        self.assertTrue(items[0].approved)
+
+        self.assertEqual(items[1].book, self.book_two)
+        self.assertEqual(items[1].order, 2)
+        self.assertTrue(items[1].approved)
+
+        self.assertEqual(items[2].book, self.book_four)
+        self.assertEqual(items[2].order, 3)
+        self.assertTrue(items[2].approved)
+
+        self.assertEqual(items[3].book, self.book_three)
+        self.assertEqual(items[3].order, 4)
+        self.assertFalse(items[3].approved)
 
     def test_add_three_books_and_move_last_to_first(self):
         """
