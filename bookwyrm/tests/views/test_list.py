@@ -221,7 +221,7 @@ class ListViews(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             view(request, self.list.id)
 
-        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.call_count, 2)
         activity = json.loads(mock.call_args[0][1])
         self.assertEqual(activity["type"], "Add")
         self.assertEqual(activity["actor"], self.local_user.remote_id)

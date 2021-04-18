@@ -357,7 +357,7 @@ def normalize_book_list_ordering(book_list_id, start=0, add_offset=0):
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
-        return
+        return HttpResponseNotFound()
     items = book_list.listitem_set.filter(order__gt=start).order_by("order")
     for i, item in enumerate(items, start):
         effective_order = i + add_offset
