@@ -361,7 +361,8 @@ class ListViews(TestCase):
 
         remove_request = self.factory.post("", {"item": items[1].id})
         remove_request.user = self.local_user
-        views.list.remove_book(remove_request, self.list.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.remove_book(remove_request, self.list.id)
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book)
         self.assertEqual(items[1].book, self.book_three)
@@ -415,7 +416,8 @@ class ListViews(TestCase):
 
         set_position_request = self.factory.post("", {"position": 1})
         set_position_request.user = self.local_user
-        views.list.set_book_position(set_position_request, items[2].id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.set_book_position(set_position_request, items[2].id)
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book_three)
         self.assertEqual(items[1].book, self.book)

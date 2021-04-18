@@ -124,27 +124,23 @@ class List(View):
             directional_sort_by = "-" + directional_sort_by
 
         if sort_by == "order":
-            items = (
-                book_list.listitem_set
-                .filter(approved=True)
-                .order_by(directional_sort_by)
+            items = book_list.listitem_set.filter(approved=True).order_by(
+                directional_sort_by
             )
         elif sort_by == "title":
-            items = (
-                book_list.listitem_set
-                .filter(approved=True)
-                .order_by(
-                directional_sort_by)
+            items = book_list.listitem_set.filter(approved=True).order_by(
+                directional_sort_by
             )
         elif sort_by == "rating":
             items = (
-                book_list.listitem_set
-                .annotate(average_rating=Avg(Coalesce("book__review__rating", 0)))
+                book_list.listitem_set.annotate(
+                    average_rating=Avg(Coalesce("book__review__rating", 0))
+                )
                 .filter(approved=True)
                 .order_by(directional_sort_by)
             )
 
-        paginated = Paginator(items, 2)
+        paginated = Paginator(items, 25)
 
         if query and request.user.is_authenticated:
             # search for books
