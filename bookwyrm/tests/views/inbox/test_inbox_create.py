@@ -32,7 +32,7 @@ class InboxCreate(TestCase):
                     remote_id="https://example.com/status/1",
                 )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            models.User.objects.create_user(
+            self.remote_user = models.User.objects.create_user(
                 "rat",
                 "rat@rat.com",
                 "ratword",

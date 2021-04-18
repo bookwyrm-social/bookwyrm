@@ -80,6 +80,12 @@ def is_blocked_user_agent(request):
 def is_blocked_activity(activity_json):
     """ get the sender out of activity json and check if it's blocked """
     actor = activity_json.get("actor")
+
+    # check if the user is banned/deleted
+    existing = models.User.find_existing_by_remote_id(actor)
+    if existing and existing.deleted:
+        return True
+
     if not actor:
         # well I guess it's not even a valid activity so who knows
         return False

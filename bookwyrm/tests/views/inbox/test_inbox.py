@@ -1,5 +1,6 @@
 """ tests incoming activities"""
 import json
+import pathlib
 from unittest.mock import patch
 
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
@@ -26,6 +27,16 @@ class Inbox(TestCase):
         )
         local_user.remote_id = "https://example.com/user/mouse"
         local_user.save(broadcast=False)
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         self.create_json = {
             "id": "hi",
             "type": "Create",
@@ -131,3 +142,21 @@ class Inbox(TestCase):
             server_name="mastodon.social", status="blocked"
         )
         self.assertTrue(views.inbox.is_blocked_activity(activity))
+
+    def test_create_by_deactivated_user(self):
+        """ don't let deactivated users post """
+        self.remote_user.delete(broadcast=False)
+        self.assertTrue(self.remote_user.deleted)
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
+        status_data = json.loads(datafile.read_bytes())
+        activity = self.create_json
+        activity["actor"] = self.remote_user.remote_id
+        activity["object"] = status_data
+
+        with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
+            mock_valid.return_value = True
+
+            result = self.client.post(
+                "/inbox", json.dumps(activity), content_type="application/json"
+            )
+        self.assertEqual(result.status_code, 403)
