@@ -114,29 +114,37 @@ class List(View):
 
         page = request.GET.get("page", 1)
 
+        internal_sort_by = {
+            "order": "order",
+            "title": "book__title",
+            "rating": "average_rating",
+        }
+        directional_sort_by = internal_sort_by[sort_by]
+        if direction == "descending":
+            directional_sort_by = "-" + directional_sort_by
+
         if sort_by == "order":
-            directional_sort_by = "order"
-            if direction == "descending":
-                directional_sort_by = "-" + directional_sort_by
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
+            items = (
+                book_list.listitem_set
+                .filter(approved=True)
+                .order_by(directional_sort_by)
             )
         elif sort_by == "title":
-            directional_sort_by = "book__title"
-            if direction == "descending":
-                directional_sort_by = "-" + directional_sort_by
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
+            items = (
+                book_list.listitem_set
+                .filter(approved=True)
+                .order_by(
+                directional_sort_by)
             )
         elif sort_by == "rating":
-            directional_sort_by = "average_rating"
-            if direction == "descending":
-                directional_sort_by = "-" + directional_sort_by
-            items = book_list.listitem_set.annotate(
-                average_rating=Avg(Coalesce("book__review__rating", 0))
-            ).order_by(directional_sort_by)
+            items = (
+                book_list.listitem_set
+                .annotate(average_rating=Avg(Coalesce("book__review__rating", 0)))
+                .filter(approved=True)
+                .order_by(directional_sort_by)
+            )
 
-        paginated = Paginator(items, 25)
+        paginated = Paginator(items, 2)
 
         if query and request.user.is_authenticated:
             # search for books

@@ -304,8 +304,9 @@ class ListViews(TestCase):
             },
         )
         request_two.user = self.local_user
-        views.list.add_book(request_one)
-        views.list.add_book(request_two)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.add_book(request_one)
+            views.list.add_book(request_two)
 
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book)
@@ -345,9 +346,10 @@ class ListViews(TestCase):
         )
         request_three.user = self.local_user
 
-        views.list.add_book(request_one)
-        views.list.add_book(request_two)
-        views.list.add_book(request_three)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.add_book(request_one)
+            views.list.add_book(request_two)
+            views.list.add_book(request_three)
 
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book)
@@ -398,9 +400,10 @@ class ListViews(TestCase):
         )
         request_three.user = self.local_user
 
-        views.list.add_book(request_one)
-        views.list.add_book(request_two)
-        views.list.add_book(request_three)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.list.add_book(request_one)
+            views.list.add_book(request_two)
+            views.list.add_book(request_three)
 
         items = self.list.listitem_set.order_by("order").all()
         self.assertEqual(items[0].book, self.book)

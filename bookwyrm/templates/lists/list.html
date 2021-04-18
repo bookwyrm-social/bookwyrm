@@ -13,7 +13,6 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% include "snippets/booklist-pagination.html" with page=items %}
         {% if not items.object_list.exists %}
         <p>{% trans "This list is currently empty" %}</p>
         {% else %}
@@ -58,6 +57,7 @@
         {% endfor %}
         </ol>
         {% endif %}
+        {% include "snippets/booklist-pagination.html" with page=items %}
     </section>
 
     <section class="column is-one-quarter content">
