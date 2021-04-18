@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, Q, Max
 from django.db.models.functions import Coalesce
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
@@ -211,7 +211,13 @@ class Curate(View):
         approved = request.POST.get("approved") == "true"
         if approved:
             suggestion.approved = True
+            current_order = suggestion.order
+            order_max = (
+                book_list.listitem_set.aggregate(Max("order"))["order__max"] or 0
+            ) + 1
+            suggestion.order = order_max
             suggestion.save()
+            normalize_book_list_ordering(book_list.id, start=current_order)
         else:
             deleted_order = suggestion.order
             suggestion.delete(broadcast=False)
@@ -302,7 +308,7 @@ def set_book_position(request, list_item_id):
 
         original_order = list_item.order
         if original_order == int_position:
-            return
+            return HttpResponse(status=204)
         elif original_order > int_position:
             list_item.order = -1
             list_item.save()
