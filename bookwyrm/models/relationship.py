@@ -50,11 +50,10 @@ class UserRelationship(BookWyrmModel):
             ),
         ]
 
-    def get_remote_id(self, status=None):  # pylint: disable=arguments-differ
+    def get_remote_id(self):
         """ use shelf identifier in remote_id """
-        status = status or "follows"
         base_path = self.user_subject.remote_id
-        return "%s#%s/%d" % (base_path, status, self.id)
+        return "%s#follows/%d" % (base_path, self.id)
 
 
 class UserFollows(ActivityMixin, UserRelationship):
@@ -138,12 +137,18 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 notification_type=notification_type,
             )
 
+    def get_accept_reject_id(self, status):
+        """ get id for sending an accept or reject of a local user """
+
+        base_path = self.user_object.remote_id
+        return "%s#%s/%d" % (base_path, status, self.id)
+
     def accept(self):
         """ turn this request into the real deal"""
         user = self.user_object
         if not self.user_subject.local:
             activity = activitypub.Accept(
-                id=self.get_remote_id(status="accepts"),
+                id=self.get_accept_reject_id(status="accepts"),
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
@@ -156,7 +161,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         """ generate a Reject for this follow request """
         if self.user_object.local:
             activity = activitypub.Reject(
-                id=self.get_remote_id(status="rejects"),
+                id=self.get_accept_reject_id(status="rejects"),
                 actor=self.user_object.remote_id,
                 object=self.to_activity(),
             ).serialize()
