@@ -133,28 +133,6 @@ def get_uuid(identifier):
     return "%s%s" % (identifier, uuid4())
 
 
-@register.filter(name="post_date")
-def time_since(date):
-    """ concise time ago function """
-    if not isinstance(date, datetime):
-        return ""
-    now = timezone.now()
-
-    if date < (now - relativedelta(weeks=1)):
-        formatter = "%b %-d"
-        if date.year != now.year:
-            formatter += " %Y"
-        return date.strftime(formatter)
-    delta = relativedelta(now, date)
-    if delta.days:
-        return "%dd" % delta.days
-    if delta.hours:
-        return "%dh" % delta.hours
-    if delta.minutes:
-        return "%dm" % delta.minutes
-    return "%ds" % delta.seconds
-
-
 @register.filter(name="to_markdown")
 def get_markdown(content):
     """ convert markdown to html """

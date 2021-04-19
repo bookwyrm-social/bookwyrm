@@ -65,7 +65,7 @@
 </div>
 
 <div class="card-footer-item">
-    <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
+    <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
 </div>
 {% if not moderation_mode %}
 <div class="card-footer-item">

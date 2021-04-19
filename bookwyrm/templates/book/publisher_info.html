@@ -39,7 +39,7 @@
 {% endif %}
 
 <p>
-    {% with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}
+    {% with date=book.published_date|date:'M j Y' publisher=book.publishers|join:', ' %}
         {% if date or book.first_published_date %}
             <meta
                 itemprop="datePublished"
