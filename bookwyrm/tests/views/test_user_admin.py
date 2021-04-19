@@ -21,13 +21,24 @@ class UserAdminViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
+    def test_user_admin_list_page(self):
+        """ there are so many views, this just makes sure it LOADS """
+        view = views.UserAdminList.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
     def test_user_admin_page(self):
         """ there are so many views, this just makes sure it LOADS """
         view = views.UserAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        result = view(request)
+        result = view(request, self.local_user)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
