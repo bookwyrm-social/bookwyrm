@@ -38,7 +38,9 @@ class UserAdminViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        result = view(request, self.local_user)
+
+        result = view(request, self.local_user.id)
+
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
