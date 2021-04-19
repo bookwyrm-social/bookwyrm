@@ -62,13 +62,10 @@ def get_notification_count(user):
 def get_replies(status):
     """ get all direct replies to a status """
     # TODO: this limit could cause problems
-    return (
-        models.Status.objects.filter(
-            reply_parent=status,
-            deleted=False,
-        )
-        .select_subclasses()[:10]
-    )
+    return models.Status.objects.filter(
+        reply_parent=status,
+        deleted=False,
+    ).select_subclasses()[:10]
 
 
 @register.filter(name="parent")
