@@ -67,7 +67,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     )
     notes = fields.TextField(blank=True, null=True)
     approved = models.BooleanField(default=True)
-    order = fields.IntegerField(blank=True, null=True)
+    order = fields.IntegerField()
     endorsement = models.ManyToManyField("User", related_name="endorsers")
 
     activity_serializer = activitypub.ListItem
@@ -93,7 +93,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
             )
 
     class Meta:
-        """ an opinionated constraint! you can't put a book on a list twice """
-
-        unique_together = ("book", "book_list")
+        # A book may only be placed into a list once, and each order in the list may be used only
+        # once
+        unique_together = (("book", "book_list"), ("order", "book_list"))
         ordering = ("-created_date",)

@@ -185,6 +185,11 @@ urlpatterns = [
         name="list-remove-book",
     ),
     re_path(
+        r"^list-item/(?P<list_item_id>\d+)/set-position$",
+        views.list.set_book_position,
+        name="list-set-book-position",
+    ),
+    re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
     # Uyser books
