@@ -22,11 +22,6 @@ class Feed(View):
 
     def get(self, request, tab):
         """ user's homepage with activity feed """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         if not tab in STREAMS:
             tab = "home"
 
@@ -39,7 +34,7 @@ class Feed(View):
             **feed_page_data(request.user),
             **{
                 "user": request.user,
-                "activities": paginated.get_page(page),
+                "activities": paginated.get_page(request.GET.get("page")),
                 "suggested_users": suggested_users,
                 "tab": tab,
                 "goal_form": forms.GoalForm(),
@@ -55,11 +50,6 @@ class DirectMessage(View):
 
     def get(self, request, username=None):
         """ like a feed but for dms only """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         # remove fancy subclasses of status, keep just good ol' notes
         queryset = models.Status.objects.filter(
             review__isnull=True,
@@ -82,13 +72,12 @@ class DirectMessage(View):
         ).order_by("-published_date")
 
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.get_page(page)
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
                 "partner": user,
-                "activities": activity_page,
+                "activities": paginated.get_page(request.GET.get("page")),
                 "path": "/direct-messages",
             },
         }
