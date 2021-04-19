@@ -40,11 +40,6 @@ class User(View):
             return ActivitypubResponse(user.to_activity())
         # otherwise we're at a UI view
 
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         shelf_preview = []
 
         # only show other shelves that should be visible
@@ -64,7 +59,7 @@ class User(View):
                 {
                     "name": user_shelf.name,
                     "local_path": user_shelf.local_path,
-                    "books": user_shelf.books.all()[:3],
+                    "books": user_shelf.books[:3],
                     "size": user_shelf.books.count(),
                 }
             )
@@ -87,7 +82,7 @@ class User(View):
             "is_self": is_self,
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
-            "activities": paginated.get_page(page),
+            "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
         }
 

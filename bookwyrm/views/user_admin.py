@@ -20,11 +20,6 @@ class UserAdmin(View):
 
     def get(self, request):
         """ list of users """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         filters = {}
         server = request.GET.get("server")
         if server:
@@ -50,7 +45,7 @@ class UserAdmin(View):
 
         paginated = Paginator(users, PAGE_LENGTH)
         data = {
-            "users": paginated.get_page(page),
+            "users": paginated.get_page(request.GET.get("page")),
             "sort": sort,
             "server": server,
         }

@@ -30,11 +30,6 @@ class Shelf(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         shelves = privacy_filter(request.user, user.shelf_set)
 
         # get the shelf and make sure the logged in user should be able to see it
@@ -61,7 +56,7 @@ class Shelf(View):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         paginated = Paginator(
-            shelf.books.order_by("-updated_date").all(),
+            shelf.books.order_by("-updated_date"),
             PAGE_LENGTH,
         )
 
@@ -70,7 +65,7 @@ class Shelf(View):
             "is_self": is_self,
             "shelves": shelves.all(),
             "shelf": shelf,
-            "books": paginated.get_page(page),
+            "books": paginated.get_page(request.GET.get("page")),
         }
 
         return TemplateResponse(request, "user/shelf.html", data)

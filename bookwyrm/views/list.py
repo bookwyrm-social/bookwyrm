@@ -26,11 +26,6 @@ class Lists(View):
 
     def get(self, request):
         """ display a book list """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         # hide lists with no approved books
         lists = (
             models.List.objects.annotate(
@@ -47,7 +42,7 @@ class Lists(View):
 
         paginated = Paginator(lists, 12)
         data = {
-            "lists": paginated.get_page(page),
+            "lists": paginated.get_page(request.GET.get("page")),
             "list_form": forms.ListForm(),
             "path": "/list",
         }
@@ -70,19 +65,15 @@ class UserLists(View):
 
     def get(self, request, username):
         """ display a book list """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
         user = get_user_from_username(request.user, username)
-        lists = models.List.objects.filter(user=user).all()
+        lists = models.List.objects.filter(user=user)
         lists = privacy_filter(request.user, lists)
         paginated = Paginator(lists, 12)
 
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "lists": paginated.get_page(page),
+            "lists": paginated.get_page(request.GET.get("page")),
             "list_form": forms.ListForm(),
             "path": user.local_path + "/lists",
         }
@@ -113,8 +104,6 @@ class List(View):
         direction = request.GET.get("direction", "ascending")
         if direction not in ("ascending", "descending"):
             direction = "ascending"
-
-        page = request.GET.get("page", 1)
 
         internal_sort_by = {
             "order": "order",
@@ -163,7 +152,7 @@ class List(View):
 
         data = {
             "list": book_list,
-            "items": paginated.get_page(page),
+            "items": paginated.get_page(request.GET.get("page")),
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
             "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
@@ -212,7 +201,8 @@ class Curate(View):
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"
         if approved:
-            # update the book and set it to be the last in the order of approved books, before any pending books
+            # update the book and set it to be the last in the order of approved books,
+            # before any pending books
             suggestion.approved = True
             order_max = (
                 book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
@@ -241,7 +231,7 @@ def add_book(request):
     # do you have permission to add to the list?
     try:
         if request.user == book_list.user or book_list.curation == "open":
-            # add the book at the latest order of approved books, before any pending books
+            # add the book at the latest order of approved books, before pending books
             order_max = (
                 book_list.listitem_set.filter(approved=True).aggregate(Max("order"))[
                     "order__max"
@@ -327,7 +317,7 @@ def set_book_position(request, list_item_id):
         original_order = list_item.order
         if original_order == int_position:
             return HttpResponse(status=204)
-        elif original_order > int_position:
+        if original_order > int_position:
             list_item.order = -1
             list_item.save()
             increment_order_in_reverse(book_list.id, int_position, original_order)
@@ -346,6 +336,7 @@ def set_book_position(request, list_item_id):
 def increment_order_in_reverse(
     book_list_id: int, start: int, end: Optional[int] = None
 ):
+    """ increase the order nu,ber for every item in a list """
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
@@ -361,6 +352,7 @@ def increment_order_in_reverse(
 
 @transaction.atomic
 def decrement_order(book_list_id, start, end):
+    """ decrement the order value for every item in a list """
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
@@ -375,10 +367,11 @@ def decrement_order(book_list_id, start, end):
 
 @transaction.atomic
 def normalize_book_list_ordering(book_list_id, start=0, add_offset=0):
+    """ gives each book in a list the proper sequential order number """
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
-        return HttpResponseNotFound()
+        return
     items = book_list.listitem_set.filter(order__gt=start).order_by("order")
     for i, item in enumerate(items, start):
         effective_order = i + add_offset

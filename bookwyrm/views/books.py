@@ -31,11 +31,6 @@ class Book(View):
     def get(self, request, book_id):
         """ info about a book """
         try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
-        try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
             return HttpResponseNotFound()
@@ -60,7 +55,7 @@ class Book(View):
         paginated = Paginator(
             reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
         )
-        reviews_page = paginated.get_page(page)
+        reviews_page = paginated.get_page(request.GET.get("page"))
 
         user_tags = readthroughs = user_shelves = other_edition_shelves = []
         if request.user.is_authenticated:
@@ -266,11 +261,6 @@ class Editions(View):
         """ list of editions of a book """
         work = get_object_or_404(models.Work, id=book_id)
 
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
         filters = {}
@@ -285,7 +275,7 @@ class Editions(View):
 
         paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
         data = {
-            "editions": paginated.get_page(page),
+            "editions": paginated.get_page(request.GET.get("page")),
             "work": work,
             "languages": languages,
             "formats": set(
