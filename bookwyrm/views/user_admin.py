@@ -54,4 +54,4 @@ class UserAdmin(View):
             "sort": sort,
             "server": server,
         }
-        return TemplateResponse(request, "settings/user_admin.html", data)
+        return TemplateResponse(request, "user_admin/user_admin.html", data)
