@@ -174,7 +174,7 @@ def get_suggested_books(user, max_books=5):
         )
         shelf = user.shelf_set.get(identifier=preset)
 
-        shelf_books = shelf.shelfbook_set.order_by("-updated_date").all()[:limit]
+        shelf_books = shelf.shelfbook_set.order_by("-updated_date")[:limit]
         if not shelf_books:
             continue
         shelf_preview = {

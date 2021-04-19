@@ -47,7 +47,7 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     @property
     def collection_queryset(self):
         """ list of books for this shelf, overrides OrderedCollectionMixin  """
-        return self.books.filter(listitem__approved=True).all().order_by("listitem")
+        return self.books.filter(listitem__approved=True).order_by("listitem")
 
     class Meta:
         """ default sorting """

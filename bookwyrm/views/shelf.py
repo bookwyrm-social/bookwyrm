@@ -61,7 +61,7 @@ class Shelf(View):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         paginated = Paginator(
-            shelf.books.order_by("-updated_date").all(),
+            shelf.books.order_by("-updated_date"),
             PAGE_LENGTH,
         )
 

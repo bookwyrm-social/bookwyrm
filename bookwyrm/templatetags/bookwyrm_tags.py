@@ -67,8 +67,7 @@ def get_replies(status):
             reply_parent=status,
             deleted=False,
         )
-        .select_subclasses()
-        .all()[:10]
+        .select_subclasses()[:10]
     )
 
 

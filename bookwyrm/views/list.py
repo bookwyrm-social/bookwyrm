@@ -75,7 +75,7 @@ class UserLists(View):
         except ValueError:
             page = 1
         user = get_user_from_username(request.user, username)
-        lists = models.List.objects.filter(user=user).all()
+        lists = models.List.objects.filter(user=user)
         lists = privacy_filter(request.user, lists)
         paginated = Paginator(lists, 12)
 
