@@ -37,5 +37,5 @@ from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
 from .tag import Tag, AddTag, RemoveTag
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, EditUser, Followers, Following
-from .user_admin import UserAdmin
+from .user_admin import UserAdmin, UserAdminList
 from .wellknown import *

@@ -5,7 +5,7 @@
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
         </p>
-        <form name="deactivate" method="post" action="{% url 'settings-report-deactivate' report.id  %}">
+        <form name="deactivate" method="post" action="">
             {% csrf_token %}
             {% if user.is_active %}
             <button type="submit" class="button is-danger is-light">{% trans "Deactivate user" %}</button>
