@@ -1,0 +1,19 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load humanize %}
+
+{% block title %}{{ username }}{% endblock %}
+{% block header %}{{ username }}{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <a href="{% url 'settings-reports' %}">{% trans "Back to reports" %}</a>
+</div>
+
+{% include 'user_admin/user_info.html' with user=user %}
+
+{% include 'user_admin/user_moderation_actions.html' with user=user %}
+
+{% endblock %}
+
