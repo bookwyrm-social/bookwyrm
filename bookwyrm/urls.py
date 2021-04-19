@@ -63,7 +63,7 @@ urlpatterns = [
     re_path(
         r"^settings/users/(?P<user>\d+)/?$",
         views.UserAdmin.as_view(),
-        name="settings-user"
+        name="settings-user",
     ),
     re_path(
         r"^settings/federation/?$",
@@ -120,9 +120,9 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
-        views.deactivate_user,
-        name="settings-report-deactivate",
+        r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
+        views.suspend_user,
+        name="settings-report-suspend",
     ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",

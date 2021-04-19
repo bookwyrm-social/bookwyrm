@@ -5,12 +5,12 @@
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
         </p>
-        <form name="deactivate" method="post" action="">
+        <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}">
             {% csrf_token %}
             {% if user.is_active %}
-            <button type="submit" class="button is-danger is-light">{% trans "Deactivate user" %}</button>
+            <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
             {% else %}
-            <button class="button">{% trans "Reactivate user" %}</button>
+            <button class="button">{% trans "Un-suspend user" %}</button>
             {% endif %}
         </form>
     </div>

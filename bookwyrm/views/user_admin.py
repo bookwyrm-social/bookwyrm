@@ -57,6 +57,7 @@ class UserAdminList(View):
         }
         return TemplateResponse(request, "user_admin/user_admin.html", data)
 
+
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.moderate_users", raise_exception=True),
