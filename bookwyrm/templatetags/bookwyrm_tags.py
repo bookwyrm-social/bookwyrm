@@ -1,11 +1,8 @@
 """ template filters """
 from uuid import uuid4
-from datetime import datetime
 
-from dateutil.relativedelta import relativedelta
 from django import template
 from django.db.models import Avg
-from django.utils import timezone
 
 from bookwyrm import models, views
 from bookwyrm.views.status import to_markdown
