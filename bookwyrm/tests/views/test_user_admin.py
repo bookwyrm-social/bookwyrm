@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -44,3 +45,24 @@ class UserAdminViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_user_admin_page_post(self):
+        """ set the user's group """
+        group = Group.objects.create(name="editor")
+        self.assertEqual(
+            list(self.local_user.groups.values_list("name", flat=True)), []
+        )
+
+        view = views.UserAdmin.as_view()
+        request = self.factory.post("", {"groups": [group.id]})
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        result = view(request, self.local_user.id)
+
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+
+        self.assertEqual(
+            list(self.local_user.groups.values_list("name", flat=True)), ["editor"]
+        )
