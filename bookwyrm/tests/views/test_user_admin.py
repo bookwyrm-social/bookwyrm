@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from unittest.mock import patch
 from django.contrib.auth.models import Group
 from django.template.response import TemplateResponse
 from django.test import TestCase
@@ -58,7 +59,8 @@ class UserAdminViews(TestCase):
         request.user = self.local_user
         request.user.is_superuser = True
 
-        result = view(request, self.local_user.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            result = view(request, self.local_user.id)
 
         self.assertIsInstance(result, TemplateResponse)
         result.render()
