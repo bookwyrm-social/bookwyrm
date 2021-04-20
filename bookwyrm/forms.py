@@ -149,6 +149,11 @@ class LimitedEditUserForm(CustomForm):
         ]
         help_texts = {f: None for f in fields}
 
+class UserGroupForm(CustomForm):
+    class Meta:
+        model = models.User
+        fields = ["groups"]
+
 
 class TagForm(CustomForm):
     class Meta:

@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from bookwyrm.settings import PAGE_LENGTH
 
 
@@ -69,4 +69,14 @@ class UserAdmin(View):
     def get(self, request, user):
         """ user view """
         user = get_object_or_404(models.User, id=user)
-        return TemplateResponse(request, "user_admin/user.html", {"user": user})
+        data = {"user": user, "group_form": forms.UserGroupForm()}
+        return TemplateResponse(request, "user_admin/user.html", data)
+
+    def post(self, request, user):
+        """ update user group """
+        user = get_object_or_404(models.User, id=user)
+        form = forms.UserGroupForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+        data = {"user": user, "group_form": form}
+        return TemplateResponse(request, "user_admin/user.html", data)
