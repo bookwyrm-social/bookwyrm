@@ -181,36 +181,6 @@ class TemplateTags(TestCase):
         uuid = bookwyrm_tags.get_uuid("hi")
         self.assertTrue(re.match(r"hi[A-Za-z0-9\-]", uuid))
 
-    def test_time_since(self, _):
-        """ ultraconcise timestamps """
-        self.assertEqual(bookwyrm_tags.time_since("bleh"), "")
-
-        now = timezone.now()
-        self.assertEqual(bookwyrm_tags.time_since(now), "0s")
-
-        seconds_ago = now - relativedelta(seconds=4)
-        self.assertEqual(bookwyrm_tags.time_since(seconds_ago), "4s")
-
-        minutes_ago = now - relativedelta(minutes=8)
-        self.assertEqual(bookwyrm_tags.time_since(minutes_ago), "8m")
-
-        hours_ago = now - relativedelta(hours=9)
-        self.assertEqual(bookwyrm_tags.time_since(hours_ago), "9h")
-
-        days_ago = now - relativedelta(days=3)
-        self.assertEqual(bookwyrm_tags.time_since(days_ago), "3d")
-
-        # I am not going to figure out how to mock dates tonight.
-        months_ago = now - relativedelta(months=5)
-        self.assertTrue(
-            re.match(r"[A-Z][a-z]{2} \d?\d", bookwyrm_tags.time_since(months_ago))
-        )
-
-        years_ago = now - relativedelta(years=10)
-        self.assertTrue(
-            re.match(r"[A-Z][a-z]{2} \d?\d \d{4}", bookwyrm_tags.time_since(years_ago))
-        )
-
     def test_get_markdown(self, _):
         """ mardown format data """
         result = bookwyrm_tags.get_markdown("_hi_")
