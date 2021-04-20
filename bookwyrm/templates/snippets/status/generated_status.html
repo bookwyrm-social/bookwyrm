@@ -1,0 +1,43 @@
+{% spaceless %}
+
+{% load bookwyrm_tags %}
+{% load i18n %}
+
+{% if status_type == 'Rating' %}
+<div
+    class="block"
+        {% firstof 'itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating"' as rating_type %}
+        itemprop="rating"
+        itemtype="https://schema.org/Rating"
+>
+    <div>
+        <span class="is-sr-only" {{ rating_type }}>
+            <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                {# @todo Is it possible to not hard-code the value? #}
+                <meta itemprop="bestRating" content="5">
+        </span>
+
+        {% include 'snippets/stars.html' with rating=status.rating %}
+    </div>
+</div>
+{% endif %}
+
+{% if not hide_book %}
+{% with book=status.book|default:status.mention_books.first %}
+<div class="columns">
+    <div class="column is-narrow">
+        <div>
+            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
+        </div>
+    </div>
+    <div class="column">
+        <h3 class="title is-6 mb-1">{% include 'snippets/book_titleby.html' with book=book %}</h3>
+        <p>{{ book|book_description|default:""|truncatewords_html:20 }}</p>
+        {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+    </div>
+</div>
+{% endwith %}
+{% endif %}
+
+{% endspaceless %}
