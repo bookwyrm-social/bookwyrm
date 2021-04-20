@@ -30,6 +30,14 @@ class UserViews(TestCase):
         self.rat = models.User.objects.create_user(
             "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
         )
+        self.book = models.Edition.objects.create(title="test")
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.local_user.shelf_set.first(),
+            )
+
         models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False

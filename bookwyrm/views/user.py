@@ -59,7 +59,7 @@ class User(View):
                 {
                     "name": user_shelf.name,
                     "local_path": user_shelf.local_path,
-                    "books": user_shelf.books[:3],
+                    "books": user_shelf.books.all()[:3],
                     "size": user_shelf.books.count(),
                 }
             )
