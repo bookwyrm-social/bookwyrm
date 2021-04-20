@@ -51,13 +51,20 @@ urlpatterns = [
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
     # admin
-    re_path(r"^settings/site-settings", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
-        r"^settings/email-preview",
+        r"^settings/email-preview/?$",
         views.site.email_preview,
         name="settings-email-preview",
     ),
-    re_path(r"^settings/users", views.UserAdmin.as_view(), name="settings-users"),
+    re_path(
+        r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
+    ),
+    re_path(
+        r"^settings/users/(?P<user>\d+)/?$",
+        views.UserAdmin.as_view(),
+        name="settings-user",
+    ),
     re_path(
         r"^settings/federation/?$",
         views.Federation.as_view(),
@@ -113,9 +120,9 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
-        views.deactivate_user,
-        name="settings-report-deactivate",
+        r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
+        views.suspend_user,
+        name="settings-report-suspend",
     ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
