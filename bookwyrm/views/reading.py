@@ -145,6 +145,7 @@ def create_readthrough(request):
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    """ ensures that data is stored consistently in the UTC timezone """
     user_tz = dateutil.tz.gettz(user.preferred_timezone)
     start_date = dateutil.parser.parse(date_str, ignoretz=True)
     return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)

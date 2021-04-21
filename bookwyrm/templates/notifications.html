@@ -123,7 +123,7 @@
                                 {% include 'snippets/status_preview.html' with status=related_status %}
                             </div>
                             <div class="column is-narrow {% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %}has-text-black{% else %}has-text-grey-dark{% endif %}">
-                                {{ related_status.published_date | post_date }}
+                                {{ related_status.published_date|timesince }}
                                 {% include 'snippets/privacy-icons.html' with item=related_status %}
                             </div>
                         </div>

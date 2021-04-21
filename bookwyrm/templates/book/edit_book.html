@@ -109,7 +109,10 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="mb-2"><label class="label" for="id_series">{% trans "Series:" %}</label> {{ form.series }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_series">{% trans "Series:" %}</label>
+                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}">
+                </p>
                 {% for error in form.series.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}

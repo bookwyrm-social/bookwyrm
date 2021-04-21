@@ -80,6 +80,7 @@ class InboxRemove(TestCase):
                 user=self.local_user,
                 book=self.book,
                 book_list=booklist,
+                order=1,
             )
         self.assertEqual(booklist.books.count(), 1)
 
