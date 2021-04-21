@@ -16,24 +16,22 @@
 {% endblock %}
 
 {% block card-footer %}
-<footer class="card-footer has-background-white-bis">
-    <div class="card-footer-item">
-        <p>{% blocktrans with username=report.reporter.display_name path=report.reporter.local_path %}Reported by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}</p>
-    </div>
-    <div class="card-footer-item">
-        {{ report.created_date | naturaltime }}
-    </div>
-    <div class="card-footer-item">
-        <form name="resolve" method="post" action="{% url 'settings-report-resolve' report.id %}">
-            {% csrf_token %}
-            <button class="button" type="submit">
-                {% if report.resolved %}
-                {% trans "Re-open" %}
-                {% else %}
-                {% trans "Resolve" %}
-                {% endif %}
-            </button>
-        </form>
-    </div>
-</footer>
+<div class="card-footer-item">
+    <p>{% blocktrans with username=report.reporter.display_name path=report.reporter.local_path %}Reported by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}</p>
+</div>
+<div class="card-footer-item">
+    {{ report.created_date | naturaltime }}
+</div>
+<div class="card-footer-item">
+    <form name="resolve" method="post" action="{% url 'settings-report-resolve' report.id %}">
+        {% csrf_token %}
+        <button class="button" type="submit">
+            {% if report.resolved %}
+            {% trans "Re-open" %}
+            {% else %}
+            {% trans "Resolve" %}
+            {% endif %}
+        </button>
+    </form>
+</div>
 {% endblock %}
