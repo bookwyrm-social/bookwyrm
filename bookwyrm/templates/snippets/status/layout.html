@@ -13,7 +13,7 @@
 {% block card-content %}{% endblock %}
 
 {% block card-footer %}
-<div class="card-footer-item">
+<div class="card-content pt-0">
     {% if moderation_mode and perms.bookwyrm.moderate_post %}
 
     {# moderation options #}
@@ -55,19 +55,6 @@
     </a>
     {% endif %}
 </div>
-
-<div class="card-footer-item">
-    {% include 'snippets/privacy-icons.html' with item=status %}
-</div>
-
-<div class="card-footer-item">
-    <a href="{{ status.remote_id }}">{{ status.published_date | post_date }}</a>
-</div>
-{% if not moderation_mode %}
-<div class="card-footer-item">
-    {% include 'snippets/status/status_options.html' with class="is-small" right=True %}
-</div>
-{% endif %}
 {% endblock %}
 
 
