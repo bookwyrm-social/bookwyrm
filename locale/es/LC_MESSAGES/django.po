@@ -900,15 +900,15 @@ msgstr "%(year)s Meta de lectura"
 #, python-format
 msgid "%(mutuals)s follower you follow"
 msgid_plural "%(mutuals)s followers you follow"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(mutuals)s seguidor que sigues"
+msgstr[1] "%(mutuals)s seguidores que sigues"
 
 #: bookwyrm/templates/feed/suggested_users.html:19
 #, python-format
 msgid "%(shared_books)s book on your shelves"
 msgid_plural "%(shared_books)s books on your shelves"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(shared_books)s libro en tus estantes"
+msgstr[1] "%(shared_books)s libros en tus estantes"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, fuzzy, python-format
@@ -2305,8 +2305,8 @@ msgstr "No calificación"
 #, python-format
 msgid "%(rating)s star"
 msgid_plural "%(rating)s stars"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(rating)s estrella"
+msgstr[1] "%(rating)s estrellas"
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
@@ -2327,8 +2327,8 @@ msgstr[1] "<a href=\"%(path)s\">%(title)s</a> por "
 #, python-format
 msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
 msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Reseña de \"%(book_title)s\" (%(display_rating)s estrella): %(review_title)s"
+msgstr[1] "Reseña de \"%(book_title)s\" (%(display_rating)s estrellas): %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:8
 #, python-format
@@ -2928,15 +2928,15 @@ msgstr "Asegura que este valor es más que o que iguala a %(limit_value)s."
 #, python-format
 msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
 msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que este valor tiene por lo menos %(limit_value)d carácter. (Tiene %(show_value)d).)"
+msgstr[1] "Verifica que este valor tiene por lo menos %(limit_value)d caracteres. (Tiene %(show_value)d).)"
 
 #: venv/lib/python3.8/site-packages/django/core/validators.py:368
 #, python-format
 msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
 msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que este valor tiene a lo sumo %(limit_value)d carácter. (Tiene %(show_value)d).)"
+msgstr[1] "Verifica que este valor tiene a lo sumo %(limit_value)d caracteres. (Tiene %(show_value)d).)"
 
 #: venv/lib/python3.8/site-packages/django/core/validators.py:387
 #: venv/lib/python3.8/site-packages/django/forms/fields.py:292
@@ -2950,22 +2950,23 @@ msgstr "Número de serie:"
 #, python-format
 msgid "Ensure that there are no more than %(max)s digit in total."
 msgid_plural "Ensure that there are no more than %(max)s digits in total."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que no hay más que %(max)s digito en total."
+msgstr[1] "Verifica que no hay más que %(max)s digitos en total."
 
 #: venv/lib/python3.8/site-packages/django/core/validators.py:394
 #, python-format
+#                         is 
 msgid "Ensure that there are no more than %(max)s decimal place."
 msgid_plural "Ensure that there are no more than %(max)s decimal places."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que no hay más que %(max)s cifra decimal."
+msgstr[1] "Verifica que no hay más que %(max)s cifras decimales."
 
 #: venv/lib/python3.8/site-packages/django/core/validators.py:399
 #, python-format
 msgid "Ensure that there are no more than %(max)s digit before the decimal point."
 msgid_plural "Ensure that there are no more than %(max)s digits before the decimal point."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que no hay más que %(max)s digito antes de la coma decimal."
+msgstr[1] "Verifica que no hay más que %(max)s digitos antes de la coma decimal."
 
 #: venv/lib/python3.8/site-packages/django/core/validators.py:461
 #, python-format
@@ -3336,8 +3337,8 @@ msgstr "Este estante está vacio."
 #, python-format
 msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
 msgid_plural "Ensure this filename has at most %(max)d characters (it has %(length)d)."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Verifica que este nombre de archivo no tiene más que %(max)d carácter. (Tiene %(length)d)."
+msgstr[1] "Verifica que este nombre de archivo no tiene más que %(max)d caracteres. (Tiene %(length)d)."
 
 #: venv/lib/python3.8/site-packages/django/forms/fields.py:552
 msgid "Please either submit a file or check the clear checkbox, not both."
@@ -3396,15 +3397,15 @@ msgstr "Datos de ManagementForm está ausento o ha sido corrompido"
 #, python-format
 msgid "Please submit %d or fewer forms."
 msgid_plural "Please submit %d or fewer forms."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Por favor, enviar %d o menos formularios."
+msgstr[1] "Por favor, enviar %d o menos formularios."
 
 #: venv/lib/python3.8/site-packages/django/forms/formsets.py:352
 #, python-format
 msgid "Please submit %d or more forms."
 msgid_plural "Please submit %d or more forms."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Por favor, enviar %d o más formularios."
+msgstr[1] "Por favor, enviar %d o más formularios."
 
 #: venv/lib/python3.8/site-packages/django/forms/formsets.py:379
 #: venv/lib/python3.8/site-packages/django/forms/formsets.py:386
@@ -3490,8 +3491,8 @@ msgstr "sí,no,quizás"
 #, python-format
 msgid "%(size)d byte"
 msgid_plural "%(size)d bytes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(size)d byte"
+msgstr[1] "%(size)d bytes"
 
 #: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:838
 #, python-format
@@ -3905,65 +3906,65 @@ msgstr "Se falló la verificación CSRF. Se abortó la solicitud."
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:115
 msgid "You are seeing this message because this HTTPS site requires a “Referer header” to be sent by your Web browser, but none was sent. This header is required for security reasons, to ensure that your browser is not being hijacked by third parties."
-msgstr ""
+msgstr "Estás viendo este mensaje porque este sitio HTTPS requiere que tu navegador Web envie un “Referer header”, pero no se la envió. Esta cabecedera se requiere por razones de seguridad, para asegurar que tu navegador no sea secuestrado por terceros."
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:120
 msgid "If you have configured your browser to disable “Referer” headers, please re-enable them, at least for this site, or for HTTPS connections, or for “same-origin” requests."
-msgstr ""
+msgstr "Si has configurado su navegador para deshabilitar las cabecederas “Referer”, vuelva a habilitarlos, al menos para este sitio, o para conexiones HTTPS, o para solicitudes del “same-origin”. "
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:124
 msgid "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or including the “Referrer-Policy: no-referrer” header, please remove them. The CSRF protection requires the “Referer” header to do strict referer checking. If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer\" …> for links to third-party sites."
-msgstr ""
+msgstr "Si estás usando la eqtigueta <meta name=\"referrer\" content=\"no-referrer\"> o estás incluyendo la cabecedera “Referrer-Policy: no-referrer”, quitalas por favor. La protección CSRF require la cabecedera “Referer” para hacer verficación “strict referer“. Si te preocupa la privacidad, utiliza alternativas como <a rel=\"noreferrer\" …>  para sitios de terceros."
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:132
 msgid "You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is required for security reasons, to ensure that your browser is not being hijacked by third parties."
-msgstr ""
+msgstr "Estás viendo este mensaje porque este sitio requiere un cookie CSRF cuando se envie formularios. Este cookie se requiere por razones de seguridad, para asegurar que tu navegador no sea secuestrado por terceros."
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:137
 msgid "If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for “same-origin” requests."
-msgstr ""
+msgstr "Si has configurado su navegador para deshabilitar los cookies, vuelva a habilitarlos, al menos para este sitio, o para conexiones HTTPS, o para solicitudes del “same-origin”. "
 
 #: venv/lib/python3.8/site-packages/django/views/csrf.py:142
 msgid "More information is available with DEBUG=True."
-msgstr ""
+msgstr "Más información es disponible con DEBUG=True."
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:41
 msgid "No year specified"
-msgstr ""
+msgstr "Ningun año fue especificado"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:61
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:111
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:208
 msgid "Date out of range"
-msgstr ""
+msgstr "Fecha fuera de rango"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:90
 msgid "No month specified"
-msgstr ""
+msgstr "Ningun mes fue especificado"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:142
 msgid "No day specified"
-msgstr ""
+msgstr "Ningun día fue especificado"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:188
 msgid "No week specified"
-msgstr ""
+msgstr "Ninguna semana fue especificado"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:338
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:367
 #, python-format
 msgid "No %(verbose_name_plural)s available"
-msgstr ""
+msgstr "No %(verbose_name_plural)s disponible"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:589
 #, python-format
 msgid "Future %(verbose_name_plural)s not available because %(class_name)s.allow_future is False."
-msgstr ""
+msgstr "%(verbose_name_plural)s del futuro no está disponible porque %(class_name)s.allow_future es False."
 
 #: venv/lib/python3.8/site-packages/django/views/generic/dates.py:623
 #, python-format
 msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
-msgstr ""
+msgstr "Cadena de fecha invalida “%(datestr)s” dado el formato “%(format)s”"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/detail.py:54
 #, fuzzy, python-format
@@ -3973,21 +3974,21 @@ msgstr "No se encontró ningún libro correspondiente a la búsqueda: \"%(query)
 
 #: venv/lib/python3.8/site-packages/django/views/generic/list.py:67
 msgid "Page is not “last”, nor can it be converted to an int."
-msgstr ""
+msgstr "Página no es “last”, ni puede ser convertido en un int."
 
 #: venv/lib/python3.8/site-packages/django/views/generic/list.py:72
 #, python-format
 msgid "Invalid page (%(page_number)s): %(message)s"
-msgstr ""
+msgstr "Página invalida (%(page_number)s): %(message)s"
 
 #: venv/lib/python3.8/site-packages/django/views/generic/list.py:154
 #, python-format
 msgid "Empty list and “%(class_name)s.allow_empty” is False."
-msgstr ""
+msgstr "Lista vacia y “%(class_name)s.allow_empty” es False."
 
 #: venv/lib/python3.8/site-packages/django/views/static.py:40
 msgid "Directory indexes are not allowed here."
-msgstr ""
+msgstr "Indices directorios no se permiten aquí."
 
 #: venv/lib/python3.8/site-packages/django/views/static.py:42
 #, fuzzy, python-format
@@ -3998,41 +3999,41 @@ msgstr "%(value)s no es un usuario válido"
 #: venv/lib/python3.8/site-packages/django/views/static.py:80
 #, python-format
 msgid "Index of %(directory)s"
-msgstr ""
+msgstr "Indice de %(directory)s"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:7
 msgid "Django: the Web framework for perfectionists with deadlines."
-msgstr ""
+msgstr "Django: el estructura Web para perfeccionistas con fechas límites."
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:346
 #, python-format
 msgid "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
-msgstr ""
+msgstr "Ver <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">notas de lanzamiento</a> por Django %(version)s"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:368
 msgid "The install worked successfully! Congratulations!"
-msgstr ""
+msgstr "¡La instalación fue exitoso! ¡Felicidades!"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:369
 #, python-format
 msgid "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not configured any URLs."
-msgstr ""
+msgstr "Estás viendo esta pagina porque <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> está en tu archivo de configuración y no has configurado ningún URL."
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:384
 msgid "Django Documentation"
-msgstr ""
+msgstr "Documentación de Django"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:385
 msgid "Topics, references, &amp; how-to’s"
-msgstr ""
+msgstr "Tópicos, referencias, &amp; instrucciones paso-a-paso"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:396
 msgid "Tutorial: A Polling App"
-msgstr ""
+msgstr "Tutorial: Una aplicación polling"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:397
 msgid "Get started with Django"
-msgstr ""
+msgstr "Empezar con Django"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:408
 #, fuzzy
@@ -4042,111 +4043,119 @@ msgstr "Comentario"
 
 #: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:409
 msgid "Connect, get help, or contribute"
-msgstr ""
+msgstr "Conectarse, encontrar ayuda, o contribuir"
 
 #: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1301
 #, python-format
 msgid "Attempting to connect to qpid with SASL mechanism %s"
-msgstr ""
+msgstr "Intentando conectar con qpid con mecanismo SASL %s"
 
 #: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1306
 #, python-format
 msgid "Connected to qpid with SASL mechanism %s"
-msgstr ""
+msgstr "Conectado con qpid con mecanismo SASL %s"
 
 #: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1324
 #, python-format
 msgid "Unable to connect to qpid with SASL mechanism %s"
-msgstr ""
+msgstr "No se pudo conectar con qpid con mecanismo SASL %s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:371
 msgid "1 second ago"
-msgstr ""
+msgstr "Hace 1 segundo"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:377
 msgid "1 minute ago"
-msgstr ""
+msgstr "Hace 1 minuto"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:382
 msgid "1 hour ago"
-msgstr ""
+msgstr "Hace 1 hora"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:385
 #, python-format
 msgid "%(time)s"
-msgstr ""
+msgstr "%(time)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:387
 msgid "yesterday"
-msgstr ""
+msgstr "ayer"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:387
 #, python-format
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
 msgid "yesterday at %(time)s"
-msgstr ""
+msgstr "ayer a las %(time)s" 
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:389
 #, python-format
 msgid "%(weekday)s"
-msgstr ""
+msgstr "%(weekday)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:389
 #, python-format
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
 msgid "%(weekday)s at %(time)s"
-msgstr ""
+msgstr "%(weekday)s a las %(time)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:392
 #: venv/lib/python3.8/site-packages/tornado/locale.py:445
 #, python-format
 msgid "%(month_name)s %(day)s"
-msgstr ""
+msgstr "%(day)s %(month_name)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:394
 #, python-format
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
 msgid "%(month_name)s %(day)s at %(time)s"
-msgstr ""
+msgstr "%(day)s %(month_name)s a las %(time)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:399
 #, python-format
 msgid "%(month_name)s %(day)s, %(year)s"
-msgstr ""
+msgstr "%(day)s %(month_name)s, %(year)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:401
 #, python-format
+# TODO cc @mouse this could be grammatically incorrect if the time said 1 o'clock
+# a working clock is broken twice a day!
 msgid "%(month_name)s %(day)s, %(year)s at %(time)s"
-msgstr ""
+msgstr "%(day)s %(month_name)s, %(year)s a las %(time)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:439
 #, python-format
 msgid "%(weekday)s, %(month_name)s %(day)s"
-msgstr ""
+msgstr "%(weekday)s, %(day)s %(month_name)s"
 
 #: venv/lib/python3.8/site-packages/tornado/locale.py:462
 #, python-format
 msgid "%(commas)s and %(last)s"
-msgstr ""
+msgstr "%(commas)s y %(last)s"
 
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:68
 msgctxt "law"
 msgid "right"
-msgstr ""
+msgstr "justo"
 
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:69
 msgctxt "good"
 msgid "right"
-msgstr ""
+msgstr "correcto"
 
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:71
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:74
 msgctxt "organization"
 msgid "club"
-msgstr ""
+msgstr "club"
 
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:76
 #: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:77
 msgctxt "stick"
 msgid "club"
-msgstr ""
+msgstr "garrote"
 
 #, fuzzy
 #~| msgid "Started"
