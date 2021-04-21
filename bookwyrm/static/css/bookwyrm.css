@@ -30,6 +30,30 @@ body {
     min-width: 75% !important;
 }
 
+/** Utils
+ ******************************************************************************/
+
+@media only screen and (max-width: 768px) {
+     .is-sr-only-mobile {
+        border: none !important;
+        clip: rect(0,0,0,0) !important;
+        height: .01em !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        white-space: nowrap !important;
+        width: .01em !important;
+    }
+
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+}
+
+.button.is-transparent {
+    background-color: transparent;
+}
+
 /** Shelving
  ******************************************************************************/
 

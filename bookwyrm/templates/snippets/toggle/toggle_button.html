@@ -10,12 +10,12 @@
     >
 
     {% if icon %}
-    <span class="icon icon-{{ icon }}" title="{{ text }}">
+    <span class="icon icon-{{ icon }} m-0-mobile" title="{{ text }}">
         <span class="is-sr-only">{{ text }}</span>
     </span>
     {% elif icon_with_text %}
-    <span class="icon icon-{{ icon_with_text }}" aria-hidden></span>
-    <span>{{ text }}</span>
+    <span class="icon icon-{{ icon_with_text }} m-0-mobile" title="{{ text }}"></span>
+    <span class="is-sr-only-mobile">{{ text }}</span>
     {% else %}
     <span>{{ text }}</span>
     {% endif %}

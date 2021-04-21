@@ -3,17 +3,17 @@
 {% with status.id|uuid as uuid %}
 <form name="favorite" action="/favorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}is-hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-small is-white" type="submit">
-        <span class="icon icon-heart" title="{% trans 'Like status' %}">
+    <button class="button is-small is-light is-transparent" type="submit">
+        <span class="icon icon-heart m-0-mobile" title="{% trans 'Like' %}">
         </span>
-        <span>{% trans "Like status" %}</span>
+        <span class="is-sr-only-mobile">{% trans "Like" %}</span>
     </button>
 </form>
 <form name="unfavorite" action="/unfavorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} active {% if not request.user|liked:status %}is-hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}
-    <button class="button is-white is-small" type="submit">
-        <span class="icon icon-heart has-text-primary" title="{% trans 'Un-like status' %}"></span>
-        <span>{% trans "Un-like status" %}</span>
+    <button class="button is-light is-transparent is-small" type="submit">
+        <span class="icon icon-heart has-text-primary m-0-mobile" title="{% trans 'Un-like' %}"></span>
+        <span class="is-sr-only-mobile">{% trans "Un-like" %}</span>
     </button>
 </form>
 {% endwith %}
