@@ -270,10 +270,10 @@ class Editions(View):
         if request.GET.get("format"):
             filters["physical_format__iexact"] = request.GET.get("format")
 
-        editions = work.editions.order_by("-edition_rank").all()
+        editions = work.editions.order_by("-edition_rank")
         languages = set(sum([e.languages for e in editions], []))
 
-        paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
+        paginated = Paginator(editions.filter(**filters), PAGE_LENGTH)
         data = {
             "editions": paginated.get_page(request.GET.get("page")),
             "work": work,
