@@ -13,7 +13,7 @@
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small shelf-option" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
+        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
     </form>
 </li>
 {% endfor %}
@@ -23,7 +23,7 @@
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ current.id }}">
-        <button class="button is-fullwidth is-small is-danger is-light" type="submit">{% trans "Remove" %}</button>
+        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove" %}</button>
     </form>
 </li>
 {% endblock %}
