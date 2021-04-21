@@ -79,14 +79,12 @@
         <p class="is-size-7 is-flex is-align-items-center">
             <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
             {% if status.progress %}
-            <span class="help">
-            {% spaceless %}
-            ({% if status.progress_mode == 'PG' %}
-                {% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %}
+            <span class="ml-1">
+            {% if status.progress_mode == 'PG' %}
+                ({% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %})
             {% else %}
-                {{ status.progress }}%
-            {% endif %})
-            {% endspaceless %}
+                ({{ status.progress }}%)
+            {% endif %}
             </span>
             {% endif %}
             {% include 'snippets/privacy-icons.html' with item=status %}
