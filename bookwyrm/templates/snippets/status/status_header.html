@@ -10,7 +10,7 @@
     </figure>
 
     <div class="media-content">
-        <p>
+        <h3 class="has-text-weight-bold">
             <span
                 itemprop="author"
                 itemscope
@@ -75,7 +75,7 @@
                     {{ status.mention_books.first.title }}
                 </a>
             {% endif %}
-        </p>
+        </h3>
         <p class="is-size-7 is-flex is-align-items-center">
             <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
             {% if status.progress %}

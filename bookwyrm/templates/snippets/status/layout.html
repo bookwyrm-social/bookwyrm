@@ -4,9 +4,9 @@
 {% load humanize %}
 
 {% block card-header %}
-    <h3 class="card-header-title has-background-white-ter is-block">
-        {% include 'snippets/status/status_header.html' with status=status %}
-    </h3>
+<div class="card-header-title has-background-white-ter is-block">
+    {% include 'snippets/status/status_header.html' with status=status %}
+</div>
 {% endblock %}
 
 {% block card-content %}{% endblock %}
