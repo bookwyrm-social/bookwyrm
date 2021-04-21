@@ -6,14 +6,16 @@
     <input type="hidden" name="user" value="{{ request.user.id }}">
     <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
     {% if type == 'review' %}
-    <div class="control">
+    <div class="field">
         <label class="label" for="id_name_{{ book.id }}_{{ type }}">{% trans "Title" %}:</label>
-        <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'" value="{% firstof draft.name ''%}">
+        <div class="control">
+            <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'" value="{% firstof draft.name ''%}">
+        </div>
     </div>
     {% endif %}
-    <div class="control">
+    <div class="field">
         {% if type != 'reply' and type != 'direct'  %}
-        <label class="label" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">
+        <label class="label{% if type == 'review' %} mb-0{% endif %}" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">
             {% if type == 'comment' %}
             {% trans "Comment:" %}
             {% elif type == 'quotation' %}
@@ -25,28 +27,37 @@
         {% endif %}
 
         {% if type == 'review' %}
-        <fieldset>
+        <fieldset class="mb-1">
             <legend class="is-sr-only">{% trans "Rating" %}</legend>
 
             {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
         </fieldset>
         {% endif %}
 
-        {% if type == 'quotation' %}
-        <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.quote|default:'' }}</textarea>
-        {% else %}
-        {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
-        {% endif %}
+        <div class="control">
+            {% if type == 'quotation' %}
+            <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.quote|default:'' }}</textarea>
+            {% elif type == 'reply' %}
+            {% include 'snippets/content_warning_field.html' with parent_status=status %}
+            <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" aria-label="{% trans 'Reply' %}" required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
+            {% else %}
+            {% include 'snippets/content_warning_field.html' with parent_status=status %}
+            <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.content|default:'' }}</textarea>
+            {% endif %}
+        </div>
     </div>
+
+    {# Supplemental fields #}
     {% if type == 'quotation' %}
-    <div class="control">
+    <div class="field">
         <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}">{{ draft.content|default:'' }}</textarea>
+        <div class="control">
+            <textarea name="content" class="textarea" rows="3" id="id_content_quote-{{ book.id }}">{{ draft.content|default:'' }}</textarea>
+        </div>
     </div>
     {% elif type == 'comment' %}
-    <div class="control">
+    <div>
         {% active_shelf book as active_shelf %}
         {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
 
@@ -58,11 +69,13 @@
                 <div class="control">
                     <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress-{{ uuid }}">
                 </div>
-                <div class="control select">
-                    <select name="progress_mode" aria-label="Progress mode">
-                        <option value="PG" {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
-                        <option value="PCT" {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
-                    </select>
+                <div class="control">
+                    <div class="select">
+                        <select name="progress_mode" aria-label="Progress mode">
+                            <option value="PG" {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
+                            <option value="PCT" {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             {% if readthrough.progress_mode == 'PG' and book.pages %}
@@ -73,9 +86,12 @@
         {% endif %}
     </div>
     {% endif %}
-    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
+
+
     {# bottom bar #}
-    <div class="columns pt-1">
+    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
+    
+    <div class="columns mt-1">
         <div class="field has-addons column">
             <div class="control">
                 {% trans "Include spoiler alert" as button_text %}
