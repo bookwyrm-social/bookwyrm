@@ -26,7 +26,11 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
 
-    last_edited_by = models.ForeignKey("User", on_delete=models.PROTECT, null=True)
+    last_edited_by = fields.ForeignKey(
+        "User",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     class Meta:
         """ can't initialize this model, that wouldn't make sense """
