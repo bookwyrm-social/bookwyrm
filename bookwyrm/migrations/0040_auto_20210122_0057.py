@@ -9,28 +9,40 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0039_merge_20210120_0753'),
+        ("bookwyrm", "0039_merge_20210120_0753"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='progressupdate',
-            name='progress',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(0)]),
+            model_name="progressupdate",
+            name="progress",
+            field=models.IntegerField(
+                validators=[django.core.validators.MinValueValidator(0)]
+            ),
         ),
         migrations.AlterField(
-            model_name='progressupdate',
-            name='readthrough',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookwyrm.ReadThrough'),
+            model_name="progressupdate",
+            name="readthrough",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="bookwyrm.ReadThrough"
+            ),
         ),
         migrations.AlterField(
-            model_name='progressupdate',
-            name='remote_id',
-            field=bookwyrm.models.fields.RemoteIdField(max_length=255, null=True, validators=[bookwyrm.models.fields.validate_remote_id]),
+            model_name="progressupdate",
+            name="remote_id",
+            field=bookwyrm.models.fields.RemoteIdField(
+                max_length=255,
+                null=True,
+                validators=[bookwyrm.models.fields.validate_remote_id],
+            ),
         ),
         migrations.AlterField(
-            model_name='readthrough',
-            name='progress',
-            field=models.IntegerField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0)]),
+            model_name="readthrough",
+            name="progress",
+            field=models.IntegerField(
+                blank=True,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(0)],
+            ),
         ),
     ]

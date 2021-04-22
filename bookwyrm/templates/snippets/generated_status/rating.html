@@ -1,0 +1,3 @@
+{% load i18n %}{% load humanize %}
+
+{% blocktrans with title=book.title path=book.remote_id display_rating=rating|floatformat:"0" count counter=rating %}Rated <em><a href="{{ path }}">{{ title }}</a></em>: {{ display_rating }} star{% plural %}Rated <em><a href="{{ path }}">{{ title }}</a></em>: {{ display_rating }} stars{% endblocktrans %}

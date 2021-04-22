@@ -5,9 +5,9 @@
 <head>
     <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" rel="stylesheet" href="/static/css/bulma.min.css">
-    <link type="text/css" rel="stylesheet" href="/static/css/format.css">
-    <link type="text/css" rel="stylesheet" href="/static/css/icons.css">
+    <link rel="stylesheet" href="/static/css/vendor/bulma.min.css">
+    <link rel="stylesheet" href="/static/css/vendor/icons.css">
+    <link rel="stylesheet" href="/static/css/bookwyrm.css">
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
 
@@ -22,165 +22,169 @@
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>
-<nav class="navbar container" aria-label="main navigation">
-    <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-            <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
-        </a>
-        <form class="navbar-item column" action="/search/">
-            <div class="field has-addons">
-                <div class="control">
-                    <input aria-label="{% trans 'Search for a book or user' %}" id="search-input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
-                </div>
-                <div class="control">
-                    <button class="button" type="submit">
-                        <span class="icon icon-search" title="{% trans 'Search' %}">
-                            <span class="is-sr-only">{% trans "Search" %}</span>
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </form>
-
-        <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main-nav" aria-expanded="false">
-            <div class="navbar-item mt-3">
-                <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
-                    <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="navbar-menu" id="main-nav">
-        <div class="navbar-start">
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                {% trans "Your shelves" %}
+<nav class="navbar" aria-label="main navigation">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
             </a>
-            <a href="/#feed" class="navbar-item">
-                {% trans "Feed" %}
-            </a>
-            <a href="{% url 'lists' %}" class="navbar-item">
-                {% trans "Lists" %}
-            </a>
-            {% endif %}
-        </div>
-
-        <div class="navbar-end">
-        {% if request.user.is_authenticated %}
-            <div class="navbar-item has-dropdown is-hoverable">
-                <a
-                    href="{{ user.local_path }}"
-                    class="navbar-link pulldown-menu"
-                    role="button"
-                    aria-expanded="false"
-                    tabindex="0"
-                    aria-haspopup="true"
-                    aria-controls="navbar-dropdown"
-                >
-                    {% include 'snippets/avatar.html' with user=request.user %}
-                    {% include 'snippets/username.html' with user=request.user anchor=false %}
-                </a>
-                <ul class="navbar-dropdown" id="navbar-dropdown">
-                    <li>
-                        <a href="/direct-messages" class="navbar-item">
-                            {% trans "Direct Messages" %}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/user/{{request.user.localname}}" class="navbar-item">
-                            {% trans 'Profile' %}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/preferences/profile" class="navbar-item">
-                            {% trans 'Settings' %}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/import" class="navbar-item">
-                            {% trans 'Import Books' %}
-                        </a>
-                    </li>
-                    {% if perms.bookwyrm.create_invites or perms.bookwyrm.edit_instance_settings%}
-                    <li class="navbar-divider" role="presentation"></li>
-                    {% endif %}
-                    {% if perms.bookwyrm.create_invites %}
-                    <li>
-                        <a href="{% url 'settings-invites' %}" class="navbar-item">
-                            {% trans 'Invites' %}
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% if perms.bookwyrm.edit_instance_settings %}
-                    <li>
-                        <a href="{% url 'settings-site' %}" class="navbar-item">
-                            {% trans 'Site Configuration' %}
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="navbar-divider" role="presentation"></li>
-                    <li>
-                        <a href="/logout" class="navbar-item">
-                            {% trans 'Log out' %}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-item">
-                <a href="/notifications" class="tags has-addons">
-                    <span class="tag is-medium">
-                        <span class="icon icon-bell" title="{% trans 'Notifications' %}">
-                            <span class="is-sr-only">{% trans "Notifications" %}</span>
-                        </span>
-                    </span>
-                    <span class="{% if not request.user|notification_count %}hidden {% endif %}tag is-danger is-medium" data-poll="notifications">
-                        {{ request.user | notification_count }}
-                    </span>
-                </a>
-            </div>
-            {% else %}
-            <div class="navbar-item">
-                {% if request.path != '/login' and request.path != '/login/' %}
-                <div class="columns">
-                    <div class="column">
-                        <form name="login" method="post" action="/login">
-                            {% csrf_token %}
-                            <div class="columns is-variable is-1">
-                                <div class="column">
-                                    <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
-                                    <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
-                                </div>
-                                <div class="column">
-                                    <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
-                                    <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
-                                    <p class="help"><a href="/password-reset">{% trans "Forgot your password?" %}</a></p>
-                                </div>
-                                <div class="column is-narrow">
-                                    <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
-                                </div>
-                            </div>
-                        </form>
+            <form class="navbar-item column" action="/search/">
+                <div class="field has-addons">
+                    <div class="control">
+                        <input aria-label="{% trans 'Search for a book or user' %}" id="search-input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
                     </div>
-                    {% if site.allow_registration and request.path != '' and request.path != '/' %}
-                    <div class="column is-narrow">
-                        <a href="/" class="button is-link">
-                            {% trans "Join" %}
-                        </a>
+                    <div class="control">
+                        <button class="button" type="submit">
+                            <span class="icon icon-search" title="{% trans 'Search' %}">
+                                <span class="is-sr-only">{% trans "Search" %}</span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main-nav" aria-expanded="false">
+                <div class="navbar-item mt-3">
+                    <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
+                        <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar-menu" id="main-nav">
+            <div class="navbar-start">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
+                    {% trans "Your books" %}
+                </a>
+                <a href="/#feed" class="navbar-item">
+                    {% trans "Feed" %}
+                </a>
+                <a href="{% url 'lists' %}" class="navbar-item">
+                    {% trans "Lists" %}
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="navbar-end">
+            {% if request.user.is_authenticated %}
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a
+                        href="{{ request.user.local_path }}"
+                        class="navbar-link pulldown-menu"
+                        role="button"
+                        aria-expanded="false"
+                        tabindex="0"
+                        aria-haspopup="true"
+                        aria-controls="navbar-dropdown"
+                    >
+                        {% include 'snippets/avatar.html' with user=request.user %}
+                        <span class="ml-2">{{ request.user.display_name }}</span>
+                    </a>
+                    <ul class="navbar-dropdown" id="navbar-dropdown">
+                        <li>
+                            <a href="{% url 'direct-messages' %}" class="navbar-item">
+                                {% trans "Direct Messages" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'directory' %}" class="navbar-item">
+                                {% trans 'Directory' %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/import" class="navbar-item">
+                                {% trans 'Import Books' %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/preferences/profile" class="navbar-item">
+                                {% trans 'Settings' %}
+                            </a>
+                        </li>
+                        {% if perms.bookwyrm.create_invites or perms.moderate_users %}
+                        <li class="navbar-divider" role="presentation"></li>
+                        {% endif %}
+                        {% if perms.bookwyrm.create_invites %}
+                        <li>
+                            <a href="{% url 'settings-invite-requests' %}" class="navbar-item">
+                                {% trans 'Invites' %}
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if perms.bookwyrm.moderate_users %}
+                        <li>
+                            <a href="{% url 'settings-users' %}" class="navbar-item">
+                                {% trans 'Admin' %}
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="navbar-divider" role="presentation"></li>
+                        <li>
+                            <a href="/logout" class="navbar-item">
+                                {% trans 'Log out' %}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar-item">
+                    <a href="/notifications" class="tags has-addons">
+                        <span class="tag is-medium">
+                            <span class="icon icon-bell" title="{% trans 'Notifications' %}">
+                                <span class="is-sr-only">{% trans "Notifications" %}</span>
+                            </span>
+                        </span>
+                        <span class="{% if not request.user|notification_count %}is-hidden {% endif %}tag is-danger is-medium transition-x" data-poll-wrapper>
+                            <span data-poll="notifications">{{ request.user | notification_count }}</span>
+                        </span>
+                    </a>
+                </div>
+                {% else %}
+                <div class="navbar-item">
+                    {% if request.path != '/login' and request.path != '/login/' %}
+                    <div class="columns">
+                        <div class="column">
+                            <form name="login" method="post" action="/login">
+                                {% csrf_token %}
+                                <div class="columns is-variable is-1">
+                                    <div class="column">
+                                        <label class="is-sr-only" for="id_localname">{% trans "Username:" %}</label>
+                                        <input type="text" name="localname" maxlength="150" class="input" required="" id="id_localname" placeholder="{% trans 'username' %}">
+                                    </div>
+                                    <div class="column">
+                                        <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
+                                        <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
+                                        <p class="help"><a href="/password-reset">{% trans "Forgot your password?" %}</a></p>
+                                    </div>
+                                    <div class="column is-narrow">
+                                        <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        {% if site.allow_registration and request.path != '' and request.path != '/' %}
+                        <div class="column is-narrow">
+                            <a href="/" class="button is-link">
+                                {% trans "Join" %}
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>
                 {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 </nav>
 
 
-<div class="section container">
-    {% block content %}
-    {% endblock %}
+<div class="section is-flex-grow-1">
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
 </div>
 
 <footer class="footer">
@@ -199,7 +203,7 @@
             {% if site.support_link %}
             <div class="column">
                 <span class="icon icon-heart"></span>
-                {% blocktrans %}Support {{ site.name }} on <a href="{{ site.support_link }}" target="_blank">{{ site.support_title }}</a>{% endblocktrans %}
+                {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
             </div>
             {% endif %}
             <div class="column">
@@ -212,6 +216,7 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="/static/js/shared.js"></script>
+<script src="/static/js/bookwyrm.js"></script>
+{% block scripts %}{% endblock %}
 </body>
 </html>

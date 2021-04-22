@@ -20,7 +20,7 @@
     {% if user == request.user %}
     <div class="block">
         {% now 'Y' as year %}
-        <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
+        <section class="card {% if goal %}is-hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
                 <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
                     <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
@@ -55,11 +55,9 @@
     </h2>
     <div class="columns is-multiline">
         {% for book in goal.books %}
-        <div class="column is-narrow">
-            <div class="box">
-                <a href="{{ book.book.local_path }}">
-                    {% include 'discover/small-book.html' with book=book.book rating=goal.ratings %}
-                </a>
+        <div class="column is-one-fifth">
+            <div class="is-clipped">
+                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
             </div>
         </div>
         {% endfor %}

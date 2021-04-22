@@ -1,0 +1,258 @@
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 20%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    overflow: hidden;
+}
+
+.navbar .logo {
+    max-height: 50px;
+}
+
+.card {
+    overflow: visible;
+}
+
+.scroll-x {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.modal-card.is-fullwidth {
+    min-width: 75% !important;
+}
+
+/** Shelving
+ ******************************************************************************/
+
+/** @todo Replace icons with SVG symbols.
+    @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
+.shelf-option:disabled > *::after {
+    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    content: "\e918";
+    margin-left: 0.5em;
+}
+
+/** Toggles
+ ******************************************************************************/
+
+.toggle-button[aria-pressed=true],
+.toggle-button[aria-pressed=true]:hover {
+    background-color: hsl(171, 100%, 41%);
+    color: white;
+}
+
+.hide-active[aria-pressed=true],
+.hide-inactive[aria-pressed=false] {
+    display: none;
+}
+
+.transition-x.is-hidden,
+.transition-y.is-hidden {
+    display: block !important;
+    visibility: hidden !important;
+    height: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.transition-x,
+.transition-y {
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+
+.transition-x {
+    transition-property: width, margin-left, margin-right, padding-left, padding-right;
+}
+
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transition-x,
+    .transition-y {
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/** Stars in a review form
+ *
+ * Specificity makes hovering taking over checked inputs.
+ *
+ * \e9d9: filled star
+ * \e9d7: empty star;
+ ******************************************************************************/
+
+.form-rate-stars {
+    width: max-content;
+}
+
+/* All stars are visually filled by default. */
+.form-rate-stars .icon::before {
+    content: '\e9d9';
+}
+
+/* Icons directly following inputs that follow the checked input are emptied. */
+.form-rate-stars input:checked ~ input + .icon::before {
+    content: '\e9d7';
+}
+
+/* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
+.form-rate-stars:hover .icon.icon::before {
+    content: '\e9d9';
+}
+
+.form-rate-stars .icon:hover ~ .icon::before {
+    content: '\e9d7';
+}
+
+/** Book covers
+ ******************************************************************************/
+
+.cover-container {
+    height: 250px;
+    width: max-content;
+    max-width: 250px;
+}
+
+.cover-container.is-large {
+    height: max-content;
+    max-width: 330px;
+}
+
+.cover-container.is-large img {
+    max-height: 500px;
+    height: auto;
+}
+
+.cover-container.is-medium {
+    height: 150px;
+}
+
+.cover-container.is-small {
+    height: 100px;
+}
+
+@media only screen and (max-width: 768px) {
+    .cover-container {
+        height: 200px;
+        width: max-content;
+    }
+
+    .cover-container.is-medium {
+        height: 100px;
+    }
+}
+
+.book-cover {
+    height: 100%;
+    object-fit: scale-down;
+}
+
+.no-cover {
+    position: relative;
+    white-space: normal;
+}
+
+.no-cover div {
+    position: absolute;
+    padding: 1em;
+    color: white;
+    top: 0;
+    left: 0;
+    text-align: center;
+}
+
+.cover-container.is-medium .no-cover div {
+    font-size: 0.9em;
+    padding: 0.3em;
+}
+
+.cover-container.is-small .no-cover div {
+    font-size: 0.7em;
+    padding: 0.1em;
+}
+
+/** Avatars
+ ******************************************************************************/
+
+.avatar {
+    vertical-align: middle;
+    display: inline;
+}
+
+.is-32x32 {
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.is-96x96 {
+    min-width: 96px;
+    min-height: 96px;
+}
+
+/** Statuses: Quotes
+ *
+ * \e906: icon-quote-open
+ * \e905: icon-quote-close
+ *
+ * The `content` class on the blockquote allows to apply styles to markdown
+ * generated HTML in the quote: https://bulma.io/documentation/elements/content/
+ *
+ * ```html
+ * <div class="quote block">
+ *     <blockquote dir="auto" class="content mb-2">
+ *         User generated quote in markdown…
+ *     </blockquote>
+ *
+ *     <p> — <a…>Book Title</a> by <a…class="author">Author</a></p>
+ * </div>
+ * ```
+ ******************************************************************************/
+
+.quote > blockquote {
+    position: relative;
+    padding-left: 2em;
+}
+
+.quote > blockquote::before,
+.quote > blockquote::after {
+    font-family: 'icomoon';
+    position: absolute;
+}
+
+.quote > blockquote::before {
+    content: "\e906";
+    top: 0;
+    left: 0;
+}
+
+.quote > blockquote::after {
+    content: "\e905";
+    right: 0;
+}
+
+/* States
+ ******************************************************************************/
+
+/* "disabled" for non-buttons */
+
+.is-disabled {
+    background-color: #dbdbdb;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    color: #7a7a7a;
+    opacity: 0.5;
+    cursor: not-allowed;
+}

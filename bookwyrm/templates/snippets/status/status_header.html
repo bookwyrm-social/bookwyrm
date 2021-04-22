@@ -1,11 +1,23 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
-{% include 'snippets/avatar.html' with user=status.user %}
-{% include 'snippets/username.html' with user=status.user %}
+<span
+    itemprop="author"
+    itemscope
+    itemtype="https://schema.org/Person"
+>
+    <a
+        href="{{ status.user.local_path }}"
+        itemprop="url"
+    >
+        {% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
+
+        <span itemprop="name">{{ status.user.display_name }}</span>
+    </a>
+</span>
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}
-{% elif status.status_type == 'Review' and not status.name and not status.content%}
+{% elif status.status_type == 'Rating' %}
     {% trans "rated" %}
 {% elif status.status_type == 'Review' %}
     {% trans "reviewed" %}
@@ -15,11 +27,46 @@
     {% trans "quoted" %}
 {% elif status.reply_parent %}
     {% with parent_status=status|parent %}
-    replied to {% include 'snippets/username.html' with user=parent_status.user possessive=True %} <a href="{{parent_status.remote_id }}">{% if parent_status.status_type == 'GeneratedNote' %}update{% else %}{{ parent_status.status_type | lower }}{% endif %}</a>
+
+    {% if parent_status.status_type == 'Review' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">review</a>{% endblocktrans %}
+    {% elif parent_status.status_type == 'Comment' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">comment</a>{% endblocktrans %}
+    {% elif parent_status.status_type == 'Quotation' %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">quote</a>{% endblocktrans %}
+    {% else %}
+    {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">status</a>{% endblocktrans %}
+    {% endif %}
+
     {% endwith %}
 {% endif %}
+
 {% if status.book %}
-<a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
+    {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
+        <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>{% if status.status_type == 'Rating' %}:
+        <span
+            itemprop="reviewRating"
+            itemscope
+            itemtype="https://schema.org/Rating"
+        >
+        <span class="is-hidden" {{ rating_type }}>
+            <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                {# @todo Is it possible to not hard-code the value? #}
+                <meta itemprop="bestRating" content="5">
+        </span>
+
+        {% include 'snippets/stars.html' with rating=status.rating %}
+        {% endif %}
+    {% else %}
+        {% include 'snippets/book_titleby.html' with book=status.book %}
+    {% endif %}
 {% elif status.mention_books %}
-<a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
+    <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
+{% endif %}
+
+{% if status.progress %}
+<p class="help">
+({% if status.progress_mode == 'PG' %}{% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %}{% else %}{{ status.progress }}%{% endif %})
+</p>
 {% endif %}

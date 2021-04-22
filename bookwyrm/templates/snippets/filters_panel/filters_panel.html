@@ -1,0 +1,28 @@
+{% load i18n %}
+<div class="notification content">
+    <h2 class="columns is-mobile mb-0">
+        <span class="column pb-0">Filters</span>
+
+        <span class="column is-narrow pb-0">
+            {% trans "Show filters" as text %}
+            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon="arrow-down" class="is-small" focus="filters" %}
+            {% trans "Hide filters" as text %}
+            {% include 'snippets/toggle/close_button.html' with text=text controls_text="filters" icon="x" class="is-small" %}
+        </span>
+    </h2>
+
+    <form class="is-hidden mt-3" id="filters" method="get" action="{{ request.path }}" tabindex="0">
+        {% if sort %}
+        <input type="hidden" name="sort" value="{{ sort }}">
+        {% endif %}
+        <div class="columns">
+            {% block filter_fields %}
+            {% endblock %}
+        </div>
+        <button class="button is-primary">{% trans "Apply filters" %}</button>
+    </form>
+
+    {% if request.GET %}
+    <a class="help" href="{{ request.path }}">{% trans "Clear filters" %}</a>
+    {% endif %}
+</div>

@@ -3,6 +3,20 @@
 {% block header %}{% trans "Invites" %}{% endblock %}
 {% load humanize %}
 {% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-invite-requests' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
+        </li>
+    </ul>
+</div>
+
 <section class="block">
     <h2 class="title is-4">{% trans "Generate New Invite" %}</h2>
 

@@ -1,0 +1,117 @@
+{% extends 'settings/admin_layout.html' %}
+{% block title %}{{ server.server_name }}{% endblock %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+
+{% block header %}
+{{ server.server_name }}
+
+{% if server.status == "blocked" %}<span class="icon icon-x has-text-danger is-size-5" title="{% trans 'Blocked' %}"><span class="is-sr-only">{% trans "Blocked" %}</span></span>
+{% endif %}
+
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+{% endblock %}
+
+{% block panel %}
+<div class="columns">
+    <section class="column is-half content">
+        <h2 class="title is-4">{% trans "Details" %}</h2>
+        <dl>
+            <div class="is-flex">
+                <dt>{% trans "Software:" %}</dt>
+                <dd>{{ server.application_type }}</dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Version:" %}</dt>
+                <dd>{{ server.application_version }}</dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Status:" %}</dt>
+                <dd>{{ server.status }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="column is-half content">
+        <h2 class="title is-4">{% trans "Activity" %}</h2>
+        <dl>
+            <div class="is-flex">
+                <dt>{% trans "Users:" %}</dt>
+                <dd>
+                    {{ users.count }}
+                    {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Reports:" %}</dt>
+                <dd>
+                    {{ reports.count }}
+                    {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Followed by us:" %}</dt>
+                <dd>
+                    {{ followed_by_us.count }}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Followed by them:" %}</dt>
+                <dd>
+                    {{ followed_by_them.count }}
+                </dd>
+            </div>
+            <div class="is-flex">
+                <dt>{% trans "Blocked by us:" %}</dt>
+                <dd>
+                    {{ blocked_by_us.count }}
+                </dd>
+            </div>
+        </dl>
+    </section>
+</div>
+
+<section class="block content">
+    <header class="columns is-mobile">
+        <div class="column">
+            <h2 class="title is-4 mb-0">{% trans "Notes" %}</h2>
+        </div>
+        <div class="column is-narrow">
+            {% trans "Edit" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-notes" %}
+        </div>
+    </header>
+    {% if server.notes %}
+    <p id="hide-edit-notes">{{ server.notes|to_markdown|safe }}</p>
+    {% endif %}
+    <form class="box is-hidden" method="POST" action="{% url 'settings-federated-server' server.id %}" id="edit-notes">
+        {% csrf_token %}
+        <p>
+            <label class="is-sr-only" for="id_notes">Notes:</label>
+            <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ server.notes|default:"" }}</textarea>
+        </p>
+        <button type="submit" class="button is-primary">{% trans "Save" %}</button>
+        {% trans "Cancel" as button_text %}
+        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="edit-notes" %}
+    </form>
+</section>
+
+<section class="block content">
+    <h2 class="title is-4">{% trans "Actions" %}</h2>
+    {% if server.status != 'blocked' %}
+    <form class="block" method="post" action="{% url 'settings-federated-server-block' server.id %}">
+        {% csrf_token %}
+        <button class="button is-danger">{% trans "Block" %}</button>
+        <p class="help">{% trans "All users from this instance will be deactivated." %}</p>
+    </form>
+    {% else %}
+    <form class="block" method="post" action="{% url 'settings-federated-server-unblock' server.id %}">
+        {% csrf_token %}
+        <button class="button">{% trans "Un-block" %}</button>
+        <p class="help">{% trans "All users from this instance will be re-activated." %}</p>
+    </form>
+    {% endif %}
+</section>
+
+{% endblock %}
+

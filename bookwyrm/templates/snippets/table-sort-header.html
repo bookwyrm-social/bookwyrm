@@ -1,0 +1,13 @@
+{% load i18n %}
+<a href="{{ url }}?sort={% if sort == field %}-{% endif %}{{ field }}{% for k, v in request.GET.items %}{% if k != "sort" %}&{{ k }}={{ v }}{% endif %}{% endfor %}">
+    {{ text }}
+    {% if sort == field %}
+    <span class="icon icon-arrow-up">
+        <span class="is-sr-only">{% trans "Sorted ascending" %}</span>
+    </span>
+    {% elif sort == "-"|add:field %}
+    <span class="icon icon-arrow-down">
+        <span class="is-sr-only">{% trans "Sorted descending" %}</span>
+    </span>
+    {% endif %}
+</a>

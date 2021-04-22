@@ -7,36 +7,43 @@
 {% block content %}
 <div class="block">
     <h1 class="title">{% trans "Import Books" %}</h1>
-    <form name="import" action="/import" method="post" enctype="multipart/form-data">
+    <form class="box" name="import" action="/import" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <label class="label" for="source">
-          <p>{% trans "Data source" %}</p>
-        <div class="select {{ class }}">
-          <select name="source" id="source">
-            <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
-            GoodReads
-            </option>
-            <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
-            LibraryThing
-            </option>
-          </select>
+        <div class="columns">
+        <div class="column is-half">
+            <label class="label" for="source">
+                {% trans "Data source:" %}
+            </label>
+            <div class="select block">
+                <select name="source" id="source">
+                    <option value="GoodReads" {% if current == 'GoodReads' %}selected{% endif %}>
+                        GoodReads (CSV)
+                    </option>
+                    <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
+                        LibraryThing (TSV)
+                    </option>
+                </select>
+            </div>
+            <div class="field">
+                <label class="label" for="id_csv_file">{% trans "Data file:" %}</label>
+                {{ import_form.csv_file }}
+            </div>
         </div>
-        </label>
 
-        <div class="field">
-            {{ import_form.as_p }}
+        <div class="column is-half">
+            <div class="field">
+                <label class="label">
+                    <input type="checkbox" name="include_reviews" checked> {% trans "Include reviews" %}
+                </label>
+            </div>
+            <div class="field">
+                <label class="label">
+                    <p>{% trans "Privacy setting for imported reviews:" %}</p>
+                    {% include 'snippets/privacy_select.html' with no_label=True %}
+                </label>
+            </div>
         </div>
-        <div class="field">
-            <label class="label">
-                <input type="checkbox" name="include_reviews" checked> {% trans "Include reviews" %}
-            </label>
-        </div>
-        <div class="field">
-            <label class="label">
-                <p>{% trans "Privacy setting for imported reviews:" %}</p>
-                {% include 'snippets/privacy_select.html' with no_label=True %}
-            </label>
         </div>
         <button class="button is-primary" type="submit">{% trans "Import" %}</button>
     </form>

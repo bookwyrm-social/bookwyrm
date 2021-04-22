@@ -7,13 +7,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0029_auto_20201221_2014'),
+        ("bookwyrm", "0029_auto_20201221_2014"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='localname',
-            field=models.CharField(max_length=255, null=True, unique=True, validators=[bookwyrm.models.fields.validate_localname]),
+            model_name="user",
+            name="localname",
+            field=models.CharField(
+                max_length=255,
+                null=True,
+                unique=True,
+                validators=[bookwyrm.models.fields.validate_localname],
+            ),
         ),
     ]

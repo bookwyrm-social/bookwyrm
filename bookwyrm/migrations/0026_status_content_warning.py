@@ -7,13 +7,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0025_auto_20201217_0046'),
+        ("bookwyrm", "0025_auto_20201217_0046"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='status',
-            name='content_warning',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=500, null=True),
+            model_name="status",
+            name="content_warning",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=500, null=True
+            ),
         ),
     ]

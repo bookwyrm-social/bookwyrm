@@ -1,30 +1,29 @@
 {% extends 'components/dropdown.html' %}
 {% load i18n %}
 {% block dropdown-trigger %}
-<span>{% trans "Change shelf" %}</span>
+<span>{% trans "Move book" %}</span>
 <span class="icon icon-arrow-down" aria-hidden="true"></span>
 {% endblock %}
 
 {% block dropdown-list %}
 {% for shelf in request.user.shelf_set.all %}
-{% if shelf.identifier != current.identifier %}
-<li role="menuitem">
-    <form class="dropdown-item pt-0 pb-0" name="shelve" action="/shelve/" method="post">
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
+        <input type="hidden" name="change-shelf-from" value="{{ current.identifier }}">
         <input type="hidden" name="shelf" value="{{ shelf.identifier }}">
-        <button class="button is-fullwidth is-small" type="submit">{{ shelf.name }}</button>
+        <button class="button is-fullwidth is-small shelf-option is-radiusless is-white" type="submit" {% if shelf.identifier == current.identifier %}disabled{% endif %}><span>{{ shelf.name }}</span></button>
     </form>
 </li>
-{% endif %}
 {% endfor %}
-<li class="navbar-divider" role="presentation"></li>
-<li>
-    <form class="dropdown-item pt-0 pb-0" name="shelve" action="/unshelve/" method="post">
+<li class="navbar-divider" role="separator"></li>
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="shelve" action="/unshelve/" method="post">
         {% csrf_token %}
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="shelf" value="{{ current.id }}">
-        <button class="button is-fullwidth is-small is-danger is-light" type="submit">{% trans "Unshelve" %}</button>
+        <button class="button is-fullwidth is-small is-radiusless is-danger is-light" type="submit">{% trans "Remove" %}</button>
     </form>
 </li>
 {% endblock %}

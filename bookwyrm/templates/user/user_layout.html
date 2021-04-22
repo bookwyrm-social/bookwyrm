@@ -33,7 +33,7 @@
         {% for requester in user.follower_requests.all %}
             <div class="row shrink">
                 <p>
-                    {% include 'snippets/username.html' with user=requester show_full=True %}
+                    <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
                 </p>
                 {% include 'snippets/follow_request_buttons.html' with user=requester %}
             </div>
@@ -42,7 +42,7 @@
     {% endif %}
 </div>
 {% with user|username as username %}
-{% if 'user/'|add:username|add:'/shelf' not in request.path  and 'user/'|add:username|add:'/shelves' not in request.path %}
+{% if 'user/'|add:username|add:'/books' not in request.path and 'user/'|add:username|add:'/shelf' not in request.path %}
 <nav class="tabs">
     <ul>
         {% url 'user-feed' user|username as url %}
@@ -56,7 +56,7 @@
             <a href="{{ url }}">{% trans "Reading Goal" %}</a>
         </li>
         {% endif %}
-        {% if is_self or user.lists.exists %}
+        {% if is_self or user.list_set.exists %}
         {% url 'user-lists' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Lists" %}</a>
@@ -65,7 +65,7 @@
         {% if user.shelf_set.exists %}
         {% url 'user-shelves' user|username as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
-            <a href="{{ url }}">{% trans "Shelves" %}</a>
+            <a href="{{ url }}">{% trans "Books" %}</a>
         </li>
         {% endif %}
     </ul>

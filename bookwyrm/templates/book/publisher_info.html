@@ -1,0 +1,70 @@
+{% spaceless %}
+
+{% load i18n %}
+{% load humanize %}
+
+<p>
+    {% with format=book.physical_format pages=book.pages %}
+        {% if format %}
+            {% comment %}
+                @todo The bookFormat property is limited to a list of values whereas the book edition is free text.
+                @see https://schema.org/bookFormat
+            {% endcomment %}
+            <meta itemprop="bookFormat" content="{{ format }}">
+        {% endif %}
+
+        {% if pages %}
+            <meta itemprop="numberOfPages" content="{{ pages }}">
+        {% endif %}
+
+        {% if format and not pages %}
+            {% blocktrans %}{{ format }}{% endblocktrans %}
+        {% elif format and pages %}
+            {% blocktrans %}{{ format }}, {{ pages }} pages{% endblocktrans %}
+        {% elif pages %}
+            {% blocktrans %}{{ pages }} pages{% endblocktrans %}
+        {% endif %}
+    {% endwith %}
+</p>
+
+{% if book.languages %}
+    {% for language in book.languages %}
+        <meta itemprop="inLanguage" content="{{ language }}">
+    {% endfor %}
+
+    <p>
+        {% with languages=book.languages|join:", " %}
+            {% blocktrans %}{{ languages }} language{% endblocktrans %}
+        {% endwith %}
+    </p>
+{% endif %}
+
+<p>
+    {% with date=book.published_date|naturalday publisher=book.publishers|join:', ' %}
+        {% if date or book.first_published_date %}
+            <meta
+                itemprop="datePublished"
+                content="{{ book.first_published_date|default:book.published_date|date:'Y-m-d' }}"
+            >
+        {% endif %}
+
+        {% comment %}
+            @todo The publisher property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.
+            @see https://schema.org/Publisher
+        {% endcomment %}
+        {% if book.publishers %}
+            {% for publisher in book.publishers %}
+                <meta itemprop="publisher" content="{{ publisher }}">
+            {% endfor %}
+        {% endif %}
+
+        {% if date and publisher %}
+            {% blocktrans %}Published {{ date }} by {{ publisher }}.{% endblocktrans %}
+        {% elif date %}
+            {% blocktrans %}Published {{ date }}{% endblocktrans %}
+        {% elif publisher %}
+            {% blocktrans %}Published by {{ publisher }}.{% endblocktrans %}
+        {% endif %}
+    {% endwith %}
+</p>
+{% endspaceless %}

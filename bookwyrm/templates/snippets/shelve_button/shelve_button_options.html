@@ -2,8 +2,8 @@
 {% load i18n %}
 {% for shelf in shelves %}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
-{% if dropdown %}<li role="menuitem">{% endif %}
-    <div class="{% if dropdown %}dropdown-item pt-0 pb-0{% elif active_shelf.shelf.identifier|next_shelf != shelf.identifier %}hidden{% endif %}">
+{% if dropdown %}<li role="menuitem" class="dropdown-item p-0">{% endif %}
+    <div class="{% if not dropdown and active_shelf.shelf.identifier|next_shelf != shelf.identifier %}is-hidden{% endif %}">
     {% if shelf.identifier == 'reading' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
         {% trans "Start reading" as button_text %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start-reading" controls_uid=button_uuid focus="modal-title-start-reading" disabled=is_current %}
@@ -27,3 +27,24 @@
     </div>
 {% if dropdown %}</li>{% endif %}
 {% endfor %}
+{% if dropdown %}
+
+{% if readthrough and active_shelf.shelf.identifier != 'read' %}
+<li role="menuitem" class="dropdown-item p-0">
+    {% trans "Update progress" as button_text %}
+    {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="progress-update" controls_uid=button_uuid focus="modal-title-progress-update" %}
+</li>
+{% endif %}
+
+{% if active_shelf.shelf %}
+<li role="menuitem" class="dropdown-item p-0">
+    <form  name="shelve" action="/unshelve/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
+        <input type="hidden" name="shelf" value="{{ active_shelf.shelf.id }}">
+        <button class="button is-fullwidth is-small{% if dropdown %} is-radiusless{% endif %} is-danger is-light" type="submit">{% blocktrans with name=active_shelf.shelf.name %}Remove from {{ name }}{% endblocktrans %}</button>
+    </form>
+</li>
+{% endif %}
+
+{% endif %}

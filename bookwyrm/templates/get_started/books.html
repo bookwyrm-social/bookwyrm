@@ -1,0 +1,57 @@
+{% extends 'get_started/layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "What are you reading?" %}</h2>
+    <form class="field has-addons" method="get" action="{% url 'get-started-books' %}">
+        <div class="control">
+            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a book' %}" aria-label="{% trans 'Search for a book' %}">
+            {% if request.GET.query and not book_results %}
+            <p class="help">{% blocktrans with query=request.GET.query %}No books found for "{{ query }}"{% endblocktrans %}. {% blocktrans %}You can add books when you start using {{ site_name }}.{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+        <div class="control">
+            <button class="button" type="submit">
+                <span class="icon icon-search" title="{% trans 'Search' %}">
+                    <span class="is-sr-only">{% trans "Search" %}</span>
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<form class="block" name="add-books" method="post" action="{% url 'get-started-books' %}">
+    {% csrf_token %}
+    <h3 class="title is-5">{% trans "Suggested Books" %}</h3>
+    <fieldset name="books" class="columns scroll-x is-mobile">
+        {% if book_results %}
+        <div class="column is-narrow content">
+            <p class="help mb-0">Search results</p>
+            <div class="columns is-mobile">
+                {% for book in book_results %}
+                {% include 'get_started/book_preview.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if popular_books %}
+        <div class="column is-narrow content">
+            <p class="help mb-0">
+                {% blocktrans %}Popular on {{ site_name }}{% endblocktrans %}
+            </p>
+            <div class="columns is-mobile">
+                {% for book in popular_books %}
+                {% include 'get_started/book_preview.html' %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if not book_results and not popular_books %}
+        <p><em>{% trans "No books found" %}</em></p>
+        {% endif %}
+    </fieldset>
+    <button type="submit" class="button is-primary">{% trans "Save &amp; continue" %}</button>
+</form>
+{% endblock %}
+

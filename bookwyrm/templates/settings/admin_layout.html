@@ -6,7 +6,14 @@
 {% block content %}
 
 <header class="block column is-offset-one-quarter pl-1">
-    <h1 class="title">{% block header %}{% endblock %}</h1>
+    <div class="columns is-mobile">
+        <div class="column">
+            <h1 class="title">{% block header %}{% endblock %}</h1>
+        </div>
+        <div class="column is-narrow">
+            {% block edit-button %}{% endblock %}
+        </div>
+    </div>
 </header>
 
 <div class="block columns">
@@ -15,8 +22,17 @@
         <h2 class="menu-label">{% trans "Manage Users" %}</h2>
         <ul class="menu-list">
             <li>
-                {% url 'settings-invites' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
+                {% url 'settings-users' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Users" %}</a>
+            </li>
+            <li>
+                {% url 'settings-invite-requests' as url %}
+                {% url 'settings-invites' as alt_url %}
+                <a href="{{ url }}"{% if url in request.path or request.path in alt_url %} class="is-active" aria-selected="true"{% endif %}>{% trans "Invites" %}</a>
+            </li>
+            <li>
+                {% url 'settings-reports' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Reports" %}</a>
             </li>
             <li>
                 {% url 'settings-federation' as url %}
@@ -42,7 +58,7 @@
         </ul>
         {% endif %}
     </nav>
-    <div class="column content">
+    <div class="column">
         {% block panel %}{% endblock %}
     </div>
 </div>

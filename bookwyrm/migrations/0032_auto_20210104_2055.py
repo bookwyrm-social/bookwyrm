@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0031_auto_20210104_2040'),
+        ("bookwyrm", "0031_auto_20210104_2040"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='instance_tagline',
-            field=models.CharField(default='Social Reading and Reviewing', max_length=150),
+            model_name="sitesettings",
+            name="instance_tagline",
+            field=models.CharField(
+                default="Social Reading and Reviewing", max_length=150
+            ),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='registration_closed_text',
-            field=models.TextField(default='Contact an administrator to get an invite'),
+            model_name="sitesettings",
+            name="registration_closed_text",
+            field=models.TextField(default="Contact an administrator to get an invite"),
         ),
     ]

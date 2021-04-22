@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+
+{% block title %}{% blocktrans with book_title=work.title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work.title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
+</div>
+
+{% include 'book/edition_filters.html' %}
+
+<div class="block">
+    {% for book in editions %}
+    <div class="columns">
+        <div class="column is-2">
+            <a href="/book/{{ book.id }}">
+                {% include 'snippets/book_cover.html' with book=book size="medium" %}
+            </a>
+        </div>
+        <div class="column is-7">
+            <h2 class="title is-5">
+                <a href="/book/{{ book.id }}" class="has-text-black">
+                    {{ book.title }}
+                </a>
+            </h2>
+
+            {% with book=book %}
+                <div class="columns is-multiline">
+                    <div class="column is-half">
+                        {% include 'book/publisher_info.html' %}
+                    </div>
+
+                    <div class="column is-half ">
+                        {% include 'book/book_identifiers.html' %}
+                    </div>
+                </div>
+            {% endwith %}
+        </div>
+        <div class="column is-3">
+            {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=editions path=request.path %}
+</div>
+{% endblock %}

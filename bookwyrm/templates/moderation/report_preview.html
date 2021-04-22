@@ -1,0 +1,37 @@
+{% extends 'components/card.html' %}
+{% load i18n %}
+{% load humanize %}
+{% block card-header %}
+<h2 class="card-header-title has-background-white-ter is-block">
+    <a href="{% url 'settings-report' report.id %}">{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}</a>
+</h2>
+{% endblock %}
+
+{% block card-content %}
+<div class="block content">
+    <p>
+        {% if report.note %}{{ report.note }}{% else %}<em>{% trans "No notes provided" %}</em>{% endif %}
+    </p>
+</div>
+{% endblock %}
+
+{% block card-footer %}
+<div class="card-footer-item">
+    <p>{% blocktrans with username=report.reporter.display_name path=report.reporter.local_path %}Reported by <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}</p>
+</div>
+<div class="card-footer-item">
+    {{ report.created_date | naturaltime }}
+</div>
+<div class="card-footer-item">
+    <form name="resolve" method="post" action="{% url 'settings-report-resolve' report.id %}">
+        {% csrf_token %}
+        <button class="button" type="submit">
+            {% if report.resolved %}
+            {% trans "Re-open" %}
+            {% else %}
+            {% trans "Resolve" %}
+            {% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

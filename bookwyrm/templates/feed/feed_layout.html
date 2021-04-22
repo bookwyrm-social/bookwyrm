@@ -12,6 +12,7 @@
         {% if not suggested_books %}
         <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
         {% else %}
+        {% with active_book=request.GET.book %}
         <div class="tab-group">
             <div class="tabs is-small">
                 <ul role="tablist">
@@ -28,8 +29,14 @@
                         <div class="tabs is-small is-toggle">
                             <ul>
                                 {% for book in shelf.books %}
-                                <li{% if shelf_counter == 1 and forloop.first %} class="is-active"{% endif %}>
-                                    <a href="#book-{{ book.id }}" id="tab-book-{{ book.id }}" role="tab" aria-label="{{ book.title }}" aria-selected="{% if shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}" aria-controls="book-{{ book.id }}">
+                                <li class="{% if active_book == book.id|stringformat:'d' %}is-active{% elif not active_book and shelf_counter == 1 and forloop.first %}is-active{% endif %}">
+                                    <a
+                                        href="{{ request.path }}?book={{ book.id }}"
+                                        id="tab-book-{{ book.id }}"
+                                        role="tab"
+                                        aria-label="{{ book.title }}"
+                                        aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
+                                        aria-controls="book-{{ book.id }}">
                                         {% include 'snippets/book_cover.html' with book=book size="medium" %}
                                     </a>
                                 </li>
@@ -45,22 +52,26 @@
             {% for shelf in suggested_books %}
             {% with shelf_counter=forloop.counter %}
             {% for book in shelf.books %}
-            <div class="suggested-tabs card" role="tabpanel" id="book-{{ book.id }}"{% if shelf_counter != 1 or not forloop.first %} hidden{% endif %} aria-labelledby="tab-book-{{ book.id }}">
+            <div
+                class="suggested-tabs card"
+                role="tabpanel"
+                id="book-{{ book.id }}"
+                {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
+                aria-labelledby="tab-book-{{ book.id }}">
+
                 <div class="card-header">
-                    <p class="card-header-title">
-                        <span>{% include 'snippets/book_titleby.html' with book=book %}</span>
-                    </p>
+                    <div class="card-header-title">
+                        <div>
+                            <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
+                            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                        </div>
+                    </div>
                     <div class="card-header-icon is-hidden-tablet">
                         {% trans "Close" as button_text %}
                         {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
                     </div>
                 </div>
                 <div class="card-content">
-                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
-                {% active_shelf book as active_shelf %}
-                {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
-                {% include 'snippets/progress_update.html' with readthrough=book.latest_readthrough %}
-                {% endif %}
                 {% include 'snippets/create_status.html' with book=book %}
                 </div>
             </div>
@@ -68,6 +79,7 @@
             {% endwith %}
             {% endfor %}
         </div>
+        {% endwith %}
         {% endif %}
 
         {% if goal %}
@@ -91,3 +103,6 @@
 </div>
 {% endblock %}
 
+{% block scripts %}
+<script src="/static/js/vendor/tabs.js"></script>
+{% endblock %}

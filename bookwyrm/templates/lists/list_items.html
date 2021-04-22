@@ -1,5 +1,4 @@
 {% load bookwyrm_tags %}
-{% load i18n %}
 <div class="columns is-multiline">
     {% for list in lists %}
     <div class="column is-one-quarter">
@@ -15,8 +14,16 @@
                 {% endfor %}
             </div>
             <div class="card-content is-flex-grow-0">
-                {% if list.description %}{{ list.description | to_markdown | safe | truncatewords_html:20 }}{% endif %}
-                <p class="subtitle help">{% if list.curation != 'open' %}{% trans "Created and curated by" %}{% else %}{% trans "Created by" %}{% endif %} {% include 'snippets/username.html' with user=list.user %}</p>
+                <div {% if list.description %}title="{{ list.description }}"{% endif %}>
+                {% if list.description %}
+                    {{ list.description|to_markdown|safe|truncatechars_html:30 }}
+                {% else %}
+                &nbsp;
+                {% endif %}
+                </div>
+                <p class="subtitle help">
+                    {% include 'lists/created_text.html' with list=list %}
+                </p>
             </div>
         </div>
     </div>

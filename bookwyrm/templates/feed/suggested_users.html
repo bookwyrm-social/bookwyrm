@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load humanize %}
+<div class="columns is-mobile scroll-x mb-0">
+    {% for user in suggested_users %}
+    <div class="column is-flex is-flex-grow-0">
+        <div class="box has-text-centered is-shadowless has-background-white-bis m-0">
+            <a href="{{ user.local_path }}" class="has-text-black">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+                <span title="{{ user.display_name }}" class="is-block is-6 has-text-weight-bold">{{ user.display_name|truncatechars:10 }}</span>
+                <span title="@{{ user|username }}" class="is-block pb-3">@{{ user|username|truncatechars:8 }}</span>
+            </a>
+            {% include 'snippets/follow_button.html' with user=user minimal=True %}
+            {% if user.mutuals %}
+            <p class="help">
+            {% blocktrans with mutuals=user.mutuals|intcomma count counter=user.mutuals %}{{ mutuals }} follower you follow{% plural %}{{ mutuals }} followers you follow{% endblocktrans %}
+            </p>
+            {% elif user.shared_books %}
+            <p class="help">{% blocktrans with shared_books=user.shared_books|intcomma count counter=user.shared_books %}{{ shared_books }} book on your shelves{% plural %}{{ shared_books }} books on your shelves{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+

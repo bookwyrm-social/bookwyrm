@@ -4,62 +4,110 @@
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
-    <input type="hidden" name="reply_parent" value="{{ reply_parent.id }}">
+    <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
     {% if type == 'review' %}
-    <div class="control">
+    <div class="field">
         <label class="label" for="id_name_{{ book.id }}_{{ type }}">{% trans "Title" %}:</label>
-        <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'">
+        <div class="control">
+            <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}_{{ type }}" placeholder="My {{ type }} of '{{ book.title }}'" value="{% firstof draft.name ''%}">
+        </div>
     </div>
     {% endif %}
-    <div class="control">
+    <div class="field">
         {% if type != 'reply' and type != 'direct'  %}
-        <label class="label" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">{{ type|title }}:</label>
+        <label class="label{% if type == 'review' %} mb-0{% endif %}" for="id_{% if type == 'quotation' %}quote{% else %}content{% endif %}_{{ book.id }}_{{ type }}">
+            {% if type == 'comment' %}
+            {% trans "Comment:" %}
+            {% elif type == 'quotation' %}
+            {% trans "Quote:" %}
+            {% elif type == 'review' %}
+            {% trans "Review:" %}
+            {% endif %}
+        </label>
         {% endif %}
 
         {% if type == 'review' %}
-        <fieldset>
+        <fieldset class="mb-1">
             <legend class="is-sr-only">{% trans "Rating" %}</legend>
-            <div class="field is-grouped stars form-rate-stars">
-                <label class="is-sr-only" for="no-rating-{{ book.id }}">{% trans "No rating" %}</label>
-                <input class="is-sr-only" type="radio" name="rating" value="" id="no-rating-{{ book.id }}" checked>
-                {% for i in '12345'|make_list %}
-                <input class="is-sr-only" id="book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}">
-                <label class="icon icon-star-empty" for="book{{book.id}}-star-{{ forloop.counter }}">
-                    <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
-                </label>
-                {% endfor %}
-            </div>
+
+            {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
         </fieldset>
         {% endif %}
 
-        {% if type == 'quotation' %}
-        <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required></textarea>
-        {% else %}
-        {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" {% if type == 'reply' %} aria-label="Reply"{% endif %} required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}</textarea>
-        {% endif %}
+        <div class="control">
+            {% if type == 'quotation' %}
+            <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.quote|default:'' }}</textarea>
+            {% elif type == 'reply' %}
+            {% include 'snippets/content_warning_field.html' with parent_status=status %}
+            <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" aria-label="{% trans 'Reply' %}" required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
+            {% else %}
+            {% include 'snippets/content_warning_field.html' with parent_status=status %}
+            <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.content|default:'' }}</textarea>
+            {% endif %}
+        </div>
     </div>
+
+    {# Supplemental fields #}
     {% if type == 'quotation' %}
-    <div class="control">
+    <div class="field">
         <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/content_warning_field.html' with parent_status=status %}
-        <textarea name="content" class="textarea is-small" id="id_content_quote-{{ book.id }}"></textarea>
+        <div class="control">
+            <textarea name="content" class="textarea" rows="3" id="id_content_quote-{{ book.id }}">{{ draft.content|default:'' }}</textarea>
+        </div>
+    </div>
+    {% elif type == 'comment' %}
+    <div>
+        {% active_shelf book as active_shelf %}
+        {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
+
+        {% with readthrough=book.latest_readthrough %}
+        <div class="field">
+            <input type="hidden" name="id" value="{{ readthrough.id }}"/>
+            <label class="label" for="progress-{{ uuid }}">{% trans "Progress:" %}</label>
+            <div class="field has-addons mb-0">
+                <div class="control">
+                    <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress-{{ uuid }}">
+                </div>
+                <div class="control">
+                    <div class="select">
+                        <select name="progress_mode" aria-label="Progress mode">
+                            <option value="PG" {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
+                            <option value="PCT" {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% if readthrough.progress_mode == 'PG' and book.pages %}
+            <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+        {% endwith %}
+        {% endif %}
     </div>
     {% endif %}
-    <input type="checkbox" class="hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if status.content_warning %}checked{% endif %} aria-hidden="true">
+
+
     {# bottom bar #}
-    <div class="columns pt-1">
+    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
+    
+    <div class="columns mt-1">
         <div class="field has-addons column">
             <div class="control">
                 {% trans "Include spoiler alert" as button_text %}
-                {% include 'snippets/toggle/toggle_button.html' with text=button_text icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=status.content_warning %}
+                {% firstof draft.content_warning status.content_warning as pressed %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text icon="warning is-size-4" controls_text="spoilers" controls_uid=uuid focus="id_content_warning" checkbox="id_show_spoilers" class="toggle-button" pressed=pressed %}
             </div>
             <div class="control">
             {% if type == 'direct' %}
                 <input type="hidden" name="privacy" value="direct">
                 <button type="button" class="button" aria-label="Privacy" disabled>{% trans "Private" %}</button>
             {% else %}
+                {% if draft %}
+                {% include 'snippets/privacy_select.html' with current=draft.privacy %}
+                {% else %}
                 {% include 'snippets/privacy_select.html' with current=reply_parent.privacy %}
+                {% endif %}
             {% endif %}
             </div>
         </div>

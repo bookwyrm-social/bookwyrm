@@ -1,11 +1,12 @@
-''' the good stuff! the books! '''
+""" the good stuff! the books! """
+from datetime import datetime
 import dateutil.parser
+import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
@@ -17,11 +18,10 @@ from .shelf import handle_unshelve
 @login_required
 @require_POST
 def start_reading(request, book_id):
-    ''' begin reading a book '''
+    """ begin reading a book """
     book = get_edition(book_id)
-    shelf = models.Shelf.objects.filter(
-        identifier='reading',
-        user=request.user
+    reading_shelf = models.Shelf.objects.filter(
+        identifier=models.Shelf.READING, user=request.user
     ).first()
 
     # create a readthrough
@@ -32,36 +32,38 @@ def start_reading(request, book_id):
         # create a progress update if we have a page
         readthrough.create_update()
 
-    # shelve the book
-    if request.POST.get('reshelve', True):
-        try:
-            current_shelf = models.Shelf.objects.get(
-                user=request.user,
-                edition=book
-            )
-            handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
-            pass
-    models.ShelfBook.objects.create(
-        book=book, shelf=shelf, user=request.user)
+    current_status_shelfbook = (
+        models.ShelfBook.objects.select_related("shelf")
+        .filter(
+            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+            user=request.user,
+            book=book,
+        )
+        .first()
+    )
+    if current_status_shelfbook is not None:
+        if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
+            handle_unshelve(book, current_status_shelfbook.shelf)
+        else:  # It already was on the shelf
+            return redirect(request.headers.get("Referer", "/"))
+
+    models.ShelfBook.objects.create(book=book, shelf=reading_shelf, user=request.user)
 
     # post about it (if you want)
-    if request.POST.get('post-status'):
-        privacy = request.POST.get('privacy')
-        handle_reading_status(request.user, shelf, book, privacy)
+    if request.POST.get("post-status"):
+        privacy = request.POST.get("privacy")
+        handle_reading_status(request.user, reading_shelf, book, privacy)
 
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
 @require_POST
 def finish_reading(request, book_id):
-    ''' a user completed a book, yay '''
+    """ a user completed a book, yay """
     book = get_edition(book_id)
-    shelf = models.Shelf.objects.filter(
-        identifier='read',
-        user=request.user
+    finished_read_shelf = models.Shelf.objects.filter(
+        identifier=models.Shelf.READ_FINISHED, user=request.user
     ).first()
 
     # update or create a readthrough
@@ -69,32 +71,37 @@ def finish_reading(request, book_id):
     if readthrough:
         readthrough.save()
 
-    # shelve the book
-    if request.POST.get('reshelve', True):
-        try:
-            current_shelf = models.Shelf.objects.get(
-                user=request.user,
-                edition=book
-            )
-            handle_unshelve(request.user, book, current_shelf)
-        except models.Shelf.DoesNotExist:
-            # this just means it isn't currently on the user's shelves
-            pass
+    current_status_shelfbook = (
+        models.ShelfBook.objects.select_related("shelf")
+        .filter(
+            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+            user=request.user,
+            book=book,
+        )
+        .first()
+    )
+    if current_status_shelfbook is not None:
+        if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
+            handle_unshelve(book, current_status_shelfbook.shelf)
+        else:  # It already was on the shelf
+            return redirect(request.headers.get("Referer", "/"))
+
     models.ShelfBook.objects.create(
-        book=book, shelf=shelf, user=request.user)
+        book=book, shelf=finished_read_shelf, user=request.user
+    )
 
     # post about it (if you want)
-    if request.POST.get('post-status'):
-        privacy = request.POST.get('privacy')
-        handle_reading_status(request.user, shelf, book, privacy)
+    if request.POST.get("post-status"):
+        privacy = request.POST.get("privacy")
+        handle_reading_status(request.user, finished_read_shelf, book, privacy)
 
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
 @require_POST
 def edit_readthrough(request):
-    ''' can't use the form because the dates are too finnicky '''
+    """ can't use the form because the dates are too finnicky """
     readthrough = update_readthrough(request, create=False)
     if not readthrough:
         return HttpResponseNotFound()
@@ -108,40 +115,46 @@ def edit_readthrough(request):
     # use default now for date field
     readthrough.create_update()
 
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
 @require_POST
 def delete_readthrough(request):
-    ''' remove a readthrough '''
-    readthrough = get_object_or_404(
-        models.ReadThrough, id=request.POST.get('id'))
+    """ remove a readthrough """
+    readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 
     # don't let people edit other people's data
     if request.user != readthrough.user:
         return HttpResponseBadRequest()
 
     readthrough.delete()
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
 @require_POST
 def create_readthrough(request):
-    ''' can't use the form because the dates are too finnicky '''
-    book = get_object_or_404(models.Edition, id=request.POST.get('book'))
+    """ can't use the form because the dates are too finnicky """
+    book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     readthrough = update_readthrough(request, create=True, book=book)
     if not readthrough:
         return redirect(book.local_path)
     readthrough.save()
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))
+
+
+def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    """ ensures that data is stored consistently in the UTC timezone """
+    user_tz = dateutil.tz.gettz(user.preferred_timezone)
+    start_date = dateutil.parser.parse(date_str, ignoretz=True)
+    return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
 
 
 def update_readthrough(request, book=None, create=True):
-    ''' updates but does not save dates on a readthrough '''
+    """ updates but does not save dates on a readthrough """
     try:
-        read_id = request.POST.get('id')
+        read_id = request.POST.get("id")
         if not read_id:
             raise models.ReadThrough.DoesNotExist
         readthrough = models.ReadThrough.objects.get(id=read_id)
@@ -153,24 +166,25 @@ def update_readthrough(request, book=None, create=True):
             book=book,
         )
 
-    start_date = request.POST.get('start_date')
+    start_date = request.POST.get("start_date")
     if start_date:
         try:
-            start_date = timezone.make_aware(dateutil.parser.parse(start_date))
-            readthrough.start_date = start_date
+            readthrough.start_date = load_date_in_user_tz_as_utc(
+                start_date, request.user
+            )
         except ParserError:
             pass
 
-    finish_date = request.POST.get('finish_date')
+    finish_date = request.POST.get("finish_date")
     if finish_date:
         try:
-            finish_date = timezone.make_aware(
-                dateutil.parser.parse(finish_date))
-            readthrough.finish_date = finish_date
+            readthrough.finish_date = load_date_in_user_tz_as_utc(
+                finish_date, request.user
+            )
         except ParserError:
             pass
 
-    progress = request.POST.get('progress')
+    progress = request.POST.get("progress")
     if progress:
         try:
             progress = int(progress)
@@ -178,7 +192,7 @@ def update_readthrough(request, book=None, create=True):
         except ValueError:
             pass
 
-    progress_mode = request.POST.get('progress_mode')
+    progress_mode = request.POST.get("progress_mode")
     if progress_mode:
         try:
             progress_mode = models.ProgressMode(progress_mode)
@@ -191,15 +205,16 @@ def update_readthrough(request, book=None, create=True):
 
     return readthrough
 
+
 @login_required
 @require_POST
 def delete_progressupdate(request):
-    ''' remove a progress update '''
-    update = get_object_or_404(models.ProgressUpdate, id=request.POST.get('id'))
+    """ remove a progress update """
+    update = get_object_or_404(models.ProgressUpdate, id=request.POST.get("id"))
 
     # don't let people edit other people's data
     if request.user != update.user:
         return HttpResponseBadRequest()
 
     update.delete()
-    return redirect(request.headers.get('Referer', '/'))
+    return redirect(request.headers.get("Referer", "/"))

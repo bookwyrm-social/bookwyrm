@@ -1,0 +1,58 @@
+{% extends 'get_started/layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Create your profile" %}</h2>
+    {% if form.non_field_errors %}
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+    {% endif %}
+    <form name="edit-profile" action="{% url 'get-started-profile' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="columns">
+            <div class="column is-two-thirds">
+                <div class="block">
+                    <label class="label" for="id_name">{% trans "Display name:" %}</label>
+                    <input type="text" name="name" maxlength="100" class="input" id="id_name" placeholder="{{ user.localname }}" value="{% if request.user.name %}{{ request.user.name }}{% endif %}">
+                    {% for error in form.name.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+                <div class="block">
+                    <label class="label" for="id_summary">{% trans "Summary:" %}</label>
+                    <textarea name="summary" cols="None" rows="None" class="textarea" id="id_summary" placeholder="{% trans 'A little bit about you' %}">{% if request.user.summary %}{{ request.user.summary }}{% endif %}</textarea>
+                    {% for error in form.summary.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="column is-one-third">
+                <div class="block">
+                    <label class="label" for="id_avatar">{% trans "Avatar:" %}</label>
+                    {{ form.avatar }}
+                    {% for error in form.avatar.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="block">
+            <label class="checkbox label" for="id_manually_approves_followers">
+                {% trans "Manually approve followers:" %}
+                {{ form.manually_approves_followers }}
+            </label>
+        </div>
+        <div class="block">
+            <label class="checkbox label" for="id_discoverable">
+                {% trans "Show this account in suggested users:" %}
+                <input type="checkbox" name="discoverable" class="checkbox" id="id_discoverable" value="{{ request.user.discoverable }}">
+            </label>
+            {% url 'directory' as path %}
+            <p class="help">{% trans "Your account will show up in the directory, and may be recommended to other BookWyrm users." %}</p>
+        </div>
+        <div class="block"><button class="button is-primary" type="submit">{% trans "Save &amp; continue" %}</button></div>
+    </form>
+</div>
+{% endblock %}
+

@@ -3,7 +3,7 @@
 {% load bookwyrm_tags %}
 
 {% block panel %}
-{% if items.exists and list.user == request.user %}
+{% if items.object_list.exists and list.user == request.user %}
 <section class="block">
     <h2 class="title is-4">{% trans "Post list to feed" %}</h2>
     <div class="block column is-three-quarters">
@@ -22,14 +22,14 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
-        {% if not items.exists %}
+        {% if not items.object_list.exists %}
         <p>{% trans "This list is currently empty" %}</p>
         {% else %}
-        <ol>
+        <ol start="{{ items.start_index }}">
         {% for item in items %}
             <li class="block pb-3">
                 <div class="card">
-                    <div class="card-content columns p-0 mb-0 is-mobile">
+                    <div class="card-content columns p-0 pr-2 mb-0 is-mobile">
                         <div class="column is-narrow pt-0 pb-0">
                             <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
                         </div>
@@ -39,11 +39,27 @@
                             {% include 'snippets/shelve_button/shelve_button.html' with book=item.book %}
                         </div>
                     </div>
-                    <div class="card-footer has-background-white-bis">
+                    <div class="card-footer has-background-white-bis is-align-items-baseline">
                         <div class="card-footer-item">
+                            <div>
                             <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
+                            </div>
                         </div>
                         {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}
+                        <div class="card-footer-item">
+                            <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
+                                <div class="field has-addons mb-0">
+                                    {% csrf_token %}
+                                    <div class="control">
+                                        <input id="input-list-position" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
+                                    </div>
+                                    <div class="control">
+                                        <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
+                                    </div>
+                                </div>
+                                <label for="input-list-position" class="help">{% trans "List position" %}</label>
+                            </form>
+                        </div>
                         <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
                             {% csrf_token %}
                             <input type="hidden" name="item" value="{{ item.id }}">
@@ -56,10 +72,27 @@
         {% endfor %}
         </ol>
         {% endif %}
+        {% include "snippets/pagination.html" with page=items %}
     </section>
 
-    {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
     <section class="column is-one-quarter content">
+        <h2>{% trans "Sort List" %}</h2>
+        <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
+            <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
+            <div class="select is-fullwidth">
+                {{ sort_form.sort_by }}
+            </div>
+            <label class="label" for="id_direction">{% trans "Direction" %}</label>
+            <div class="select is-fullwidth">
+                {{ sort_form.direction }}
+            </div>
+            <div>
+                <button class="button is-primary is-fullwidth" type="submit">
+                    {% trans "Sort List" %}
+                </button>
+            </div>
+        </form>
+    {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
         <h2>{% if list.curation == 'open' or request.user == list.user %}{% trans "Add Books" %}{% else %}{% trans "Suggest Books" %}{% endif %}</h2>
         <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field has-addons">
@@ -92,16 +125,17 @@
             </div>
             <div class="column">
                 <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-                <form name="add-book" method="post" action="{% url 'list-add-book' list.id %}">
+                <form name="add-book" method="post" action="{% url 'list-add-book' %}">
                     {% csrf_token %}
                     <input type="hidden" name="book" value="{{ book.id }}">
+                    <input type="hidden" name="list" value="{{ list.id }}">
                     <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
                 </form>
             </div>
         </div>
         {% endif %}
         {% endfor %}
-    </section>
     {% endif %}
+    </section>
 </div>
 {% endblock %}
