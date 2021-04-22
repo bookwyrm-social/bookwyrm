@@ -224,4 +224,3 @@ def get_lang():
     """ get current language, strip to the first two letters """
     language = utils.translation.get_language()
     return language[0 : language.find("-")]
-
