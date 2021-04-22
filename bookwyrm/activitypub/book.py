@@ -11,6 +11,7 @@ class Book(ActivityObject):
     """ serializes an edition or work, abstract """
 
     title: str
+    lastEditedBy: str = None
     sortTitle: str = ""
     subtitle: str = ""
     description: str = ""

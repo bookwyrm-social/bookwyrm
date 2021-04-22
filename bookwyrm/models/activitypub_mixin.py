@@ -148,14 +148,14 @@ class ActivitypubMixin:
         mentions = self.recipients if hasattr(self, "recipients") else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or []]
+        recipients = [u.inbox for u in mentions or [] if not u.local]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
             queryset = user_model.viewer_aware_objects(user).filter(
                 local=False,
-            )
+            ).distinct()
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
@@ -175,7 +175,7 @@ class ActivitypubMixin:
                 "inbox", flat=True
             )
             recipients += list(shared_inboxes) + list(inboxes)
-        return recipients
+        return list(set(recipients))
 
     def to_activity_dataclass(self):
         """ convert from a model to an activity """
