@@ -120,11 +120,11 @@ class StatusForm(CustomForm):
         model = models.Status
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
+
 class ListStatusForm(CustomForm):
     class Meta:
         model = models.GeneratedNote
-        fields = [
-            'user', 'content', 'privacy', 'mention_books']
+        fields = ["user", "content", "privacy", "mention_books"]
 
 
 class EditUserForm(CustomForm):

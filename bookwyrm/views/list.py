@@ -156,7 +156,7 @@ class List(View):
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
             "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
-            'status_form': forms.ListStatusForm(),
+            "status_form": forms.ListStatusForm(),
             "query": query or "",
             "sort_form": forms.SortListForm(
                 {"direction": direction, "sort_by": sort_by}
