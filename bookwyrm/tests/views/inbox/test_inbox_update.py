@@ -23,6 +23,16 @@ class InboxUpdate(TestCase):
         )
         self.local_user.remote_id = "https://example.com/user/mouse"
         self.local_user.save(broadcast=False)
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
 
         self.create_json = {
             "id": "hi",
@@ -34,7 +44,7 @@ class InboxUpdate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_handle_update_list(self):
+    def test_update_list(self):
         """ a new list """
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
@@ -68,7 +78,7 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_handle_update_user(self):
+    def test_update_user(self):
         """ update an existing user """
         # we only do this with remote users
         self.local_user.local = False
@@ -94,7 +104,7 @@ class InboxUpdate(TestCase):
         self.assertEqual(user.localname, "mouse")
         self.assertTrue(user.discoverable)
 
-    def test_handle_update_edition(self):
+    def test_update_edition(self):
         """ update an existing edition """
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
         bookdata = json.loads(datafile.read_bytes())
@@ -123,7 +133,7 @@ class InboxUpdate(TestCase):
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
 
-    def test_handle_update_work(self):
+    def test_update_work(self):
         """ update an existing edition """
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_work.json")
         bookdata = json.loads(datafile.read_bytes())
