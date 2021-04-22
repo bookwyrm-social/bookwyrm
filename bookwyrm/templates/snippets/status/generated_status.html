@@ -13,7 +13,7 @@
     </div>
     <div class="column">
         <h3 class="title is-6 mb-1">{% include 'snippets/book_titleby.html' with book=book %}</h3>
-        <p>{{ book|book_description|default:""|truncatewords_html:20 }}</p>
+        <p>{{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}</p>
         {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
     </div>
 </div>
