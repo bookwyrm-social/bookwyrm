@@ -132,6 +132,7 @@ class InboxUpdate(TestCase):
             )
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
+        self.assertEqual(book.last_edited_by, self.remote_user)
 
     def test_update_work(self):
         """ update an existing edition """
