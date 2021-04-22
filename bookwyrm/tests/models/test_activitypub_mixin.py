@@ -155,8 +155,8 @@ class ActivitypubMixins(TestCase):
 
         recipients = ActivitypubMixin.get_recipients(mock_self)
         self.assertEqual(len(recipients), 2)
-        self.assertEqual(recipients[0], another_remote_user.inbox)
-        self.assertEqual(recipients[1], self.remote_user.inbox)
+        self.assertTrue(another_remote_user.inbox in recipients)
+        self.assertTrue(self.remote_user.inbox in recipients)
 
     def test_get_recipients_direct(self, _):
         """ determines the recipients for a user's object broadcast """

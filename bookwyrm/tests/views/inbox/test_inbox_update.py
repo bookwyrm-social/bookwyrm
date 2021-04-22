@@ -80,14 +80,22 @@ class InboxUpdate(TestCase):
 
     def test_update_user(self):
         """ update an existing user """
-        # we only do this with remote users
-        self.local_user.local = False
-        self.local_user.save()
+        models.UserFollows.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user,
+        )
+        models.UserFollows.objects.create(
+            user_subject=self.remote_user,
+            user_object=self.local_user,
+        )
+        self.assertTrue(self.remote_user in self.local_user.followers.all())
+        self.assertTrue(self.local_user in self.remote_user.followers.all())
 
-        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_user.json")
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_user_rat.json")
         userdata = json.loads(datafile.read_bytes())
         del userdata["icon"]
-        self.assertIsNone(self.local_user.name)
+        self.assertIsNone(self.remote_user.name)
+        self.assertFalse(self.remote_user.discoverable)
         views.inbox.activity_task(
             {
                 "type": "Update",
@@ -98,11 +106,14 @@ class InboxUpdate(TestCase):
                 "object": userdata,
             }
         )
-        user = models.User.objects.get(id=self.local_user.id)
-        self.assertEqual(user.name, "MOUSE?? MOUSE!!")
-        self.assertEqual(user.username, "mouse@example.com")
-        self.assertEqual(user.localname, "mouse")
+        user = models.User.objects.get(id=self.remote_user.id)
+        self.assertEqual(user.name, "RAT???")
+        self.assertEqual(user.username, "rat@example.com")
         self.assertTrue(user.discoverable)
+
+        # make sure relationships aren't disrupted
+        self.assertTrue(self.remote_user in self.local_user.followers.all())
+        self.assertTrue(self.local_user in self.remote_user.followers.all())
 
     def test_update_edition(self):
         """ update an existing edition """
