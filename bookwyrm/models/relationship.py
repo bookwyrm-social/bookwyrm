@@ -101,12 +101,15 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
     def save(self, *args, broadcast=True, **kwargs):
         """ make sure the follow or block relationship doesn't already exist """
-        # don't create a request if a follow already exists
+        # if there's a request for a follow that already exists, accept it
+        # without changing the local database state
         if UserFollows.objects.filter(
             user_subject=self.user_subject,
             user_object=self.user_object,
         ).exists():
-            raise IntegrityError()
+            self.accept(broadcast_only=True)
+            return
+
         # blocking in either direction is a no-go
         if UserBlocks.objects.filter(
             Q(
@@ -141,9 +144,9 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
         """ get id for sending an accept or reject of a local user """
 
         base_path = self.user_object.remote_id
-        return "%s#%s/%d" % (base_path, status, self.id)
+        return "%s#%s/%d" % (base_path, status, self.id or 0)
 
-    def accept(self):
+    def accept(self, broadcast_only=False):
         """ turn this request into the real deal"""
         user = self.user_object
         if not self.user_subject.local:
@@ -153,6 +156,9 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
                 object=self.to_activity(),
             ).serialize()
             self.broadcast(activity, user)
+        if broadcast_only:
+            return
+
         with transaction.atomic():
             UserFollows.from_request(self)
             self.delete()
