@@ -278,7 +278,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         if value is None or value is MISSING:
             return None
         if not isinstance(value, list):
-            # TODO
+            # If this is a link, we currently aren't doing anything with it
             return None
         items = []
         for remote_id in value:
