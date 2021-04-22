@@ -65,6 +65,7 @@ class Author(ActivityObject):
     """ author of a book """
 
     name: str
+    lastEditedBy: str = None
     born: str = None
     died: str = None
     aliases: List[str] = field(default_factory=lambda: [])

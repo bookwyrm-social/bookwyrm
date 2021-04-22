@@ -153,9 +153,13 @@ class ActivitypubMixin:
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.viewer_aware_objects(user).filter(
-                local=False,
-            ).distinct()
+            queryset = (
+                user_model.viewer_aware_objects(user)
+                .filter(
+                    local=False,
+                )
+                .distinct()
+            )
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
             if software:
