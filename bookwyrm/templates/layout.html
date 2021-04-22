@@ -1,7 +1,7 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">

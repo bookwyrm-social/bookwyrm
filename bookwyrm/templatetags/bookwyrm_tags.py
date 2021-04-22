@@ -1,7 +1,7 @@
 """ template filters """
 from uuid import uuid4
 
-from django import template
+from django import template, utils
 from django.db.models import Avg
 
 from bookwyrm import models, views
@@ -217,3 +217,10 @@ def active_read_through(book, user):
 def comparison_bool(str1, str2):
     """ idk why I need to write a tag for this, it reutrns a bool """
     return str1 == str2
+
+
+@register.simple_tag(takes_context=False)
+def get_lang():
+    """ get current language, strip to the first two letters """
+    language = utils.translation.get_language()
+    return language[0:language.find('-')]
