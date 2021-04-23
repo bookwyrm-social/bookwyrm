@@ -316,7 +316,7 @@
             {% endfor %}
         </div>
         <div class="block">
-            {% include 'snippets/pagination.html' with page=statuses path=book.local_path anchor="#reviews" %}
+            {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
         </div>
     </div>
 </div>
