@@ -204,7 +204,11 @@ class ObjectMixin(ActivitypubMixin):
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
-        if not broadcast:
+        if (
+            not broadcast
+            or hasattr(self, "status_type")
+            and self.status_type == "Announce"
+        ):
             return
 
         # this will work for objects owned by a user (lists, shelves)
