@@ -171,6 +171,8 @@ def get_next_shelf(current_shelf):
 @register.filter(name="title")
 def get_title(book):
     """ display the subtitle if the title is short """
+    if not book:
+        return ""
     title = book.title
     if len(title) < 6 and book.subtitle:
         title = "{:s}: {:s}".format(title, book.subtitle)
