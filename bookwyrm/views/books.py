@@ -47,25 +47,22 @@ class Book(View):
 
         # all reviews for the book
         reviews = privacy_filter(
-            request.user,
-            models.Review.objects.filter(book__in=work.editions.all())
+            request.user, models.Review.objects.filter(book__in=work.editions.all())
         )
 
         # the reviews to show
         if user_statuses and request.user.is_authenticated:
-            if user_statuses == 'review':
+            if user_statuses == "review":
                 queryset = book.review_set
-            elif user_statuses == 'comment':
+            elif user_statuses == "comment":
                 queryset = book.comment_set
             else:
                 queryset = book.quotation_set
-            paginated = Paginator(
-                queryset.filter(user=request.user), PAGE_LENGTH
-            )
+            queryset = queryset.filter(user=request.user)
         else:
-            paginated = Paginator(
-                reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
-            )
+            queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
+        paginated = Paginator(queryset, PAGE_LENGTH)
+
         data = {
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),

@@ -251,7 +251,7 @@
             <ul>
                 {% url 'book' book.id as tab_url %}
                 <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                    <a href="{{ tab_url }}">{% trans "Reviews" %}</a>
+                    <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
                 </li>
                 {% if user_statuses.review_count %}
                 {% url 'book-user-statuses' book.id 'review' as tab_url %}
