@@ -6,30 +6,30 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0069_auto_20210422_1604'),
+        ("bookwyrm", "0069_auto_20210422_1604"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='usertag',
+            name="usertag",
             unique_together=None,
         ),
         migrations.RemoveField(
-            model_name='usertag',
-            name='book',
+            model_name="usertag",
+            name="book",
         ),
         migrations.RemoveField(
-            model_name='usertag',
-            name='tag',
+            model_name="usertag",
+            name="tag",
         ),
         migrations.RemoveField(
-            model_name='usertag',
-            name='user',
+            model_name="usertag",
+            name="user",
         ),
         migrations.DeleteModel(
-            name='Tag',
+            name="Tag",
         ),
         migrations.DeleteModel(
-            name='UserTag',
+            name="UserTag",
         ),
     ]
