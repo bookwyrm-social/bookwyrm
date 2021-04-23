@@ -28,7 +28,7 @@ from .helpers import is_api_request, get_edition, privacy_filter
 class Book(View):
     """ a book! this is the stuff """
 
-    def get(self, request, book_id):
+    def get(self, request, book_id, user_statuses=False):
         """ info about a book """
         try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
@@ -40,22 +40,42 @@ class Book(View):
 
         if isinstance(book, models.Work):
             book = book.get_default_edition()
-        if not book:
+        if not book or not book.parent_work:
             return HttpResponseNotFound()
 
         work = book.parent_work
-        if not work:
-            return HttpResponseNotFound()
 
         # all reviews for the book
-        reviews = models.Review.objects.filter(book__in=work.editions.all())
-        reviews = privacy_filter(request.user, reviews)
+        reviews = privacy_filter(
+            request.user,
+            models.Review.objects.filter(book__in=work.editions.all())
+        )
 
         # the reviews to show
-        paginated = Paginator(
-            reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
-        )
-        reviews_page = paginated.get_page(request.GET.get("page"))
+        if user_statuses and request.user.is_authenticated:
+            if user_statuses == 'review':
+                queryset = book.review_set
+            elif user_statuses == 'comment':
+                queryset = book.comment_set
+            else:
+                queryset = book.quotation_set
+            paginated = Paginator(
+                queryset.filter(user=request.user), PAGE_LENGTH
+            )
+        else:
+            paginated = Paginator(
+                reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
+            )
+        data = {
+            "book": book,
+            "statuses": paginated.get_page(request.GET.get("page")),
+            "review_count": reviews.count(),
+            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
+            "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
+            "lists": privacy_filter(
+                request.user, book.list_set.filter(listitem__approved=True)
+            ),
+        }
 
         if request.user.is_authenticated:
             readthroughs = models.ReadThrough.objects.filter(
@@ -67,29 +87,24 @@ class Book(View):
                 readthrough.progress_updates = (
                     readthrough.progressupdate_set.all().order_by("-updated_date")
                 )
+            data["readthroughs"] = readthroughs
 
-            user_shelves = models.ShelfBook.objects.filter(user=request.user, book=book)
+            data["user_shelves"] = models.ShelfBook.objects.filter(
+                user=request.user, book=book
+            )
 
-            other_edition_shelves = models.ShelfBook.objects.filter(
+            data["other_edition_shelves"] = models.ShelfBook.objects.filter(
                 ~Q(book=book),
                 user=request.user,
                 book__parent_work=book.parent_work,
             )
 
-        data = {
-            "book": book,
-            "reviews": reviews_page,
-            "review_count": reviews.count(),
-            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
-            "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
-            "lists": privacy_filter(
-                request.user, book.list_set.filter(listitem__approved=True)
-            ),
-            "user_shelves": user_shelves,
-            "other_edition_shelves": other_edition_shelves,
-            "readthroughs": readthroughs,
-            "path": "/book/%s" % book_id,
-        }
+            data["user_statuses"] = {
+                "review_count": book.review_set.filter(user=request.user).count(),
+                "comment_count": book.comment_set.filter(user=request.user).count(),
+                "quotation_count": book.quotation_set.filter(user=request.user).count(),
+            }
+
         return TemplateResponse(request, "book/book.html", data)
 
 
