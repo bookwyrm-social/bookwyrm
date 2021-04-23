@@ -1,5 +1,4 @@
 """ the good stuff! the books! """
-from datetime import datetime
 from uuid import uuid4
 
 from dateutil.parser import parse as dateparse
@@ -32,11 +31,6 @@ class Book(View):
     def get(self, request, book_id):
         """ info about a book """
         try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
-        try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
             return HttpResponseNotFound()
@@ -61,7 +55,7 @@ class Book(View):
         paginated = Paginator(
             reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
         )
-        reviews_page = paginated.page(page)
+        reviews_page = paginated.get_page(request.GET.get("page"))
 
         user_tags = readthroughs = user_shelves = other_edition_shelves = []
         if request.user.is_authenticated:
@@ -175,18 +169,18 @@ class EditBook(View):
             data["confirm_mode"] = True
             # this isn't preserved because it isn't part of the form obj
             data["remove_authors"] = request.POST.getlist("remove_authors")
-            # we have to make sure the dates are passed in as datetime, they're currently a string
+            # make sure the dates are passed in as datetime, they're currently a string
             # QueryDicts are immutable, we need to copy
             formcopy = data["form"].data.copy()
             try:
                 formcopy["first_published_date"] = dateparse(
                     formcopy["first_published_date"]
                 )
-            except MultiValueDictKeyError:
+            except (MultiValueDictKeyError, ValueError):
                 pass
             try:
                 formcopy["published_date"] = dateparse(formcopy["published_date"])
-            except MultiValueDictKeyError:
+            except (MultiValueDictKeyError, ValueError):
                 pass
             data["form"].data = formcopy
             return TemplateResponse(request, "book/edit_book.html", data)
@@ -267,11 +261,6 @@ class Editions(View):
         """ list of editions of a book """
         work = get_object_or_404(models.Work, id=book_id)
 
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
         filters = {}
@@ -281,12 +270,12 @@ class Editions(View):
         if request.GET.get("format"):
             filters["physical_format__iexact"] = request.GET.get("format")
 
-        editions = work.editions.order_by("-edition_rank").all()
+        editions = work.editions.order_by("-edition_rank")
         languages = set(sum([e.languages for e in editions], []))
 
-        paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
+        paginated = Paginator(editions.filter(**filters), PAGE_LENGTH)
         data = {
-            "editions": paginated.page(page),
+            "editions": paginated.get_page(request.GET.get("page")),
             "work": work,
             "languages": languages,
             "formats": set(

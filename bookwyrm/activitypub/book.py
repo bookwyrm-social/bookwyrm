@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .base_activity import ActivityObject
-from .image import Image
+from .image import Document
 
 
 @dataclass(init=False)
@@ -11,6 +11,7 @@ class Book(ActivityObject):
     """ serializes an edition or work, abstract """
 
     title: str
+    lastEditedBy: str = None
     sortTitle: str = ""
     subtitle: str = ""
     description: str = ""
@@ -28,7 +29,7 @@ class Book(ActivityObject):
     librarythingKey: str = ""
     goodreadsKey: str = ""
 
-    cover: Image = None
+    cover: Document = None
     type: str = "Book"
 
 
@@ -64,6 +65,7 @@ class Author(ActivityObject):
     """ author of a book """
 
     name: str
+    lastEditedBy: str = None
     born: str = None
     died: str = None
     aliases: List[str] = field(default_factory=lambda: [])

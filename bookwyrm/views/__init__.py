@@ -6,6 +6,8 @@ from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .directory import Directory
 from .federation import Federation, FederatedServer
+from .federation import AddFederatedServer, ImportServerBlocklist
+from .federation import block_server, unblock_server
 from .feed import DirectMessage, Feed, Replies, Status
 from .follow import follow, unfollow
 from .follow import accept_follow_request, delete_follow_request
@@ -23,7 +25,7 @@ from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
 from .reading import start_reading, finish_reading, delete_progressupdate
-from .reports import Report, Reports, make_report, resolve_report, deactivate_user
+from .reports import Report, Reports, make_report, resolve_report, suspend_user
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword
 from .search import Search
@@ -34,5 +36,5 @@ from .site import Site
 from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
 from .updates import get_notification_count, get_unread_status_count
 from .user import User, EditUser, Followers, Following
-from .user_admin import UserAdmin
+from .user_admin import UserAdmin, UserAdminList
 from .wellknown import *

@@ -12,7 +12,7 @@ from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
 from .helpers import get_user_from_username, privacy_filter, get_suggested_users
-from .helpers import is_api_request, is_bookwyrm_request, object_visible_to_user
+from .helpers import is_api_request, is_bookwyrm_request
 
 
 # pylint: disable= no-self-use
@@ -22,11 +22,6 @@ class Feed(View):
 
     def get(self, request, tab):
         """ user's homepage with activity feed """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         if not tab in STREAMS:
             tab = "home"
 
@@ -39,7 +34,7 @@ class Feed(View):
             **feed_page_data(request.user),
             **{
                 "user": request.user,
-                "activities": paginated.page(page),
+                "activities": paginated.get_page(request.GET.get("page")),
                 "suggested_users": suggested_users,
                 "tab": tab,
                 "goal_form": forms.GoalForm(),
@@ -55,11 +50,6 @@ class DirectMessage(View):
 
     def get(self, request, username=None):
         """ like a feed but for dms only """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         # remove fancy subclasses of status, keep just good ol' notes
         queryset = models.Status.objects.filter(
             review__isnull=True,
@@ -82,13 +72,12 @@ class DirectMessage(View):
         ).order_by("-published_date")
 
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.page(page)
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
                 "partner": user,
-                "activities": activity_page,
+                "activities": paginated.get_page(request.GET.get("page")),
                 "path": "/direct-messages",
             },
         }
@@ -105,7 +94,7 @@ class Status(View):
             status = models.Status.objects.select_subclasses().get(
                 id=status_id, deleted=False
             )
-        except (ValueError, models.Status.DoesNotExist):
+        except (ValueError, models.Status.DoesNotExist, models.User.DoesNotExist):
             return HttpResponseNotFound()
 
         # the url should have the poster's username in it
@@ -113,7 +102,7 @@ class Status(View):
             return HttpResponseNotFound()
 
         # make sure the user is authorized to see the status
-        if not object_visible_to_user(request.user, status):
+        if not status.visible_to_user(request.user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -174,7 +163,7 @@ def get_suggested_books(user, max_books=5):
         )
         shelf = user.shelf_set.get(identifier=preset)
 
-        shelf_books = shelf.shelfbook_set.order_by("-updated_date").all()[:limit]
+        shelf_books = shelf.shelfbook_set.order_by("-updated_date")[:limit]
         if not shelf_books:
             continue
         shelf_preview = {

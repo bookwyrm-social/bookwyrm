@@ -1,4 +1,4 @@
-""" undo wrapper activity """
+""" activities that do things """
 from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
@@ -9,23 +9,25 @@ from .ordered_collection import CollectionItem
 
 @dataclass(init=False)
 class Verb(ActivityObject):
-    """generic fields for activities - maybe an unecessary level of
-    abstraction but w/e"""
+    """generic fields for activities """
 
     actor: str
     object: ActivityObject
 
     def action(self):
-        """ usually we just want to save, this can be overridden as needed """
-        self.object.to_model()
+        """ usually we just want to update and save """
+        # self.object may return None if the object is invalid in an expected way
+        # ie, Question type
+        if self.object:
+            self.object.to_model()
 
 
 @dataclass(init=False)
 class Create(Verb):
     """ Create activity """
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     signature: Signature = None
     type: str = "Create"
 
@@ -34,26 +36,38 @@ class Create(Verb):
 class Delete(Verb):
     """ Create activity """
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
     def action(self):
         """ find and delete the activity object """
-        obj = self.object.to_model(save=False, allow_create=False)
-        obj.delete()
+        if not self.object:
+            return
+
+        if isinstance(self.object, str):
+            # Deleted users are passed as strings. Not wild about this fix
+            model = apps.get_model("bookwyrm.User")
+            obj = model.find_existing_by_remote_id(self.object)
+        else:
+            obj = self.object.to_model(save=False, allow_create=False)
+
+        if obj:
+            obj.delete()
+        # if we can't find it, we don't need to delete it because we don't have it
 
 
 @dataclass(init=False)
 class Update(Verb):
     """ Update activity """
 
-    to: List
+    to: List[str]
     type: str = "Update"
 
     def action(self):
         """ update a model instance from the dataclass """
-        self.object.to_model(allow_create=False)
+        if self.object:
+            self.object.to_model(allow_create=False)
 
 
 @dataclass(init=False)
@@ -162,7 +176,8 @@ class Remove(Add):
     def action(self):
         """ find and remove the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
-        obj.delete()
+        if obj:
+            obj.delete()
 
 
 @dataclass(init=False)

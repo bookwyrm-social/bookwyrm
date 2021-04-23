@@ -30,11 +30,6 @@ class ManageInvites(View):
 
     def get(self, request):
         """ invite management page """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         paginated = Paginator(
             models.SiteInvite.objects.filter(user=request.user).order_by(
                 "-created_date"
@@ -43,7 +38,7 @@ class ManageInvites(View):
         )
 
         data = {
-            "invites": paginated.page(page),
+            "invites": paginated.get_page(request.GET.get("page")),
             "form": forms.CreateInviteForm(),
         }
         return TemplateResponse(request, "settings/manage_invites.html", data)
@@ -93,11 +88,6 @@ class ManageInviteRequests(View):
     def get(self, request):
         """ view a list of requests """
         ignored = request.GET.get("ignored", False)
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         sort = request.GET.get("sort")
         sort_fields = [
             "created_date",
@@ -136,7 +126,7 @@ class ManageInviteRequests(View):
         data = {
             "ignored": ignored,
             "count": paginated.count,
-            "requests": paginated.page(page),
+            "requests": paginated.get_page(request.GET.get("page")),
             "sort": sort,
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)

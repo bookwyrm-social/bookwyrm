@@ -1,9 +1,19 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
-<a href="{{ status.user.local_path }}">
-{% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
-{{ status.user.display_name }}
-</a>
+<span
+    itemprop="author"
+    itemscope
+    itemtype="https://schema.org/Person"
+>
+    <a
+        href="{{ status.user.local_path }}"
+        itemprop="url"
+    >
+        {% include 'snippets/avatar.html' with user=status.user ariaHide="true" %}
+
+        <span itemprop="name">{{ status.user.display_name }}</span>
+    </a>
+</span>
 
 {% if status.status_type == 'GeneratedNote' %}
     {{ status.content | safe }}
@@ -30,10 +40,29 @@
 
     {% endwith %}
 {% endif %}
+
 {% if status.book %}
-<a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>
+    {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
+        <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>{% if status.status_type == 'Rating' %}:
+        <span
+            itemprop="reviewRating"
+            itemscope
+            itemtype="https://schema.org/Rating"
+        >
+        <span class="is-hidden" {{ rating_type }}>
+            <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                {# @todo Is it possible to not hard-code the value? #}
+                <meta itemprop="bestRating" content="5">
+        </span>
+
+        {% include 'snippets/stars.html' with rating=status.rating %}
+        {% endif %}
+    {% else %}
+        {% include 'snippets/book_titleby.html' with book=status.book %}
+    {% endif %}
 {% elif status.mention_books %}
-<a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
+    <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
 {% endif %}
 
 {% if status.progress %}

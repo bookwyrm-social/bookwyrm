@@ -275,9 +275,12 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         return [i.remote_id for i in value.all()]
 
     def field_from_activity(self, value):
-        items = []
         if value is None or value is MISSING:
-            return []
+            return None
+        if not isinstance(value, list):
+            # If this is a link, we currently aren't doing anything with it
+            return None
+        items = []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)
@@ -336,7 +339,7 @@ def image_serializer(value, alt):
     else:
         return None
     url = "https://%s%s" % (DOMAIN, url)
-    return activitypub.Image(url=url, name=alt)
+    return activitypub.Document(url=url, name=alt)
 
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):

@@ -24,6 +24,16 @@ from .federated_server import FederatedServer
 from . import fields, Review
 
 
+DeactivationReason = models.TextChoices(
+    "DeactivationReason",
+    [
+        "self_deletion",
+        "moderator_deletion",
+        "domain_block",
+    ],
+)
+
+
 class User(OrderedCollectionPageMixin, AbstractUser):
     """ a user who wants to read books """
 
@@ -111,6 +121,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         default=str(pytz.utc),
         max_length=255,
     )
+    deactivation_reason = models.CharField(
+        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+    )
 
     name_field = "username"
     property_fields = [("following_link", "following")]
@@ -132,13 +145,18 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return self.name
         return self.localname or self.username
 
+    @property
+    def deleted(self):
+        """ for consistent naming """
+        return not self.is_active
+
     activity_serializer = activitypub.Person
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
         """ the user queryset filtered for the context of the logged in user """
         queryset = cls.objects.filter(is_active=True)
-        if viewer.is_authenticated:
+        if viewer and viewer.is_authenticated:
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
@@ -192,6 +210,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
+        if not self.is_active:
+            return self.remote_id
+
         activity_object = super().to_activity(**kwargs)
         activity_object["@context"] = [
             "https://www.w3.org/ns/activitystreams",
@@ -269,6 +290,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 user=self,
                 editable=False,
             ).save(broadcast=False)
+
+    def delete(self, *args, **kwargs):
+        """ deactivate rather than delete a user """
+        self.is_active = False
+        # skip the logic in this class's save()
+        super().save(*args, **kwargs)
 
     @property
     def local_path(self):

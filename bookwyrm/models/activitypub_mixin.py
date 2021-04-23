@@ -148,13 +148,17 @@ class ActivitypubMixin:
         mentions = self.recipients if hasattr(self, "recipients") else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or []]
+        recipients = [u.inbox for u in mentions or [] if not u.local]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.objects.filter(
-                local=False,
+            queryset = (
+                user_model.viewer_aware_objects(user)
+                .filter(
+                    local=False,
+                )
+                .distinct()
             )
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
@@ -175,7 +179,7 @@ class ActivitypubMixin:
                 "inbox", flat=True
             )
             recipients += list(shared_inboxes) + list(inboxes)
-        return recipients
+        return list(set(recipients))
 
     def to_activity_dataclass(self):
         """ convert from a model to an activity """
@@ -193,7 +197,7 @@ class ObjectMixin(ActivitypubMixin):
     def save(self, *args, created=None, **kwargs):
         """ broadcast created/updated/deleted objects as appropriate """
         broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg woul cause an error in the base save method
+        # this bonus kwarg would cause an error in the base save method
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
 
@@ -359,6 +363,10 @@ class CollectionItemMixin(ActivitypubMixin):
 
     activity_serializer = activitypub.CollectionItem
 
+    def broadcast(self, activity, sender, software="bookwyrm"):
+        """ only send book collection updates to other bookwyrm instances """
+        super().broadcast(activity, sender, software=software)
+
     @property
     def privacy(self):
         """ inherit the privacy of the list, or direct if pending """
@@ -371,6 +379,9 @@ class CollectionItemMixin(ActivitypubMixin):
     def recipients(self):
         """ the owner of the list is a direct recipient """
         collection_field = getattr(self, self.collection_field)
+        if collection_field.user.local:
+            # don't broadcast to yourself
+            return []
         return [collection_field.user]
 
     def save(self, *args, broadcast=True, **kwargs):
@@ -386,11 +397,11 @@ class CollectionItemMixin(ActivitypubMixin):
         activity = self.to_add_activity(self.user)
         self.broadcast(activity, self.user)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, broadcast=True, **kwargs):
         """ broadcast a remove activity """
         activity = self.to_remove_activity(self.user)
         super().delete(*args, **kwargs)
-        if self.user.local:
+        if self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
     def to_add_activity(self, user):
@@ -524,7 +535,7 @@ def to_ordered_collection_page(
     """ serialize and pagiante a queryset """
     paginated = Paginator(queryset, PAGE_LENGTH)
 
-    activity_page = paginated.page(page)
+    activity_page = paginated.get_page(page)
     if id_only:
         items = [s.remote_id for s in activity_page.object_list]
     else:

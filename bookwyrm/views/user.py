@@ -17,7 +17,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter, object_visible_to_user
+from .helpers import is_blocked, privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -39,11 +39,6 @@ class User(View):
             # we have a json request
             return ActivitypubResponse(user.to_activity())
         # otherwise we're at a UI view
-
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
 
         shelf_preview = []
 
@@ -80,14 +75,14 @@ class User(View):
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if not object_visible_to_user(request.user, goal):
+        if goal and not goal.visible_to_user(request.user):
             goal = None
         data = {
             "user": user,
             "is_self": is_self,
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
-            "activities": paginated.page(page),
+            "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
         }
 

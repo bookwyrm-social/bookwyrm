@@ -51,11 +51,12 @@ class List(TestCase):
             book_list=book_list,
             book=self.book,
             user=self.local_user,
+            order=1,
         )
 
         self.assertTrue(item.approved)
         self.assertEqual(item.privacy, "unlisted")
-        self.assertEqual(item.recipients, [self.local_user])
+        self.assertEqual(item.recipients, [])
 
     def test_list_item_pending(self, _):
         """ a list entry """
@@ -65,10 +66,14 @@ class List(TestCase):
             )
 
         item = models.ListItem.objects.create(
-            book_list=book_list, book=self.book, user=self.local_user, approved=False
+            book_list=book_list,
+            book=self.book,
+            user=self.local_user,
+            approved=False,
+            order=1,
         )
 
         self.assertFalse(item.approved)
         self.assertEqual(item.book_list.privacy, "public")
         self.assertEqual(item.privacy, "direct")
-        self.assertEqual(item.recipients, [self.local_user])
+        self.assertEqual(item.recipients, [])

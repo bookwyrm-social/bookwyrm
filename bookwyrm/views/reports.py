@@ -29,8 +29,10 @@ class Reports(View):
         resolved = request.GET.get("resolved") == "true"
         server = request.GET.get("server")
         if server:
-            server = get_object_or_404(models.FederatedServer, id=server)
-            filters["user__federated_server"] = server
+            filters["user__federated_server__server_name"] = server
+        username = request.GET.get("username")
+        if username:
+            filters["user__username__icontains"] = username
         filters["resolved"] = resolved
         data = {
             "resolved": resolved,
@@ -72,12 +74,13 @@ class Report(View):
 
 @login_required
 @permission_required("bookwyrm_moderate_user")
-def deactivate_user(_, report_id):
+def suspend_user(_, user_id):
     """ mark an account as inactive """
-    report = get_object_or_404(models.Report, id=report_id)
-    report.user.is_active = not report.user.is_active
-    report.user.save()
-    return redirect("settings-report", report.id)
+    user = get_object_or_404(models.User, id=user_id)
+    user.is_active = not user.is_active
+    # this isn't a full deletion, so we don't want to tell the world
+    user.save(broadcast=False)
+    return redirect("settings-user", user.id)
 
 
 @login_required
@@ -98,8 +101,7 @@ def make_report(request):
     """ a user reports something """
     form = forms.ReportForm(request.POST)
     if not form.is_valid():
-        print(form.errors)
-        return redirect(request.headers.get("Referer", "/"))
+        raise ValueError(form.errors)
 
     form.save()
     return redirect(request.headers.get("Referer", "/"))

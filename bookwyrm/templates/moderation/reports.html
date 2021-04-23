@@ -8,6 +8,7 @@
 {% trans "Reports" %}
 {% endif %}
 {% endblock %}
+
 {% block header %}
 {% if server %}
 {% blocktrans with server_name=server.server_name %}Reports: <small>{{ server_name }}</small>{% endblocktrans %}
@@ -28,6 +29,8 @@
         </li>
     </ul>
 </div>
+
+{% include 'user_admin/user_admin_filters.html' %}
 
 <div class="block">
     {% if not reports %}

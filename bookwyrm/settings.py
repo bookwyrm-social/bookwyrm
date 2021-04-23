@@ -24,7 +24,8 @@ EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT", 587)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS", True)
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", True)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", False)
 DEFAULT_FROM_EMAIL = "admin@{:s}".format(env("DOMAIN"))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -97,6 +98,7 @@ WSGI_APPLICATION = "bookwyrm.wsgi.application"
 # redis/activity streams settings
 REDIS_ACTIVITY_HOST = env("REDIS_ACTIVITY_HOST", "localhost")
 REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
+REDIS_ACTIVITY_PASSWORD = env("REDIS_ACTIVITY_PASSWORD", None)
 
 MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 STREAMS = ["home", "local", "federated"]
@@ -165,7 +167,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = "/static/"

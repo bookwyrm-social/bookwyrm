@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-01 13:14-0700\n"
+"POT-Creation-Date: 2021-04-11 01:59+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,6 +49,34 @@ msgstr "%(count)d usos"
 msgid "Unlimited"
 msgstr "Sin límite"
 
+#: bookwyrm/forms.py:289
+msgid "List Order"
+msgstr "Orden de la lista"
+
+#: bookwyrm/forms.py:290
+#| msgid "Title"
+msgid "Book Title"
+msgstr "Título"
+
+#: bookwyrm/forms.py:291 bookwyrm/templates/snippets/create_status_form.html:29
+#: bookwyrm/templates/user/shelf.html:81
+msgid "Rating"
+msgstr "Calificación"
+
+#: bookwyrm/forms.py:293 bookwyrm/templates/lists/list.html:105
+msgid "Sort By"
+msgstr "Ordenar por"
+
+#: bookwyrm/forms.py:297
+#| msgid "Started reading"
+msgid "Ascending"
+msgstr "Ascendente"
+
+#: bookwyrm/forms.py:298
+#| msgid "Started reading"
+msgid "Descending"
+msgstr "Descendente"
+
 #: bookwyrm/models/fields.py:24
 #, python-format
 msgid "%(value)s is not a valid remote_id"
@@ -59,7 +87,7 @@ msgstr "%(value)s no es un remote_id válido"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s no es un usuario válido"
 
-#: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:157
+#: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:152
 msgid "username"
 msgstr "nombre de usuario"
 
@@ -146,12 +174,12 @@ msgid "ISBN:"
 msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book.html:69
-#: bookwyrm/templates/book/edit_book.html:211
+#: bookwyrm/templates/book/edit_book.html:223
 msgid "OCLC Number:"
 msgstr "Número OCLC:"
 
 #: bookwyrm/templates/book/book.html:76
-#: bookwyrm/templates/book/edit_book.html:215
+#: bookwyrm/templates/book/edit_book.html:227
 msgid "ASIN:"
 msgstr "ASIN:"
 
@@ -171,17 +199,17 @@ msgid "Add Description"
 msgstr "Agregar descripción"
 
 #: bookwyrm/templates/book/book.html:107
-#: bookwyrm/templates/book/edit_book.html:101
+#: bookwyrm/templates/book/edit_book.html:107
 #: bookwyrm/templates/lists/form.html:12
 msgid "Description:"
 msgstr "Descripción:"
 
 #: bookwyrm/templates/book/book.html:111
-#: bookwyrm/templates/book/edit_book.html:225
+#: bookwyrm/templates/book/edit_book.html:237
 #: bookwyrm/templates/edit_author.html:78 bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:70
 #: bookwyrm/templates/settings/site.html:93
-#: bookwyrm/templates/snippets/readthrough.html:65
+#: bookwyrm/templates/snippets/readthrough.html:75
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:34
@@ -190,12 +218,12 @@ msgstr "Guardar"
 
 #: bookwyrm/templates/book/book.html:112 bookwyrm/templates/book/book.html:161
 #: bookwyrm/templates/book/cover_modal.html:32
-#: bookwyrm/templates/book/edit_book.html:226
+#: bookwyrm/templates/book/edit_book.html:238
 #: bookwyrm/templates/edit_author.html:79
 #: bookwyrm/templates/moderation/report_modal.html:32
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
-#: bookwyrm/templates/snippets/readthrough.html:66
+#: bookwyrm/templates/snippets/readthrough.html:76
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:43
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:43
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:35
@@ -257,7 +285,7 @@ msgstr "Irse a lista"
 
 #: bookwyrm/templates/book/book.html:223
 #: bookwyrm/templates/book/cover_modal.html:31
-#: bookwyrm/templates/lists/list.html:90
+#: bookwyrm/templates/lists/list.html:156
 msgid "Add"
 msgstr "Agregar"
 
@@ -266,14 +294,14 @@ msgid "rated it"
 msgstr "lo calificó con"
 
 #: bookwyrm/templates/book/cover_modal.html:17
-#: bookwyrm/templates/book/edit_book.html:163
+#: bookwyrm/templates/book/edit_book.html:175
 #, fuzzy
 #| msgid "Add cover"
 msgid "Upload cover:"
 msgstr "Agregar portada"
 
 #: bookwyrm/templates/book/cover_modal.html:23
-#: bookwyrm/templates/book/edit_book.html:169
+#: bookwyrm/templates/book/edit_book.html:181
 msgid "Load cover from url:"
 msgstr ""
 
@@ -353,93 +381,93 @@ msgstr "Volver"
 msgid "Metadata"
 msgstr "Metadatos"
 
-#: bookwyrm/templates/book/edit_book.html:91
+#: bookwyrm/templates/book/edit_book.html:92
 msgid "Title:"
 msgstr "Título:"
 
-#: bookwyrm/templates/book/edit_book.html:96
+#: bookwyrm/templates/book/edit_book.html:100
 msgid "Subtitle:"
 msgstr "Subtítulo:"
 
-#: bookwyrm/templates/book/edit_book.html:106
+#: bookwyrm/templates/book/edit_book.html:112
 msgid "Series:"
 msgstr "Serie:"
 
-#: bookwyrm/templates/book/edit_book.html:111
+#: bookwyrm/templates/book/edit_book.html:117
 msgid "Series number:"
 msgstr "Número de serie:"
 
-#: bookwyrm/templates/book/edit_book.html:117
+#: bookwyrm/templates/book/edit_book.html:123
 #, fuzzy
 #| msgid "Published"
 msgid "Publisher:"
 msgstr "Publicado"
 
-#: bookwyrm/templates/book/edit_book.html:119
+#: bookwyrm/templates/book/edit_book.html:125
 msgid "Separate multiple publishers with commas."
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:125
+#: bookwyrm/templates/book/edit_book.html:132
 msgid "First published date:"
 msgstr "Fecha de primera publicación:"
 
-#: bookwyrm/templates/book/edit_book.html:130
+#: bookwyrm/templates/book/edit_book.html:140
 msgid "Published date:"
 msgstr "Fecha de publicación:"
 
-#: bookwyrm/templates/book/edit_book.html:137
+#: bookwyrm/templates/book/edit_book.html:149
 #, fuzzy
 #| msgid "Author"
 msgid "Authors"
 msgstr "Autor/Autora"
 
-#: bookwyrm/templates/book/edit_book.html:143
+#: bookwyrm/templates/book/edit_book.html:155
 #, fuzzy, python-format
 #| msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
 msgstr "Agregado por <a href=\"%(user_path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/book/edit_book.html:148
+#: bookwyrm/templates/book/edit_book.html:160
 #, fuzzy
 #| msgid "Edit Author"
 msgid "Add Authors:"
 msgstr "Editar Autor/Autora"
 
-#: bookwyrm/templates/book/edit_book.html:149
+#: bookwyrm/templates/book/edit_book.html:161
 msgid "John Doe, Jane Smith"
 msgstr ""
 
-#: bookwyrm/templates/book/edit_book.html:155
+#: bookwyrm/templates/book/edit_book.html:167
 #: bookwyrm/templates/user/shelf.html:75
 msgid "Cover"
 msgstr "Portada:"
 
-#: bookwyrm/templates/book/edit_book.html:182
+#: bookwyrm/templates/book/edit_book.html:194
 msgid "Physical Properties"
 msgstr "Propiedades físicas:"
 
-#: bookwyrm/templates/book/edit_book.html:183
+#: bookwyrm/templates/book/edit_book.html:195
 #: bookwyrm/templates/book/format_filter.html:5
 msgid "Format:"
 msgstr "Formato:"
 
-#: bookwyrm/templates/book/edit_book.html:191
+#: bookwyrm/templates/book/edit_book.html:203
 msgid "Pages:"
 msgstr "Páginas:"
 
-#: bookwyrm/templates/book/edit_book.html:198
+#: bookwyrm/templates/book/edit_book.html:210
 msgid "Book Identifiers"
 msgstr "Identificadores de libro"
 
-#: bookwyrm/templates/book/edit_book.html:199
+#: bookwyrm/templates/book/edit_book.html:211
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit_book.html:203
+#: bookwyrm/templates/book/edit_book.html:215
 msgid "ISBN 10:"
 msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit_book.html:207
+#: bookwyrm/templates/book/edit_book.html:219
 #: bookwyrm/templates/edit_author.html:59
 msgid "Openlibrary key:"
 msgstr "Clave OpenLibrary:"
@@ -497,11 +525,17 @@ msgstr ""
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
-#: bookwyrm/templates/feed/feed_layout.html:57
+#: bookwyrm/templates/feed/feed_layout.html:70
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
 msgid "Close"
 msgstr "Cerrar"
+
+#: bookwyrm/templates/compose.html:5 bookwyrm/templates/compose.html:8
+#, fuzzy
+#| msgid "Boost status"
+msgid "Compose status"
+msgstr "Status de respaldo"
 
 #: bookwyrm/templates/directory/community_filter.html:5
 #, fuzzy
@@ -523,7 +557,7 @@ msgstr "Federalizado"
 
 #: bookwyrm/templates/directory/directory.html:6
 #: bookwyrm/templates/directory/directory.html:11
-#: bookwyrm/templates/layout.html:97
+#: bookwyrm/templates/layout.html:92
 msgid "Directory"
 msgstr ""
 
@@ -844,23 +878,23 @@ msgstr "Tus libros"
 msgid "There are no books here right now! Try searching for a book to get started"
 msgstr "¡No hay ningún libro aqui ahorita! Busca a un libro para empezar"
 
-#: bookwyrm/templates/feed/feed_layout.html:23
+#: bookwyrm/templates/feed/feed_layout.html:24
 #: bookwyrm/templates/user/shelf.html:28
 msgid "To Read"
 msgstr "Para leer"
 
-#: bookwyrm/templates/feed/feed_layout.html:24
+#: bookwyrm/templates/feed/feed_layout.html:25
 #: bookwyrm/templates/user/shelf.html:28
 msgid "Currently Reading"
 msgstr "Leyendo actualmente"
 
-#: bookwyrm/templates/feed/feed_layout.html:25
+#: bookwyrm/templates/feed/feed_layout.html:26
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
 #: bookwyrm/templates/user/shelf.html:28
 msgid "Read"
 msgstr "Leer"
 
-#: bookwyrm/templates/feed/feed_layout.html:74 bookwyrm/templates/goal.html:26
+#: bookwyrm/templates/feed/feed_layout.html:88 bookwyrm/templates/goal.html:26
 #: bookwyrm/templates/snippets/goal_card.html:6
 #, python-format
 msgid "%(year)s Reading Goal"
@@ -893,7 +927,7 @@ msgid "What are you reading?"
 msgstr "Lectura se empezó"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/lists/list.html:58
+#: bookwyrm/templates/lists/list.html:124
 msgid "Search for a book"
 msgstr "Buscar libros"
 
@@ -914,7 +948,7 @@ msgstr ""
 #: bookwyrm/templates/get_started/users.html:18
 #: bookwyrm/templates/get_started/users.html:19
 #: bookwyrm/templates/layout.html:37 bookwyrm/templates/layout.html:38
-#: bookwyrm/templates/lists/list.html:62
+#: bookwyrm/templates/lists/list.html:128
 msgid "Search"
 msgstr "Buscar"
 
@@ -931,7 +965,7 @@ msgid "Popular on %(site_name)s"
 msgstr "Sobre %(site_name)s"
 
 #: bookwyrm/templates/get_started/books.html:51
-#: bookwyrm/templates/lists/list.html:75
+#: bookwyrm/templates/lists/list.html:141
 msgid "No books found"
 msgstr "No se encontró ningún libro"
 
@@ -1055,7 +1089,7 @@ msgid "%(username)s's %(year)s Books"
 msgstr "Los libros de %(username)s para %(year)s"
 
 #: bookwyrm/templates/import.html:5 bookwyrm/templates/import.html:9
-#: bookwyrm/templates/layout.html:102
+#: bookwyrm/templates/layout.html:97
 msgid "Import Books"
 msgstr "Importar libros"
 
@@ -1196,16 +1230,11 @@ msgstr "Menú de navigación central"
 msgid "Feed"
 msgstr "Actividad"
 
-#: bookwyrm/templates/layout.html:92
-#: bookwyrm/templates/preferences/preferences_layout.html:14
-msgid "Profile"
-msgstr "Perfil"
-
-#: bookwyrm/templates/layout.html:107
+#: bookwyrm/templates/layout.html:102
 msgid "Settings"
 msgstr "Configuración"
 
-#: bookwyrm/templates/layout.html:116
+#: bookwyrm/templates/layout.html:111
 #: bookwyrm/templates/settings/admin_layout.html:24
 #: bookwyrm/templates/settings/manage_invite_requests.html:15
 #: bookwyrm/templates/settings/manage_invites.html:3
@@ -1213,57 +1242,57 @@ msgstr "Configuración"
 msgid "Invites"
 msgstr "Invitaciones"
 
-#: bookwyrm/templates/layout.html:123
+#: bookwyrm/templates/layout.html:118
 msgid "Admin"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:130
+#: bookwyrm/templates/layout.html:125
 msgid "Log out"
 msgstr "Cerrar sesión"
 
-#: bookwyrm/templates/layout.html:138 bookwyrm/templates/layout.html:139
+#: bookwyrm/templates/layout.html:133 bookwyrm/templates/layout.html:134
 #: bookwyrm/templates/notifications.html:6
 #: bookwyrm/templates/notifications.html:10
 msgid "Notifications"
 msgstr "Notificaciones"
 
-#: bookwyrm/templates/layout.html:156 bookwyrm/templates/layout.html:160
+#: bookwyrm/templates/layout.html:151 bookwyrm/templates/layout.html:155
 #: bookwyrm/templates/login.html:17
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Nombre de usuario:"
 
-#: bookwyrm/templates/layout.html:161
+#: bookwyrm/templates/layout.html:156
 msgid "password"
 msgstr "contraseña"
 
-#: bookwyrm/templates/layout.html:162 bookwyrm/templates/login.html:36
+#: bookwyrm/templates/layout.html:157 bookwyrm/templates/login.html:36
 msgid "Forgot your password?"
 msgstr "¿Olvidaste tu contraseña?"
 
-#: bookwyrm/templates/layout.html:165 bookwyrm/templates/login.html:10
+#: bookwyrm/templates/layout.html:160 bookwyrm/templates/login.html:10
 #: bookwyrm/templates/login.html:33
 msgid "Log in"
 msgstr "Iniciar sesión"
 
-#: bookwyrm/templates/layout.html:173
+#: bookwyrm/templates/layout.html:168
 msgid "Join"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:196
+#: bookwyrm/templates/layout.html:191
 msgid "About this server"
 msgstr "Sobre este servidor"
 
-#: bookwyrm/templates/layout.html:200
+#: bookwyrm/templates/layout.html:195
 msgid "Contact site admin"
 msgstr "Contactarse con administradores del sitio"
 
-#: bookwyrm/templates/layout.html:207
+#: bookwyrm/templates/layout.html:202
 #, python-format
 msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 msgstr ""
 
-#: bookwyrm/templates/layout.html:211
+#: bookwyrm/templates/layout.html:206
 msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm es software de código abierto. Puedes contribuir o reportar problemas en <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
@@ -1342,44 +1371,73 @@ msgstr "Abierto"
 msgid "Anyone can add books to this list"
 msgstr "Cualquer usuario puede agregar libros a esta lista"
 
-#: bookwyrm/templates/lists/list.html:17
+#: bookwyrm/templates/lists/list.html:19
+#: bookwyrm/templates/snippets/pagination.html:12
+msgid "Previous"
+msgstr "Anterior"
+
+#: bookwyrm/templates/lists/list.html:22
+#: bookwyrm/templates/snippets/pagination.html:23
+msgid "Next"
+msgstr "Siguiente"
+
+#: bookwyrm/templates/lists/list.html:58
 msgid "This list is currently empty"
 msgstr "Esta lista está vacia"
 
-#: bookwyrm/templates/lists/list.html:35
+#: bookwyrm/templates/lists/list.html:76
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Agregado por <a href=\"%(user_path)s\">%(username)s</a>"
 
-#: bookwyrm/templates/lists/list.html:41
-#: bookwyrm/templates/snippets/shelf_selector.html:28
+#: bookwyrm/templates/lists/list.html:82
+#: bookwyrm/templates/snippets/shelf_selector.html:26
 msgid "Remove"
 msgstr "Quitar"
 
-#: bookwyrm/templates/lists/list.html:54
+#: bookwyrm/templates/lists/list.html:90
+msgid "Set list position"
+msgstr "Apunta indice"
+
+#: bookwyrm/templates/lists/list.html:103
+#: bookwyrm/templates/lists/list.html:115
+msgid "Sort List"
+msgstr "Ordena la lista"
+
+#: bookwyrm/templates/lists/list.html:109
+#, fuzzy
+#| msgid "List curation:"
+msgid "Direction"
+msgstr "Enumerar lista de comisariado:"
+
+#: bookwyrm/templates/lists/list.html:120
 msgid "Add Books"
 msgstr "Agregar libros"
 
-#: bookwyrm/templates/lists/list.html:54
+#: bookwyrm/templates/lists/list.html:120
 msgid "Suggest Books"
 msgstr "Sugerir libros"
 
-#: bookwyrm/templates/lists/list.html:63
+#: bookwyrm/templates/lists/list.html:129
 msgid "search"
 msgstr "buscar"
 
-#: bookwyrm/templates/lists/list.html:69
+#: bookwyrm/templates/lists/list.html:135
 msgid "Clear search"
 msgstr "Borrar búsqueda"
 
-#: bookwyrm/templates/lists/list.html:74
+#: bookwyrm/templates/lists/list.html:140
 #, python-format
 msgid "No books found matching the query \"%(query)s\""
 msgstr "No se encontró ningún libro correspondiente a la búsqueda: \"%(query)s\""
 
-#: bookwyrm/templates/lists/list.html:90
+#: bookwyrm/templates/lists/list.html:156
 msgid "Suggest"
 msgstr "Sugerir"
+
+#: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
+msgid "Your Lists"
+msgstr "Tus listas"
 
 #: bookwyrm/templates/login.html:4
 msgid "Login"
@@ -1422,7 +1480,7 @@ msgid "View user profile"
 msgstr "Perfil de usuario"
 
 #: bookwyrm/templates/moderation/report.html:22
-#: bookwyrm/templates/snippets/status/status_options.html:25
+#: bookwyrm/templates/snippets/status/status_options.html:35
 #: bookwyrm/templates/snippets/user_options.html:13
 msgid "Send direct message"
 msgstr "Enviar mensaje directo"
@@ -1440,8 +1498,8 @@ msgid "Moderator Comments"
 msgstr ""
 
 #: bookwyrm/templates/moderation/report.html:54
-#: bookwyrm/templates/snippets/create_status.html:12
-#: bookwyrm/templates/snippets/create_status_form.html:52
+#: bookwyrm/templates/snippets/create_status.html:28
+#: bookwyrm/templates/snippets/create_status_form.html:44
 msgid "Comment"
 msgstr "Comentario"
 
@@ -1698,6 +1756,10 @@ msgstr "Huso horario preferido"
 msgid "Account"
 msgstr "Cuenta"
 
+#: bookwyrm/templates/preferences/preferences_layout.html:14
+msgid "Profile"
+msgstr "Perfil"
+
 #: bookwyrm/templates/preferences/preferences_layout.html:20
 msgid "Relationships"
 msgstr "Relaciones"
@@ -1854,7 +1916,8 @@ msgid "Software"
 msgstr "Software"
 
 #: bookwyrm/templates/settings/federation.html:24
-#: bookwyrm/templates/settings/manage_invite_requests.html:33
+#: bookwyrm/templates/settings/manage_invite_requests.html:44
+#: bookwyrm/templates/settings/status_filter.html:5
 #: bookwyrm/templates/settings/user_admin.html:32
 msgid "Status"
 msgstr "Status"
@@ -1872,61 +1935,72 @@ msgstr "Invitaciones"
 msgid "Ignored Invite Requests"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:31
-msgid "Date"
-msgstr ""
+#: bookwyrm/templates/settings/manage_invite_requests.html:35
+#, fuzzy
+#| msgid "Federated"
+msgid "Date requested"
+msgstr "Federalizado"
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:32
+#: bookwyrm/templates/settings/manage_invite_requests.html:39
+#, fuzzy
+#| msgid "Accept"
+msgid "Date accepted"
+msgstr "Aceptar"
+
+#: bookwyrm/templates/settings/manage_invite_requests.html:42
 msgid "Email"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:34
+#: bookwyrm/templates/settings/manage_invite_requests.html:47
 #, fuzzy
 #| msgid "Notifications"
 msgid "Action"
 msgstr "Notificaciones"
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:37
+#: bookwyrm/templates/settings/manage_invite_requests.html:50
 #, fuzzy
 #| msgid "Follow Requests"
 msgid "No requests"
 msgstr "Solicitudes de seguidor"
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:45
+#: bookwyrm/templates/settings/manage_invite_requests.html:59
+#: bookwyrm/templates/settings/status_filter.html:16
 #, fuzzy
 #| msgid "Accept"
 msgid "Accepted"
 msgstr "Aceptar"
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:47
+#: bookwyrm/templates/settings/manage_invite_requests.html:61
+#: bookwyrm/templates/settings/status_filter.html:12
 msgid "Sent"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:49
+#: bookwyrm/templates/settings/manage_invite_requests.html:63
+#: bookwyrm/templates/settings/status_filter.html:8
 msgid "Requested"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:57
+#: bookwyrm/templates/settings/manage_invite_requests.html:73
 msgid "Send invite"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:59
+#: bookwyrm/templates/settings/manage_invite_requests.html:75
 msgid "Re-send invite"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:70
+#: bookwyrm/templates/settings/manage_invite_requests.html:95
 msgid "Ignore"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:72
-msgid "Un-gnore"
+#: bookwyrm/templates/settings/manage_invite_requests.html:97
+msgid "Un-ignore"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:83
+#: bookwyrm/templates/settings/manage_invite_requests.html:108
 msgid "Back to pending requests"
 msgstr ""
 
-#: bookwyrm/templates/settings/manage_invite_requests.html:85
+#: bookwyrm/templates/settings/manage_invite_requests.html:110
 msgid "View ignored requests"
 msgstr ""
 
@@ -2080,8 +2154,8 @@ msgstr "<a href=\"%(path)s\">%(title)s</a> por "
 
 #: bookwyrm/templates/snippets/boost_button.html:8
 #: bookwyrm/templates/snippets/boost_button.html:9
-#: bookwyrm/templates/snippets/status/status_body.html:51
 #: bookwyrm/templates/snippets/status/status_body.html:52
+#: bookwyrm/templates/snippets/status/status_body.html:53
 msgid "Boost status"
 msgstr "Status de respaldo"
 
@@ -2094,15 +2168,15 @@ msgstr "Status de des-respaldo"
 msgid "Spoiler alert:"
 msgstr "Alerta de spoiler:"
 
-#: bookwyrm/templates/snippets/content_warning_field.html:4
+#: bookwyrm/templates/snippets/content_warning_field.html:10
 msgid "Spoilers ahead!"
 msgstr "¡Advertencia, ya vienen spoilers!"
 
-#: bookwyrm/templates/snippets/create_status.html:9
+#: bookwyrm/templates/snippets/create_status.html:17
 msgid "Review"
 msgstr "Reseña"
 
-#: bookwyrm/templates/snippets/create_status.html:15
+#: bookwyrm/templates/snippets/create_status.html:39
 msgid "Quote"
 msgstr "Cita"
 
@@ -2124,52 +2198,41 @@ msgstr "Cita"
 msgid "Review:"
 msgstr "Reseña"
 
-#: bookwyrm/templates/snippets/create_status_form.html:29
-#: bookwyrm/templates/user/shelf.html:81
-msgid "Rating"
-msgstr "Calificación"
-
-#: bookwyrm/templates/snippets/create_status_form.html:31
-#: bookwyrm/templates/snippets/rate_action.html:14
-#: bookwyrm/templates/snippets/stars.html:3
-msgid "No rating"
-msgstr "No calificación"
-
-#: bookwyrm/templates/snippets/create_status_form.html:64
+#: bookwyrm/templates/snippets/create_status_form.html:56
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:16
 msgid "Progress:"
 msgstr "Progreso:"
 
-#: bookwyrm/templates/snippets/create_status_form.html:71
+#: bookwyrm/templates/snippets/create_status_form.html:63
 #: bookwyrm/templates/snippets/readthrough_form.html:22
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:30
 msgid "pages"
 msgstr "páginas"
 
-#: bookwyrm/templates/snippets/create_status_form.html:72
+#: bookwyrm/templates/snippets/create_status_form.html:64
 #: bookwyrm/templates/snippets/readthrough_form.html:23
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:31
 msgid "percent"
 msgstr "por ciento"
 
-#: bookwyrm/templates/snippets/create_status_form.html:77
+#: bookwyrm/templates/snippets/create_status_form.html:69
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:36
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "de %(pages)s páginas"
 
-#: bookwyrm/templates/snippets/create_status_form.html:89
+#: bookwyrm/templates/snippets/create_status_form.html:81
 msgid "Include spoiler alert"
 msgstr "Incluir alerta de spoiler"
 
-#: bookwyrm/templates/snippets/create_status_form.html:95
+#: bookwyrm/templates/snippets/create_status_form.html:88
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
 #: bookwyrm/templates/snippets/privacy_select.html:19
 msgid "Private"
 msgstr "Privada"
 
-#: bookwyrm/templates/snippets/create_status_form.html:102
+#: bookwyrm/templates/snippets/create_status_form.html:99
 msgid "Post"
 msgstr "Compartir"
 
@@ -2184,13 +2247,14 @@ msgstr "Estás eliminando esta lectura y sus %(count)s actualizaciones de progre
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
 #: bookwyrm/templates/snippets/follow_request_buttons.html:13
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:391
 msgid "Delete"
 msgstr "Eliminar"
 
 #: bookwyrm/templates/snippets/fav_button.html:7
 #: bookwyrm/templates/snippets/fav_button.html:8
-#: bookwyrm/templates/snippets/status/status_body.html:55
 #: bookwyrm/templates/snippets/status/status_body.html:56
+#: bookwyrm/templates/snippets/status/status_body.html:57
 msgid "Like status"
 msgstr "Me gusta status"
 
@@ -2209,11 +2273,11 @@ msgstr "Mostrar menos"
 msgid "Hide filters"
 msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:19
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:22
 msgid "Apply filters"
 msgstr ""
 
-#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:23
+#: bookwyrm/templates/snippets/filters_panel/filters_panel.html:26
 #, fuzzy
 #| msgid "Clear search"
 msgid "Clear filters"
@@ -2236,6 +2300,19 @@ msgstr "Dejar de seguir"
 #: bookwyrm/templates/snippets/follow_request_buttons.html:8
 msgid "Accept"
 msgstr "Aceptar"
+
+#: bookwyrm/templates/snippets/form_rate_stars.html:20
+#: bookwyrm/templates/snippets/stars.html:13
+msgid "No rating"
+msgstr "No calificación"
+
+#: bookwyrm/templates/snippets/form_rate_stars.html:45
+#: bookwyrm/templates/snippets/stars.html:7
+#, python-format
+msgid "%(rating)s star"
+msgid_plural "%(rating)s stars"
+msgstr[0] ""
+msgstr[1] ""
 
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
@@ -2311,13 +2388,17 @@ msgstr "Has leído <a href=\"%(path)s\">%(read_count)s de %(goal_count)s libros<
 msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
 msgstr "%(username)s ha leído <a href=\"%(path)s\">%(read_count)s de %(goal_count)s libros</a>."
 
-#: bookwyrm/templates/snippets/pagination.html:7
-msgid "Previous"
-msgstr "Anterior"
+#: bookwyrm/templates/snippets/page_text.html:4
+#, fuzzy, python-format
+#| msgid "of %(pages)s pages"
+msgid "page %(page)s of %(total_pages)s"
+msgstr "de %(pages)s páginas"
 
-#: bookwyrm/templates/snippets/pagination.html:15
-msgid "Next"
-msgstr "Siguiente"
+#: bookwyrm/templates/snippets/page_text.html:6
+#, fuzzy, python-format
+#| msgid "%(pages)s pages"
+msgid "page %(page)s"
+msgstr "%(pages)s páginas"
 
 #: bookwyrm/templates/snippets/privacy-icons.html:3
 #: bookwyrm/templates/snippets/privacy-icons.html:4
@@ -2348,7 +2429,7 @@ msgstr "Seguidores"
 msgid "Leave a rating"
 msgstr "Da una calificación"
 
-#: bookwyrm/templates/snippets/rate_action.html:29
+#: bookwyrm/templates/snippets/rate_action.html:19
 msgid "Rate"
 msgstr "Calificar"
 
@@ -2356,28 +2437,28 @@ msgstr "Calificar"
 msgid "Progress Updates:"
 msgstr "Actualizaciones de progreso:"
 
-#: bookwyrm/templates/snippets/readthrough.html:12
+#: bookwyrm/templates/snippets/readthrough.html:14
 msgid "finished"
 msgstr "terminado"
 
-#: bookwyrm/templates/snippets/readthrough.html:15
+#: bookwyrm/templates/snippets/readthrough.html:25
 msgid "Show all updates"
 msgstr "Mostrar todas las actualizaciones"
 
-#: bookwyrm/templates/snippets/readthrough.html:31
+#: bookwyrm/templates/snippets/readthrough.html:41
 msgid "Delete this progress update"
 msgstr "Eliminar esta actualización de progreso"
 
-#: bookwyrm/templates/snippets/readthrough.html:41
+#: bookwyrm/templates/snippets/readthrough.html:51
 msgid "started"
 msgstr "empezado"
 
-#: bookwyrm/templates/snippets/readthrough.html:47
-#: bookwyrm/templates/snippets/readthrough.html:61
+#: bookwyrm/templates/snippets/readthrough.html:57
+#: bookwyrm/templates/snippets/readthrough.html:71
 msgid "Edit read dates"
 msgstr "Editar fechas de lectura"
 
-#: bookwyrm/templates/snippets/readthrough.html:51
+#: bookwyrm/templates/snippets/readthrough.html:61
 msgid "Delete these read dates"
 msgstr "Eliminar estas fechas de lectura"
 
@@ -2501,9 +2582,9 @@ msgstr "respaldó"
 msgid "Delete status"
 msgstr "Eliminar status"
 
-#: bookwyrm/templates/snippets/status/status_body.html:34
-#: bookwyrm/templates/snippets/status/status_body.html:47
+#: bookwyrm/templates/snippets/status/status_body.html:35
 #: bookwyrm/templates/snippets/status/status_body.html:48
+#: bookwyrm/templates/snippets/status/status_body.html:49
 msgid "Reply"
 msgstr "Respuesta"
 
@@ -2549,6 +2630,12 @@ msgstr "<a href=\"%(related_path)s\">respondió a</a> tu <a href=\"%(parent_path
 #: bookwyrm/templates/snippets/user_options.html:7
 msgid "More options"
 msgstr "Más opciones"
+
+#: bookwyrm/templates/snippets/status/status_options.html:27
+#, fuzzy
+#| msgid "Delete these read dates"
+msgid "Delete & re-draft"
+msgstr "Eliminar estas fechas de lectura"
 
 #: bookwyrm/templates/snippets/switch_edition_button.html:5
 msgid "Switch to this edition"
@@ -2618,10 +2705,6 @@ msgstr "Siguiendo"
 msgid "%(username)s isn't following any users"
 msgstr "%(username)s no sigue a nadie"
 
-#: bookwyrm/templates/user/lists.html:9
-msgid "Your Lists"
-msgstr "Tus listas"
-
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
 msgid "Lists: %(username)s"
@@ -2657,11 +2740,11 @@ msgstr "Empezado"
 msgid "Finished"
 msgstr "Terminado"
 
-#: bookwyrm/templates/user/shelf.html:127
+#: bookwyrm/templates/user/shelf.html:129
 msgid "This shelf is empty."
 msgstr "Este estante está vacio."
 
-#: bookwyrm/templates/user/shelf.html:133
+#: bookwyrm/templates/user/shelf.html:135
 msgid "Delete shelf"
 msgstr "Eliminar estante"
 
@@ -2738,12 +2821,1360 @@ msgstr "Ya existe un usuario con ese nombre."
 msgid "A password reset link sent to %s"
 msgstr ""
 
+#: venv/lib/python3.8/site-packages/_pytest/config/argparsing.py:442
+#, python-format
+msgid "ambiguous option: %(option)s could match %(matches)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/contrib/messages/apps.py:7
+#, fuzzy
+#| msgid "All messages"
+msgid "Messages"
+msgstr "Todos los mensajes"
+
+#: venv/lib/python3.8/site-packages/django/contrib/sitemaps/apps.py:7
+msgid "Site Maps"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/contrib/staticfiles/apps.py:9
+msgid "Static Files"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/contrib/syndication/apps.py:7
+msgid "Syndication"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/paginator.py:48
+msgid "That page number is not an integer"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/paginator.py:50
+msgid "That page number is less than 1"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/paginator.py:55
+msgid "That page contains no results"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:20
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid value."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:91
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:671
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid URL."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:145
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid integer."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:156
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid email address."
+msgstr "Dirección de correo electrónico:"
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: venv/lib/python3.8/site-packages/django/core/validators.py:230
+msgid "Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:237
+msgid "Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or hyphens."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:246
+#: venv/lib/python3.8/site-packages/django/core/validators.py:266
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid IPv4 address."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:251
+#: venv/lib/python3.8/site-packages/django/core/validators.py:267
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid IPv6 address."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:261
+#: venv/lib/python3.8/site-packages/django/core/validators.py:265
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid IPv4 or IPv6 address."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:295
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:301
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:334
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:343
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:353
+#, python-format
+msgid "Ensure this value has at least %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at least %(limit_value)d characters (it has %(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:368
+#, python-format
+msgid "Ensure this value has at most %(limit_value)d character (it has %(show_value)d)."
+msgid_plural "Ensure this value has at most %(limit_value)d characters (it has %(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:387
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:292
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:327
+#, fuzzy
+#| msgid "Series number:"
+msgid "Enter a number."
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:389
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:394
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:399
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural "Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:461
+#, python-format
+msgid "File extension “%(extension)s” is not allowed. Allowed extensions are: %(allowed_extensions)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/core/validators.py:513
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/base.py:1190
+#: venv/lib/python3.8/site-packages/django/forms/models.py:760
+msgid "and"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/base.py:1192
+#, fuzzy, python-format
+#| msgid "A user with that username already exists."
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr "Ya existe un usuario con ese nombre."
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:100
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid remote_id"
+msgid "Value %(value)r is not a valid choice."
+msgstr "%(value)s no es un remote_id válido"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:101
+#, fuzzy
+#| msgid "This shelf is empty."
+msgid "This field cannot be null."
+msgstr "Este estante está vacio."
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:102
+msgid "This field cannot be blank."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:103
+#, fuzzy, python-format
+#| msgid "A user with that username already exists."
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr "Ya existe un usuario con ese nombre."
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or 'month'.
+#. Eg: "Title must be unique for pub_date year"
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:107
+#, python-format
+msgid "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:126
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:939
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:940
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:942
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:983
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1047
+#, fuzzy
+#| msgid "No active invites"
+msgid "Comma-separated integers"
+msgstr "No invitaciónes activas"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1096
+#, python-format
+msgid "“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD format."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1098
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1241
+#, python-format
+msgid "“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid date."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1101
+msgid "Date (without time)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1239
+#, python-format
+msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ] format."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1243
+#, python-format
+msgid "“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1247
+msgid "Date (with time)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1395
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid username"
+msgid "“%(value)s” value must be a decimal number."
+msgstr "%(value)s no es un usuario válido"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1397
+#, fuzzy
+#| msgid "Series number:"
+msgid "Decimal number"
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1536
+#, python-format
+msgid "“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[.uuuuuu] format."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1539
+#, fuzzy
+#| msgid "List curation:"
+msgid "Duration"
+msgstr "Enumerar lista de comisariado:"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1589
+#, fuzzy
+#| msgid "Email address:"
+msgid "Email address"
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1612
+msgid "File path"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1678
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid username"
+msgid "“%(value)s” value must be a float."
+msgstr "%(value)s no es un usuario válido"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1680
+msgid "Floating point number"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1718
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1720
+msgid "Integer"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1803
+#, fuzzy
+#| msgid "No active invites"
+msgid "Big (8 byte) integer"
+msgstr "No invitaciónes activas"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1819
+#, fuzzy
+#| msgid "Email address:"
+msgid "IPv4 address"
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1850
+#, fuzzy
+#| msgid "Email address:"
+msgid "IP address"
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1930
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1931
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1933
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1976
+#, fuzzy
+#| msgid "No active invites"
+msgid "Positive big integer"
+msgstr "No invitaciónes activas"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1989
+#, fuzzy
+#| msgid "No active invites"
+msgid "Positive integer"
+msgstr "No invitaciónes activas"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2002
+#, fuzzy
+#| msgid "No active invites"
+msgid "Positive small integer"
+msgstr "No invitaciónes activas"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2016
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2048
+msgid "Small integer"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2055
+msgid "Text"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2083
+#, python-format
+msgid "“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] format."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2085
+#, python-format
+msgid "“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an invalid time."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2088
+msgid "Time"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2214
+msgid "URL"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2236
+msgid "Raw binary data"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2301
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid username"
+msgid "“%(value)s” is not a valid UUID."
+msgstr "%(value)s no es un usuario válido"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2303
+msgid "Universally unique identifier"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/files.py:231
+msgid "File"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/files.py:379
+#, fuzzy
+#| msgid "Images"
+msgid "Image"
+msgstr "Imagenes"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/json.py:18
+msgid "A JSON object"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/json.py:20
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:790
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r does not exist."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:792
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:1045
+#, fuzzy
+#| msgid "Relationships"
+msgid "One-to-one relationship"
+msgstr "Relaciones"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:1099
+#, fuzzy, python-format
+#| msgid "Relationships"
+msgid "%(from)s-%(to)s relationship"
+msgstr "Relaciones"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:1100
+#, fuzzy, python-format
+#| msgid "Relationships"
+msgid "%(from)s-%(to)s relationships"
+msgstr "Relaciones"
+
+#: venv/lib/python3.8/site-packages/django/db/models/fields/related.py:1142
+#, fuzzy
+#| msgid "Relationships"
+msgid "Many-to-many relationship"
+msgstr "Relaciones"
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: venv/lib/python3.8/site-packages/django/forms/boundfield.py:150
+msgid ":?.!"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:54
+#, fuzzy
+#| msgid "This shelf is empty."
+msgid "This field is required."
+msgstr "Este estante está vacio."
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:247
+#, fuzzy
+#| msgid "Series number:"
+msgid "Enter a whole number."
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:398
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:1139
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid date."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:422
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:1140
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid time."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:450
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid date/time."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:484
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid duration."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:485
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:545
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:546
+msgid "No file was submitted."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:547
+#, fuzzy
+#| msgid "This shelf is empty."
+msgid "The submitted file is empty."
+msgstr "Este estante está vacio."
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:549
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural "Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:552
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:613
+msgid "Upload a valid image. The file you uploaded was either not an image or a corrupted image."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:775
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:865
+#: venv/lib/python3.8/site-packages/django/forms/models.py:1296
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:866
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:981
+#: venv/lib/python3.8/site-packages/django/forms/models.py:1295
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a list of values."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:982
+msgid "Enter a complete value."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:1198
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid UUID."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/forms/fields.py:1228
+#, fuzzy
+#| msgid "Email address:"
+msgid "Enter a valid JSON."
+msgstr "Dirección de correo electrónico:"
+
+#. Translators: This is the default suffix added to form field labels
+#: venv/lib/python3.8/site-packages/django/forms/forms.py:78
+msgid ":"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/forms.py:205
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:93
+msgid "ManagementForm data is missing or has been tampered with"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:345
+#, python-format
+msgid "Please submit %d or fewer forms."
+msgid_plural "Please submit %d or fewer forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:352
+#, python-format
+msgid "Please submit %d or more forms."
+msgid_plural "Please submit %d or more forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:379
+#: venv/lib/python3.8/site-packages/django/forms/formsets.py:386
+msgid "Order"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:755
+#, python-format
+msgid "Please correct the duplicate data for %(field)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:759
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:765
+#, python-format
+msgid "Please correct the duplicate data for %(field_name)s which must be unique for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:774
+msgid "Please correct the duplicate values below."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:1096
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:1180
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/models.py:1298
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid username"
+msgid "“%(pk)s” is not a valid value."
+msgstr "%(value)s no es un usuario válido"
+
+#: venv/lib/python3.8/site-packages/django/forms/utils.py:167
+#, python-format
+msgid "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it may be ambiguous or it may not exist."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:398
+msgid "Clear"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:399
+#, fuzzy
+#| msgid "Currently Reading"
+msgid "Currently"
+msgstr "Leyendo actualmente"
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:400
+#, fuzzy
+#| msgid "Change shelf"
+msgid "Change"
+msgstr "Cambiar estante"
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:709
+msgid "Unknown"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:710
+msgid "Yes"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/forms/widgets.py:711
+msgid "No"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:790
+msgid "yes,no,maybe"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:819
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:836
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:838
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:840
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:842
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:844
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/template/defaultfilters.py:846
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:65
+msgid "p.m."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:66
+msgid "a.m."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:71
+msgid "PM"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:72
+msgid "AM"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:149
+msgid "midnight"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dateformat.py:151
+msgid "noon"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:6
+#: venv/lib/python3.8/site-packages/tornado/locale.py:295
+msgid "Monday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:6
+#: venv/lib/python3.8/site-packages/tornado/locale.py:296
+msgid "Tuesday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:6
+#: venv/lib/python3.8/site-packages/tornado/locale.py:297
+msgid "Wednesday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:6
+#: venv/lib/python3.8/site-packages/tornado/locale.py:298
+msgid "Thursday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:6
+#: venv/lib/python3.8/site-packages/tornado/locale.py:299
+msgid "Friday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:7
+#: venv/lib/python3.8/site-packages/tornado/locale.py:300
+msgid "Saturday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:7
+#: venv/lib/python3.8/site-packages/tornado/locale.py:301
+msgid "Sunday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:10
+msgid "Mon"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:10
+msgid "Tue"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:10
+msgid "Wed"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:10
+msgid "Thu"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:10
+msgid "Fri"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:11
+#, fuzzy
+#| msgid "Status"
+msgid "Sat"
+msgstr "Status"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:11
+msgid "Sun"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:281
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:282
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:283
+#, fuzzy
+#| msgid "Search"
+msgid "March"
+msgstr "Buscar"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:284
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:285
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:14
+#: venv/lib/python3.8/site-packages/tornado/locale.py:286
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:15
+#: venv/lib/python3.8/site-packages/tornado/locale.py:287
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:15
+#: venv/lib/python3.8/site-packages/tornado/locale.py:288
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:15
+#: venv/lib/python3.8/site-packages/tornado/locale.py:289
+#, fuzzy
+#| msgid "Series number:"
+msgid "September"
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:15
+#: venv/lib/python3.8/site-packages/tornado/locale.py:290
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:15
+#: venv/lib/python3.8/site-packages/tornado/locale.py:291
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:16
+#: venv/lib/python3.8/site-packages/tornado/locale.py:292
+#, fuzzy
+#| msgid "Series number:"
+msgid "December"
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "jan"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "feb"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "mar"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "apr"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "may"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:19
+msgid "jun"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "jul"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "aug"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "sep"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "oct"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "nov"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:20
+msgid "dec"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:23
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:24
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:25
+#, fuzzy
+#| msgid "Search"
+msgctxt "abbrev. month"
+msgid "March"
+msgstr "Buscar"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:26
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:27
+msgctxt "abbrev. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:28
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:29
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:30
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:31
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:32
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:33
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:34
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:37
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:38
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:39
+#, fuzzy
+#| msgid "Search"
+msgctxt "alt. month"
+msgid "March"
+msgstr "Buscar"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:40
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:41
+msgctxt "alt. month"
+msgid "May"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:42
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:43
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:44
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:45
+#, fuzzy
+#| msgid "Series number:"
+msgctxt "alt. month"
+msgid "September"
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:46
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:47
+msgctxt "alt. month"
+msgid "November"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/dates.py:48
+#, fuzzy
+#| msgid "Series number:"
+msgctxt "alt. month"
+msgid "December"
+msgstr "Número de serie:"
+
+#: venv/lib/python3.8/site-packages/django/utils/ipv6.py:8
+#, fuzzy
+#| msgid "Email address:"
+msgid "This is not a valid IPv6 address."
+msgstr "Dirección de correo electrónico:"
+
+#: venv/lib/python3.8/site-packages/django/utils/text.py:70
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/text.py:236
+msgid "or"
+msgstr ""
+
+#. Translators: This string is used as a separator between list elements
+#: venv/lib/python3.8/site-packages/django/utils/text.py:255
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:83
+msgid ", "
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:9
+#, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:10
+#, python-format
+msgid "%d month"
+msgid_plural "%d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:11
+#, python-format
+msgid "%d week"
+msgid_plural "%d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:12
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:13
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/utils/timesince.py:14
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:110
+msgid "Forbidden"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:111
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:115
+msgid "You are seeing this message because this HTTPS site requires a “Referer header” to be sent by your Web browser, but none was sent. This header is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:120
+msgid "If you have configured your browser to disable “Referer” headers, please re-enable them, at least for this site, or for HTTPS connections, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:124
+msgid "If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or including the “Referrer-Policy: no-referrer” header, please remove them. The CSRF protection requires the “Referer” header to do strict referer checking. If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer\" …> for links to third-party sites."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:132
+msgid "You are seeing this message because this site requires a CSRF cookie when submitting forms. This cookie is required for security reasons, to ensure that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:137
+msgid "If you have configured your browser to disable cookies, please re-enable them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/csrf.py:142
+msgid "More information is available with DEBUG=True."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:41
+msgid "No year specified"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:61
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:111
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:208
+msgid "Date out of range"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:90
+msgid "No month specified"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:142
+msgid "No day specified"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:188
+msgid "No week specified"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:338
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:367
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:589
+#, python-format
+msgid "Future %(verbose_name_plural)s not available because %(class_name)s.allow_future is False."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/dates.py:623
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/detail.py:54
+#, fuzzy, python-format
+#| msgid "No books found matching the query \"%(query)s\""
+msgid "No %(verbose_name)s found matching the query"
+msgstr "No se encontró ningún libro correspondiente a la búsqueda: \"%(query)s\""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/list.py:67
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/list.py:72
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/generic/list.py:154
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/static.py:40
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/static.py:42
+#, fuzzy, python-format
+#| msgid "%(value)s is not a valid username"
+msgid "“%(path)s” does not exist"
+msgstr "%(value)s no es un usuario válido"
+
+#: venv/lib/python3.8/site-packages/django/views/static.py:80
+#, python-format
+msgid "Index of %(directory)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:7
+msgid "Django: the Web framework for perfectionists with deadlines."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:346
+#, python-format
+msgid "View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:368
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:369
+#, python-format
+msgid "You are seeing this page because <a href=\"https://docs.djangoproject.com/en/%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener\">DEBUG=True</a> is in your settings file and you have not configured any URLs."
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:384
+msgid "Django Documentation"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:385
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:396
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:397
+msgid "Get started with Django"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:408
+#, fuzzy
+#| msgid "Comment"
+msgid "Django Community"
+msgstr "Comentario"
+
+#: venv/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:409
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1301
+#, python-format
+msgid "Attempting to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1306
+#, python-format
+msgid "Connected to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/kombu/transport/qpid.py:1324
+#, python-format
+msgid "Unable to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:371
+msgid "1 second ago"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:377
+msgid "1 minute ago"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:382
+msgid "1 hour ago"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:385
+#, python-format
+msgid "%(time)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:387
+msgid "yesterday"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:387
+#, python-format
+msgid "yesterday at %(time)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:389
+#, python-format
+msgid "%(weekday)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:389
+#, python-format
+msgid "%(weekday)s at %(time)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:392
+#: venv/lib/python3.8/site-packages/tornado/locale.py:445
+#, python-format
+msgid "%(month_name)s %(day)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:394
+#, python-format
+msgid "%(month_name)s %(day)s at %(time)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:399
+#, python-format
+msgid "%(month_name)s %(day)s, %(year)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:401
+#, python-format
+msgid "%(month_name)s %(day)s, %(year)s at %(time)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:439
+#, python-format
+msgid "%(weekday)s, %(month_name)s %(day)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/locale.py:462
+#, python-format
+msgid "%(commas)s and %(last)s"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:68
+msgctxt "law"
+msgid "right"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:69
+msgctxt "good"
+msgid "right"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:71
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:74
+msgctxt "organization"
+msgid "club"
+msgstr ""
+
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:76
+#: venv/lib/python3.8/site-packages/tornado/test/locale_test.py:77
+msgctxt "stick"
+msgid "club"
+msgstr ""
+
 #, fuzzy
 #~| msgid "Started"
 #~ msgid "Getting Started"
 #~ msgstr "Empezado"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "No users found for \"%(query)s\""
 #~ msgid "No users were found for \"%(query)s\""
 #~ msgstr "No se encontró ningún usuario correspondiente a \"%(query)s\""
@@ -2757,7 +4188,6 @@ msgstr ""
 #~ msgid "Your lists"
 #~ msgstr "Tus listas"
 
-#, python-format
 #~ msgid "See all %(size)s lists"
 #~ msgstr "Ver las %(size)s listas"
 
@@ -2782,147 +4212,17 @@ msgstr ""
 #~ msgid "Your Shelves"
 #~ msgstr "Tus estantes"
 
-#, python-format
 #~ msgid "%(username)s: Shelves"
 #~ msgstr "%(username)s: Estantes"
 
 #~ msgid "Shelves"
 #~ msgstr "Estantes"
 
-#, python-format
 #~ msgid "See all %(shelf_count)s shelves"
 #~ msgstr "Ver los %(shelf_count)s estantes"
 
 #~ msgid "Send follow request"
 #~ msgstr "Envia solicitud de seguidor"
-
-#, fuzzy
-#~| msgid "All messages"
-#~ msgid "Messages"
-#~ msgstr "Todos los mensajes"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid email address."
-#~ msgstr "Dirección de correo electrónico:"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "Enter a number."
-#~ msgstr "Número de serie:"
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid remote_id"
-#~ msgid "Value %(value)r is not a valid choice."
-#~ msgstr "%(value)s no es un remote_id válido"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "Decimal number"
-#~ msgstr "Número de serie:"
-
-#, fuzzy
-#~| msgid "List curation:"
-#~ msgid "Duration"
-#~ msgstr "Enumerar lista de comisariado:"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Email address"
-#~ msgstr "Dirección de correo electrónico:"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "IPv4 address"
-#~ msgstr "Dirección de correo electrónico:"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "IP address"
-#~ msgstr "Dirección de correo electrónico:"
-
-#, fuzzy
-#~| msgid "No active invites"
-#~ msgid "Positive integer"
-#~ msgstr "No invitaciónes activas"
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
-#~ msgid "“%(value)s” is not a valid UUID."
-#~ msgstr "%(value)s no es un usuario válido"
-
-#, fuzzy
-#~| msgid "Images"
-#~ msgid "Image"
-#~ msgstr "Imagenes"
-
-#, fuzzy
-#~| msgid "Relationships"
-#~ msgid "One-to-one relationship"
-#~ msgstr "Relaciones"
-
-#, fuzzy
-#~| msgid "This shelf is empty."
-#~ msgid "This field is required."
-#~ msgstr "Este estante está vacio."
-
-#, fuzzy
-#~| msgid "This shelf is empty."
-#~ msgid "The submitted file is empty."
-#~ msgstr "Este estante está vacio."
-
-#, fuzzy
-#~| msgid "%(value)s is not a valid username"
-#~ msgid "“%(pk)s” is not a valid value."
-#~ msgstr "%(value)s no es un usuario válido"
-
-#, fuzzy
-#~| msgid "Currently Reading"
-#~ msgid "Currently"
-#~ msgstr "Leyendo actualmente"
-
-#, fuzzy
-#~| msgid "Change shelf"
-#~ msgid "Change"
-#~ msgstr "Cambiar estante"
-
-#, fuzzy
-#~| msgid "Status"
-#~ msgid "Sat"
-#~ msgstr "Status"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgid "March"
-#~ msgstr "Buscar"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgid "September"
-#~ msgstr "Número de serie:"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "abbrev. month"
-#~ msgid "March"
-#~ msgstr "Buscar"
-
-#, fuzzy
-#~| msgid "Search"
-#~ msgctxt "alt. month"
-#~ msgid "March"
-#~ msgstr "Buscar"
-
-#, fuzzy
-#~| msgid "Series number:"
-#~ msgctxt "alt. month"
-#~ msgid "September"
-#~ msgstr "Número de serie:"
-
-#, fuzzy
-#~| msgid "No books found matching the query \"%(query)s\""
-#~ msgid "No %(verbose_name)s found matching the query"
-#~ msgstr "No se encontró ningún libro correspondiente a la búsqueda: \"%(query)s\""
 
 #~ msgid "Announcements"
 #~ msgstr "Anuncios"

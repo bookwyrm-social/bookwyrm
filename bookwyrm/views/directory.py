@@ -15,12 +15,6 @@ class Directory(View):
 
     def get(self, request):
         """ lets see your cute faces """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
-        # filters
         filters = {}
         software = request.GET.get("software")
         if not software or software == "bookwyrm":
@@ -39,7 +33,7 @@ class Directory(View):
         paginated = Paginator(users, 12)
 
         data = {
-            "users": paginated.page(page),
+            "users": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

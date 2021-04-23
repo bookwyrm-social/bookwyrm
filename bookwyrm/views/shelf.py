@@ -16,7 +16,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_edition, get_user_from_username
-from .helpers import handle_reading_status, privacy_filter, object_visible_to_user
+from .helpers import handle_reading_status, privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -30,11 +30,6 @@ class Shelf(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
         shelves = privacy_filter(request.user, user.shelf_set)
 
         # get the shelf and make sure the logged in user should be able to see it
@@ -43,7 +38,7 @@ class Shelf(View):
                 shelf = user.shelf_set.get(identifier=shelf_identifier)
             except models.Shelf.DoesNotExist:
                 return HttpResponseNotFound()
-            if not object_visible_to_user(request.user, shelf):
+            if not shelf.visible_to_user(request.user):
                 return HttpResponseNotFound()
         # this is a constructed "all books" view, with a fake "shelf" obj
         else:
@@ -61,7 +56,7 @@ class Shelf(View):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
         paginated = Paginator(
-            shelf.books.order_by("-updated_date").all(),
+            shelf.books.order_by("-updated_date"),
             PAGE_LENGTH,
         )
 
@@ -70,7 +65,7 @@ class Shelf(View):
             "is_self": is_self,
             "shelves": shelves.all(),
             "shelf": shelf,
-            "books": paginated.page(page),
+            "books": paginated.get_page(request.GET.get("page")),
         }
 
         return TemplateResponse(request, "user/shelf.html", data)

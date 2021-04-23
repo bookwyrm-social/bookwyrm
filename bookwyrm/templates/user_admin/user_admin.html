@@ -13,6 +13,8 @@
 
 {% block panel %}
 
+{% include 'user_admin/user_admin_filters.html' %}
+
 <table class="table is-striped">
     <tr>
         {% url 'settings-users' as url %}
@@ -39,7 +41,7 @@
     </tr>
     {% for user in users %}
     <tr>
-        <td>{{ user.username }}</td>
+        <td><a href="{% url 'settings-user' user.id %}">{{ user.username }}</a></td>
         <td>{{ user.created_date }}</td>
         <td>{{ user.last_active_date }}</td>
         <td>{% if user.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}</td>

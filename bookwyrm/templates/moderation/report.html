@@ -1,5 +1,6 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
+{% load bookwyrm_tags %}
 {% load humanize %}
 
 {% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
@@ -14,23 +15,9 @@
     {% include 'moderation/report_preview.html' with report=report %}
 </div>
 
-<div class="block content">
-    <h3>{% trans "Actions" %}</h3>
-    <p><a href="{{ report.user.local_path }}">{% trans "View user profile" %}</a></p>
-    <div class="is-flex">
-        <p class="mr-1">
-            <a class="button" href="{% url 'direct-messages-user' report.user.username %}">{% trans "Send direct message" %}</a>
-        </p>
-        <form name="deactivate" method="post" action="{% url 'settings-report-deactivate' report.id  %}">
-            {% csrf_token %}
-            {% if report.user.is_active %}
-            <button type="submit" class="button is-danger is-light">{% trans "Deactivate user" %}</button>
-            {% else %}
-            <button class="button">{% trans "Reactivate user" %}</button>
-            {% endif %}
-        </form>
-    </div>
-</div>
+{% include 'user_admin/user_info.html' with user=report.user %}
+
+{% include 'user_admin/user_moderation_actions.html' with user=report.user %}
 
 <div class="block">
     <h3 class="title is-4">{% trans "Moderator Comments" %}</h3>
