@@ -269,7 +269,7 @@ class Status(TestCase):
     def test_review_to_pure_activity(self, *_):
         """ subclass of the base model version with a "pure" serializer """
         status = models.Review.objects.create(
-            name="Review name",
+            name="Review's name",
             content="test content",
             rating=3.0,
             user=self.local_user,
@@ -280,7 +280,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
             activity["name"],
-            'Review of "%s" (3 stars): Review name' % self.book.title,
+            'Review of "%s" (3 stars): Review\'s name' % self.book.title,
         )
         self.assertEqual(activity["content"], "test content")
         self.assertEqual(activity["attachment"][0].type, "Document")
