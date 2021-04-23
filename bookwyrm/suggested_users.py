@@ -1,5 +1,5 @@
 """ store recommended follows in redis """
-import math.floor
+import math
 from django.dispatch import receiver
 from django.db.models import signals, Q
 
@@ -41,17 +41,28 @@ class SuggestedUsers(RedisStore):
         )
 
     def get_stores_for_object(self, obj):
+        return [self.store_id(u) for u in self.get_users_for_object(obj)]
+
+    def get_users_for_object(self, obj):  # pylint: disable=no-self-use
         """ given a user, who might want to follow them """
         return models.User.objects.filter(
             local=True,
-        ).exclude(user_following=obj)
+        ).exclude(following=obj)
 
     def rerank_obj(self, obj):
         """ update all the instances of this user with new ranks """
-        stores = self.get_stores_for_object(obj)
         pipeline = r.pipeline()
-        for store in stores:
-            pipeline.zadd(store, self.get_value(obj), xx=True)
+        for store_user in self.get_users_for_object(obj):
+            annotated_user = get_annotated_users(
+                store_user,
+                id=obj.id,
+            ).first()
+
+            pipeline.zadd(
+                self.store_id(store_user),
+                self.get_value(annotated_user),
+                xx=True
+            )
         pipeline.execute()
 
     def rerank_user_suggestions(self, user):
@@ -107,13 +118,13 @@ def add_or_remove_on_discoverability_change(
     sender, instance, created, raw, using, update_fields, **kwargs
 ):
     """ make a user (un)discoverable """
-    if not "discoverable" in update_fields:
+    if not update_fields or not "discoverable" in update_fields:
         return
 
     if created:
         suggested_users.rerank_user_suggestions(instance)
 
     if instance.discoverable:
-        suggested_users.add_object_to_related_stores(instance)
+        suggested_users.rerank_obj(instance)
     elif not created and not instance.discoverable:
         suggested_users.remove_object_from_related_stores(instance)
