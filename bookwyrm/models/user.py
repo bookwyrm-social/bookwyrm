@@ -7,6 +7,8 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import signals
+from django.dispatch import receiver
 from django.utils import timezone
 import pytz
 
@@ -240,10 +242,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             super().save(*args, **kwargs)
             return
 
-        # this is a new remote user, we need to set their remote server field
         if not self.local:
-            super().save(*args, **kwargs)
-            set_remote_server.delay(self.id)
             return
 
         # populate fields for local users
@@ -387,8 +386,16 @@ class AnnualGoal(BookWyrmModel):
         ).count()
 
 
+@receiver(signals.post_save, sender=User)
+# pylint: disable=unused-argument
+def set_remote_server(sender, instance, created, *args, **kwargs):
+    """ for a new remote user, we need to set their remote server field """
+    if created and not instance.local:
+        set_remote_server_task.delay(instance.id)
+
+
 @app.task
-def set_remote_server(user_id):
+def set_remote_server_task(user_id):
     """ figure out the user's remote server in the background """
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
