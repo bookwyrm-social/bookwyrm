@@ -356,7 +356,7 @@ class Boost(ActivityMixin, Status):
         #     unique_together = ('user', 'boosted_status')
         if Boost.objects.filter(
             boosted_status=self.boosted_status, user=self.user
-        ).exists():
+        ).exclude(id=self.id).exists():
             return
 
         super().save(*args, **kwargs)
