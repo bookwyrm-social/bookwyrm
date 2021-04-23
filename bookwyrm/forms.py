@@ -156,14 +156,6 @@ class UserGroupForm(CustomForm):
         fields = ["groups"]
 
 
-class TagForm(CustomForm):
-    class Meta:
-        model = models.Tag
-        fields = ["name"]
-        help_texts = {f: None for f in fields}
-        labels = {"name": "Add a tag"}
-
-
 class CoverForm(CustomForm):
     class Meta:
         model = models.Book

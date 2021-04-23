@@ -57,12 +57,7 @@ class Book(View):
         )
         reviews_page = paginated.get_page(request.GET.get("page"))
 
-        user_tags = readthroughs = user_shelves = other_edition_shelves = []
         if request.user.is_authenticated:
-            user_tags = models.UserTag.objects.filter(
-                book=book, user=request.user
-            ).values_list("tag__identifier", flat=True)
-
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
                 book=book,
@@ -87,11 +82,9 @@ class Book(View):
             "review_count": reviews.count(),
             "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
-            "tags": models.UserTag.objects.filter(book=book),
             "lists": privacy_filter(
                 request.user, book.list_set.filter(listitem__approved=True)
             ),
-            "user_tags": user_tags,
             "user_shelves": user_shelves,
             "other_edition_shelves": other_edition_shelves,
             "readthroughs": readthroughs,
