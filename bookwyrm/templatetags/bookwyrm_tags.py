@@ -167,6 +167,7 @@ def get_next_shelf(current_shelf):
         return "read"
     return "to-read"
 
+
 @register.filter(name="title")
 def get_title(book):
     """ display the subtitle if the title is short """
