@@ -43,7 +43,7 @@
 
 {% if status.book %}
     {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-        <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>{% if status.status_type == 'Rating' %}:
+        <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
         <span
             itemprop="reviewRating"
             itemscope
@@ -62,7 +62,7 @@
         {% include 'snippets/book_titleby.html' with book=status.book %}
     {% endif %}
 {% elif status.mention_books %}
-    <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first.title }}</a>
+    <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first|title }}</a>
 {% endif %}
 
 {% if status.progress %}
