@@ -86,7 +86,7 @@
         {% for book in books %}
         <tr class="book-preview">
             <td>
-                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
+                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-small' %}</a>
             </td>
             <td>
                 <a href="{{ book.local_path }}">{{ book.title }}</a>

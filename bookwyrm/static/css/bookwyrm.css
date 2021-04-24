@@ -124,6 +124,14 @@ body {
     position: relative;
 }
 
+.cover-container.is-small {
+    height: 100px;
+}
+
+.cover-container.is-medium {
+    height: 150px;
+}
+
 /*
 .cover-container.is-large {
     height: max-content;
@@ -133,14 +141,6 @@ body {
 .cover-container.is-large img {
     max-height: 500px;
     height: auto;
-}
-
-.cover-container.is-medium {
-    height: 150px;
-}
-
-.cover-container.is-small {
-    height: 100px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -161,6 +161,11 @@ body {
 
     /* Usweful when stretching under-sized images. */
     image-rendering: optimizeQuality;
+}
+
+[class~="has-height"] .book-cover {
+    width: auto;
+    height: 100%;
 }
 
 .no-cover .cover_caption {

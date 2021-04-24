@@ -9,21 +9,20 @@
         is-clipped
         is-flex
         is-align-items-center
+        {{ cover_class }}
 
         {% if not book.cover %}
             no-cover
         {% endif %}
-
-        {% if size %}
-            is-{{ size }}
-        {% endif %}
-
-        {% if container_class %}
-            {{ container_class }}
-        {% endif %}
     "
-    aria-hidden="true"
 
+    {% if aria != "show" %}
+        aria-hidden="true"
+    {% endif %}
+
+    {% if book.alt_text %}
+        title="{{ book.alt_text }}"
+    {% endif %}
 >
     <img
         class="book-cover"
@@ -34,7 +33,6 @@
 
             {% if book.alt_text %}
                 alt="{{ book.alt_text }}"
-                title="{{ book.alt_text }}"
             {% endif %}
         {% else %}
             src="/static/images/no_cover.jpg"

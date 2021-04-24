@@ -8,7 +8,7 @@
             <div class="column">
                 <a
                     href="{{ book.local_path }}"
-                >{% include 'snippets/book_cover.html' with size="large" %}</a>
+                >{% include 'snippets/book_cover.html' with cover_class='is-large' %}</a>
 
                 {% include 'snippets/stars.html' with rating=book|rating:request.user %}
             </div>

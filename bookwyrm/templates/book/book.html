@@ -49,7 +49,7 @@
     <div class="columns">
         <div class="column is-one-fifth">
             <div class="is-clipped">
-                {% include 'snippets/book_cover.html' with book=book size=large %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-large' %}
                 {% include 'snippets/rate_action.html' with user=request.user book=book %}
             </div>
             <div class="mb-3">
