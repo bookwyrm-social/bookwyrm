@@ -153,7 +153,7 @@ LANGUAGES = [
     ("de-de", _("German")),
     ("es", _("Spanish")),
     ("fr-fr", _("French")),
-    ("zh-cn", _("Simplified Chinese")),
+    ("zh-hans", _("Simplified Chinese")),
 ]
 
 
