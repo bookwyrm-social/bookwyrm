@@ -18,18 +18,29 @@
         {% else %}
         <ol start="{{ items.start_index }}">
         {% for item in items %}
-            <li class="block pb-3">
+            <li class="block mb-5">
                 <div class="card">
-                    <div class="card-content columns p-0 pr-2 mb-0 is-mobile">
-                        <div class="column is-narrow pt-0 pb-0">
-                            <a href="{{ item.book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="medium" %}</a>
+                    {% with book=item.book %}
+                        <div
+                            class="
+                                card-content p-0 mb-0
+                                columns is-mobile is-gapless
+                            "
+                        >
+                            <div class="column">
+                                <a href="{{ item.book.local_path }}" aria-hidden="true">
+                                    {% include 'snippets/book_cover.html' %}
+                                </a>
+                            </div>
+
+                            <div class="column is-9-mobile is-10-tablet ml-3">
+                                <span>{% include 'snippets/book_titleby.html' %}</span>
+                                {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                                {% include 'snippets/shelve_button/shelve_button.html' %}
+                            </div>
                         </div>
-                        <div class="column is-flex-direction-column is-align-items-self-start">
-                            <span>{% include 'snippets/book_titleby.html' with book=item.book %}</span>
-                            {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
-                            {% include 'snippets/shelve_button/shelve_button.html' with book=item.book %}
-                        </div>
-                    </div>
+                    {% endwith %}
+
                     <div class="card-footer has-background-white-bis is-align-items-baseline">
                         <div class="card-footer-item">
                             <div>
@@ -66,7 +77,7 @@
         {% include "snippets/pagination.html" with page=items %}
     </section>
 
-    <section class="column is-one-quarter content">
+    <section class="column is-one-quarter">
         <h2>{% trans "Sort List" %}</h2>
         <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
             <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
@@ -108,24 +119,27 @@
         <p>{% trans "No books found" %}</p>
         {% endif %}
         {% endif %}
-        {% for book in suggested_books %}
-        {% if book %}
-        <div class="block columns is-mobile">
-            <div class="column is-narrow">
-                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
-            </div>
-            <div class="column">
-                <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
-                <form name="add-book" method="post" action="{% url 'list-add-book' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="book" value="{{ book.id }}">
-                    <input type="hidden" name="list" value="{{ list.id }}">
-                    <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
-                </form>
-            </div>
-        </div>
+
+        {% if suggested_books|length > 0 %}
+            {% for book in suggested_books %}
+                <div class="columns is-mobile is-gapless">
+                    <a class="column" href="{{ book.local_path }}" aria-hidden="true">
+                        {% include 'snippets/book_cover.html' with book=book %}
+                    </a>
+
+                    <div class="column is-9-mobile is-8-tablet ml-3">
+                        <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
+
+                        <form class="mt-1" name="add-book" method="post" action="{% url 'list-add-book' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="book" value="{{ book.id }}">
+                            <input type="hidden" name="list" value="{{ list.id }}">
+                            <button type="submit" class="button is-small is-link">{% if list.curation == 'open' or request.user == list.user %}{% trans "Add" %}{% else %}{% trans "Suggest" %}{% endif %}</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
         {% endif %}
-        {% endfor %}
     {% endif %}
     </section>
 </div>
