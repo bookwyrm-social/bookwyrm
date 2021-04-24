@@ -11,6 +11,7 @@ class Book(ActivityObject):
     """ serializes an edition or work, abstract """
 
     title: str
+    lastEditedBy: str = None
     sortTitle: str = ""
     subtitle: str = ""
     description: str = ""
@@ -64,6 +65,7 @@ class Author(ActivityObject):
     """ author of a book """
 
     name: str
+    lastEditedBy: str = None
     born: str = None
     died: str = None
     aliases: List[str] = field(default_factory=lambda: [])

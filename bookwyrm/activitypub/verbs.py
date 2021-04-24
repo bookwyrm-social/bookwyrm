@@ -176,7 +176,8 @@ class Remove(Add):
     def action(self):
         """ find and remove the activity object """
         obj = self.object.to_model(save=False, allow_create=False)
-        obj.delete()
+        if obj:
+            obj.delete()
 
 
 @dataclass(init=False)

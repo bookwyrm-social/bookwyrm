@@ -1,7 +1,7 @@
 """ template filters """
 from uuid import uuid4
 
-from django import template
+from django import template, utils
 from django.db.models import Avg
 
 from bookwyrm import models, views
@@ -168,6 +168,17 @@ def get_next_shelf(current_shelf):
     return "to-read"
 
 
+@register.filter(name="title")
+def get_title(book):
+    """ display the subtitle if the title is short """
+    if not book:
+        return ""
+    title = book.title
+    if len(title) < 6 and book.subtitle:
+        title = "{:s}: {:s}".format(title, book.subtitle)
+    return title
+
+
 @register.simple_tag(takes_context=False)
 def related_status(notification):
     """ for notifications """
@@ -217,3 +228,10 @@ def active_read_through(book, user):
 def comparison_bool(str1, str2):
     """ idk why I need to write a tag for this, it reutrns a bool """
     return str1 == str2
+
+
+@register.simple_tag(takes_context=False)
+def get_lang():
+    """ get current language, strip to the first two letters """
+    language = utils.translation.get_language()
+    return language[0 : language.find("-")]

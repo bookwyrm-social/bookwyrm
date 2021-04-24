@@ -148,13 +148,17 @@ class ActivitypubMixin:
         mentions = self.recipients if hasattr(self, "recipients") else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or []]
+        recipients = [u.inbox for u in mentions or [] if not u.local]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.viewer_aware_objects(user).filter(
-                local=False,
+            queryset = (
+                user_model.viewer_aware_objects(user)
+                .filter(
+                    local=False,
+                )
+                .distinct()
             )
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
@@ -175,7 +179,7 @@ class ActivitypubMixin:
                 "inbox", flat=True
             )
             recipients += list(shared_inboxes) + list(inboxes)
-        return recipients
+        return list(set(recipients))
 
     def to_activity_dataclass(self):
         """ convert from a model to an activity """
@@ -200,7 +204,9 @@ class ObjectMixin(ActivitypubMixin):
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
-        if not broadcast:
+        if not broadcast or (
+            hasattr(self, "status_type") and self.status_type == "Announce"
+        ):
             return
 
         # this will work for objects owned by a user (lists, shelves)

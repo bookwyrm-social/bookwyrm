@@ -17,8 +17,6 @@ from .favorite import Favorite
 from .notification import Notification
 from .readthrough import ReadThrough, ProgressUpdate, ProgressMode
 
-from .tag import Tag, UserTag
-
 from .user import User, KeyPair, AnnualGoal
 from .relationship import UserFollows, UserFollowRequest, UserBlocks
 from .report import Report, ReportComment
