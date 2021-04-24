@@ -117,14 +117,14 @@ body {
 }
 
 /** Book covers
+ *
+ * The book cover takes the full width of its ancestor’s layout.
  ******************************************************************************/
-
 .cover-container {
-    height: 250px;
-    width: max-content;
-    max-width: 250px;
+    position: relative;
 }
 
+/*
 .cover-container.is-large {
     height: max-content;
     max-width: 330px;
@@ -153,26 +153,25 @@ body {
         height: 100px;
     }
 }
+*/
 
 .book-cover {
-    height: 100%;
-    object-fit: scale-down;
+    display: block;
+    width: 100%;
+
+    /* Usweful when stretching under-sized images. */
+    image-rendering: optimizeQuality;
 }
 
-.no-cover {
-    position: relative;
-    white-space: normal;
-}
-
-.no-cover div {
+.no-cover .cover_caption {
     position: absolute;
     padding: 1em;
     color: white;
     top: 0;
     left: 0;
-    text-align: center;
 }
 
+/*
 .cover-container.is-medium .no-cover div {
     font-size: 0.9em;
     padding: 0.3em;
@@ -182,6 +181,7 @@ body {
     font-size: 0.7em;
     padding: 0.1em;
 }
+*/
 
 /** Avatars
  ******************************************************************************/
