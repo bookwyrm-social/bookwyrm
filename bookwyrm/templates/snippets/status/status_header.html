@@ -41,6 +41,10 @@
             {% elif status.reply_parent %}
                 {% with parent_status=status|parent %}
 
+               {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">status</a>{% endblocktrans %}
+               {% endwith %}
+           {% endif %}
+
         {% if status.book %}
             {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
                 <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
@@ -52,12 +56,9 @@
                 <span class="is-hidden" {{ rating_type }}>
                     <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
 
-                        {% endwith %}
-                    {% endif %}
-
                     {% if status.book %}
                         {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                            <a href="/book/{{ status.book.id }}">{{ status.book.title }}</a>{% if status.status_type == 'Rating' %}:
+                            <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
                             <span
                                 itemprop="reviewRating"
                                 itemscope
