@@ -13,7 +13,6 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
-from .helpers import get_suggested_users
 from .user import save_user_form
 
 
@@ -120,7 +119,7 @@ class GetStartedUsers(View):
         )
 
         if user_results.count() < 5:
-            suggested_users = get_suggested_users(request.user)
+            suggested_users = None#get_suggested_users(request.user)
 
         data = {
             "suggested_users": list(user_results) + list(suggested_users),

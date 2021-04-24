@@ -1,17 +1,16 @@
 """ store recommended follows in redis """
 import math
 from django.dispatch import receiver
-from django.db.models import signals, Q
+from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
-from bookwyrm.views.helpers import get_annotated_users
 
 
 class SuggestedUsers(RedisStore):
     """ suggested users for a user """
 
-    max_length = 10
+    max_length = 30
 
     def get_rank(self, obj):
         """ get computed rank """
@@ -25,7 +24,7 @@ class SuggestedUsers(RedisStore):
         """ calculate mutuals count and shared books count from rank """
         return {
             "mutuals": math.floor(rank),
-            "shared_books": int(1 / (-1 * (1 % rank - 1))),
+            "shared_books": int(1 / (-1 * (1 % rank - 1))) if rank else 0,
         }
 
     def get_objects_for_store(self, store):
@@ -81,6 +80,35 @@ class SuggestedUsers(RedisStore):
             user.shared_books = counts["shared_books"]
             results.append(user)
         return results
+
+
+def get_annotated_users(viewer, *args, **kwargs):
+    """ Users, annotated with things they have in common """
+    return (
+        models.User.objects.filter(discoverable=True, is_active=True, *args, **kwargs)
+        .exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
+        .annotate(
+            mutuals=Count(
+                "following",
+                filter=Q(
+                    ~Q(id=viewer.id),
+                    ~Q(id__in=viewer.following.all()),
+                    following__in=viewer.following.all(),
+                ),
+                distinct=True,
+            ),
+            shared_books=Count(
+                "shelfbook",
+                filter=Q(
+                    ~Q(id=viewer.id),
+                    shelfbook__book__parent_work__in=[
+                        s.book.parent_work for s in viewer.shelfbook_set.all()
+                    ],
+                ),
+                distinct=True,
+            ),
+        )
+    )
 
 
 suggested_users = SuggestedUsers()
