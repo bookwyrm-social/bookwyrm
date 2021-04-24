@@ -48,7 +48,7 @@ class SuggestedUsers(RedisStore):
             local=True,
         ).exclude(following=obj)
 
-    def rerank_obj(self, obj):
+    def rerank_obj(self, obj, update_only=True):
         """ update all the instances of this user with new ranks """
         pipeline = r.pipeline()
         for store_user in self.get_users_for_object(obj):
@@ -60,7 +60,7 @@ class SuggestedUsers(RedisStore):
             pipeline.zadd(
                 self.store_id(store_user),
                 self.get_value(annotated_user),
-                xx=True
+                xx=update_only
             )
         pipeline.execute()
 
@@ -146,13 +146,14 @@ def add_or_remove_on_discoverability_change(
     sender, instance, created, raw, using, update_fields, **kwargs
 ):
     """ make a user (un)discoverable """
-    if not update_fields or not "discoverable" in update_fields:
-        return
-
     if created:
         suggested_users.rerank_user_suggestions(instance)
 
+    if not created and (not update_fields or not "discoverable" in update_fields):
+        return
+
     if instance.discoverable:
-        suggested_users.rerank_obj(instance)
+        suggested_users.rerank_obj(instance, update_only=False)
+
     elif not created and not instance.discoverable:
         suggested_users.remove_object_from_related_stores(instance)
