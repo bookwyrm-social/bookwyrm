@@ -14,10 +14,17 @@
         {% if not hide_book %}
         {% with book=status.book|default:status.mention_books.first %}
         {% if book %}
-        <div class="column is-narrow is-hidden-mobile">
-            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book %}</a>
-            {% include 'snippets/stars.html' with rating=book|rating:request.user %}
-            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+        <div class="column is-narrow">
+            <div class="columns is-mobile">
+                <div class="column is-narrow">
+                    <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book %}</a>
+                    {% include 'snippets/stars.html' with rating=book|rating:request.user %}
+                    {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                </div>
+                <div class="column is-hidden-tablet">
+                    <p>{{ book|book_description|to_markdown|default:""|safe|truncatewords_html:15 }}</p>
+                </div>
+            </div>
         </div>
         {% endif %}
         {% endwith %}
