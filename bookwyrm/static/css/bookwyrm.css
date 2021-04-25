@@ -53,6 +53,16 @@ body {
     background-color: transparent;
 }
 
+.card.is-stretchable {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card.is-stretchable .card-content {
+    flex-grow: 1;
+}
+
 /** Shelving
  ******************************************************************************/
 
