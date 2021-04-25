@@ -4,16 +4,16 @@
 {% load humanize %}
 
 {% block card-header %}
-    <h3 class="card-header-title has-background-white-ter is-block">
-        {% include 'snippets/status/status_header.html' with status=status %}
-    </h3>
+<div class="card-header-title has-background-white-ter is-block">
+    {% include 'snippets/status/status_header.html' with status=status %}
+</div>
 {% endblock %}
 
 {% block card-content %}{% endblock %}
 
 {% block card-footer %}
+{% if moderation_mode and perms.bookwyrm.moderate_post %}
 <div class="card-footer-item">
-    {% if moderation_mode and perms.bookwyrm.moderate_post %}
 
     {# moderation options #}
     <form name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
@@ -22,53 +22,44 @@
             {% trans "Delete status" %}
         </button>
     </form>
-    {% elif no_interact %}
-    {# nothing here #}
-    {% elif request.user.is_authenticated %}
-    <div class="field has-addons">
-        <div class="control">
-            {% trans "Reply" as button_text %}
-            {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text=button_text icon="comment" class="is-small toggle-button" focus="id_content_reply" %}
-        </div>
-        <div class="control">
-            {% include 'snippets/boost_button.html' with status=status %}
-        </div>
-        <div class="control">
-            {% include 'snippets/fav_button.html' with status=status %}
-        </div>
-    </div>
-
-    {% else %}
-    <a href="/login">
-        <span class="icon icon-comment" title="{% trans 'Reply' %}">
-            <span class="is-sr-only">{% trans "Reply" %}</span>
-        </span>
-
-        <span class="icon icon-boost" title="{% trans 'Boost status' %}">
-            <span class="is-sr-only">{% trans "Boost status" %}</span>
-        </span>
-
-        <span class="icon icon-heart" title="{% trans 'Like status' %}">
-            <span class="is-sr-only">{% trans "Like status" %}</span>
-        </span>
-    </a>
-    {% endif %}
 </div>
-
+{% elif no_interact %}
+{# nothing here #}
+{% elif request.user.is_authenticated %}
 <div class="card-footer-item">
-    {% include 'snippets/privacy-icons.html' with item=status %}
+    {% trans "Reply" as button_text %}
+    {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light is-transparent toggle-button" focus="id_content_reply" %}
 </div>
-
 <div class="card-footer-item">
-    <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
+    {% include 'snippets/boost_button.html' with status=status %}
+</div>
+<div class="card-footer-item">
+    {% include 'snippets/fav_button.html' with status=status %}
 </div>
 {% if not moderation_mode %}
 <div class="card-footer-item">
-    {% include 'snippets/status/status_options.html' with class="is-small" right=True %}
+    {% include 'snippets/status/status_options.html' with class="is-small is-light is-transparent" right=True %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="card-footer-item">
+    <a href="/login">
+        <span class="icon icon-comment is-small" title="{% trans 'Reply' %}">
+            <span class="is-sr-only">{% trans "Reply" %}</span>
+        </span>
+
+        <span class="icon icon-boost is-small ml-4" title="{% trans 'Boost status' %}">
+            <span class="is-sr-only">{% trans "Boost status" %}</span>
+        </span>
+
+        <span class="icon icon-heart is-small ml-4" title="{% trans 'Like status' %}">
+            <span class="is-sr-only">{% trans "Like status" %}</span>
+        </span>
+    </a>
 </div>
 {% endif %}
 {% endblock %}
-
 
 {% block card-bonus %}
 {% if request.user.is_authenticated and not moderation_mode %}
