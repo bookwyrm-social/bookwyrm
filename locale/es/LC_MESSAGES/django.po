@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-22 15:55+0000\n"
+"POT-Creation-Date: 2021-04-25 04:01+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,57 +18,57 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:232
+#: bookwyrm/forms.py:224
 msgid "A user with this email already exists."
 msgstr "Ya existe un usuario con ese correo electrónico."
 
-#: bookwyrm/forms.py:246
+#: bookwyrm/forms.py:238
 msgid "One Day"
 msgstr "Un día"
 
-#: bookwyrm/forms.py:247
+#: bookwyrm/forms.py:239
 msgid "One Week"
 msgstr "Una semana"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:240
 msgid "One Month"
 msgstr "Un mes"
 
-#: bookwyrm/forms.py:249
+#: bookwyrm/forms.py:241
 msgid "Does Not Expire"
 msgstr "Nunca se vence"
 
-#: bookwyrm/forms.py:254
+#: bookwyrm/forms.py:246
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d usos"
 
-#: bookwyrm/forms.py:257
+#: bookwyrm/forms.py:249
 msgid "Unlimited"
 msgstr "Sin límite"
 
-#: bookwyrm/forms.py:301
+#: bookwyrm/forms.py:293
 msgid "List Order"
 msgstr "Orden de la lista"
 
-#: bookwyrm/forms.py:302
+#: bookwyrm/forms.py:294
 msgid "Book Title"
 msgstr "Título"
 
-#: bookwyrm/forms.py:303 bookwyrm/templates/snippets/create_status_form.html:31
+#: bookwyrm/forms.py:295 bookwyrm/templates/snippets/create_status_form.html:31
 #: bookwyrm/templates/user/shelf.html:81
 msgid "Rating"
 msgstr "Calificación"
 
-#: bookwyrm/forms.py:305 bookwyrm/templates/lists/list.html:72
+#: bookwyrm/forms.py:297 bookwyrm/templates/lists/list.html:72
 msgid "Sort By"
 msgstr "Ordenar por"
 
-#: bookwyrm/forms.py:309
+#: bookwyrm/forms.py:301
 msgid "Ascending"
 msgstr "Ascendente"
 
-#: bookwyrm/forms.py:310
+#: bookwyrm/forms.py:302
 msgid "Descending"
 msgstr "Descendente"
 
@@ -2047,7 +2047,7 @@ msgstr "Texto de registración cerrada:"
 msgid "No cover"
 msgstr "Sin portada"
 
-#: bookwyrm/templates/snippets/book_titleby.html:3
+#: bookwyrm/templates/snippets/book_titleby.html:4
 #, python-format
 msgid "<a href=\"%(path)s\">%(title)s</a> by "
 msgstr "<a href=\"%(path)s\">%(title)s</a> por "
@@ -2527,19 +2527,6 @@ msgstr "En orden ascendente"
 msgid "Sorted descending"
 msgstr "En orden descendente"
 
-#: bookwyrm/templates/snippets/tag.html:14
-msgid "Remove tag"
-msgstr "Eliminar etiqueta"
-
-#: bookwyrm/templates/snippets/tag.html:18
-msgid "Add tag"
-msgstr "Agregar etiqueta"
-
-#: bookwyrm/templates/tag.html:9
-#, python-format
-msgid "Books tagged \"%(tag.name)s\""
-msgstr "Libros etiquetados con \"%(tag.name)s\""
-
 #: bookwyrm/templates/user/books_header.html:5
 #, python-format
 msgid "%(username)s's books"
@@ -2753,6 +2740,15 @@ msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónic
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
+
+#~ msgid "Remove tag"
+#~ msgstr "Eliminar etiqueta"
+
+#~ msgid "Add tag"
+#~ msgstr "Agregar etiqueta"
+
+#~ msgid "Books tagged \"%(tag.name)s\""
+#~ msgstr "Libros etiquetados con \"%(tag.name)s\""
 
 #~ msgid "Deactivate user"
 #~ msgstr "Desactivar usuario"
