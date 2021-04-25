@@ -48,10 +48,9 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            <div class="is-clipped">
-                {% include 'snippets/book_cover.html' with book=book cover_class='is-large' %}
-                {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            </div>
+            {% include 'snippets/book_cover.html' with book=book cover_class='has-height is-h-medium-mobile' %}
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+
             <div class="mb-3">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>

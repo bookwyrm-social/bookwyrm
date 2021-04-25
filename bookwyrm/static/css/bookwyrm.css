@@ -98,7 +98,7 @@ body {
  *
  * \e9d9: filled star
  * \e9d7: empty star;
- ******************************************************************************/
+ * -------------------------------------------------------------------------- */
 
 .form-rate-stars {
     width: max-content;
@@ -125,75 +125,44 @@ body {
 
 /** Book covers
  *
- * The book cover takes the full width of its ancestor’s layout.
+ * - take the full width of their ancestor’s layout.
+ * - take whatever height they need.
+ *
+ * When assigning a height, add the `has-height` class.
  ******************************************************************************/
 .cover-container {
     position: relative;
+    overflow: hidden;
 }
 
-.cover-container.is-small {
-    height: 100px;
-}
-
-.cover-container.is-medium {
-    height: 150px;
-}
-
-/*
-.cover-container.is-large {
-    height: max-content;
-    max-width: 330px;
-}
-
-.cover-container.is-large img {
-    max-height: 500px;
-    height: auto;
-}
-
-@media only screen and (max-width: 768px) {
-    .cover-container {
-        height: 200px;
-        width: max-content;
-    }
-
-    .cover-container.is-medium {
-        height: 100px;
-    }
-}
-*/
-
+/* Book cover
+   -------------------------------------------------------------------------- */
 .book-cover {
     display: block;
-    width: 100%;
+    width: auto;
 
     /* Useful when stretching under-sized images. */
     image-rendering: optimizeQuality;
+    image-rendering: smooth;
 }
 
+/* `height: inherit` makes sure the height computed is not approximative,
+    without specifying a fixed height. */
 [class~="has-height"] .book-cover {
-    width: auto;
-    height: 100%;
+    height: inherit;
+    max-height: 100%;
 }
 
+/* Cover caption
+   -------------------------------------------------------------------------- */
 .no-cover .cover_caption {
     position: absolute;
-    padding: 1em;
+    padding: .25em;
     color: white;
     top: 0;
     left: 0;
+    font-size: 0.75em;
 }
-
-/*
-.cover-container.is-medium .no-cover div {
-    font-size: 0.9em;
-    padding: 0.3em;
-}
-
-.cover-container.is-small .no-cover div {
-    font-size: 0.7em;
-    padding: 0.1em;
-}
-*/
 
 /** Avatars
  ******************************************************************************/
@@ -266,4 +235,25 @@ body {
     color: #7a7a7a;
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Dimensions
+ ******************************************************************************/
+
+.is-h-small {
+    height: 100px !important;
+}
+
+.is-h-medium {
+    height: 150px !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .is-h-small-mobile {
+        height: 100px !important;
+    }
+
+    .is-h-medium-mobile {
+        height: 150px;
+    }
 }

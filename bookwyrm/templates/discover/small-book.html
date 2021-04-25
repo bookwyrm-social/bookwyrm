@@ -6,7 +6,7 @@
     {% with book=book %}
         <a
             href="{{ book.local_path }}"
-        >{% include 'snippets/book_cover.html' with cover_class='is-small' %}</a>
+        >{% include 'snippets/book_cover.html' with cover_class='is-h-small' %}</a>
 
         {% include 'snippets/stars.html' with rating=book|rating:request.user %}
 
