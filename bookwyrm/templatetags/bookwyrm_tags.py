@@ -168,6 +168,17 @@ def get_next_shelf(current_shelf):
     return "to-read"
 
 
+@register.filter(name="title")
+def get_title(book):
+    """ display the subtitle if the title is short """
+    if not book:
+        return ""
+    title = book.title
+    if len(title) < 6 and book.subtitle:
+        title = "{:s}: {:s}".format(title, book.subtitle)
+    return title
+
+
 @register.simple_tag(takes_context=False)
 def related_status(notification):
     """ for notifications """
