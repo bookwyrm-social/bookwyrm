@@ -351,6 +351,16 @@ class Boost(ActivityMixin, Status):
 
     def save(self, *args, **kwargs):
         """ save and notify """
+        # This constraint can't work as it would cross tables.
+        # class Meta:
+        #     unique_together = ('user', 'boosted_status')
+        if (
+            Boost.objects.filter(boosted_status=self.boosted_status, user=self.user)
+            .exclude(id=self.id)
+            .exists()
+        ):
+            return
+
         super().save(*args, **kwargs)
         if not self.boosted_status.user.local or self.boosted_status.user == self.user:
             return

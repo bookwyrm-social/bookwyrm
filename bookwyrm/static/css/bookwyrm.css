@@ -1,6 +1,5 @@
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 20%;
 }
 
 body {
@@ -28,6 +27,40 @@ body {
 
 .modal-card.is-fullwidth {
     min-width: 75% !important;
+}
+
+/** Utilities not covered by Bulma
+ ******************************************************************************/
+
+@media only screen and (max-width: 768px) {
+    .is-sr-only-mobile {
+        border: none !important;
+        clip: rect(0, 0, 0, 0) !important;
+        height: 0.01em !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        white-space: nowrap !important;
+        width: 0.01em !important;
+    }
+
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+}
+
+.button.is-transparent {
+    background-color: transparent;
+}
+
+.card.is-stretchable {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card.is-stretchable .card-content {
+    flex-grow: 1;
 }
 
 /** Shelving
@@ -84,6 +117,13 @@ body {
     .transition-y {
         transition-duration: 0.001ms !important;
     }
+}
+
+/** Stars
+ ******************************************************************************/
+
+.stars {
+    white-space: nowrap;
 }
 
 /** Stars in a review form
@@ -255,4 +295,54 @@ body {
     color: #7a7a7a;
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Book preview table
+ ******************************************************************************/
+
+.book-preview td {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width: 768px) {
+    table.is-mobile,
+    table.is-mobile tbody {
+        display: block;
+    }
+
+    table.is-mobile tr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-top: 1px solid #dbdbdb;
+    }
+
+    table.is-mobile td {
+        display: block;
+        box-sizing: border-box;
+        flex: 1 0 100%;
+        order: 2;
+        border-bottom: 0;
+    }
+
+    table.is-mobile td.book-preview-top-row {
+        order: 1;
+        flex-basis: auto;
+    }
+
+    table.is-mobile td[data-title]:not(:empty)::before {
+        content: attr(data-title);
+        display: block;
+        font-size: 0.75em;
+        font-weight: bold;
+    }
+
+    table.is-mobile td:empty {
+        padding: 0;
+    }
+
+    table.is-mobile th,
+    table.is-mobile thead {
+        display: none;
+    }
 }

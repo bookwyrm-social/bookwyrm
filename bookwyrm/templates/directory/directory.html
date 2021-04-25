@@ -41,7 +41,7 @@
 <div class="columns is-multiline">
     {% for user in users %}
     <div class="column is-one-third">
-        <div class="card block">
+        <div class="card is-stretchable">
             <div class="card-content">
                 <div class="media">
                     <a href="{{ user.local_path }}" class="media-left">
@@ -56,13 +56,13 @@
                     </div>
                 </div>
 
-                <div class="content">
+                <div>
                 {% if user.summary %}
                     {{ user.summary | to_markdown | safe | truncatechars_html:40 }}
                 {% else %}&nbsp;{% endif %}
                 </div>
             </div>
-            <footer class="card-footer content">
+            <footer class="card-footer">
                 {% if user != request.user %}
                 {% if user.mutuals %}
                 <div class="card-footer-item">
