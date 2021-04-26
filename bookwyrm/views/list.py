@@ -270,7 +270,7 @@ def add_book(request):
         pass
 
     path = reverse("list", args=[book_list.id])
-    params = request.GET
+    params = request.GET.copy()
     params["updated"] = True
     return redirect("{:s}?{:s}".format(path, urlencode(params)))
 
