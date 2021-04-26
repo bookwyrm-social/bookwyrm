@@ -13,15 +13,16 @@ class Connector(AbstractConnector):
     """ instantiate a connector  """
 
     # pylint: disable=arguments-differ
-    def search(self, query, min_confidence=0.1, raw=False):
+    def search(self, query, min_confidence=0.1, raw=False, filters=None):
         """ search your local database """
+        filters = filters or []
         if not query:
             return []
         # first, try searching unqiue identifiers
-        results = search_identifiers(query)
+        results = search_identifiers(query, *filters)
         if not results:
             # then try searching title/author
-            results = search_title_author(query, min_confidence)
+            results = search_title_author(query, min_confidence, *filters)
         search_results = []
         for result in results:
             if raw:
@@ -98,15 +99,15 @@ class Connector(AbstractConnector):
         pass
 
 
-def search_identifiers(query):
+def search_identifiers(query, *filters):
     """ tries remote_id, isbn; defined as dedupe fields on the model """
-    filters = [
+    or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
         if hasattr(f, "deduplication_field") and f.deduplication_field
     ]
     results = models.Edition.objects.filter(
-        reduce(operator.or_, (Q(**f) for f in filters))
+        *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
 
     # when there are multiple editions of the same work, pick the default.
@@ -114,7 +115,7 @@ def search_identifiers(query):
     return results.filter(parent_work__default_edition__id=F("id")) or results
 
 
-def search_title_author(query, min_confidence):
+def search_title_author(query, min_confidence, *filters):
     """ searches for title and author """
     vector = (
         SearchVector("title", weight="A")
@@ -126,7 +127,7 @@ def search_title_author(query, min_confidence):
     results = (
         models.Edition.objects.annotate(search=vector)
         .annotate(rank=SearchRank(vector, query))
-        .filter(rank__gt=min_confidence)
+        .filter(*filters, rank__gt=min_confidence)
         .order_by("-rank")
     )
 

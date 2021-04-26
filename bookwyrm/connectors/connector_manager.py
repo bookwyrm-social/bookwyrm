@@ -67,10 +67,12 @@ def search(query, min_confidence=0.1):
     return results
 
 
-def local_search(query, min_confidence=0.1, raw=False):
+def local_search(query, min_confidence=0.1, raw=False, filters=None):
     """ only look at local search results """
     connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(query, min_confidence=min_confidence, raw=raw)
+    return connector.search(
+        query, min_confidence=min_confidence, raw=raw, filters=filters
+    )
 
 
 def isbn_local_search(query, raw=False):

@@ -137,7 +137,11 @@ class List(View):
 
         if query and request.user.is_authenticated:
             # search for books
-            suggestions = connector_manager.local_search(query, raw=True)
+            suggestions = connector_manager.local_search(
+                query,
+                raw=True,
+                filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            )
         elif request.user.is_authenticated:
             # just suggest whatever books are nearby
             suggestions = request.user.shelfbook_set.filter(
@@ -265,7 +269,7 @@ def add_book(request):
         # if the book is already on the list, don't flip out
         pass
 
-    path = reverse('list', args=[book_list.id])
+    path = reverse("list", args=[book_list.id])
     return redirect("{:s}?{:s}".format(path, urlencode(request.GET)))
 
 
