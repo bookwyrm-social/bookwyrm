@@ -260,7 +260,12 @@ urlpatterns = [
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
-    re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view()),
+    re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view(), name="book"),
+    re_path(
+        r"%s/(?P<user_statuses>review|comment|quote)/?$" % book_path,
+        views.Book.as_view(),
+        name="book-user-statuses",
+    ),
     re_path(r"%s/edit/?$" % book_path, views.EditBook.as_view()),
     re_path(r"%s/confirm/?$" % book_path, views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view()),

@@ -68,63 +68,66 @@
 <div class="block">
     <div>
         {% if books|length > 0 %}
-        <div class="scroll-x">
-        <table class="table is-striped is-fullwidth">
-
-        <tr class="book-preview">
-            <th>{% trans "Cover" %}</th>
-            <th>{% trans "Title" %}</th>
-            <th>{% trans "Author" %}</th>
-            <th>{% trans "Shelved" %}</th>
-            <th>{% trans "Started" %}</th>
-            <th>{% trans "Finished" %}</th>
-            {% if ratings %}<th>{% trans "Rating" %}</th>{% endif %}
-            {% if shelf.user == request.user %}
-            <th aria-hidden="true"></th>
-            {% endif %}
-        </tr>
-        {% for book in books %}
-        <tr class="book-preview">
-            <td>
-                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-h-small' %}</a>
-            </td>
-            <td>
-                <a href="{{ book.local_path }}">{{ book.title }}</a>
-            </td>
-            <td>
-                {% include 'snippets/authors.html' %}
-            </td>
-            <td>
-                {{ book.created_date | naturalday }}
-            </td>
-            {% latest_read_through book user as read_through %}
-            <td>
-                {{ read_through.start_date | naturalday |default_if_none:""}}
-            </td>
-            <td>
-                {{ read_through.finish_date | naturalday |default_if_none:""}}
-            </td>
-            {% if ratings %}
-            <td>
-                {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
-            </td>
-            {% endif %}
-            {% if shelf.user == request.user %}
-            <td>
-                {% with right=True %}
-                {% if not shelf.id %}
-                {% active_shelf book as current %}
-                {% include 'snippets/shelf_selector.html' with current=current.shelf class="is-small" %}
-                {% else %}
-                {% include 'snippets/shelf_selector.html' with current=shelf class="is-small" %}
-                {% endif %}
-                {% endwith %}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
+        <table class="table is-striped is-fullwidth is-mobile">
+            <thead>
+                <tr>
+                    <th>{% trans "Cover" %}</th>
+                    <th>{% trans "Title" %}</th>
+                    <th>{% trans "Author" %}</th>
+                    <th>{% trans "Shelved" %}</th>
+                    <th>{% trans "Started" %}</th>
+                    <th>{% trans "Finished" %}</th>
+                    {% if ratings %}<th>{% trans "Rating" %}</th>{% endif %}
+                    {% if shelf.user == request.user %}
+                    <th aria-hidden="true"></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                {% spaceless %}
+                <tr class="book-preview">
+                    <td class="book-preview-top-row">
+                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="small" %}</a>
+                    </td>
+                    <td data-title="{% trans "Title" %}">
+                        <a href="{{ book.local_path }}">{{ book.title }}</a>
+                    </td>
+                    <td data-title="{% trans "Author" %}">
+                        {% include 'snippets/authors.html' %}
+                    </td>
+                    <td data-title="{% trans "Shelved" %}">
+                        {{ book.created_date | naturalday }}
+                    </td>
+                    {% latest_read_through book user as read_through %}
+                    <td data-title="{% trans "Started" %}">
+                        {{ read_through.start_date | naturalday |default_if_none:""}}
+                    </td>
+                    <td data-title="{% trans "Finished" %}">
+                        {{ read_through.finish_date | naturalday |default_if_none:""}}
+                    </td>
+                    {% if ratings %}
+                    <td data-title="{% trans "Rating" %}">
+                        {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
+                    </td>
+                    {% endif %}
+                    {% if shelf.user == request.user %}
+                    <td class="book-preview-top-row has-text-right">
+                        {% with right=True %}
+                        {% if not shelf.id %}
+                        {% active_shelf book as current %}
+                        {% include 'snippets/shelf_selector.html' with current=current.shelf class="is-small" %}
+                        {% else %}
+                        {% include 'snippets/shelf_selector.html' with current=shelf class="is-small" %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endspaceless %}
+                {% endfor %} 
+            </tbody>
         </table>
-        </div>
         {% else %}
         <p>{% trans "This shelf is empty." %}</p>
         {% if shelf.id and shelf.editable %}
