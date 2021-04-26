@@ -6,7 +6,7 @@ from .connector_manager import ConnectorException
 
 
 class Connector(AbstractConnector):
-    """ instantiate a connector for OL """
+    """instantiate a connector for OL"""
 
     def __init__(self, identifier):
         super().__init__(identifier)
@@ -51,7 +51,7 @@ class Connector(AbstractConnector):
         ] + shared_mappings
 
     def get_remote_id(self, value):
-        """ convert an id/uri into a url """
+        """convert an id/uri into a url"""
         return "{:s}?action=by-uris&uris={:s}".format(self.books_url, value)
 
     def get_book_data(self, remote_id):
@@ -88,16 +88,16 @@ class Connector(AbstractConnector):
         )
 
     def parse_isbn_search_data(self, data):
-        """ boop doop """
+        """boop doop"""
 
     def format_isbn_search_result(self, search_result):
-        """ beep bloop """
+        """beep bloop"""
 
     def is_work_data(self, data):
         return data.get("type") == "work"
 
     def load_edition_data(self, work_uri):
-        """ get a list of editions for a work """
+        """get a list of editions for a work"""
         url = "{:s}?action=reverse-claims&property=wdt:P629&value={:s}".format(
             self.books_url, work_uri
         )
@@ -149,7 +149,7 @@ class Connector(AbstractConnector):
         return "%s%s" % (self.covers_url, cover_id)
 
     def resolve_keys(self, keys):
-        """ cool, it's "wd:Q3156592" now what the heck does that mean """
+        """cool, it's "wd:Q3156592" now what the heck does that mean"""
         results = []
         for uri in keys:
             try:
@@ -161,5 +161,5 @@ class Connector(AbstractConnector):
 
 
 def get_language_code(options, code="en"):
-    """ when there are a bunch of translation but we need a single field """
+    """when there are a bunch of translation but we need a single field"""
     return options.get(code)

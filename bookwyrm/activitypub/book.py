@@ -8,7 +8,7 @@ from .image import Document
 
 @dataclass(init=False)
 class BookData(ActivityObject):
-    """ shared fields for all book data and authors"""
+    """shared fields for all book data and authors"""
 
     openlibraryKey: str = None
     inventaireId: str = None

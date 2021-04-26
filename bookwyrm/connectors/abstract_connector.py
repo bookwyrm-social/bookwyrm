@@ -69,7 +69,7 @@ class AbstractMinimalConnector(ABC):
         return results
 
     def get_search_data(self, remote_id, **kwargs):  # pylint: disable=no-self-use
-        """ this allows connectors to override the default behavior """
+        """this allows connectors to override the default behavior"""
         return get_data(remote_id, **kwargs)
 
     @abstractmethod
@@ -155,7 +155,7 @@ class AbstractConnector(AbstractMinimalConnector):
         return edition
 
     def get_book_data(self, remote_id):  # pylint: disable=no-self-use
-        """ this allows connectors to override the default behavior """
+        """this allows connectors to override the default behavior"""
         return get_data(remote_id)
 
     def create_edition_from_data(self, work, edition_data):
