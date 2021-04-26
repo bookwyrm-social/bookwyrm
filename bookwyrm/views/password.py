@@ -14,17 +14,17 @@ from bookwyrm.emailing import password_reset_email
 
 # pylint: disable= no-self-use
 class PasswordResetRequest(View):
-    """ forgot password flow """
+    """forgot password flow"""
 
     def get(self, request):
-        """ password reset page """
+        """password reset page"""
         return TemplateResponse(
             request,
             "password_reset_request.html",
         )
 
     def post(self, request):
-        """ create a password reset token """
+        """create a password reset token"""
         email = request.POST.get("email")
         try:
             user = models.User.objects.get(email=email)
@@ -43,10 +43,10 @@ class PasswordResetRequest(View):
 
 
 class PasswordReset(View):
-    """ set new password """
+    """set new password"""
 
     def get(self, request, code):
-        """ endpoint for sending invites """
+        """endpoint for sending invites"""
         if request.user.is_authenticated:
             return redirect("/")
         try:
@@ -59,7 +59,7 @@ class PasswordReset(View):
         return TemplateResponse(request, "password_reset.html", {"code": code})
 
     def post(self, request, code):
-        """ allow a user to change their password through an emailed token """
+        """allow a user to change their password through an emailed token"""
         try:
             reset_code = models.PasswordReset.objects.get(code=code)
         except models.PasswordReset.DoesNotExist:
@@ -84,15 +84,15 @@ class PasswordReset(View):
 
 @method_decorator(login_required, name="dispatch")
 class ChangePassword(View):
-    """ change password as logged in user """
+    """change password as logged in user"""
 
     def get(self, request):
-        """ change password page """
+        """change password page"""
         data = {"user": request.user}
         return TemplateResponse(request, "preferences/change_password.html", data)
 
     def post(self, request):
-        """ allow a user to change their password """
+        """allow a user to change their password"""
         new_password = request.POST.get("password")
         confirm_password = request.POST.get("confirm-password")
 

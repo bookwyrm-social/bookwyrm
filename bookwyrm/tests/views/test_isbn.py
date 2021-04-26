@@ -11,10 +11,10 @@ from bookwyrm.settings import DOMAIN
 
 
 class IsbnViews(TestCase):
-    """ tag views"""
+    """tag views"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -37,7 +37,7 @@ class IsbnViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_isbn_json_response(self):
-        """ searches local data only and returns book data in json format """
+        """searches local data only and returns book data in json format"""
         view = views.Isbn.as_view()
         request = self.factory.get("")
         with patch("bookwyrm.views.isbn.is_api_request") as is_api:

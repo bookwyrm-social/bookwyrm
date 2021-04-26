@@ -8,10 +8,10 @@ from bookwyrm import models, settings
 
 # pylint: disable=unused-argument
 class Shelf(TestCase):
-    """ some activitypub oddness ahead """
+    """some activitypub oddness ahead"""
 
     def setUp(self):
-        """ look, a shelf """
+        """look, a shelf"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -19,7 +19,7 @@ class Shelf(TestCase):
         self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_remote_id(self):
-        """ shelves use custom remote ids """
+        """shelves use custom remote ids"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
@@ -28,7 +28,7 @@ class Shelf(TestCase):
         self.assertEqual(shelf.get_remote_id(), expected_id)
 
     def test_to_activity(self):
-        """ jsonify it """
+        """jsonify it"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
@@ -42,7 +42,7 @@ class Shelf(TestCase):
         self.assertEqual(activity_json["owner"], self.local_user.remote_id)
 
     def test_create_update_shelf(self):
-        """ create and broadcast shelf creation """
+        """create and broadcast shelf creation"""
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             shelf = models.Shelf.objects.create(
@@ -63,7 +63,7 @@ class Shelf(TestCase):
         self.assertEqual(shelf.name, "arthur russel")
 
     def test_shelve(self):
-        """ create and broadcast shelf creation """
+        """create and broadcast shelf creation"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(
                 name="Test Shelf", identifier="test-shelf", user=self.local_user

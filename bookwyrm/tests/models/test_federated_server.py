@@ -6,10 +6,10 @@ from bookwyrm import models
 
 
 class FederatedServer(TestCase):
-    """ federate server management """
+    """federate server management"""
 
     def setUp(self):
-        """ we'll need a user """
+        """we'll need a user"""
         self.server = models.FederatedServer.objects.create(server_name="test.server")
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
@@ -36,7 +36,7 @@ class FederatedServer(TestCase):
             )
 
     def test_block_unblock(self):
-        """ block a server and all users on it """
+        """block a server and all users on it"""
         self.assertEqual(self.server.status, "federated")
         self.assertTrue(self.remote_user.is_active)
         self.assertFalse(self.inactive_remote_user.is_active)

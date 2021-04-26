@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -52,7 +52,7 @@ class InboxActivities(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_boost(self, redis_mock):
-        """ boost a status """
+        """boost a status"""
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
             "type": "Announce",
@@ -82,7 +82,7 @@ class InboxActivities(TestCase):
     @responses.activate
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_boost_remote_status(self, redis_mock):
-        """ boost a status from a remote server """
+        """boost a status from a remote server"""
         work = models.Work.objects.create(title="work title")
         book = models.Edition.objects.create(
             title="Test",
@@ -131,7 +131,7 @@ class InboxActivities(TestCase):
 
     @responses.activate
     def test_discarded_boost(self):
-        """ test a boost of a mastodon status that will be discarded """
+        """test a boost of a mastodon status that will be discarded"""
         status = models.Status(
             content="hi",
             user=self.remote_user,
@@ -154,7 +154,7 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Boost.objects.count(), 0)
 
     def test_unboost(self):
-        """ undo a boost """
+        """undo a boost"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             boost = models.Boost.objects.create(
                 boosted_status=self.status, user=self.remote_user
@@ -183,7 +183,7 @@ class InboxActivities(TestCase):
         self.assertFalse(models.Boost.objects.exists())
 
     def test_unboost_unknown_boost(self):
-        """ undo a boost """
+        """undo a boost"""
         activity = {
             "type": "Undo",
             "actor": "hi",

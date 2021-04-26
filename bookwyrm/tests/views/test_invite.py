@@ -11,10 +11,10 @@ from bookwyrm import views
 
 
 class InviteViews(TestCase):
-    """ every response to a get request, html or json """
+    """every response to a get request, html or json"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -26,7 +26,7 @@ class InviteViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_invite_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Invite.as_view()
         models.SiteInvite.objects.create(code="hi", user=self.local_user)
         request = self.factory.get("")
@@ -41,7 +41,7 @@ class InviteViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_manage_invites(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.ManageInvites.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -52,7 +52,7 @@ class InviteViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_invite_request(self):
-        """ request to join a server """
+        """request to join a server"""
         form = forms.InviteRequestForm()
         form.data["email"] = "new@user.email"
 
@@ -66,7 +66,7 @@ class InviteViews(TestCase):
         self.assertEqual(req.email, "new@user.email")
 
     def test_invite_request_email_taken(self):
-        """ request to join a server with an existing user email """
+        """request to join a server with an existing user email"""
         form = forms.InviteRequestForm()
         form.data["email"] = "mouse@mouse.mouse"
 
@@ -80,7 +80,7 @@ class InviteViews(TestCase):
         self.assertFalse(models.InviteRequest.objects.exists())
 
     def test_manage_invite_requests(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.ManageInviteRequests.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -98,7 +98,7 @@ class InviteViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_manage_invite_requests_send(self):
-        """ send an invite """
+        """send an invite"""
         req = models.InviteRequest.objects.create(email="fish@example.com")
 
         view = views.ManageInviteRequests.as_view()
@@ -113,7 +113,7 @@ class InviteViews(TestCase):
         self.assertIsNotNone(req.invite)
 
     def test_ignore_invite_request(self):
-        """ don't invite that jerk """
+        """don't invite that jerk"""
         req = models.InviteRequest.objects.create(email="fish@example.com")
 
         view = views.ignore_invite_request

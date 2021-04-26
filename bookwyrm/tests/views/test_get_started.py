@@ -8,10 +8,10 @@ from bookwyrm import forms, models, views
 
 
 class GetStartedViews(TestCase):
-    """ helping new users get oriented """
+    """helping new users get oriented"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -31,7 +31,7 @@ class GetStartedViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_profile_view(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedProfile.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -43,7 +43,7 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_profile_view_post(self):
-        """ save basic user details """
+        """save basic user details"""
         view = views.GetStartedProfile.as_view()
         form = forms.LimitedEditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
@@ -61,7 +61,7 @@ class GetStartedViews(TestCase):
         self.assertTrue(self.local_user.discoverable)
 
     def test_books_view(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedBooks.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -73,7 +73,7 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_books_view_with_query(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedBooks.as_view()
         request = self.factory.get("?query=Example")
         request.user = self.local_user
@@ -85,7 +85,7 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_books_view_post(self):
-        """ shelve some books """
+        """shelve some books"""
         view = views.GetStartedBooks.as_view()
         data = {self.book.id: self.local_user.shelf_set.first().id}
         request = self.factory.post("", data)
@@ -103,7 +103,7 @@ class GetStartedViews(TestCase):
         self.assertEqual(shelfbook.user, self.local_user)
 
     def test_users_view(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -115,7 +115,7 @@ class GetStartedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_users_view_with_query(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("?query=rat")
         request.user = self.local_user

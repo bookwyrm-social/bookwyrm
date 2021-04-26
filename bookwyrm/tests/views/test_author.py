@@ -12,10 +12,10 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 
 class AuthorViews(TestCase):
-    """ author views"""
+    """author views"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -42,7 +42,7 @@ class AuthorViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_author_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Author.as_view()
         author = models.Author.objects.create(name="Jessica")
         request = self.factory.get("")
@@ -62,7 +62,7 @@ class AuthorViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_edit_author_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.EditAuthor.as_view()
         author = models.Author.objects.create(name="Test Author")
         request = self.factory.get("")
@@ -76,7 +76,7 @@ class AuthorViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_edit_author(self):
-        """ edit an author """
+        """edit an author"""
         view = views.EditAuthor.as_view()
         author = models.Author.objects.create(name="Test Author")
         self.local_user.groups.add(self.group)
@@ -93,7 +93,7 @@ class AuthorViews(TestCase):
         self.assertEqual(author.last_edited_by, self.local_user)
 
     def test_edit_author_non_editor(self):
-        """ edit an author with invalid post data"""
+        """edit an author with invalid post data"""
         view = views.EditAuthor.as_view()
         author = models.Author.objects.create(name="Test Author")
         form = forms.AuthorForm(instance=author)
@@ -108,7 +108,7 @@ class AuthorViews(TestCase):
         self.assertEqual(author.name, "Test Author")
 
     def test_edit_author_invalid_form(self):
-        """ edit an author with invalid post data"""
+        """edit an author with invalid post data"""
         view = views.EditAuthor.as_view()
         author = models.Author.objects.create(name="Test Author")
         self.local_user.groups.add(self.group)

@@ -6,10 +6,10 @@ from bookwyrm import models, settings
 
 
 class ReadThrough(TestCase):
-    """ some activitypub oddness ahead """
+    """some activitypub oddness ahead"""
 
     def setUp(self):
-        """ look, a shelf """
+        """look, a shelf"""
         self.user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -27,7 +27,7 @@ class ReadThrough(TestCase):
         )
 
     def test_progress_update(self):
-        """ Test progress updates """
+        """Test progress updates"""
         self.readthrough.create_update()  # No-op, no progress yet
         self.readthrough.progress = 10
         self.readthrough.create_update()

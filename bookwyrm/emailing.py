@@ -8,7 +8,7 @@ from bookwyrm.settings import DOMAIN
 
 
 def email_data():
-    """ fields every email needs """
+    """fields every email needs"""
     site = models.SiteSettings.objects.get()
     if site.logo_small:
         logo_path = "/images/{}".format(site.logo_small.url)
@@ -24,14 +24,14 @@ def email_data():
 
 
 def invite_email(invite_request):
-    """ send out an invite code """
+    """send out an invite code"""
     data = email_data()
     data["invite_link"] = invite_request.invite.link
     send_email.delay(invite_request.email, *format_email("invite", data))
 
 
 def password_reset_email(reset_code):
-    """ generate a password reset email """
+    """generate a password reset email"""
     data = email_data()
     data["reset_link"] = reset_code.link
     data["user"] = reset_code.user.display_name
@@ -39,7 +39,7 @@ def password_reset_email(reset_code):
 
 
 def format_email(email_name, data):
-    """ render the email templates """
+    """render the email templates"""
     subject = (
         get_template("email/{}/subject.html".format(email_name)).render(data).strip()
     )
@@ -58,7 +58,7 @@ def format_email(email_name, data):
 
 @app.task
 def send_email(recipient, subject, html_content, text_content):
-    """ use a task to send the email """
+    """use a task to send the email"""
     email = EmailMultiAlternatives(
         subject, text_content, settings.DEFAULT_FROM_EMAIL, [recipient]
     )

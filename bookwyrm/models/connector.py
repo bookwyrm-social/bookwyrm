@@ -9,7 +9,7 @@ ConnectorFiles = models.TextChoices("ConnectorFiles", CONNECTORS)
 
 
 class Connector(BookWyrmModel):
-    """ book data source connectors """
+    """book data source connectors"""
 
     identifier = models.CharField(max_length=255, unique=True)
     priority = models.IntegerField(default=2)
@@ -32,7 +32,7 @@ class Connector(BookWyrmModel):
     query_count_expiry = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:
-        """ check that there's code to actually use this connector """
+        """check that there's code to actually use this connector"""
 
         constraints = [
             models.CheckConstraint(

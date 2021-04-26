@@ -27,5 +27,5 @@ activity_objects = {c[0]: c[1] for c in cls_members if hasattr(c[1], "to_model")
 
 
 def parse(activity_json):
-    """ figure out what activity this is and parse it """
+    """figure out what activity this is and parse it"""
     return naive_parse(activity_objects, activity_json)

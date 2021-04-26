@@ -6,7 +6,7 @@ from bookwyrm.sanitize_html import InputHtmlParser
 
 
 def create_generated_note(user, content, mention_books=None, privacy="public"):
-    """ a note created by the app about user activity """
+    """a note created by the app about user activity"""
     # sanitize input html
     parser = InputHtmlParser()
     parser.feed(content)
