@@ -9,7 +9,7 @@ from .openlibrary_languages import languages
 
 
 class Connector(AbstractConnector):
-    """ instantiate a connector for OL """
+    """instantiate a connector for OL"""
 
     def __init__(self, identifier):
         super().__init__(identifier)
@@ -59,7 +59,7 @@ class Connector(AbstractConnector):
         ]
 
     def get_remote_id_from_data(self, data):
-        """ format a url from an openlibrary id field """
+        """format a url from an openlibrary id field"""
         try:
             key = data["key"]
         except KeyError:
@@ -87,7 +87,7 @@ class Connector(AbstractConnector):
         return get_data(url)
 
     def get_authors_from_data(self, data):
-        """ parse author json and load or create authors """
+        """parse author json and load or create authors"""
         for author_blob in data.get("authors", []):
             author_blob = author_blob.get("author", author_blob)
             # this id is "/authors/OL1234567A"
@@ -99,7 +99,7 @@ class Connector(AbstractConnector):
             yield author
 
     def get_cover_url(self, cover_blob, size="L"):
-        """ ask openlibrary for the cover """
+        """ask openlibrary for the cover"""
         if not cover_blob:
             return None
         cover_id = cover_blob[0]
@@ -141,7 +141,7 @@ class Connector(AbstractConnector):
         )
 
     def load_edition_data(self, olkey):
-        """ query openlibrary for editions of a work """
+        """query openlibrary for editions of a work"""
         url = "%s/works/%s/editions" % (self.books_url, olkey)
         return get_data(url)
 
@@ -166,7 +166,7 @@ class Connector(AbstractConnector):
 
 
 def ignore_edition(edition_data):
-    """ don't load a million editions that have no metadata """
+    """don't load a million editions that have no metadata"""
     # an isbn, we love to see it
     if edition_data.get("isbn_13") or edition_data.get("isbn_10"):
         return False
@@ -185,19 +185,19 @@ def ignore_edition(edition_data):
 
 
 def get_description(description_blob):
-    """ descriptions can be a string or a dict """
+    """descriptions can be a string or a dict"""
     if isinstance(description_blob, dict):
         return description_blob.get("value")
     return description_blob
 
 
 def get_openlibrary_key(key):
-    """ convert /books/OL27320736M into OL27320736M """
+    """convert /books/OL27320736M into OL27320736M"""
     return key.split("/")[-1]
 
 
 def get_languages(language_blob):
-    """ /language/eng -> English """
+    """/language/eng -> English"""
     langs = []
     for lang in language_blob:
         langs.append(languages.get(lang.get("key", ""), None))
@@ -205,7 +205,7 @@ def get_languages(language_blob):
 
 
 def pick_default_edition(options):
-    """ favor physical copies with covers in english """
+    """favor physical copies with covers in english"""
     if not options:
         return None
     if len(options) == 1:

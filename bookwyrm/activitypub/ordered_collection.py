@@ -7,7 +7,7 @@ from .base_activity import ActivityObject
 
 @dataclass(init=False)
 class OrderedCollection(ActivityObject):
-    """ structure of an ordered collection activity """
+    """structure of an ordered collection activity"""
 
     totalItems: int
     first: str
@@ -19,7 +19,7 @@ class OrderedCollection(ActivityObject):
 
 @dataclass(init=False)
 class OrderedCollectionPrivate(OrderedCollection):
-    """ an ordered collection with privacy settings """
+    """an ordered collection with privacy settings"""
 
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
@@ -27,14 +27,14 @@ class OrderedCollectionPrivate(OrderedCollection):
 
 @dataclass(init=False)
 class Shelf(OrderedCollectionPrivate):
-    """ structure of an ordered collection activity """
+    """structure of an ordered collection activity"""
 
     type: str = "Shelf"
 
 
 @dataclass(init=False)
 class BookList(OrderedCollectionPrivate):
-    """ structure of an ordered collection activity """
+    """structure of an ordered collection activity"""
 
     summary: str = None
     curation: str = "closed"
@@ -43,7 +43,7 @@ class BookList(OrderedCollectionPrivate):
 
 @dataclass(init=False)
 class OrderedCollectionPage(ActivityObject):
-    """ structure of an ordered collection activity """
+    """structure of an ordered collection activity"""
 
     partOf: str
     orderedItems: List
@@ -54,7 +54,7 @@ class OrderedCollectionPage(ActivityObject):
 
 @dataclass(init=False)
 class CollectionItem(ActivityObject):
-    """ an item in a collection """
+    """an item in a collection"""
 
     actor: str
     type: str = "CollectionItem"
@@ -62,7 +62,7 @@ class CollectionItem(ActivityObject):
 
 @dataclass(init=False)
 class ListItem(CollectionItem):
-    """ a book on a list """
+    """a book on a list"""
 
     book: str
     notes: str = None
@@ -73,7 +73,7 @@ class ListItem(CollectionItem):
 
 @dataclass(init=False)
 class ShelfItem(CollectionItem):
-    """ a book on a list """
+    """a book on a list"""
 
     book: str
     type: str = "ShelfItem"

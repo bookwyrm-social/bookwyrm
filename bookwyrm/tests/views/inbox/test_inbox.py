@@ -12,10 +12,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class Inbox(TestCase):
-    """ readthrough tests """
+    """readthrough tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.client = Client()
         self.factory = RequestFactory()
         local_user = models.User.objects.create_user(
@@ -48,12 +48,12 @@ class Inbox(TestCase):
         models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
-        """ shouldn't try to handle if the user is not found """
+        """shouldn't try to handle if the user is not found"""
         result = self.client.get("/inbox", content_type="application/json")
         self.assertIsInstance(result, HttpResponseNotAllowed)
 
     def test_inbox_invalid_user(self):
-        """ shouldn't try to handle if the user is not found """
+        """shouldn't try to handle if the user is not found"""
         result = self.client.post(
             "/user/bleh/inbox",
             '{"type": "Test", "object": "exists"}',
@@ -62,7 +62,7 @@ class Inbox(TestCase):
         self.assertIsInstance(result, HttpResponseNotFound)
 
     def test_inbox_invalid_bad_signature(self):
-        """ bad request for invalid signature """
+        """bad request for invalid signature"""
         with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
             mock_valid.return_value = False
             result = self.client.post(
@@ -73,7 +73,7 @@ class Inbox(TestCase):
             self.assertEqual(result.status_code, 401)
 
     def test_inbox_invalid_bad_signature_delete(self):
-        """ invalid signature for Delete is okay though """
+        """invalid signature for Delete is okay though"""
         with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
             mock_valid.return_value = False
             result = self.client.post(
@@ -84,7 +84,7 @@ class Inbox(TestCase):
             self.assertEqual(result.status_code, 200)
 
     def test_inbox_unknown_type(self):
-        """ never heard of that activity type, don't have a handler for it """
+        """never heard of that activity type, don't have a handler for it"""
         with patch("bookwyrm.views.inbox.has_valid_signature") as mock_valid:
             result = self.client.post(
                 "/inbox",
@@ -95,7 +95,7 @@ class Inbox(TestCase):
             self.assertIsInstance(result, HttpResponseNotFound)
 
     def test_inbox_success(self):
-        """ a known type, for which we start a task """
+        """a known type, for which we start a task"""
         activity = self.create_json
         activity["object"] = {
             "id": "https://example.com/list/22",
@@ -121,7 +121,7 @@ class Inbox(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_is_blocked_user_agent(self):
-        """ check for blocked servers """
+        """check for blocked servers"""
         request = self.factory.post(
             "",
             HTTP_USER_AGENT="http.rb/4.4.1 (Mastodon/3.3.0; +https://mastodon.social/)",
@@ -134,7 +134,7 @@ class Inbox(TestCase):
         self.assertTrue(views.inbox.is_blocked_user_agent(request))
 
     def test_is_blocked_activity(self):
-        """ check for blocked servers """
+        """check for blocked servers"""
         activity = {"actor": "https://mastodon.social/user/whaatever/else"}
         self.assertFalse(views.inbox.is_blocked_activity(activity))
 
@@ -144,7 +144,7 @@ class Inbox(TestCase):
         self.assertTrue(views.inbox.is_blocked_activity(activity))
 
     def test_create_by_deactivated_user(self):
-        """ don't let deactivated users post """
+        """don't let deactivated users post"""
         self.remote_user.delete(broadcast=False)
         self.assertTrue(self.remote_user.deleted)
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")

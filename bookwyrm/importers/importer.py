@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class Importer:
-    """ Generic class for csv data import from an outside service """
+    """Generic class for csv data import from an outside service"""
 
     service = "Unknown"
     delimiter = ","
@@ -18,7 +18,7 @@ class Importer:
     mandatory_fields = ["Title", "Author"]
 
     def create_job(self, user, csv_file, include_reviews, privacy):
-        """ check over a csv and creates a database entry for the job"""
+        """check over a csv and creates a database entry for the job"""
         job = ImportJob.objects.create(
             user=user, include_reviews=include_reviews, privacy=privacy
         )
@@ -32,16 +32,16 @@ class Importer:
         return job
 
     def save_item(self, job, index, data):  # pylint: disable=no-self-use
-        """ creates and saves an import item """
+        """creates and saves an import item"""
         ImportItem(job=job, index=index, data=data).save()
 
     def parse_fields(self, entry):
-        """ updates csv data with additional info """
+        """updates csv data with additional info"""
         entry.update({"import_source": self.service})
         return entry
 
     def create_retry_job(self, user, original_job, items):
-        """ retry items that didn't import """
+        """retry items that didn't import"""
         job = ImportJob.objects.create(
             user=user,
             include_reviews=original_job.include_reviews,
@@ -53,7 +53,7 @@ class Importer:
         return job
 
     def start_import(self, job):
-        """ initalizes a csv import job """
+        """initalizes a csv import job"""
         result = import_data.delay(self.service, job.id)
         job.task_id = result.id
         job.save()
@@ -61,7 +61,7 @@ class Importer:
 
 @app.task
 def import_data(source, job_id):
-    """ does the actual lookup work in a celery task """
+    """does the actual lookup work in a celery task"""
     job = ImportJob.objects.get(id=job_id)
     try:
         for item in job.items.all():
@@ -89,7 +89,7 @@ def import_data(source, job_id):
 
 
 def handle_imported_book(source, user, item, include_reviews, privacy):
-    """ process a csv and then post about it """
+    """process a csv and then post about it"""
     if isinstance(item.book, models.Work):
         item.book = item.book.default_edition
     if not item.book:

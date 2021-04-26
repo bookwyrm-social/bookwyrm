@@ -14,10 +14,10 @@ from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class ImportJob(TestCase):
-    """ this is a fancy one!!! """
+    """this is a fancy one!!!"""
 
     def setUp(self):
-        """ data is from a goodreads export of The Raven Tower """
+        """data is from a goodreads export of The Raven Tower"""
         read_data = {
             "Book Id": 39395857,
             "Title": "The Raven Tower",
@@ -72,30 +72,30 @@ class ImportJob(TestCase):
         )
 
     def test_isbn(self):
-        """ it unquotes the isbn13 field from data """
+        """it unquotes the isbn13 field from data"""
         expected = "9780356506999"
         item = models.ImportItem.objects.get(index=1)
         self.assertEqual(item.isbn, expected)
 
     def test_shelf(self):
-        """ converts to the local shelf typology """
+        """converts to the local shelf typology"""
         expected = "reading"
         self.assertEqual(self.item_1.shelf, expected)
 
     def test_date_added(self):
-        """ converts to the local shelf typology """
+        """converts to the local shelf typology"""
         expected = datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc)
         item = models.ImportItem.objects.get(index=1)
         self.assertEqual(item.date_added, expected)
 
     def test_date_read(self):
-        """ converts to the local shelf typology """
+        """converts to the local shelf typology"""
         expected = datetime.datetime(2019, 4, 12, 0, 0, tzinfo=timezone.utc)
         item = models.ImportItem.objects.get(index=2)
         self.assertEqual(item.date_read, expected)
 
     def test_currently_reading_reads(self):
-        """ infer currently reading dates where available """
+        """infer currently reading dates where available"""
         expected = [
             models.ReadThrough(
                 start_date=datetime.datetime(2019, 4, 9, 0, 0, tzinfo=timezone.utc)
@@ -106,7 +106,7 @@ class ImportJob(TestCase):
         self.assertEqual(actual.reads[0].finish_date, expected[0].finish_date)
 
     def test_read_reads(self):
-        """ infer read dates where available """
+        """infer read dates where available"""
         actual = self.item_2
         self.assertEqual(
             actual.reads[0].start_date,
@@ -118,14 +118,14 @@ class ImportJob(TestCase):
         )
 
     def test_unread_reads(self):
-        """ handle books with no read dates """
+        """handle books with no read dates"""
         expected = []
         actual = models.ImportItem.objects.get(index=3)
         self.assertEqual(actual.reads, expected)
 
     @responses.activate
     def test_get_book_from_isbn(self):
-        """ search and load books by isbn (9780356506999) """
+        """search and load books by isbn (9780356506999)"""
         connector_info = models.Connector.objects.create(
             identifier="openlibrary.org",
             name="OpenLibrary",

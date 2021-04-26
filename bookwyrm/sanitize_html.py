@@ -3,7 +3,7 @@ from html.parser import HTMLParser
 
 
 class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
-    """ Removes any html that isn't allowed_tagsed from a block """
+    """Removes any html that isn't allowed_tagsed from a block"""
 
     def __init__(self):
         HTMLParser.__init__(self)
@@ -28,7 +28,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
         self.allow_html = True
 
     def handle_starttag(self, tag, attrs):
-        """ check if the tag is valid """
+        """check if the tag is valid"""
         if self.allow_html and tag in self.allowed_tags:
             self.output.append(("tag", self.get_starttag_text()))
             self.tag_stack.append(tag)
@@ -36,7 +36,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
             self.output.append(("data", ""))
 
     def handle_endtag(self, tag):
-        """ keep the close tag """
+        """keep the close tag"""
         if not self.allow_html or tag not in self.allowed_tags:
             self.output.append(("data", ""))
             return
@@ -51,11 +51,11 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
         self.output.append(("tag", "</%s>" % tag))
 
     def handle_data(self, data):
-        """ extract the answer, if we're in an answer tag """
+        """extract the answer, if we're in an answer tag"""
         self.output.append(("data", data))
 
     def get_output(self):
-        """ convert the output from a list of tuples to a string """
+        """convert the output from a list of tuples to a string"""
         if self.tag_stack:
             self.allow_html = False
         if not self.allow_html:

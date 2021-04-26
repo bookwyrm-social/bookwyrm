@@ -8,7 +8,7 @@ from . import fields
 
 
 class Attachment(ActivitypubMixin, BookWyrmModel):
-    """ an image (or, in the future, video etc) associated with a status """
+    """an image (or, in the future, video etc) associated with a status"""
 
     status = models.ForeignKey(
         "Status", on_delete=models.CASCADE, related_name="attachments", null=True
@@ -16,13 +16,13 @@ class Attachment(ActivitypubMixin, BookWyrmModel):
     reverse_unfurl = True
 
     class Meta:
-        """ one day we'll have other types of attachments besides images """
+        """one day we'll have other types of attachments besides images"""
 
         abstract = True
 
 
 class Image(Attachment):
-    """ an image attachment """
+    """an image attachment"""
 
     image = fields.ImageField(
         upload_to="status/",

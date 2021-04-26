@@ -19,16 +19,16 @@ from .reading import edit_readthrough
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class CreateStatus(View):
-    """ the view for *posting* """
+    """the view for *posting*"""
 
     def get(self, request):
-        """ compose view (used for delete-and-redraft """
+        """compose view (used for delete-and-redraft"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
     def post(self, request, status_type):
-        """ create  status of whatever type """
+        """create  status of whatever type"""
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
@@ -80,10 +80,10 @@ class CreateStatus(View):
 
 @method_decorator(login_required, name="dispatch")
 class DeleteStatus(View):
-    """ tombstone that bad boy """
+    """tombstone that bad boy"""
 
     def post(self, request, status_id):
-        """ delete and tombstone a status """
+        """delete and tombstone a status"""
         status = get_object_or_404(models.Status, id=status_id)
 
         # don't let people delete other people's statuses
@@ -97,10 +97,10 @@ class DeleteStatus(View):
 
 @method_decorator(login_required, name="dispatch")
 class DeleteAndRedraft(View):
-    """ delete a status but let the user re-create it """
+    """delete a status but let the user re-create it"""
 
     def post(self, request, status_id):
-        """ delete and tombstone a status """
+        """delete and tombstone a status"""
         status = get_object_or_404(
             models.Status.objects.select_subclasses(), id=status_id
         )
@@ -130,7 +130,7 @@ class DeleteAndRedraft(View):
 
 
 def find_mentions(content):
-    """ detect @mentions in raw status content """
+    """detect @mentions in raw status content"""
     if not content:
         return
     for match in re.finditer(regex.strict_username, content):
@@ -148,7 +148,7 @@ def find_mentions(content):
 
 
 def format_links(content):
-    """ detect and format links """
+    """detect and format links"""
     return re.sub(
         r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % regex.domain,
         r'\g<1><a href="\g<2>">\g<3></a>',
@@ -157,7 +157,7 @@ def format_links(content):
 
 
 def to_markdown(content):
-    """ catch links and convert to markdown """
+    """catch links and convert to markdown"""
     content = markdown(content)
     content = format_links(content)
     # sanitize resulting html

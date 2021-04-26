@@ -8,7 +8,7 @@ from .image import Image
 
 @dataclass(init=False)
 class PublicKey(ActivityObject):
-    """ public key block """
+    """public key block"""
 
     owner: str
     publicKeyPem: str
@@ -17,7 +17,7 @@ class PublicKey(ActivityObject):
 
 @dataclass(init=False)
 class Person(ActivityObject):
-    """ actor activitypub json """
+    """actor activitypub json"""
 
     preferredUsername: str
     inbox: str

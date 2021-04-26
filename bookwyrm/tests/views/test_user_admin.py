@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 
 class UserAdminViews(TestCase):
-    """ every response to a get request, html or json """
+    """every response to a get request, html or json"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -24,7 +24,7 @@ class UserAdminViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_user_admin_list_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.UserAdminList.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -35,7 +35,7 @@ class UserAdminViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_user_admin_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.UserAdmin.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -48,7 +48,7 @@ class UserAdminViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_user_admin_page_post(self):
-        """ set the user's group """
+        """set the user's group"""
         group = Group.objects.create(name="editor")
         self.assertEqual(
             list(self.local_user.groups.values_list("name", flat=True)), []

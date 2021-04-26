@@ -17,10 +17,10 @@ from bookwyrm.settings import PAGE_LENGTH
     name="dispatch",
 )
 class UserAdminList(View):
-    """ admin view of users on this server """
+    """admin view of users on this server"""
 
     def get(self, request):
-        """ list of users """
+        """list of users"""
         filters = {}
         server = request.GET.get("server")
         if server:
@@ -59,16 +59,16 @@ class UserAdminList(View):
     name="dispatch",
 )
 class UserAdmin(View):
-    """ moderate an individual user """
+    """moderate an individual user"""
 
     def get(self, request, user):
-        """ user view """
+        """user view"""
         user = get_object_or_404(models.User, id=user)
         data = {"user": user, "group_form": forms.UserGroupForm()}
         return TemplateResponse(request, "user_admin/user.html", data)
 
     def post(self, request, user):
-        """ update user group """
+        """update user group"""
         user = get_object_or_404(models.User, id=user)
         form = forms.UserGroupForm(request.POST, instance=user)
         if form.is_valid():

@@ -9,7 +9,7 @@ class GoodreadsImporter(Importer):
     service = "GoodReads"
 
     def parse_fields(self, entry):
-        """ handle the specific fields in goodreads csvs """
+        """handle the specific fields in goodreads csvs"""
         entry.update({"import_source": self.service})
         # add missing 'Date Started' field
         entry.update({"Date Started": None})

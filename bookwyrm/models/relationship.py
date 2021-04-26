@@ -11,7 +11,7 @@ from . import fields
 
 
 class UserRelationship(BookWyrmModel):
-    """ many-to-many through table for followers """
+    """many-to-many through table for followers"""
 
     user_subject = fields.ForeignKey(
         "User",
@@ -28,16 +28,16 @@ class UserRelationship(BookWyrmModel):
 
     @property
     def privacy(self):
-        """ all relationships are handled directly with the participants """
+        """all relationships are handled directly with the participants"""
         return "direct"
 
     @property
     def recipients(self):
-        """ the remote user needs to recieve direct broadcasts """
+        """the remote user needs to recieve direct broadcasts"""
         return [u for u in [self.user_subject, self.user_object] if not u.local]
 
     class Meta:
-        """ relationships should be unique """
+        """relationships should be unique"""
 
         abstract = True
         constraints = [
@@ -51,22 +51,22 @@ class UserRelationship(BookWyrmModel):
         ]
 
     def get_remote_id(self):
-        """ use shelf identifier in remote_id """
+        """use shelf identifier in remote_id"""
         base_path = self.user_subject.remote_id
         return "%s#follows/%d" % (base_path, self.id)
 
 
 class UserFollows(ActivityMixin, UserRelationship):
-    """ Following a user """
+    """Following a user"""
 
     status = "follows"
 
     def to_activity(self):  # pylint: disable=arguments-differ
-        """ overrides default to manually set serializer """
+        """overrides default to manually set serializer"""
         return activitypub.Follow(**generate_activity(self))
 
     def save(self, *args, **kwargs):
-        """ really really don't let a user follow someone who blocked them """
+        """really really don't let a user follow someone who blocked them"""
         # blocking in either direction is a no-go
         if UserBlocks.objects.filter(
             Q(
@@ -85,7 +85,7 @@ class UserFollows(ActivityMixin, UserRelationship):
 
     @classmethod
     def from_request(cls, follow_request):
-        """ converts a follow request into a follow relationship """
+        """converts a follow request into a follow relationship"""
         return cls.objects.create(
             user_subject=follow_request.user_subject,
             user_object=follow_request.user_object,
@@ -94,13 +94,13 @@ class UserFollows(ActivityMixin, UserRelationship):
 
 
 class UserFollowRequest(ActivitypubMixin, UserRelationship):
-    """ following a user requires manual or automatic confirmation """
+    """following a user requires manual or automatic confirmation"""
 
     status = "follow_request"
     activity_serializer = activitypub.Follow
 
     def save(self, *args, broadcast=True, **kwargs):
-        """ make sure the follow or block relationship doesn't already exist """
+        """make sure the follow or block relationship doesn't already exist"""
         # if there's a request for a follow that already exists, accept it
         # without changing the local database state
         if UserFollows.objects.filter(
@@ -141,13 +141,13 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             )
 
     def get_accept_reject_id(self, status):
-        """ get id for sending an accept or reject of a local user """
+        """get id for sending an accept or reject of a local user"""
 
         base_path = self.user_object.remote_id
         return "%s#%s/%d" % (base_path, status, self.id or 0)
 
     def accept(self, broadcast_only=False):
-        """ turn this request into the real deal"""
+        """turn this request into the real deal"""
         user = self.user_object
         if not self.user_subject.local:
             activity = activitypub.Accept(
@@ -164,7 +164,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
             self.delete()
 
     def reject(self):
-        """ generate a Reject for this follow request """
+        """generate a Reject for this follow request"""
         if self.user_object.local:
             activity = activitypub.Reject(
                 id=self.get_accept_reject_id(status="rejects"),
@@ -177,13 +177,13 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
 
 
 class UserBlocks(ActivityMixin, UserRelationship):
-    """ prevent another user from following you and seeing your posts """
+    """prevent another user from following you and seeing your posts"""
 
     status = "blocks"
     activity_serializer = activitypub.Block
 
     def save(self, *args, **kwargs):
-        """ remove follow or follow request rels after a block is created """
+        """remove follow or follow request rels after a block is created"""
         super().save(*args, **kwargs)
 
         UserFollows.objects.filter(

@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -50,7 +50,7 @@ class InboxActivities(TestCase):
         models.SiteSettings.objects.create()
 
     def test_delete_status(self):
-        """ remove a status """
+        """remove a status"""
         self.assertFalse(self.status.deleted)
         activity = {
             "type": "Delete",
@@ -71,7 +71,7 @@ class InboxActivities(TestCase):
         self.assertIsInstance(status.deleted_date, datetime)
 
     def test_delete_status_notifications(self):
-        """ remove a status with related notifications """
+        """remove a status with related notifications"""
         models.Notification.objects.create(
             related_status=self.status,
             user=self.local_user,
@@ -106,7 +106,7 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.get(), notif)
 
     def test_delete_user(self):
-        """ delete a user """
+        """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -121,7 +121,7 @@ class InboxActivities(TestCase):
         self.assertFalse(models.User.objects.get(username="rat@example.com").is_active)
 
     def test_delete_user_unknown(self):
-        """ don't worry about it if we don't know the user """
+        """don't worry about it if we don't know the user"""
         self.assertEqual(models.User.objects.filter(is_active=True).count(), 2)
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",

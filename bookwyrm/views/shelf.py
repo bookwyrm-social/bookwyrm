@@ -21,10 +21,10 @@ from .helpers import handle_reading_status, privacy_filter
 
 # pylint: disable= no-self-use
 class Shelf(View):
-    """ shelf page """
+    """shelf page"""
 
     def get(self, request, username, shelf_identifier=None):
-        """ display a shelf """
+        """display a shelf"""
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
@@ -73,7 +73,7 @@ class Shelf(View):
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
     def post(self, request, username, shelf_identifier):
-        """ edit a shelf """
+        """edit a shelf"""
         try:
             shelf = request.user.shelf_set.get(identifier=shelf_identifier)
         except models.Shelf.DoesNotExist:
@@ -94,7 +94,7 @@ class Shelf(View):
 @login_required
 @require_POST
 def create_shelf(request):
-    """ user generated shelves """
+    """user generated shelves"""
     form = forms.ShelfForm(request.POST)
     if not form.is_valid():
         return redirect(request.headers.get("Referer", "/"))
@@ -106,7 +106,7 @@ def create_shelf(request):
 @login_required
 @require_POST
 def delete_shelf(request, shelf_id):
-    """ user generated shelves """
+    """user generated shelves"""
     shelf = get_object_or_404(models.Shelf, id=shelf_id)
     if request.user != shelf.user or not shelf.editable:
         return HttpResponseBadRequest()
@@ -118,7 +118,7 @@ def delete_shelf(request, shelf_id):
 @login_required
 @require_POST
 def shelve(request):
-    """ put a book on a user's shelf """
+    """put a book on a user's shelf"""
     book = get_edition(request.POST.get("book"))
 
     desired_shelf = models.Shelf.objects.filter(
@@ -177,7 +177,7 @@ def shelve(request):
 @login_required
 @require_POST
 def unshelve(request):
-    """ put a  on a user's shelf """
+    """put a  on a user's shelf"""
     book = models.Edition.objects.get(id=request.POST["book"])
     current_shelf = models.Shelf.objects.get(id=request.POST["shelf"])
 
@@ -187,6 +187,6 @@ def unshelve(request):
 
 # pylint: disable=unused-argument
 def handle_unshelve(book, shelf):
-    """ unshelve a book """
+    """unshelve a book"""
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)
     row.delete()

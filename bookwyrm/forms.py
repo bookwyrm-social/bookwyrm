@@ -12,7 +12,7 @@ from bookwyrm import models
 
 
 class CustomForm(ModelForm):
-    """ add css classes to the forms """
+    """add css classes to the forms"""
 
     def __init__(self, *args, **kwargs):
         css_classes = defaultdict(lambda: "")
@@ -198,7 +198,7 @@ class ImportForm(forms.Form):
 
 class ExpiryWidget(widgets.Select):
     def value_from_datadict(self, data, files, name):
-        """ human-readable exiration time buckets """
+        """human-readable exiration time buckets"""
         selected_string = super().value_from_datadict(data, files, name)
 
         if selected_string == "day":
@@ -217,7 +217,7 @@ class ExpiryWidget(widgets.Select):
 
 class InviteRequestForm(CustomForm):
     def clean(self):
-        """ make sure the email isn't in use by a registered user """
+        """make sure the email isn't in use by a registered user"""
         cleaned_data = super().clean()
         email = cleaned_data.get("email")
         if email and models.User.objects.filter(email=email).exists():

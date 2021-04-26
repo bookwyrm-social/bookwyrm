@@ -16,10 +16,10 @@ from .helpers import handle_remote_webfinger
 
 # pylint: disable= no-self-use
 class Search(View):
-    """ search users or books """
+    """search users or books"""
 
     def get(self, request):
-        """ that search bar up top """
+        """that search bar up top"""
         query = request.GET.get("q")
         min_confidence = request.GET.get("min_confidence", 0.1)
 

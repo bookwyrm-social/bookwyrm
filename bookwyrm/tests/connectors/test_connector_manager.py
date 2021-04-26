@@ -8,10 +8,10 @@ from bookwyrm.connectors.self_connector import Connector as SelfConnector
 
 
 class ConnectorManager(TestCase):
-    """ interface between the app and various connectors """
+    """interface between the app and various connectors"""
 
     def setUp(self):
-        """ we'll need some books and a connector info entry """
+        """we'll need some books and a connector info entry"""
         self.work = models.Work.objects.create(title="Example Work")
 
         self.edition = models.Edition.objects.create(
@@ -32,7 +32,7 @@ class ConnectorManager(TestCase):
         )
 
     def test_get_or_create_connector(self):
-        """ loads a connector if the data source is known or creates one """
+        """loads a connector if the data source is known or creates one"""
         remote_id = "https://example.com/object/1"
         connector = connector_manager.get_or_create_connector(remote_id)
         self.assertIsInstance(connector, BookWyrmConnector)
@@ -43,7 +43,7 @@ class ConnectorManager(TestCase):
         self.assertEqual(connector.identifier, same_connector.identifier)
 
     def test_get_connectors(self):
-        """ load all connectors """
+        """load all connectors"""
         remote_id = "https://example.com/object/1"
         connector_manager.get_or_create_connector(remote_id)
         connectors = list(connector_manager.get_connectors())
@@ -52,7 +52,7 @@ class ConnectorManager(TestCase):
         self.assertIsInstance(connectors[1], BookWyrmConnector)
 
     def test_search(self):
-        """ search all connectors """
+        """search all connectors"""
         results = connector_manager.search("Example")
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0]["connector"], SelfConnector)
@@ -60,7 +60,7 @@ class ConnectorManager(TestCase):
         self.assertEqual(results[0]["results"][0].title, "Example Edition")
 
     def test_search_isbn(self):
-        """ special handling if a query resembles an isbn """
+        """special handling if a query resembles an isbn"""
         results = connector_manager.search("0000000000")
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0]["connector"], SelfConnector)
@@ -68,20 +68,20 @@ class ConnectorManager(TestCase):
         self.assertEqual(results[0]["results"][0].title, "Example Edition")
 
     def test_local_search(self):
-        """ search only the local database """
+        """search only the local database"""
         results = connector_manager.local_search("Example")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].title, "Example Edition")
 
     def test_first_search_result(self):
-        """ only get one search result """
+        """only get one search result"""
         result = connector_manager.first_search_result("Example")
         self.assertEqual(result.title, "Example Edition")
         no_result = connector_manager.first_search_result("dkjfhg")
         self.assertIsNone(no_result)
 
     def test_load_connector(self):
-        """ load a connector object from the database entry """
+        """load a connector object from the database entry"""
         connector = connector_manager.load_connector(self.connector)
         self.assertIsInstance(connector, SelfConnector)
         self.assertEqual(connector.identifier, "test_connector")
