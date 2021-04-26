@@ -29,4 +29,6 @@
     <div>{% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}</div>
     {% endif %}
 </div>
+
+{% include 'snippets/pagination.html' with page=followers path=request.path %}
 {% endblock %}
