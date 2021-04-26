@@ -1,5 +1,6 @@
 """ book list views"""
 from typing import Optional
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,6 +10,7 @@ from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -263,7 +265,8 @@ def add_book(request):
         # if the book is already on the list, don't flip out
         pass
 
-    return redirect("list", book_list.id)
+    path = reverse('list', args=[book_list.id])
+    return redirect("{:s}?{:s}".format(path, urlencode(request.GET)))
 
 
 @require_POST
