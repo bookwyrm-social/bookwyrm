@@ -26,20 +26,22 @@ class BaseModel(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
+        class TestModel(base_model.BookWyrmModel):
+            """ just making it not abstract """
+        self.test_model = TestModel()
+
     def test_remote_id(self):
         """these should be generated"""
-        instance = base_model.BookWyrmModel()
-        instance.id = 1
-        expected = instance.get_remote_id()
-        self.assertEqual(expected, "https://%s/bookwyrmmodel/1" % DOMAIN)
+        self.test_model.id = 1
+        expected = self.test_model.get_remote_id()
+        self.assertEqual(expected, "https://%s/testmodel/1" % DOMAIN)
 
     def test_remote_id_with_user(self):
         """format of remote id when there's a user object"""
-        instance = base_model.BookWyrmModel()
-        instance.user = self.local_user
-        instance.id = 1
-        expected = instance.get_remote_id()
-        self.assertEqual(expected, "https://%s/user/mouse/bookwyrmmodel/1" % DOMAIN)
+        self.test_model.user = self.local_user
+        self.test_model.id = 1
+        expected = self.test_model.get_remote_id()
+        self.assertEqual(expected, "https://%s/user/mouse/testmodel/1" % DOMAIN)
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
