@@ -26,10 +26,10 @@ class BaseModel(TestCase):
                 outbox="https://example.com/users/rat/outbox",
             )
 
-        class TestModel(base_model.BookWyrmModel):
+        class BookWyrmTestModel(base_model.BookWyrmModel):
             """just making it not abstract"""
 
-        self.test_model = TestModel()
+        self.test_model = BookWyrmTestModel()
 
     def test_remote_id(self):
         """these should be generated"""
