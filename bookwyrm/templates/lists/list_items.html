@@ -14,7 +14,7 @@
                     <div class="card-image columns is-mobile is-gapless is-clipped">
                         {% for book in list_books %}
                             <a class="column is-narrow" href="{{ book.book.local_path }}">
-                                {% include 'snippets/book_cover.html' with book=book.book cover_class='has-height is-h-small' aria='show' %}
+                                {% include 'snippets/book_cover.html' with book=book.book cover_class='is-min-w-none is-h-small' aria='show' %}
                             </a>
                         {% endfor %}
                     </div>

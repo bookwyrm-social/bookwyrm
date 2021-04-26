@@ -13,32 +13,32 @@
 
 <div class="block">
     {% for book in editions %}
-    <div class="columns">
-        <div class="column is-2">
-            <a href="/book/{{ book.id }}">
-                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-medium' %}
-            </a>
+    <div class="columns is-gapless mb-6">
+        <div class="column is-2 is-flex align-r-tablet">
+            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-medium' %}
         </div>
-        <div class="column is-7">
-            <h2 class="title is-5">
+
+        <div class="column is-flex-grow-1 my-3-mobile mx-3-tablet">
+            <h2 class="title is-5 mb-1">
                 <a href="/book/{{ book.id }}" class="has-text-black">
                     {{ book.title }}
                 </a>
             </h2>
 
             {% with book=book %}
-                <div class="columns is-multiline">
+                <div class="columns is-multiline is-gapless">
                     <div class="column is-half">
                         {% include 'book/publisher_info.html' %}
                     </div>
 
-                    <div class="column is-half ">
+                    <div class="column ml-3-tablet">
                         {% include 'book/book_identifiers.html' %}
                     </div>
                 </div>
             {% endwith %}
         </div>
-        <div class="column is-3">
+
+        <div class="column is-narrow">
             {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True %}
         </div>
     </div>

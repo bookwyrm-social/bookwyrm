@@ -159,43 +159,47 @@ body {
 
 /** Book covers
  *
- * - take the full width of their ancestor’s layout.
- * - take whatever height they need.
- *
- * When assigning a height, add the `has-height` class.
+ * - The context gives the extrinsic dimensions.
+ * - .cover-container gives the intrinsic dimensions and position.
+ * - .book-cover is positioned and sized based on its container.
  ******************************************************************************/
+
 .cover-container {
+    display: flex;
     position: relative;
     overflow: hidden;
+    min-width: 80px;
+    min-height: 100px;
+    max-width: max-content;
+    outline: solid 1px #dbdbdb;
 }
 
 /* Book cover
  * -------------------------------------------------------------------------- */
+
 .book-cover {
     display: block;
-    width: auto;
+    max-width: 100%;
+    max-height: 100%;
 
     /* Useful when stretching under-sized images. */
     image-rendering: optimizeQuality;
     image-rendering: smooth;
 }
 
-/* `height: inherit` makes sure the height computed is not approximative,
-    without specifying a fixed height. */
-[class~="has-height"] .book-cover {
-    height: inherit;
-    max-height: 100%;
-}
-
 /* Cover caption
  * -------------------------------------------------------------------------- */
+
 .no-cover .cover_caption {
     position: absolute;
-    padding: 0.25em;
-    color: white;
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
+    padding: 0.25em;
     font-size: 0.75em;
+    color: white;
+    background-color: #002549;
 }
 
 /** Avatars
@@ -204,16 +208,6 @@ body {
 .avatar {
     vertical-align: middle;
     display: inline;
-}
-
-.is-32x32 {
-    min-width: 32px;
-    min-height: 32px;
-}
-
-.is-96x96 {
-    min-width: 96px;
-    min-height: 96px;
 }
 
 /** Statuses: Quotes
@@ -274,6 +268,16 @@ body {
 /* Dimensions
  ******************************************************************************/
 
+.is-32x32 {
+    min-width: 32px !important;
+    min-height: 32px !important;
+}
+
+.is-96x96 {
+    min-width: 96px !important;
+    min-height: 96px !important;
+}
+
 .is-h-small {
     height: 100px !important;
 }
@@ -283,12 +287,51 @@ body {
 }
 
 @media only screen and (max-width: 768px) {
-    .is-h-small-mobile {
-        height: 100px !important;
-    }
-
     .is-h-medium-mobile {
         height: 150px;
+    }
+}
+
+.is-min-w-none {
+    min-width: auto !important;
+}
+
+/* Alignments
+ ******************************************************************************/
+
+/* Flex item position
+ *
+ * This is for a default `flex-direction: row`.
+ * -------------------------------------------------------------------------- */
+
+.align-r {
+    justify-content: flex-end;
+}
+
+@media screen and (min-width: 769px) {
+    .align-r-tablet {
+        justify-content: flex-end;
+    }
+}
+
+/* Spacings
+ ******************************************************************************/
+
+@media screen and (max-width: 768px) {
+    .my-3-mobile {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .ml-3-tablet {
+        margin-left: 0.75rem !important;
+    }
+
+    .mx-3-tablet {
+        margin-right: 0.75rem !important;
+        margin-left: 0.75rem !important;
     }
 }
 
