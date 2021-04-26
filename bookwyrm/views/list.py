@@ -270,7 +270,9 @@ def add_book(request):
         pass
 
     path = reverse("list", args=[book_list.id])
-    return redirect("{:s}?{:s}".format(path, urlencode(request.GET)))
+    params = request.GET
+    params["updated"] = True
+    return redirect("{:s}?{:s}".format(path, urlencode(params)))
 
 
 @require_POST

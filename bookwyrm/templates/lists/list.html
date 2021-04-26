@@ -13,6 +13,16 @@
 
 <div class="columns mt-3">
     <section class="column is-three-quarters">
+        {% if request.GET.updated %}
+        <div class="notification is-primary">
+            {% if list.curation != "open" and request.user != list.user %}
+            {% trans "You successfully suggested a book for this list!" %}
+            {% else %}
+            {% trans "You successfully added a book to this list!" %}
+            {% endif %}
+        </div>
+        {% endif %}
+
         {% if not items.object_list.exists %}
         <p>{% trans "This list is currently empty" %}</p>
         {% else %}
