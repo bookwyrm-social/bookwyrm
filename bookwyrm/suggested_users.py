@@ -24,7 +24,7 @@ class SuggestedUsers(RedisStore):
         """calculate mutuals count and shared books count from rank"""
         return {
             "mutuals": math.floor(rank),
-            "shared_books": int(1 / (-1 * (1 % rank - 1))) if rank else 0,
+            "shared_books": int(1 / (-1 * (rank % 1 - 1))) - 1,
         }
 
     def get_objects_for_store(self, store):
