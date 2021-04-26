@@ -10,10 +10,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxUpdate(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -45,7 +45,7 @@ class InboxUpdate(TestCase):
         models.SiteSettings.objects.create()
 
     def test_update_list(self):
-        """ a new list """
+        """a new list"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
@@ -79,7 +79,7 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
     def test_update_user(self):
-        """ update an existing user """
+        """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,
             user_object=self.remote_user,
@@ -116,7 +116,7 @@ class InboxUpdate(TestCase):
         self.assertTrue(self.local_user in self.remote_user.followers.all())
 
     def test_update_edition(self):
-        """ update an existing edition """
+        """update an existing edition"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
         bookdata = json.loads(datafile.read_bytes())
 
@@ -146,7 +146,7 @@ class InboxUpdate(TestCase):
         self.assertEqual(book.last_edited_by, self.remote_user)
 
     def test_update_work(self):
-        """ update an existing edition """
+        """update an existing edition"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_work.json")
         bookdata = json.loads(datafile.read_bytes())
 

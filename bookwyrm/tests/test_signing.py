@@ -20,7 +20,7 @@ from bookwyrm.signatures import create_key_pair, make_signature, make_digest
 
 
 def get_follow_activity(follower, followee):
-    """ generates a test activity """
+    """generates a test activity"""
     return Follow(
         id="https://test.com/user/follow/id",
         actor=follower.remote_id,
@@ -33,10 +33,10 @@ Sender = namedtuple("Sender", ("remote_id", "key_pair"))
 
 
 class Signature(TestCase):
-    """ signature test """
+    """signature test"""
 
     def setUp(self):
-        """ create users and test data """
+        """create users and test data"""
         self.mouse = models.User.objects.create_user(
             "mouse@%s" % DOMAIN, "mouse@example.com", "", local=True, localname="mouse"
         )
@@ -56,7 +56,7 @@ class Signature(TestCase):
         models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
-        """ test request """
+        """test request"""
         c = Client()
         return c.post(
             urlsplit(self.rat.inbox).path,
@@ -74,7 +74,7 @@ class Signature(TestCase):
     def send_test_request(  # pylint: disable=too-many-arguments
         self, sender, signer=None, send_data=None, digest=None, date=None
     ):
-        """ sends a follow request to the "rat" user """
+        """sends a follow request to the "rat" user"""
         now = date or http_date()
         data = json.dumps(get_follow_activity(sender, self.rat))
         digest = digest or make_digest(data)
@@ -84,7 +84,7 @@ class Signature(TestCase):
                 return self.send(signature, now, send_data or data, digest)
 
     def test_correct_signature(self):
-        """ this one should just work """
+        """this one should just work"""
         response = self.send_test_request(sender=self.mouse)
         self.assertEqual(response.status_code, 200)
 
@@ -96,7 +96,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_remote_signer(self):
-        """ signtures for remote users """
+        """signtures for remote users"""
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
@@ -119,7 +119,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_key_needs_refresh(self):
-        """ an out of date key should be updated and the new key work """
+        """an out of date key should be updated and the new key work"""
         datafile = pathlib.Path(__file__).parent.joinpath("data/ap_user.json")
         data = json.loads(datafile.read_bytes())
         data["id"] = self.fake_remote.remote_id
@@ -155,7 +155,7 @@ class Signature(TestCase):
 
     @responses.activate
     def test_nonexistent_signer(self):
-        """ fail when unable to look up signer """
+        """fail when unable to look up signer"""
         responses.add(
             responses.GET,
             self.fake_remote.remote_id,
@@ -177,7 +177,7 @@ class Signature(TestCase):
 
     @pytest.mark.integration
     def test_invalid_digest(self):
-        """ signature digest must be valid """
+        """signature digest must be valid"""
         with patch("bookwyrm.activitypub.resolve_remote_id"):
             response = self.send_test_request(
                 self.mouse, digest="SHA-256=AAAAAAAAAAAAAAAAAA"

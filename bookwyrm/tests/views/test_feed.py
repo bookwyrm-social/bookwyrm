@@ -17,10 +17,10 @@ from bookwyrm.activitypub import ActivitypubResponse
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class FeedViews(TestCase):
-    """ activity feed, statuses, dms """
+    """activity feed, statuses, dms"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -37,7 +37,7 @@ class FeedViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_feed(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Feed.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -47,7 +47,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_status_page(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(content="hi", user=self.local_user)
@@ -67,7 +67,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_status_page_not_found(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
 
         request = self.factory.get("")
@@ -79,7 +79,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
     def test_status_page_with_image(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Status.as_view()
 
         image_file = pathlib.Path(__file__).parent.joinpath(
@@ -115,7 +115,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_replies_page(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Replies.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(content="hi", user=self.local_user)
@@ -135,7 +135,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_direct_messages_page(self, *_):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.DirectMessage.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -145,7 +145,7 @@ class FeedViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_get_suggested_book(self, *_):
-        """ gets books the ~*~ algorithm ~*~ thinks you want to post about """
+        """gets books the ~*~ algorithm ~*~ thinks you want to post about"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(
                 book=self.book,

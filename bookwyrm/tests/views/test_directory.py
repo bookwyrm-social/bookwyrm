@@ -7,10 +7,10 @@ from bookwyrm import models, views
 
 # pylint: disable=unused-argument
 class DirectoryViews(TestCase):
-    """ tag views"""
+    """tag views"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -32,7 +32,7 @@ class DirectoryViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_directory_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Directory.as_view()
         request = self.factory.get("")
         request.user = self.local_user

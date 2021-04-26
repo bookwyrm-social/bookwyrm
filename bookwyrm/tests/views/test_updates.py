@@ -10,10 +10,10 @@ from bookwyrm import models, views
 
 
 class UpdateViews(TestCase):
-    """ lets the ui check for unread notification """
+    """lets the ui check for unread notification"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -25,7 +25,7 @@ class UpdateViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_get_notification_count(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("")
         request.user = self.local_user
 
@@ -43,7 +43,7 @@ class UpdateViews(TestCase):
         self.assertEqual(data["count"], 1)
 
     def test_get_unread_status_count(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("")
         request.user = self.local_user
 

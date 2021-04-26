@@ -11,10 +11,10 @@ from bookwyrm import models, views
 
 
 class GoalViews(TestCase):
-    """ viewing and creating statuses """
+    """viewing and creating statuses"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -41,7 +41,7 @@ class GoalViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_goal_page_no_goal(self):
-        """ view a reading goal page for another's unset goal """
+        """view a reading goal page for another's unset goal"""
         view = views.Goal.as_view()
         request = self.factory.get("")
         request.user = self.rat
@@ -50,7 +50,7 @@ class GoalViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
     def test_goal_page_no_goal_self(self):
-        """ view a reading goal page for your own unset goal """
+        """view a reading goal page for your own unset goal"""
         view = views.Goal.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -60,7 +60,7 @@ class GoalViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_anonymous(self):
-        """ can't view it without login """
+        """can't view it without login"""
         view = views.Goal.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
@@ -69,7 +69,7 @@ class GoalViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_goal_page_public(self):
-        """ view a user's public goal """
+        """view a user's public goal"""
         models.ReadThrough.objects.create(
             finish_date=timezone.now(),
             user=self.local_user,
@@ -91,7 +91,7 @@ class GoalViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
 
     def test_goal_page_private(self):
-        """ view a user's private goal """
+        """view a user's private goal"""
         models.AnnualGoal.objects.create(
             user=self.local_user, year=2020, goal=15, privacy="followers"
         )
@@ -104,7 +104,7 @@ class GoalViews(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_create_goal(self, _):
-        """ create a new goal """
+        """create a new goal"""
         view = views.Goal.as_view()
         request = self.factory.post(
             "",

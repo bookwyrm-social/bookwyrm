@@ -16,11 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 class ConnectorException(HTTPError):
-    """ when the connector can't do what was asked """
+    """when the connector can't do what was asked"""
 
 
 def search(query, min_confidence=0.1):
-    """ find books based on arbitary keywords """
+    """find books based on arbitary keywords"""
     if not query:
         return []
     results = []
@@ -67,20 +67,22 @@ def search(query, min_confidence=0.1):
     return results
 
 
-def local_search(query, min_confidence=0.1, raw=False):
-    """ only look at local search results """
+def local_search(query, min_confidence=0.1, raw=False, filters=None):
+    """only look at local search results"""
     connector = load_connector(models.Connector.objects.get(local=True))
-    return connector.search(query, min_confidence=min_confidence, raw=raw)
+    return connector.search(
+        query, min_confidence=min_confidence, raw=raw, filters=filters
+    )
 
 
 def isbn_local_search(query, raw=False):
-    """ only look at local search results """
+    """only look at local search results"""
     connector = load_connector(models.Connector.objects.get(local=True))
     return connector.isbn_search(query, raw=raw)
 
 
 def first_search_result(query, min_confidence=0.1):
-    """ search until you find a result that fits """
+    """search until you find a result that fits"""
     for connector in get_connectors():
         result = connector.search(query, min_confidence=min_confidence)
         if result:
@@ -89,13 +91,13 @@ def first_search_result(query, min_confidence=0.1):
 
 
 def get_connectors():
-    """ load all connectors """
+    """load all connectors"""
     for info in models.Connector.objects.order_by("priority").all():
         yield load_connector(info)
 
 
 def get_or_create_connector(remote_id):
-    """ get the connector related to the object's server """
+    """get the connector related to the object's server"""
     url = urlparse(remote_id)
     identifier = url.netloc
     if not identifier:
@@ -119,7 +121,7 @@ def get_or_create_connector(remote_id):
 
 @app.task
 def load_more_data(connector_id, book_id):
-    """ background the work of getting all 10,000 editions of LoTR """
+    """background the work of getting all 10,000 editions of LoTR"""
     connector_info = models.Connector.objects.get(id=connector_id)
     connector = load_connector(connector_info)
     book = models.Book.objects.select_subclasses().get(id=book_id)
@@ -127,7 +129,7 @@ def load_more_data(connector_id, book_id):
 
 
 def load_connector(connector_info):
-    """ instantiate the connector class """
+    """instantiate the connector class"""
     connector = importlib.import_module(
         "bookwyrm.connectors.%s" % connector_info.connector_file
     )
@@ -137,6 +139,6 @@ def load_connector(connector_info):
 @receiver(signals.post_save, sender="bookwyrm.FederatedServer")
 # pylint: disable=unused-argument
 def create_connector(sender, instance, created, *args, **kwargs):
-    """ create a connector to an external bookwyrm server """
+    """create a connector to an external bookwyrm server"""
     if instance.application_type == "bookwyrm":
         get_or_create_connector("https://{:s}".format(instance.server_name))

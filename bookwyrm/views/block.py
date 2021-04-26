@@ -12,14 +12,14 @@ from bookwyrm import models
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Block(View):
-    """ blocking users """
+    """blocking users"""
 
     def get(self, request):
-        """ list of blocked users? """
+        """list of blocked users?"""
         return TemplateResponse(request, "preferences/blocks.html")
 
     def post(self, request, user_id):
-        """ block a user """
+        """block a user"""
         to_block = get_object_or_404(models.User, id=user_id)
         models.UserBlocks.objects.create(
             user_subject=request.user, user_object=to_block
@@ -30,7 +30,7 @@ class Block(View):
 @require_POST
 @login_required
 def unblock(request, user_id):
-    """ undo a block """
+    """undo a block"""
     to_unblock = get_object_or_404(models.User, id=user_id)
     try:
         block = models.UserBlocks.objects.get(

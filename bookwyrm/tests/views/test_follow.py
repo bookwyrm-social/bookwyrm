@@ -11,10 +11,10 @@ from bookwyrm import models, views
 
 
 class BookViews(TestCase):
-    """ books books books """
+    """books books books"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -50,7 +50,7 @@ class BookViews(TestCase):
         )
 
     def test_handle_follow_remote(self):
-        """ send a follow request """
+        """send a follow request"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -65,7 +65,7 @@ class BookViews(TestCase):
         self.assertEqual(rel.status, "follow_request")
 
     def test_handle_follow_local_manually_approves(self):
-        """ send a follow request """
+        """send a follow request"""
         rat = models.User.objects.create_user(
             "rat@local.com",
             "rat@rat.com",
@@ -88,7 +88,7 @@ class BookViews(TestCase):
         self.assertEqual(rel.status, "follow_request")
 
     def test_handle_follow_local(self):
-        """ send a follow request """
+        """send a follow request"""
         rat = models.User.objects.create_user(
             "rat@local.com",
             "rat@rat.com",
@@ -111,7 +111,7 @@ class BookViews(TestCase):
         self.assertEqual(rel.status, "follows")
 
     def test_handle_unfollow(self):
-        """ send an unfollow """
+        """send an unfollow"""
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         self.remote_user.followers.add(self.local_user)
@@ -125,7 +125,7 @@ class BookViews(TestCase):
         self.assertEqual(self.remote_user.followers.count(), 0)
 
     def test_handle_accept(self):
-        """ accept a follow request """
+        """accept a follow request"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(broadcast=False)
         request = self.factory.post("", {"user": self.remote_user.username})
@@ -142,7 +142,7 @@ class BookViews(TestCase):
         self.assertEqual(self.local_user.followers.first(), self.remote_user)
 
     def test_handle_reject(self):
-        """ reject a follow request """
+        """reject a follow request"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(broadcast=False)
         request = self.factory.post("", {"user": self.remote_user.username})

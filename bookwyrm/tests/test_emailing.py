@@ -10,10 +10,10 @@ from bookwyrm import emailing, models
 
 @patch("bookwyrm.emailing.send_email.delay")
 class Emailing(TestCase):
-    """ every response to a get request, html or json """
+    """every response to a get request, html or json"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -25,7 +25,7 @@ class Emailing(TestCase):
         models.SiteSettings.objects.create()
 
     def test_invite_email(self, email_mock):
-        """ load the invite email """
+        """load the invite email"""
         invite_request = models.InviteRequest.objects.create(
             email="test@email.com",
             invite=models.SiteInvite.objects.create(user=self.local_user),
@@ -40,7 +40,7 @@ class Emailing(TestCase):
         self.assertEqual(len(args), 4)
 
     def test_password_reset_email(self, email_mock):
-        """ load the password reset email """
+        """load the password reset email"""
         reset = models.PasswordReset.objects.create(user=self.local_user)
         emailing.password_reset_email(reset)
 

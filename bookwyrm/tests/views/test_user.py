@@ -15,10 +15,10 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 
 class UserViews(TestCase):
-    """ view user and edit profile """
+    """view user and edit profile"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -43,7 +43,7 @@ class UserViews(TestCase):
         self.anonymous_user.is_authenticated = False
 
     def test_user_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.User.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -69,7 +69,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_user_page_blocked(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.User.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -80,7 +80,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
     def test_followers_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -98,7 +98,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_followers_page_blocked(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -109,7 +109,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
     def test_following_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Following.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -127,7 +127,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_following_page_blocked(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Following.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -138,7 +138,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 404)
 
     def test_edit_user_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.EditUser.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -148,7 +148,7 @@ class UserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_edit_user(self):
-        """ use a form to update a user """
+        """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
@@ -168,7 +168,7 @@ class UserViews(TestCase):
 
     # idk how to mock the upload form, got tired of triyng to make it work
     def test_edit_user_avatar(self):
-        """ use a form to update a user """
+        """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
@@ -195,7 +195,7 @@ class UserViews(TestCase):
         self.assertEqual(self.local_user.avatar.height, 120)
 
     def test_crop_avatar(self):
-        """ reduce that image size """
+        """reduce that image size"""
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
         )

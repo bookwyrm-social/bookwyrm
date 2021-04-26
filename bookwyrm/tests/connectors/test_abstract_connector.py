@@ -10,10 +10,10 @@ from bookwyrm.settings import DOMAIN
 
 
 class AbstractConnector(TestCase):
-    """ generic code for connecting to outside data sources """
+    """generic code for connecting to outside data sources"""
 
     def setUp(self):
-        """ we need an example connector """
+        """we need an example connector"""
         self.connector_info = models.Connector.objects.create(
             identifier="example.com",
             connector_file="openlibrary",
@@ -38,7 +38,7 @@ class AbstractConnector(TestCase):
         self.edition_data = edition_data
 
         class TestConnector(abstract_connector.AbstractConnector):
-            """ nothing added here """
+            """nothing added here"""
 
             def format_search_result(self, search_result):
                 return search_result
@@ -81,18 +81,18 @@ class AbstractConnector(TestCase):
         )
 
     def test_abstract_connector_init(self):
-        """ barebones connector for search with defaults """
+        """barebones connector for search with defaults"""
         self.assertIsInstance(self.connector.book_mappings, list)
 
     def test_is_available(self):
-        """ this isn't used.... """
+        """this isn't used...."""
         self.assertTrue(self.connector.is_available())
         self.connector.max_query_count = 1
         self.connector.connector.query_count = 2
         self.assertFalse(self.connector.is_available())
 
     def test_get_or_create_book_existing(self):
-        """ find an existing book by remote/origin id """
+        """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)
         self.assertEqual(
             self.book.remote_id, "https://%s/book/%d" % (DOMAIN, self.book.id)
@@ -113,7 +113,7 @@ class AbstractConnector(TestCase):
 
     @responses.activate
     def test_get_or_create_book_deduped(self):
-        """ load remote data and deduplicate """
+        """load remote data and deduplicate"""
         responses.add(
             responses.GET, "https://example.com/book/abcd", json=self.edition_data
         )
@@ -125,7 +125,7 @@ class AbstractConnector(TestCase):
 
     @responses.activate
     def test_get_or_create_author(self):
-        """ load an author """
+        """load an author"""
         self.connector.author_mappings = [
             Mapping("id"),
             Mapping("name"),
@@ -142,7 +142,7 @@ class AbstractConnector(TestCase):
         self.assertEqual(result.origin_id, "https://www.example.com/author")
 
     def test_get_or_create_author_existing(self):
-        """ get an existing author """
+        """get an existing author"""
         author = models.Author.objects.create(name="Test Author")
         result = self.connector.get_or_create_author(author.remote_id)
         self.assertEqual(author, result)

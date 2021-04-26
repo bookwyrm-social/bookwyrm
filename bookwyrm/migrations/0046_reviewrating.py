@@ -8,7 +8,7 @@ from psycopg2.extras import execute_values
 
 
 def convert_review_rating(app_registry, schema_editor):
-    """ take rating type Reviews and convert them to ReviewRatings """
+    """take rating type Reviews and convert them to ReviewRatings"""
     db_alias = schema_editor.connection.alias
 
     reviews = (
@@ -29,7 +29,7 @@ VALUES %s""",
 
 
 def unconvert_review_rating(app_registry, schema_editor):
-    """ undo the conversion from ratings back to reviews"""
+    """undo the conversion from ratings back to reviews"""
     # All we need to do to revert this is drop the table, which Django will do
     # on its own, as long as we have a valid reverse function. So, this is a
     # no-op function so Django will do its thing

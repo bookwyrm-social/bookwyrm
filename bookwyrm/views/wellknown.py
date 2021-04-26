@@ -13,7 +13,7 @@ from bookwyrm.settings import DOMAIN, VERSION
 
 @require_GET
 def webfinger(request):
-    """ allow other servers to ask about a user """
+    """allow other servers to ask about a user"""
     resource = request.GET.get("resource")
     if not resource or not resource.startswith("acct:"):
         return HttpResponseNotFound()
@@ -40,7 +40,7 @@ def webfinger(request):
 
 @require_GET
 def nodeinfo_pointer(_):
-    """ direct servers to nodeinfo """
+    """direct servers to nodeinfo"""
     return JsonResponse(
         {
             "links": [
@@ -55,7 +55,7 @@ def nodeinfo_pointer(_):
 
 @require_GET
 def nodeinfo(_):
-    """ basic info about the server """
+    """basic info about the server"""
     status_count = models.Status.objects.filter(user__local=True).count()
     user_count = models.User.objects.filter(local=True).count()
 
@@ -90,7 +90,7 @@ def nodeinfo(_):
 
 @require_GET
 def instance_info(_):
-    """ let's talk about your cool unique instance """
+    """let's talk about your cool unique instance"""
     user_count = models.User.objects.filter(local=True).count()
     status_count = models.Status.objects.filter(user__local=True).count()
 
@@ -116,12 +116,12 @@ def instance_info(_):
 
 @require_GET
 def peers(_):
-    """ list of federated servers this instance connects with """
+    """list of federated servers this instance connects with"""
     names = models.FederatedServer.objects.values_list("server_name", flat=True)
     return JsonResponse(list(names), safe=False)
 
 
 @require_GET
 def host_meta(request):
-    """ meta of the host """
+    """meta of the host"""
     return TemplateResponse(request, "host_meta.xml", {"DOMAIN": DOMAIN})

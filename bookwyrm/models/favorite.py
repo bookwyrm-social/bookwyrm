@@ -11,7 +11,7 @@ from .status import Status
 
 
 class Favorite(ActivityMixin, BookWyrmModel):
-    """ fav'ing a post """
+    """fav'ing a post"""
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
@@ -24,11 +24,11 @@ class Favorite(ActivityMixin, BookWyrmModel):
 
     @classmethod
     def ignore_activity(cls, activity):
-        """ don't bother with incoming favs of unknown statuses """
+        """don't bother with incoming favs of unknown statuses"""
         return not Status.objects.filter(remote_id=activity.object).exists()
 
     def save(self, *args, **kwargs):
-        """ update user active time """
+        """update user active time"""
         self.user.last_active_date = timezone.now()
         self.user.save(broadcast=False)
         super().save(*args, **kwargs)
@@ -45,7 +45,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
             )
 
     def delete(self, *args, **kwargs):
-        """ delete and delete notifications """
+        """delete and delete notifications"""
         # check for notification
         if self.status.user.local:
             notification_model = apps.get_model(
@@ -62,6 +62,6 @@ class Favorite(ActivityMixin, BookWyrmModel):
         super().delete(*args, **kwargs)
 
     class Meta:
-        """ can't fav things twice """
+        """can't fav things twice"""
 
         unique_together = ("user", "status")
