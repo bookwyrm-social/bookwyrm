@@ -8,10 +8,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxRemove(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -41,7 +41,7 @@ class InboxRemove(TestCase):
         models.SiteSettings.objects.create()
 
     def test_handle_unshelve_book(self):
-        """ remove a book from a shelf """
+        """remove a book from a shelf"""
         shelf = models.Shelf.objects.create(user=self.remote_user, name="Test Shelf")
         shelf.remote_id = "https://bookwyrm.social/user/mouse/shelf/to-read"
         shelf.save()
@@ -70,7 +70,7 @@ class InboxRemove(TestCase):
         self.assertFalse(shelf.books.exists())
 
     def test_handle_remove_book_from_list(self):
-        """ listing a book """
+        """listing a book"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             booklist = models.List.objects.create(
                 name="test list",
@@ -80,6 +80,7 @@ class InboxRemove(TestCase):
                 user=self.local_user,
                 book=self.book,
                 book_list=booklist,
+                order=1,
             )
         self.assertEqual(booklist.books.count(), 1)
 

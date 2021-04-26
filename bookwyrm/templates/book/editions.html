@@ -25,7 +25,18 @@
                     {{ book.title }}
                 </a>
             </h2>
-            {% include 'book/publisher_info.html' with book=book %}
+
+            {% with book=book %}
+                <div class="columns is-multiline">
+                    <div class="column is-half">
+                        {% include 'book/publisher_info.html' %}
+                    </div>
+
+                    <div class="column is-half ">
+                        {% include 'book/book_identifiers.html' %}
+                    </div>
+                </div>
+            {% endwith %}
         </div>
         <div class="column is-3">
             {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True %}

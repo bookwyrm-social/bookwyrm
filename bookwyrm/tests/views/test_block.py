@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class BlockViews(TestCase):
-    """ view user and edit profile """
+    """view user and edit profile"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -34,7 +34,7 @@ class BlockViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_block_get(self, _):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Block.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -44,7 +44,7 @@ class BlockViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_block_post(self, _):
-        """ create a "block" database entry from an activity """
+        """create a "block" database entry from an activity"""
         view = views.Block.as_view()
         self.local_user.followers.add(self.remote_user)
         models.UserFollowRequest.objects.create(
@@ -65,7 +65,7 @@ class BlockViews(TestCase):
         self.assertFalse(models.UserFollowRequest.objects.exists())
 
     def test_unblock(self, _):
-        """ undo a block """
+        """undo a block"""
         self.local_user.blocks.add(self.remote_user)
         request = self.factory.post("")
         request.user = self.local_user

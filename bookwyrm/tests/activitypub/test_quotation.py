@@ -8,10 +8,10 @@ from bookwyrm import activitypub, models
 
 
 class Quotation(TestCase):
-    """ we have hecka ways to create statuses """
+    """we have hecka ways to create statuses"""
 
     def setUp(self):
-        """ model objects we'll need """
+        """model objects we'll need"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.user = models.User.objects.create_user(
                 "mouse",
@@ -30,7 +30,7 @@ class Quotation(TestCase):
         self.status_data = json.loads(datafile.read_bytes())
 
     def test_quotation_activity(self):
-        """ create a Quoteation ap object from json """
+        """create a Quoteation ap object from json"""
         quotation = activitypub.Quotation(**self.status_data)
 
         self.assertEqual(quotation.type, "Quotation")
@@ -41,7 +41,7 @@ class Quotation(TestCase):
         self.assertEqual(quotation.published, "2020-05-10T02:38:31.150343+00:00")
 
     def test_activity_to_model(self):
-        """ create a model instance from an activity object """
+        """create a model instance from an activity object"""
         activity = activitypub.Quotation(**self.status_data)
         quotation = activity.to_model(model=models.Quotation)
 

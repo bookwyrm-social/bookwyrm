@@ -26,15 +26,10 @@ from .helpers import is_api_request, get_edition, privacy_filter
 
 # pylint: disable= no-self-use
 class Book(View):
-    """ a book! this is the stuff """
+    """a book! this is the stuff"""
 
-    def get(self, request, book_id):
-        """ info about a book """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
+    def get(self, request, book_id, user_statuses=False):
+        """info about a book"""
         try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
@@ -45,29 +40,41 @@ class Book(View):
 
         if isinstance(book, models.Work):
             book = book.get_default_edition()
-        if not book:
+        if not book or not book.parent_work:
             return HttpResponseNotFound()
 
         work = book.parent_work
-        if not work:
-            return HttpResponseNotFound()
 
         # all reviews for the book
-        reviews = models.Review.objects.filter(book__in=work.editions.all())
-        reviews = privacy_filter(request.user, reviews)
+        reviews = privacy_filter(
+            request.user, models.Review.objects.filter(book__in=work.editions.all())
+        )
 
         # the reviews to show
-        paginated = Paginator(
-            reviews.exclude(Q(content__isnull=True) | Q(content="")), PAGE_LENGTH
-        )
-        reviews_page = paginated.get_page(page)
+        if user_statuses and request.user.is_authenticated:
+            if user_statuses == "review":
+                queryset = book.review_set
+            elif user_statuses == "comment":
+                queryset = book.comment_set
+            else:
+                queryset = book.quotation_set
+            queryset = queryset.filter(user=request.user)
+        else:
+            queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
+        paginated = Paginator(queryset, PAGE_LENGTH)
 
-        user_tags = readthroughs = user_shelves = other_edition_shelves = []
+        data = {
+            "book": book,
+            "statuses": paginated.get_page(request.GET.get("page")),
+            "review_count": reviews.count(),
+            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
+            "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
+            "lists": privacy_filter(
+                request.user, book.list_set.filter(listitem__approved=True)
+            ),
+        }
+
         if request.user.is_authenticated:
-            user_tags = models.UserTag.objects.filter(
-                book=book, user=request.user
-            ).values_list("tag__identifier", flat=True)
-
             readthroughs = models.ReadThrough.objects.filter(
                 user=request.user,
                 book=book,
@@ -77,31 +84,24 @@ class Book(View):
                 readthrough.progress_updates = (
                     readthrough.progressupdate_set.all().order_by("-updated_date")
                 )
+            data["readthroughs"] = readthroughs
 
-            user_shelves = models.ShelfBook.objects.filter(user=request.user, book=book)
+            data["user_shelves"] = models.ShelfBook.objects.filter(
+                user=request.user, book=book
+            )
 
-            other_edition_shelves = models.ShelfBook.objects.filter(
+            data["other_edition_shelves"] = models.ShelfBook.objects.filter(
                 ~Q(book=book),
                 user=request.user,
                 book__parent_work=book.parent_work,
             )
 
-        data = {
-            "book": book,
-            "reviews": reviews_page,
-            "review_count": reviews.count(),
-            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
-            "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
-            "tags": models.UserTag.objects.filter(book=book),
-            "lists": privacy_filter(
-                request.user, book.list_set.filter(listitem__approved=True)
-            ),
-            "user_tags": user_tags,
-            "user_shelves": user_shelves,
-            "other_edition_shelves": other_edition_shelves,
-            "readthroughs": readthroughs,
-            "path": "/book/%s" % book_id,
-        }
+            data["user_statuses"] = {
+                "review_count": book.review_set.filter(user=request.user).count(),
+                "comment_count": book.comment_set.filter(user=request.user).count(),
+                "quotation_count": book.quotation_set.filter(user=request.user).count(),
+            }
+
         return TemplateResponse(request, "book/book.html", data)
 
 
@@ -110,10 +110,10 @@ class Book(View):
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
 )
 class EditBook(View):
-    """ edit a book """
+    """edit a book"""
 
     def get(self, request, book_id=None):
-        """ info about a book """
+        """info about a book"""
         book = None
         if book_id:
             book = get_edition(book_id)
@@ -123,7 +123,7 @@ class EditBook(View):
         return TemplateResponse(request, "book/edit_book.html", data)
 
     def post(self, request, book_id=None):
-        """ edit a book cool """
+        """edit a book cool"""
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
@@ -209,10 +209,10 @@ class EditBook(View):
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
 )
 class ConfirmEditBook(View):
-    """ confirm edits to a book """
+    """confirm edits to a book"""
 
     def post(self, request, book_id=None):
-        """ edit a book cool """
+        """edit a book cool"""
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
@@ -260,16 +260,11 @@ class ConfirmEditBook(View):
 
 
 class Editions(View):
-    """ list of editions """
+    """list of editions"""
 
     def get(self, request, book_id):
-        """ list of editions of a book """
+        """list of editions of a book"""
         work = get_object_or_404(models.Work, id=book_id)
-
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
 
         if is_api_request(request):
             return ActivitypubResponse(work.to_edition_list(**request.GET))
@@ -280,12 +275,12 @@ class Editions(View):
         if request.GET.get("format"):
             filters["physical_format__iexact"] = request.GET.get("format")
 
-        editions = work.editions.order_by("-edition_rank").all()
+        editions = work.editions.order_by("-edition_rank")
         languages = set(sum([e.languages for e in editions], []))
 
-        paginated = Paginator(editions.filter(**filters).all(), PAGE_LENGTH)
+        paginated = Paginator(editions.filter(**filters), PAGE_LENGTH)
         data = {
-            "editions": paginated.get_page(page),
+            "editions": paginated.get_page(request.GET.get("page")),
             "work": work,
             "languages": languages,
             "formats": set(
@@ -298,7 +293,7 @@ class Editions(View):
 @login_required
 @require_POST
 def upload_cover(request, book_id):
-    """ upload a new cover """
+    """upload a new cover"""
     book = get_object_or_404(models.Edition, id=book_id)
     book.last_edited_by = request.user
 
@@ -321,7 +316,7 @@ def upload_cover(request, book_id):
 
 
 def set_cover_from_url(url):
-    """ load it from a url """
+    """load it from a url"""
     image_file = get_image(url)
     if not image_file:
         return None
@@ -334,7 +329,7 @@ def set_cover_from_url(url):
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def add_description(request, book_id):
-    """ upload a new cover """
+    """upload a new cover"""
     if not request.method == "POST":
         return redirect("/")
 
@@ -351,7 +346,7 @@ def add_description(request, book_id):
 
 @require_POST
 def resolve_book(request):
-    """ figure out the local path to a book from a remote_id """
+    """figure out the local path to a book from a remote_id"""
     remote_id = request.POST.get("remote_id")
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
@@ -363,7 +358,7 @@ def resolve_book(request):
 @require_POST
 @transaction.atomic
 def switch_edition(request):
-    """ switch your copy of a book to a different edition """
+    """switch your copy of a book to a different edition"""
     edition_id = request.POST.get("edition")
     new_edition = get_object_or_404(models.Edition, id=edition_id)
     shelfbooks = models.ShelfBook.objects.filter(

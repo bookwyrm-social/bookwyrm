@@ -18,7 +18,7 @@ from bookwyrm.settings import DOMAIN
 
 
 def validate_remote_id(value):
-    """ make sure the remote_id looks like a url """
+    """make sure the remote_id looks like a url"""
     if not value or not re.match(r"^http.?:\/\/[^\s]+$", value):
         raise ValidationError(
             _("%(value)s is not a valid remote_id"),
@@ -27,7 +27,7 @@ def validate_remote_id(value):
 
 
 def validate_localname(value):
-    """ make sure localnames look okay """
+    """make sure localnames look okay"""
     if not re.match(r"^[A-Za-z\-_\.0-9]+$", value):
         raise ValidationError(
             _("%(value)s is not a valid username"),
@@ -36,7 +36,7 @@ def validate_localname(value):
 
 
 def validate_username(value):
-    """ make sure usernames look okay """
+    """make sure usernames look okay"""
     if not re.match(r"^[A-Za-z\-_\.0-9]+@[A-Za-z\-_\.0-9]+\.[a-z]{2,}$", value):
         raise ValidationError(
             _("%(value)s is not a valid username"),
@@ -45,7 +45,7 @@ def validate_username(value):
 
 
 class ActivitypubFieldMixin:
-    """ make a database field serializable """
+    """make a database field serializable"""
 
     def __init__(
         self,
@@ -64,7 +64,7 @@ class ActivitypubFieldMixin:
         super().__init__(*args, **kwargs)
 
     def set_field_from_activity(self, instance, data):
-        """ helper function for assinging a value to the field """
+        """helper function for assinging a value to the field"""
         try:
             value = getattr(data, self.get_activitypub_field())
         except AttributeError:
@@ -78,7 +78,7 @@ class ActivitypubFieldMixin:
         setattr(instance, self.name, formatted)
 
     def set_activity_from_field(self, activity, instance):
-        """ update the json object """
+        """update the json object"""
         value = getattr(instance, self.name)
         formatted = self.field_to_activity(value)
         if formatted is None:
@@ -94,19 +94,19 @@ class ActivitypubFieldMixin:
             activity[key] = formatted
 
     def field_to_activity(self, value):
-        """ formatter to convert a model value into activitypub """
+        """formatter to convert a model value into activitypub"""
         if hasattr(self, "activitypub_wrapper"):
             return {self.activitypub_wrapper: value}
         return value
 
     def field_from_activity(self, value):
-        """ formatter to convert activitypub into a model value """
+        """formatter to convert activitypub into a model value"""
         if value and hasattr(self, "activitypub_wrapper"):
             value = value.get(self.activitypub_wrapper)
         return value
 
     def get_activitypub_field(self):
-        """ model_field_name to activitypubFieldName """
+        """model_field_name to activitypubFieldName"""
         if self.activitypub_field:
             return self.activitypub_field
         name = self.name.split(".")[-1]
@@ -115,7 +115,7 @@ class ActivitypubFieldMixin:
 
 
 class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
-    """ default (de)serialization for foreign key and one to one """
+    """default (de)serialization for foreign key and one to one"""
 
     def __init__(self, *args, load_remote=True, **kwargs):
         self.load_remote = load_remote
@@ -146,7 +146,7 @@ class ActivitypubRelatedFieldMixin(ActivitypubFieldMixin):
 
 
 class RemoteIdField(ActivitypubFieldMixin, models.CharField):
-    """ a url that serves as a unique identifier """
+    """a url that serves as a unique identifier"""
 
     def __init__(self, *args, max_length=255, validators=None, **kwargs):
         validators = validators or [validate_remote_id]
@@ -156,7 +156,7 @@ class RemoteIdField(ActivitypubFieldMixin, models.CharField):
 
 
 class UsernameField(ActivitypubFieldMixin, models.CharField):
-    """ activitypub-aware username field """
+    """activitypub-aware username field"""
 
     def __init__(self, activitypub_field="preferredUsername", **kwargs):
         self.activitypub_field = activitypub_field
@@ -172,7 +172,7 @@ class UsernameField(ActivitypubFieldMixin, models.CharField):
         )
 
     def deconstruct(self):
-        """ implementation of models.Field deconstruct """
+        """implementation of models.Field deconstruct"""
         name, path, args, kwargs = super().deconstruct()
         del kwargs["verbose_name"]
         del kwargs["max_length"]
@@ -191,7 +191,7 @@ PrivacyLevels = models.TextChoices(
 
 
 class PrivacyField(ActivitypubFieldMixin, models.CharField):
-    """ this maps to two differente activitypub fields """
+    """this maps to two differente activitypub fields"""
 
     public = "https://www.w3.org/ns/activitystreams#Public"
 
@@ -236,7 +236,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
 
 
 class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
-    """ activitypub-aware foreign key field """
+    """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
         if not value:
@@ -245,7 +245,7 @@ class ForeignKey(ActivitypubRelatedFieldMixin, models.ForeignKey):
 
 
 class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
-    """ activitypub-aware foreign key field """
+    """activitypub-aware foreign key field"""
 
     def field_to_activity(self, value):
         if not value:
@@ -254,14 +254,14 @@ class OneToOneField(ActivitypubRelatedFieldMixin, models.OneToOneField):
 
 
 class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
-    """ activitypub-aware many to many field """
+    """activitypub-aware many to many field"""
 
     def __init__(self, *args, link_only=False, **kwargs):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
     def set_field_from_activity(self, instance, data):
-        """ helper function for assinging a value to the field """
+        """helper function for assinging a value to the field"""
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
@@ -275,9 +275,12 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         return [i.remote_id for i in value.all()]
 
     def field_from_activity(self, value):
-        items = []
         if value is None or value is MISSING:
-            return []
+            return None
+        if not isinstance(value, list):
+            # If this is a link, we currently aren't doing anything with it
+            return None
+        items = []
         for remote_id in value:
             try:
                 validate_remote_id(remote_id)
@@ -290,7 +293,7 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
 
 
 class TagField(ManyToManyField):
-    """ special case of many to many that uses Tags """
+    """special case of many to many that uses Tags"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -330,7 +333,7 @@ class TagField(ManyToManyField):
 
 
 def image_serializer(value, alt):
-    """ helper for serializing images """
+    """helper for serializing images"""
     if value and hasattr(value, "url"):
         url = value.url
     else:
@@ -340,7 +343,7 @@ def image_serializer(value, alt):
 
 
 class ImageField(ActivitypubFieldMixin, models.ImageField):
-    """ activitypub-aware image field """
+    """activitypub-aware image field"""
 
     def __init__(self, *args, alt_field=None, **kwargs):
         self.alt_field = alt_field
@@ -348,7 +351,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
     # pylint: disable=arguments-differ
     def set_field_from_activity(self, instance, data, save=True):
-        """ helper function for assinging a value to the field """
+        """helper function for assinging a value to the field"""
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
@@ -394,7 +397,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
-    """ activitypub-aware datetime field """
+    """activitypub-aware datetime field"""
 
     def field_to_activity(self, value):
         if not value:
@@ -413,7 +416,7 @@ class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
 
 
 class HtmlField(ActivitypubFieldMixin, models.TextField):
-    """ a text field for storing html """
+    """a text field for storing html"""
 
     def field_from_activity(self, value):
         if not value or value == MISSING:
@@ -424,30 +427,30 @@ class HtmlField(ActivitypubFieldMixin, models.TextField):
 
 
 class ArrayField(ActivitypubFieldMixin, DjangoArrayField):
-    """ activitypub-aware array field """
+    """activitypub-aware array field"""
 
     def field_to_activity(self, value):
         return [str(i) for i in value]
 
 
 class CharField(ActivitypubFieldMixin, models.CharField):
-    """ activitypub-aware char field """
+    """activitypub-aware char field"""
 
 
 class TextField(ActivitypubFieldMixin, models.TextField):
-    """ activitypub-aware text field """
+    """activitypub-aware text field"""
 
 
 class BooleanField(ActivitypubFieldMixin, models.BooleanField):
-    """ activitypub-aware boolean field """
+    """activitypub-aware boolean field"""
 
 
 class IntegerField(ActivitypubFieldMixin, models.IntegerField):
-    """ activitypub-aware boolean field """
+    """activitypub-aware boolean field"""
 
 
 class DecimalField(ActivitypubFieldMixin, models.DecimalField):
-    """ activitypub-aware boolean field """
+    """activitypub-aware boolean field"""
 
     def field_to_activity(self, value):
         if not value:

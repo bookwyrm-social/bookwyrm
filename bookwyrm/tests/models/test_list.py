@@ -7,10 +7,10 @@ from bookwyrm import models, settings
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class List(TestCase):
-    """ some activitypub oddness ahead """
+    """some activitypub oddness ahead"""
 
     def setUp(self):
-        """ look, a list """
+        """look, a list"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -18,7 +18,7 @@ class List(TestCase):
         self.book = models.Edition.objects.create(title="hi", parent_work=work)
 
     def test_remote_id(self, _):
-        """ shelves use custom remote ids """
+        """shelves use custom remote ids"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
@@ -27,7 +27,7 @@ class List(TestCase):
         self.assertEqual(book_list.get_remote_id(), expected_id)
 
     def test_to_activity(self, _):
-        """ jsonify it """
+        """jsonify it"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
@@ -41,7 +41,7 @@ class List(TestCase):
         self.assertEqual(activity_json["owner"], self.local_user.remote_id)
 
     def test_list_item(self, _):
-        """ a list entry """
+        """a list entry"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user, privacy="unlisted"
@@ -51,6 +51,7 @@ class List(TestCase):
             book_list=book_list,
             book=self.book,
             user=self.local_user,
+            order=1,
         )
 
         self.assertTrue(item.approved)
@@ -58,14 +59,18 @@ class List(TestCase):
         self.assertEqual(item.recipients, [])
 
     def test_list_item_pending(self, _):
-        """ a list entry """
+        """a list entry"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="Test List", user=self.local_user
             )
 
         item = models.ListItem.objects.create(
-            book_list=book_list, book=self.book, user=self.local_user, approved=False
+            book_list=book_list,
+            book=self.book,
+            user=self.local_user,
+            approved=False,
+            order=1,
         )
 
         self.assertFalse(item.approved)

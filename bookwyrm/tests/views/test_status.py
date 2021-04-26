@@ -10,10 +10,10 @@ from bookwyrm.settings import DOMAIN
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
-    """ viewing and creating statuses """
+    """viewing and creating statuses"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -43,7 +43,7 @@ class StatusViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_handle_status(self, _):
-        """ create a status """
+        """create a status"""
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
             {
@@ -66,7 +66,7 @@ class StatusViews(TestCase):
         self.assertEqual(status.book, self.book)
 
     def test_handle_status_reply(self, _):
-        """ create a status in reply to an existing status """
+        """create a status in reply to an existing status"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True
@@ -96,7 +96,7 @@ class StatusViews(TestCase):
         self.assertEqual(models.Notification.objects.get().user, self.local_user)
 
     def test_handle_status_mentions(self, _):
-        """ @mention a user in a post """
+        """@mention a user in a post"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat@%s" % DOMAIN, "rat@rat.com", "password", local=True, localname="rat"
@@ -124,7 +124,7 @@ class StatusViews(TestCase):
         )
 
     def test_handle_status_reply_with_mentions(self, _):
-        """ reply to a post with an @mention'ed user """
+        """reply to a post with an @mention'ed user"""
         view = views.CreateStatus.as_view()
         user = models.User.objects.create_user(
             "rat", "rat@rat.com", "password", local=True, localname="rat"
@@ -168,7 +168,7 @@ class StatusViews(TestCase):
         self.assertTrue(self.local_user in reply.mention_users.all())
 
     def test_delete_and_redraft(self, _):
-        """ delete and re-draft a status """
+        """delete and re-draft a status"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -189,7 +189,7 @@ class StatusViews(TestCase):
         self.assertTrue(status.deleted)
 
     def test_delete_and_redraft_invalid_status_type_rating(self, _):
-        """ you can't redraft generated statuses """
+        """you can't redraft generated statuses"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -209,7 +209,7 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
 
     def test_delete_and_redraft_invalid_status_type_generated_note(self, _):
-        """ you can't redraft generated statuses """
+        """you can't redraft generated statuses"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -229,7 +229,7 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
 
     def test_find_mentions(self, _):
-        """ detect and look up @ mentions of users """
+        """detect and look up @ mentions of users"""
         user = models.User.objects.create_user(
             "nutria@%s" % DOMAIN,
             "nutria@nutria.com",
@@ -275,7 +275,7 @@ class StatusViews(TestCase):
         )
 
     def test_format_links(self, _):
-        """ find and format urls into a tags """
+        """find and format urls into a tags"""
         url = "http://www.fish.com/"
         self.assertEqual(
             views.status.format_links(url), '<a href="%s">www.fish.com/</a>' % url
@@ -298,7 +298,7 @@ class StatusViews(TestCase):
         )
 
     def test_to_markdown(self, _):
-        """ this is mostly handled in other places, but nonetheless """
+        """this is mostly handled in other places, but nonetheless"""
         text = "_hi_ and http://fish.com is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
         self.assertEqual(
@@ -307,13 +307,13 @@ class StatusViews(TestCase):
         )
 
     def test_to_markdown_link(self, _):
-        """ this is mostly handled in other places, but nonetheless """
+        """this is mostly handled in other places, but nonetheless"""
         text = "[hi](http://fish.com) is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
     def test_handle_delete_status(self, mock):
-        """ marks a status as deleted """
+        """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
@@ -333,7 +333,7 @@ class StatusViews(TestCase):
         self.assertTrue(status.deleted)
 
     def test_handle_delete_status_permission_denied(self, _):
-        """ marks a status as deleted """
+        """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
@@ -347,7 +347,7 @@ class StatusViews(TestCase):
         self.assertFalse(status.deleted)
 
     def test_handle_delete_status_moderator(self, mock):
-        """ marks a status as deleted """
+        """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")

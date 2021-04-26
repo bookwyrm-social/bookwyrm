@@ -7,10 +7,10 @@ from bookwyrm import activitystreams, models
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class Activitystreams(TestCase):
-    """ using redis to build activity streams """
+    """using redis to build activity streams"""
 
     def setUp(self):
-        """ use a test csv """
+        """use a test csv"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
         )
@@ -30,14 +30,14 @@ class Activitystreams(TestCase):
         self.book = models.Edition.objects.create(title="test book")
 
         class TestStream(activitystreams.ActivityStream):
-            """ test stream, don't have to do anything here  """
+            """test stream, don't have to do anything here"""
 
             key = "test"
 
         self.test_stream = TestStream()
 
     def test_activitystream_class_ids(self, *_):
-        """ the abstract base class for stream objects """
+        """the abstract base class for stream objects"""
         self.assertEqual(
             self.test_stream.stream_id(self.local_user),
             "{}-test".format(self.local_user.id),
@@ -48,7 +48,7 @@ class Activitystreams(TestCase):
         )
 
     def test_abstractstream_get_audience(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
@@ -59,7 +59,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.another_user in users)
 
     def test_abstractstream_get_audience_direct(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user,
             content="hi",
@@ -82,7 +82,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.remote_user in users)
 
     def test_abstractstream_get_audience_followers_remote_user(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user,
             content="hi",
@@ -92,7 +92,7 @@ class Activitystreams(TestCase):
         self.assertFalse(users.exists())
 
     def test_abstractstream_get_audience_followers_self(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Comment.objects.create(
             user=self.local_user,
             content="hi",
@@ -105,7 +105,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.remote_user in users)
 
     def test_abstractstream_get_audience_followers_with_mention(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Comment.objects.create(
             user=self.remote_user,
             content="hi",
@@ -120,7 +120,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.remote_user in users)
 
     def test_abstractstream_get_audience_followers_with_relationship(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         self.remote_user.followers.add(self.local_user)
         status = models.Comment.objects.create(
             user=self.remote_user,
@@ -134,7 +134,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.remote_user in users)
 
     def test_homestream_get_audience(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
@@ -142,7 +142,7 @@ class Activitystreams(TestCase):
         self.assertFalse(users.exists())
 
     def test_homestream_get_audience_with_mentions(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
@@ -152,7 +152,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
 
     def test_homestream_get_audience_with_relationship(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         self.remote_user.followers.add(self.local_user)
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
@@ -162,7 +162,7 @@ class Activitystreams(TestCase):
         self.assertFalse(self.another_user in users)
 
     def test_localstream_get_audience_remote_status(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
@@ -170,7 +170,7 @@ class Activitystreams(TestCase):
         self.assertEqual(users, [])
 
     def test_localstream_get_audience_local_status(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.local_user, content="hi", privacy="public"
         )
@@ -179,7 +179,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.another_user in users)
 
     def test_localstream_get_audience_unlisted(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.local_user, content="hi", privacy="unlisted"
         )
@@ -187,7 +187,7 @@ class Activitystreams(TestCase):
         self.assertEqual(users, [])
 
     def test_federatedstream_get_audience(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="public"
         )
@@ -196,7 +196,7 @@ class Activitystreams(TestCase):
         self.assertTrue(self.another_user in users)
 
     def test_federatedstream_get_audience_unlisted(self, *_):
-        """ get a list of users that should see a status """
+        """get a list of users that should see a status"""
         status = models.Status.objects.create(
             user=self.remote_user, content="hi", privacy="unlisted"
         )

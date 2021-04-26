@@ -10,10 +10,10 @@ from bookwyrm import forms, models, views
 
 
 class FederationViews(TestCase):
-    """ every response to a get request, html or json """
+    """every response to a get request, html or json"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -35,7 +35,7 @@ class FederationViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_federation_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Federation.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -46,7 +46,7 @@ class FederationViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_server_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         view = views.FederatedServer.as_view()
         request = self.factory.get("")
@@ -59,7 +59,7 @@ class FederationViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_server_page_block(self):
-        """ block a server """
+        """block a server"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
         self.remote_user.save()
@@ -79,7 +79,7 @@ class FederationViews(TestCase):
         self.assertFalse(self.remote_user.is_active)
 
     def test_server_page_unblock(self):
-        """ unblock a server """
+        """unblock a server"""
         server = models.FederatedServer.objects.create(
             server_name="hi.there.com", status="blocked"
         )
@@ -100,7 +100,7 @@ class FederationViews(TestCase):
         self.assertTrue(self.remote_user.is_active)
 
     def test_add_view_get(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         # create mode
         view = views.AddFederatedServer.as_view()
         request = self.factory.get("")
@@ -113,7 +113,7 @@ class FederationViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_add_view_post_create(self):
-        """ create a server entry """
+        """create a server entry"""
         form = forms.ServerForm()
         form.data["server_name"] = "remote.server"
         form.data["application_type"] = "coolsoft"
@@ -131,7 +131,7 @@ class FederationViews(TestCase):
         self.assertEqual(server.status, "blocked")
 
     def test_import_blocklist(self):
-        """ load a json file with a list of servers to block """
+        """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
         self.remote_user.save()

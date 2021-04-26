@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxAdd(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -42,7 +42,7 @@ class InboxAdd(TestCase):
         models.SiteSettings.objects.create()
 
     def test_handle_add_book_to_shelf(self):
-        """ shelving a book """
+        """shelving a book"""
         shelf = models.Shelf.objects.create(user=self.remote_user, name="Test Shelf")
         shelf.remote_id = "https://bookwyrm.social/user/mouse/shelf/to-read"
         shelf.save()
@@ -65,7 +65,7 @@ class InboxAdd(TestCase):
 
     @responses.activate
     def test_handle_add_book_to_list(self):
-        """ listing a book """
+        """listing a book"""
         responses.add(
             responses.GET,
             "https://bookwyrm.social/user/mouse/list/to-read",
@@ -94,6 +94,7 @@ class InboxAdd(TestCase):
                 "type": "ListItem",
                 "book": self.book.remote_id,
                 "id": "https://bookwyrm.social/listbook/6189",
+                "order": 1,
             },
             "target": "https://bookwyrm.social/user/mouse/list/to-read",
             "@context": "https://www.w3.org/ns/activitystreams",

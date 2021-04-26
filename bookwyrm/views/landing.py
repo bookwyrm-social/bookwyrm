@@ -9,18 +9,18 @@ from . import helpers
 
 # pylint: disable= no-self-use
 class About(View):
-    """ create invites """
+    """create invites"""
 
     def get(self, request):
-        """ more information about the instance """
+        """more information about the instance"""
         return TemplateResponse(request, "discover/about.html")
 
 
 class Home(View):
-    """ discover page or home feed depending on auth """
+    """discover page or home feed depending on auth"""
 
     def get(self, request):
-        """ this is the same as the feed on the home tab """
+        """this is the same as the feed on the home tab"""
         if request.user.is_authenticated:
             feed_view = Feed.as_view()
             return feed_view(request, "home")
@@ -29,10 +29,10 @@ class Home(View):
 
 
 class Discover(View):
-    """ preview of recently reviewed books """
+    """preview of recently reviewed books"""
 
     def get(self, request):
-        """ tiled book activity page """
+        """tiled book activity page"""
         data = {
             "register_form": forms.RegisterForm(),
             "request_form": forms.InviteRequestForm(),

@@ -21,7 +21,7 @@ CurationType = models.TextChoices(
 
 
 class List(OrderedCollectionMixin, BookWyrmModel):
-    """ a list of books """
+    """a list of books"""
 
     name = fields.CharField(max_length=100)
     user = fields.ForeignKey(
@@ -41,22 +41,22 @@ class List(OrderedCollectionMixin, BookWyrmModel):
     activity_serializer = activitypub.BookList
 
     def get_remote_id(self):
-        """ don't want the user to be in there in this case """
+        """don't want the user to be in there in this case"""
         return "https://%s/list/%d" % (DOMAIN, self.id)
 
     @property
     def collection_queryset(self):
-        """ list of books for this shelf, overrides OrderedCollectionMixin  """
-        return self.books.filter(listitem__approved=True).all().order_by("listitem")
+        """list of books for this shelf, overrides OrderedCollectionMixin"""
+        return self.books.filter(listitem__approved=True).order_by("listitem")
 
     class Meta:
-        """ default sorting """
+        """default sorting"""
 
         ordering = ("-updated_date",)
 
 
 class ListItem(CollectionItemMixin, BookWyrmModel):
-    """ ok """
+    """ok"""
 
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="book"
@@ -67,14 +67,14 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
     )
     notes = fields.TextField(blank=True, null=True)
     approved = models.BooleanField(default=True)
-    order = fields.IntegerField(blank=True, null=True)
+    order = fields.IntegerField()
     endorsement = models.ManyToManyField("User", related_name="endorsers")
 
     activity_serializer = activitypub.ListItem
     collection_field = "book_list"
 
     def save(self, *args, **kwargs):
-        """ create a notification too """
+        """create a notification too"""
         created = not bool(self.id)
         super().save(*args, **kwargs)
         # tick the updated date on the parent list
@@ -93,7 +93,7 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
             )
 
     class Meta:
-        """ an opinionated constraint! you can't put a book on a list twice """
-
-        unique_together = ("book", "book_list")
+        # A book may only be placed into a list once, and each order in the list may be used only
+        # once
+        unique_together = (("book", "book_list"), ("order", "book_list"))
         ordering = ("-created_date",)

@@ -18,15 +18,10 @@ from .helpers import is_api_request, is_bookwyrm_request
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Feed(View):
-    """ activity stream """
+    """activity stream"""
 
     def get(self, request, tab):
-        """ user's homepage with activity feed """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
+        """user's homepage with activity feed"""
         if not tab in STREAMS:
             tab = "home"
 
@@ -39,7 +34,7 @@ class Feed(View):
             **feed_page_data(request.user),
             **{
                 "user": request.user,
-                "activities": paginated.get_page(page),
+                "activities": paginated.get_page(request.GET.get("page")),
                 "suggested_users": suggested_users,
                 "tab": tab,
                 "goal_form": forms.GoalForm(),
@@ -51,15 +46,10 @@ class Feed(View):
 
 @method_decorator(login_required, name="dispatch")
 class DirectMessage(View):
-    """ dm view """
+    """dm view"""
 
     def get(self, request, username=None):
-        """ like a feed but for dms only """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
+        """like a feed but for dms only"""
         # remove fancy subclasses of status, keep just good ol' notes
         queryset = models.Status.objects.filter(
             review__isnull=True,
@@ -82,13 +72,12 @@ class DirectMessage(View):
         ).order_by("-published_date")
 
         paginated = Paginator(activities, PAGE_LENGTH)
-        activity_page = paginated.get_page(page)
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
                 "partner": user,
-                "activities": activity_page,
+                "activities": paginated.get_page(request.GET.get("page")),
                 "path": "/direct-messages",
             },
         }
@@ -96,10 +85,10 @@ class DirectMessage(View):
 
 
 class Status(View):
-    """ get posting """
+    """get posting"""
 
     def get(self, request, username, status_id):
-        """ display a particular status (and replies, etc) """
+        """display a particular status (and replies, etc)"""
         try:
             user = get_user_from_username(request.user, username)
             status = models.Status.objects.select_subclasses().get(
@@ -131,10 +120,10 @@ class Status(View):
 
 
 class Replies(View):
-    """ replies page (a json view of status) """
+    """replies page (a json view of status)"""
 
     def get(self, request, username, status_id):
-        """ ordered collection of replies to a status """
+        """ordered collection of replies to a status"""
         # the html view is the same as Status
         if not is_api_request(request):
             status_view = Status.as_view()
@@ -149,7 +138,7 @@ class Replies(View):
 
 
 def feed_page_data(user):
-    """ info we need for every feed page """
+    """info we need for every feed page"""
     if not user.is_authenticated:
         return {}
 
@@ -162,7 +151,7 @@ def feed_page_data(user):
 
 
 def get_suggested_books(user, max_books=5):
-    """ helper to get a user's recent books """
+    """helper to get a user's recent books"""
     book_count = 0
     preset_shelves = [("reading", max_books), ("read", 2), ("to-read", max_books)]
     suggested_books = []
@@ -174,7 +163,7 @@ def get_suggested_books(user, max_books=5):
         )
         shelf = user.shelf_set.get(identifier=preset)
 
-        shelf_books = shelf.shelfbook_set.order_by("-updated_date").all()[:limit]
+        shelf_books = shelf.shelfbook_set.order_by("-updated_date")[:limit]
         if not shelf_books:
             continue
         shelf_preview = {

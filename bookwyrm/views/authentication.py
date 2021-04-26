@@ -16,10 +16,10 @@ from bookwyrm.settings import DOMAIN
 # pylint: disable= no-self-use
 @method_decorator(csrf_exempt, name="dispatch")
 class Login(View):
-    """ authenticate an existing user """
+    """authenticate an existing user"""
 
     def get(self, request):
-        """ login page """
+        """login page"""
         if request.user.is_authenticated:
             return redirect("/")
         # sene user to the login page
@@ -30,7 +30,7 @@ class Login(View):
         return TemplateResponse(request, "login.html", data)
 
     def post(self, request):
-        """ authentication action """
+        """authentication action"""
         if request.user.is_authenticated:
             return redirect("/")
         login_form = forms.LoginForm(request.POST)
@@ -61,10 +61,10 @@ class Login(View):
 
 
 class Register(View):
-    """ register a user """
+    """register a user"""
 
     def post(self, request):
-        """ join the server """
+        """join the server"""
         if not models.SiteSettings.get().allow_registration:
             invite_code = request.POST.get("invite_code")
 
@@ -117,9 +117,9 @@ class Register(View):
 
 @method_decorator(login_required, name="dispatch")
 class Logout(View):
-    """ log out """
+    """log out"""
 
     def get(self, request):
-        """ done with this place! outa here! """
+        """done with this place! outa here!"""
         logout(request)
         return redirect("/")

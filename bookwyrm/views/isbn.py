@@ -13,10 +13,10 @@ from .helpers import is_api_request
 
 # pylint: disable= no-self-use
 class Isbn(View):
-    """ search a book by isbn """
+    """search a book by isbn"""
 
     def get(self, request, isbn):
-        """ info about a book """
+        """info about a book"""
         book_results = connector_manager.isbn_local_search(isbn)
 
         if is_api_request(request):

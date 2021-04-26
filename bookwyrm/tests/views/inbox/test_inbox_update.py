@@ -10,10 +10,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxUpdate(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -23,6 +23,16 @@ class InboxUpdate(TestCase):
         )
         self.local_user.remote_id = "https://example.com/user/mouse"
         self.local_user.save(broadcast=False)
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
 
         self.create_json = {
             "id": "hi",
@@ -34,8 +44,8 @@ class InboxUpdate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_handle_update_list(self):
-        """ a new list """
+    def test_update_list(self):
+        """a new list"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             book_list = models.List.objects.create(
                 name="hi", remote_id="https://example.com/list/22", user=self.local_user
@@ -68,16 +78,24 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_handle_update_user(self):
-        """ update an existing user """
-        # we only do this with remote users
-        self.local_user.local = False
-        self.local_user.save()
+    def test_update_user(self):
+        """update an existing user"""
+        models.UserFollows.objects.create(
+            user_subject=self.local_user,
+            user_object=self.remote_user,
+        )
+        models.UserFollows.objects.create(
+            user_subject=self.remote_user,
+            user_object=self.local_user,
+        )
+        self.assertTrue(self.remote_user in self.local_user.followers.all())
+        self.assertTrue(self.local_user in self.remote_user.followers.all())
 
-        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_user.json")
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_user_rat.json")
         userdata = json.loads(datafile.read_bytes())
         del userdata["icon"]
-        self.assertIsNone(self.local_user.name)
+        self.assertIsNone(self.remote_user.name)
+        self.assertFalse(self.remote_user.discoverable)
         views.inbox.activity_task(
             {
                 "type": "Update",
@@ -88,14 +106,17 @@ class InboxUpdate(TestCase):
                 "object": userdata,
             }
         )
-        user = models.User.objects.get(id=self.local_user.id)
-        self.assertEqual(user.name, "MOUSE?? MOUSE!!")
-        self.assertEqual(user.username, "mouse@example.com")
-        self.assertEqual(user.localname, "mouse")
+        user = models.User.objects.get(id=self.remote_user.id)
+        self.assertEqual(user.name, "RAT???")
+        self.assertEqual(user.username, "rat@example.com")
         self.assertTrue(user.discoverable)
 
-    def test_handle_update_edition(self):
-        """ update an existing edition """
+        # make sure relationships aren't disrupted
+        self.assertTrue(self.remote_user in self.local_user.followers.all())
+        self.assertTrue(self.local_user in self.remote_user.followers.all())
+
+    def test_update_edition(self):
+        """update an existing edition"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
         bookdata = json.loads(datafile.read_bytes())
 
@@ -122,9 +143,10 @@ class InboxUpdate(TestCase):
             )
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
+        self.assertEqual(book.last_edited_by, self.remote_user)
 
-    def test_handle_update_work(self):
-        """ update an existing edition """
+    def test_update_work(self):
+        """update an existing edition"""
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_work.json")
         bookdata = json.loads(datafile.read_bytes())
 

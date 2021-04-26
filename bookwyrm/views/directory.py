@@ -11,16 +11,10 @@ from .helpers import get_annotated_users
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 class Directory(View):
-    """ display of known bookwyrm users """
+    """display of known bookwyrm users"""
 
     def get(self, request):
-        """ lets see your cute faces """
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
-
-        # filters
+        """lets see your cute faces"""
         filters = {}
         software = request.GET.get("software")
         if not software or software == "bookwyrm":
@@ -39,12 +33,12 @@ class Directory(View):
         paginated = Paginator(users, 12)
 
         data = {
-            "users": paginated.get_page(page),
+            "users": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "directory/directory.html", data)
 
     def post(self, request):
-        """ join the directory """
+        """join the directory"""
         request.user.discoverable = True
         request.user.save()
         return redirect("directory")

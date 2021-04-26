@@ -19,7 +19,7 @@ from . import fields
 
 
 class Status(OrderedCollectionPageMixin, BookWyrmModel):
-    """ any post, like a reply to a review, etc """
+    """any post, like a reply to a review, etc"""
 
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="attributedTo"
@@ -59,12 +59,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
     deserialize_reverse_fields = [("attachments", "attachment")]
 
     class Meta:
-        """ default sorting """
+        """default sorting"""
 
         ordering = ("-published_date",)
 
     def save(self, *args, **kwargs):
-        """ save and notify """
+        """save and notify"""
         super().save(*args, **kwargs)
 
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
@@ -98,7 +98,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
             )
 
     def delete(self, *args, **kwargs):  # pylint: disable=unused-argument
-        """ "delete" a status """
+        """ "delete" a status"""
         if hasattr(self, "boosted_status"):
             # okay but if it's a boost really delete it
             super().delete(*args, **kwargs)
@@ -109,7 +109,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def recipients(self):
-        """ tagged users who definitely need to get this status in broadcast """
+        """tagged users who definitely need to get this status in broadcast"""
         mentions = [u for u in self.mention_users.all() if not u.local]
         if (
             hasattr(self, "reply_parent")
@@ -121,7 +121,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @classmethod
     def ignore_activity(cls, activity):  # pylint: disable=too-many-return-statements
-        """ keep notes if they are replies to existing statuses """
+        """keep notes if they are replies to existing statuses"""
         if activity.type == "Announce":
             try:
                 boosted = activitypub.resolve_remote_id(
@@ -163,16 +163,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 
     @property
     def status_type(self):
-        """ expose the type of status for the ui using activity type """
+        """expose the type of status for the ui using activity type"""
         return self.activity_serializer.__name__
 
     @property
     def boostable(self):
-        """ you can't boost dms """
+        """you can't boost dms"""
         return self.privacy in ["unlisted", "public"]
 
     def to_replies(self, **kwargs):
-        """ helper function for loading AP serialized replies to a status """
+        """helper function for loading AP serialized replies to a status"""
         return self.to_ordered_collection(
             self.replies(self),
             remote_id="%s/replies" % self.remote_id,
@@ -181,7 +181,7 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         ).serialize()
 
     def to_activity_dataclass(self, pure=False):  # pylint: disable=arguments-differ
-        """ return tombstone if the status is deleted """
+        """return tombstone if the status is deleted"""
         if self.deleted:
             return activitypub.Tombstone(
                 id=self.remote_id,
@@ -210,16 +210,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return activity
 
     def to_activity(self, pure=False):  # pylint: disable=arguments-differ
-        """ json serialized activitypub class """
+        """json serialized activitypub class"""
         return self.to_activity_dataclass(pure=pure).serialize()
 
 
 class GeneratedNote(Status):
-    """ these are app-generated messages about user activity """
+    """these are app-generated messages about user activity"""
 
     @property
     def pure_content(self):
-        """ indicate the book in question for mastodon (or w/e) users """
+        """indicate the book in question for mastodon (or w/e) users"""
         message = self.content
         books = ", ".join(
             '<a href="%s">"%s"</a>' % (book.remote_id, book.title)
@@ -232,7 +232,7 @@ class GeneratedNote(Status):
 
 
 class Comment(Status):
-    """ like a review but without a rating and transient """
+    """like a review but without a rating and transient"""
 
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
@@ -253,7 +253,7 @@ class Comment(Status):
 
     @property
     def pure_content(self):
-        """ indicate the book in question for mastodon (or w/e) users """
+        """indicate the book in question for mastodon (or w/e) users"""
         return '%s<p>(comment on <a href="%s">"%s"</a>)</p>' % (
             self.content,
             self.book.remote_id,
@@ -265,7 +265,7 @@ class Comment(Status):
 
 
 class Quotation(Status):
-    """ like a review but without a rating and transient """
+    """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
     book = fields.ForeignKey(
@@ -274,7 +274,7 @@ class Quotation(Status):
 
     @property
     def pure_content(self):
-        """ indicate the book in question for mastodon (or w/e) users """
+        """indicate the book in question for mastodon (or w/e) users"""
         quote = re.sub(r"^<p>", '<p>"', self.quote)
         quote = re.sub(r"</p>$", '"</p>', quote)
         return '%s <p>-- <a href="%s">"%s"</a></p>%s' % (
@@ -289,7 +289,7 @@ class Quotation(Status):
 
 
 class Review(Status):
-    """ a book review """
+    """a book review"""
 
     name = fields.CharField(max_length=255, null=True)
     book = fields.ForeignKey(
@@ -306,7 +306,7 @@ class Review(Status):
 
     @property
     def pure_name(self):
-        """ clarify review names for mastodon serialization """
+        """clarify review names for mastodon serialization"""
         template = get_template("snippets/generated_status/review_pure_name.html")
         return template.render(
             {"book": self.book, "rating": self.rating, "name": self.name}
@@ -314,7 +314,7 @@ class Review(Status):
 
     @property
     def pure_content(self):
-        """ indicate the book in question for mastodon (or w/e) users """
+        """indicate the book in question for mastodon (or w/e) users"""
         return self.content
 
     activity_serializer = activitypub.Review
@@ -322,7 +322,7 @@ class Review(Status):
 
 
 class ReviewRating(Review):
-    """ a subtype of review that only contains a rating """
+    """a subtype of review that only contains a rating"""
 
     def save(self, *args, **kwargs):
         if not self.rating:
@@ -339,7 +339,7 @@ class ReviewRating(Review):
 
 
 class Boost(ActivityMixin, Status):
-    """ boost'ing a post """
+    """boost'ing a post"""
 
     boosted_status = fields.ForeignKey(
         "Status",
@@ -350,7 +350,17 @@ class Boost(ActivityMixin, Status):
     activity_serializer = activitypub.Announce
 
     def save(self, *args, **kwargs):
-        """ save and notify """
+        """save and notify"""
+        # This constraint can't work as it would cross tables.
+        # class Meta:
+        #     unique_together = ('user', 'boosted_status')
+        if (
+            Boost.objects.filter(boosted_status=self.boosted_status, user=self.user)
+            .exclude(id=self.id)
+            .exists()
+        ):
+            return
+
         super().save(*args, **kwargs)
         if not self.boosted_status.user.local or self.boosted_status.user == self.user:
             return
@@ -364,7 +374,7 @@ class Boost(ActivityMixin, Status):
         )
 
     def delete(self, *args, **kwargs):
-        """ delete and un-notify """
+        """delete and un-notify"""
         notification_model = apps.get_model("bookwyrm.Notification", require_ready=True)
         notification_model.objects.filter(
             user=self.boosted_status.user,
@@ -375,7 +385,7 @@ class Boost(ActivityMixin, Status):
         super().delete(*args, **kwargs)
 
     def __init__(self, *args, **kwargs):
-        """ the user field is "actor" here instead of "attributedTo" """
+        """the user field is "actor" here instead of "attributedTo" """
         super().__init__(*args, **kwargs)
 
         reserve_fields = ["user", "boosted_status", "published_date", "privacy"]

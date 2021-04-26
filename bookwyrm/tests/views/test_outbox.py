@@ -13,10 +13,10 @@ from bookwyrm.settings import USER_AGENT
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class OutboxView(TestCase):
-    """ sends out activities """
+    """sends out activities"""
 
     def setUp(self):
-        """ we'll need some data """
+        """we'll need some data"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -34,19 +34,19 @@ class OutboxView(TestCase):
         )
 
     def test_outbox(self, _):
-        """ returns user's statuses """
+        """returns user's statuses"""
         request = self.factory.get("")
         result = views.Outbox.as_view()(request, "mouse")
         self.assertIsInstance(result, JsonResponse)
 
     def test_outbox_bad_method(self, _):
-        """ can't POST to outbox """
+        """can't POST to outbox"""
         request = self.factory.post("")
         result = views.Outbox.as_view()(request, "mouse")
         self.assertEqual(result.status_code, 405)
 
     def test_outbox_unknown_user(self, _):
-        """ should 404 for unknown and remote users """
+        """should 404 for unknown and remote users"""
         request = self.factory.post("")
         result = views.Outbox.as_view()(request, "beepboop")
         self.assertEqual(result.status_code, 405)
@@ -54,7 +54,7 @@ class OutboxView(TestCase):
         self.assertEqual(result.status_code, 405)
 
     def test_outbox_privacy(self, _):
-        """ don't show dms et cetera in outbox """
+        """don't show dms et cetera in outbox"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Status.objects.create(
                 content="PRIVATE!!", user=self.local_user, privacy="direct"
@@ -77,7 +77,7 @@ class OutboxView(TestCase):
         self.assertEqual(data["totalItems"], 2)
 
     def test_outbox_filter(self, _):
-        """ if we only care about reviews, only get reviews """
+        """if we only care about reviews, only get reviews"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Review.objects.create(
                 content="look at this",
@@ -103,7 +103,7 @@ class OutboxView(TestCase):
         self.assertEqual(data["totalItems"], 1)
 
     def test_outbox_bookwyrm_request_true(self, _):
-        """ should differentiate between bookwyrm and outside requests """
+        """should differentiate between bookwyrm and outside requests"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Review.objects.create(
                 name="hi",
@@ -121,7 +121,7 @@ class OutboxView(TestCase):
         self.assertEqual(data["orderedItems"][0]["type"], "Review")
 
     def test_outbox_bookwyrm_request_false(self, _):
-        """ should differentiate between bookwyrm and outside requests """
+        """should differentiate between bookwyrm and outside requests"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Review.objects.create(
                 name="hi",

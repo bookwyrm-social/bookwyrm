@@ -8,10 +8,10 @@ from bookwyrm.settings import DOMAIN
 
 
 class BaseModel(TestCase):
-    """ functionality shared across models """
+    """functionality shared across models"""
 
     def setUp(self):
-        """ shared data """
+        """shared data"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
         )
@@ -27,14 +27,14 @@ class BaseModel(TestCase):
             )
 
     def test_remote_id(self):
-        """ these should be generated """
+        """these should be generated"""
         instance = base_model.BookWyrmModel()
         instance.id = 1
         expected = instance.get_remote_id()
         self.assertEqual(expected, "https://%s/bookwyrmmodel/1" % DOMAIN)
 
     def test_remote_id_with_user(self):
-        """ format of remote id when there's a user object """
+        """format of remote id when there's a user object"""
         instance = base_model.BookWyrmModel()
         instance.user = self.local_user
         instance.id = 1
@@ -42,7 +42,7 @@ class BaseModel(TestCase):
         self.assertEqual(expected, "https://%s/user/mouse/bookwyrmmodel/1" % DOMAIN)
 
     def test_set_remote_id(self):
-        """ this function sets remote ids after creation """
+        """this function sets remote ids after creation"""
         # using Work because it BookWrymModel is abstract and this requires save
         # Work is a relatively not-fancy model.
         instance = models.Work.objects.create(title="work title")
@@ -59,7 +59,7 @@ class BaseModel(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user(self, _):
-        """ does a user have permission to view an object """
+        """does a user have permission to view an object"""
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"
         )
@@ -88,7 +88,7 @@ class BaseModel(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_follower(self, _):
-        """ what you can see if you follow a user """
+        """what you can see if you follow a user"""
         self.remote_user.followers.add(self.local_user)
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="followers"
@@ -108,7 +108,7 @@ class BaseModel(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_object_visible_to_user_blocked(self, _):
-        """ you can't see it if they block you """
+        """you can't see it if they block you"""
         self.remote_user.blocks.add(self.local_user)
         obj = models.Status.objects.create(
             content="hi", user=self.remote_user, privacy="public"

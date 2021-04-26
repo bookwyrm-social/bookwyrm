@@ -1,10 +1,10 @@
 {% load i18n %}
 {% if rating %}
 
-{% blocktrans with book_title=book.title display_rating=rating|floatformat:"0" review_title=name count counter=rating %}Review of "{{ book_title }}" ({{ display_rating }} star): {{ review_title }}{% plural %}Review of "{{ book_title }}" ({{ display_rating }} stars): {{ review_title }}{% endblocktrans %}
+{% blocktrans with book_title=book.title|safe display_rating=rating|floatformat:"0" review_title=name|safe count counter=rating %}Review of "{{ book_title }}" ({{ display_rating }} star): {{ review_title }}{% plural %}Review of "{{ book_title }}" ({{ display_rating }} stars): {{ review_title }}{% endblocktrans %}
 
 {% else %}
 
-{% blocktrans with book_title=book.title review_title=name %}Review of "{{ book_title }}": {{ review_title }}{% endblocktrans %}
+{% blocktrans with book_title=book.title|safe review_title=name|safe %}Review of "{{ book_title }}": {{ review_title }}{% endblocktrans %}
 
 {% endif %}

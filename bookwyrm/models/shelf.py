@@ -9,7 +9,7 @@ from . import fields
 
 
 class Shelf(OrderedCollectionMixin, BookWyrmModel):
-    """ a list of books owned by a user """
+    """a list of books owned by a user"""
 
     TO_READ = "to-read"
     READING = "reading"
@@ -34,36 +34,36 @@ class Shelf(OrderedCollectionMixin, BookWyrmModel):
     activity_serializer = activitypub.Shelf
 
     def save(self, *args, **kwargs):
-        """ set the identifier """
+        """set the identifier"""
         super().save(*args, **kwargs)
         if not self.identifier:
             self.identifier = self.get_identifier()
             super().save(*args, **kwargs, broadcast=False)
 
     def get_identifier(self):
-        """ custom-shelf-123 for the url """
+        """custom-shelf-123 for the url"""
         slug = re.sub(r"[^\w]", "", self.name).lower()
         return "{:s}-{:d}".format(slug, self.id)
 
     @property
     def collection_queryset(self):
-        """ list of books for this shelf, overrides OrderedCollectionMixin  """
-        return self.books.all().order_by("shelfbook")
+        """list of books for this shelf, overrides OrderedCollectionMixin"""
+        return self.books.order_by("shelfbook")
 
     def get_remote_id(self):
-        """ shelf identifier instead of id """
+        """shelf identifier instead of id"""
         base_path = self.user.remote_id
         identifier = self.identifier or self.get_identifier()
         return "%s/books/%s" % (base_path, identifier)
 
     class Meta:
-        """ user/shelf unqiueness """
+        """user/shelf unqiueness"""
 
         unique_together = ("user", "identifier")
 
 
 class ShelfBook(CollectionItemMixin, BookWyrmModel):
-    """ many to many join table for books and shelves """
+    """many to many join table for books and shelves"""
 
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="book"

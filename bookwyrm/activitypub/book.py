@@ -8,9 +8,10 @@ from .image import Document
 
 @dataclass(init=False)
 class Book(ActivityObject):
-    """ serializes an edition or work, abstract """
+    """serializes an edition or work, abstract"""
 
     title: str
+    lastEditedBy: str = None
     sortTitle: str = ""
     subtitle: str = ""
     description: str = ""
@@ -34,7 +35,7 @@ class Book(ActivityObject):
 
 @dataclass(init=False)
 class Edition(Book):
-    """ Edition instance of a book object """
+    """Edition instance of a book object"""
 
     work: str
     isbn10: str = ""
@@ -51,7 +52,7 @@ class Edition(Book):
 
 @dataclass(init=False)
 class Work(Book):
-    """ work instance of a book object """
+    """work instance of a book object"""
 
     lccn: str = ""
     defaultEdition: str = ""
@@ -61,9 +62,10 @@ class Work(Book):
 
 @dataclass(init=False)
 class Author(ActivityObject):
-    """ author of a book """
+    """author of a book"""
 
     name: str
+    lastEditedBy: str = None
     born: str = None
     died: str = None
     aliases: List[str] = field(default_factory=lambda: [])

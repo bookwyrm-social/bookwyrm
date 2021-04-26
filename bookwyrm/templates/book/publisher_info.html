@@ -1,6 +1,7 @@
 {% spaceless %}
 
 {% load i18n %}
+{% load humanize %}
 
 <p>
     {% with format=book.physical_format pages=book.pages %}
@@ -39,7 +40,7 @@
 {% endif %}
 
 <p>
-    {% with date=book.published_date|date:'M jS Y' publisher=book.publishers|join:', ' %}
+    {% with date=book.published_date|naturalday publisher=book.publishers|join:', ' %}
         {% if date or book.first_published_date %}
             <meta
                 itemprop="datePublished"

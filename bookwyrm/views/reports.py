@@ -20,10 +20,10 @@ from bookwyrm import forms, models
     name="dispatch",
 )
 class Reports(View):
-    """ list of reports  """
+    """list of reports"""
 
     def get(self, request):
-        """ view current reports """
+        """view current reports"""
         filters = {}
 
         resolved = request.GET.get("resolved") == "true"
@@ -52,17 +52,17 @@ class Reports(View):
     name="dispatch",
 )
 class Report(View):
-    """ view a specific report """
+    """view a specific report"""
 
     def get(self, request, report_id):
-        """ load a report """
+        """load a report"""
         data = {
             "report": get_object_or_404(models.Report, id=report_id),
         }
         return TemplateResponse(request, "moderation/report.html", data)
 
     def post(self, request, report_id):
-        """ comment on a report """
+        """comment on a report"""
         report = get_object_or_404(models.Report, id=report_id)
         models.ReportComment.objects.create(
             user=request.user,
@@ -74,18 +74,19 @@ class Report(View):
 
 @login_required
 @permission_required("bookwyrm_moderate_user")
-def deactivate_user(_, report_id):
-    """ mark an account as inactive """
-    report = get_object_or_404(models.Report, id=report_id)
-    report.user.is_active = not report.user.is_active
-    report.user.save()
-    return redirect("settings-report", report.id)
+def suspend_user(_, user_id):
+    """mark an account as inactive"""
+    user = get_object_or_404(models.User, id=user_id)
+    user.is_active = not user.is_active
+    # this isn't a full deletion, so we don't want to tell the world
+    user.save(broadcast=False)
+    return redirect("settings-user", user.id)
 
 
 @login_required
 @permission_required("bookwyrm_moderate_post")
 def resolve_report(_, report_id):
-    """ mark a report as (un)resolved """
+    """mark a report as (un)resolved"""
     report = get_object_or_404(models.Report, id=report_id)
     report.resolved = not report.resolved
     report.save()
@@ -97,7 +98,7 @@ def resolve_report(_, report_id):
 @login_required
 @require_POST
 def make_report(request):
-    """ a user reports something """
+    """a user reports something"""
     form = forms.ReportForm(request.POST)
     if not form.is_valid():
         raise ValueError(form.errors)

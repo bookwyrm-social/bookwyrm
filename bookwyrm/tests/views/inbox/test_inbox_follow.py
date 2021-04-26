@@ -1,4 +1,5 @@
 """ tests incoming activities"""
+import json
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -8,10 +9,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxRelationships(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -34,8 +35,8 @@ class InboxRelationships(TestCase):
 
         models.SiteSettings.objects.create()
 
-    def test_handle_follow(self):
-        """ remote user wants to follow local user """
+    def test_follow(self):
+        """remote user wants to follow local user"""
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/users/rat/follows/123",
@@ -48,6 +49,8 @@ class InboxRelationships(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
             views.inbox.activity_task(activity)
             self.assertEqual(mock.call_count, 1)
+            response_activity = json.loads(mock.call_args[0][1])
+            self.assertEqual(response_activity["type"], "Accept")
 
         # notification created
         notification = models.Notification.objects.get()
@@ -61,8 +64,35 @@ class InboxRelationships(TestCase):
         follow = models.UserFollows.objects.get(user_object=self.local_user)
         self.assertEqual(follow.user_subject, self.remote_user)
 
-    def test_handle_follow_manually_approved(self):
-        """ needs approval before following """
+    def test_follow_duplicate(self):
+        """remote user wants to follow local user twice"""
+        activity = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": "https://example.com/users/rat/follows/123",
+            "type": "Follow",
+            "actor": "https://example.com/users/rat",
+            "object": "https://example.com/user/mouse",
+        }
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.inbox.activity_task(activity)
+
+        # the follow relationship should exist
+        follow = models.UserFollows.objects.get(user_object=self.local_user)
+        self.assertEqual(follow.user_subject, self.remote_user)
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay") as mock:
+            views.inbox.activity_task(activity)
+            self.assertEqual(mock.call_count, 1)
+            response_activity = json.loads(mock.call_args[0][1])
+            self.assertEqual(response_activity["type"], "Accept")
+
+        # the follow relationship should STILL exist
+        follow = models.UserFollows.objects.get(user_object=self.local_user)
+        self.assertEqual(follow.user_subject, self.remote_user)
+
+    def test_follow_manually_approved(self):
+        """needs approval before following"""
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/users/rat/follows/123",
@@ -91,8 +121,8 @@ class InboxRelationships(TestCase):
         follow = models.UserFollows.objects.all()
         self.assertEqual(list(follow), [])
 
-    def test_handle_undo_follow_request(self):
-        """ the requester cancels a follow request """
+    def test_undo_follow_request(self):
+        """the requester cancels a follow request"""
         self.local_user.manually_approves_followers = True
         self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -121,8 +151,8 @@ class InboxRelationships(TestCase):
 
         self.assertFalse(self.local_user.follower_requests.exists())
 
-    def test_handle_unfollow(self):
-        """ remove a relationship """
+    def test_unfollow(self):
+        """remove a relationship"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             rel = models.UserFollows.objects.create(
                 user_subject=self.remote_user, user_object=self.local_user
@@ -146,8 +176,8 @@ class InboxRelationships(TestCase):
         views.inbox.activity_task(activity)
         self.assertIsNone(self.local_user.followers.first())
 
-    def test_handle_follow_accept(self):
-        """ a remote user approved a follow request from local """
+    def test_follow_accept(self):
+        """a remote user approved a follow request from local"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             rel = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
@@ -177,8 +207,8 @@ class InboxRelationships(TestCase):
         self.assertEqual(follows.count(), 1)
         self.assertEqual(follows.first(), self.local_user)
 
-    def test_handle_follow_reject(self):
-        """ turn down a follow request """
+    def test_follow_reject(self):
+        """turn down a follow request"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             rel = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user, user_object=self.remote_user
