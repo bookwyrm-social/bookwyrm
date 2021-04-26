@@ -51,13 +51,20 @@ urlpatterns = [
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
     # admin
-    re_path(r"^settings/site-settings", views.Site.as_view(), name="settings-site"),
+    re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
-        r"^settings/email-preview",
+        r"^settings/email-preview/?$",
         views.site.email_preview,
         name="settings-email-preview",
     ),
-    re_path(r"^settings/users", views.UserAdmin.as_view(), name="settings-users"),
+    re_path(
+        r"^settings/users/?$", views.UserAdminList.as_view(), name="settings-users"
+    ),
+    re_path(
+        r"^settings/users/(?P<user>\d+)/?$",
+        views.UserAdmin.as_view(),
+        name="settings-user",
+    ),
     re_path(
         r"^settings/federation/?$",
         views.Federation.as_view(),
@@ -67,6 +74,26 @@ urlpatterns = [
         r"^settings/federation/(?P<server>\d+)/?$",
         views.FederatedServer.as_view(),
         name="settings-federated-server",
+    ),
+    re_path(
+        r"^settings/federation/(?P<server>\d+)/block?$",
+        views.federation.block_server,
+        name="settings-federated-server-block",
+    ),
+    re_path(
+        r"^settings/federation/(?P<server>\d+)/unblock?$",
+        views.federation.unblock_server,
+        name="settings-federated-server-unblock",
+    ),
+    re_path(
+        r"^settings/federation/add/?$",
+        views.AddFederatedServer.as_view(),
+        name="settings-add-federated-server",
+    ),
+    re_path(
+        r"^settings/federation/import/?$",
+        views.ImportServerBlocklist.as_view(),
+        name="settings-import-blocklist",
     ),
     re_path(
         r"^settings/invites/?$", views.ManageInvites.as_view(), name="settings-invites"
@@ -93,9 +120,9 @@ urlpatterns = [
         name="settings-report",
     ),
     re_path(
-        r"^settings/reports/(?P<report_id>\d+)/deactivate/?$",
-        views.deactivate_user,
-        name="settings-report-deactivate",
+        r"^settings/reports/(?P<user_id>\d+)/suspend/?$",
+        views.suspend_user,
+        name="settings-report-suspend",
     ),
     re_path(
         r"^settings/reports/(?P<report_id>\d+)/resolve/?$",
@@ -165,6 +192,11 @@ urlpatterns = [
         name="list-remove-book",
     ),
     re_path(
+        r"^list-item/(?P<list_item_id>\d+)/set-position$",
+        views.list.set_book_position,
+        name="list-set-book-position",
+    ),
+    re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
     # Uyser books
@@ -228,7 +260,12 @@ urlpatterns = [
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
-    re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view()),
+    re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view(), name="book"),
+    re_path(
+        r"%s/(?P<user_statuses>review|comment|quote)/?$" % book_path,
+        views.Book.as_view(),
+        name="book-user-statuses",
+    ),
     re_path(r"%s/edit/?$" % book_path, views.EditBook.as_view()),
     re_path(r"%s/confirm/?$" % book_path, views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view()),
@@ -245,11 +282,6 @@ urlpatterns = [
     # author
     re_path(r"^author/(?P<author_id>\d+)(.json)?/?$", views.Author.as_view()),
     re_path(r"^author/(?P<author_id>\d+)/edit/?$", views.EditAuthor.as_view()),
-    # tags
-    re_path(r"^tag/(?P<tag_id>.+)\.json/?$", views.Tag.as_view()),
-    re_path(r"^tag/(?P<tag_id>.+)/?$", views.Tag.as_view()),
-    re_path(r"^tag/?$", views.AddTag.as_view()),
-    re_path(r"^untag/?$", views.RemoveTag.as_view()),
     # reading progress
     re_path(r"^edit-readthrough/?$", views.edit_readthrough, name="edit-readthrough"),
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),

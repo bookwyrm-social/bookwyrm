@@ -37,7 +37,7 @@
         </div>
         {% endif %}
 
-        <div class="{% if local_results.results %}hidden{% endif %}" id="more-results">
+        <div class="{% if local_results.results %}is-hidden{% endif %}" id="more-results">
             {% for result_set in book_results|slice:"1:" %}
             {% if result_set.results %}
             <section class="block">

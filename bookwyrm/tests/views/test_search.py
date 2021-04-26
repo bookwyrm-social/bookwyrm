@@ -13,10 +13,10 @@ from bookwyrm.settings import DOMAIN
 
 
 class ShelfViews(TestCase):
-    """ tag views"""
+    """tag views"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -38,7 +38,7 @@ class ShelfViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_search_json_response(self):
-        """ searches local data only and returns book data in json format """
+        """searches local data only and returns book data in json format"""
         view = views.Search.as_view()
         # we need a connector for this, sorry
         request = self.factory.get("", {"q": "Test Book"})
@@ -53,11 +53,11 @@ class ShelfViews(TestCase):
         self.assertEqual(data[0]["key"], "https://%s/book/%d" % (DOMAIN, self.book.id))
 
     def test_search_html_response(self):
-        """ searches remote connectors """
+        """searches remote connectors"""
         view = views.Search.as_view()
 
         class TestConnector(abstract_connector.AbstractMinimalConnector):
-            """ nothing added here """
+            """nothing added here"""
 
             def format_search_result(self, search_result):
                 pass
@@ -106,7 +106,7 @@ class ShelfViews(TestCase):
         )
 
     def test_search_html_response_users(self):
-        """ searches remote connectors """
+        """searches remote connectors"""
         view = views.Search.as_view()
         request = self.factory.get("", {"q": "mouse"})
         request.user = self.local_user

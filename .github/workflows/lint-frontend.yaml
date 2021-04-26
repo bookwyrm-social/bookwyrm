@@ -3,12 +3,14 @@ name: Lint Frontend
 
 on:
   push:
-    branches: [ main, ci ]
+    branches: [ main, ci, frontend ]
     paths:
       - '.github/workflows/**'
       - 'static/**'
+      - '.eslintrc'
+      - '.stylelintrc'
   pull_request:
-    branches: [ main, ci ]
+    branches: [ main, ci, frontend ]
 
 jobs:
   lint:
@@ -16,14 +18,21 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
       - uses: actions/checkout@v2
 
       - name: Install modules
         run: yarn
 
+      # See .stylelintignore for files that are not linted.
       - name: Run stylelint
-        run: yarn stylelint **/static/**/*.css --report-needless-disables --report-invalid-scope-disables
+        run: >
+          yarn stylelint bookwyrm/static/**/*.css \
+            --report-needless-disables \
+            --report-invalid-scope-disables
 
+      # See .eslintignore for files that are not linted.
       - name: Run ESLint
-        run: yarn eslint . --ext .js,.jsx,.ts,.tsx
+        run: >
+          yarn eslint bookwyrm/static \
+            --ext .js,.jsx,.ts,.tsx

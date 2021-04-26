@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from .base_activity import ActivityObject
-from .image import Image
+from .image import Document
 
 
 @dataclass(init=False)
@@ -15,11 +15,12 @@ class BookData(ActivityObject):
     librarythingKey: str = None
     goodreadsKey: str = None
     bnfId: str = None
+    lastEditedBy: str = None
 
 
 @dataclass(init=False)
 class Book(BookData):
-    """ serializes an edition or work, abstract """
+    """serializes an edition or work, abstract"""
 
     title: str
     sortTitle: str = ""
@@ -35,13 +36,13 @@ class Book(BookData):
     firstPublishedDate: str = ""
     publishedDate: str = ""
 
-    cover: Image = None
+    cover: Document = None
     type: str = "Book"
 
 
 @dataclass(init=False)
 class Edition(Book):
-    """ Edition instance of a book object """
+    """Edition instance of a book object"""
 
     work: str
     isbn10: str = ""
@@ -58,7 +59,7 @@ class Edition(Book):
 
 @dataclass(init=False)
 class Work(Book):
-    """ work instance of a book object """
+    """work instance of a book object"""
 
     lccn: str = ""
     defaultEdition: str = ""
@@ -68,7 +69,7 @@ class Work(Book):
 
 @dataclass(init=False)
 class Author(BookData):
-    """ author of a book """
+    """author of a book"""
 
     name: str
     isni: str = None

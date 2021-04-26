@@ -4,7 +4,7 @@ from .abstract_connector import AbstractMinimalConnector, SearchResult
 
 
 class Connector(AbstractMinimalConnector):
-    """ this is basically just for search """
+    """this is basically just for search"""
 
     def get_or_create_book(self, remote_id):
         edition = activitypub.resolve_remote_id(remote_id, model=models.Edition)

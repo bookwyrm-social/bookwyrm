@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from bookwyrm.models import Connector, SiteSettings, User
+from bookwyrm.models import Connector, FederatedServer, SiteSettings, User
 from bookwyrm.settings import DOMAIN
 
 
@@ -119,6 +119,16 @@ def init_connectors():
     )
 
 
+def init_federated_servers():
+    """big no to nazis"""
+    built_in_blocks = ["gab.ai", "gab.com"]
+    for server in built_in_blocks:
+        FederatedServer.objects.create(
+            server_name=server,
+            status="blocked",
+        )
+
+
 def init_settings():
     SiteSettings.objects.create()
 
@@ -130,4 +140,5 @@ class Command(BaseCommand):
         init_groups()
         init_permissions()
         init_connectors()
+        init_federated_servers()
         init_settings()

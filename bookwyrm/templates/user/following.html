@@ -29,4 +29,6 @@
     <div>{% blocktrans with username=user|username %}{{ username }} isn't following any users{% endblocktrans %}</div>
     {% endif %}
 </div>
+
+{% include 'snippets/pagination.html' with page=following path=request.path %}
 {% endblock %}

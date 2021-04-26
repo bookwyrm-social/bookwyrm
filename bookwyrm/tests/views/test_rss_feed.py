@@ -8,10 +8,10 @@ from bookwyrm.views import rss_feed
 
 
 class RssFeedView(TestCase):
-    """ rss feed behaves as expected """
+    """rss feed behaves as expected"""
 
     def setUp(self):
-        """ test data """
+        """test data"""
         self.site = models.SiteSettings.objects.create()
 
         self.user = models.User.objects.create_user(
@@ -50,7 +50,7 @@ class RssFeedView(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
     def test_rss_feed(self, _):
-        """ load an rss feed """
+        """load an rss feed"""
         view = rss_feed.RssFeed()
         request = self.factory.get("/user/rss_user/rss")
         request.user = self.user

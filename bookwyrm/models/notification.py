@@ -10,7 +10,7 @@ NotificationType = models.TextChoices(
 
 
 class Notification(BookWyrmModel):
-    """ you've been tagged, liked, followed, etc """
+    """you've been tagged, liked, followed, etc"""
 
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     related_book = models.ForeignKey("Edition", on_delete=models.CASCADE, null=True)
@@ -29,7 +29,7 @@ class Notification(BookWyrmModel):
     )
 
     def save(self, *args, **kwargs):
-        """ save, but don't make dupes """
+        """save, but don't make dupes"""
         # there's probably a better way to do this
         if self.__class__.objects.filter(
             user=self.user,
@@ -45,7 +45,7 @@ class Notification(BookWyrmModel):
         super().save(*args, **kwargs)
 
     class Meta:
-        """ checks if notifcation is in enum list for valid types """
+        """checks if notifcation is in enum list for valid types"""
 
         constraints = [
             models.CheckConstraint(

@@ -6,7 +6,7 @@ from . import Importer
 
 
 class LibrarythingImporter(Importer):
-    """ csv downloads from librarything """
+    """csv downloads from librarything"""
 
     service = "LibraryThing"
     delimiter = "\t"
@@ -15,7 +15,7 @@ class LibrarythingImporter(Importer):
     mandatory_fields = ["Title", "Primary Author"]
 
     def parse_fields(self, entry):
-        """ custom parsing for librarything """
+        """custom parsing for librarything"""
         data = {}
         data["import_source"] = self.service
         data["Book Id"] = entry["Book Id"]

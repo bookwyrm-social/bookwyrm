@@ -17,15 +17,15 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter, object_visible_to_user
+from .helpers import is_blocked, privacy_filter
 
 
 # pylint: disable= no-self-use
 class User(View):
-    """ user profile page """
+    """user profile page"""
 
     def get(self, request, username):
-        """ profile page for a user """
+        """profile page for a user"""
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
@@ -39,11 +39,6 @@ class User(View):
             # we have a json request
             return ActivitypubResponse(user.to_activity())
         # otherwise we're at a UI view
-
-        try:
-            page = int(request.GET.get("page", 1))
-        except ValueError:
-            page = 1
 
         shelf_preview = []
 
@@ -80,14 +75,14 @@ class User(View):
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
         ).first()
-        if not object_visible_to_user(request.user, goal):
+        if goal and not goal.visible_to_user(request.user):
             goal = None
         data = {
             "user": user,
             "is_self": is_self,
             "shelves": shelf_preview,
             "shelf_count": shelves.count(),
-            "activities": paginated.page(page),
+            "activities": paginated.get_page(request.GET.get("page", 1)),
             "goal": goal,
         }
 
@@ -95,10 +90,10 @@ class User(View):
 
 
 class Followers(View):
-    """ list of followers view """
+    """list of followers view"""
 
     def get(self, request, username):
-        """ list of followers """
+        """list of followers"""
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
@@ -111,19 +106,20 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
+        paginated = Paginator(user.followers.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "followers": user.followers.all(),
+            "followers": paginated.page(request.GET.get("page", 1)),
         }
         return TemplateResponse(request, "user/followers.html", data)
 
 
 class Following(View):
-    """ list of following view """
+    """list of following view"""
 
     def get(self, request, username):
-        """ list of followers """
+        """list of followers"""
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
@@ -136,20 +132,21 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
+        paginated = Paginator(user.followers.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "following": user.following.all(),
+            "following": paginated.page(request.GET.get("page", 1)),
         }
         return TemplateResponse(request, "user/following.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
 class EditUser(View):
-    """ edit user view """
+    """edit user view"""
 
     def get(self, request):
-        """ edit profile page for a user """
+        """edit profile page for a user"""
         data = {
             "form": forms.EditUserForm(instance=request.user),
             "user": request.user,
@@ -157,7 +154,7 @@ class EditUser(View):
         return TemplateResponse(request, "preferences/edit_user.html", data)
 
     def post(self, request):
-        """ les get fancy with images """
+        """les get fancy with images"""
         form = forms.EditUserForm(request.POST, request.FILES, instance=request.user)
         if not form.is_valid():
             data = {"form": form, "user": request.user}
@@ -169,7 +166,7 @@ class EditUser(View):
 
 
 def save_user_form(form):
-    """ special handling for the user form """
+    """special handling for the user form"""
     user = form.save(commit=False)
 
     if "avatar" in form.files:
@@ -186,7 +183,7 @@ def save_user_form(form):
 
 
 def crop_avatar(image):
-    """ reduce the size and make an avatar square """
+    """reduce the size and make an avatar square"""
     target_size = 120
     width, height = image.size
     thumbnail_scale = (

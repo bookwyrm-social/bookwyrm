@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -23,8 +24,18 @@ from .federated_server import FederatedServer
 from . import fields, Review
 
 
+DeactivationReason = models.TextChoices(
+    "DeactivationReason",
+    [
+        "self_deletion",
+        "moderator_deletion",
+        "domain_block",
+    ],
+)
+
+
 class User(OrderedCollectionPageMixin, AbstractUser):
-    """ a user who wants to read books """
+    """a user who wants to read books"""
 
     username = fields.UsernameField()
     email = models.EmailField(unique=True, null=True)
@@ -54,7 +65,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     summary = fields.HtmlField(null=True, blank=True)
     local = models.BooleanField(default=False)
     bookwyrm_user = fields.BooleanField(default=True)
-    localname = models.CharField(
+    localname = CICharField(
         max_length=255,
         null=True,
         unique=True,
@@ -110,33 +121,47 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         default=str(pytz.utc),
         max_length=255,
     )
+    deactivation_reason = models.CharField(
+        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+    )
 
     name_field = "username"
+    property_fields = [("following_link", "following")]
+
+    @property
+    def following_link(self):
+        """just how to find out the following info"""
+        return "{:s}/following".format(self.remote_id)
 
     @property
     def alt_text(self):
-        """ alt text with username """
+        """alt text with username"""
         return "avatar for %s" % (self.localname or self.username)
 
     @property
     def display_name(self):
-        """ show the cleanest version of the user's name possible """
+        """show the cleanest version of the user's name possible"""
         if self.name and self.name != "":
             return self.name
         return self.localname or self.username
+
+    @property
+    def deleted(self):
+        """for consistent naming"""
+        return not self.is_active
 
     activity_serializer = activitypub.Person
 
     @classmethod
     def viewer_aware_objects(cls, viewer):
-        """ the user queryset filtered for the context of the logged in user """
+        """the user queryset filtered for the context of the logged in user"""
         queryset = cls.objects.filter(is_active=True)
-        if viewer.is_authenticated:
+        if viewer and viewer.is_authenticated:
             queryset = queryset.exclude(blocks=viewer)
         return queryset
 
     def to_outbox(self, filter_type=None, **kwargs):
-        """ an ordered collection of statuses """
+        """an ordered collection of statuses"""
         if filter_type:
             filter_class = apps.get_model(
                 "bookwyrm.%s" % filter_type, require_ready=True
@@ -163,7 +188,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         ).serialize()
 
     def to_following_activity(self, **kwargs):
-        """ activitypub following list """
+        """activitypub following list"""
         remote_id = "%s/following" % self.remote_id
         return self.to_ordered_collection(
             self.following.order_by("-updated_date").all(),
@@ -173,7 +198,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         )
 
     def to_followers_activity(self, **kwargs):
-        """ activitypub followers list """
+        """activitypub followers list"""
         remote_id = "%s/followers" % self.remote_id
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
@@ -185,6 +210,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def to_activity(self, **kwargs):
         """override default AP serializer to add context object
         idk if this is the best way to go about this"""
+        if not self.is_active:
+            return self.remote_id
+
         activity_object = super().to_activity(**kwargs)
         activity_object["@context"] = [
             "https://www.w3.org/ns/activitystreams",
@@ -199,7 +227,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         return activity_object
 
     def save(self, *args, **kwargs):
-        """ populate fields for new local users """
+        """populate fields for new local users"""
         created = not bool(self.id)
         if not self.local and not re.match(regex.full_username, self.username):
             # generate a username that uses the domain (webfinger format)
@@ -263,14 +291,20 @@ class User(OrderedCollectionPageMixin, AbstractUser):
                 editable=False,
             ).save(broadcast=False)
 
+    def delete(self, *args, **kwargs):
+        """deactivate rather than delete a user"""
+        self.is_active = False
+        # skip the logic in this class's save()
+        super().save(*args, **kwargs)
+
     @property
     def local_path(self):
-        """ this model doesn't inherit bookwyrm model, so here we are """
+        """this model doesn't inherit bookwyrm model, so here we are"""
         return "/user/%s" % (self.localname or self.username)
 
 
 class KeyPair(ActivitypubMixin, BookWyrmModel):
-    """ public and private keys for a user """
+    """public and private keys for a user"""
 
     private_key = models.TextField(blank=True, null=True)
     public_key = fields.TextField(
@@ -285,7 +319,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
         return "%s/#main-key" % self.owner.remote_id
 
     def save(self, *args, **kwargs):
-        """ create a key pair """
+        """create a key pair"""
         # no broadcasting happening here
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
@@ -303,7 +337,7 @@ class KeyPair(ActivitypubMixin, BookWyrmModel):
 
 
 class AnnualGoal(BookWyrmModel):
-    """ set a goal for how many books you read in a year """
+    """set a goal for how many books you read in a year"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     goal = models.IntegerField(validators=[MinValueValidator(1)])
@@ -313,17 +347,17 @@ class AnnualGoal(BookWyrmModel):
     )
 
     class Meta:
-        """ unqiueness constraint """
+        """unqiueness constraint"""
 
         unique_together = ("user", "year")
 
     def get_remote_id(self):
-        """ put the year in the path """
+        """put the year in the path"""
         return "%s/goal/%d" % (self.user.remote_id, self.year)
 
     @property
     def books(self):
-        """ the books you've read this year """
+        """the books you've read this year"""
         return (
             self.user.readthrough_set.filter(finish_date__year__gte=self.year)
             .order_by("-finish_date")
@@ -332,7 +366,7 @@ class AnnualGoal(BookWyrmModel):
 
     @property
     def ratings(self):
-        """ ratings for books read this year """
+        """ratings for books read this year"""
         book_ids = [r.book.id for r in self.books]
         reviews = Review.objects.filter(
             user=self.user,
@@ -342,12 +376,12 @@ class AnnualGoal(BookWyrmModel):
 
     @property
     def progress_percent(self):
-        """ how close to your goal, in percent form """
+        """how close to your goal, in percent form"""
         return int(float(self.book_count / self.goal) * 100)
 
     @property
     def book_count(self):
-        """ how many books you've read this year """
+        """how many books you've read this year"""
         return self.user.readthrough_set.filter(
             finish_date__year__gte=self.year
         ).count()
@@ -355,7 +389,7 @@ class AnnualGoal(BookWyrmModel):
 
 @app.task
 def set_remote_server(user_id):
-    """ figure out the user's remote server in the background """
+    """figure out the user's remote server in the background"""
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
@@ -365,7 +399,7 @@ def set_remote_server(user_id):
 
 
 def get_or_create_remote_server(domain):
-    """ get info on a remote server """
+    """get info on a remote server"""
     try:
         return FederatedServer.objects.get(server_name=domain)
     except FederatedServer.DoesNotExist:
@@ -394,7 +428,7 @@ def get_or_create_remote_server(domain):
 
 @app.task
 def get_remote_reviews(outbox):
-    """ ingest reviews by a new remote bookwyrm user """
+    """ingest reviews by a new remote bookwyrm user"""
     outbox_page = outbox + "?page=true&type=Review"
     data = get_data(outbox_page)
 

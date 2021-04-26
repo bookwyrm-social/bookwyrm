@@ -9,7 +9,7 @@ ConnectorFiles = models.TextChoices("ConnectorFiles", CONNECTORS)
 
 
 class Connector(BookWyrmModel):
-    """ book data source connectors """
+    """book data source connectors"""
 
     identifier = models.CharField(max_length=255, unique=True)
     priority = models.IntegerField(default=2)
