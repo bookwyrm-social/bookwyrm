@@ -1,69 +1,83 @@
-""" undo wrapper activity """
+""" activities that do things """
 from dataclasses import dataclass, field
 from typing import List
 from django.apps import apps
 
 from .base_activity import ActivityObject, Signature, resolve_remote_id
-from .book import Edition
+from .ordered_collection import CollectionItem
 
 
 @dataclass(init=False)
 class Verb(ActivityObject):
-    """generic fields for activities - maybe an unecessary level of
-    abstraction but w/e"""
+    """generic fields for activities"""
 
     actor: str
     object: ActivityObject
 
     def action(self):
-        """ usually we just want to save, this can be overridden as needed """
-        self.object.to_model()
+        """usually we just want to update and save"""
+        # self.object may return None if the object is invalid in an expected way
+        # ie, Question type
+        if self.object:
+            self.object.to_model()
 
 
 @dataclass(init=False)
 class Create(Verb):
-    """ Create activity """
+    """Create activity"""
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     signature: Signature = None
     type: str = "Create"
 
 
 @dataclass(init=False)
 class Delete(Verb):
-    """ Create activity """
+    """Create activity"""
 
-    to: List
-    cc: List
+    to: List[str]
+    cc: List[str] = field(default_factory=lambda: [])
     type: str = "Delete"
 
     def action(self):
-        """ find and delete the activity object """
-        obj = self.object.to_model(save=False, allow_create=False)
-        obj.delete()
+        """find and delete the activity object"""
+        if not self.object:
+            return
+
+        if isinstance(self.object, str):
+            # Deleted users are passed as strings. Not wild about this fix
+            model = apps.get_model("bookwyrm.User")
+            obj = model.find_existing_by_remote_id(self.object)
+        else:
+            obj = self.object.to_model(save=False, allow_create=False)
+
+        if obj:
+            obj.delete()
+        # if we can't find it, we don't need to delete it because we don't have it
 
 
 @dataclass(init=False)
 class Update(Verb):
-    """ Update activity """
+    """Update activity"""
 
-    to: List
+    to: List[str]
     type: str = "Update"
 
     def action(self):
-        """ update a model instance from the dataclass """
-        self.object.to_model(allow_create=False)
+        """update a model instance from the dataclass"""
+        if self.object:
+            self.object.to_model(allow_create=False)
 
 
 @dataclass(init=False)
 class Undo(Verb):
-    """ Undo an activity """
+    """Undo an activity"""
 
     type: str = "Undo"
 
     def action(self):
-        """ find and remove the activity object """
+        """find and remove the activity object"""
         if isinstance(self.object, str):
             # it may be that sometihng should be done with these, but idk what
             # this seems just to be coming from pleroma
@@ -89,107 +103,98 @@ class Undo(Verb):
 
 @dataclass(init=False)
 class Follow(Verb):
-    """ Follow activity """
+    """Follow activity"""
 
     object: str
     type: str = "Follow"
 
     def action(self):
-        """ relationship save """
+        """relationship save"""
         self.to_model()
 
 
 @dataclass(init=False)
 class Block(Verb):
-    """ Block activity """
+    """Block activity"""
 
     object: str
     type: str = "Block"
 
     def action(self):
-        """ relationship save """
+        """relationship save"""
         self.to_model()
 
 
 @dataclass(init=False)
 class Accept(Verb):
-    """ Accept activity """
+    """Accept activity"""
 
     object: Follow
     type: str = "Accept"
 
     def action(self):
-        """ find and remove the activity object """
+        """find and remove the activity object"""
         obj = self.object.to_model(save=False, allow_create=False)
         obj.accept()
 
 
 @dataclass(init=False)
 class Reject(Verb):
-    """ Reject activity """
+    """Reject activity"""
 
     object: Follow
     type: str = "Reject"
 
     def action(self):
-        """ find and remove the activity object """
+        """find and remove the activity object"""
         obj = self.object.to_model(save=False, allow_create=False)
         obj.reject()
 
 
 @dataclass(init=False)
 class Add(Verb):
-    """Add activity """
+    """Add activity"""
 
-    target: str
-    object: Edition
+    target: ActivityObject
+    object: CollectionItem
     type: str = "Add"
-    notes: str = None
-    order: int = 0
-    approved: bool = True
 
     def action(self):
-        """ add obj to collection """
-        target = resolve_remote_id(self.target, refresh=False)
-        # we want to get the related field that isn't the book, this is janky af sorry
-        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
-            0
-        ].related_model
-        self.to_model(model=model)
+        """figure out the target to assign the item to a collection"""
+        target = resolve_remote_id(self.target)
+        item = self.object.to_model(save=False)
+        setattr(item, item.collection_field, target)
+        item.save()
 
 
 @dataclass(init=False)
-class Remove(Verb):
-    """Remove activity """
+class Remove(Add):
+    """Remove activity"""
 
-    target: ActivityObject
     type: str = "Remove"
 
     def action(self):
-        """ find and remove the activity object """
-        target = resolve_remote_id(self.target, refresh=False)
-        model = [t for t in type(target)._meta.related_objects if t.name != "edition"][
-            0
-        ].related_model
-        obj = self.to_model(model=model, save=False, allow_create=False)
-        obj.delete()
+        """find and remove the activity object"""
+        obj = self.object.to_model(save=False, allow_create=False)
+        if obj:
+            obj.delete()
 
 
 @dataclass(init=False)
 class Like(Verb):
-    """ a user faving an object """
+    """a user faving an object"""
 
     object: str
     type: str = "Like"
 
     def action(self):
-        """ like """
+        """like"""
         self.to_model()
 
 
 @dataclass(init=False)
 class Announce(Verb):
-    """ boosting a status """
+    """boosting a status"""
 
     published: str
     to: List[str] = field(default_factory=lambda: [])
@@ -198,5 +203,5 @@ class Announce(Verb):
     type: str = "Announce"
 
     def action(self):
-        """ boost """
+        """boost"""
         self.to_model()

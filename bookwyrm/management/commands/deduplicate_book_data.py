@@ -6,7 +6,7 @@ from bookwyrm import models
 
 
 def update_related(canonical, obj):
-    """ update all the models with fk to the object being removed """
+    """update all the models with fk to the object being removed"""
     # move related models to canonical
     related_models = [
         (r.remote_field.name, r.related_model) for r in canonical._meta.related_objects
@@ -24,7 +24,7 @@ def update_related(canonical, obj):
 
 
 def copy_data(canonical, obj):
-    """ try to get the most data possible """
+    """try to get the most data possible"""
     for data_field in obj._meta.get_fields():
         if not hasattr(data_field, "activitypub_field"):
             continue
@@ -38,7 +38,7 @@ def copy_data(canonical, obj):
 
 
 def dedupe_model(model):
-    """ combine duplicate editions and update related models """
+    """combine duplicate editions and update related models"""
     fields = model._meta.get_fields()
     dedupe_fields = [
         f for f in fields if hasattr(f, "deduplication_field") and f.deduplication_field
@@ -68,12 +68,12 @@ def dedupe_model(model):
 
 
 class Command(BaseCommand):
-    """ dedplucate allllll the book data models """
+    """dedplucate allllll the book data models"""
 
     help = "merges duplicate book data"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """ run deudplications """
+        """run deudplications"""
         dedupe_model(models.Edition)
         dedupe_model(models.Work)
         dedupe_model(models.Author)

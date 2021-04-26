@@ -6,7 +6,7 @@ from .base_model import BookWyrmModel
 
 
 class Report(BookWyrmModel):
-    """ reported status or user """
+    """reported status or user"""
 
     reporter = models.ForeignKey(
         "User", related_name="reporter", on_delete=models.PROTECT
@@ -17,7 +17,7 @@ class Report(BookWyrmModel):
     resolved = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        """ notify admins when a report is created """
+        """notify admins when a report is created"""
         super().save(*args, **kwargs)
         user_model = apps.get_model("bookwyrm.User", require_ready=True)
         # moderators and superusers should be notified
@@ -34,7 +34,7 @@ class Report(BookWyrmModel):
             )
 
     class Meta:
-        """ don't let users report themselves """
+        """don't let users report themselves"""
 
         constraints = [
             models.CheckConstraint(check=~Q(reporter=F("user")), name="self_report")
@@ -43,13 +43,13 @@ class Report(BookWyrmModel):
 
 
 class ReportComment(BookWyrmModel):
-    """ updates on a report """
+    """updates on a report"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     note = models.TextField()
     report = models.ForeignKey(Report, on_delete=models.PROTECT)
 
     class Meta:
-        """ sort comments """
+        """sort comments"""
 
         ordering = ("-created_date",)

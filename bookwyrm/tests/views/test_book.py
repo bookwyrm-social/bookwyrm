@@ -18,10 +18,10 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 
 class BookViews(TestCase):
-    """ books books books """
+    """books books books"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -47,8 +47,41 @@ class BookViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
+    def test_date_regression(self):
+        """ensure that creating a new book actually saves the published date fields
+
+        this was initially a regression due to using a custom date picker tag
+        """
+        first_published_date = "2021-04-20"
+        published_date = "2022-04-20"
+        self.local_user.groups.add(self.group)
+        view = views.EditBook.as_view()
+        form = forms.EditionForm(
+            {
+                "title": "New Title",
+                "last_edited_by": self.local_user.id,
+                "first_published_date": first_published_date,
+                "published_date": published_date,
+            }
+        )
+        request = self.factory.post("", form.data)
+        request.user = self.local_user
+
+        with patch("bookwyrm.connectors.connector_manager.local_search"):
+            result = view(request)
+        result.render()
+
+        self.assertContains(
+            result,
+            f'<input type="date" name="first_published_date" class="input" id="id_first_published_date" value="{first_published_date}">',
+        )
+        self.assertContains(
+            result,
+            f'<input type="date" name="published_date" class="input" id="id_published_date" value="{published_date}">',
+        )
+
     def test_book_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Book.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -67,7 +100,7 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_edit_book_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.EditBook.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -78,7 +111,7 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_edit_book(self):
-        """ lets a user edit a book """
+        """lets a user edit a book"""
         view = views.EditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm(instance=self.book)
@@ -92,7 +125,7 @@ class BookViews(TestCase):
         self.assertEqual(self.book.title, "New Title")
 
     def test_edit_book_add_author(self):
-        """ lets a user edit a book with new authors """
+        """lets a user edit a book with new authors"""
         view = views.EditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm(instance=self.book)
@@ -110,7 +143,7 @@ class BookViews(TestCase):
         self.assertEqual(self.book.title, "Example Edition")
 
     def test_edit_book_add_new_author_confirm(self):
-        """ lets a user edit a book confirmed with new authors """
+        """lets a user edit a book confirmed with new authors"""
         view = views.ConfirmEditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm(instance=self.book)
@@ -129,7 +162,7 @@ class BookViews(TestCase):
         self.assertEqual(self.book.authors.first().name, "Sappho")
 
     def test_edit_book_remove_author(self):
-        """ remove an author from a book """
+        """remove an author from a book"""
         author = models.Author.objects.create(name="Sappho")
         self.book.authors.add(author)
         form = forms.EditionForm(instance=self.book)
@@ -149,7 +182,7 @@ class BookViews(TestCase):
         self.assertFalse(self.book.authors.exists())
 
     def test_create_book(self):
-        """ create an entirely new book and work """
+        """create an entirely new book and work"""
         view = views.ConfirmEditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm()
@@ -163,7 +196,7 @@ class BookViews(TestCase):
         self.assertEqual(book.parent_work.title, "New Title")
 
     def test_create_book_existing_work(self):
-        """ create an entirely new book and work """
+        """create an entirely new book and work"""
         view = views.ConfirmEditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm()
@@ -178,7 +211,7 @@ class BookViews(TestCase):
         self.assertEqual(book.parent_work, self.work)
 
     def test_create_book_with_author(self):
-        """ create an entirely new book and work """
+        """create an entirely new book and work"""
         view = views.ConfirmEditBook.as_view()
         self.local_user.groups.add(self.group)
         form = forms.EditionForm()
@@ -196,7 +229,7 @@ class BookViews(TestCase):
         self.assertEqual(book.authors.first(), book.parent_work.authors.first())
 
     def test_switch_edition(self):
-        """ updates user's relationships to a book """
+        """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
         edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
@@ -220,7 +253,7 @@ class BookViews(TestCase):
         self.assertEqual(models.ReadThrough.objects.get().book, edition2)
 
     def test_editions_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Editions.as_view()
         request = self.factory.get("")
         with patch("bookwyrm.views.books.is_api_request") as is_api:
@@ -238,7 +271,7 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_upload_cover_file(self):
-        """ add a cover via file upload """
+        """add a cover via file upload"""
         self.assertFalse(self.book.cover)
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"
@@ -263,7 +296,7 @@ class BookViews(TestCase):
 
     @responses.activate
     def test_upload_cover_url(self):
-        """ add a cover via url """
+        """add a cover via url"""
         self.assertFalse(self.book.cover)
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/default_avi.jpg"

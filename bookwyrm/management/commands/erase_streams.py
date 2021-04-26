@@ -10,15 +10,15 @@ r = redis.Redis(
 
 
 def erase_streams():
-    """ throw the whole redis away """
+    """throw the whole redis away"""
     r.flushall()
 
 
 class Command(BaseCommand):
-    """ delete activity streams for all users """
+    """delete activity streams for all users"""
 
     help = "Delete all the user streams"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """ flush all, baby """
+        """flush all, baby"""
         erase_streams()

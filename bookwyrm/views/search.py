@@ -16,10 +16,10 @@ from .helpers import handle_remote_webfinger
 
 # pylint: disable= no-self-use
 class Search(View):
-    """ search users or books """
+    """search users or books"""
 
     def get(self, request):
-        """ that search bar up top """
+        """that search bar up top"""
         query = request.GET.get("q")
         min_confidence = request.GET.get("min_confidence", 0.1)
 
@@ -34,7 +34,7 @@ class Search(View):
         if query and re.match(regex.full_username, query):
             handle_remote_webfinger(query)
 
-        # do a  user search
+        # do a user search
         user_results = (
             models.User.viewer_aware_objects(request.user)
             .annotate(

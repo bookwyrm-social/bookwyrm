@@ -9,10 +9,10 @@ from bookwyrm import models
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class ReadThrough(TestCase):
-    """ readthrough tests """
+    """readthrough tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.client = Client()
 
         self.work = models.Work.objects.create(title="Example Work")
@@ -52,7 +52,7 @@ class ReadThrough(TestCase):
         self.assertEqual(delay_mock.call_count, 1)
 
     def test_create_progress_readthrough(self, delay_mock):
-        """ a readthrough with progress """
+        """a readthrough with progress"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(

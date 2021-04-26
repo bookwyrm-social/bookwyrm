@@ -1,4 +1,5 @@
 """ testing models """
+import json
 from unittest.mock import patch
 from django.test import TestCase
 import responses
@@ -21,7 +22,7 @@ class User(TestCase):
         )
 
     def test_computed_fields(self):
-        """ username instead of id here """
+        """username instead of id here"""
         expected_id = "https://%s/user/mouse" % DOMAIN
         self.assertEqual(self.user.remote_id, expected_id)
         self.assertEqual(self.user.username, "mouse@%s" % DOMAIN)
@@ -152,3 +153,17 @@ class User(TestCase):
         self.assertEqual(server.server_name, DOMAIN)
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
+
+    def test_delete_user(self):
+        """deactivate a user"""
+        self.assertTrue(self.user.is_active)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as broadcast_mock:
+            self.user.delete()
+
+        self.assertEqual(broadcast_mock.call_count, 1)
+        activity = json.loads(broadcast_mock.call_args[0][1])
+        self.assertEqual(activity["type"], "Delete")
+        self.assertEqual(activity["object"], self.user.remote_id)
+        self.assertFalse(self.user.is_active)

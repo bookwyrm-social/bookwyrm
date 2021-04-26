@@ -1,7 +1,7 @@
 {% spaceless %}
 {% load i18n %}
 
-<p class="stars">
+<span class="stars">
     <span class="is-sr-only">
         {% if rating %}
             {% blocktranslate trimmed with rating=rating|floatformat count counter=rating|length %}
@@ -23,5 +23,5 @@
             aria-hidden="true"
         ></span>
     {% endfor %}
-</p>
+</span>
 {% endspaceless %}

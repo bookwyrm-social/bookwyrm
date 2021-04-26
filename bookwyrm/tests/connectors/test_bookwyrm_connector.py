@@ -9,10 +9,10 @@ from bookwyrm.connectors.abstract_connector import SearchResult
 
 
 class BookWyrmConnector(TestCase):
-    """ this connector doesn't do much, just search """
+    """this connector doesn't do much, just search"""
 
     def setUp(self):
-        """ create the connector """
+        """create the connector"""
         models.Connector.objects.create(
             identifier="example.com",
             connector_file="bookwyrm_connector",
@@ -24,14 +24,14 @@ class BookWyrmConnector(TestCase):
         self.connector = Connector("example.com")
 
     def test_get_or_create_book_existing(self):
-        """ load book activity """
+        """load book activity"""
         work = models.Work.objects.create(title="Test Work")
         book = models.Edition.objects.create(title="Test Edition", parent_work=work)
         result = self.connector.get_or_create_book(book.remote_id)
         self.assertEqual(book, result)
 
     def test_format_search_result(self):
-        """ create a SearchResult object from search response json """
+        """create a SearchResult object from search response json"""
         datafile = pathlib.Path(__file__).parent.joinpath("../data/bw_search.json")
         search_data = json.loads(datafile.read_bytes())
         results = self.connector.parse_search_data(search_data)
@@ -46,7 +46,7 @@ class BookWyrmConnector(TestCase):
         self.assertEqual(result.connector, self.connector)
 
     def test_format_isbn_search_result(self):
-        """ just gotta attach the connector  """
+        """just gotta attach the connector"""
         datafile = pathlib.Path(__file__).parent.joinpath("../data/bw_search.json")
         search_data = json.loads(datafile.read_bytes())
         results = self.connector.parse_isbn_search_data(search_data)

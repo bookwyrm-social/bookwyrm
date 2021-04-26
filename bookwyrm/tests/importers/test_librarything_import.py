@@ -13,10 +13,10 @@ from bookwyrm.settings import DOMAIN
 
 
 class LibrarythingImport(TestCase):
-    """ importing from librarything tsv """
+    """importing from librarything tsv"""
 
     def setUp(self):
-        """ use a test tsv """
+        """use a test tsv"""
         self.importer = LibrarythingImporter()
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
 
@@ -45,7 +45,7 @@ class LibrarythingImport(TestCase):
         )
 
     def test_create_job(self):
-        """ creates the import job entry and checks csv """
+        """creates the import job entry and checks csv"""
         import_job = self.importer.create_job(self.user, self.csv, False, "public")
         self.assertEqual(import_job.user, self.user)
         self.assertEqual(import_job.include_reviews, False)
@@ -61,7 +61,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_items[2].data["Book Id"], "5015399")
 
     def test_create_retry_job(self):
-        """ trying again with items that didn't import """
+        """trying again with items that didn't import"""
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
 
@@ -80,7 +80,7 @@ class LibrarythingImport(TestCase):
 
     @responses.activate
     def test_import_data(self):
-        """ resolve entry """
+        """resolve entry"""
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
         book = models.Edition.objects.create(title="Test Book")
 
@@ -95,7 +95,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(import_item.book.id, book.id)
 
     def test_handle_imported_book(self):
-        """ librarything import added a book, this adds related connections """
+        """librarything import added a book, this adds related connections"""
         shelf = self.user.shelf_set.filter(identifier="read").first()
         self.assertIsNone(shelf.books.first())
 
@@ -130,7 +130,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.finish_date.day, 8)
 
     def test_handle_imported_book_already_shelved(self):
-        """ librarything import added a book, this adds related connections """
+        """librarything import added a book, this adds related connections"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = self.user.shelf_set.filter(identifier="to-read").first()
             models.ShelfBook.objects.create(shelf=shelf, user=self.user, book=self.book)
@@ -165,7 +165,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.finish_date.day, 8)
 
     def test_handle_import_twice(self):
-        """ re-importing books """
+        """re-importing books"""
         shelf = self.user.shelf_set.filter(identifier="read").first()
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
@@ -202,7 +202,7 @@ class LibrarythingImport(TestCase):
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_imported_book_review(self, _):
-        """ librarything review import """
+        """librarything review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)
@@ -225,7 +225,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(review.privacy, "unlisted")
 
     def test_handle_imported_book_reviews_disabled(self):
-        """ librarything review import """
+        """librarything review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")
         csv_file = open(datafile, "r", encoding=self.importer.encoding)

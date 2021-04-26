@@ -1,9 +1,10 @@
 """ incoming activities """
 import json
+import re
 from urllib.parse import urldefrag
 
-from django.http import HttpResponse
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -12,15 +13,20 @@ import requests
 from bookwyrm import activitypub, models
 from bookwyrm.tasks import app
 from bookwyrm.signatures import Signature
+from bookwyrm.utils import regex
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):
-    """ requests sent by outside servers"""
+    """requests sent by outside servers"""
 
     def post(self, request, username=None):
-        """ only works as POST request """
+        """only works as POST request"""
+        # first check if this server is on our shitlist
+        if is_blocked_user_agent(request):
+            return HttpResponseForbidden()
+
         # make sure the user's inbox even exists
         if username:
             try:
@@ -33,6 +39,10 @@ class Inbox(View):
             activity_json = json.loads(request.body)
         except json.decoder.JSONDecodeError:
             return HttpResponseBadRequest()
+
+        # let's be extra sure we didn't block this domain
+        if is_blocked_activity(activity_json):
+            return HttpResponseForbidden()
 
         if (
             not "object" in activity_json
@@ -54,26 +64,47 @@ class Inbox(View):
         return HttpResponse()
 
 
+def is_blocked_user_agent(request):
+    """check if a request is from a blocked server based on user agent"""
+    # check user agent
+    user_agent = request.headers.get("User-Agent")
+    if not user_agent:
+        return False
+    url = re.search(r"https?://{:s}/?".format(regex.domain), user_agent)
+    if not url:
+        return False
+    url = url.group()
+    return models.FederatedServer.is_blocked(url)
+
+
+def is_blocked_activity(activity_json):
+    """get the sender out of activity json and check if it's blocked"""
+    actor = activity_json.get("actor")
+
+    # check if the user is banned/deleted
+    existing = models.User.find_existing_by_remote_id(actor)
+    if existing and existing.deleted:
+        return True
+
+    if not actor:
+        # well I guess it's not even a valid activity so who knows
+        return False
+    return models.FederatedServer.is_blocked(actor)
+
+
 @app.task
 def activity_task(activity_json):
-    """ do something with this json we think is legit """
+    """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
-    try:
-        activity = activitypub.parse(activity_json)
-    except activitypub.ActivitySerializerError:
-        return
+    activity = activitypub.parse(activity_json)
 
     # cool that worked, now we should do the action described by the type
     # (create, update, delete, etc)
-    try:
-        activity.action()
-    except activitypub.ActivitySerializerError:
-        # this is raised if the activity is discarded
-        return
+    activity.action()
 
 
 def has_valid_signature(request, activity):
-    """ verify incoming signature """
+    """verify incoming signature"""
     try:
         signature = Signature.parse(request)
 

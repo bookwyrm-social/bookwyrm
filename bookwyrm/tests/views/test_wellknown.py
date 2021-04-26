@@ -11,10 +11,10 @@ from bookwyrm import models, views
 
 
 class UserViews(TestCase):
-    """ view user and edit profile """
+    """view user and edit profile"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -41,7 +41,7 @@ class UserViews(TestCase):
         self.anonymous_user.is_authenticated = False
 
     def test_webfinger(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         request = self.factory.get("", {"resource": "acct:mouse@local.com"})
         request.user = self.anonymous_user
 
@@ -51,7 +51,7 @@ class UserViews(TestCase):
         self.assertEqual(data["subject"], "acct:mouse@local.com")
 
     def test_nodeinfo_pointer(self):
-        """ just tells you where nodeinfo is """
+        """just tells you where nodeinfo is"""
         request = self.factory.get("")
         request.user = self.anonymous_user
 
@@ -61,7 +61,7 @@ class UserViews(TestCase):
         self.assertTrue("href" in data["links"][0])
 
     def test_nodeinfo(self):
-        """ info about the instance """
+        """info about the instance"""
         request = self.factory.get("")
         request.user = self.anonymous_user
 
@@ -73,7 +73,7 @@ class UserViews(TestCase):
         self.assertEqual(models.User.objects.count(), 3)
 
     def test_instanceinfo(self):
-        """ about the instance's user activity """
+        """about the instance's user activity"""
         request = self.factory.get("")
         request.user = self.anonymous_user
 

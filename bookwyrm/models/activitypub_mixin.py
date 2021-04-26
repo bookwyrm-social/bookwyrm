@@ -1,5 +1,6 @@
 """ activitypub model functionality """
 from base64 import b64encode
+from collections import namedtuple
 from functools import reduce
 import json
 import operator
@@ -25,14 +26,23 @@ from bookwyrm.models.fields import ImageField, ManyToManyField
 logger = logging.getLogger(__name__)
 # I tried to separate these classes into mutliple files but I kept getting
 # circular import errors so I gave up. I'm sure it could be done though!
+
+PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
+
+
+def set_activity_from_property_field(activity, obj, field):
+    """assign a model property value to the activity json"""
+    activity[field[1]] = getattr(obj, field[0])
+
+
 class ActivitypubMixin:
-    """ add this mixin for models that are AP serializable """
+    """add this mixin for models that are AP serializable"""
 
     activity_serializer = lambda: {}
     reverse_unfurl = False
 
     def __init__(self, *args, **kwargs):
-        """ collect some info on model fields """
+        """collect some info on model fields"""
         self.image_fields = []
         self.many_to_many_fields = []
         self.simple_fields = []  # "simple"
@@ -52,6 +62,12 @@ class ActivitypubMixin:
         self.activity_fields = (
             self.image_fields + self.many_to_many_fields + self.simple_fields
         )
+        if hasattr(self, "property_fields"):
+            self.activity_fields += [
+                # pylint: disable=cell-var-from-loop
+                PropertyField(lambda a, o: set_activity_from_property_field(a, o, f))
+                for f in self.property_fields
+            ]
 
         # these are separate to avoid infinite recursion issues
         self.deserialize_reverse_fields = (
@@ -69,7 +85,7 @@ class ActivitypubMixin:
 
     @classmethod
     def find_existing_by_remote_id(cls, remote_id):
-        """ look up a remote id in the db """
+        """look up a remote id in the db"""
         return cls.find_existing({"id": remote_id})
 
     @classmethod
@@ -110,7 +126,7 @@ class ActivitypubMixin:
         return match.first()
 
     def broadcast(self, activity, sender, software=None):
-        """ send out an activity """
+        """send out an activity"""
         broadcast_task.delay(
             sender.id,
             json.dumps(activity, cls=activitypub.ActivityEncoder),
@@ -118,7 +134,7 @@ class ActivitypubMixin:
         )
 
     def get_recipients(self, software=None):
-        """ figure out which inbox urls to post to """
+        """figure out which inbox urls to post to"""
         # first we have to figure out who should receive this activity
         privacy = self.privacy if hasattr(self, "privacy") else "public"
         # is this activity owned by a user (statuses, lists, shelves), or is it
@@ -132,13 +148,17 @@ class ActivitypubMixin:
         mentions = self.recipients if hasattr(self, "recipients") else []
 
         # we always send activities to explicitly mentioned users' inboxes
-        recipients = [u.inbox for u in mentions or []]
+        recipients = [u.inbox for u in mentions or [] if not u.local]
 
         # unless it's a dm, all the followers should receive the activity
         if privacy != "direct":
             # we will send this out to a subset of all remote users
-            queryset = user_model.objects.filter(
-                local=False,
+            queryset = (
+                user_model.viewer_aware_objects(user)
+                .filter(
+                    local=False,
+                )
+                .distinct()
             )
             # filter users first by whether they're using the desired software
             # this lets us send book updates only to other bw servers
@@ -159,32 +179,34 @@ class ActivitypubMixin:
                 "inbox", flat=True
             )
             recipients += list(shared_inboxes) + list(inboxes)
-        return recipients
+        return list(set(recipients))
 
     def to_activity_dataclass(self):
-        """ convert from a model to an activity """
+        """convert from a model to an activity"""
         activity = generate_activity(self)
         return self.activity_serializer(**activity)
 
     def to_activity(self, **kwargs):  # pylint: disable=unused-argument
-        """ convert from a model to a json activity """
+        """convert from a model to a json activity"""
         return self.to_activity_dataclass().serialize()
 
 
 class ObjectMixin(ActivitypubMixin):
-    """ add this mixin for object models that are AP serializable """
+    """add this mixin for object models that are AP serializable"""
 
     def save(self, *args, created=None, **kwargs):
-        """ broadcast created/updated/deleted objects as appropriate """
+        """broadcast created/updated/deleted objects as appropriate"""
         broadcast = kwargs.get("broadcast", True)
-        # this bonus kwarg woul cause an error in the base save method
+        # this bonus kwarg would cause an error in the base save method
         if "broadcast" in kwargs:
             del kwargs["broadcast"]
 
         created = created or not bool(self.id)
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
-        if not broadcast:
+        if not broadcast or (
+            hasattr(self, "status_type") and self.status_type == "Announce"
+        ):
             return
 
         # this will work for objects owned by a user (lists, shelves)
@@ -232,7 +254,7 @@ class ObjectMixin(ActivitypubMixin):
         self.broadcast(activity, user)
 
     def to_create_activity(self, user, **kwargs):
-        """ returns the object wrapped in a Create activity """
+        """returns the object wrapped in a Create activity"""
         activity_object = self.to_activity_dataclass(**kwargs)
 
         signature = None
@@ -258,7 +280,7 @@ class ObjectMixin(ActivitypubMixin):
         ).serialize()
 
     def to_delete_activity(self, user):
-        """ notice of deletion """
+        """notice of deletion"""
         return activitypub.Delete(
             id=self.remote_id + "/activity",
             actor=user.remote_id,
@@ -268,7 +290,7 @@ class ObjectMixin(ActivitypubMixin):
         ).serialize()
 
     def to_update_activity(self, user):
-        """ wrapper for Updates to an activity """
+        """wrapper for Updates to an activity"""
         activity_id = "%s#update/%s" % (self.remote_id, uuid4())
         return activitypub.Update(
             id=activity_id,
@@ -284,13 +306,13 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
     @property
     def collection_remote_id(self):
-        """ this can be overriden if there's a special remote id, ie outbox """
+        """this can be overriden if there's a special remote id, ie outbox"""
         return self.remote_id
 
     def to_ordered_collection(
         self, queryset, remote_id=None, page=False, collection_only=False, **kwargs
     ):
-        """ an ordered collection of whatevers """
+        """an ordered collection of whatevers"""
         if not queryset.ordered:
             raise RuntimeError("queryset must be ordered")
 
@@ -319,11 +341,11 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
 
 class OrderedCollectionMixin(OrderedCollectionPageMixin):
-    """ extends activitypub models to work as ordered collections """
+    """extends activitypub models to work as ordered collections"""
 
     @property
     def collection_queryset(self):
-        """ usually an ordered collection model aggregates a different model """
+        """usually an ordered collection model aggregates a different model"""
         raise NotImplementedError("Model must define collection_queryset")
 
     activity_serializer = activitypub.OrderedCollection
@@ -332,81 +354,98 @@ class OrderedCollectionMixin(OrderedCollectionPageMixin):
         return self.to_ordered_collection(self.collection_queryset, **kwargs)
 
     def to_activity(self, **kwargs):
-        """ an ordered collection of the specified model queryset  """
+        """an ordered collection of the specified model queryset"""
         return self.to_ordered_collection(
             self.collection_queryset, **kwargs
         ).serialize()
 
 
 class CollectionItemMixin(ActivitypubMixin):
-    """ for items that are part of an (Ordered)Collection """
+    """for items that are part of an (Ordered)Collection"""
 
-    activity_serializer = activitypub.Add
-    object_field = collection_field = None
+    activity_serializer = activitypub.CollectionItem
+
+    def broadcast(self, activity, sender, software="bookwyrm"):
+        """only send book collection updates to other bookwyrm instances"""
+        super().broadcast(activity, sender, software=software)
+
+    @property
+    def privacy(self):
+        """inherit the privacy of the list, or direct if pending"""
+        collection_field = getattr(self, self.collection_field)
+        if self.approved:
+            return collection_field.privacy
+        return "direct"
+
+    @property
+    def recipients(self):
+        """the owner of the list is a direct recipient"""
+        collection_field = getattr(self, self.collection_field)
+        if collection_field.user.local:
+            # don't broadcast to yourself
+            return []
+        return [collection_field.user]
 
     def save(self, *args, broadcast=True, **kwargs):
-        """ broadcast updated """
-        created = not bool(self.id)
+        """broadcast updated"""
         # first off, we want to save normally no matter what
         super().save(*args, **kwargs)
 
-        # these shouldn't be edited, only created and deleted
-        if not broadcast or not created or not self.user.local:
+        # list items can be updateda, normally you would only broadcast on created
+        if not broadcast or not self.user.local:
             return
 
         # adding an obj to the collection
-        activity = self.to_add_activity()
+        activity = self.to_add_activity(self.user)
         self.broadcast(activity, self.user)
 
-    def delete(self, *args, **kwargs):
-        """ broadcast a remove activity """
-        activity = self.to_remove_activity()
+    def delete(self, *args, broadcast=True, **kwargs):
+        """broadcast a remove activity"""
+        activity = self.to_remove_activity(self.user)
         super().delete(*args, **kwargs)
-        if self.user.local:
+        if self.user.local and broadcast:
             self.broadcast(activity, self.user)
 
-    def to_add_activity(self):
-        """ AP for shelving a book"""
-        object_field = getattr(self, self.object_field)
+    def to_add_activity(self, user):
+        """AP for shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Add(
-            id=self.remote_id,
-            actor=self.user.remote_id,
-            object=object_field,
+            id="{:s}#add".format(collection_field.remote_id),
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 
-    def to_remove_activity(self):
-        """ AP for un-shelving a book"""
-        object_field = getattr(self, self.object_field)
+    def to_remove_activity(self, user):
+        """AP for un-shelving a book"""
         collection_field = getattr(self, self.collection_field)
         return activitypub.Remove(
-            id=self.remote_id,
-            actor=self.user.remote_id,
-            object=object_field,
+            id="{:s}#remove".format(collection_field.remote_id),
+            actor=user.remote_id,
+            object=self.to_activity_dataclass(),
             target=collection_field.remote_id,
         ).serialize()
 
 
 class ActivityMixin(ActivitypubMixin):
-    """ add this mixin for models that are AP serializable """
+    """add this mixin for models that are AP serializable"""
 
     def save(self, *args, broadcast=True, **kwargs):
-        """ broadcast activity """
+        """broadcast activity"""
         super().save(*args, **kwargs)
         user = self.user if hasattr(self, "user") else self.user_subject
         if broadcast and user.local:
             self.broadcast(self.to_activity(), user)
 
     def delete(self, *args, broadcast=True, **kwargs):
-        """ nevermind, undo that activity """
+        """nevermind, undo that activity"""
         user = self.user if hasattr(self, "user") else self.user_subject
         if broadcast and user.local:
             self.broadcast(self.to_undo_activity(), user)
         super().delete(*args, **kwargs)
 
     def to_undo_activity(self):
-        """ undo an action """
+        """undo an action"""
         user = self.user if hasattr(self, "user") else self.user_subject
         return activitypub.Undo(
             id="%s#undo" % self.remote_id,
@@ -416,7 +455,7 @@ class ActivityMixin(ActivitypubMixin):
 
 
 def generate_activity(obj):
-    """ go through the fields on an object """
+    """go through the fields on an object"""
     activity = {}
     for field in obj.activity_fields:
         field.set_activity_from_field(activity, obj)
@@ -430,7 +469,7 @@ def generate_activity(obj):
         ) in obj.serialize_reverse_fields:
             related_field = getattr(obj, model_field_name)
             activity[activity_field_name] = unfurl_related_field(
-                related_field, sort_field
+                related_field, sort_field=sort_field
             )
 
     if not activity.get("id"):
@@ -439,8 +478,8 @@ def generate_activity(obj):
 
 
 def unfurl_related_field(related_field, sort_field=None):
-    """ load reverse lookups (like public key owner or Status attachment """
-    if hasattr(related_field, "all"):
+    """load reverse lookups (like public key owner or Status attachment"""
+    if sort_field and hasattr(related_field, "all"):
         return [
             unfurl_related_field(i) for i in related_field.order_by(sort_field).all()
         ]
@@ -455,7 +494,7 @@ def unfurl_related_field(related_field, sort_field=None):
 
 @app.task
 def broadcast_task(sender_id, activity, recipients):
-    """ the celery task for broadcast """
+    """the celery task for broadcast"""
     user_model = apps.get_model("bookwyrm.User", require_ready=True)
     sender = user_model.objects.get(id=sender_id)
     for recipient in recipients:
@@ -466,7 +505,7 @@ def broadcast_task(sender_id, activity, recipients):
 
 
 def sign_and_send(sender, data, destination):
-    """ crpyto whatever and http junk """
+    """crpyto whatever and http junk"""
     now = http_date()
 
     if not sender.key_pair.private_key:
@@ -495,10 +534,10 @@ def sign_and_send(sender, data, destination):
 def to_ordered_collection_page(
     queryset, remote_id, id_only=False, page=1, pure=False, **kwargs
 ):
-    """ serialize and pagiante a queryset """
+    """serialize and pagiante a queryset"""
     paginated = Paginator(queryset, PAGE_LENGTH)
 
-    activity_page = paginated.page(page)
+    activity_page = paginated.get_page(page)
     if id_only:
         items = [s.remote_id for s in activity_page.object_list]
     else:

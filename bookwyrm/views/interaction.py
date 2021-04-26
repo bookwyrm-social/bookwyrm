@@ -12,10 +12,10 @@ from bookwyrm import models
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Favorite(View):
-    """ like a status """
+    """like a status"""
 
     def post(self, request, status_id):
-        """ create a like """
+        """create a like"""
         status = models.Status.objects.get(id=status_id)
         try:
             models.Favorite.objects.create(status=status, user=request.user)
@@ -28,10 +28,10 @@ class Favorite(View):
 
 @method_decorator(login_required, name="dispatch")
 class Unfavorite(View):
-    """ take back a fav """
+    """take back a fav"""
 
     def post(self, request, status_id):
-        """ unlike a status """
+        """unlike a status"""
         status = models.Status.objects.get(id=status_id)
         try:
             favorite = models.Favorite.objects.get(status=status, user=request.user)
@@ -45,10 +45,10 @@ class Unfavorite(View):
 
 @method_decorator(login_required, name="dispatch")
 class Boost(View):
-    """ boost a status """
+    """boost a status"""
 
     def post(self, request, status_id):
-        """ boost a status """
+        """boost a status"""
         status = models.Status.objects.get(id=status_id)
         # is it boostable?
         if not status.boostable:
@@ -70,10 +70,10 @@ class Boost(View):
 
 @method_decorator(login_required, name="dispatch")
 class Unboost(View):
-    """ boost a status """
+    """boost a status"""
 
     def post(self, request, status_id):
-        """ boost a status """
+        """boost a status"""
         status = models.Status.objects.get(id=status_id)
         boost = models.Boost.objects.filter(
             boosted_status=status, user=request.user

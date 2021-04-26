@@ -10,21 +10,21 @@ r = redis.Redis(
 
 
 def populate_streams():
-    """ build all the streams for all the users """
+    """build all the streams for all the users"""
     users = models.User.objects.filter(
         local=True,
         is_active=True,
     )
     for user in users:
         for stream in activitystreams.streams.values():
-            stream.populate_stream(user)
+            stream.populate_streams(user)
 
 
 class Command(BaseCommand):
-    """ start all over with user streams """
+    """start all over with user streams"""
 
     help = "Populate streams for all users"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """ run feed builder """
+        """run feed builder"""
         populate_streams()

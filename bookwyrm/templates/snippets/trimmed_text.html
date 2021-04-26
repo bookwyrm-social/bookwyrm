@@ -2,39 +2,46 @@
 {% load i18n %}
 
 {% with 0|uuid as uuid %}
-{% if full %}
-{% with full|to_markdown|safe as full %}
+    {% if full %}
+        {% with full|to_markdown|safe as full %}
+            {% with full|to_markdown|safe|truncatewords_html:150 as trimmed %}
+                {% if not no_trim and trimmed != full %}
+                    <div id="hide-full-{{ uuid }}">
+                        <div class="content" id="trimmed-{{ uuid }}">
+                            <div dir="auto">{{ trimmed }}</div>
 
-{% with full|to_markdown|safe|truncatewords_html:60 as trimmed %}
-{% if not no_trim and trimmed != full %}
-<div id="hide-full-{{ uuid }}">
-    <div class="content" id="trimmed-{{ uuid }}">
-        <div dir="auto">{{ trimmed }}</div>
+                            <div>
+                                {% trans "Show more" as button_text %}
+                                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="full-{{ uuid }}" class="is-hidden">
+                        <div class="content">
+                            <div
+                                dir="auto"
+                                {% if itemprop %}itemprop="{{ itemprop }}{% endif %}"
+                            >
+                                {{ full }}
+                            </div>
 
-        <div>
-            {% trans "Show more" as button_text %}
-            {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
-        </div>
-    </div>
-</div>
-<div id="full-{{ uuid }}" class="hidden">
-    <div class="content">
-        <div dir="auto">{{ full }}</div>
-
-        <div>
-            {% trans "Show less" as button_text %}
-            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="content">
-    <div dir="auto">{{ full }}</div>
-</div>
-{% endif %}
+                            <div>
+                                {% trans "Show less" as button_text %}
+                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="content">
+                        <div
+                            dir="auto"
+                            {% if itemprop %}itemprop="{{ itemprop }}{% endif %}"
+                        >
+                            {{ full }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endwith %}
+    {% endif %}
 {% endwith %}
-
-{% endwith %}
-{% endif %}
-{% endwith %}
-

@@ -11,14 +11,16 @@
         <h1 class="title">
             {% trans "Lists" %}
             {% if request.user.is_authenticated %}
-            <a class="help has-text-weight-normal" href="{% url 'user-lists' request.user|username %}">Your lists</a>
+            <a class="help has-text-weight-normal" href="{% url 'user-lists' request.user|username %}">{% trans "Your Lists" %}</a>
             {% endif %}
         </h1>
     </div>
+    {% if request.user.is_authenticated %}
     <div class="column is-narrow">
         {% trans "Create List" as button_text %}
         {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text=button_text focus="create-list-header" %}
     </div>
+    {% endif %}
 </header>
 
 <div class="block">

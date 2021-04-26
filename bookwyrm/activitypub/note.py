@@ -4,24 +4,24 @@ from typing import Dict, List
 from django.apps import apps
 
 from .base_activity import ActivityObject, Link
-from .image import Image
+from .image import Document
 
 
 @dataclass(init=False)
 class Tombstone(ActivityObject):
-    """ the placeholder for a deleted status """
+    """the placeholder for a deleted status"""
 
     type: str = "Tombstone"
 
     def to_model(self, *args, **kwargs):  # pylint: disable=unused-argument
-        """ this should never really get serialized, just searched for """
+        """this should never really get serialized, just searched for"""
         model = apps.get_model("bookwyrm.Status")
         return model.find_existing_by_remote_id(self.id)
 
 
 @dataclass(init=False)
 class Note(ActivityObject):
-    """ Note activity """
+    """Note activity"""
 
     published: str
     attributedTo: str
@@ -32,14 +32,14 @@ class Note(ActivityObject):
     inReplyTo: str = ""
     summary: str = ""
     tag: List[Link] = field(default_factory=lambda: [])
-    attachment: List[Image] = field(default_factory=lambda: [])
+    attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
     type: str = "Note"
 
 
 @dataclass(init=False)
 class Article(Note):
-    """ what's an article except a note with more fields """
+    """what's an article except a note with more fields"""
 
     name: str
     type: str = "Article"
@@ -47,14 +47,14 @@ class Article(Note):
 
 @dataclass(init=False)
 class GeneratedNote(Note):
-    """ just a re-typed note """
+    """just a re-typed note"""
 
     type: str = "GeneratedNote"
 
 
 @dataclass(init=False)
 class Comment(Note):
-    """ like a note but with a book """
+    """like a note but with a book"""
 
     inReplyToBook: str
     type: str = "Comment"
@@ -62,7 +62,7 @@ class Comment(Note):
 
 @dataclass(init=False)
 class Quotation(Comment):
-    """ a quote and commentary on a book """
+    """a quote and commentary on a book"""
 
     quote: str
     type: str = "Quotation"
@@ -70,7 +70,7 @@ class Quotation(Comment):
 
 @dataclass(init=False)
 class Review(Comment):
-    """ a full book review """
+    """a full book review"""
 
     name: str = None
     rating: int = None
@@ -79,7 +79,7 @@ class Review(Comment):
 
 @dataclass(init=False)
 class Rating(Comment):
-    """ just a star rating """
+    """just a star rating"""
 
     rating: int
     content: str = None

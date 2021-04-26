@@ -11,7 +11,7 @@ from bookwyrm.utils import regex
 
 
 def get_user_from_username(viewer, username):
-    """ helper function to resolve a localname or a username to a user """
+    """helper function to resolve a localname or a username to a user"""
     # raises DoesNotExist if user is now found
     try:
         return models.User.viewer_aware_objects(viewer).get(localname=username)
@@ -20,44 +20,20 @@ def get_user_from_username(viewer, username):
 
 
 def is_api_request(request):
-    """ check whether a request is asking for html or data """
+    """check whether a request is asking for html or data"""
     return "json" in request.headers.get("Accept", "") or request.path[-5:] == ".json"
 
 
 def is_bookwyrm_request(request):
-    """ check if the request is coming from another bookwyrm instance """
+    """check if the request is coming from another bookwyrm instance"""
     user_agent = request.headers.get("User-Agent")
     if user_agent is None or re.search(regex.bookwyrm_user_agent, user_agent) is None:
         return False
     return True
 
 
-def object_visible_to_user(viewer, obj):
-    """ is a user authorized to view an object? """
-    if not obj:
-        return False
-
-    # viewer can't see it if the object's owner blocked them
-    if viewer in obj.user.blocks.all():
-        return False
-
-    # you can see your own posts and any public or unlisted posts
-    if viewer == obj.user or obj.privacy in ["public", "unlisted"]:
-        return True
-
-    # you can see the followers only posts of people you follow
-    if obj.privacy == "followers" and obj.user.followers.filter(id=viewer.id).first():
-        return True
-
-    # you can see dms you are tagged in
-    if isinstance(obj, models.Status):
-        if obj.privacy == "direct" and obj.mention_users.filter(id=viewer.id).first():
-            return True
-    return False
-
-
 def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
-    """ filter objects that have "user" and "privacy" fields """
+    """filter objects that have "user" and "privacy" fields"""
     privacy_levels = privacy_levels or ["public", "unlisted", "followers", "direct"]
     # if there'd a deleted field, exclude deleted items
     try:
@@ -108,7 +84,7 @@ def privacy_filter(viewer, queryset, privacy_levels=None, following_only=False):
 
 
 def handle_remote_webfinger(query):
-    """ webfingerin' other servers """
+    """webfingerin' other servers"""
     user = None
 
     # usernames could be @user@domain or user@domain
@@ -124,7 +100,7 @@ def handle_remote_webfinger(query):
         return None
 
     try:
-        user = models.User.objects.get(username=query)
+        user = models.User.objects.get(username__iexact=query)
     except models.User.DoesNotExist:
         url = "https://%s/.well-known/webfinger?resource=acct:%s" % (domain, query)
         try:
@@ -138,13 +114,13 @@ def handle_remote_webfinger(query):
                     user = activitypub.resolve_remote_id(
                         link["href"], model=models.User
                     )
-                except KeyError:
+                except (KeyError, activitypub.ActivitySerializerError):
                     return None
     return user
 
 
 def get_edition(book_id):
-    """ look up a book in the db and return an edition """
+    """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
         book = book.get_default_edition()
@@ -152,7 +128,7 @@ def get_edition(book_id):
 
 
 def handle_reading_status(user, shelf, book, privacy):
-    """ post about a user reading a book """
+    """post about a user reading a book"""
     # tell the world about this cool thing that happened
     try:
         message = {
@@ -169,14 +145,14 @@ def handle_reading_status(user, shelf, book, privacy):
 
 
 def is_blocked(viewer, user):
-    """ is this viewer blocked by the user? """
+    """is this viewer blocked by the user?"""
     if viewer.is_authenticated and viewer in user.blocks.all():
         return True
     return False
 
 
 def get_discover_books():
-    """ list of books for the discover page """
+    """list of books for the discover page"""
     return list(
         set(
             models.Edition.objects.filter(

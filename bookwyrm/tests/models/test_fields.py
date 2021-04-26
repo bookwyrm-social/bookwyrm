@@ -25,10 +25,10 @@ from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 
 # pylint: disable=too-many-public-methods
 class ActivitypubFields(TestCase):
-    """ overwrites standard model feilds to work with activitypub """
+    """overwrites standard model feilds to work with activitypub"""
 
     def test_validate_remote_id(self):
-        """ should look like a url """
+        """should look like a url"""
         self.assertIsNone(fields.validate_remote_id("http://www.example.com"))
         self.assertIsNone(fields.validate_remote_id("https://www.example.com"))
         self.assertIsNone(fields.validate_remote_id("http://exle.com/dlg-23/x"))
@@ -45,7 +45,7 @@ class ActivitypubFields(TestCase):
         )
 
     def test_activitypub_field_mixin(self):
-        """ generic mixin with super basic to and from functionality """
+        """generic mixin with super basic to and from functionality"""
         instance = fields.ActivitypubFieldMixin()
         self.assertEqual(instance.field_to_activity("fish"), "fish")
         self.assertEqual(instance.field_from_activity("fish"), "fish")
@@ -63,11 +63,11 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.get_activitypub_field(), "snakeCaseName")
 
     def test_set_field_from_activity(self):
-        """ setter from entire json blob """
+        """setter from entire json blob"""
 
         @dataclass
         class TestModel:
-            """ real simple mock """
+            """real simple mock"""
 
             field_name: str
 
@@ -82,11 +82,11 @@ class ActivitypubFields(TestCase):
         self.assertEqual(mock_model.field_name, "hi")
 
     def test_set_activity_from_field(self):
-        """ set json field given entire model """
+        """set json field given entire model"""
 
         @dataclass
         class TestModel:
-            """ real simple mock """
+            """real simple mock"""
 
             field_name: str
             unrelated: str
@@ -100,7 +100,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(data["fieldName"], "bip")
 
     def test_remote_id_field(self):
-        """ just sets some defaults on charfield """
+        """just sets some defaults on charfield"""
         instance = fields.RemoteIdField()
         self.assertEqual(instance.max_length, 255)
         self.assertTrue(instance.deduplication_field)
@@ -109,7 +109,7 @@ class ActivitypubFields(TestCase):
             instance.run_validators("http://www.example.com/dlfjg 23/x")
 
     def test_username_field(self):
-        """ again, just setting defaults on username field """
+        """again, just setting defaults on username field"""
         instance = fields.UsernameField()
         self.assertEqual(instance.activitypub_field, "preferredUsername")
         self.assertEqual(instance.max_length, 150)
@@ -130,7 +130,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity("test@example.com"), "test")
 
     def test_privacy_field_defaults(self):
-        """ post privacy field's many default values """
+        """post privacy field's many default values"""
         instance = fields.PrivacyField()
         self.assertEqual(instance.max_length, 255)
         self.assertEqual(
@@ -143,11 +143,11 @@ class ActivitypubFields(TestCase):
         )
 
     def test_privacy_field_set_field_from_activity(self):
-        """ translate between to/cc fields and privacy """
+        """translate between to/cc fields and privacy"""
 
         @dataclass(init=False)
         class TestActivity(ActivityObject):
-            """ real simple mock """
+            """real simple mock"""
 
             to: List[str]
             cc: List[str]
@@ -155,7 +155,7 @@ class ActivitypubFields(TestCase):
             type: str = "Test"
 
         class TestPrivacyModel(ActivitypubMixin, BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
+            """real simple mock model because BookWyrmModel is abstract"""
 
             privacy_field = fields.PrivacyField()
             mention_users = fields.TagField(User)
@@ -187,7 +187,7 @@ class ActivitypubFields(TestCase):
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_privacy_field_set_activity_from_field(self, *_):
-        """ translate between to/cc fields and privacy """
+        """translate between to/cc fields and privacy"""
         user = User.objects.create_user(
             "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
         )
@@ -231,7 +231,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(activity["cc"], [])
 
     def test_foreign_key(self):
-        """ should be able to format a related model """
+        """should be able to format a related model"""
         instance = fields.ForeignKey("User", on_delete=models.CASCADE)
         Serializable = namedtuple("Serializable", ("to_activity", "remote_id"))
         item = Serializable(lambda: {"a": "b"}, "https://e.b/c")
@@ -240,7 +240,7 @@ class ActivitypubFields(TestCase):
 
     @responses.activate
     def test_foreign_key_from_activity_str(self):
-        """ create a new object from a foreign key """
+        """create a new object from a foreign key"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
@@ -264,7 +264,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(value.name, "MOUSE?? MOUSE!!")
 
     def test_foreign_key_from_activity_dict(self):
-        """ test recieving activity json """
+        """test recieving activity json"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
@@ -284,7 +284,7 @@ class ActivitypubFields(TestCase):
         # et cetera but we're not testing serializing user json
 
     def test_foreign_key_from_activity_dict_existing(self):
-        """ test receiving a dict of an existing object in the db """
+        """test receiving a dict of an existing object in the db"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
@@ -302,7 +302,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(value, user)
 
     def test_foreign_key_from_activity_str_existing(self):
-        """ test receiving a remote id of an existing object in the db """
+        """test receiving a remote id of an existing object in the db"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         user = User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
@@ -315,14 +315,14 @@ class ActivitypubFields(TestCase):
         self.assertEqual(value, user)
 
     def test_one_to_one_field(self):
-        """ a gussied up foreign key """
+        """a gussied up foreign key"""
         instance = fields.OneToOneField("User", on_delete=models.CASCADE)
         Serializable = namedtuple("Serializable", ("to_activity", "remote_id"))
         item = Serializable(lambda: {"a": "b"}, "https://e.b/c")
         self.assertEqual(instance.field_to_activity(item), {"a": "b"})
 
     def test_many_to_many_field(self):
-        """ lists! """
+        """lists!"""
         instance = fields.ManyToManyField("User")
 
         Serializable = namedtuple("Serializable", ("to_activity", "remote_id"))
@@ -340,7 +340,7 @@ class ActivitypubFields(TestCase):
 
     @responses.activate
     def test_many_to_many_field_from_activity(self):
-        """ resolve related fields for a list, takes a list of remote ids """
+        """resolve related fields for a list, takes a list of remote ids"""
         instance = fields.ManyToManyField(User)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
@@ -360,7 +360,7 @@ class ActivitypubFields(TestCase):
         self.assertIsInstance(value[0], User)
 
     def test_tag_field(self):
-        """ a special type of many to many field """
+        """a special type of many to many field"""
         instance = fields.TagField("User")
 
         Serializable = namedtuple(
@@ -379,13 +379,13 @@ class ActivitypubFields(TestCase):
         self.assertEqual(result[0].type, "Serializable")
 
     def test_tag_field_from_activity(self):
-        """ loadin' a list of items from Links """
+        """loadin' a list of items from Links"""
         # TODO
 
     @responses.activate
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
     def test_image_field(self, _):
-        """ storing images """
+        """storing images"""
         user = User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -423,7 +423,7 @@ class ActivitypubFields(TestCase):
         self.assertIsInstance(loaded_image[1], ContentFile)
 
     def test_datetime_field(self):
-        """ this one is pretty simple, it just has to use isoformat """
+        """this one is pretty simple, it just has to use isoformat"""
         instance = fields.DateTimeField()
         now = timezone.now()
         self.assertEqual(instance.field_to_activity(now), now.isoformat())
@@ -431,12 +431,12 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_from_activity("bip"), None)
 
     def test_array_field(self):
-        """ idk why it makes them strings but probably for a good reason """
+        """idk why it makes them strings but probably for a good reason"""
         instance = fields.ArrayField(fields.IntegerField)
         self.assertEqual(instance.field_to_activity([0, 1]), ["0", "1"])
 
     def test_html_field(self):
-        """ sanitizes html, the sanitizer has its own tests """
+        """sanitizes html, the sanitizer has its own tests"""
         instance = fields.HtmlField()
         self.assertEqual(
             instance.field_from_activity("<marquee><p>hi</p></marquee>"), "<p>hi</p>"

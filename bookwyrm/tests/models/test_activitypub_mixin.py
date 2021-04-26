@@ -15,10 +15,10 @@ from bookwyrm.models.activitypub_mixin import ActivityMixin, ObjectMixin
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class ActivitypubMixins(TestCase):
-    """ functionality shared across models """
+    """functionality shared across models"""
 
     def setUp(self):
-        """ shared data """
+        """shared data"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
         )
@@ -46,16 +46,16 @@ class ActivitypubMixins(TestCase):
 
     # ActivitypubMixin
     def test_to_activity(self, _):
-        """ model to ActivityPub json """
+        """model to ActivityPub json"""
 
         @dataclass(init=False)
         class TestActivity(ActivityObject):
-            """ real simple mock """
+            """real simple mock"""
 
             type: str = "Test"
 
         class TestModel(ActivitypubMixin, base_model.BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
+            """real simple mock model because BookWyrmModel is abstract"""
 
         instance = TestModel()
         instance.remote_id = "https://www.example.com/test"
@@ -67,7 +67,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(activity["type"], "Test")
 
     def test_find_existing_by_remote_id(self, _):
-        """ attempt to match a remote id to an object in the db """
+        """attempt to match a remote id to an object in the db"""
         # uses a different remote id scheme
         # this isn't really part of this test directly but it's helpful to state
         book = models.Edition.objects.create(
@@ -100,7 +100,7 @@ class ActivitypubMixins(TestCase):
         result = models.Status.find_existing_by_remote_id("https://comment.net")
 
     def test_find_existing(self, _):
-        """ match a blob of data to a model """
+        """match a blob of data to a model"""
         book = models.Edition.objects.create(
             title="Test edition",
             openlibrary_key="OL1234",
@@ -110,7 +110,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(result, book)
 
     def test_get_recipients_public_object(self, _):
-        """ determines the recipients for an object's broadcast """
+        """determines the recipients for an object's broadcast"""
         MockSelf = namedtuple("Self", ("privacy"))
         mock_self = MockSelf("public")
         recipients = ActivitypubMixin.get_recipients(mock_self)
@@ -118,7 +118,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(recipients[0], self.remote_user.inbox)
 
     def test_get_recipients_public_user_object_no_followers(self, _):
-        """ determines the recipients for a user's object broadcast """
+        """determines the recipients for a user's object broadcast"""
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
 
@@ -126,7 +126,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(len(recipients), 0)
 
     def test_get_recipients_public_user_object(self, _):
-        """ determines the recipients for a user's object broadcast """
+        """determines the recipients for a user's object broadcast"""
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
@@ -136,7 +136,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(recipients[0], self.remote_user.inbox)
 
     def test_get_recipients_public_user_object_with_mention(self, _):
-        """ determines the recipients for a user's object broadcast """
+        """determines the recipients for a user's object broadcast"""
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
@@ -155,11 +155,11 @@ class ActivitypubMixins(TestCase):
 
         recipients = ActivitypubMixin.get_recipients(mock_self)
         self.assertEqual(len(recipients), 2)
-        self.assertEqual(recipients[0], another_remote_user.inbox)
-        self.assertEqual(recipients[1], self.remote_user.inbox)
+        self.assertTrue(another_remote_user.inbox in recipients)
+        self.assertTrue(self.remote_user.inbox in recipients)
 
     def test_get_recipients_direct(self, _):
-        """ determines the recipients for a user's object broadcast """
+        """determines the recipients for a user's object broadcast"""
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
@@ -181,7 +181,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(recipients[0], another_remote_user.inbox)
 
     def test_get_recipients_combine_inboxes(self, _):
-        """ should combine users with the same shared_inbox """
+        """should combine users with the same shared_inbox"""
         self.remote_user.shared_inbox = "http://example.com/inbox"
         self.remote_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
@@ -205,7 +205,7 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(recipients[0], "http://example.com/inbox")
 
     def test_get_recipients_software(self, _):
-        """ should differentiate between bookwyrm and other remote users """
+        """should differentiate between bookwyrm and other remote users"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             another_remote_user = models.User.objects.create_user(
                 "nutria",
@@ -235,13 +235,13 @@ class ActivitypubMixins(TestCase):
 
     # ObjectMixin
     def test_object_save_create(self, _):
-        """ should save uneventufully when broadcast is disabled """
+        """should save uneventufully when broadcast is disabled"""
 
         class Success(Exception):
-            """ this means we got to the right method """
+            """this means we got to the right method"""
 
         class ObjectModel(ObjectMixin, base_model.BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
+            """real simple mock model because BookWyrmModel is abstract"""
 
             user = models.fields.ForeignKey("User", on_delete=db.models.CASCADE)
 
@@ -252,7 +252,7 @@ class ActivitypubMixins(TestCase):
             def broadcast(
                 self, activity, sender, **kwargs
             ):  # pylint: disable=arguments-differ
-                """ do something """
+                """do something"""
                 raise Success()
 
             def to_create_activity(self, user):  # pylint: disable=arguments-differ
@@ -266,13 +266,13 @@ class ActivitypubMixins(TestCase):
         ObjectModel(user=None).save()
 
     def test_object_save_update(self, _):
-        """ should save uneventufully when broadcast is disabled """
+        """should save uneventufully when broadcast is disabled"""
 
         class Success(Exception):
-            """ this means we got to the right method """
+            """this means we got to the right method"""
 
         class UpdateObjectModel(ObjectMixin, base_model.BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
+            """real simple mock model because BookWyrmModel is abstract"""
 
             user = models.fields.ForeignKey("User", on_delete=db.models.CASCADE)
             last_edited_by = models.fields.ForeignKey(
@@ -292,13 +292,13 @@ class ActivitypubMixins(TestCase):
             UpdateObjectModel(id=1, last_edited_by=self.local_user).save()
 
     def test_object_save_delete(self, _):
-        """ should create delete activities when objects are deleted by flag """
+        """should create delete activities when objects are deleted by flag"""
 
         class ActivitySuccess(Exception):
-            """ this means we got to the right method """
+            """this means we got to the right method"""
 
         class DeletableObjectModel(ObjectMixin, base_model.BookWyrmModel):
-            """ real simple mock model because BookWyrmModel is abstract """
+            """real simple mock model because BookWyrmModel is abstract"""
 
             user = models.fields.ForeignKey("User", on_delete=db.models.CASCADE)
             deleted = models.fields.BooleanField()
@@ -314,7 +314,7 @@ class ActivitypubMixins(TestCase):
             DeletableObjectModel(id=1, user=self.local_user, deleted=True).save()
 
     def test_to_delete_activity(self, _):
-        """ wrapper for Delete activity """
+        """wrapper for Delete activity"""
         MockSelf = namedtuple("Self", ("remote_id", "to_activity"))
         mock_self = MockSelf(
             "https://example.com/status/1", lambda *args: self.object_mock
@@ -329,7 +329,7 @@ class ActivitypubMixins(TestCase):
         )
 
     def test_to_update_activity(self, _):
-        """ ditto above but for Update """
+        """ditto above but for Update"""
         MockSelf = namedtuple("Self", ("remote_id", "to_activity"))
         mock_self = MockSelf(
             "https://example.com/status/1", lambda *args: self.object_mock
@@ -347,7 +347,7 @@ class ActivitypubMixins(TestCase):
 
     # Activity mixin
     def test_to_undo_activity(self, _):
-        """ and again, for Undo """
+        """and again, for Undo"""
         MockSelf = namedtuple("Self", ("remote_id", "to_activity", "user"))
         mock_self = MockSelf(
             "https://example.com/status/1",

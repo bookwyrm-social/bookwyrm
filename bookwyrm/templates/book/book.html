@@ -6,24 +6,36 @@
 {% block title %}{{ book.title }}{% endblock %}
 
 {% block content %}
-<div class="block">
+{% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
+<div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
         <div class="column">
             <h1 class="title">
-                {{ book.title }}{% if book.subtitle %}:
-                <small>{{ book.subtitle }}</small>{% endif %}
+                <span itemprop="name">
+                    {{ book.title }}{% if book.subtitle %}:
+                        <small>{{ book.subtitle }}</small>
+                    {% endif %}
+                </span>
+
                 {% if book.series %}
-                <small class="has-text-grey-dark">({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})</small><br>
+                    <meta itemprop="isPartOf" content="{{ book.series }}">
+                    <meta itemprop="volumeNumber" content="{{ book.series_number }}">
+
+                    <small class="has-text-grey-dark">
+                        ({{ book.series }}
+                        {% if book.series_number %} #{{ book.series_number }}{% endif %})
+                    </small>
+                    <br>
                 {% endif %}
             </h1>
             {% if book.authors %}
             <h2 class="subtitle">
-                {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
+            {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
             </h2>
             {% endif %}
         </div>
 
-        {% if request.user.is_authenticated and perms.bookwyrm.edit_book %}
+        {% if user_authenticated and can_edit_book %}
         <div class="column is-narrow">
             <a href="{{ book.id }}/edit">
                 <span class="icon icon-pencil" title="{% trans "Edit Book" %}">
@@ -44,7 +56,7 @@
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
 
-            {% if request.user.is_authenticated and not book.cover %}
+            {% if user_authenticated and not book.cover %}
             <div class="block">
                 {% trans "Add cover" as button_text %}
                 {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
@@ -55,31 +67,16 @@
             </div>
             {% endif %}
 
-            <section class="content is-clipped">
-                <dl>
-                    {% if book.isbn_13 %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "ISBN:" %}</dt>
-                        <dd>{{ book.isbn_13 }}</dd>
+            <section class="is-clipped">
+                {% with book=book %}
+                    <div class="content">
+                        {% include 'book/publisher_info.html' %}
                     </div>
-                    {% endif %}
 
-                    {% if book.oclc_number %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "OCLC Number:" %}</dt>
-                        <dd>{{ book.oclc_number }}</dd>
+                    <div class="my-3">
+                        {% include 'book/book_identifiers.html' %}
                     </div>
-                    {% endif %}
-
-                    {% if book.asin %}
-                    <div class="is-flex is-justify-content-space-between is-align-items-center">
-                        <dt>{% trans "ASIN:" %}</dt>
-                        <dd>{{ book.asin }}</dd>
-                    </div>
-                    {% endif %}
-                </dl>
-
-                {% include 'book/publisher_info.html' with book=book %}
+                {% endwith %}
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
@@ -89,18 +86,35 @@
 
         <div class="column is-three-fifths">
             <div class="block">
-                <h3 class="field is-grouped">
+                <h3
+                    class="field is-grouped"
+                    itemprop="aggregateRating"
+                    itemscope
+                    itemtype="https://schema.org/AggregateRating"
+                >
+                    <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
+                    {# @todo Is it possible to not hard-code the value? #}
+                    <meta itemprop="bestRating" content="5">
+                    <meta itemprop="reviewCount" content="{{ review_count }}">
+
                     {% include 'snippets/stars.html' with rating=rating %}
-                    {% blocktrans count counter=review_count %}({{ review_count }} review){% plural %}({{ review_count }} reviews){% endblocktrans %}
+
+                    {% blocktrans count counter=review_count trimmed %}
+                        ({{ review_count }} review)
+                    {% plural %}
+                        ({{ review_count }} reviews)
+                    {% endblocktrans %}
                 </h3>
 
-                {% include 'snippets/trimmed_text.html' with full=book|book_description %}
+                {% with full=book|book_description itemprop='abstract' %}
+                    {% include 'snippets/trimmed_text.html' %}
+                {% endwith %}
 
-                {% if request.user.is_authenticated and perms.bookwyrm.edit_book and not book|book_description %}
+                {% if user_authenticated and can_edit_book and not book|book_description %}
                 {% trans 'Add Description' as button_text %}
                 {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
 
-                <div class="box hidden" id="add-description-{{ book.id }}">
+                <div class="box is-hidden" id="add-description-{{ book.id }}">
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
                         {% csrf_token %}
                         <p class="fields is-grouped">
@@ -138,7 +152,7 @@
                 {% endfor %}
             </div>
 
-            {% if request.user.is_authenticated %}
+            {% if user_authenticated %}
             <section class="block">
                 <header class="columns">
                     <h2 class="column title is-5 mb-1">{% trans "Your reading activity" %}</h2>
@@ -150,7 +164,7 @@
                 {% if not readthroughs.exists %}
                 <p>{% trans "You don't have any reading activity for this book." %}</p>
                 {% endif %}
-                <section class="hidden box" id="add-readthrough">
+                <section class="is-hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
                         <div class="field is-grouped">
@@ -176,14 +190,15 @@
         </div>
         <div class="column is-one-fifth">
             {% if book.subjects %}
-            <section class="content block">
-                <h2 class="title is-5">{% trans "Subjects" %}</h2>
-                <ul>
-                {% for subject in book.subjects %}
-                    <li>{{ subject }}</li>
-                {% endfor %}
-                </ul>
-            </section>
+                <section class="content block">
+                    <h2 class="title is-5">{% trans "Subjects" %}</h2>
+
+                    <ul>
+                        {% for subject in book.subjects %}
+                            <li itemprop="about">{{ subject }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
             {% endif %}
 
             {% if book.subject_places %}
@@ -229,43 +244,85 @@
             {% endif %}
         </div>
     </div>
-</div>
 
-<div class="block" id="reviews">
-    {% for review in reviews %}
-    <div class="block">
-        {% include 'snippets/status/status.html' with status=review hide_book=True depth=1 %}
-    </div>
-    {% endfor %}
+    <div class="block" id="reviews">
+        {% if request.user.is_authenticated %}
+        <nav class="tabs">
+            <ul>
+                {% url 'book' book.id as tab_url %}
+                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                    <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
+                </li>
+                {% if user_statuses.review_count %}
+                {% url 'book-user-statuses' book.id 'review' as tab_url %}
+                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                    <a href="{{ tab_url }}">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
+                </li>
+                {% endif %}
+                {% if user_statuses.comment_count %}
+                {% url 'book-user-statuses' book.id 'comment' as tab_url %}
+                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                    <a href="{{ tab_url }}">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
+                </li>
+                {% endif %}
+                {% if user_statuses.quotation_count %}
+                {% url 'book-user-statuses' book.id 'quote' as tab_url %}
+                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                    <a href="{{ tab_url }}">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
 
-    <div class="block is-flex is-flex-wrap-wrap">
-        {% for rating in ratings %}
-        <div class="block mr-5">
-            <div class="media">
-                <div class="media-left">{% include 'snippets/avatar.html' with user=rating.user %}</div>
-                <div class="media-content">
-                    <div>
-                        <a href="{{ rating.user.local_path }}">{{ rating.user.display_name }}</a>
-                    </div>
-                    <div class="is-flex">
-                        <p class="mr-1">{% trans "rated it" %}</p>
-                        {% include 'snippets/stars.html' with rating=rating.rating %}
-                    </div>
-                    <div>
-                        <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
-                    </div>
-                </div>
+        {% for review in statuses %}
+            <div
+                class="block"
+                itemprop="review"
+                itemscope
+                itemtype="https://schema.org/Review"
+            >
+                {% with status=review hide_book=True depth=1 %}
+                    {% include 'snippets/status/status.html' %}
+                {% endwith %}
             </div>
-        </div>
         {% endfor %}
-    </div>
-    <div class="block">
-        {% include 'snippets/pagination.html' with page=reviews path=book.local_path anchor="#reviews" %}
+
+        <div class="block is-flex is-flex-wrap-wrap">
+            {% for rating in ratings %}
+                {% with user=rating.user %}
+                    <div class="block mr-5">
+                        <div class="media">
+                            <div class="media-left">
+                                {% include 'snippets/avatar.html' %}
+                            </div>
+
+                            <div class="media-content">
+                                <div>
+                                    <a href="{{ user.local_path }}">{{ user.display_name }}</a>
+                                </div>
+                                <div class="is-flex">
+                                    <p class="mr-1">{% trans "rated it" %}</p>
+
+                                    {% include 'snippets/stars.html' with rating=rating.rating %}
+                                </div>
+                                <div>
+                                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+        <div class="block">
+            {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
+        </div>
     </div>
 </div>
-
+{% endwith %}
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/tabs.js"></script>
+<script src="/static/js/vendor/tabs.js"></script>
 {% endblock %}

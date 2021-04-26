@@ -18,7 +18,7 @@ from .shelf import handle_unshelve
 @login_required
 @require_POST
 def start_reading(request, book_id):
-    """ begin reading a book """
+    """begin reading a book"""
     book = get_edition(book_id)
     reading_shelf = models.Shelf.objects.filter(
         identifier=models.Shelf.READING, user=request.user
@@ -60,7 +60,7 @@ def start_reading(request, book_id):
 @login_required
 @require_POST
 def finish_reading(request, book_id):
-    """ a user completed a book, yay """
+    """a user completed a book, yay"""
     book = get_edition(book_id)
     finished_read_shelf = models.Shelf.objects.filter(
         identifier=models.Shelf.READ_FINISHED, user=request.user
@@ -101,7 +101,7 @@ def finish_reading(request, book_id):
 @login_required
 @require_POST
 def edit_readthrough(request):
-    """ can't use the form because the dates are too finnicky """
+    """can't use the form because the dates are too finnicky"""
     readthrough = update_readthrough(request, create=False)
     if not readthrough:
         return HttpResponseNotFound()
@@ -121,7 +121,7 @@ def edit_readthrough(request):
 @login_required
 @require_POST
 def delete_readthrough(request):
-    """ remove a readthrough """
+    """remove a readthrough"""
     readthrough = get_object_or_404(models.ReadThrough, id=request.POST.get("id"))
 
     # don't let people edit other people's data
@@ -135,7 +135,7 @@ def delete_readthrough(request):
 @login_required
 @require_POST
 def create_readthrough(request):
-    """ can't use the form because the dates are too finnicky """
+    """can't use the form because the dates are too finnicky"""
     book = get_object_or_404(models.Edition, id=request.POST.get("book"))
     readthrough = update_readthrough(request, create=True, book=book)
     if not readthrough:
@@ -145,13 +145,14 @@ def create_readthrough(request):
 
 
 def load_date_in_user_tz_as_utc(date_str: str, user: models.User) -> datetime:
+    """ensures that data is stored consistently in the UTC timezone"""
     user_tz = dateutil.tz.gettz(user.preferred_timezone)
     start_date = dateutil.parser.parse(date_str, ignoretz=True)
     return start_date.replace(tzinfo=user_tz).astimezone(dateutil.tz.UTC)
 
 
 def update_readthrough(request, book=None, create=True):
-    """ updates but does not save dates on a readthrough """
+    """updates but does not save dates on a readthrough"""
     try:
         read_id = request.POST.get("id")
         if not read_id:
@@ -208,7 +209,7 @@ def update_readthrough(request, book=None, create=True):
 @login_required
 @require_POST
 def delete_progressupdate(request):
-    """ remove a progress update """
+    """remove a progress update"""
     update = get_object_or_404(models.ProgressUpdate, id=request.POST.get("id"))
 
     # don't let people edit other people's data

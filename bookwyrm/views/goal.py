@@ -10,23 +10,23 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
 from bookwyrm.status import create_generated_note
-from .helpers import get_user_from_username, object_visible_to_user
+from .helpers import get_user_from_username
 
 
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class Goal(View):
-    """ track books for the year """
+    """track books for the year"""
 
     def get(self, request, username, year):
-        """ reading goal page """
+        """reading goal page"""
         user = get_user_from_username(request.user, username)
         year = int(year)
         goal = models.AnnualGoal.objects.filter(year=year, user=user).first()
         if not goal and user != request.user:
             return HttpResponseNotFound()
 
-        if goal and not object_visible_to_user(request.user, goal):
+        if goal and not goal.visible_to_user(request.user):
             return HttpResponseNotFound()
 
         data = {
@@ -39,7 +39,7 @@ class Goal(View):
         return TemplateResponse(request, "goal.html", data)
 
     def post(self, request, username, year):
-        """ update or create an annual goal """
+        """update or create an annual goal"""
         user = get_user_from_username(request.user, username)
         if user != request.user:
             return HttpResponseNotFound()
@@ -71,7 +71,7 @@ class Goal(View):
 @require_POST
 @login_required
 def hide_goal(request):
-    """ don't keep bugging people to set a goal """
+    """don't keep bugging people to set a goal"""
     request.user.show_goal = False
     request.user.save(broadcast=False)
     return redirect(request.headers.get("Referer", "/"))
