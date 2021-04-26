@@ -89,11 +89,11 @@ def get_annotated_users(viewer, *args, **kwargs):
         .exclude(Q(id__in=viewer.blocks.all()) | Q(blocks=viewer))
         .annotate(
             mutuals=Count(
-                "following",
+                "followers",
                 filter=Q(
                     ~Q(id=viewer.id),
                     ~Q(id__in=viewer.following.all()),
-                    following__in=viewer.following.all(),
+                    followers__in=viewer.following.all(),
                 ),
                 distinct=True,
             ),
