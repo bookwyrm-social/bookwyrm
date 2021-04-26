@@ -28,6 +28,7 @@ class BaseModel(TestCase):
 
         class TestModel(base_model.BookWyrmModel):
             """ just making it not abstract """
+
         self.test_model = TestModel()
 
     def test_remote_id(self):
