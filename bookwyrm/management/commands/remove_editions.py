@@ -5,7 +5,7 @@ from bookwyrm import models
 
 
 def remove_editions():
-    """ combine duplicate editions and update related models """
+    """combine duplicate editions and update related models"""
     # not in use
     filters = {
         "%s__isnull" % r.name: True for r in models.Edition._meta.related_objects
@@ -33,10 +33,10 @@ def remove_editions():
 
 
 class Command(BaseCommand):
-    """ dedplucate allllll the book data models """
+    """dedplucate allllll the book data models"""
 
     help = "merges duplicate book data"
     # pylint: disable=no-self-use,unused-argument
     def handle(self, *args, **options):
-        """ run deudplications """
+        """run deudplications"""
         remove_editions()

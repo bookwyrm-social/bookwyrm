@@ -10,10 +10,10 @@ from bookwyrm import models, views
 
 
 class PasswordViews(TestCase):
-    """ view user and edit profile """
+    """view user and edit profile"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -27,7 +27,7 @@ class PasswordViews(TestCase):
         models.SiteSettings.objects.create(id=1)
 
     def test_password_reset_request(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.PasswordResetRequest.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -38,7 +38,7 @@ class PasswordViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_password_reset_request_post(self):
-        """ send 'em an email """
+        """send 'em an email"""
         request = self.factory.post("", {"email": "aa@bb.ccc"})
         view = views.PasswordResetRequest.as_view()
         resp = view(request)
@@ -53,7 +53,7 @@ class PasswordViews(TestCase):
         self.assertEqual(models.PasswordReset.objects.get().user, self.local_user)
 
     def test_password_reset(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.get("")
@@ -64,7 +64,7 @@ class PasswordViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_password_reset_post(self):
-        """ reset from code """
+        """reset from code"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
@@ -74,7 +74,7 @@ class PasswordViews(TestCase):
         self.assertFalse(models.PasswordReset.objects.exists())
 
     def test_password_reset_wrong_code(self):
-        """ reset from code """
+        """reset from code"""
         view = views.PasswordReset.as_view()
         models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
@@ -83,7 +83,7 @@ class PasswordViews(TestCase):
         self.assertTrue(models.PasswordReset.objects.exists())
 
     def test_password_reset_mismatch(self):
-        """ reset from code """
+        """reset from code"""
         view = views.PasswordReset.as_view()
         code = models.PasswordReset.objects.create(user=self.local_user)
         request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})
@@ -92,7 +92,7 @@ class PasswordViews(TestCase):
         self.assertTrue(models.PasswordReset.objects.exists())
 
     def test_password_change_get(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.ChangePassword.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -103,7 +103,7 @@ class PasswordViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_password_change(self):
-        """ change password """
+        """change password"""
         view = views.ChangePassword.as_view()
         password_hash = self.local_user.password
         request = self.factory.post("", {"password": "hi", "confirm-password": "hi"})
@@ -113,7 +113,7 @@ class PasswordViews(TestCase):
         self.assertNotEqual(self.local_user.password, password_hash)
 
     def test_password_change_mismatch(self):
-        """ change password """
+        """change password"""
         view = views.ChangePassword.as_view()
         password_hash = self.local_user.password
         request = self.factory.post("", {"password": "hi", "confirm-password": "hihi"})

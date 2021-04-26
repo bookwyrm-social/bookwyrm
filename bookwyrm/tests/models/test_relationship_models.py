@@ -6,10 +6,10 @@ from bookwyrm import models
 
 
 class Relationship(TestCase):
-    """ following, blocking, stuff like that """
+    """following, blocking, stuff like that"""
 
     def setUp(self):
-        """ we need some users for this """
+        """we need some users for this"""
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -27,11 +27,11 @@ class Relationship(TestCase):
         self.local_user.save(broadcast=False)
 
     def test_user_follows_from_request(self):
-        """ convert a follow request into a follow """
+        """convert a follow request into a follow"""
         real_broadcast = models.UserFollowRequest.broadcast
 
         def mock_broadcast(_, activity, user):
-            """ introspect what's being sent out """
+            """introspect what's being sent out"""
             self.assertEqual(user.remote_id, self.local_user.remote_id)
             self.assertEqual(activity["type"], "Follow")
 
@@ -54,7 +54,7 @@ class Relationship(TestCase):
         models.UserFollowRequest.broadcast = real_broadcast
 
     def test_user_follows_from_request_custom_remote_id(self):
-        """ store a specific remote id for a relationship provided by remote """
+        """store a specific remote id for a relationship provided by remote"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.local_user,
@@ -71,7 +71,7 @@ class Relationship(TestCase):
         self.assertEqual(rel.user_object, self.remote_user)
 
     def test_follow_request_activity(self):
-        """ accept a request and make it a relationship """
+        """accept a request and make it a relationship"""
         real_broadcast = models.UserFollowRequest.broadcast
 
         def mock_broadcast(_, activity, user):
@@ -88,7 +88,7 @@ class Relationship(TestCase):
         models.UserFollowRequest.broadcast = real_broadcast
 
     def test_follow_request_accept(self):
-        """ accept a request and make it a relationship """
+        """accept a request and make it a relationship"""
         real_broadcast = models.UserFollowRequest.broadcast
 
         def mock_broadcast(_, activity, user):
@@ -115,7 +115,7 @@ class Relationship(TestCase):
         models.UserFollowRequest.broadcast = real_broadcast
 
     def test_follow_request_reject(self):
-        """ accept a request and make it a relationship """
+        """accept a request and make it a relationship"""
         real_broadcast = models.UserFollowRequest.broadcast
 
         def mock_reject(_, activity, user):

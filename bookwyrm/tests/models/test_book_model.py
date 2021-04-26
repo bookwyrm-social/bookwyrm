@@ -8,10 +8,10 @@ from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
 
 
 class Book(TestCase):
-    """ not too much going on in the books model but here we are """
+    """not too much going on in the books model but here we are"""
 
     def setUp(self):
-        """ we'll need some books """
+        """we'll need some books"""
         self.work = models.Work.objects.create(
             title="Example Work", remote_id="https://example.com/book/1"
         )
@@ -25,17 +25,17 @@ class Book(TestCase):
         )
 
     def test_remote_id(self):
-        """ fanciness with remote/origin ids """
+        """fanciness with remote/origin ids"""
         remote_id = "https://%s/book/%d" % (settings.DOMAIN, self.work.id)
         self.assertEqual(self.work.get_remote_id(), remote_id)
         self.assertEqual(self.work.remote_id, remote_id)
 
     def test_create_book(self):
-        """ you shouldn't be able to create Books (only editions and works) """
+        """you shouldn't be able to create Books (only editions and works)"""
         self.assertRaises(ValueError, models.Book.objects.create, title="Invalid Book")
 
     def test_isbn_10_to_13(self):
-        """ checksums and so on """
+        """checksums and so on"""
         isbn_10 = "178816167X"
         isbn_13 = isbn_10_to_13(isbn_10)
         self.assertEqual(isbn_13, "9781788161671")
@@ -45,7 +45,7 @@ class Book(TestCase):
         self.assertEqual(isbn_13, "9781788161671")
 
     def test_isbn_13_to_10(self):
-        """ checksums and so on """
+        """checksums and so on"""
         isbn_13 = "9781788161671"
         isbn_10 = isbn_13_to_10(isbn_13)
         self.assertEqual(isbn_10, "178816167X")
@@ -55,7 +55,7 @@ class Book(TestCase):
         self.assertEqual(isbn_10, "178816167X")
 
     def test_get_edition_info(self):
-        """ text slug about an edition """
+        """text slug about an edition"""
         book = models.Edition.objects.create(title="Test Edition")
         self.assertEqual(book.edition_info, "")
 
@@ -77,7 +77,7 @@ class Book(TestCase):
         self.assertEqual(book.alt_text, "Test Edition (worm, Glorbish language, 2020)")
 
     def test_get_rank(self):
-        """ sets the data quality index for the book """
+        """sets the data quality index for the book"""
         # basic rank
         self.assertEqual(self.first_edition.edition_rank, 0)
 

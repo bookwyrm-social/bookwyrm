@@ -14,10 +14,10 @@ from bookwyrm.settings import DOMAIN
 
 # pylint: disable=too-many-public-methods
 class AuthenticationViews(TestCase):
-    """ login and password management """
+    """login and password management"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -31,7 +31,7 @@ class AuthenticationViews(TestCase):
         self.settings = models.SiteSettings.objects.create(id=1)
 
     def test_login_get(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         login = views.Login.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
@@ -47,7 +47,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_register(self):
-        """ create a user """
+        """create a user"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
         request = self.factory.post(
@@ -68,7 +68,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.local, True)
 
     def test_register_trailing_space(self):
-        """ django handles this so weirdly """
+        """django handles this so weirdly"""
         view = views.Register.as_view()
         request = self.factory.post(
             "register/",
@@ -84,7 +84,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.local, True)
 
     def test_register_invalid_email(self):
-        """ gotta have an email """
+        """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
         request = self.factory.post(
@@ -95,7 +95,7 @@ class AuthenticationViews(TestCase):
         response.render()
 
     def test_register_invalid_username(self):
-        """ gotta have an email """
+        """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
         request = self.factory.post(
@@ -123,7 +123,7 @@ class AuthenticationViews(TestCase):
         response.render()
 
     def test_register_closed_instance(self):
-        """ you can't just register """
+        """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
         self.settings.save()
@@ -135,7 +135,7 @@ class AuthenticationViews(TestCase):
             view(request)
 
     def test_register_invite(self):
-        """ you can't just register """
+        """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
         self.settings.save()

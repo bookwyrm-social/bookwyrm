@@ -10,10 +10,10 @@ from bookwyrm import views
 
 
 class LandingViews(TestCase):
-    """ pages you land on without really trying """
+    """pages you land on without really trying"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -27,7 +27,7 @@ class LandingViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_home_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Home.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -43,7 +43,7 @@ class LandingViews(TestCase):
         result.render()
 
     def test_about_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.About.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -53,7 +53,7 @@ class LandingViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_discover(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Discover.as_view()
         request = self.factory.get("")
         result = view(request)

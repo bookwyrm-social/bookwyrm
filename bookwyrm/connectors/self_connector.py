@@ -10,11 +10,11 @@ from .abstract_connector import AbstractConnector, SearchResult
 
 
 class Connector(AbstractConnector):
-    """ instantiate a connector  """
+    """instantiate a connector"""
 
     # pylint: disable=arguments-differ
     def search(self, query, min_confidence=0.1, raw=False, filters=None):
-        """ search your local database """
+        """search your local database"""
         filters = filters or []
         if not query:
             return []
@@ -36,7 +36,7 @@ class Connector(AbstractConnector):
         return search_results
 
     def isbn_search(self, query, raw=False):
-        """ search your local database """
+        """search your local database"""
         if not query:
             return []
 
@@ -88,11 +88,11 @@ class Connector(AbstractConnector):
         return None
 
     def parse_isbn_search_data(self, data):
-        """ it's already in the right format, don't even worry about it """
+        """it's already in the right format, don't even worry about it"""
         return data
 
     def parse_search_data(self, data):
-        """ it's already in the right format, don't even worry about it """
+        """it's already in the right format, don't even worry about it"""
         return data
 
     def expand_book_data(self, book):
@@ -100,7 +100,7 @@ class Connector(AbstractConnector):
 
 
 def search_identifiers(query, *filters):
-    """ tries remote_id, isbn; defined as dedupe fields on the model """
+    """tries remote_id, isbn; defined as dedupe fields on the model"""
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
@@ -116,7 +116,7 @@ def search_identifiers(query, *filters):
 
 
 def search_title_author(query, min_confidence, *filters):
-    """ searches for title and author """
+    """searches for title and author"""
     vector = (
         SearchVector("title", weight="A")
         + SearchVector("subtitle", weight="B")

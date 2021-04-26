@@ -8,10 +8,10 @@ from bookwyrm.management.commands.populate_streams import populate_streams
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class Activitystreams(TestCase):
-    """ using redis to build activity streams """
+    """using redis to build activity streams"""
 
     def setUp(self):
-        """ we need some stuff """
+        """we need some stuff"""
         self.local_user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
         )
@@ -31,7 +31,7 @@ class Activitystreams(TestCase):
         self.book = models.Edition.objects.create(title="test book")
 
     def test_populate_streams(self, _):
-        """ make sure the function on the redis manager gets called """
+        """make sure the function on the redis manager gets called"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             models.Comment.objects.create(
                 user=self.local_user, content="hi", book=self.book

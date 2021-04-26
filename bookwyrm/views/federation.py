@@ -20,10 +20,10 @@ from bookwyrm.settings import PAGE_LENGTH
     name="dispatch",
 )
 class Federation(View):
-    """ what servers do we federate with """
+    """what servers do we federate with"""
 
     def get(self, request):
-        """ list of servers """
+        """list of servers"""
         servers = models.FederatedServer.objects
 
         sort = request.GET.get("sort")
@@ -43,15 +43,15 @@ class Federation(View):
 
 
 class AddFederatedServer(View):
-    """ manually add a server """
+    """manually add a server"""
 
     def get(self, request):
-        """ add server form """
+        """add server form"""
         data = {"form": forms.ServerForm()}
         return TemplateResponse(request, "settings/edit_server.html", data)
 
     def post(self, request):
-        """ add a server from the admin panel """
+        """add a server from the admin panel"""
         form = forms.ServerForm(request.POST)
         if not form.is_valid():
             data = {"form": form}
@@ -66,14 +66,14 @@ class AddFederatedServer(View):
     name="dispatch",
 )
 class ImportServerBlocklist(View):
-    """ manually add a server """
+    """manually add a server"""
 
     def get(self, request):
-        """ add server form """
+        """add server form"""
         return TemplateResponse(request, "settings/server_blocklist.html")
 
     def post(self, request):
-        """ add a server from the admin panel """
+        """add a server from the admin panel"""
         json_data = json.load(request.FILES["json_file"])
         failed = []
         success_count = 0
@@ -102,10 +102,10 @@ class ImportServerBlocklist(View):
     name="dispatch",
 )
 class FederatedServer(View):
-    """ views for handling a specific federated server """
+    """views for handling a specific federated server"""
 
     def get(self, request, server):
-        """ load a server """
+        """load a server"""
         server = get_object_or_404(models.FederatedServer, id=server)
         users = server.user_set
         data = {
@@ -121,7 +121,7 @@ class FederatedServer(View):
         return TemplateResponse(request, "settings/federated_server.html", data)
 
     def post(self, request, server):  # pylint: disable=unused-argument
-        """ update note """
+        """update note"""
         server = get_object_or_404(models.FederatedServer, id=server)
         server.notes = request.POST.get("notes")
         server.save()
@@ -133,7 +133,7 @@ class FederatedServer(View):
 @permission_required("bookwyrm.control_federation", raise_exception=True)
 # pylint: disable=unused-argument
 def block_server(request, server):
-    """ block a server """
+    """block a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
     server.block()
     return redirect("settings-federated-server", server.id)
@@ -144,7 +144,7 @@ def block_server(request, server):
 @permission_required("bookwyrm.control_federation", raise_exception=True)
 # pylint: disable=unused-argument
 def unblock_server(request, server):
-    """ unblock a server """
+    """unblock a server"""
     server = get_object_or_404(models.FederatedServer, id=server)
     server.unblock()
     return redirect("settings-federated-server", server.id)

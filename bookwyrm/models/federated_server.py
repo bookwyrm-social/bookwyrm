@@ -13,7 +13,7 @@ FederationStatus = models.TextChoices(
 
 
 class FederatedServer(BookWyrmModel):
-    """ store which servers we federate with """
+    """store which servers we federate with"""
 
     server_name = models.CharField(max_length=255, unique=True)
     status = models.CharField(
@@ -25,7 +25,7 @@ class FederatedServer(BookWyrmModel):
     notes = models.TextField(null=True, blank=True)
 
     def block(self):
-        """ block a server """
+        """block a server"""
         self.status = "blocked"
         self.save()
 
@@ -35,7 +35,7 @@ class FederatedServer(BookWyrmModel):
         )
 
     def unblock(self):
-        """ unblock a server """
+        """unblock a server"""
         self.status = "federated"
         self.save()
 
@@ -45,7 +45,7 @@ class FederatedServer(BookWyrmModel):
 
     @classmethod
     def is_blocked(cls, url):
-        """ look up if a domain is blocked """
+        """look up if a domain is blocked"""
         url = urlparse(url)
         domain = url.netloc
         return cls.objects.filter(server_name=domain, status="blocked").exists()

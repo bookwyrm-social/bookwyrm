@@ -20,12 +20,12 @@ from .user import save_user_form
 # pylint: disable= no-self-use
 @method_decorator(login_required, name="dispatch")
 class GetStartedProfile(View):
-    """ tell us about yourself """
+    """tell us about yourself"""
 
     next_view = "get-started-books"
 
     def get(self, request):
-        """ basic profile info """
+        """basic profile info"""
         data = {
             "form": forms.LimitedEditUserForm(instance=request.user),
             "next": self.next_view,
@@ -33,7 +33,7 @@ class GetStartedProfile(View):
         return TemplateResponse(request, "get_started/profile.html", data)
 
     def post(self, request):
-        """ update your profile """
+        """update your profile"""
         form = forms.LimitedEditUserForm(
             request.POST, request.FILES, instance=request.user
         )
@@ -46,12 +46,12 @@ class GetStartedProfile(View):
 
 @method_decorator(login_required, name="dispatch")
 class GetStartedBooks(View):
-    """ name a book, any book, we gotta start somewhere """
+    """name a book, any book, we gotta start somewhere"""
 
     next_view = "get-started-users"
 
     def get(self, request):
-        """ info about a book """
+        """info about a book"""
         query = request.GET.get("query")
         book_results = popular_books = []
         if query:
@@ -82,7 +82,7 @@ class GetStartedBooks(View):
         return TemplateResponse(request, "get_started/books.html", data)
 
     def post(self, request):
-        """ shelve some books """
+        """shelve some books"""
         shelve_actions = [
             (k, v)
             for k, v in request.POST.items()
@@ -100,10 +100,10 @@ class GetStartedBooks(View):
 
 @method_decorator(login_required, name="dispatch")
 class GetStartedUsers(View):
-    """ find friends """
+    """find friends"""
 
     def get(self, request):
-        """ basic profile info """
+        """basic profile info"""
         query = request.GET.get("query")
         user_results = (
             models.User.viewer_aware_objects(request.user)

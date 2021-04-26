@@ -5,7 +5,7 @@ from .base_activity import ActivityObject
 
 @dataclass(init=False)
 class Document(ActivityObject):
-    """ a document """
+    """a document"""
 
     url: str
     name: str = ""
@@ -15,6 +15,6 @@ class Document(ActivityObject):
 
 @dataclass(init=False)
 class Image(Document):
-    """ an image """
+    """an image"""
 
     type: str = "Image"
