@@ -35,14 +35,14 @@ class BaseModel(TestCase):
         """these should be generated"""
         self.test_model.id = 1
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, "https://%s/testmodel/1" % DOMAIN)
+        self.assertEqual(expected, "https://%s/bookwyrmtestmodel/1" % DOMAIN)
 
     def test_remote_id_with_user(self):
         """format of remote id when there's a user object"""
         self.test_model.user = self.local_user
         self.test_model.id = 1
         expected = self.test_model.get_remote_id()
-        self.assertEqual(expected, "https://%s/user/mouse/testmodel/1" % DOMAIN)
+        self.assertEqual(expected, "https://%s/user/mouse/bookwyrmtestmodel/1" % DOMAIN)
 
     def test_set_remote_id(self):
         """this function sets remote ids after creation"""
