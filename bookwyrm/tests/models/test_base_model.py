@@ -27,7 +27,7 @@ class BaseModel(TestCase):
             )
 
         class TestModel(base_model.BookWyrmModel):
-            """ just making it not abstract """
+            """just making it not abstract"""
 
         self.test_model = TestModel()
 
