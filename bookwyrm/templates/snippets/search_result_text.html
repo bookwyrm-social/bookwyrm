@@ -1,6 +1,8 @@
 {% load i18n %}
 <div class="columns is-mobile is-gapless">
-    {% include 'snippets/book_cover.html' with book=result cover_class='column' img_path=false %}
+    <div class="column is-cover">
+        {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' img_path=false %}
+    </div>
 
     <div class="column is-10 ml-3">
         <p>

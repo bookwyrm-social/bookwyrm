@@ -159,19 +159,33 @@ body {
 
 /** Book covers
  *
- * - The context gives the extrinsic dimensions.
- * - .cover-container gives the intrinsic dimensions and position.
+ * - .is-cover gives the behaviour of the cover and its surrounding.
+ * - .cover-container gives the dimensions and position (for borders, image and other elements).
  * - .book-cover is positioned and sized based on its container.
+ *
+ * To have the cover with specific dimensions, specify a width or height for
+ * standard bulma’s named breapoints:
+ *
+ * is-[w|h]-[xs|s|m|l|xl]-[mobile|tablet|desktop]
  ******************************************************************************/
+
+.column.is-cover {
+    flex-grow: 0 !important;
+}
+
+.column.is-cover,
+.column.is-cover + .column {
+    flex-basis: auto !important;
+}
 
 .cover-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
+    width: max-content;
+    max-width: 100%;
     overflow: hidden;
-    min-width: 80px;
-    min-height: 100px;
-    max-width: max-content;
-    outline: solid 1px #dbdbdb;
 }
 
 /* Book cover
@@ -278,46 +292,231 @@ body {
     min-height: 96px !important;
 }
 
-.is-h-small {
+.is-w-auto {
+    width: auto !important;
+}
+
+.is-w-xs {
+    width: 80px !important;
+}
+
+.is-w-s {
+    width: 100px !important;
+}
+
+.is-w-m {
+    width: 150px !important;
+}
+
+.is-w-l {
+    width: 200px !important;
+}
+
+.is-h-xs {
+    height: 80px !important;
+}
+
+.is-h-s {
     height: 100px !important;
 }
 
-.is-h-medium {
+.is-h-m {
     height: 150px !important;
 }
 
+.is-h-l {
+    height: 200px !important;
+}
+
 @media only screen and (max-width: 768px) {
-    .is-h-medium-mobile {
-        height: 150px;
+    .is-w-auto-mobile {
+        width: auto !important;
+    }
+
+    .is-w-xs-mobile {
+        width: 80px !important;
+    }
+
+    .is-w-s-mobile {
+        width: 100px !important;
+    }
+
+    .is-w-m-mobile {
+        width: 150px !important;
+    }
+
+    .is-w-l-mobile {
+        width: 200px !important;
+    }
+
+    .is-h-xs-mobile {
+        height: 80px !important;
+    }
+
+    .is-h-s-mobile {
+        height: 100px !important;
+    }
+
+    .is-h-m-mobile {
+        height: 150px !important;
+    }
+
+    .is-h-l-mobile {
+        height: 200px !important;
     }
 }
 
-.is-min-w-none {
-    min-width: auto !important;
+@media only screen and (min-width: 769px) {
+    .is-w-auto-tablet {
+        width: auto !important;
+    }
+
+    .is-w-xs-tablet {
+        width: 80px !important;
+    }
+
+    .is-w-s-tablet {
+        width: 100px !important;
+    }
+
+    .is-w-m-tablet {
+        width: 150px !important;
+    }
+
+    .is-w-l-tablet {
+        width: 200px !important;
+    }
+
+    .is-h-xs-tablet {
+        height: 80px !important;
+    }
+
+    .is-h-s-tablet {
+        height: 100px !important;
+    }
+
+    .is-h-m-tablet {
+        height: 150px !important;
+    }
+
+    .is-h-l-tablet {
+        height: 200px !important;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .is-w-auto-desktop {
+        width: auto !important;
+    }
+
+    .is-w-xs-desktop {
+        width: 80px !important;
+    }
+
+    .is-w-s-desktop {
+        width: 100px !important;
+    }
+
+    .is-w-m-desktop {
+        width: 150px !important;
+    }
+
+    .is-w-l-desktop {
+        width: 200px !important;
+    }
+
+    .is-h-xs-desktop {
+        height: 80px !important;
+    }
+
+    .is-h-s-desktop {
+        height: 100px !important;
+    }
+
+    .is-h-m-desktop {
+        height: 150px !important;
+    }
+
+    .is-h-l-desktop {
+        height: 200px !important;
+    }
 }
 
 /* Alignments
  ******************************************************************************/
 
 /* Flex item position
- *
- * This is for a default `flex-direction: row`.
  * -------------------------------------------------------------------------- */
 
-.align-r {
-    justify-content: flex-end;
+.align {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.align.to-c {
+    justify-content: center !important;
+}
+
+.align.to-r {
+    justify-content: flex-end !important;
+}
+
+.align.to-l {
+    justify-content: flex-start !important;
+}
+
+@media screen and (max-width: 768px) {
+    .align.to-c-mobile {
+        justify-content: center !important;
+    }
+
+    .align.to-r-mobile {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-l-mobile {
+        justify-content: flex-start !important;
+    }
 }
 
 @media screen and (min-width: 769px) {
-    .align-r-tablet {
-        justify-content: flex-end;
+    .align.to-c-tablet {
+        justify-content: center !important;
+    }
+
+    .align.to-r-tablet {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-l-tablet {
+        justify-content: flex-start !important;
     }
 }
 
 /* Spacings
  ******************************************************************************/
 
+.mr-auto {
+    margin-right: auto !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
 @media screen and (max-width: 768px) {
+    .mr-auto-mobile {
+        margin-right: auto !important;
+    }
+
+    .ml-auto-mobile {
+        margin-left: auto !important;
+    }
+
+    .ml-3-mobile {
+        margin-left: 0.75rem !important;
+    }
+
     .my-3-mobile {
         margin-top: 0.75rem !important;
         margin-bottom: 0.75rem !important;
@@ -325,6 +524,14 @@ body {
 }
 
 @media screen and (min-width: 769px) {
+    .mr-auto-tablet {
+        margin-right: auto !important;
+    }
+
+    .ml-auto-tablet {
+        margin-left: auto !important;
+    }
+
     .ml-3-tablet {
         margin-left: 0.75rem !important;
     }

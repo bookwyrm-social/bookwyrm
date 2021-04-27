@@ -14,11 +14,11 @@
 <div class="block">
     {% for book in editions %}
     <div class="columns is-gapless mb-6">
-        <div class="column is-2 is-flex align-r-tablet">
-            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-medium' %}
+        <div class="column is-cover">
+            {% include 'snippets/book_cover.html' with book=book cover_class='is-w-m is-h-m align to-l-mobile' %}
         </div>
 
-        <div class="column is-flex-grow-1 my-3-mobile mx-3-tablet">
+        <div class="column my-3-mobile ml-3-tablet mr-auto">
             <h2 class="title is-5 mb-1">
                 <a href="/book/{{ book.id }}" class="has-text-black">
                     {{ book.title }}
@@ -26,7 +26,7 @@
             </h2>
 
             {% with book=book %}
-                <div class="columns is-multiline is-gapless">
+                <div class="columns is-multiline is-gapless ml-3-tablet">
                     <div class="column is-half">
                         {% include 'book/publisher_info.html' %}
                     </div>

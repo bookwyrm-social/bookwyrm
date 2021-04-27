@@ -25,23 +25,23 @@
                         mb-6
                     "
                 >
-                    <dt class="column is-5-tablet is-6-desktop">
+                    <dt class="column mr-auto">
                         <div class="columns is-mobile is-gapless is-vcentered">
                             <a
-                                class="column"
+                                class="column is-cover"
                                 href="{{ book.local_path }}"
                                 aria-hidden="true"
                             >
-                                {% include 'snippets/book_cover.html' %}
+                                {% include 'snippets/book_cover.html' with cover_class='is-w-xs-mobile is-w-s is-h-xs-mobile is-h-s' %}
                             </a>
 
-                            <div class="column is-10-mobile is-10-tablet ml-3">
+                            <div class="column ml-3">
                                 {% include 'snippets/book_titleby.html' %}
                             </div>
                         </div>
                     </dt>
 
-                    <dd class="column is-3-tablet is-3-desktop my-3">
+                    <dd class="column is-4-tablet mx-3-tablet my-3-mobile">
                         {% trans "Suggested by" %}
 
                         <a href="{{ item.user.local_path }}">
