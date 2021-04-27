@@ -167,6 +167,9 @@ body {
  * standard bulma’s named breapoints:
  *
  * is-[w|h]-[xs|s|m|l|xl]-[mobile|tablet|desktop]
+ *
+ * When using `.column.is-N`, add `.is-w-auto` to the container so that the flex
+ * calculations are not biased by the default `max-content`.
  ******************************************************************************/
 
 .column.is-cover {
@@ -280,6 +283,7 @@ body {
 }
 
 /* Dimensions
+ * @todo These could be in rem.
  ******************************************************************************/
 
 .is-32x32 {
@@ -312,6 +316,10 @@ body {
     width: 200px !important;
 }
 
+.is-w-xxl {
+    width: 500px !important;
+}
+
 .is-h-xs {
     height: 80px !important;
 }
@@ -326,6 +334,10 @@ body {
 
 .is-h-l {
     height: 200px !important;
+}
+
+.is-h-xxl {
+    height: 500px !important;
 }
 
 @media only screen and (max-width: 768px) {
@@ -349,6 +361,10 @@ body {
         width: 200px !important;
     }
 
+    .is-w-xxl-mobile {
+        width: 500px !important;
+    }
+
     .is-h-xs-mobile {
         height: 80px !important;
     }
@@ -363,6 +379,10 @@ body {
 
     .is-h-l-mobile {
         height: 200px !important;
+    }
+
+    .is-h-xxl-mobile {
+        height: 500px !important;
     }
 }
 
@@ -387,6 +407,10 @@ body {
         width: 200px !important;
     }
 
+    .is-w-xxl-tablet {
+        width: 500px !important;
+    }
+
     .is-h-xs-tablet {
         height: 80px !important;
     }
@@ -401,6 +425,10 @@ body {
 
     .is-h-l-tablet {
         height: 200px !important;
+    }
+
+    .is-h-xxl-tablet {
+        height: 500px !important;
     }
 }
 
@@ -425,6 +453,10 @@ body {
         width: 200px !important;
     }
 
+    .is-w-xxl-desktop {
+        width: 500px !important;
+    }
+
     .is-h-xs-desktop {
         height: 80px !important;
     }
@@ -439,6 +471,10 @@ body {
 
     .is-h-l-desktop {
         height: 200px !important;
+    }
+
+    .is-h-xxl-desktop {
+        height: 500px !important;
     }
 }
 
@@ -459,6 +495,10 @@ body {
 
 .align.to-r {
     justify-content: flex-end !important;
+}
+
+.align.to-b {
+    align-items: flex-end !important;
 }
 
 .align.to-l {
@@ -511,6 +551,10 @@ body {
 
     .ml-auto-mobile {
         margin-left: auto !important;
+    }
+
+    .mt-3-mobile {
+        margin-top: 0.75rem !important;
     }
 
     .ml-3-mobile {

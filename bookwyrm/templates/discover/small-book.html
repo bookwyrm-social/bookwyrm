@@ -4,9 +4,9 @@
 
 {% if book %}
     {% with book=book %}
-        <a
-            href="{{ book.local_path }}"
-        >{% include 'snippets/book_cover.html' with cover_class='is-h-s' %}</a>
+        <a href="{{ book.local_path }}">
+            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-h-l-tablet is-w-auto align to-b to-l' %}
+        </a>
 
         {% include 'snippets/stars.html' with rating=book|rating:request.user %}
 

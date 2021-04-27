@@ -4,16 +4,18 @@
 
 {% if book %}
     {% with book=book %}
-        <div class="columns">
-            <div class="column">
+        <div class="columns is-gapless">
+            <div class="column is-5-tablet is-cover">
                 <a
+                    class="align to-b to-l"
                     href="{{ book.local_path }}"
-                >{% include 'snippets/book_cover.html' %}</a>
+                >{% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto-tablet' %}</a>
 
                 {% include 'snippets/stars.html' with rating=book|rating:request.user %}
             </div>
 
-            <div class="column">
+
+            <div class="column mt-3-mobile ml-3-tablet">
                 <h3 class="title is-5">
                     <a href="/book/{{ book.id }}">{{ book.title }}</a>
                 </h3>
