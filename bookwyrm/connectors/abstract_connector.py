@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractMinimalConnector(ABC):
-    """ just the bare bones, for other bookwyrm instances """
+    """just the bare bones, for other bookwyrm instances"""
 
     def __init__(self, identifier):
         # load connector settings
@@ -39,7 +39,7 @@ class AbstractMinimalConnector(ABC):
             setattr(self, field, getattr(info, field))
 
     def search(self, query, min_confidence=None):
-        """ free text search """
+        """free text search"""
         params = {}
         if min_confidence:
             params["min_confidence"] = min_confidence
@@ -55,7 +55,7 @@ class AbstractMinimalConnector(ABC):
         return results
 
     def isbn_search(self, query):
-        """ isbn search """
+        """isbn search"""
         params = {}
         data = get_data(
             "%s%s" % (self.isbn_search_url, query),
@@ -70,27 +70,27 @@ class AbstractMinimalConnector(ABC):
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
-        """ pull up a book record by whatever means possible """
+        """pull up a book record by whatever means possible"""
 
     @abstractmethod
     def parse_search_data(self, data):
-        """ turn the result json from a search into a list """
+        """turn the result json from a search into a list"""
 
     @abstractmethod
     def format_search_result(self, search_result):
-        """ create a SearchResult obj from json """
+        """create a SearchResult obj from json"""
 
     @abstractmethod
     def parse_isbn_search_data(self, data):
-        """ turn the result json from a search into a list """
+        """turn the result json from a search into a list"""
 
     @abstractmethod
     def format_isbn_search_result(self, search_result):
-        """ create a SearchResult obj from json """
+        """create a SearchResult obj from json"""
 
 
 class AbstractConnector(AbstractMinimalConnector):
-    """ generic book data connector """
+    """generic book data connector"""
 
     def __init__(self, identifier):
         super().__init__(identifier)
@@ -99,14 +99,14 @@ class AbstractConnector(AbstractMinimalConnector):
         self.book_mappings = []
 
     def is_available(self):
-        """ check if you're allowed to use this connector """
+        """check if you're allowed to use this connector"""
         if self.max_query_count is not None:
             if self.connector.query_count >= self.max_query_count:
                 return False
         return True
 
     def get_or_create_book(self, remote_id):
-        """ translate arbitrary json into an Activitypub dataclass """
+        """translate arbitrary json into an Activitypub dataclass"""
         # first, check if we have the origin_id saved
         existing = models.Edition.find_existing_by_remote_id(
             remote_id
@@ -151,7 +151,7 @@ class AbstractConnector(AbstractMinimalConnector):
         return edition
 
     def create_edition_from_data(self, work, edition_data):
-        """ if we already have the work, we're ready """
+        """if we already have the work, we're ready"""
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
         mapped_data["work"] = work.remote_id
         edition_activity = activitypub.Edition(**mapped_data)
@@ -171,7 +171,7 @@ class AbstractConnector(AbstractMinimalConnector):
         return edition
 
     def get_or_create_author(self, remote_id):
-        """ load that author """
+        """load that author"""
         existing = models.Author.find_existing_by_remote_id(remote_id)
         if existing:
             return existing
@@ -189,23 +189,23 @@ class AbstractConnector(AbstractMinimalConnector):
 
     @abstractmethod
     def is_work_data(self, data):
-        """ differentiate works and editions """
+        """differentiate works and editions"""
 
     @abstractmethod
     def get_edition_from_work_data(self, data):
-        """ every work needs at least one edition """
+        """every work needs at least one edition"""
 
     @abstractmethod
     def get_work_from_edition_data(self, data):
-        """ every edition needs a work """
+        """every edition needs a work"""
 
     @abstractmethod
     def get_authors_from_data(self, data):
-        """ load author data """
+        """load author data"""
 
     @abstractmethod
     def expand_book_data(self, book):
-        """ get more info on a book """
+        """get more info on a book"""
 
 
 def dict_from_mappings(data, mappings):
@@ -218,7 +218,7 @@ def dict_from_mappings(data, mappings):
 
 
 def get_data(url, params=None):
-    """ wrapper for request.get """
+    """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
         raise ConnectorException(
@@ -250,7 +250,7 @@ def get_data(url, params=None):
 
 
 def get_image(url):
-    """ wrapper for requesting an image """
+    """wrapper for requesting an image"""
     try:
         resp = requests.get(
             url,
@@ -268,7 +268,7 @@ def get_image(url):
 
 @dataclass
 class SearchResult:
-    """ standardized search result object """
+    """standardized search result object"""
 
     title: str
     key: str
@@ -284,14 +284,14 @@ class SearchResult:
         )
 
     def json(self):
-        """ serialize a connector for json response """
+        """serialize a connector for json response"""
         serialized = asdict(self)
         del serialized["connector"]
         return serialized
 
 
 class Mapping:
-    """ associate a local database field with a field in an external dataset """
+    """associate a local database field with a field in an external dataset"""
 
     def __init__(self, local_field, remote_field=None, formatter=None):
         noop = lambda x: x
@@ -301,7 +301,7 @@ class Mapping:
         self.formatter = formatter or noop
 
     def get_value(self, data):
-        """ pull a field from incoming json and return the formatted version """
+        """pull a field from incoming json and return the formatted version"""
         value = data.get(self.remote_field)
         if not value:
             return None

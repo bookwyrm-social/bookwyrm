@@ -9,10 +9,10 @@ from bookwyrm import models, views
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class InteractionViews(TestCase):
-    """ viewing and creating statuses """
+    """viewing and creating statuses"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -41,7 +41,7 @@ class InteractionViews(TestCase):
         )
 
     def test_favorite(self, _):
-        """ create and broadcast faving a status """
+        """create and broadcast faving a status"""
         view = views.Favorite.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
@@ -59,7 +59,7 @@ class InteractionViews(TestCase):
         self.assertEqual(notification.related_user, self.remote_user)
 
     def test_unfavorite(self, _):
-        """ unfav a status """
+        """unfav a status"""
         view = views.Unfavorite.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
@@ -76,7 +76,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Notification.objects.count(), 0)
 
     def test_boost(self, _):
-        """ boost a status """
+        """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
@@ -98,7 +98,7 @@ class InteractionViews(TestCase):
         self.assertEqual(notification.related_status, status)
 
     def test_self_boost(self, _):
-        """ boost your own status """
+        """boost your own status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -122,7 +122,7 @@ class InteractionViews(TestCase):
         self.assertFalse(models.Notification.objects.exists())
 
     def test_boost_unlisted(self, _):
-        """ boost a status """
+        """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -137,7 +137,7 @@ class InteractionViews(TestCase):
         self.assertEqual(boost.privacy, "unlisted")
 
     def test_boost_private(self, _):
-        """ boost a status """
+        """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -150,7 +150,7 @@ class InteractionViews(TestCase):
         self.assertFalse(models.Boost.objects.exists())
 
     def test_boost_twice(self, _):
-        """ boost a status """
+        """boost a status"""
         view = views.Boost.as_view()
         request = self.factory.post("")
         request.user = self.local_user
@@ -162,7 +162,7 @@ class InteractionViews(TestCase):
         self.assertEqual(models.Boost.objects.count(), 1)
 
     def test_unboost(self, _):
-        """ undo a boost """
+        """undo a boost"""
         view = views.Unboost.as_view()
         request = self.factory.post("")
         request.user = self.remote_user

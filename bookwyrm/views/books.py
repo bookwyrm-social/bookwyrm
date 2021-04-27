@@ -26,10 +26,10 @@ from .helpers import is_api_request, get_edition, privacy_filter
 
 # pylint: disable= no-self-use
 class Book(View):
-    """ a book! this is the stuff """
+    """a book! this is the stuff"""
 
     def get(self, request, book_id, user_statuses=False):
-        """ info about a book """
+        """info about a book"""
         try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
@@ -110,10 +110,10 @@ class Book(View):
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
 )
 class EditBook(View):
-    """ edit a book """
+    """edit a book"""
 
     def get(self, request, book_id=None):
-        """ info about a book """
+        """info about a book"""
         book = None
         if book_id:
             book = get_edition(book_id)
@@ -123,7 +123,7 @@ class EditBook(View):
         return TemplateResponse(request, "book/edit_book.html", data)
 
     def post(self, request, book_id=None):
-        """ edit a book cool """
+        """edit a book cool"""
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
@@ -209,10 +209,10 @@ class EditBook(View):
     permission_required("bookwyrm.edit_book", raise_exception=True), name="dispatch"
 )
 class ConfirmEditBook(View):
-    """ confirm edits to a book """
+    """confirm edits to a book"""
 
     def post(self, request, book_id=None):
-        """ edit a book cool """
+        """edit a book cool"""
         # returns None if no match is found
         book = models.Edition.objects.filter(id=book_id).first()
         form = forms.EditionForm(request.POST, request.FILES, instance=book)
@@ -260,10 +260,10 @@ class ConfirmEditBook(View):
 
 
 class Editions(View):
-    """ list of editions """
+    """list of editions"""
 
     def get(self, request, book_id):
-        """ list of editions of a book """
+        """list of editions of a book"""
         work = get_object_or_404(models.Work, id=book_id)
 
         if is_api_request(request):
@@ -293,7 +293,7 @@ class Editions(View):
 @login_required
 @require_POST
 def upload_cover(request, book_id):
-    """ upload a new cover """
+    """upload a new cover"""
     book = get_object_or_404(models.Edition, id=book_id)
     book.last_edited_by = request.user
 
@@ -316,7 +316,7 @@ def upload_cover(request, book_id):
 
 
 def set_cover_from_url(url):
-    """ load it from a url """
+    """load it from a url"""
     image_file = get_image(url)
     if not image_file:
         return None
@@ -329,7 +329,7 @@ def set_cover_from_url(url):
 @require_POST
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def add_description(request, book_id):
-    """ upload a new cover """
+    """upload a new cover"""
     if not request.method == "POST":
         return redirect("/")
 
@@ -346,7 +346,7 @@ def add_description(request, book_id):
 
 @require_POST
 def resolve_book(request):
-    """ figure out the local path to a book from a remote_id """
+    """figure out the local path to a book from a remote_id"""
     remote_id = request.POST.get("remote_id")
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
@@ -358,7 +358,7 @@ def resolve_book(request):
 @require_POST
 @transaction.atomic
 def switch_edition(request):
-    """ switch your copy of a book to a different edition """
+    """switch your copy of a book to a different edition"""
     edition_id = request.POST.get("edition")
     new_edition = get_object_or_404(models.Edition, id=edition_id)
     shelfbooks = models.ShelfBook.objects.filter(

@@ -21,10 +21,10 @@ from bookwyrm import models
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 class BaseActivity(TestCase):
-    """ the super class for model-linked activitypub dataclasses """
+    """the super class for model-linked activitypub dataclasses"""
 
     def setUp(self):
-        """ we're probably going to re-use this so why copy/paste """
+        """we're probably going to re-use this so why copy/paste"""
         self.user = models.User.objects.create_user(
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
@@ -45,28 +45,28 @@ class BaseActivity(TestCase):
         self.image_data = output.getvalue()
 
     def test_init(self, _):
-        """ simple successfuly init """
+        """simple successfuly init"""
         instance = ActivityObject(id="a", type="b")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))
 
     def test_init_missing(self, _):
-        """ init with missing required params """
+        """init with missing required params"""
         with self.assertRaises(ActivitySerializerError):
             ActivityObject()
 
     def test_init_extra_fields(self, _):
-        """ init ignoring additional fields """
+        """init ignoring additional fields"""
         instance = ActivityObject(id="a", type="b", fish="c")
         self.assertTrue(hasattr(instance, "id"))
         self.assertTrue(hasattr(instance, "type"))
 
     def test_init_default_field(self, _):
-        """ replace an existing required field with a default field """
+        """replace an existing required field with a default field"""
 
         @dataclass(init=False)
         class TestClass(ActivityObject):
-            """ test class with default field """
+            """test class with default field"""
 
             type: str = "TestObject"
 
@@ -75,7 +75,7 @@ class BaseActivity(TestCase):
         self.assertEqual(instance.type, "TestObject")
 
     def test_serialize(self, _):
-        """ simple function for converting dataclass to dict """
+        """simple function for converting dataclass to dict"""
         instance = ActivityObject(id="a", type="b")
         serialized = instance.serialize()
         self.assertIsInstance(serialized, dict)
@@ -84,7 +84,7 @@ class BaseActivity(TestCase):
 
     @responses.activate
     def test_resolve_remote_id(self, _):
-        """ look up or load remote data """
+        """look up or load remote data"""
         # existing item
         result = resolve_remote_id("http://example.com/a/b", model=models.User)
         self.assertEqual(result, self.user)
@@ -106,14 +106,14 @@ class BaseActivity(TestCase):
         self.assertEqual(result.name, "MOUSE?? MOUSE!!")
 
     def test_to_model_invalid_model(self, _):
-        """ catch mismatch between activity type and model type """
+        """catch mismatch between activity type and model type"""
         instance = ActivityObject(id="a", type="b")
         with self.assertRaises(ActivitySerializerError):
             instance.to_model(model=models.User)
 
     @responses.activate
     def test_to_model_image(self, _):
-        """ update an image field """
+        """update an image field"""
         activity = activitypub.Person(
             id=self.user.remote_id,
             name="New Name",
@@ -146,7 +146,7 @@ class BaseActivity(TestCase):
         self.assertEqual(self.user.key_pair.public_key, "hi")
 
     def test_to_model_many_to_many(self, _):
-        """ annoying that these all need special handling """
+        """annoying that these all need special handling"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(
                 content="test status",
@@ -216,7 +216,7 @@ class BaseActivity(TestCase):
 
     @responses.activate
     def test_set_related_field(self, _):
-        """ celery task to add back-references to created objects """
+        """celery task to add back-references to created objects"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Status.objects.create(
                 content="test status",

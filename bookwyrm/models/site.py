@@ -12,7 +12,7 @@ from .user import User
 
 
 class SiteSettings(models.Model):
-    """ customized settings for this instance """
+    """customized settings for this instance"""
 
     name = models.CharField(default="BookWyrm", max_length=100)
     instance_tagline = models.CharField(
@@ -35,7 +35,7 @@ class SiteSettings(models.Model):
 
     @classmethod
     def get(cls):
-        """ gets the site settings db entry or defaults """
+        """gets the site settings db entry or defaults"""
         try:
             return cls.objects.get(id=1)
         except cls.DoesNotExist:
@@ -45,12 +45,12 @@ class SiteSettings(models.Model):
 
 
 def new_access_code():
-    """ the identifier for a user invite """
+    """the identifier for a user invite"""
     return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
 
 
 class SiteInvite(models.Model):
-    """ gives someone access to create an account on the instance """
+    """gives someone access to create an account on the instance"""
 
     created_date = models.DateTimeField(auto_now_add=True)
     code = models.CharField(max_length=32, default=new_access_code)
@@ -61,19 +61,19 @@ class SiteInvite(models.Model):
     invitees = models.ManyToManyField(User, related_name="invitees")
 
     def valid(self):
-        """ make sure it hasn't expired or been used """
+        """make sure it hasn't expired or been used"""
         return (self.expiry is None or self.expiry > timezone.now()) and (
             self.use_limit is None or self.times_used < self.use_limit
         )
 
     @property
     def link(self):
-        """ formats the invite link """
+        """formats the invite link"""
         return "https://{}/invite/{}".format(DOMAIN, self.code)
 
 
 class InviteRequest(BookWyrmModel):
-    """ prospective users can request an invite """
+    """prospective users can request an invite"""
 
     email = models.EmailField(max_length=255, unique=True)
     invite = models.ForeignKey(
@@ -83,30 +83,30 @@ class InviteRequest(BookWyrmModel):
     ignored = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        """ don't create a request for a registered email """
+        """don't create a request for a registered email"""
         if not self.id and User.objects.filter(email=self.email).exists():
             raise IntegrityError()
         super().save(*args, **kwargs)
 
 
 def get_passowrd_reset_expiry():
-    """ give people a limited time to use the link """
+    """give people a limited time to use the link"""
     now = timezone.now()
     return now + datetime.timedelta(days=1)
 
 
 class PasswordReset(models.Model):
-    """ gives someone access to create an account on the instance """
+    """gives someone access to create an account on the instance"""
 
     code = models.CharField(max_length=32, default=new_access_code)
     expiry = models.DateTimeField(default=get_passowrd_reset_expiry)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def valid(self):
-        """ make sure it hasn't expired or been used """
+        """make sure it hasn't expired or been used"""
         return self.expiry > timezone.now()
 
     @property
     def link(self):
-        """ formats the invite link """
+        """formats the invite link"""
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)

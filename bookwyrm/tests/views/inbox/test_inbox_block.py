@@ -8,10 +8,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxBlock(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -35,7 +35,7 @@ class InboxBlock(TestCase):
         models.SiteSettings.objects.create()
 
     def test_handle_blocks(self):
-        """ create a "block" database entry from an activity """
+        """create a "block" database entry from an activity"""
         self.local_user.followers.add(self.remote_user)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.UserFollowRequest.objects.create(
@@ -67,7 +67,7 @@ class InboxBlock(TestCase):
         self.assertFalse(models.UserFollowRequest.objects.exists())
 
     def test_handle_unblock(self):
-        """ unblock a user """
+        """unblock a user"""
         self.remote_user.blocks.add(self.local_user)
 
         block = models.UserBlocks.objects.get()

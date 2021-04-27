@@ -9,10 +9,10 @@ from .helpers import is_bookwyrm_request
 
 # pylint: disable= no-self-use
 class Outbox(View):
-    """ outbox """
+    """outbox"""
 
     def get(self, request, username):
-        """ outbox for the requested user """
+        """outbox for the requested user"""
         user = get_object_or_404(models.User, localname=username)
         filter_type = request.GET.get("type")
         if filter_type not in models.status_models:

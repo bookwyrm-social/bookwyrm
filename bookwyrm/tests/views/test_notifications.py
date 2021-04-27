@@ -8,10 +8,10 @@ from bookwyrm import views
 
 
 class NotificationViews(TestCase):
-    """ notifications """
+    """notifications"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -23,7 +23,7 @@ class NotificationViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_notifications_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Notifications.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -33,7 +33,7 @@ class NotificationViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_clear_notifications(self):
-        """ erase notifications """
+        """erase notifications"""
         models.Notification.objects.create(
             user=self.local_user, notification_type="FAVORITE"
         )

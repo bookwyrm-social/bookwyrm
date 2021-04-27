@@ -22,7 +22,7 @@ class User(TestCase):
         )
 
     def test_computed_fields(self):
-        """ username instead of id here """
+        """username instead of id here"""
         expected_id = "https://%s/user/mouse" % DOMAIN
         self.assertEqual(self.user.remote_id, expected_id)
         self.assertEqual(self.user.username, "mouse@%s" % DOMAIN)
@@ -155,7 +155,7 @@ class User(TestCase):
         self.assertIsNone(server.application_version)
 
     def test_delete_user(self):
-        """ deactivate a user """
+        """deactivate a user"""
         self.assertTrue(self.user.is_active)
         with patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.delay"

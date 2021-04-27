@@ -108,7 +108,7 @@ def init_connectors():
 
 
 def init_federated_servers():
-    """ big no to nazis """
+    """big no to nazis"""
     built_in_blocks = ["gab.ai", "gab.com"]
     for server in built_in_blocks:
         FederatedServer.objects.create(

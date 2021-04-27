@@ -1,5 +1,6 @@
 """ book list views"""
 from typing import Optional
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,6 +10,7 @@ from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -22,10 +24,10 @@ from .helpers import get_user_from_username
 
 # pylint: disable=no-self-use
 class Lists(View):
-    """ book list page """
+    """book list page"""
 
     def get(self, request):
-        """ display a book list """
+        """display a book list"""
         # hide lists with no approved books
         lists = (
             models.List.objects.annotate(
@@ -51,7 +53,7 @@ class Lists(View):
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
     def post(self, request):
-        """ create a book_list """
+        """create a book_list"""
         form = forms.ListForm(request.POST)
         if not form.is_valid():
             return redirect("lists")
@@ -61,10 +63,10 @@ class Lists(View):
 
 
 class UserLists(View):
-    """ a user's book list page """
+    """a user's book list page"""
 
     def get(self, request, username):
-        """ display a book list """
+        """display a book list"""
         user = get_user_from_username(request.user, username)
         lists = models.List.objects.filter(user=user)
         lists = privacy_filter(request.user, lists)
@@ -81,10 +83,10 @@ class UserLists(View):
 
 
 class List(View):
-    """ book list page """
+    """book list page"""
 
     def get(self, request, list_id):
-        """ display a book list """
+        """display a book list"""
         book_list = get_object_or_404(models.List, id=list_id)
         if not book_list.visible_to_user(request.user):
             return HttpResponseNotFound()
@@ -135,7 +137,11 @@ class List(View):
 
         if query and request.user.is_authenticated:
             # search for books
-            suggestions = connector_manager.local_search(query, raw=True)
+            suggestions = connector_manager.local_search(
+                query,
+                raw=True,
+                filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            )
         elif request.user.is_authenticated:
             # just suggest whatever books are nearby
             suggestions = request.user.shelfbook_set.filter(
@@ -166,7 +172,7 @@ class List(View):
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
     def post(self, request, list_id):
-        """ edit a list """
+        """edit a list"""
         book_list = get_object_or_404(models.List, id=list_id)
         form = forms.ListForm(request.POST, instance=book_list)
         if not form.is_valid():
@@ -176,11 +182,11 @@ class List(View):
 
 
 class Curate(View):
-    """ approve or discard list suggestsions """
+    """approve or discard list suggestsions"""
 
     @method_decorator(login_required, name="dispatch")
     def get(self, request, list_id):
-        """ display a pending list """
+        """display a pending list"""
         book_list = get_object_or_404(models.List, id=list_id)
         if not book_list.user == request.user:
             # only the creater can curate the list
@@ -196,7 +202,7 @@ class Curate(View):
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument
     def post(self, request, list_id):
-        """ edit a book_list """
+        """edit a book_list"""
         book_list = get_object_or_404(models.List, id=list_id)
         suggestion = get_object_or_404(models.ListItem, id=request.POST.get("item"))
         approved = request.POST.get("approved") == "true"
@@ -222,7 +228,7 @@ class Curate(View):
 
 @require_POST
 def add_book(request):
-    """ put a book on a list """
+    """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
     if not book_list.visible_to_user(request.user):
         return HttpResponseNotFound()
@@ -263,12 +269,15 @@ def add_book(request):
         # if the book is already on the list, don't flip out
         pass
 
-    return redirect("list", book_list.id)
+    path = reverse("list", args=[book_list.id])
+    params = request.GET.copy()
+    params["updated"] = True
+    return redirect("{:s}?{:s}".format(path, urlencode(params)))
 
 
 @require_POST
 def remove_book(request, list_id):
-    """ remove a book from a list """
+    """remove a book from a list"""
     with transaction.atomic():
         book_list = get_object_or_404(models.List, id=list_id)
         item = get_object_or_404(models.ListItem, id=request.POST.get("item"))
@@ -336,7 +345,7 @@ def set_book_position(request, list_item_id):
 def increment_order_in_reverse(
     book_list_id: int, start: int, end: Optional[int] = None
 ):
-    """ increase the order nu,ber for every item in a list """
+    """increase the order nu,ber for every item in a list"""
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
@@ -352,7 +361,7 @@ def increment_order_in_reverse(
 
 @transaction.atomic
 def decrement_order(book_list_id, start, end):
-    """ decrement the order value for every item in a list """
+    """decrement the order value for every item in a list"""
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:
@@ -367,7 +376,7 @@ def decrement_order(book_list_id, start, end):
 
 @transaction.atomic
 def normalize_book_list_ordering(book_list_id, start=0, add_offset=0):
-    """ gives each book in a list the proper sequential order number """
+    """gives each book in a list the proper sequential order number"""
     try:
         book_list = models.List.objects.get(id=book_list_id)
     except models.List.DoesNotExist:

@@ -12,10 +12,10 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 # pylint: disable=unused-argument
 class ListViews(TestCase):
-    """ tag views"""
+    """tag views"""
 
     def setUp(self):
-        """ we need basic test data and mocks """
+        """we need basic test data and mocks"""
         self.factory = RequestFactory()
         self.local_user = models.User.objects.create_user(
             "mouse@local.com",
@@ -67,7 +67,7 @@ class ListViews(TestCase):
         models.SiteSettings.objects.create()
 
     def test_lists_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Lists.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.List.objects.create(name="Public list", user=self.local_user)
@@ -90,7 +90,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_lists_create(self):
-        """ create list view """
+        """create list view"""
         view = views.Lists.as_view()
         request = self.factory.post(
             "",
@@ -118,7 +118,7 @@ class ListViews(TestCase):
         self.assertEqual(new_list.curation, "open")
 
     def test_list_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()
         request = self.factory.get("")
         request.user = self.local_user
@@ -153,7 +153,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     def test_list_edit(self):
-        """ edit a list """
+        """edit a list"""
         view = views.List.as_view()
         request = self.factory.post(
             "",
@@ -185,7 +185,7 @@ class ListViews(TestCase):
         self.assertEqual(self.list.curation, "curated")
 
     def test_curate_page(self):
-        """ there are so many views, this just makes sure it LOADS """
+        """there are so many views, this just makes sure it LOADS"""
         view = views.Curate.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.List.objects.create(name="Public list", user=self.local_user)
@@ -205,7 +205,7 @@ class ListViews(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_curate_approve(self):
-        """ approve a pending item """
+        """approve a pending item"""
         view = views.Curate.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             pending = models.ListItem.objects.create(
@@ -240,7 +240,7 @@ class ListViews(TestCase):
         self.assertTrue(pending.approved)
 
     def test_curate_reject(self):
-        """ approve a pending item """
+        """approve a pending item"""
         view = views.Curate.as_view()
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             pending = models.ListItem.objects.create(
@@ -266,7 +266,7 @@ class ListViews(TestCase):
         self.assertFalse(models.ListItem.objects.exists())
 
     def test_add_book(self):
-        """ put a book on a list """
+        """put a book on a list"""
         request = self.factory.post(
             "",
             {
@@ -545,7 +545,7 @@ class ListViews(TestCase):
         self.assertEqual(items[2].order, 3)
 
     def test_add_book_outsider(self):
-        """ put a book on a list """
+        """put a book on a list"""
         self.list.curation = "open"
         self.list.save(broadcast=False)
         request = self.factory.post(
@@ -571,7 +571,7 @@ class ListViews(TestCase):
         self.assertTrue(item.approved)
 
     def test_add_book_pending(self):
-        """ put a book on a list awaiting approval """
+        """put a book on a list awaiting approval"""
         self.list.curation = "curated"
         self.list.save(broadcast=False)
         request = self.factory.post(
@@ -601,7 +601,7 @@ class ListViews(TestCase):
         self.assertFalse(item.approved)
 
     def test_add_book_self_curated(self):
-        """ put a book on a list automatically approved """
+        """put a book on a list automatically approved"""
         self.list.curation = "curated"
         self.list.save(broadcast=False)
         request = self.factory.post(
@@ -627,7 +627,7 @@ class ListViews(TestCase):
         self.assertTrue(item.approved)
 
     def test_remove_book(self):
-        """ take an item off a list """
+        """take an item off a list"""
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             item = models.ListItem.objects.create(
@@ -651,7 +651,7 @@ class ListViews(TestCase):
         self.assertFalse(self.list.listitem_set.exists())
 
     def test_remove_book_unauthorized(self):
-        """ take an item off a list """
+        """take an item off a list"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             item = models.ListItem.objects.create(
                 book_list=self.list, user=self.local_user, book=self.book, order=1

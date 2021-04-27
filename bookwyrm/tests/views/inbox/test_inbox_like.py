@@ -8,10 +8,10 @@ from bookwyrm import models, views
 
 # pylint: disable=too-many-public-methods
 class InboxActivities(TestCase):
-    """ inbox tests """
+    """inbox tests"""
 
     def setUp(self):
-        """ basic user and book data """
+        """basic user and book data"""
         self.local_user = models.User.objects.create_user(
             "mouse@example.com",
             "mouse@mouse.com",
@@ -50,7 +50,7 @@ class InboxActivities(TestCase):
         models.SiteSettings.objects.create()
 
     def test_handle_favorite(self):
-        """ fav a status """
+        """fav a status"""
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/fav/1",
@@ -68,7 +68,7 @@ class InboxActivities(TestCase):
         self.assertEqual(fav.user, self.remote_user)
 
     def test_ignore_favorite(self):
-        """ don't try to save an unknown status """
+        """don't try to save an unknown status"""
         activity = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "id": "https://example.com/fav/1",
@@ -83,7 +83,7 @@ class InboxActivities(TestCase):
         self.assertFalse(models.Favorite.objects.exists())
 
     def test_handle_unfavorite(self):
-        """ fav a status """
+        """fav a status"""
         activity = {
             "id": "https://example.com/fav/1#undo",
             "type": "Undo",

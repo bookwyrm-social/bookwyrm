@@ -15,16 +15,16 @@ from bookwyrm import emailing, forms, models
     name="dispatch",
 )
 class Site(View):
-    """ manage things like the instance name """
+    """manage things like the instance name"""
 
     def get(self, request):
-        """ edit form """
+        """edit form"""
         site = models.SiteSettings.objects.get()
         data = {"site_form": forms.SiteForm(instance=site)}
         return TemplateResponse(request, "settings/site.html", data)
 
     def post(self, request):
-        """ edit the site settings """
+        """edit the site settings"""
         site = models.SiteSettings.objects.get()
         form = forms.SiteForm(request.POST, request.FILES, instance=site)
         if not form.is_valid():
@@ -38,7 +38,7 @@ class Site(View):
 @login_required
 @permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
 def email_preview(request):
-    """ for development, renders and example email template """
+    """for development, renders and example email template"""
     template = request.GET.get("email")
     data = emailing.email_data()
     data["subject_path"] = "email/{}/subject.html".format(template)

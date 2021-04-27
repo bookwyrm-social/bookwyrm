@@ -19,10 +19,10 @@ from bookwyrm.utils import regex
 @method_decorator(csrf_exempt, name="dispatch")
 # pylint: disable=no-self-use
 class Inbox(View):
-    """ requests sent by outside servers"""
+    """requests sent by outside servers"""
 
     def post(self, request, username=None):
-        """ only works as POST request """
+        """only works as POST request"""
         # first check if this server is on our shitlist
         if is_blocked_user_agent(request):
             return HttpResponseForbidden()
@@ -65,7 +65,7 @@ class Inbox(View):
 
 
 def is_blocked_user_agent(request):
-    """ check if a request is from a blocked server based on user agent """
+    """check if a request is from a blocked server based on user agent"""
     # check user agent
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
@@ -78,7 +78,7 @@ def is_blocked_user_agent(request):
 
 
 def is_blocked_activity(activity_json):
-    """ get the sender out of activity json and check if it's blocked """
+    """get the sender out of activity json and check if it's blocked"""
     actor = activity_json.get("actor")
 
     # check if the user is banned/deleted
@@ -94,7 +94,7 @@ def is_blocked_activity(activity_json):
 
 @app.task
 def activity_task(activity_json):
-    """ do something with this json we think is legit """
+    """do something with this json we think is legit"""
     # lets see if the activitypub module can make sense of this json
     activity = activitypub.parse(activity_json)
 
@@ -104,7 +104,7 @@ def activity_task(activity_json):
 
 
 def has_valid_signature(request, activity):
-    """ verify incoming signature """
+    """verify incoming signature"""
     try:
         signature = Signature.parse(request)
 
