@@ -73,7 +73,7 @@ class AbstractMinimalConnector(ABC):
         return get_data(remote_id, **kwargs)
 
     @abstractmethod
-    def get_or_create_book(self, remote_id, work=None):
+    def get_or_create_book(self, remote_id):
         """pull up a book record by whatever means possible"""
 
     @abstractmethod
@@ -109,7 +109,7 @@ class AbstractConnector(AbstractMinimalConnector):
                 return False
         return True
 
-    def get_or_create_book(self, remote_id, work=None):
+    def get_or_create_book(self, remote_id):
         """translate arbitrary json into an Activitypub dataclass"""
         # first, check if we have the origin_id saved
         existing = models.Edition.find_existing_by_remote_id(
@@ -123,7 +123,6 @@ class AbstractConnector(AbstractMinimalConnector):
         # load the json
         data = self.get_book_data(remote_id)
         mapped_data = dict_from_mappings(data, self.book_mappings)
-        work_data = edition_data = None
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
@@ -134,22 +133,20 @@ class AbstractConnector(AbstractMinimalConnector):
             work_data = mapped_data
         else:
             edition_data = data
-            if not work:
-                try:
-                    work_data = self.get_work_from_edition_data(data)
-                    work_data = dict_from_mappings(work_data, self.book_mappings)
-                except (KeyError, ConnectorException):
-                    work_data = mapped_data
+            try:
+                work_data = self.get_work_from_edition_data(data)
+                work_data = dict_from_mappings(work_data, self.book_mappings)
+            except (KeyError, ConnectorException):
+                work_data = mapped_data
 
-        if (not work_data and not work) or not edition_data:
+        if not work_data or not edition_data:
             raise ConnectorException("Unable to load book data: %s" % remote_id)
 
         with transaction.atomic():
-            if not work:
-                # create activitypub object
-                work_activity = activitypub.Work(**work_data)
-                # this will dedupe automatically
-                work = work_activity.to_model(model=models.Work)
+            # create activitypub object
+            work_activity = activitypub.Work(**work_data)
+            # this will dedupe automatically
+            work = work_activity.to_model(model=models.Work)
             for author in self.get_authors_from_data(data):
                 work.authors.add(author)
 

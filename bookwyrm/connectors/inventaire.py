@@ -137,7 +137,12 @@ class Connector(AbstractConnector):
 
         for edition_uri in edition_options.get("uris"):
             remote_id = self.get_remote_id(edition_uri)
-            self.get_or_create_book(remote_id, work=work)
+            try:
+                data = self.get_book_data(remote_id)
+            except ConnectorException:
+                # who, indeed, knows
+                continue
+            self.create_edition_from_data(work, data)
 
     def get_cover_url(self, cover_blob, *_):
         """format the relative cover url into an absolute one:
