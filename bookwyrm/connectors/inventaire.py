@@ -143,7 +143,9 @@ class Connector(AbstractConnector):
         """format the relative cover url into an absolute one:
         {"url": "/img/entities/e794783f01b9d4f897a1ea9820b96e00d346994f"}
         """
-        cover_id = cover_blob[0].get("url")
+        if isinstance(cover_blob, list) and len(cover_blob) > 0:
+            cover_blob = cover_blob[0]
+        cover_id = cover_blob.get("url")
         if not cover_id:
             return None
         return "%s%s" % (self.covers_url, cover_id)
