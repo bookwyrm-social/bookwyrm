@@ -43,10 +43,6 @@ body {
         white-space: nowrap !important;
         width: 0.01em !important;
     }
-
-    .m-0-mobile {
-        margin: 0 !important;
-    }
 }
 
 .button.is-transparent {
@@ -280,6 +276,56 @@ body {
     color: #7a7a7a;
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* Book preview table
+ ******************************************************************************/
+
+.book-preview td {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width: 768px) {
+    table.is-mobile,
+    table.is-mobile tbody {
+        display: block;
+    }
+
+    table.is-mobile tr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-top: 1px solid #dbdbdb;
+    }
+
+    table.is-mobile td {
+        display: block;
+        box-sizing: border-box;
+        flex: 1 0 100%;
+        order: 2;
+        border-bottom: 0;
+    }
+
+    table.is-mobile td.book-preview-top-row {
+        order: 1;
+        flex-basis: auto;
+    }
+
+    table.is-mobile td[data-title]:not(:empty)::before {
+        content: attr(data-title);
+        display: block;
+        font-size: 0.75em;
+        font-weight: bold;
+    }
+
+    table.is-mobile td:empty {
+        padding: 0;
+    }
+
+    table.is-mobile th,
+    table.is-mobile thead {
+        display: none;
+    }
 }
 
 /* Dimensions
@@ -554,6 +600,10 @@ body {
         justify-content: flex-end !important;
     }
 
+    .align.to-b-mobile {
+        align-items: flex-end !important;
+    }
+
     .align.to-l-mobile {
         justify-content: flex-start !important;
     }
@@ -570,6 +620,10 @@ body {
 
     .align.to-r-tablet {
         justify-content: flex-end !important;
+    }
+
+    .align.to-b-tablet {
+        align-items: flex-end !important;
     }
 
     .align.to-l-tablet {
@@ -589,6 +643,10 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+
     .mr-auto-mobile {
         margin-right: auto !important;
     }
@@ -627,55 +685,5 @@ body {
     .mx-3-tablet {
         margin-right: 0.75rem !important;
         margin-left: 0.75rem !important;
-    }
-}
-
-/* Book preview table
- ******************************************************************************/
-
-.book-preview td {
-    vertical-align: middle;
-}
-
-@media only screen and (max-width: 768px) {
-    table.is-mobile,
-    table.is-mobile tbody {
-        display: block;
-    }
-
-    table.is-mobile tr {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        border-top: 1px solid #dbdbdb;
-    }
-
-    table.is-mobile td {
-        display: block;
-        box-sizing: border-box;
-        flex: 1 0 100%;
-        order: 2;
-        border-bottom: 0;
-    }
-
-    table.is-mobile td.book-preview-top-row {
-        order: 1;
-        flex-basis: auto;
-    }
-
-    table.is-mobile td[data-title]:not(:empty)::before {
-        content: attr(data-title);
-        display: block;
-        font-size: 0.75em;
-        font-weight: bold;
-    }
-
-    table.is-mobile td:empty {
-        padding: 0;
-    }
-
-    table.is-mobile th,
-    table.is-mobile thead {
-        display: none;
     }
 }
