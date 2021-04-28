@@ -17,7 +17,7 @@
                     <div class="column is-cover">
                         <div class="columns is-mobile is-gapless">
                             <div class="column is-cover">
-                                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-h-xs is-h-l-tablet' %}</a>
+                                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-mobile is-h-l-tablet' %}</a>
 
                                 {% include 'snippets/stars.html' with rating=book|rating:request.user %}
 
