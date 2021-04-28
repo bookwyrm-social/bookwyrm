@@ -264,7 +264,7 @@ class ViewsHelpers(TestCase):
                 local=True,
                 localname=i,
             )
-            user.followers.add(user_1)
+            user.following.add(user_1)
             user.followers.add(self.local_user)
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
