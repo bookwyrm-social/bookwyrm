@@ -144,7 +144,12 @@
                     <div class="column ml-3">
                         <p>{% include 'snippets/book_titleby.html' with book=book %}</p>
 
-                        <form class="mt-1" name="add-book" method="post" action="{% url 'list-add-book' %}">
+                        <form
+                            class="mt-1"
+                            name="add-book"
+                            method="post"
+                            action="{% url 'list-add-book' %}{% if query %}?q={{ query }}{% endif %}"
+                        >
                             {% csrf_token %}
                             <input type="hidden" name="book" value="{{ book.id }}">
                             <input type="hidden" name="list" value="{{ list.id }}">
