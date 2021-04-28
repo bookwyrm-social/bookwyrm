@@ -3,7 +3,7 @@ from functools import reduce
 import operator
 
 from django.contrib.postgres.search import SearchRank, SearchVector
-from django.db.models import Count, F, Q
+from django.db.models import Count, OuterRef, Subquery, F, Q
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -47,7 +47,16 @@ class Connector(AbstractConnector):
 
         # when there are multiple editions of the same work, pick the default.
         # it would be odd for this to happen.
-        results = results.filter(parent_work__default_edition__id=F("id")) or results
+
+        default_editions = models.Edition.objects.filter(
+            parent_work=OuterRef("parent_work")
+        ).order_by("-edition_rank")
+        results = (
+            results.annotate(
+                default_id=Subquery(default_editions.values("id")[:1])
+            ).filter(default_id=F("id"))
+            or results
+        )
 
         search_results = []
         for result in results:
@@ -112,7 +121,15 @@ def search_identifiers(query, *filters):
 
     # when there are multiple editions of the same work, pick the default.
     # it would be odd for this to happen.
-    return results.filter(parent_work__default_edition__id=F("id")) or results
+    default_editions = models.Edition.objects.filter(
+        parent_work=OuterRef("parent_work")
+    ).order_by("-edition_rank")
+    return (
+        results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
+            default_id=F("id")
+        )
+        or results
+    )
 
 
 def search_title_author(query, min_confidence, *filters):
@@ -140,10 +157,10 @@ def search_title_author(query, min_confidence, *filters):
 
     for work_id in set(editions_of_work):
         editions = results.filter(parent_work=work_id)
-        default = editions.filter(parent_work__default_edition=F("id"))
-        default_rank = default.first().rank if default.exists() else 0
+        default = editions.order_by("-edition_rank").first()
+        default_rank = default.rank if default else 0
         # if mutliple books have the top rank, pick the default edition
         if default_rank == editions.first().rank:
-            yield default.first()
+            yield default
         else:
             yield editions.first()

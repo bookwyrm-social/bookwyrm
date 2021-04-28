@@ -1,7 +1,7 @@
 """ database schema for books and shelves """
 import re
 
-from django.db import models, transaction
+from django.db import models
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -143,10 +143,6 @@ class Work(OrderedCollectionPageMixin, Book):
     lccn = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    # this has to be nullable but should never be null
-    default_edition = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, null=True, load_remote=False
-    )
 
     def save(self, *args, **kwargs):
         """set some fields on the edition object"""
@@ -155,18 +151,10 @@ class Work(OrderedCollectionPageMixin, Book):
             edition.save()
         return super().save(*args, **kwargs)
 
-    def get_default_edition(self):
+    @property
+    def default_edition(self):
         """in case the default edition is not set"""
-        return self.default_edition or self.editions.order_by("-edition_rank").first()
-
-    @transaction.atomic()
-    def reset_default_edition(self):
-        """sets a new default edition based on computed rank"""
-        self.default_edition = None
-        # editions are re-ranked implicitly
-        self.save()
-        self.default_edition = self.get_default_edition()
-        self.save()
+        return self.editions.order_by("-edition_rank").first()
 
     def to_edition_list(self, **kwargs):
         """an ordered collection of editions"""
@@ -220,15 +208,8 @@ class Edition(Book):
     activity_serializer = activitypub.Edition
     name_field = "title"
 
-    def get_rank(self, ignore_default=False):
+    def get_rank(self):
         """calculate how complete the data is on this edition"""
-        if (
-            not ignore_default
-            and self.parent_work
-            and self.parent_work.default_edition == self
-        ):
-            # default edition has the highest rank
-            return 20
         rank = 0
         rank += int(bool(self.cover)) * 3
         rank += int(bool(self.isbn_13))

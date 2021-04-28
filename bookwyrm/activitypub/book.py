@@ -62,7 +62,6 @@ class Work(Book):
     """work instance of a book object"""
 
     lccn: str = ""
-    defaultEdition: str = ""
     editions: List[str] = field(default_factory=lambda: [])
     type: str = "Work"
 

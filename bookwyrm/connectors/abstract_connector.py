@@ -116,8 +116,8 @@ class AbstractConnector(AbstractMinimalConnector):
             remote_id
         ) or models.Work.find_existing_by_remote_id(remote_id)
         if existing:
-            if hasattr(existing, "get_default_editon"):
-                return existing.get_default_editon()
+            if hasattr(existing, "default_edition"):
+                return existing.default_edition
             return existing
 
         # load the json
@@ -169,10 +169,6 @@ class AbstractConnector(AbstractMinimalConnector):
         edition = edition_activity.to_model(model=models.Edition)
         edition.connector = self.connector
         edition.save()
-
-        if not work.default_edition:
-            work.default_edition = edition
-            work.save()
 
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
