@@ -37,9 +37,9 @@
                                 columns is-mobile is-gapless
                             "
                         >
-                            <div class="column is-2-mobile is-cover">
+                            <div class="column is-2-mobile is-cover align to-t">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m is-h-s-mobile' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet' %}
                                 </a>
                             </div>
 
@@ -134,11 +134,11 @@
             {% for book in suggested_books %}
                 <div class="columns is-mobile is-gapless">
                     <a
-                        class="column is-cover align to-c"
+                        class="column is-2-mobile is-3-tablet is-cover align to-c"
                         href="{{ book.local_path }}"
                         aria-hidden="true"
                     >
-                        {% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-xs is-h-s-mobile' %}
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto is-h-s-mobile align to-t' %}
                     </a>
 
                     <div class="column ml-3">
