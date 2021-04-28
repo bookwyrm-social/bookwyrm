@@ -155,14 +155,16 @@ body {
 
 /** Book covers
  *
- * - .is-cover gives the behaviour of the cover and its surrounding.
+ * - .is-cover gives the behaviour of the cover and its surrounding. (optional)
  * - .cover-container gives the dimensions and position (for borders, image and other elements).
  * - .book-cover is positioned and sized based on its container.
  *
- * To have the cover with specific dimensions, specify a width or height for
+ * To have the cover within specific dimensions, specify a width or height for
  * standard bulma’s named breapoints:
  *
- * is-[w|h]-[xs|s|m|l|xl]-[mobile|tablet|desktop]
+ * `is-(w|h)-(auto|xs|s|m|l|xl|xxl)[-(mobile|tablet|desktop)]`
+ *
+ * The cover will be centered horizontally and vertically within those dimensions.
  *
  * When using `.column.is-N`, add `.is-w-auto` to the container so that the flex
  * calculations are not biased by the default `max-content`.
@@ -557,6 +559,8 @@ body {
 }
 
 /* Alignments
+ *
+ * Use them with `.align.to-(c|t|r|b|l)[-(mobile|tablet)]`
  ******************************************************************************/
 
 /* Flex item position
@@ -632,6 +636,9 @@ body {
 }
 
 /* Spacings
+ *
+ * Those are supplementary rules to Bulma’s. They follow the same conventions.
+ * Add those you’ll need.
  ******************************************************************************/
 
 .mr-auto {
@@ -663,6 +670,11 @@ body {
         margin-left: 0.75rem !important;
     }
 
+    .mx-3-mobile {
+        margin-right: 0.75rem !important;
+        margin-left: 0.75rem !important;
+    }
+
     .my-3-mobile {
         margin-top: 0.75rem !important;
         margin-bottom: 0.75rem !important;
@@ -670,12 +682,20 @@ body {
 }
 
 @media screen and (min-width: 769px) {
+    .m-0-tablet {
+        margin: 0 !important;
+    }
+
     .mr-auto-tablet {
         margin-right: auto !important;
     }
 
     .ml-auto-tablet {
         margin-left: auto !important;
+    }
+
+    .mt-3-tablet {
+        margin-top: 0.75rem !important;
     }
 
     .ml-3-tablet {
@@ -685,5 +705,10 @@ body {
     .mx-3-tablet {
         margin-right: 0.75rem !important;
         margin-left: 0.75rem !important;
+    }
+
+    .my-3-tablet {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
     }
 }
