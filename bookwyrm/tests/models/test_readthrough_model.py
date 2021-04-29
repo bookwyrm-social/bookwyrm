@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from bookwyrm import models, settings
+from bookwyrm import models
 
 
 class ReadThrough(TestCase):
@@ -19,8 +19,6 @@ class ReadThrough(TestCase):
         self.edition = models.Edition.objects.create(
             title="Example Edition", parent_work=self.work
         )
-        self.work.default_edition = self.edition
-        self.work.save()
 
         self.readthrough = models.ReadThrough.objects.create(
             user=self.user, book=self.edition

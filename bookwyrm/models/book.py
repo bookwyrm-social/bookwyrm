@@ -1,11 +1,11 @@
 """ database schema for books and shelves """
 import re
 
-from django.db import models, transaction
+from django.db import models
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -19,10 +19,16 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     openlibrary_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    inventaire_id = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     librarything_key = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     goodreads_key = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
 
@@ -137,10 +143,6 @@ class Work(OrderedCollectionPageMixin, Book):
     lccn = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
-    # this has to be nullable but should never be null
-    default_edition = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, null=True, load_remote=False
-    )
 
     def save(self, *args, **kwargs):
         """set some fields on the edition object"""
@@ -149,18 +151,10 @@ class Work(OrderedCollectionPageMixin, Book):
             edition.save()
         return super().save(*args, **kwargs)
 
-    def get_default_edition(self):
+    @property
+    def default_edition(self):
         """in case the default edition is not set"""
-        return self.default_edition or self.editions.order_by("-edition_rank").first()
-
-    @transaction.atomic()
-    def reset_default_edition(self):
-        """sets a new default edition based on computed rank"""
-        self.default_edition = None
-        # editions are re-ranked implicitly
-        self.save()
-        self.default_edition = self.get_default_edition()
-        self.save()
+        return self.editions.order_by("-edition_rank").first()
 
     def to_edition_list(self, **kwargs):
         """an ordered collection of editions"""
@@ -214,17 +208,20 @@ class Edition(Book):
     activity_serializer = activitypub.Edition
     name_field = "title"
 
-    def get_rank(self, ignore_default=False):
+    def get_rank(self):
         """calculate how complete the data is on this edition"""
-        if (
-            not ignore_default
-            and self.parent_work
-            and self.parent_work.default_edition == self
-        ):
-            # default edition has the highest rank
-            return 20
         rank = 0
+        # big ups for havinga  cover
         rank += int(bool(self.cover)) * 3
+        # is it in the instance's preferred language?
+        rank += int(bool(DEFAULT_LANGUAGE in self.languages))
+        # prefer print editions
+        if self.physical_format:
+            rank += int(
+                bool(self.physical_format.lower() in ["paperback", "hardcover"])
+            )
+
+        # does it have metadata?
         rank += int(bool(self.isbn_13))
         rank += int(bool(self.isbn_10))
         rank += int(bool(self.oclc_number))
@@ -241,6 +238,12 @@ class Edition(Book):
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        # normalize isbn format
+        if self.isbn_10:
+            self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
+        if self.isbn_13:
+            self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()

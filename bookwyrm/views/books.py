@@ -39,7 +39,7 @@ class Book(View):
             return ActivitypubResponse(book.to_activity())
 
         if isinstance(book, models.Work):
-            book = book.get_default_edition()
+            book = book.default_edition
         if not book or not book.parent_work:
             return HttpResponseNotFound()
 
@@ -156,7 +156,6 @@ class EditBook(View):
                         ),
                     }
                 )
-                print(data["author_matches"])
 
         # we're creating a new book
         if not book:
