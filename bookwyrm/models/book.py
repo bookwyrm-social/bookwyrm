@@ -5,7 +5,7 @@ from django.db import models
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -211,7 +211,15 @@ class Edition(Book):
     def get_rank(self):
         """calculate how complete the data is on this edition"""
         rank = 0
+        # big ups for havinga  cover
         rank += int(bool(self.cover)) * 3
+        # is it in the instance's preferred language?
+        rank += int(bool(DEFAULT_LANGUAGE in self.languages))
+        print(DEFAULT_LANGUAGE)
+        # prefer print editions
+        rank += int(bool(self.physical_format.lower() in ['paperback', 'hardcover']))
+
+        # does it have metadata?
         rank += int(bool(self.isbn_13))
         rank += int(bool(self.isbn_10))
         rank += int(bool(self.oclc_number))

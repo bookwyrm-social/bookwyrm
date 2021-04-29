@@ -23,7 +23,9 @@ class Connector(AbstractConnector):
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
             Mapping("inventaireId", remote_field="uri"),
-            Mapping("description", remote_field="sitelinks", formatter=self.get_description),
+            Mapping(
+                "description", remote_field="sitelinks", formatter=self.get_description
+            ),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_first),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_first),
@@ -84,7 +86,9 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=search_result.get("label"),
             key=self.get_remote_id(search_result.get("uri")),
-            view_link="{:s}/entity/{:s}".format(self.base_url, search_result.get("uri")),
+            view_link="{:s}/entity/{:s}".format(
+                self.base_url, search_result.get("uri")
+            ),
             cover=cover,
             connector=self,
         )
@@ -104,7 +108,9 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=title[0],
             key=self.get_remote_id(search_result.get("uri")),
-            view_link="{:s}/entity/{:s}".format(self.base_url, search_result.get("uri")),
+            view_link="{:s}/entity/{:s}".format(
+                self.base_url, search_result.get("uri")
+            ),
             cover=self.get_cover_url(search_result.get("image")),
             connector=self,
         )
@@ -187,7 +193,7 @@ class Connector(AbstractConnector):
         return results
 
     def get_description(self, links):
-        """ grab an extracted except from wikipedia """
+        """grab an extracted except from wikipedia"""
         link = links.get("enwiki")
         if not link:
             return ""
