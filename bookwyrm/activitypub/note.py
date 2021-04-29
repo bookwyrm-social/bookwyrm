@@ -83,4 +83,5 @@ class Rating(Comment):
 
     rating: int
     content: str = None
+    name: str = None  # not used, but the model inherits from Review
     type: str = "Rating"

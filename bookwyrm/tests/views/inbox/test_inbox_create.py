@@ -129,8 +129,8 @@ class InboxCreate(TestCase):
 
     def test_create_rating(self):
         """a remote rating activity"""
-        models.Edition.objects.create(
-            title="Test Book", origin_id="https://example.com/book/1"
+        book = models.Edition.objects.create(
+            title="Test Book", remote_id="https://example.com/book/1"
         )
         activity = self.create_json
         activity["object"] = {
@@ -160,8 +160,8 @@ class InboxCreate(TestCase):
         with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
             views.inbox.activity_task(activity)
             self.assertTrue(redis_mock.called)
-        rating = models.Status.objects.select_subclasses().first()
-        self.assertEqual(rating.book, self.book)
+        rating = models.ReviewRating.objects.first()
+        self.assertEqual(rating.book, book)
         self.assertEqual(rating.rating, 3.0)
 
     def test_create_list(self):
