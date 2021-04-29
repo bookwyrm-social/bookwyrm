@@ -70,10 +70,11 @@
         {% endif %}
     </div>
     <div class="column">
+        {% if request.user.is_authenticated %}
         <section class="block">
             <h2 class="title is-4">{% trans "Matching Users" %}</h2>
             {% if not user_results %}
-            <p>{% blocktrans %}No users found for "{{ query }}"{% endblocktrans %}</p>
+            <p><em>{% blocktrans %}No users found for "{{ query }}"{% endblocktrans %}</em></p>
             {% endif %}
             <ul>
             {% for result in user_results %}
@@ -87,10 +88,11 @@
             {% endfor %}
             </ul>
         </section>
+        {% endif %}
         <section class="block">
             <h2 class="title is-4">{% trans "Lists" %}</h2>
             {% if not list_results %}
-            <p>{% blocktrans %}No lists found for "{{ query }}"{% endblocktrans %}</p>
+            <p><em>{% blocktrans %}No lists found for "{{ query }}"{% endblocktrans %}</em></p>
             {% endif %}
             {% for result in list_results %}
             <div class="block">
