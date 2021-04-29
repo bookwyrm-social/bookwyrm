@@ -14,7 +14,12 @@
         <h2 class="title is-4">{% trans "Matching Books" %}</h2>
         <section class="block">
             {% if not local_results.results %}
-            <p>{% blocktrans %}No books found for "{{ query }}"{% endblocktrans %}</p>
+                <p><em>{% blocktrans %}No books found for "{{ query }}"{% endblocktrans %}</em></p>
+                {% if not user.is_authenticated %}
+                <p>
+                <a href="{% url 'login' %}">{% trans "Log in to import or add books." %}</a>
+                </p>
+                {% endif %}
             {% else %}
             <ul>
             {% for result in local_results.results %}
@@ -88,7 +93,7 @@
     </div>
     <div class="column">
         {% if request.user.is_authenticated %}
-        <section class="block">
+        <section class="box">
             <h2 class="title is-4">{% trans "Matching Users" %}</h2>
             {% if not user_results %}
             <p><em>{% blocktrans %}No users found for "{{ query }}"{% endblocktrans %}</em></p>
@@ -106,7 +111,7 @@
             </ul>
         </section>
         {% endif %}
-        <section class="block">
+        <section class="box">
             <h2 class="title is-4">{% trans "Lists" %}</h2>
             {% if not list_results %}
             <p><em>{% blocktrans %}No lists found for "{{ query }}"{% endblocktrans %}</em></p>
