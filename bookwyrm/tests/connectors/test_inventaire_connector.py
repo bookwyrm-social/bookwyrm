@@ -1,4 +1,6 @@
 """ testing book data connectors """
+import json
+import pathlib
 from django.test import TestCase
 import responses
 
@@ -45,3 +47,22 @@ class Inventaire(TestCase):
         result = self.connector.get_book_data("https://test.url/ok")
         self.assertEqual(result["wdt:P31"], ["wd:Q3331189"])
         self.assertEqual(result["uri"], "isbn:9780375757853")
+
+    def test_format_search_result(self):
+        """json to search result objs"""
+        search_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_search.json"
+        )
+        search_results = json.loads(search_file.read_bytes())
+
+        results = self.connector.parse_search_data(search_results)
+        formatted = self.connector.format_search_result(results[0])
+
+        self.assertEqual(formatted.title, "The Stories of Vladimir Nabokov")
+        self.assertEqual(
+            formatted.key, "https://inventaire.io?action=by-uris&uris=wd:Q7766679"
+        )
+        self.assertEqual(
+            formatted.cover,
+            "https://covers.inventaire.io/img/entities/ddb32e115a28dcc0465023869ba19f6868ec4042",
+        )
