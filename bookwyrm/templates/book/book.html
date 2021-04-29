@@ -81,6 +81,9 @@
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
                 {% endif %}
+                {% if book.inventaire_id %}
+                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
+                {% endif %}
             </section>
         </div>
 
