@@ -98,7 +98,7 @@ def init_connectors():
         identifier="inventaire.io",
         name="Inventaire",
         connector_file="inventaire",
-        base_url="https://inventaire.io/entity/",
+        base_url="https://inventaire.io",
         books_url="https://inventaire.io/api/entities",
         covers_url="https://inventaire.io",
         search_url="https://inventaire.io/api/search?types=works&types=works&search=",

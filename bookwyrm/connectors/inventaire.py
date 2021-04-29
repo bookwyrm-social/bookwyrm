@@ -23,6 +23,7 @@ class Connector(AbstractConnector):
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
             Mapping("inventaireId", remote_field="uri"),
+            Mapping("description", remote_field="sitelinks", formatter=self.get_description),
             Mapping("cover", remote_field="image", formatter=self.get_cover_url),
             Mapping("isbn13", remote_field="wdt:P212", formatter=get_first),
             Mapping("isbn10", remote_field="wdt:P957", formatter=get_first),
@@ -44,6 +45,7 @@ class Connector(AbstractConnector):
         self.author_mappings = [
             Mapping("id", remote_field="uri", formatter=self.get_remote_id),
             Mapping("name", remote_field="labels", formatter=get_language_code),
+            Mapping("bio", remote_field="sitelinks", formatter=self.get_description),
             Mapping("goodreadsKey", remote_field="wdt:P2963", formatter=get_first),
             Mapping("isni", remote_field="wdt:P213", formatter=get_first),
             Mapping("viafId", remote_field="wdt:P214", formatter=get_first),
@@ -82,7 +84,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=search_result.get("label"),
             key=self.get_remote_id(search_result.get("uri")),
-            view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
+            view_link="{:s}/entity/{:s}".format(self.base_url, search_result.get("uri")),
             cover=cover,
             connector=self,
         )
@@ -102,7 +104,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=title[0],
             key=self.get_remote_id(search_result.get("uri")),
-            view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
+            view_link="{:s}/entity/{:s}".format(self.base_url, search_result.get("uri")),
             cover=self.get_cover_url(search_result.get("image")),
             connector=self,
         )
@@ -183,6 +185,20 @@ class Connector(AbstractConnector):
                 continue
             results.append(get_language_code(data.get("labels")))
         return results
+
+    def get_description(self, links):
+        """ grab an extracted except from wikipedia """
+        link = links.get("enwiki")
+        if not link:
+            return ""
+        url = "{:s}/api/data?action=wp-extract&lang=en&title={:s}".format(
+            self.base_url, link
+        )
+        try:
+            data = get_data(url)
+        except ConnectorException:
+            return ""
+        return data.get("extract")
 
 
 def get_language_code(options, code="en"):
