@@ -86,6 +86,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=search_result.get("label"),
             key=self.get_remote_id(search_result.get("uri")),
+            author=search_result.get("description"),
             view_link="{:s}/entity/{:s}".format(
                 self.base_url, search_result.get("uri")
             ),
@@ -108,6 +109,7 @@ class Connector(AbstractConnector):
         return SearchResult(
             title=title[0],
             key=self.get_remote_id(search_result.get("uri")),
+            author=search_result.get("description"),
             view_link="{:s}/entity/{:s}".format(
                 self.base_url, search_result.get("uri")
             ),
