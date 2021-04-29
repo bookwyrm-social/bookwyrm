@@ -89,7 +89,7 @@ class Connector(AbstractConnector):
 
     def parse_isbn_search_data(self, data):
         """got some daaaata"""
-        results = data.get('entities')
+        results = data.get("entities")
         if not results:
             return []
         return list(results.values())
@@ -104,7 +104,7 @@ class Connector(AbstractConnector):
             key=self.get_remote_id(search_result.get("uri")),
             view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
             cover=self.get_cover_url(search_result.get("image")),
-            connector=self
+            connector=self,
         )
 
     def is_work_data(self, data):

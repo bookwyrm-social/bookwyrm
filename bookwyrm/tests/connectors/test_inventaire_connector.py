@@ -138,7 +138,7 @@ class Inventaire(TestCase):
         self.assertEqual(result, ["epistolary novel", "crime novel"])
 
     def test_isbn_search(self):
-        """ another search type """
+        """another search type"""
         search_file = pathlib.Path(__file__).parent.joinpath(
             "../data/inventaire_isbn_search.json"
         )
@@ -149,7 +149,8 @@ class Inventaire(TestCase):
 
         self.assertEqual(formatted.title, "L'homme aux cercles bleus")
         self.assertEqual(
-            formatted.key, "https://inventaire.io?action=by-uris&uris=isbn:9782290349229"
+            formatted.key,
+            "https://inventaire.io?action=by-uris&uris=isbn:9782290349229",
         )
         self.assertEqual(
             formatted.cover,
