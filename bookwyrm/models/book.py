@@ -216,7 +216,10 @@ class Edition(Book):
         # is it in the instance's preferred language?
         rank += int(bool(DEFAULT_LANGUAGE in self.languages))
         # prefer print editions
-        rank += int(bool(self.physical_format.lower() in ["paperback", "hardcover"]))
+        if self.physical_format:
+            rank += int(
+                bool(self.physical_format.lower() in ["paperback", "hardcover"])
+            )
 
         # does it have metadata?
         rank += int(bool(self.isbn_13))
@@ -235,6 +238,10 @@ class Edition(Book):
             self.isbn_10 = isbn_13_to_10(self.isbn_13)
         if self.isbn_10 and not self.isbn_13:
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
+
+        # normalize isbn format
+        self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
+        self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()
