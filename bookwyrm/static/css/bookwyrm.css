@@ -356,27 +356,27 @@ ol.ordered-list {
 }
 
 ol.ordered-list li {
-  counter-increment: books
+    counter-increment: books
 }
 
 ol.ordered-list li::before {
-  content: counter(books);
-  position: absolute;
-  left: -20px;
-  width: 20px;
-  height: 24px;
+    content: counter(books);
+    position: absolute;
+    left: -20px;
+    width: 20px;
+    height: 24px;
 
-  border: 1px solid #dbdbdb;
-  border-right: 0;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
+    border: 1px solid #dbdbdb;
+    border-right: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
 
-  color: #888;
-  font-size: 0.8em;
-  font-weight: bold;
+    color: #888;
+    font-size: 0.8em;
+    font-weight: bold;
 }
