@@ -70,7 +70,7 @@ class Connector(AbstractConnector):
         # flatten the data so that images, uri, and claims are on the same level
         return {
             **data.get("claims", {}),
-            **{k: data.get(k) for k in ["uri", "image", "labels"]},
+            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks"]},
         }
 
     def parse_search_data(self, data):
@@ -193,7 +193,7 @@ class Connector(AbstractConnector):
         return results
 
     def get_description(self, links):
-        """grab an extracted except from wikipedia"""
+        """grab an extracted excerpt from wikipedia"""
         link = links.get("enwiki")
         if not link:
             return ""

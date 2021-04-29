@@ -215,9 +215,8 @@ class Edition(Book):
         rank += int(bool(self.cover)) * 3
         # is it in the instance's preferred language?
         rank += int(bool(DEFAULT_LANGUAGE in self.languages))
-        print(DEFAULT_LANGUAGE)
         # prefer print editions
-        rank += int(bool(self.physical_format.lower() in ['paperback', 'hardcover']))
+        rank += int(bool(self.physical_format.lower() in ["paperback", "hardcover"]))
 
         # does it have metadata?
         rank += int(bool(self.isbn_13))
