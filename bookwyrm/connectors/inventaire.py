@@ -1,4 +1,6 @@
 """ inventaire data connector """
+import re
+
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult, Mapping
 from .abstract_connector import get_data
@@ -148,11 +150,15 @@ class Connector(AbstractConnector):
         """format the relative cover url into an absolute one:
         {"url": "/img/entities/e794783f01b9d4f897a1ea9820b96e00d346994f"}
         """
+        # covers may or may not be a list
         if isinstance(cover_blob, list) and len(cover_blob) > 0:
             cover_blob = cover_blob[0]
         cover_id = cover_blob.get("url")
         if not cover_id:
             return None
+        # cover may or may not be an absolute url already
+        if re.match(r"^http", cover_id):
+            return cover_id
         return "%s%s" % (self.covers_url, cover_id)
 
     def resolve_keys(self, keys):
