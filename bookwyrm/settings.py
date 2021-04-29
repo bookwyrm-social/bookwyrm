@@ -11,6 +11,7 @@ DOMAIN = env("DOMAIN")
 VERSION = "0.0.1"
 
 PAGE_LENGTH = env("PAGE_LENGTH", 15)
+DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
 # celery
 CELERY_BROKER = env("CELERY_BROKER")
@@ -33,6 +34,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
 ]
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/

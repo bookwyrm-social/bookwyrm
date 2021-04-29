@@ -44,7 +44,7 @@ class AbstractMinimalConnector(ABC):
         if min_confidence:
             params["min_confidence"] = min_confidence
 
-        data = get_data(
+        data = self.get_search_data(
             "%s%s" % (self.search_url, query),
             params=params,
         )
@@ -57,7 +57,7 @@ class AbstractMinimalConnector(ABC):
     def isbn_search(self, query):
         """isbn search"""
         params = {}
-        data = get_data(
+        data = self.get_search_data(
             "%s%s" % (self.isbn_search_url, query),
             params=params,
         )
@@ -67,6 +67,10 @@ class AbstractMinimalConnector(ABC):
         for doc in self.parse_isbn_search_data(data)[:10]:
             results.append(self.format_isbn_search_result(doc))
         return results
+
+    def get_search_data(self, remote_id, **kwargs):  # pylint: disable=no-self-use
+        """this allows connectors to override the default behavior"""
+        return get_data(remote_id, **kwargs)
 
     @abstractmethod
     def get_or_create_book(self, remote_id):
@@ -112,12 +116,12 @@ class AbstractConnector(AbstractMinimalConnector):
             remote_id
         ) or models.Work.find_existing_by_remote_id(remote_id)
         if existing:
-            if hasattr(existing, "get_default_editon"):
-                return existing.get_default_editon()
+            if hasattr(existing, "default_edition"):
+                return existing.default_edition
             return existing
 
         # load the json
-        data = get_data(remote_id)
+        data = self.get_book_data(remote_id)
         mapped_data = dict_from_mappings(data, self.book_mappings)
         if self.is_work_data(data):
             try:
@@ -128,12 +132,12 @@ class AbstractConnector(AbstractMinimalConnector):
                 edition_data = data
             work_data = mapped_data
         else:
+            edition_data = data
             try:
                 work_data = self.get_work_from_edition_data(data)
                 work_data = dict_from_mappings(work_data, self.book_mappings)
             except (KeyError, ConnectorException):
                 work_data = mapped_data
-            edition_data = data
 
         if not work_data or not edition_data:
             raise ConnectorException("Unable to load book data: %s" % remote_id)
@@ -150,6 +154,10 @@ class AbstractConnector(AbstractMinimalConnector):
         load_more_data.delay(self.connector.id, work.id)
         return edition
 
+    def get_book_data(self, remote_id):  # pylint: disable=no-self-use
+        """this allows connectors to override the default behavior"""
+        return get_data(remote_id)
+
     def create_edition_from_data(self, work, edition_data):
         """if we already have the work, we're ready"""
         mapped_data = dict_from_mappings(edition_data, self.book_mappings)
@@ -158,10 +166,6 @@ class AbstractConnector(AbstractMinimalConnector):
         edition = edition_activity.to_model(model=models.Edition)
         edition.connector = self.connector
         edition.save()
-
-        if not work.default_edition:
-            work.default_edition = edition
-            work.save()
 
         for author in self.get_authors_from_data(edition_data):
             edition.authors.add(author)
@@ -176,7 +180,7 @@ class AbstractConnector(AbstractMinimalConnector):
         if existing:
             return existing
 
-        data = get_data(remote_id)
+        data = self.get_book_data(remote_id)
 
         mapped_data = dict_from_mappings(data, self.author_mappings)
         try:
@@ -273,6 +277,7 @@ class SearchResult:
     title: str
     key: str
     connector: object
+    view_link: str = None
     author: str = None
     year: str = None
     cover: str = None

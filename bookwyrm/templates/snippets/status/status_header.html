@@ -6,7 +6,7 @@
     <figure class="media-left" aria-hidden="true">
         <a class="image is-48x48" href="{{ status.user.local_path }}">
             {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
-        </a>    
+        </a>
     </figure>
 
     <div class="media-content">
@@ -47,7 +47,7 @@
 
             {% if status.book %}
                 {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                    <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
+                    <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}: {% include 'snippets/stars.html' with rating=status.rating %}
                     <span
                         itemprop="reviewRating"
                         itemscope
@@ -71,7 +71,6 @@
                                         <meta itemprop="bestRating" content="5">
                                 </span>
 
-                                {% include 'snippets/stars.html' with rating=status.rating %}
                                 {% endif %}
                             {% else %}
                                 {% include 'snippets/book_titleby.html' with book=status.book %}

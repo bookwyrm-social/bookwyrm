@@ -16,7 +16,7 @@ class Notifications(View):
         notifications = request.user.notification_set.all().order_by("-created_date")
         unread = [n.id for n in notifications.filter(read=False)]
         data = {
-            "notifications": notifications,
+            "notifications": notifications[:50],
             "unread": unread,
         }
         notifications.update(read=True)

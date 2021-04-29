@@ -228,6 +228,32 @@ class GoodreadsImport(TestCase):
         self.assertEqual(review.published_date.day, 8)
         self.assertEqual(review.privacy, "unlisted")
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_handle_imported_book_rating(self, _):
+        """goodreads rating import"""
+        import_job = models.ImportJob.objects.create(user=self.user)
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            "../data/goodreads-rating.csv"
+        )
+        csv_file = open(datafile, "r")
+        entry = list(csv.DictReader(csv_file))[2]
+        entry = self.importer.parse_fields(entry)
+        import_item = models.ImportItem.objects.create(
+            job_id=import_job.id, index=0, data=entry, book=self.book
+        )
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, True, "unlisted"
+            )
+        review = models.ReviewRating.objects.get(book=self.book, user=self.user)
+        self.assertIsInstance(review, models.ReviewRating)
+        self.assertEqual(review.rating, 2)
+        self.assertEqual(review.published_date.year, 2019)
+        self.assertEqual(review.published_date.month, 7)
+        self.assertEqual(review.published_date.day, 8)
+        self.assertEqual(review.privacy, "unlisted")
+
     def test_handle_imported_book_reviews_disabled(self):
         """goodreads review import"""
         import_job = models.ImportJob.objects.create(user=self.user)

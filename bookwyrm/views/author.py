@@ -27,7 +27,7 @@ class Author(View):
         ).distinct()
         data = {
             "author": author,
-            "books": [b.get_default_edition() for b in books],
+            "books": [b.default_edition for b in books],
         }
         return TemplateResponse(request, "author.html", data)
 

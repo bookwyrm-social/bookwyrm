@@ -20,8 +20,6 @@ class ReadThrough(TestCase):
         self.edition = models.Edition.objects.create(
             title="Example Edition", parent_work=self.work
         )
-        self.work.default_edition = self.edition
-        self.work.save()
 
         self.user = models.User.objects.create_user(
             "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"

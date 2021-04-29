@@ -14,8 +14,8 @@ class Connector(AbstractConnector):
     def __init__(self, identifier):
         super().__init__(identifier)
 
-        get_first = lambda a: a[0]
-        get_remote_id = lambda a: self.base_url + a
+        get_first = lambda a, *args: a[0]
+        get_remote_id = lambda a, *args: self.base_url + a
         self.book_mappings = [
             Mapping("title"),
             Mapping("id", remote_field="key", formatter=get_remote_id),

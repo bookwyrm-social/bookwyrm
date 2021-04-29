@@ -31,16 +31,6 @@ class Connector(BookWyrmModel):
     # when to reset the query count back to 0 (ie, after 1 day)
     query_count_expiry = models.DateTimeField(auto_now_add=True, blank=True)
 
-    class Meta:
-        """check that there's code to actually use this connector"""
-
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(connector_file__in=ConnectorFiles),
-                name="connector_file_valid",
-            )
-        ]
-
     def __str__(self):
         return "{} ({})".format(
             self.identifier,

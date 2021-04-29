@@ -1,5 +1,6 @@
 """ book list views"""
 from typing import Optional
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,6 +10,7 @@ from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -135,7 +137,11 @@ class List(View):
 
         if query and request.user.is_authenticated:
             # search for books
-            suggestions = connector_manager.local_search(query, raw=True)
+            suggestions = connector_manager.local_search(
+                query,
+                raw=True,
+                filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            )
         elif request.user.is_authenticated:
             # just suggest whatever books are nearby
             suggestions = request.user.shelfbook_set.filter(
@@ -263,7 +269,10 @@ def add_book(request):
         # if the book is already on the list, don't flip out
         pass
 
-    return redirect("list", book_list.id)
+    path = reverse("list", args=[book_list.id])
+    params = request.GET.copy()
+    params["updated"] = True
+    return redirect("{:s}?{:s}".format(path, urlencode(params)))
 
 
 @require_POST
