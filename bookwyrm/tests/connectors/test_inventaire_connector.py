@@ -136,3 +136,22 @@ class Inventaire(TestCase):
         ]
         result = self.connector.resolve_keys(keys)
         self.assertEqual(result, ["epistolary novel", "crime novel"])
+
+    def test_isbn_search(self):
+        """ another search type """
+        search_file = pathlib.Path(__file__).parent.joinpath(
+            "../data/inventaire_isbn_search.json"
+        )
+        search_results = json.loads(search_file.read_bytes())
+
+        results = self.connector.parse_isbn_search_data(search_results)
+        formatted = self.connector.format_isbn_search_result(results[0])
+
+        self.assertEqual(formatted.title, "L'homme aux cercles bleus")
+        self.assertEqual(
+            formatted.key, "https://inventaire.io?action=by-uris&uris=isbn:9782290349229"
+        )
+        self.assertEqual(
+            formatted.cover,
+            "https://covers.inventaire.io/img/entities/12345",
+        )

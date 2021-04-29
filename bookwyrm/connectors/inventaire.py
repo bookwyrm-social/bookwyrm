@@ -81,19 +81,31 @@ class Connector(AbstractConnector):
         )
         return SearchResult(
             title=search_result.get("label"),
-            key="{:s}?action=by-uris&uris={:s}".format(
-                self.books_url, search_result.get("uri")
-            ),
+            key=self.get_remote_id(search_result.get("uri")),
             view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
             cover=cover,
             connector=self,
         )
 
     def parse_isbn_search_data(self, data):
-        """boop doop"""
+        """got some daaaata"""
+        results = data.get('entities')
+        if not results:
+            return []
+        return list(results.values())
 
     def format_isbn_search_result(self, search_result):
-        """beep bloop"""
+        """totally different format than a regular search result"""
+        title = search_result.get("claims", {}).get("wdt:P1476", [])
+        if not title:
+            return None
+        return SearchResult(
+            title=title[0],
+            key=self.get_remote_id(search_result.get("uri")),
+            view_link="{:s}{:s}".format(self.base_url, search_result.get("uri")),
+            cover=self.get_cover_url(search_result.get("image")),
+            connector=self
+        )
 
     def is_work_data(self, data):
         return data.get("type") == "work"

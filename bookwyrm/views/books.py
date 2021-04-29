@@ -156,7 +156,6 @@ class EditBook(View):
                         ),
                     }
                 )
-                print(data["author_matches"])
 
         # we're creating a new book
         if not book:
