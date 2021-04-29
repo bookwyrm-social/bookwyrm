@@ -219,7 +219,7 @@ class ViewsHelpers(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             # 1 shared follow
             self.local_user.following.add(user_2)
-            user_1.following.add(user_2)
+            user_1.followers.add(user_2)
 
             # 1 shared book
             models.ShelfBook.objects.create(
@@ -264,7 +264,7 @@ class ViewsHelpers(TestCase):
                 local=True,
                 localname=i,
             )
-            user.followers.add(user_1)
+            user.following.add(user_1)
             user.followers.add(self.local_user)
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):

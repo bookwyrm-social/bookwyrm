@@ -190,11 +190,11 @@ def get_annotated_users(user, *args, **kwargs):
         .exclude(Q(id__in=user.blocks.all()) | Q(blocks=user))
         .annotate(
             mutuals=Count(
-                "following",
+                "followers",
                 filter=Q(
                     ~Q(id=user.id),
                     ~Q(id__in=user.following.all()),
-                    following__in=user.following.all(),
+                    followers__in=user.following.all(),
                 ),
                 distinct=True,
             ),
