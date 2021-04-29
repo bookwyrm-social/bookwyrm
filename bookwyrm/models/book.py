@@ -240,8 +240,10 @@ class Edition(Book):
             self.isbn_13 = isbn_10_to_13(self.isbn_10)
 
         # normalize isbn format
-        self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
-        self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
+        if self.isbn_10:
+            self.isbn_10 = re.sub(r"[^0-9X]", "", self.isbn_10)
+        if self.isbn_13:
+            self.isbn_13 = re.sub(r"[^0-9X]", "", self.isbn_13)
 
         # set rank
         self.edition_rank = self.get_rank()
