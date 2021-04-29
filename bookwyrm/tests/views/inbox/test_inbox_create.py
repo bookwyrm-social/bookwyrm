@@ -127,6 +127,43 @@ class InboxCreate(TestCase):
         self.assertTrue(models.Notification.objects.filter(user=self.local_user))
         self.assertEqual(models.Notification.objects.get().notification_type, "REPLY")
 
+    def test_create_rating(self):
+        """a remote rating activity"""
+        models.Edition.objects.create(
+            title="Test Book", origin_id="https://example.com/book/1"
+        )
+        activity = self.create_json
+        activity["object"] = {
+            "id": "https://example.com/user/mouse/reviewrating/12",
+            "type": "Rating",
+            "published": "2021-04-29T21:27:30.014235+00:00",
+            "attributedTo": "https://example.com/user/mouse",
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": ["https://example.com/user/mouse/followers"],
+            "replies": {
+                "id": "https://example.com/user/mouse/reviewrating/12/replies",
+                "type": "OrderedCollection",
+                "totalItems": 0,
+                "first": "https://example.com/user/mouse/reviewrating/12/replies?page=1",
+                "last": "https://example.com/user/mouse/reviewrating/12/replies?page=1",
+                "@context": "https://www.w3.org/ns/activitystreams",
+            },
+            "inReplyTo": "",
+            "summary": "",
+            "tag": [],
+            "attachment": [],
+            "sensitive": False,
+            "inReplyToBook": "https://example.com/book/1",
+            "rating": 3,
+            "@context": "https://www.w3.org/ns/activitystreams",
+        }
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            views.inbox.activity_task(activity)
+            self.assertTrue(redis_mock.called)
+        rating = models.Status.objects.select_subclasses().first()
+        self.assertEqual(rating.book, self.book)
+        self.assertEqual(rating.rating, 3.0)
+
     def test_create_list(self):
         """a new list"""
         activity = self.create_json
