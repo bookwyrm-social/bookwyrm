@@ -29,18 +29,23 @@
         {% if request.user.is_authenticated %}
         {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
-            <p>
+            <h3 class="title is-6 mb-0">
                 {% trans "Didn't find what you were looking for?" %}
-            </p>
+            </h3>
             {% trans "Show results from other catalogues" as button_text %}
             {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results" %}
+
+            {% if local_results.results %}
+            {% trans "Hide results from other catalogues" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
+            {% endif %}
         </div>
         {% endif %}
 
         <div class="{% if local_results.results %}is-hidden{% endif %}" id="more-results">
             {% for result_set in book_results|slice:"1:" %}
             {% if result_set.results %}
-            <section class="block">
+            <section class="box has-background-white-bis">
                 {% if not result_set.connector.local %}
                 <header class="columns is-mobile">
                     <div class="column">
@@ -56,7 +61,7 @@
                 </header>
                 {% endif %}
 
-                <div class="box has-background-white-ter{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
+                <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
                     <div class="is-flex is-flex-direction-row-reverse">
                         <div>
                             {% trans "Close" as button_text %}
@@ -74,11 +79,6 @@
             </section>
             {% endif %}
             {% endfor %}
-
-            {% if local_results.results %}
-            {% trans "Hide results from other catalogues" as button_text %}
-            {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results" %}
-            {% endif %}
         </div>
 
         <div class="block">
