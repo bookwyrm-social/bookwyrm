@@ -2,7 +2,7 @@
 <div class="columns is-multiline">
     {% for list in lists %}
     <div class="column is-one-quarter">
-        <div class="card">
+        <div class="card is-stretchable">
             <header class="card-header">
                 <h4 class="card-header-title">
                     <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
