@@ -6,7 +6,7 @@ from .abstract_connector import AbstractMinimalConnector, SearchResult
 class Connector(AbstractMinimalConnector):
     """this is basically just for search"""
 
-    def get_or_create_book(self, remote_id, work=None):
+    def get_or_create_book(self, remote_id):
         return activitypub.resolve_remote_id(remote_id, model=models.Edition)
 
     def parse_search_data(self, data):
