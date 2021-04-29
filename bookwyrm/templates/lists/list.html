@@ -79,15 +79,19 @@
     <section class="column is-one-quarter content">
         <h2>{% trans "Sort List" %}</h2>
         <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
-            <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
-            <div class="select is-fullwidth">
-                {{ sort_form.sort_by }}
+            <div class="field">
+                <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
+                <div class="select is-fullwidth">
+                    {{ sort_form.sort_by }}
+                </div>
             </div>
-            <label class="label" for="id_direction">{% trans "Direction" %}</label>
-            <div class="select is-fullwidth">
-                {{ sort_form.direction }}
+            <div class="field">
+                <label class="label" for="id_direction">{% trans "Direction" %}</label>
+                <div class="select is-fullwidth">
+                    {{ sort_form.direction }}
+                </div>
             </div>
-            <div>
+            <div class="field">
                 <button class="button is-primary is-fullwidth" type="submit">
                     {% trans "Sort List" %}
                 </button>
