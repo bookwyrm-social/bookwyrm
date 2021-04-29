@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-29 11:36-0700\n"
+"POT-Creation-Date: 2021-04-29 13:24-0700\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -272,7 +272,7 @@ msgstr "Lieux"
 
 #: bookwyrm/templates/book/book.html:220 bookwyrm/templates/layout.html:65
 #: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search_results.html:91
+#: bookwyrm/templates/search_results.html:115
 #: bookwyrm/templates/user/user_layout.html:62
 msgid "Lists"
 msgstr "Listes"
@@ -554,6 +554,7 @@ msgstr "Publié par %(publisher)s."
 #: bookwyrm/templates/feed/feed_layout.html:70
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
+#: bookwyrm/templates/search_results.html:72
 msgid "Close"
 msgstr "Fermer"
 
@@ -1072,7 +1073,7 @@ msgid "Search for a user"
 msgstr "Chercher un compte"
 
 #: bookwyrm/templates/get_started/users.html:13
-#: bookwyrm/templates/search_results.html:76
+#: bookwyrm/templates/search_results.html:99
 #, python-format
 msgid "No users found for \"%(query)s\""
 msgstr "Aucun compte trouvé pour « %(query)s »"
@@ -1836,23 +1837,33 @@ msgstr "Profil"
 msgid "Relationships"
 msgstr "Relations"
 
-#: bookwyrm/templates/search_results.html:33
+#: bookwyrm/templates/search_results.html:20
+msgid "Log in to import or add books."
+msgstr ""
+
+#: bookwyrm/templates/search_results.html:38
 msgid "Didn't find what you were looking for?"
 msgstr "Vous n’avez pas trouvé ce que vous cherchiez ?"
 
-#: bookwyrm/templates/search_results.html:35
+#: bookwyrm/templates/search_results.html:40
 msgid "Show results from other catalogues"
 msgstr "Montrer les résultats d’autres catalogues"
 
-#: bookwyrm/templates/search_results.html:62
+#: bookwyrm/templates/search_results.html:44
 msgid "Hide results from other catalogues"
 msgstr "Masquer les résultats d’autres catalogues"
 
-#: bookwyrm/templates/search_results.html:74
+#: bookwyrm/templates/search_results.html:63
+#, fuzzy
+#| msgid "Show more"
+msgid "Show"
+msgstr "Déplier"
+
+#: bookwyrm/templates/search_results.html:97
 msgid "Matching Users"
 msgstr "Comptes correspondants"
 
-#: bookwyrm/templates/search_results.html:93
+#: bookwyrm/templates/search_results.html:117
 #, python-format
 msgid "No lists found for \"%(query)s\""
 msgstr "Aucune liste trouvée pour « %(query)s »"
