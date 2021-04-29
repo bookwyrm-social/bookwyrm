@@ -65,7 +65,7 @@ class Connector(AbstractConnector):
             raise ConnectorException("Invalid book data")
         # flatten the data so that images, uri, and claims are on the same level
         return {
-            **data.get("claims"),
+            **data.get("claims", {}),
             **{k: data.get(k) for k in ["uri", "image", "labels"]},
         }
 
