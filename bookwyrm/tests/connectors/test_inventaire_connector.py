@@ -66,3 +66,73 @@ class Inventaire(TestCase):
             formatted.cover,
             "https://covers.inventaire.io/img/entities/ddb32e115a28dcc0465023869ba19f6868ec4042",
         )
+
+    def test_get_cover_url(self):
+        """figure out where the cover image is"""
+        cover_blob = {"url": "/img/entities/d46a8"}
+        result = self.connector.get_cover_url(cover_blob)
+        self.assertEqual(result, "https://covers.inventaire.io/img/entities/d46a8")
+
+        cover_blob = {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Moonstone%201st%20ed.jpg?width=1000",
+            "file": "The Moonstone 1st ed.jpg",
+            "credits": {
+                "text": "Wikimedia Commons",
+                "url": "https://commons.wikimedia.org/wiki/File:The Moonstone 1st ed.jpg",
+            },
+        }
+
+        result = self.connector.get_cover_url(cover_blob)
+        self.assertEqual(
+            result,
+            "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Moonstone%201st%20ed.jpg?width=1000",
+        )
+
+    @responses.activate
+    def test_resolve_keys(self):
+        """makes an http request"""
+        responses.add(
+            responses.GET,
+            "https://inventaire.io?action=by-uris&uris=wd:Q465821",
+            json={
+                "entities": {
+                    "wd:Q465821": {
+                        "type": "genre",
+                        "labels": {
+                            "nl": "briefroman",
+                            "en": "epistolary novel",
+                            "de-ch": "Briefroman",
+                            "en-ca": "Epistolary novel",
+                            "nb": "brev- og dagbokroman",
+                        },
+                        "descriptions": {
+                            "en": "novel written as a series of documents",
+                            "es": "novela escrita como una serie de documentos",
+                            "eo": "romano en la formo de serio de leteroj",
+                        },
+                    },
+                    "redirects": {},
+                }
+            },
+        )
+        responses.add(
+            responses.GET,
+            "https://inventaire.io?action=by-uris&uris=wd:Q208505",
+            json={
+                "entities": {
+                    "wd:Q208505": {
+                        "type": "genre",
+                        "labels": {
+                            "en": "crime novel",
+                        },
+                    },
+                }
+            },
+        )
+
+        keys = [
+            "wd:Q465821",
+            "wd:Q208505",
+        ]
+        result = self.connector.resolve_keys(keys)
+        self.assertEqual(result, ["epistolary novel", "crime novel"])
