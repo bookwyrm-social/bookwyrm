@@ -17,7 +17,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter
+from .helpers import privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -29,10 +29,6 @@ class User(View):
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
@@ -99,10 +95,6 @@ class Followers(View):
         except models.User.DoesNotExist:
             return HttpResponseNotFound()
 
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
-            return HttpResponseNotFound()
-
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
@@ -123,10 +115,6 @@ class Following(View):
         try:
             user = get_user_from_username(request.user, username)
         except models.User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
             return HttpResponseNotFound()
 
         if is_api_request(request):
