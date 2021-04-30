@@ -25,7 +25,7 @@
         </div>
     </div>
     {% endfor %}
-    {% if not followers.count %}
+    {% if not followers %}
     <div>{% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}</div>
     {% endif %}
 </div>
