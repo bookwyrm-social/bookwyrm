@@ -30,27 +30,30 @@ class Search(View):
             )
             return JsonResponse([r.json() for r in book_results], safe=False)
 
+        data = {"query": query or ""}
+
         # use webfinger for mastodon style account@domain.com username
         if query and re.match(regex.full_username, query):
             handle_remote_webfinger(query)
 
         # do a user search
-        user_results = (
-            models.User.viewer_aware_objects(request.user)
-            .annotate(
-                similarity=Greatest(
-                    TrigramSimilarity("username", query),
-                    TrigramSimilarity("localname", query),
+        if request.user.is_authenticated:
+            data["user_results"] = (
+                models.User.viewer_aware_objects(request.user)
+                .annotate(
+                    similarity=Greatest(
+                        TrigramSimilarity("username", query),
+                        TrigramSimilarity("localname", query),
+                    )
                 )
+                .filter(
+                    similarity__gt=0.5,
+                )
+                .order_by("-similarity")[:10]
             )
-            .filter(
-                similarity__gt=0.5,
-            )
-            .order_by("-similarity")[:10]
-        )
 
         # any relevent lists?
-        list_results = (
+        data["list_results"] = (
             privacy_filter(
                 request.user,
                 models.List.objects,
@@ -68,11 +71,7 @@ class Search(View):
             .order_by("-similarity")[:10]
         )
 
-        book_results = connector_manager.search(query, min_confidence=min_confidence)
-        data = {
-            "book_results": book_results,
-            "user_results": user_results,
-            "list_results": list_results,
-            "query": query or "",
-        }
+        data["book_results"] = connector_manager.search(
+            query, min_confidence=min_confidence
+        )
         return TemplateResponse(request, "search_results.html", data)

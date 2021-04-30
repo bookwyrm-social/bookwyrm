@@ -48,10 +48,9 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            <div class="is-clipped">
-                {% include 'snippets/book_cover.html' with book=book size=large %}
-                {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            </div>
+            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+
             <div class="mb-3">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
@@ -80,6 +79,9 @@
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
+                {% endif %}
+                {% if book.inventaire_id %}
+                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
                 {% endif %}
             </section>
         </div>

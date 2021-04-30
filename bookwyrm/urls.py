@@ -43,7 +43,7 @@ urlpatterns = [
     re_path("^api/updates/notifications/?$", views.get_notification_count),
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
     # authentication
-    re_path(r"^login/?$", views.Login.as_view()),
+    re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
     re_path(r"^logout/?$", views.Logout.as_view()),
     re_path(r"^password-reset/?$", views.PasswordResetRequest.as_view()),
@@ -224,7 +224,11 @@ urlpatterns = [
     re_path(r"^hide-goal/?$", views.hide_goal, name="hide-goal"),
     # preferences
     re_path(r"^preferences/profile/?$", views.EditUser.as_view(), name="prefs-profile"),
-    re_path(r"^preferences/password/?$", views.ChangePassword.as_view()),
+    re_path(
+        r"^preferences/password/?$",
+        views.ChangePassword.as_view(),
+        name="prefs-password",
+    ),
     re_path(r"^preferences/block/?$", views.Block.as_view()),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
