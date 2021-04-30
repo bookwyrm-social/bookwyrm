@@ -84,11 +84,11 @@ class SelfConnector(TestCase):
             title="Edition 1 Title", parent_work=work
         )
         edition_2 = models.Edition.objects.create(
-            title="Edition 2 Title", parent_work=work
+            title="Edition 2 Title",
+            parent_work=work,
+            edition_rank=20,  # that's default babey
         )
         edition_3 = models.Edition.objects.create(title="Fish", parent_work=work)
-        work.default_edition = edition_2
-        work.save()
 
         # pick the best edition
         results = self.connector.search("Edition 1 Title")

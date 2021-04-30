@@ -123,7 +123,7 @@ def get_edition(book_id):
     """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
-        book = book.get_default_edition()
+        book = book.default_edition
     return book
 
 
@@ -190,11 +190,11 @@ def get_annotated_users(user, *args, **kwargs):
         .exclude(Q(id__in=user.blocks.all()) | Q(blocks=user))
         .annotate(
             mutuals=Count(
-                "following",
+                "followers",
                 filter=Q(
                     ~Q(id=user.id),
                     ~Q(id__in=user.following.all()),
-                    following__in=user.following.all(),
+                    followers__in=user.following.all(),
                 ),
                 distinct=True,
             ),

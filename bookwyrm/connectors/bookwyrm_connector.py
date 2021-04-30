@@ -7,11 +7,7 @@ class Connector(AbstractMinimalConnector):
     """this is basically just for search"""
 
     def get_or_create_book(self, remote_id):
-        edition = activitypub.resolve_remote_id(remote_id, model=models.Edition)
-        work = edition.parent_work
-        work.default_edition = work.get_default_edition()
-        work.save()
-        return edition
+        return activitypub.resolve_remote_id(remote_id, model=models.Edition)
 
     def parse_search_data(self, data):
         return data

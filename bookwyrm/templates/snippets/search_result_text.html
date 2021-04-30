@@ -8,17 +8,17 @@
         <p>
             <strong>
                 <a
-                    href="{{ result.key }}"
-
+                    href="{{ result.view_link|default:result.key }}"
                     {% if remote_result %}
                         rel=”noopener”
                         target="_blank"
                     {% endif %}
                 >{{ result.title }}</a>
             </strong>
-
+        </p>
+        <p>
             {% if result.author %}
-                {% blocktrans with author=result.author %}by {{ author }}{% endblocktrans %}
+                {{ result.author }}
             {% endif %}
 
             {% if result.year %}

@@ -84,9 +84,3 @@ class Book(TestCase):
         self.first_edition.description = "hi"
         self.first_edition.save()
         self.assertEqual(self.first_edition.edition_rank, 1)
-
-        # default edition
-        self.work.default_edition = self.first_edition
-        self.work.save()
-        self.first_edition.refresh_from_db()
-        self.assertEqual(self.first_edition.edition_rank, 20)
