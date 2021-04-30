@@ -224,7 +224,11 @@ urlpatterns = [
     re_path(r"^hide-goal/?$", views.hide_goal, name="hide-goal"),
     # preferences
     re_path(r"^preferences/profile/?$", views.EditUser.as_view(), name="prefs-profile"),
-    re_path(r"^preferences/password/?$", views.ChangePassword.as_view()),
+    re_path(
+        r"^preferences/password/?$",
+        views.ChangePassword.as_view(),
+        name="prefs-password",
+    ),
     re_path(r"^preferences/block/?$", views.Block.as_view()),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
