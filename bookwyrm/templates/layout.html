@@ -200,6 +200,11 @@
                 </p>
                 {% endif %}
             </div>
+            {% if site.footer_item %}
+            <div class="column">
+                <p>{{ site.footer_item|safe }}</p>
+            </div>
+            {% endif %}
             {% if site.support_link %}
             <div class="column">
                 <span class="icon icon-heart"></span>

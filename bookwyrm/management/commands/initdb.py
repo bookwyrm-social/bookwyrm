@@ -1,4 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
+""" What you need in the database to make it work """
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
@@ -7,12 +8,14 @@ from bookwyrm.settings import DOMAIN
 
 
 def init_groups():
+    """permission levels"""
     groups = ["admin", "moderator", "editor"]
     for group in groups:
         Group.objects.create(name=group)
 
 
 def init_permissions():
+    """ permissin types """
     permissions = [
         {
             "codename": "edit_instance_settings",
@@ -69,6 +72,7 @@ def init_permissions():
 
 
 def init_connectors():
+    """access book data sources"""
     Connector.objects.create(
         identifier=DOMAIN,
         name="Local",
@@ -130,7 +134,11 @@ def init_federated_servers():
 
 
 def init_settings():
-    SiteSettings.objects.create()
+    """ info about the instance """
+    SiteSettings.objects.create(
+        support_link="https://www.patreon.com/bookwyrm",
+        support_title="Patreon",
+    )
 
 
 class Command(BaseCommand):
