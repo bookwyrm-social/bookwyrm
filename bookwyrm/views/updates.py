@@ -10,7 +10,8 @@ def get_notification_count(request):
     """any notifications waiting?"""
     return JsonResponse(
         {
-            "count": request.user.notification_set.filter(read=False).count(),
+            "count": request.user.unread_notification_count,
+            "has_mentions": request.user.has_unread_mentions,
         }
     )
 

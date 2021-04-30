@@ -97,10 +97,12 @@ let BookWyrm = new class {
     updateCountElement(counter, data) {
         const currentCount = counter.innerText;
         const count = data.count;
+        const hasMentions = data.has_mentions;
 
         if (count != currentCount) {
             this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-hidden', count < 1);
             counter.innerText = count;
+            this.addRemoveClass(counter.closest('[data-poll-wrapper]'), 'is-danger', hasMentions);
         }
     }
 
