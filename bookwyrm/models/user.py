@@ -152,12 +152,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     @property
     def unread_notification_count(self):
-        """ count of notifications, for the templates """
+        """count of notifications, for the templates"""
         return self.notification_set.filter(read=False).count()
 
     @property
     def has_unread_mentions(self):
-        """ whether any of the unread notifications are conversations """
+        """whether any of the unread notifications are conversations"""
         return self.notification_set.filter(
             read=False,
             notification_type__in=["REPLY", "MENTION", "TAG"],
