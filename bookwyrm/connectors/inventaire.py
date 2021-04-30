@@ -137,9 +137,8 @@ class Connector(AbstractConnector):
         return self.get_book_data(self.get_remote_id(uri))
 
     def get_work_from_edition_data(self, data):
-        try:
-            uri = data["claims"]["wdt:P629"]
-        except KeyError:
+        uri = data.get("wdt:P629", [None])[0]
+        if not uri:
             raise ConnectorException("Invalid book data")
         return self.get_book_data(self.get_remote_id(uri))
 
