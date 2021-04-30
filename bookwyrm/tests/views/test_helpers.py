@@ -3,6 +3,7 @@ import json
 from unittest.mock import patch
 import pathlib
 from django.db.models import Q
+from django.http import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 import responses
@@ -67,7 +68,7 @@ class ViewsHelpers(TestCase):
             views.helpers.get_user_from_username(self.local_user, "mouse@local.com"),
             self.local_user,
         )
-        with self.assertRaises(models.User.DoesNotExist):
+        with self.assertRaises(Http404):
             views.helpers.get_user_from_username(self.local_user, "mojfse@example.com")
 
     def test_is_api_request(self, _):

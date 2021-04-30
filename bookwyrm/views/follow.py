@@ -14,10 +14,7 @@ from .helpers import get_user_from_username
 def follow(request):
     """follow another user, here or abroad"""
     username = request.POST["user"]
-    try:
-        to_follow = get_user_from_username(request.user, username)
-    except models.User.DoesNotExist:
-        return HttpResponseBadRequest()
+    to_follow = get_user_from_username(request.user, username)
 
     try:
         models.UserFollowRequest.objects.create(
@@ -35,10 +32,7 @@ def follow(request):
 def unfollow(request):
     """unfollow a user"""
     username = request.POST["user"]
-    try:
-        to_unfollow = get_user_from_username(request.user, username)
-    except models.User.DoesNotExist:
-        return HttpResponseBadRequest()
+    to_unfollow = get_user_from_username(request.user, username)
 
     try:
         models.UserFollows.objects.get(
@@ -63,10 +57,7 @@ def unfollow(request):
 def accept_follow_request(request):
     """a user accepts a follow request"""
     username = request.POST["user"]
-    try:
-        requester = get_user_from_username(request.user, username)
-    except models.User.DoesNotExist:
-        return HttpResponseBadRequest()
+    requester = get_user_from_username(request.user, username)
 
     try:
         follow_request = models.UserFollowRequest.objects.get(
@@ -85,10 +76,7 @@ def accept_follow_request(request):
 def delete_follow_request(request):
     """a user rejects a follow request"""
     username = request.POST["user"]
-    try:
-        requester = get_user_from_username(request.user, username)
-    except models.User.DoesNotExist:
-        return HttpResponseBadRequest()
+    requester = get_user_from_username(request.user, username)
 
     try:
         follow_request = models.UserFollowRequest.objects.get(

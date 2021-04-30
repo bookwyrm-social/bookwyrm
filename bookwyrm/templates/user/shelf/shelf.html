@@ -1,21 +1,21 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load bookwyrm_tags %}
 {% load humanize %}
 {% load i18n %}
 
 {% block title %}
-{% include 'user/books_header.html' %}
+{% include 'user/shelf/books_header.html' %}
 {% endblock %}
 
 {% block header %}
 <header class="columns">
     <h1 class="title">
-        {% include 'user/books_header.html' %}
+        {% include 'user/shelf/books_header.html' %}
     </h1>
 </header>
 {% endblock %}
 
-{% block panel %}
+{% block tabs %}
 <div class="block columns">
     <div class="column">
         <div class="tabs">
@@ -39,9 +39,11 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block panel %}
 <div class="block">
-    {% include 'user/create_shelf_form.html' with controls_text='create-shelf-form' %}
+    {% include 'user/shelf/create_shelf_form.html' with controls_text='create-shelf-form' %}
 </div>
 
 <div class="block columns is-mobile">
@@ -62,7 +64,7 @@
 </div>
 
 <div class="block">
-    {% include 'user/edit_shelf_form.html' with controls_text="edit-shelf-form" %}
+    {% include 'user/shelf/edit_shelf_form.html' with controls_text="edit-shelf-form" %}
 </div>
 
 <div class="block">
