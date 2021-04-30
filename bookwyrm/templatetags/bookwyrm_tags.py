@@ -235,3 +235,10 @@ def get_lang():
     """get current language, strip to the first two letters"""
     language = utils.translation.get_language()
     return language[0 : language.find("-")]
+
+
+@register.simple_tag(takes_context=True)
+def mutuals_count(context, user):
+    """how many users that you follow, follow them"""
+    viewer = context["request"].user
+    return user.followers.filter(id__in=viewer.following.all()).count()

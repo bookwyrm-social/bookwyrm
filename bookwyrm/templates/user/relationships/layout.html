@@ -6,13 +6,13 @@
 {% with user|username as username %}
 <nav class="tabs">
     <ul>
-        {% url 'user-following' user|username as url %}
-        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
-            <a href="{{ url }}">{% trans "Following" %}</a>
-        </li>
         {% url 'user-followers' user|username as url %}
         <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "Followers" %}</a>
+        </li>
+        {% url 'user-following' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Following" %}</a>
         </li>
     </ul>
 </nav>
