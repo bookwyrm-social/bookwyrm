@@ -160,7 +160,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """whether any of the unread notifications are conversations"""
         return self.notification_set.filter(
             read=False,
-            notification_type__in=["REPLY", "MENTION", "TAG"],
+            notification_type__in=["REPLY", "MENTION", "TAG", "REPORT"],
         ).exists()
 
     activity_serializer = activitypub.Person
