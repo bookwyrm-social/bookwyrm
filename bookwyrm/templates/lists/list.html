@@ -44,8 +44,15 @@
                             </div>
 
                             <div class="column ml-3">
-                                <span>{% include 'snippets/book_titleby.html' %}</span>
-                                {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                                <p>
+                                    {% include 'snippets/book_titleby.html' %}
+                                </p>
+                                <p>
+                                    {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
+                                </p>
+                                <p>
+                                    {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
+                                </p>
                                 {% include 'snippets/shelve_button/shelve_button.html' %}
                             </div>
                         </div>
