@@ -15,7 +15,7 @@ def init_groups():
 
 
 def init_permissions():
-    """permissin types"""
+    """permission types"""
     permissions = [
         {
             "codename": "edit_instance_settings",
