@@ -122,7 +122,6 @@ class AbstractConnector(AbstractMinimalConnector):
 
         # load the json
         data = self.get_book_data(remote_id)
-        mapped_data = dict_from_mappings(data, self.book_mappings)
         if self.is_work_data(data):
             try:
                 edition_data = self.get_edition_from_work_data(data)
@@ -130,24 +129,26 @@ class AbstractConnector(AbstractMinimalConnector):
                 # hack: re-use the work data as the edition data
                 # this is why remote ids aren't necessarily unique
                 edition_data = data
-            work_data = mapped_data
+            work_data = data
         else:
             edition_data = data
             try:
                 work_data = self.get_work_from_edition_data(data)
-                work_data = dict_from_mappings(work_data, self.book_mappings)
-            except (KeyError, ConnectorException):
-                work_data = mapped_data
+            except (KeyError, ConnectorException) as e:
+                logger.exception(e)
+                work_data = data
 
         if not work_data or not edition_data:
             raise ConnectorException("Unable to load book data: %s" % remote_id)
 
         with transaction.atomic():
             # create activitypub object
-            work_activity = activitypub.Work(**work_data)
+            work_activity = activitypub.Work(
+                **dict_from_mappings(work_data, self.book_mappings)
+            )
             # this will dedupe automatically
             work = work_activity.to_model(model=models.Work)
-            for author in self.get_authors_from_data(data):
+            for author in self.get_authors_from_data(work_data):
                 work.authors.add(author)
 
             edition = self.create_edition_from_data(work, edition_data)
