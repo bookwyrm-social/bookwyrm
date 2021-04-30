@@ -5,7 +5,7 @@ from django.test import TestCase
 import responses
 
 from bookwyrm import models
-from bookwyrm.connectors.inventaire import Connector
+from bookwyrm.connectors.inventaire import Connector, get_language_code
 
 
 class Inventaire(TestCase):
@@ -156,3 +156,18 @@ class Inventaire(TestCase):
             formatted.cover,
             "https://covers.inventaire.io/img/entities/12345",
         )
+
+    def test_get_language_code(self):
+        """get english or whatever is in reach"""
+        options = {
+            "de": "bip",
+            "en": "hi",
+            "fr": "there",
+        }
+        self.assertEqual(get_language_code(options), "hi")
+
+        options = {
+            "fr": "there",
+        }
+        self.assertEqual(get_language_code(options), "there")
+        self.assertIsNone(get_language_code({}))
