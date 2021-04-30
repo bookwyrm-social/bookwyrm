@@ -1,4 +1,4 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
 
@@ -10,8 +10,8 @@
 
 {% block panel %}
 <div class="block">
-    <h2 class="title">{% trans "Followers" %}</h2>
-    {% for follower in followers %}
+    <h2 class="title">{% trans "Following" %}</h2>
+    {% for follower in user.following.all %}
     <div class="block columns">
         <div class="column">
             <a href="{{ follower.local_path }}">
@@ -25,10 +25,10 @@
         </div>
     </div>
     {% endfor %}
-    {% if not followers %}
-    <div>{% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}</div>
+    {% if not following %}
+    <div>{% blocktrans with username=user|username %}{{ username }} isn't following any users{% endblocktrans %}</div>
     {% endif %}
 </div>
 
-{% include 'snippets/pagination.html' with page=followers path=request.path %}
+{% include 'snippets/pagination.html' with page=following path=request.path %}
 {% endblock %}

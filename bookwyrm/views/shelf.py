@@ -68,7 +68,7 @@ class Shelf(View):
             "books": paginated.get_page(request.GET.get("page")),
         }
 
-        return TemplateResponse(request, "user/shelf.html", data)
+        return TemplateResponse(request, "user/shelf/shelf.html", data)
 
     @method_decorator(login_required, name="dispatch")
     # pylint: disable=unused-argument

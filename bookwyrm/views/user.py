@@ -112,7 +112,7 @@ class Followers(View):
             "is_self": request.user.id == user.id,
             "followers": paginated.page(request.GET.get("page", 1)),
         }
-        return TemplateResponse(request, "user/followers.html", data)
+        return TemplateResponse(request, "user/relationships/followers.html", data)
 
 
 class Following(View):
@@ -138,7 +138,7 @@ class Following(View):
             "is_self": request.user.id == user.id,
             "following": paginated.page(request.GET.get("page", 1)),
         }
-        return TemplateResponse(request, "user/following.html", data)
+        return TemplateResponse(request, "user/relationships/following.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
