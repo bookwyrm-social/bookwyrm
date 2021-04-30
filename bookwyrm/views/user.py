@@ -110,7 +110,7 @@ class Followers(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "followers": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.page(request.GET.get("page", 1)),
         }
         return TemplateResponse(request, "user/relationships/followers.html", data)
 
@@ -132,11 +132,11 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        paginated = Paginator(user.followers.all(), PAGE_LENGTH)
+        paginated = Paginator(user.following.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "following": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.page(request.GET.get("page", 1)),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
 
