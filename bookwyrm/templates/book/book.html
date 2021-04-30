@@ -249,6 +249,7 @@
 
     <div class="block" id="reviews">
         {% if request.user.is_authenticated %}
+        {% if user_statuses.review_count or user_statuses.comment_count or user_stuatses.quotation_count %}
         <nav class="tabs">
             <ul>
                 {% url 'book' book.id as tab_url %}
@@ -275,6 +276,7 @@
                 {% endif %}
             </ul>
         </nav>
+        {% endif %}
         {% endif %}
 
         {% for review in statuses %}
