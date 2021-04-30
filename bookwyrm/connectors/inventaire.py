@@ -21,6 +21,7 @@ class Connector(AbstractConnector):
         ]
         self.book_mappings = [
             Mapping("title", remote_field="wdt:P1476", formatter=get_first),
+            Mapping("title", remote_field="labels", formatter=get_language_code),
             Mapping("subtitle", remote_field="wdt:P1680", formatter=get_first),
             Mapping("inventaireId", remote_field="uri"),
             Mapping(
@@ -211,4 +212,8 @@ class Connector(AbstractConnector):
 
 def get_language_code(options, code="en"):
     """when there are a bunch of translation but we need a single field"""
-    return options.get(code)
+    result = options.get(code)
+    if result:
+        return result
+    values = list(options.values())
+    return values[0] if values else None

@@ -217,6 +217,10 @@ def dict_from_mappings(data, mappings):
     the subclass"""
     result = {}
     for mapping in mappings:
+        # sometimes there are multiple mappings for one field, don't
+        # overwrite earlier writes in that case
+        if mapping.local_field in result and result[mapping.local_field]:
+            continue
         result[mapping.local_field] = mapping.get_value(data)
     return result
 
