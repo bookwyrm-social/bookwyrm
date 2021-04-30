@@ -150,6 +150,19 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         """for consistent naming"""
         return not self.is_active
 
+    @property
+    def unread_notification_count(self):
+        """ count of notifications, for the templates """
+        return self.notification_set.filter(read=False).count()
+
+    @property
+    def has_unread_mentions(self):
+        """ whether any of the unread notifications are conversations """
+        return self.notification_set.filter(
+            read=False,
+            notification_type__in=["REPLY", "MENTION", "TAG"],
+        ).exists()
+
     activity_serializer = activitypub.Person
 
     @classmethod
