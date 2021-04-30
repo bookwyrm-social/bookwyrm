@@ -34,7 +34,7 @@
         {% if request.user.is_authenticated %}
         {% if book_results|slice:":1" and local_results.results %}
         <div class="block">
-            <h3 class="title is-6 mb-0">
+            <h3 class="title is-6">
                 {% trans "Didn't find what you were looking for?" %}
             </h3>
             {% trans "Show results from other catalogues" as button_text %}
@@ -72,12 +72,13 @@
                             {% trans "Close" as button_text %}
                             {% include 'snippets/toggle/toggle_button.html' with label=button_text class="delete" nonbutton=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier pressed=forloop.first %}
                         </div>
+
                         <ul class="is-flex-grow-1">
-                        {% for result in result_set.results %}
-                            <li class="pb-4">
-                                {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
-                            </li>
-                        {% endfor %}
+                            {% for result in result_set.results %}
+                                <li class="mb-5">
+                                    {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>

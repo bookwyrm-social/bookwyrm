@@ -45,21 +45,22 @@
 </section>
 
 {% if goal.books %}
-<section class="content">
-    <h2>
+<section>
+    <h2 class="title is-4">
         {% if goal.user == request.user %}
         {% blocktrans %}Your {{ year }} Books{% endblocktrans %}
         {% else %}
         {% blocktrans with username=goal.user.display_name %}{{ username }}'s {{ year }} Books{% endblocktrans %}
         {% endif %}
     </h2>
-    <div class="columns is-multiline">
+
+    <div class="columns is-mobile is-multiline">
         {% for book in goal.books %}
-        <div class="column is-one-fifth">
-            <div class="is-clipped">
-                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
+            <div class="column is-cover">
+                <a href="{{ book.book.local_path }}">
+                    {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-xl is-h-l-mobile' %}
+                </a>
             </div>
-        </div>
         {% endfor %}
     </div>
 </section>

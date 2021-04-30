@@ -1,10 +1,13 @@
-<div class="columns is-multiline">
+<div class="columns is-mobile is-multiline">
     {% for book in books %}
     <div class="column is-narrow">
-        <div class="box">
-            <a href="/book/{{ book.id }}">
-                {% include 'snippets/book_cover.html' with book=book %}
-            </a>
+        <div class="box is-flex is-flex-direction-column is-align-items-center">
+            <div class="mb-3">
+                <a href="/book/{{ book.id }}">
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-w-l-mobile is-h-l-mobile is-w-l-tablet is-h-xl-tablet' %}
+                </a>
+            </div>
+
             {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True %}
         </div>
     </div>
