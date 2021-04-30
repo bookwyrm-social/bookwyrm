@@ -25,10 +25,7 @@ class Shelf(View):
 
     def get(self, request, username, shelf_identifier=None):
         """display a shelf"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         shelves = privacy_filter(request.user, user.shelf_set)
 

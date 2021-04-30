@@ -6,7 +6,6 @@ from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -26,10 +25,7 @@ class User(View):
 
     def get(self, request, username):
         """profile page for a user"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             # we have a json request
@@ -90,10 +86,7 @@ class Followers(View):
 
     def get(self, request, username):
         """list of followers"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
@@ -112,10 +105,7 @@ class Following(View):
 
     def get(self, request, username):
         """list of followers"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
