@@ -37,16 +37,16 @@
 
     <section class="block" id="images">
         <h2 class="title is-4">{% trans "Images" %}</h2>
-        <div class="field is-grouped">
-            <div class="control">
+        <div class="columns">
+            <div class="column">
                 <label class="label" for="id_logo">{% trans "Logo:" %}</label>
                 {{ site_form.logo }}
             </div>
-            <div class="control">
+            <div class="column">
                 <label class="label" for="id_logo_small">{% trans "Logo small:" %}</label>
                 {{ site_form.logo_small }}
             </div>
-            <div class="control">
+            <div class="column">
                 <label class="label" for="id_favicon">{% trans "Favicon:" %}</label>
                 {{ site_form.favicon }}
             </div>
@@ -68,6 +68,10 @@
         <div class="control">
             <label class="label" for="id_admin_email">{% trans "Admin email:" %}</label>
             {{ site_form.admin_email }}
+        </div>
+        <div class="control">
+            <label class="label" for="id_footer_item">{% trans "Additional info:" %}</label>
+            {{ site_form.footer_item }}
         </div>
     </section>
 
