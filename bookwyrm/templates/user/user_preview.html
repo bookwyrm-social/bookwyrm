@@ -18,7 +18,7 @@
             <a href="{% url 'user-followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
             <a href="{% url 'user-following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
 
-            {% else %}
+            {% elif request.user.is_authenticated %}
 
             {% mutuals_count user as mutuals %}
             <a href="{% url 'user-followers' user|username %}">
