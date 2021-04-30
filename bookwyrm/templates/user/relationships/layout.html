@@ -2,6 +2,23 @@
 {% load i18n %}
 {% load bookwyrm_tags %}
 
+{% block tabs %}
+{% with user|username as username %}
+<nav class="tabs">
+    <ul>
+        {% url 'user-following' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Following" %}</a>
+        </li>
+        {% url 'user-followers' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Followers" %}</a>
+        </li>
+    </ul>
+</nav>
+{% endwith %}
+{% endblock %}
+
 {% block panel %}
 <div class="block">
     {% for follow in follow_list %}
