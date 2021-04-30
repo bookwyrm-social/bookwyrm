@@ -15,7 +15,7 @@
 </header>
 {% endblock %}
 
-{% block panel %}
+{% block tabs %}
 <div class="block columns">
     <div class="column">
         <div class="tabs">
@@ -39,7 +39,9 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block panel %}
 <div class="block">
     {% include 'user/shelf/create_shelf_form.html' with controls_text='create-shelf-form' %}
 </div>
