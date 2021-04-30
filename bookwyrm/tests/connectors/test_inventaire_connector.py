@@ -158,7 +158,7 @@ class Inventaire(TestCase):
         )
 
     def test_get_language_code(self):
-        """ get english or whatever is in reach """
+        """get english or whatever is in reach"""
         options = {
             "de": "bip",
             "en": "hi",
