@@ -135,8 +135,8 @@ class UserViews(TestCase):
         self.rat.blocks.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "rat")
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, "rat")
 
     def test_edit_user_page(self):
         """there are so many views, this just makes sure it LOADS"""
