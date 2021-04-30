@@ -48,7 +48,9 @@
                         {% endif %}
                     </li>
                     {% endif %}
+                    {% if readthrough.start_date %}
                     <li>{{ readthrough.start_date | localtime | naturalday }}: {% trans "started" %}</li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="column is-narrow">
