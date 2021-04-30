@@ -24,7 +24,7 @@
     {% for follow in follow_list %}
     <div class="block columns">
         <div class="column">
-            <a href="{{ follower.local_path }}">
+            <a href="{{ follow.local_path }}">
                 {% include 'snippets/avatar.html' with user=follow %}
                 {{ follow.display_name }}
             </a>
