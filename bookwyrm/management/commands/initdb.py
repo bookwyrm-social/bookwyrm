@@ -15,7 +15,7 @@ def init_groups():
 
 
 def init_permissions():
-    """ permissin types """
+    """permissin types"""
     permissions = [
         {
             "codename": "edit_instance_settings",
@@ -134,7 +134,7 @@ def init_federated_servers():
 
 
 def init_settings():
-    """ info about the instance """
+    """info about the instance"""
     SiteSettings.objects.create(
         support_link="https://www.patreon.com/bookwyrm",
         support_title="Patreon",
