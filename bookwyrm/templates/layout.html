@@ -135,8 +135,11 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
-                        <span class="{% if not request.user|notification_count %}is-hidden {% endif %}tag is-danger is-medium transition-x" data-poll-wrapper>
-                            <span data-poll="notifications">{{ request.user | notification_count }}</span>
+                        <span
+                            class="{% if not request.user.unread_notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            data-poll-wrapper
+                        >
+                            <span data-poll="notifications">{{ request.user.unread_notification_count }}</span>
                         </span>
                     </a>
                 </div>
@@ -190,7 +193,7 @@
 <footer class="footer">
     <div class="container">
         <div class="columns">
-            <div class="column">
+            <div class="column is-one-fifth">
                 <p>
                     <a href="/about">{% trans "About this server" %}</a>
                 </p>
@@ -199,16 +202,26 @@
                     <a href="mailto:{{ site.admin_email }}">{% trans "Contact site admin" %}</a>
                 </p>
                 {% endif %}
+                <p>
+                    <a href="https://docs.joinbookwyrm.com/">{% trans "Documentation" %}</a>
+                </p>
             </div>
-            {% if site.support_link %}
+            <div class="column content is-two-fifth">
+                {% if site.support_link %}
+                <p>
+                    <span class="icon icon-heart"></span>
+                    {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
+                </p>
+                {% endif %}
+                <p>
+                    {% trans 'BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.' %}
+                </p>
+            </div>
+            {% if site.footer_item %}
             <div class="column">
-                <span class="icon icon-heart"></span>
-                {% blocktrans with site_name=site.name support_link=site.support_link support_title=site.support_title %}Support {{ site_name }} on <a href="{{ support_link }}" target="_blank">{{ support_title }}</a>{% endblocktrans %}
+                <p>{{ site.footer_item|safe }}</p>
             </div>
             {% endif %}
-            <div class="column">
-                {% trans 'BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.' %}
-            </div>
         </div>
     </div>
 </footer>

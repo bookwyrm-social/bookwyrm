@@ -7,7 +7,11 @@
 
 {% block content %}
 <header class="block">
-    {% block header %}{% endblock %}
+    {% block header %}
+    <h1 class="title">
+        {% trans "User Profile" %}
+    </h1>
+    {% endblock %}
 </header>
 
 {# user bio #}
@@ -41,8 +45,9 @@
     </div>
     {% endif %}
 </div>
+
+{% block tabs %}
 {% with user|username as username %}
-{% if 'user/'|add:username|add:'/books' not in request.path and 'user/'|add:username|add:'/shelf' not in request.path %}
 <nav class="tabs">
     <ul>
         {% url 'user-feed' user|username as url %}
@@ -70,8 +75,8 @@
         {% endif %}
     </ul>
 </nav>
-{% endif %}
 {% endwith %}
+{% endblock %}
 
 {% block panel %}{% endblock %}
 

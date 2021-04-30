@@ -1,4 +1,4 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load i18n %}
 
 {% block header %}
@@ -23,7 +23,7 @@
 
 
 {% block panel %}
-<section class="block content">
+<section class="block">
     <form name="create-list" method="post" action="{% url 'lists' %}" class="box is-hidden" id="create-list">
         <header class="columns">
             <h3 class="title column">{% trans "Create list" %}</h3>

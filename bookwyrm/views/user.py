@@ -6,7 +6,6 @@ from PIL import Image
 from django.contrib.auth.decorators import login_required
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
-from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -17,7 +16,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
-from .helpers import is_blocked, privacy_filter
+from .helpers import privacy_filter
 
 
 # pylint: disable= no-self-use
@@ -26,14 +25,7 @@ class User(View):
 
     def get(self, request, username):
         """profile page for a user"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             # we have a json request
@@ -94,14 +86,7 @@ class Followers(View):
 
     def get(self, request, username):
         """list of followers"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
@@ -110,9 +95,9 @@ class Followers(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "followers": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.page(request.GET.get("page", 1)),
         }
-        return TemplateResponse(request, "user/followers.html", data)
+        return TemplateResponse(request, "user/relationships/followers.html", data)
 
 
 class Following(View):
@@ -120,25 +105,18 @@ class Following(View):
 
     def get(self, request, username):
         """list of followers"""
-        try:
-            user = get_user_from_username(request.user, username)
-        except models.User.DoesNotExist:
-            return HttpResponseNotFound()
-
-        # make sure we're not blocked
-        if is_blocked(request.user, user):
-            return HttpResponseNotFound()
+        user = get_user_from_username(request.user, username)
 
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        paginated = Paginator(user.followers.all(), PAGE_LENGTH)
+        paginated = Paginator(user.following.all(), PAGE_LENGTH)
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "following": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.page(request.GET.get("page", 1)),
         }
-        return TemplateResponse(request, "user/following.html", data)
+        return TemplateResponse(request, "user/relationships/following.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
