@@ -6,6 +6,7 @@ from PIL import Image
 from django.contrib.auth.models import AnonymousUser
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http.response import Http404
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -76,8 +77,8 @@ class UserViews(TestCase):
         self.rat.blocks.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "rat")
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, "rat")
 
     def test_followers_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -105,8 +106,8 @@ class UserViews(TestCase):
         self.rat.blocks.add(self.local_user)
         with patch("bookwyrm.views.user.is_api_request") as is_api:
             is_api.return_value = False
-            result = view(request, "rat")
-        self.assertEqual(result.status_code, 404)
+            with self.assertRaises(Http404):
+                view(request, "rat")
 
     def test_following_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -166,7 +167,6 @@ class UserViews(TestCase):
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
 
-    # idk how to mock the upload form, got tired of triyng to make it work
     def test_edit_user_avatar(self):
         """use a form to update a user"""
         view = views.EditUser.as_view()
