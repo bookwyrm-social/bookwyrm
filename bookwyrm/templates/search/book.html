@@ -8,7 +8,7 @@
 <ul class="block">
 {% for result in local_results.results %}
     <li class="pd-4">
-	{% include 'snippets/search_result_text.html' with result=result %}
+        {% include 'snippets/search_result_text.html' with result=result %}
     </li>
 {% endfor %}
 </ul>
@@ -18,37 +18,37 @@
 {% for result_set in results|slice:"1:" %}
     {% if result_set.results %}
     <section class="box has-background-white-bis">
-	{% if not result_set.connector.local %}
-	<header class="columns is-mobile">
-	    <div class="column">
-		<h3 class="title is-5">
-		    Results from
-		    <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
-		</h3>
-	    </div>
-	    <div class="column is-narrow">
-		{% trans "Show" as button_text %}
-		{% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon="arrow-down" pressed=forloop.first %}
-	    </div>
-	</header>
-	{% endif %}
+        {% if not result_set.connector.local %}
+        <header class="columns is-mobile">
+            <div class="column">
+                <h3 class="title is-5">
+                    Results from
+                    <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
+                </h3>
+            </div>
+            <div class="column is-narrow">
+                {% trans "Show" as button_text %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon="arrow-down" pressed=forloop.first %}
+            </div>
+        </header>
+        {% endif %}
 
-	<div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
-	    <div class="is-flex is-flex-direction-row-reverse">
-		<div>
-		    {% trans "Close" as button_text %}
-		    {% include 'snippets/toggle/toggle_button.html' with label=button_text class="delete" nonbutton=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier pressed=forloop.first %}
-		</div>
+        <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
+            <div class="is-flex is-flex-direction-row-reverse">
+                <div>
+                    {% trans "Close" as button_text %}
+                    {% include 'snippets/toggle/toggle_button.html' with label=button_text class="delete" nonbutton=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier pressed=forloop.first %}
+                </div>
 
-		<ul class="is-flex-grow-1">
-		    {% for result in result_set.results %}
-			<li class="mb-5">
-			    {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
-			</li>
-		    {% endfor %}
-		</ul>
-	    </div>
-	</div>
+                <ul class="is-flex-grow-1">
+                    {% for result in result_set.results %}
+                        <li class="mb-5">
+                            {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </section>
     {% endif %}
     {% endfor %}
