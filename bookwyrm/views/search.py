@@ -18,7 +18,7 @@ from .helpers import handle_remote_webfinger
 class Search(View):
     """search users or books"""
 
-    def get(self, request):
+    def get(self, request, search_type=None):
         """that search bar up top"""
         query = request.GET.get("q")
         min_confidence = request.GET.get("min_confidence", 0.1)
@@ -30,32 +30,62 @@ class Search(View):
             )
             return JsonResponse([r.json() for r in book_results], safe=False)
 
-        data = {"query": query or ""}
+        data = {"query": query, "type": search_type}
+        # make a guess about what type of query this is for
+        if search_type == "user" or (not search_type and "@" in query):
+            results = user_search(query, request.user)
+        elif search_type == "list":
+            results = list_search(query, request.user)
+        else:
+            results = book_search(query, min_confidence)
+        return TemplateResponse(request, "search_results.html", {**data, **results})
 
-        # use webfinger for mastodon style account@domain.com username
-        if query and re.match(regex.full_username, query):
-            handle_remote_webfinger(query)
 
-        # do a user search
-        if request.user.is_authenticated:
-            data["user_results"] = (
-                models.User.viewer_aware_objects(request.user)
-                .annotate(
-                    similarity=Greatest(
-                        TrigramSimilarity("username", query),
-                        TrigramSimilarity("localname", query),
-                    )
+def book_search(query, min_confidence):
+    """that search bar up top"""
+
+    return {
+        "query": query or "",
+        "book_results": connector_manager.search(query, min_confidence=min_confidence),
+    }
+
+
+def user_search(query, viewer):
+    """that search bar up top"""
+    # logged out viewers can't search users
+    if not viewer.is_authenticated:
+        return None
+
+    # use webfinger for mastodon style account@domain.com username to load the user if
+    # they don't exist locally (handle_remote_webfinger will check the db)
+    if re.match(regex.full_username, query):
+        handle_remote_webfinger(query)
+
+    return {
+        "query": query,
+        "user_results": (
+            models.User.viewer_aware_objects(viewer)
+            .annotate(
+                similarity=Greatest(
+                    TrigramSimilarity("username", query),
+                    TrigramSimilarity("localname", query),
                 )
-                .filter(
-                    similarity__gt=0.5,
-                )
-                .order_by("-similarity")[:10]
             )
+            .filter(
+                similarity__gt=0.5,
+            )
+            .order_by("-similarity")[:10]
+        ),
+    }
 
-        # any relevent lists?
-        data["list_results"] = (
+
+def list_search(query, viewer):
+    """any relevent lists?"""
+    return {
+        "query": query,
+        "list_results": (
             privacy_filter(
-                request.user,
+                viewer,
                 models.List.objects,
                 privacy_levels=["public", "followers"],
             )
@@ -69,9 +99,5 @@ class Search(View):
                 similarity__gt=0.1,
             )
             .order_by("-similarity")[:10]
-        )
-
-        data["book_results"] = connector_manager.search(
-            query, min_confidence=min_confidence
-        )
-        return TemplateResponse(request, "search_results.html", data)
+        ),
+    }
