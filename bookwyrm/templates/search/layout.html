@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Search" %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">
+        {% blocktrans %}Search{% endblocktrans %}
+    </h1>
+</div>
+
+<form class="block">
+    <div class="field has-addons">
+        <div class="control">
+            <input type="input" class="input" value="{{ query }}">
+        </div>
+        <div class="control">
+            <div class="select">
+                <select>
+                    <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
+                    <option value="list" {% if type == "list" %}selected{% endif %}>{% trans "Lists" %}</option>
+                </select>
+            </div>
+        </div>
+        <div class="control">
+            <button type="submit" class="button is-primary">
+                <span>Search</span>
+                <span class="icon icon-search" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+</form>
+
+<nav class="tabs">
+    <ul>
+        {% url 'search' "book" as url %}
+        <li{% if request.path in url %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Books" %}</a>
+        </li>
+        {% url 'search' "user" as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Users" %}</a>
+        </li>
+        {% url 'search' "list" as url %}
+        <li{% if url in request.path %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Lists" %}</a>
+        </li>
+    </ul>
+</nav>
+
+<div class="block columns">
+    <section class="block">
+        {% block panel %}
+        {% endblock %}
+    </section>
+</div>
+{% endblock %}

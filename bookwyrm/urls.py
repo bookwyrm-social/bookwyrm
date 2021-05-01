@@ -163,7 +163,8 @@ urlpatterns = [
         name="direct-messages-user",
     ),
     # search
-    re_path(r"^search/?$", views.Search.as_view()),
+    re_path(r"^search/?$", views.Search.as_view(), name="search"),
+    re_path(r"^search/(?P<search_type>user|list|book)/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view()),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view()),

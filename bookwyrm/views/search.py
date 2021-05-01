@@ -30,15 +30,22 @@ class Search(View):
             )
             return JsonResponse([r.json() for r in book_results], safe=False)
 
-        data = {"query": query, "type": search_type}
-        # make a guess about what type of query this is for
-        if search_type == "user" or (not search_type and "@" in query):
-            results = user_search(query, request.user)
-        elif search_type == "list":
-            results = list_search(query, request.user)
-        else:
-            results = book_search(query, min_confidence)
-        return TemplateResponse(request, "search_results.html", {**data, **results})
+        data = {"query": query or "", "type": search_type}
+        results = {}
+        if query:
+            # make a guess about what type of query this is for
+            if search_type == "user" or (not search_type and "@" in query):
+                results = user_search(query, request.user)
+            elif search_type == "list":
+                results = list_search(query, request.user)
+            else:
+                results = book_search(query, min_confidence)
+
+        return TemplateResponse(
+            request,
+            "search/{:s}.html".format(search_type or "book"),
+            {**data, **results}
+        )
 
 
 def book_search(query, min_confidence):
@@ -46,7 +53,7 @@ def book_search(query, min_confidence):
 
     return {
         "query": query or "",
-        "book_results": connector_manager.search(query, min_confidence=min_confidence),
+        "results": connector_manager.search(query, min_confidence=min_confidence),
     }
 
 
@@ -63,7 +70,7 @@ def user_search(query, viewer):
 
     return {
         "query": query,
-        "user_results": (
+        "results": (
             models.User.viewer_aware_objects(viewer)
             .annotate(
                 similarity=Greatest(
@@ -83,7 +90,7 @@ def list_search(query, viewer):
     """any relevent lists?"""
     return {
         "query": query,
-        "list_results": (
+        "results": (
             privacy_filter(
                 viewer,
                 models.List.objects,
