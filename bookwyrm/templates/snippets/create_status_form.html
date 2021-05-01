@@ -36,13 +36,23 @@
 
         <div class="control">
             {% if type == 'quotation' %}
-            <textarea name="quote" class="textarea" id="id_quote_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.quote|default:'' }}</textarea>
-            {% elif type == 'reply' %}
-            {% include 'snippets/content_warning_field.html' with parent_status=status %}
-            <textarea name="content" class="textarea" id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}" placeholder="{{ placeholder }}" aria-label="{% trans 'Reply' %}" required>{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mentions %}@{{ mentions|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
+            <textarea
+                name="quote"
+                class="textarea"
+                id="id_quote_{{ book.id }}_{{ type }}"
+                placeholder="{{ placeholder }}"
+                required
+            >{{ draft.quote|default:'' }}</textarea>
             {% else %}
             {% include 'snippets/content_warning_field.html' with parent_status=status %}
-            <textarea name="content" class="textarea" id="id_content_{{ book.id }}_{{ type }}" placeholder="{{ placeholder }}" required>{{ draft.content|default:'' }}</textarea>
+            <textarea
+                name="content"
+                class="textarea"
+                id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}"
+                placeholder="{{ placeholder }}"
+                aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans "Content" %}{% endif %}"
+                required
+            >{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
             {% endif %}
         </div>
     </div>
