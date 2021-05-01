@@ -2,8 +2,6 @@
 
 {% block panel %}
 
-{% for result in results %}
-hi
-{% endfor %}
+{% include 'lists/list_items.html' with lists=results %}
 
 {% endblock %}
