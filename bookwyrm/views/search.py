@@ -56,7 +56,9 @@ class Search(View):
             results = endpoints[search_type](
                 query, request.user, min_confidence, search_remote
             )
-            paginated = Paginator(results, PAGE_LENGTH).get_page(request.GET.get("page"))
+            paginated = Paginator(results, PAGE_LENGTH).get_page(
+                request.GET.get("page")
+            )
             data["results"] = paginated
 
         return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
