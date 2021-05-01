@@ -2,6 +2,7 @@
 import re
 
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.paginator import Paginator
 from django.db.models.functions import Greatest
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
@@ -9,6 +10,7 @@ from django.views import View
 
 from bookwyrm import models
 from bookwyrm.connectors import connector_manager
+from bookwyrm.settings import PAGE_LENGTH
 from bookwyrm.utils import regex
 from .helpers import is_api_request, privacy_filter
 from .helpers import handle_remote_webfinger
@@ -51,9 +53,11 @@ class Search(View):
             "remote": search_remote,
         }
         if query:
-            data["results"] = endpoints[search_type](
+            results = endpoints[search_type](
                 query, request.user, min_confidence, search_remote
             )
+            paginated = Paginator(results, PAGE_LENGTH).get_page(request.GET.get("page"))
+            data["results"] = paginated
 
         return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
 

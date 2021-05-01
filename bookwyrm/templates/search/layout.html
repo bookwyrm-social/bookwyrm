@@ -60,6 +60,10 @@
     {% endif %}
     {% block panel %}
     {% endblock %}
+
+    <div>
+        {% include 'snippets/pagination.html' with page=results path=request.path %}
+    </div>
 </section>
 {% endif %}
 
