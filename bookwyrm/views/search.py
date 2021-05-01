@@ -43,24 +43,22 @@ class Search(View):
             search_type = "book"
         endpoint = endpoints[search_type]
 
-        data = {"query": query or "", "type": search_type}
-        results = endpoint(query, request.user, min_confidence) if query else {}
+        data = {
+            "query": query or "",
+            "type": search_type,
+            "results": endpoint(query, request.user, min_confidence) if query else {},
+        }
 
-        return TemplateResponse(
-            request, "search/{:s}.html".format(search_type), {**data, **results}
-        )
+        return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
 
 
 def book_search(query, _, min_confidence):
-    """that search bar up top"""
-
-    return {
-        "results": connector_manager.search(query, min_confidence=min_confidence),
-    }
+    """the real business is elsewhere"""
+    return connector_manager.search(query, min_confidence=min_confidence)
 
 
 def user_search(query, viewer, _):
-    """that search bar up top"""
+    """cool kids members only user search"""
     # logged out viewers can't search users
     if not viewer.is_authenticated:
         return {}
@@ -70,41 +68,37 @@ def user_search(query, viewer, _):
     if re.match(regex.full_username, query):
         handle_remote_webfinger(query)
 
-    return {
-        "results": (
-            models.User.viewer_aware_objects(viewer)
-            .annotate(
-                similarity=Greatest(
-                    TrigramSimilarity("username", query),
-                    TrigramSimilarity("localname", query),
-                )
+    return (
+        models.User.viewer_aware_objects(viewer)
+        .annotate(
+            similarity=Greatest(
+                TrigramSimilarity("username", query),
+                TrigramSimilarity("localname", query),
             )
-            .filter(
-                similarity__gt=0.5,
-            )
-            .order_by("-similarity")[:10]
-        ),
-    }
+        )
+        .filter(
+            similarity__gt=0.5,
+        )
+        .order_by("-similarity")[:10]
+    )
 
 
 def list_search(query, viewer, _):
     """any relevent lists?"""
-    return {
-        "results": (
-            privacy_filter(
-                viewer,
-                models.List.objects,
-                privacy_levels=["public", "followers"],
+    return (
+        privacy_filter(
+            viewer,
+            models.List.objects,
+            privacy_levels=["public", "followers"],
+        )
+        .annotate(
+            similarity=Greatest(
+                TrigramSimilarity("name", query),
+                TrigramSimilarity("description", query),
             )
-            .annotate(
-                similarity=Greatest(
-                    TrigramSimilarity("name", query),
-                    TrigramSimilarity("description", query),
-                )
-            )
-            .filter(
-                similarity__gt=0.1,
-            )
-            .order_by("-similarity")[:10]
-        ),
-    }
+        )
+        .filter(
+            similarity__gt=0.1,
+        )
+        .order_by("-similarity")[:10]
+    )

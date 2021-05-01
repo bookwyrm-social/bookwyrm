@@ -33,6 +33,7 @@
     </div>
 </form>
 
+{% if query %}
 <nav class="tabs">
     <ul>
         <li{% if type == "book" %} class="is-active"{% endif %}>
@@ -56,4 +57,6 @@
     </p>
     {% endif %}
 </section>
+{% endif %}
+
 {% endblock %}
