@@ -19,7 +19,9 @@
             <div class="select">
                 <select name="type">
                     <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    {% if request.user.is_authenticated %}
                     <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
+                    {% endif %}
                     <option value="list" {% if type == "list" %}selected{% endif %}>{% trans "Lists" %}</option>
                 </select>
             </div>
