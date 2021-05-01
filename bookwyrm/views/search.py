@@ -23,6 +23,7 @@ class Search(View):
         query = request.GET.get("q")
         min_confidence = request.GET.get("min_confidence", 0.1)
         search_type = request.GET.get("type")
+        search_remote = request.GET.get("remote", False)
 
         if is_api_request(request):
             # only return local book results via json so we don't cascade
@@ -41,23 +42,31 @@ class Search(View):
         }
         if not search_type in endpoints:
             search_type = "book"
-        endpoint = endpoints[search_type]
 
         data = {
             "query": query or "",
             "type": search_type,
-            "results": endpoint(query, request.user, min_confidence) if query else {},
+            "remote": search_remote,
         }
+        if query:
+            data["results"] = endpoints[search_type](
+                query, request.user, min_confidence, search_remote
+            )
 
         return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
 
 
-def book_search(query, _, min_confidence):
+def book_search(query, _, min_confidence, search_remote=False):
     """the real business is elsewhere"""
-    return connector_manager.search(query, min_confidence=min_confidence)
+    if search_remote:
+        return connector_manager.search(query, min_confidence=min_confidence)
+    results = connector_manager.local_search(query, min_confidence=min_confidence)
+    if not results:
+        return None
+    return [{"results": results}]
 
 
-def user_search(query, viewer, _):
+def user_search(query, viewer, *_):
     """cool kids members only user search"""
     # logged out viewers can't search users
     if not viewer.is_authenticated:
@@ -83,7 +92,7 @@ def user_search(query, viewer, _):
     )
 
 
-def list_search(query, viewer, _):
+def list_search(query, viewer, *_):
     """any relevent lists?"""
     return (
         privacy_filter(

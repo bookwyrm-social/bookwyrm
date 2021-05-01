@@ -39,9 +39,11 @@
         <li{% if type == "book" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query }}&type=book">{% trans "Books" %}</a>
         </li>
+        {% if request.user.is_authenticated %}
         <li{% if type == "user" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query }}&type=user">{% trans "Users" %}</a>
         </li>
+        {% endif %}
         <li{% if type == "list" %} class="is-active"{% endif %}>
             <a href="{% url 'search' %}?q={{ query }}&type=list">{% trans "Lists" %}</a>
         </li>
@@ -49,13 +51,13 @@
 </nav>
 
 <section class="block">
-    {% block panel %}
-    {% endblock %}
     {% if not results %}
     <p>
         <em>{% blocktrans %}No results found for "{{ query }}"{% endblocktrans %}</em>
     </p>
     {% endif %}
+    {% block panel %}
+    {% endblock %}
 </section>
 {% endif %}
 
