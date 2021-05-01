@@ -23,7 +23,9 @@ class Search(View):
         query = request.GET.get("q")
         min_confidence = request.GET.get("min_confidence", 0.1)
         search_type = request.GET.get("type")
-        search_remote = request.GET.get("remote", False)
+        search_remote = (
+            request.GET.get("remote", False) and request.user.is_authenticated
+        )
 
         if is_api_request(request):
             # only return local book results via json so we don't cascade
