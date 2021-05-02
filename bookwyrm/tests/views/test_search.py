@@ -131,7 +131,10 @@ class ShelfViews(TestCase):
 
     def test_search_lists(self):
         """searches remote connectors"""
-        booklist = models.List.objects.create(user=self.local_user, name="test list")
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            booklist = models.List.objects.create(
+                user=self.local_user, name="test list"
+            )
         view = views.Search.as_view()
         request = self.factory.get("", {"q": "test", "type": "list"})
         request.user = self.local_user
