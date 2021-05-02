@@ -40,7 +40,7 @@
                             {% include 'snippets/shelve_button/shelve_button.html' with book=item.book %}
                         </div>
                     </div>
-                    <div class="card-footer has-background-white-bis">
+                    <div class="card-footer is-stacked-mobile has-background-white-bis">
                         <div class="card-footer-item">
                             <div>
                             <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
