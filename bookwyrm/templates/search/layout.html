@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Search" %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">
+        {% blocktrans %}Search{% endblocktrans %}
+    </h1>
+</div>
+
+<form class="block" action="{% url 'search' %}" method="GET">
+    <div class="field has-addons">
+        <div class="control">
+            <input type="input" class="input" name="q" value="{{ query }}" aria-label="{% trans 'Search query' %}">
+        </div>
+        <div class="control">
+            <div class="select" aria-label="{% trans 'Search type' %}">
+                <select name="type">
+                    <option value="book" {% if type == "book" %}selected{% endif %}>{% trans "Books" %}</option>
+                    {% if request.user.is_authenticated %}
+                    <option value="user" {% if type == "user" %}selected{% endif %}>{% trans "Users" %}</option>
+                    {% endif %}
+                    <option value="list" {% if type == "list" %}selected{% endif %}>{% trans "Lists" %}</option>
+                </select>
+            </div>
+        </div>
+        <div class="control">
+            <button type="submit" class="button is-primary">
+                <span>Search</span>
+                <span class="icon icon-search" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+</form>
+
+{% if query %}
+<nav class="tabs">
+    <ul>
+        <li{% if type == "book" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query }}&type=book">{% trans "Books" %}</a>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li{% if type == "user" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query }}&type=user">{% trans "Users" %}</a>
+        </li>
+        {% endif %}
+        <li{% if type == "list" %} class="is-active"{% endif %}>
+            <a href="{% url 'search' %}?q={{ query }}&type=list">{% trans "Lists" %}</a>
+        </li>
+    </ul>
+</nav>
+
+<section class="block">
+    {% if not results %}
+    <p>
+        <em>{% blocktrans %}No results found for "{{ query }}"{% endblocktrans %}</em>
+    </p>
+    {% endif %}
+    {% block panel %}
+    {% endblock %}
+
+    <div>
+        {% include 'snippets/pagination.html' with page=results path=request.path %}
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
