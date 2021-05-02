@@ -78,7 +78,7 @@ def user_search(query, viewer, *_):
     """cool kids members only user search"""
     # logged out viewers can't search users
     if not viewer.is_authenticated:
-        return {}
+        return models.User.objects.none()
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)

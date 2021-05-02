@@ -13,7 +13,7 @@ from bookwyrm.connectors import abstract_connector
 from bookwyrm.settings import DOMAIN
 
 
-class ShelfViews(TestCase):
+class Views(TestCase):
     """tag views"""
 
     def setUp(self):
@@ -127,7 +127,7 @@ class ShelfViews(TestCase):
         response = view(request)
 
         response.render()
-        self.assertEqual(response.context_data["results"], {})
+        self.assertEqual(response.context_data["results"].object_list.count(), 0)
 
     def test_search_lists(self):
         """searches remote connectors"""
