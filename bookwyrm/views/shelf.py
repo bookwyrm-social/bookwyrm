@@ -66,8 +66,7 @@ class Shelf(View):
             "books": page,
             "page_range": paginated.get_elided_page_range(
                 page.number, on_each_side=2, on_ends=1
-            )
-
+            ),
         }
 
         return TemplateResponse(request, "user/shelf/shelf.html", data)
