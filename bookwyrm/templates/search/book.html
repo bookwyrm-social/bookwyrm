@@ -57,18 +57,22 @@
 
 {% endif %}
 
-{% if not remote %}
 <p class="block">
     {% if request.user.is_authenticated %}
-    <a href="{{ request.path }}?q={{ query }}&type=book&remote=true">
-        {% trans "Load results from other catalogues" %}
-    </a>
+        {% if not remote %}
+        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true">
+            {% trans "Load results from other catalogues" %}
+        </a>
+        {% else %}
+        <a href="{% url 'create-book' %}">
+            {% trans "Manually add book" %}
+        </a>
+        {% endif %}
     {% else %}
-    <a href="{% url 'login' %}">
-        {% trans "Log in to import or add books." %}
-    </a>
+        <a href="{% url 'login' %}">
+            {% trans "Log in to import or add books." %}
+        </a>
     {% endif %}
 </p>
-{% endif %}
 
 {% endblock %}
