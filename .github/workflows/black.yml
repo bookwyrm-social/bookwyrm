@@ -8,6 +8,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-      - uses: psf/black@stable
-        with:
-          args: ". --check -l 80 -S"
+      - uses: psf/black@21.4b2
