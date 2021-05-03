@@ -1,5 +1,5 @@
 {% load i18n %}
-<nav class="pagination" aria-label="pagination">
+<nav class="pagination is-centered" aria-label="pagination">
     <a
         class="pagination-previous {% if not page.has_previous %}is-disabled{% endif %}"
         {% if page.has_previous %}
@@ -23,4 +23,18 @@
         {% trans "Next" %}
         <span class="icon icon-arrow-right" aria-hidden="true"></span>
     </a>
+
+    {% if page.has_other_pages and page_range %}
+        <ul class="pagination-list">
+        {% for num in page_range %}
+            {% if num == page.number %}
+                <li><a class="pagination-link is-current" aria-label="Page {{ num }}" aria-current="page">{{ num }}</a></li>
+            {% elif num == '…' %}
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+            {% else %}
+                <li><a class="pagination-link" aria-label="Goto page {{ num }}" href="{{ path }}?{% for k, v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ num }}{{ anchor }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
 </nav>

@@ -156,9 +156,13 @@ class List(View):
                     ).order_by("-updated_date")
                 ][: 5 - len(suggestions)]
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
             "list": book_list,
-            "items": paginated.get_page(request.GET.get("page")),
+            "items": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
             "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
