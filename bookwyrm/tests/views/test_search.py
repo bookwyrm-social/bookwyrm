@@ -127,7 +127,7 @@ class Views(TestCase):
         response = view(request)
 
         response.render()
-        self.assertEqual(response.context_data["results"].object_list.count(), 0)
+        self.assertFalse("results" in response.context_data)
 
     def test_search_lists(self):
         """searches remote connectors"""
