@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
+from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, privacy_filter
 from .helpers import get_user_from_username
 
@@ -133,7 +134,7 @@ class List(View):
                 .order_by(directional_sort_by)
             )
 
-        paginated = Paginator(items, 12)
+        paginated = Paginator(items, PAGE_LENGTH)
 
         if query and request.user.is_authenticated:
             # search for books
