@@ -41,14 +41,34 @@ class InboxAdd(TestCase):
 
         models.SiteSettings.objects.create()
 
+    @responses.activate
     def test_handle_add_book_to_shelf(self):
         """shelving a book"""
         shelf = models.Shelf.objects.create(user=self.remote_user, name="Test Shelf")
-        shelf.remote_id = "https://example.com/user/mouse/shelf/to-read"
+        shelf.remote_id = "https://example.com/user/rat/shelf/to-read"
         shelf.save()
 
+        responses.add(
+            responses.GET,
+            "https://example.com/user/rat/shelf/to-read",
+            json={
+                "id": shelf.remote_id,
+                "type": "Shelf",
+                "totalItems": 1,
+                "first": "https://example.com/shelf/22?page=1",
+                "last": "https://example.com/shelf/22?page=1",
+                "name": "Test Shelf",
+                "owner": self.remote_user.remote_id,
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": ["https://example.com/user/rat/followers"],
+                "summary": "summary text",
+                "curation": "curated",
+                "@context": "https://www.w3.org/ns/activitystreams",
+            },
+        )
+
         activity = {
-            "id": "https://bookwyrm.l/shelfbook/6189#add",
+            "id": "https://example.com/shelfbook/6189#add",
             "type": "Add",
             "actor": "https://example.com/users/rat",
             "object": {
@@ -57,7 +77,7 @@ class InboxAdd(TestCase):
                 "book": self.book.remote_id,
                 "id": "https://example.com/shelfbook/6189",
             },
-            "target": "https://example.com/user/mouse/shelf/to-read",
+            "target": "https://example.com/user/rat/shelf/to-read",
             "@context": "https://www.w3.org/ns/activitystreams",
         }
         views.inbox.activity_task(activity)
