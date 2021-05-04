@@ -163,7 +163,7 @@ urlpatterns = [
         name="direct-messages-user",
     ),
     # search
-    re_path(r"^search/?$", views.Search.as_view()),
+    re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
     re_path(r"^import/?$", views.Import.as_view()),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view()),
@@ -272,7 +272,7 @@ urlpatterns = [
     ),
     re_path(r"%s/edit/?$" % book_path, views.EditBook.as_view()),
     re_path(r"%s/confirm/?$" % book_path, views.ConfirmEditBook.as_view()),
-    re_path(r"^create-book/?$", views.EditBook.as_view()),
+    re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
     re_path(r"%s/editions(.json)?/?$" % book_path, views.Editions.as_view()),
     re_path(
