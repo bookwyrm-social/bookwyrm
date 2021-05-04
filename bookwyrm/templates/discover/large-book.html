@@ -17,7 +17,7 @@
 
             <div class="column mt-3-mobile ml-3-tablet">
                 <h3 class="title is-5">
-                    <a href="/book/{{ book.id }}">{{ book.title }}</a>
+                    <a href="{{ book.local_path }}">{{ book.title }}</a>
                 </h3>
 
                 {% if book.authors %}

@@ -239,7 +239,7 @@
     {% if not confirm_mode %}
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-        <a class="button" href="/book/{{ book.id }}">{% trans "Cancel" %}</a>
+        <a class="button" href="{{ book.local_path}}">{% trans "Cancel" %}</a>
     </div>
     {% endif %}
 </form>

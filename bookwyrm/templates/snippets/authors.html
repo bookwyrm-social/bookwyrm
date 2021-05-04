@@ -5,7 +5,7 @@
 {% endcomment %}
 {% for author in book.authors.all %}
     <a
-        href="/author/{{ author.id }}"
+        href="{{ author.local_path }}"
         class="author"
         itemprop="author"
         itemscope

@@ -56,7 +56,7 @@
     {% endif %}
     <ul>
         {% for job in jobs %}
-            <li><a href="/import/{{ job.id }}">{{ job.created_date | naturaltime }}</a></li>
+        <li><a href="{% url 'import-status' job.id %}">{{ job.created_date | naturaltime }}</a></li>
         {% endfor %}
     </ul>
 </div>
