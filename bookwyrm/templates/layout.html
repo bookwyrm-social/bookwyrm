@@ -94,12 +94,12 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/import" class="navbar-item">
+                            <a href="{% url 'import' %}" class="navbar-item">
                                 {% trans 'Import Books' %}
                             </a>
                         </li>
                         <li>
-                            <a href="/preferences/profile" class="navbar-item">
+                            <a href="{% url 'prefs-profile' %}" class="navbar-item">
                                 {% trans 'Settings' %}
                             </a>
                         </li>
@@ -122,14 +122,14 @@
                         {% endif %}
                         <li class="navbar-divider" role="presentation"></li>
                         <li>
-                            <a href="/logout" class="navbar-item">
+                            <a href="{% url 'logout' %}" class="navbar-item">
                                 {% trans 'Log out' %}
                             </a>
                         </li>
                     </ul>
                 </div>
                 <div class="navbar-item">
-                    <a href="/notifications" class="tags has-addons">
+                    <a href="{% url 'notifications' %}" class="tags has-addons">
                         <span class="tag is-medium">
                             <span class="icon icon-bell" title="{% trans 'Notifications' %}">
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
@@ -158,7 +158,7 @@
                                     <div class="column">
                                         <label class="is-sr-only" for="id_password">{% trans "Username:" %}</label>
                                         <input type="password" name="password" maxlength="128" class="input" required="" id="id_password" placeholder="{% trans 'password' %}">
-                                        <p class="help"><a href="/password-reset">{% trans "Forgot your password?" %}</a></p>
+                                        <p class="help"><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></p>
                                     </div>
                                     <div class="column is-narrow">
                                         <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
@@ -195,7 +195,7 @@
         <div class="columns">
             <div class="column is-one-fifth">
                 <p>
-                    <a href="/about">{% trans "About this server" %}</a>
+                <a href="{% url 'about' %}">{% trans "About this server" %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>

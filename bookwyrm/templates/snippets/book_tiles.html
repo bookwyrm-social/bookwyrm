@@ -3,7 +3,7 @@
     <div class="column is-narrow">
         <div class="box is-flex is-flex-direction-column is-align-items-center">
             <div class="mb-3">
-                <a href="/book/{{ book.id }}">
+                <a href="{{ book.local_path }}">
                     {% include 'snippets/book_cover.html' with book=book cover_class='is-w-l-mobile is-h-l-mobile is-w-l-tablet is-h-xl-tablet' %}
                 </a>
             </div>

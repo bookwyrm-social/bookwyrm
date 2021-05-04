@@ -76,7 +76,7 @@
 
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-        <a class="button" href="/author/{{ author.id }}">{% trans "Cancel" %}</a>
+        <a class="button" href="{{ author.local_path }}">{% trans "Cancel" %}</a>
     </div>
 </form>
 
