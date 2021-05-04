@@ -107,7 +107,8 @@
                                 {% endif %}
                             {% endif %}
                         {% elif notification.related_import %}
-                        {% blocktrans with related_id=notification.related_import.id %}Your <a href="{% url 'import-status' related_id %}">import</a> completed.{% endblocktrans %}
+                        {% url 'import-status' notification.related_import.id as url %}
+                        {% blocktrans %}Your <a href="{{ url }}">import</a> completed.{% endblocktrans %}
                         {% elif notification.related_report %}
                             {% url 'settings-report' notification.related_report.id as path %}
                             {% blocktrans with related_id=path %}A new <a href="{{ path }}">report</a> needs moderation.{% endblocktrans %}
