@@ -1,34 +1,41 @@
 {% load i18n %}
-<div class="columns is-mobile">
-    <div class="cover-container is-small column is-2">
-    {% if result.cover %}
-        <img src="{{ result.cover }}" class="book-cover" aria-hidden="true">
-    {% else %}
-        <div class="no-cover book-cover">
-            <img class="book-cover" src="/static/images/no_cover.jpg" aria-hidden="true">
-            <div>
-                <p>{% trans "No cover" %}</p>
-            </div>
-        </div>
-    {% endif %}
+<div class="columns is-mobile is-gapless">
+    <div class="column is-cover">
+        {% include 'snippets/book_cover.html' with book=result cover_class='is-w-xs is-h-xs' img_path=false %}
     </div>
 
-    <div class="column">
+    <div class="column is-10 ml-3">
         <p>
             <strong>
-                <a href="{{ result.key }}"{% if remote_result %} rel=”noopener” target="_blank"{% endif %}>{{ result.title }}</a>
+                <a
+                    href="{{ result.view_link|default:result.key }}"
+                    {% if remote_result %}
+                        rel=”noopener”
+                        target="_blank"
+                    {% endif %}
+                >{{ result.title }}</a>
             </strong>
+        </p>
+        <p>
             {% if result.author %}
-            {% blocktrans with author=result.author %}by {{ author }}{% endblocktrans %}{% endif %}{% if result.year %} ({{ result.year }})
+                {{ result.author }}
+            {% endif %}
+
+            {% if result.year %}
+                ({{ result.year }})
             {% endif %}
         </p>
 
         {% if remote_result %}
-        <form action="/resolve-book" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="remote_id" value="{{ result.key }}">
-            <button type="submit" class="button is-small is-link">{% trans "Import book" %}</button>
-        </form>
+            <form class="mt-1" action="/resolve-book" method="post">
+                {% csrf_token %}
+
+                <input type="hidden" name="remote_id" value="{{ result.key }}">
+
+                <button type="submit" class="button is-small is-link">
+                    {% trans "Import book" %}
+                </button>
+            </form>
         {% endif %}
     </div>
 </div>

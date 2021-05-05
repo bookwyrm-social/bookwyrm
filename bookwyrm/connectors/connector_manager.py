@@ -29,8 +29,6 @@ def search(query, min_confidence=0.1):
     isbn = re.sub(r"[\W_]", "", query)
     maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
 
-    dedup_slug = lambda r: "%s/%s/%s" % (r.title, r.author, r.year)
-    result_index = set()
     for connector in get_connectors():
         result_set = None
         if maybe_isbn:
@@ -53,10 +51,6 @@ def search(query, min_confidence=0.1):
                 logger.exception(e)
                 continue
 
-        # if the search results look the same, ignore them
-        result_set = [r for r in result_set if dedup_slug(r) not in result_index]
-        # `|=` concats two sets. WE ARE GETTING FANCY HERE
-        result_index |= set(dedup_slug(r) for r in result_set)
         results.append(
             {
                 "connector": connector,

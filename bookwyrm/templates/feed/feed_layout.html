@@ -37,7 +37,7 @@
                                         aria-label="{{ book.title }}"
                                         aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
                                         aria-controls="book-{{ book.id }}">
-                                        {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
                                     </a>
                                 </li>
                                 {% endfor %}
@@ -105,4 +105,5 @@
 
 {% block scripts %}
 <script src="/static/js/vendor/tabs.js"></script>
+{% include 'snippets/datepicker_js.html' %}
 {% endblock %}

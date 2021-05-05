@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-26 09:56-0700\n"
+"POT-Creation-Date: 2021-05-03 11:22-0700\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -58,11 +58,12 @@ msgid "Book Title"
 msgstr "标题"
 
 #: bookwyrm/forms.py:295 bookwyrm/templates/snippets/create_status_form.html:31
-#: bookwyrm/templates/user/shelf.html:80 bookwyrm/templates/user/shelf.html:110
+#: bookwyrm/templates/user/shelf/shelf.html:82
+#: bookwyrm/templates/user/shelf/shelf.html:112
 msgid "Rating"
 msgstr "评价"
 
-#: bookwyrm/forms.py:297 bookwyrm/templates/lists/list.html:82
+#: bookwyrm/forms.py:297 bookwyrm/templates/lists/list.html:100
 msgid "Sort By"
 msgstr ""
 
@@ -88,7 +89,7 @@ msgstr "%(value)s 不是有效的 remote_id"
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s 不是有效的用户名"
 
-#: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:153
+#: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:156
 msgid "username"
 msgstr "用户名"
 
@@ -96,23 +97,23 @@ msgstr "用户名"
 msgid "A user with that username already exists."
 msgstr "已经存在使用该用户名的用户。"
 
-#: bookwyrm/settings.py:152
+#: bookwyrm/settings.py:155
 msgid "English"
 msgstr "English（英语）"
 
-#: bookwyrm/settings.py:153
+#: bookwyrm/settings.py:156
 msgid "German"
 msgstr "Deutsch（德语）"
 
-#: bookwyrm/settings.py:154
+#: bookwyrm/settings.py:157
 msgid "Spanish"
 msgstr "Español（西班牙语）"
 
-#: bookwyrm/settings.py:155
+#: bookwyrm/settings.py:158
 msgid "French"
 msgstr "Français（法语）"
 
-#: bookwyrm/settings.py:156
+#: bookwyrm/settings.py:159
 msgid "Simplified Chinese"
 msgstr "简体中文"
 
@@ -150,8 +151,8 @@ msgid "Books by %(name)s"
 msgstr "%(name)s 所著的书"
 
 #: bookwyrm/templates/book/book.html:33
-#: bookwyrm/templates/discover/large-book.html:12
-#: bookwyrm/templates/discover/small-book.html:9
+#: bookwyrm/templates/discover/large-book.html:25
+#: bookwyrm/templates/discover/small-book.html:19
 msgid "by"
 msgstr "作者"
 
@@ -159,43 +160,49 @@ msgstr "作者"
 msgid "Edit Book"
 msgstr "编辑书目"
 
-#: bookwyrm/templates/book/book.html:61
+#: bookwyrm/templates/book/book.html:60
 #: bookwyrm/templates/book/cover_modal.html:5
 msgid "Add cover"
 msgstr "添加封面"
 
-#: bookwyrm/templates/book/book.html:65
+#: bookwyrm/templates/book/book.html:64
 msgid "Failed to load cover"
 msgstr "加载封面失败"
 
-#: bookwyrm/templates/book/book.html:82
+#: bookwyrm/templates/book/book.html:81
 msgid "View on OpenLibrary"
 msgstr "在 OpenLibrary 查看"
 
-#: bookwyrm/templates/book/book.html:102
+#: bookwyrm/templates/book/book.html:84
+#, fuzzy
+#| msgid "View on OpenLibrary"
+msgid "View on Inventaire"
+msgstr "在 OpenLibrary 查看"
+
+#: bookwyrm/templates/book/book.html:104
 #, python-format
 msgid "(%(review_count)s review)"
 msgid_plural "(%(review_count)s reviews)"
 msgstr[0] "(%(review_count)s 则书评)"
 
-#: bookwyrm/templates/book/book.html:114
+#: bookwyrm/templates/book/book.html:116
 msgid "Add Description"
 msgstr "添加描述"
 
-#: bookwyrm/templates/book/book.html:121
+#: bookwyrm/templates/book/book.html:123
 #: bookwyrm/templates/book/edit_book.html:107
 #: bookwyrm/templates/lists/form.html:12
 msgid "Description:"
 msgstr "描述:"
 
-#: bookwyrm/templates/book/book.html:125
-#: bookwyrm/templates/book/edit_book.html:240
+#: bookwyrm/templates/book/book.html:127
+#: bookwyrm/templates/book/edit_book.html:241
 #: bookwyrm/templates/edit_author.html:78 bookwyrm/templates/lists/form.html:42
 #: bookwyrm/templates/preferences/edit_user.html:70
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:93
-#: bookwyrm/templates/settings/site.html:93
-#: bookwyrm/templates/snippets/readthrough.html:75
+#: bookwyrm/templates/settings/site.html:97
+#: bookwyrm/templates/snippets/readthrough.html:77
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:34
@@ -203,15 +210,15 @@ msgstr "描述:"
 msgid "Save"
 msgstr "保存"
 
-#: bookwyrm/templates/book/book.html:126 bookwyrm/templates/book/book.html:175
+#: bookwyrm/templates/book/book.html:128 bookwyrm/templates/book/book.html:180
 #: bookwyrm/templates/book/cover_modal.html:32
-#: bookwyrm/templates/book/edit_book.html:241
+#: bookwyrm/templates/book/edit_book.html:242
 #: bookwyrm/templates/edit_author.html:79
 #: bookwyrm/templates/moderation/report_modal.html:34
 #: bookwyrm/templates/settings/federated_server.html:94
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
-#: bookwyrm/templates/snippets/readthrough.html:76
+#: bookwyrm/templates/snippets/readthrough.html:78
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:43
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:43
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:35
@@ -219,115 +226,112 @@ msgstr "保存"
 msgid "Cancel"
 msgstr "取消"
 
-#: bookwyrm/templates/book/book.html:135
+#: bookwyrm/templates/book/book.html:137
 #, python-format
 msgid "<a href=\"%(path)s/editions\">%(count)s editions</a>"
 msgstr "<a href=\"%(path)s/editions\">%(count)s 个版本</a>"
 
-#: bookwyrm/templates/book/book.html:143
+#: bookwyrm/templates/book/book.html:145
 #, python-format
 msgid "This edition is on your <a href=\"%(path)s\">%(shelf_name)s</a> shelf."
 msgstr "此版本在你的 <a href=\"%(path)s\">%(shelf_name)s</a> 书架上。"
 
-#: bookwyrm/templates/book/book.html:149
+#: bookwyrm/templates/book/book.html:151
 #, python-format
-msgid ""
-"A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a "
-"href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
-msgstr ""
-"本书的 <a href=\"%(book_path)s\">另一个版本</a> 在你的 <a href="
-"\"%(shelf_path)s\">%(shelf_name)s</a> 书架上。"
+msgid "A <a href=\"%(book_path)s\">different edition</a> of this book is on your <a href=\"%(shelf_path)s\">%(shelf_name)s</a> shelf."
+msgstr "本书的 <a href=\"%(book_path)s\">另一个版本</a> 在你的 <a href=\"%(shelf_path)s\">%(shelf_name)s</a> 书架上。"
 
-#: bookwyrm/templates/book/book.html:158
+#: bookwyrm/templates/book/book.html:162
 msgid "Your reading activity"
 msgstr "你的阅读活动"
 
-#: bookwyrm/templates/book/book.html:160
+#: bookwyrm/templates/book/book.html:165
 msgid "Add read dates"
 msgstr "添加阅读日期"
 
-#: bookwyrm/templates/book/book.html:165
+#: bookwyrm/templates/book/book.html:170
 msgid "You don't have any reading activity for this book."
 msgstr "你还没有任何这本书的阅读活动。"
 
-#: bookwyrm/templates/book/book.html:172
+#: bookwyrm/templates/book/book.html:177
 msgid "Create"
 msgstr "创建"
 
-#: bookwyrm/templates/book/book.html:194
-msgid "Subjects"
-msgstr "主题"
-
-#: bookwyrm/templates/book/book.html:206
-msgid "Places"
-msgstr "地点"
-
-#: bookwyrm/templates/book/book.html:217 bookwyrm/templates/layout.html:65
-#: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
-#: bookwyrm/templates/search_results.html:91
-#: bookwyrm/templates/user/user_layout.html:62
-msgid "Lists"
-msgstr "列表"
-
-#: bookwyrm/templates/book/book.html:228
-msgid "Add to list"
-msgstr "添加到列表"
-
-#: bookwyrm/templates/book/book.html:238
-#: bookwyrm/templates/book/cover_modal.html:31
-#: bookwyrm/templates/lists/list.html:133
-msgid "Add"
-msgstr "添加"
-
-#: bookwyrm/templates/book/book.html:254
+#: bookwyrm/templates/book/book.html:203
 #, fuzzy
 #| msgid "Review"
 msgid "Reviews"
 msgstr "书评"
 
-#: bookwyrm/templates/book/book.html:259
+#: bookwyrm/templates/book/book.html:208
 #, fuzzy
 #| msgid "Your shelves"
 msgid "Your reviews"
 msgstr "你的书架"
 
-#: bookwyrm/templates/book/book.html:265
+#: bookwyrm/templates/book/book.html:214
 #, fuzzy
 #| msgid "Your Account"
 msgid "Your comments"
 msgstr "你的帐号"
 
-#: bookwyrm/templates/book/book.html:271
+#: bookwyrm/templates/book/book.html:220
 #, fuzzy
 #| msgid "Your books"
 msgid "Your quotes"
 msgstr "你的书目"
 
-#: bookwyrm/templates/book/book.html:305
+#: bookwyrm/templates/book/book.html:255
 msgid "rated it"
 msgstr "评价了"
+
+#: bookwyrm/templates/book/book.html:276
+msgid "Subjects"
+msgstr "主题"
+
+#: bookwyrm/templates/book/book.html:288
+msgid "Places"
+msgstr "地点"
+
+#: bookwyrm/templates/book/book.html:299 bookwyrm/templates/layout.html:65
+#: bookwyrm/templates/lists/lists.html:5 bookwyrm/templates/lists/lists.html:12
+#: bookwyrm/templates/search/layout.html:25
+#: bookwyrm/templates/search/layout.html:50
+#: bookwyrm/templates/user/layout.html:67
+msgid "Lists"
+msgstr "列表"
+
+#: bookwyrm/templates/book/book.html:310
+msgid "Add to list"
+msgstr "添加到列表"
+
+#: bookwyrm/templates/book/book.html:320
+#: bookwyrm/templates/book/cover_modal.html:31
+#: bookwyrm/templates/lists/list.html:163
+msgid "Add"
+msgstr "添加"
 
 #: bookwyrm/templates/book/book_identifiers.html:8
 msgid "ISBN:"
 msgstr "ISBN:"
 
 #: bookwyrm/templates/book/book_identifiers.html:15
-#: bookwyrm/templates/book/edit_book.html:226
+#: bookwyrm/templates/book/edit_book.html:227
 msgid "OCLC Number:"
 msgstr "OCLC 号:"
 
 #: bookwyrm/templates/book/book_identifiers.html:22
-#: bookwyrm/templates/book/edit_book.html:230
+#: bookwyrm/templates/book/edit_book.html:231
 msgid "ASIN:"
 msgstr "ASIN:"
 
 #: bookwyrm/templates/book/cover_modal.html:17
-#: bookwyrm/templates/book/edit_book.html:178
+#: bookwyrm/templates/book/edit_book.html:179
 msgid "Upload cover:"
 msgstr "上传封面:"
 
 #: bookwyrm/templates/book/cover_modal.html:23
-#: bookwyrm/templates/book/edit_book.html:184
+#: bookwyrm/templates/book/edit_book.html:185
 msgid "Load cover from url:"
 msgstr "从网址加载封面:"
 
@@ -453,36 +457,36 @@ msgid "John Doe, Jane Smith"
 msgstr "张三, 李四"
 
 #: bookwyrm/templates/book/edit_book.html:170
-#: bookwyrm/templates/user/shelf.html:74
+#: bookwyrm/templates/user/shelf/shelf.html:76
 msgid "Cover"
 msgstr "封面"
 
-#: bookwyrm/templates/book/edit_book.html:197
+#: bookwyrm/templates/book/edit_book.html:198
 msgid "Physical Properties"
 msgstr "实体性质"
 
-#: bookwyrm/templates/book/edit_book.html:198
+#: bookwyrm/templates/book/edit_book.html:199
 #: bookwyrm/templates/book/format_filter.html:5
 msgid "Format:"
 msgstr "格式:"
 
-#: bookwyrm/templates/book/edit_book.html:206
+#: bookwyrm/templates/book/edit_book.html:207
 msgid "Pages:"
 msgstr "页数:"
 
-#: bookwyrm/templates/book/edit_book.html:213
+#: bookwyrm/templates/book/edit_book.html:214
 msgid "Book Identifiers"
 msgstr "书目标识号"
 
-#: bookwyrm/templates/book/edit_book.html:214
+#: bookwyrm/templates/book/edit_book.html:215
 msgid "ISBN 13:"
 msgstr "ISBN 13:"
 
-#: bookwyrm/templates/book/edit_book.html:218
+#: bookwyrm/templates/book/edit_book.html:219
 msgid "ISBN 10:"
 msgstr "ISBN 10:"
 
-#: bookwyrm/templates/book/edit_book.html:222
+#: bookwyrm/templates/book/edit_book.html:223
 #: bookwyrm/templates/edit_author.html:59
 msgid "Openlibrary key:"
 msgstr "Openlibrary key:"
@@ -546,6 +550,7 @@ msgstr "由 %(publisher)s 出版。"
 #: bookwyrm/templates/feed/feed_layout.html:70
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
+#: bookwyrm/templates/search/book.html:39
 msgid "Close"
 msgstr "关闭"
 
@@ -567,45 +572,25 @@ msgstr "本地用户"
 msgid "Federated community"
 msgstr "跨站社区"
 
-#: bookwyrm/templates/directory/directory.html:6
-#: bookwyrm/templates/directory/directory.html:11
+#: bookwyrm/templates/directory/directory.html:4
+#: bookwyrm/templates/directory/directory.html:9
 #: bookwyrm/templates/layout.html:93
 msgid "Directory"
 msgstr "目录"
 
-#: bookwyrm/templates/directory/directory.html:19
+#: bookwyrm/templates/directory/directory.html:17
 msgid "Make your profile discoverable to other BookWyrm users."
 msgstr "使你的个人资料可以被其它 BookWyrm 用户发现。"
 
-#: bookwyrm/templates/directory/directory.html:26
+#: bookwyrm/templates/directory/directory.html:24
 #, python-format
-msgid ""
-"You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</"
-"a>"
+msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings.</a>"
 msgstr "你可以在任何时候从你的 <a href=\"%(path)s\">个人资料设定</a> 中退出。"
 
-#: bookwyrm/templates/directory/directory.html:31
+#: bookwyrm/templates/directory/directory.html:29
 #: bookwyrm/templates/snippets/goal_card.html:22
 msgid "Dismiss message"
 msgstr "遣散消息"
-
-#: bookwyrm/templates/directory/directory.html:71
-msgid "follower you follow"
-msgid_plural "followers you follow"
-msgstr[0] "你关注的关注者"
-
-#: bookwyrm/templates/directory/directory.html:78
-msgid "book on your shelves"
-msgid_plural "books on your shelves"
-msgstr[0] "你书架上的书"
-
-#: bookwyrm/templates/directory/directory.html:86
-msgid "posts"
-msgstr "发文"
-
-#: bookwyrm/templates/directory/directory.html:92
-msgid "last active"
-msgstr "最后活跃"
 
 #: bookwyrm/templates/directory/sort_filter.html:5
 msgid "Order by"
@@ -618,6 +603,24 @@ msgstr "受推荐"
 #: bookwyrm/templates/directory/sort_filter.html:9
 msgid "Recently active"
 msgstr "最近活跃"
+
+#: bookwyrm/templates/directory/user_card.html:32
+msgid "follower you follow"
+msgid_plural "followers you follow"
+msgstr[0] "你关注的关注者"
+
+#: bookwyrm/templates/directory/user_card.html:39
+msgid "book on your shelves"
+msgid_plural "books on your shelves"
+msgstr[0] "你书架上的书"
+
+#: bookwyrm/templates/directory/user_card.html:47
+msgid "posts"
+msgstr "发文"
+
+#: bookwyrm/templates/directory/user_card.html:53
+msgid "last active"
+msgstr "最后活跃"
 
 #: bookwyrm/templates/directory/user_type_filter.html:5
 msgid "User type"
@@ -706,8 +709,8 @@ msgid "Edit Author:"
 msgstr "编辑作者:"
 
 #: bookwyrm/templates/edit_author.html:32 bookwyrm/templates/lists/form.html:8
-#: bookwyrm/templates/user/create_shelf_form.html:13
-#: bookwyrm/templates/user/edit_shelf_form.html:14
+#: bookwyrm/templates/user/shelf/create_shelf_form.html:13
+#: bookwyrm/templates/user/shelf/edit_shelf_form.html:14
 msgid "Name:"
 msgstr "名称:"
 
@@ -746,12 +749,8 @@ msgstr "你好呀，"
 
 #: bookwyrm/templates/email/html_layout.html:21
 #, python-format
-msgid ""
-"BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">"
-"%(site_name)s</a>"
-msgstr ""
-"位于 <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</"
-"a> 的 BookWyrm"
+msgid "BookWyrm hosted on <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a>"
+msgstr "位于 <a style=\"color: #3273dc;\" href=\"https://%(domain)s\">%(site_name)s</a> 的 BookWyrm"
 
 #: bookwyrm/templates/email/html_layout.html:23
 msgid "Email preference"
@@ -769,17 +768,12 @@ msgstr "立即加入"
 
 #: bookwyrm/templates/email/invite/html_content.html:15
 #, python-format
-msgid ""
-"Learn more <a href=\"https://%(domain)s%(about_path)s\">about this instance</"
-"a>."
-msgstr ""
-"了解更多 <a href=\"https://%(domain)s%(about_path)s\">有关本实例的信息</a>。"
+msgid "Learn more <a href=\"https://%(domain)s%(about_path)s\">about this instance</a>."
+msgstr "了解更多 <a href=\"https://%(domain)s%(about_path)s\">有关本实例的信息</a>。"
 
 #: bookwyrm/templates/email/invite/text_content.html:4
 #, python-format
-msgid ""
-"You're invited to join %(site_name)s! Click the link below to create an "
-"account."
+msgid "You're invited to join %(site_name)s! Click the link below to create an account."
 msgstr "你受邀请加入 %(site_name)s！点击下面的连接来创建帐号。"
 
 #: bookwyrm/templates/email/invite/text_content.html:8
@@ -789,12 +783,8 @@ msgstr "了解更多有关本实例的信息:"
 #: bookwyrm/templates/email/password_reset/html_content.html:6
 #: bookwyrm/templates/email/password_reset/text_content.html:4
 #, python-format
-msgid ""
-"You requested to reset your %(site_name)s password. Click the link below to "
-"set a new password and log in to your account."
-msgstr ""
-"你请求重置你在 %(site_name)s 的密码。点击下面的链接来设置新密码并登录你的帐"
-"号。"
+msgid "You requested to reset your %(site_name)s password. Click the link below to set a new password and log in to your account."
+msgstr "你请求重置你在 %(site_name)s 的密码。点击下面的链接来设置新密码并登录你的帐号。"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:9
 #: bookwyrm/templates/password_reset.html:4
@@ -806,8 +796,7 @@ msgstr "重设密码"
 
 #: bookwyrm/templates/email/password_reset/html_content.html:13
 #: bookwyrm/templates/email/password_reset/text_content.html:8
-msgid ""
-"If you didn't request to reset your password, you can ignore this email."
+msgid "If you didn't request to reset your password, you can ignore this email."
 msgstr "如果你没有请求重设密码，你可以忽略这封邮件。"
 
 #: bookwyrm/templates/email/password_reset/subject.html:2
@@ -864,8 +853,7 @@ msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
 msgstr "加载 <span data-poll=\"stream/%(tab)s\">0</span> 条未读状态"
 
 #: bookwyrm/templates/feed/feed.html:48
-msgid ""
-"There aren't any activities right now! Try following a user to get started"
+msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "现在还没有任何活动！尝试着从关注一个用户开始吧"
 
 #: bookwyrm/templates/feed/feed.html:56
@@ -879,28 +867,27 @@ msgstr "更新"
 
 #: bookwyrm/templates/feed/feed_layout.html:11
 #: bookwyrm/templates/layout.html:59
-#: bookwyrm/templates/user/books_header.html:3
+#: bookwyrm/templates/user/shelf/books_header.html:3
 msgid "Your books"
 msgstr "你的书目"
 
 #: bookwyrm/templates/feed/feed_layout.html:13
-msgid ""
-"There are no books here right now! Try searching for a book to get started"
+msgid "There are no books here right now! Try searching for a book to get started"
 msgstr "现在这里还没有任何书目！尝试着从搜索某本书开始吧"
 
 #: bookwyrm/templates/feed/feed_layout.html:24
-#: bookwyrm/templates/user/shelf.html:28
+#: bookwyrm/templates/user/shelf/shelf.html:28
 msgid "To Read"
 msgstr "想读"
 
 #: bookwyrm/templates/feed/feed_layout.html:25
-#: bookwyrm/templates/user/shelf.html:28
+#: bookwyrm/templates/user/shelf/shelf.html:28
 msgid "Currently Reading"
 msgstr "在读"
 
 #: bookwyrm/templates/feed/feed_layout.html:26
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:11
-#: bookwyrm/templates/user/shelf.html:28
+#: bookwyrm/templates/user/shelf/shelf.html:28
 msgid "Read"
 msgstr "读过"
 
@@ -932,13 +919,12 @@ msgid "What are you reading?"
 msgstr "你在阅读什么？"
 
 #: bookwyrm/templates/get_started/books.html:9
-#: bookwyrm/templates/lists/list.html:101
+#: bookwyrm/templates/lists/list.html:119
 msgid "Search for a book"
 msgstr "搜索书目"
 
 #: bookwyrm/templates/get_started/books.html:11
 #: bookwyrm/templates/isbn_search_results.html:17
-#: bookwyrm/templates/search_results.html:17
 #, python-format
 msgid "No books found for \"%(query)s\""
 msgstr "没有找到 \"%(query)s\" 的书目"
@@ -953,25 +939,27 @@ msgstr "你可以在开始使用 %(site_name)s 后添加书目。"
 #: bookwyrm/templates/get_started/users.html:18
 #: bookwyrm/templates/get_started/users.html:19
 #: bookwyrm/templates/layout.html:38 bookwyrm/templates/layout.html:39
-#: bookwyrm/templates/lists/list.html:105
+#: bookwyrm/templates/lists/list.html:123
+#: bookwyrm/templates/search/layout.html:4
+#: bookwyrm/templates/search/layout.html:9
 msgid "Search"
 msgstr "搜索"
 
-#: bookwyrm/templates/get_started/books.html:26
+#: bookwyrm/templates/get_started/books.html:27
 msgid "Suggested Books"
 msgstr "推荐的书目"
 
-#: bookwyrm/templates/get_started/books.html:41
+#: bookwyrm/templates/get_started/books.html:46
 #, python-format
 msgid "Popular on %(site_name)s"
 msgstr "%(site_name)s 上的热门"
 
-#: bookwyrm/templates/get_started/books.html:51
-#: bookwyrm/templates/lists/list.html:118
+#: bookwyrm/templates/get_started/books.html:58
+#: bookwyrm/templates/lists/list.html:136
 msgid "No books found"
 msgstr "没有找到书目"
 
-#: bookwyrm/templates/get_started/books.html:54
+#: bookwyrm/templates/get_started/books.html:63
 #: bookwyrm/templates/get_started/profile.html:54
 msgid "Save &amp; continue"
 msgstr "保存 &amp; 继续"
@@ -1036,9 +1024,7 @@ msgid "Show this account in suggested users:"
 msgstr "在推荐的用户中显示此帐号:"
 
 #: bookwyrm/templates/get_started/profile.html:52
-msgid ""
-"Your account will show up in the directory, and may be recommended to other "
-"BookWyrm users."
+msgid "Your account will show up in the directory, and may be recommended to other BookWyrm users."
 msgstr "你的帐号会显示在目录中，并且可能会受其它 BookWyrm 用户推荐。"
 
 #: bookwyrm/templates/get_started/users.html:11
@@ -1046,7 +1032,6 @@ msgid "Search for a user"
 msgstr "搜索用户"
 
 #: bookwyrm/templates/get_started/users.html:13
-#: bookwyrm/templates/search_results.html:76
 #, python-format
 msgid "No users found for \"%(query)s\""
 msgstr "没有找到 \"%(query)s\" 的用户"
@@ -1063,9 +1048,7 @@ msgstr "编辑目标"
 #: bookwyrm/templates/goal.html:30
 #: bookwyrm/templates/snippets/goal_card.html:13
 #, python-format
-msgid ""
-"Set a goal for how many books you'll finish reading in %(year)s, and track "
-"your progress throughout the year."
+msgid "Set a goal for how many books you'll finish reading in %(year)s, and track your progress throughout the year."
 msgstr "设定一个 %(year)s 内要读多少书的目标，并记录你全年的进度。"
 
 #: bookwyrm/templates/goal.html:39
@@ -1148,9 +1131,7 @@ msgstr "加载失败"
 
 #: bookwyrm/templates/import_status.html:44
 #, python-format
-msgid ""
-"Jump to the bottom of the list to select the %(failed_count)s items which "
-"failed to import."
+msgid "Jump to the bottom of the list to select the %(failed_count)s items which failed to import."
 msgstr "跳转至列表底部来选取 %(failed_count)s 个导入失败的项目。"
 
 #: bookwyrm/templates/import_status.html:79
@@ -1166,18 +1147,19 @@ msgid "Successfully imported"
 msgstr "成功导入了"
 
 #: bookwyrm/templates/import_status.html:112
-#: bookwyrm/templates/lists/curate.html:14
 msgid "Book"
 msgstr "书目"
 
 #: bookwyrm/templates/import_status.html:115
 #: bookwyrm/templates/snippets/create_status_form.html:10
-#: bookwyrm/templates/user/shelf.html:75 bookwyrm/templates/user/shelf.html:93
+#: bookwyrm/templates/user/shelf/shelf.html:77
+#: bookwyrm/templates/user/shelf/shelf.html:95
 msgid "Title"
 msgstr "标题"
 
 #: bookwyrm/templates/import_status.html:118
-#: bookwyrm/templates/user/shelf.html:76 bookwyrm/templates/user/shelf.html:96
+#: bookwyrm/templates/user/shelf/shelf.html:78
+#: bookwyrm/templates/user/shelf/shelf.html:98
 msgid "Author"
 msgstr "作者"
 
@@ -1199,18 +1181,15 @@ msgid "Sorry! This invite code is no longer valid."
 msgstr "抱歉！此邀请码已不再有效。"
 
 #: bookwyrm/templates/isbn_search_results.html:4
-#: bookwyrm/templates/search_results.html:4
 msgid "Search Results"
 msgstr "搜索结果"
 
 #: bookwyrm/templates/isbn_search_results.html:9
-#: bookwyrm/templates/search_results.html:9
 #, python-format
 msgid "Search Results for \"%(query)s\""
 msgstr "\"%(query)s\" 的搜索结果"
 
 #: bookwyrm/templates/isbn_search_results.html:14
-#: bookwyrm/templates/search_results.html:14
 msgid "Matching Books"
 msgstr "匹配的书目"
 
@@ -1252,53 +1231,51 @@ msgstr "登出"
 msgid "Notifications"
 msgstr "通知"
 
-#: bookwyrm/templates/layout.html:152 bookwyrm/templates/layout.html:156
+#: bookwyrm/templates/layout.html:155 bookwyrm/templates/layout.html:159
 #: bookwyrm/templates/login.html:17
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "用户名:"
 
-#: bookwyrm/templates/layout.html:157
+#: bookwyrm/templates/layout.html:160
 msgid "password"
 msgstr "密码"
 
-#: bookwyrm/templates/layout.html:158 bookwyrm/templates/login.html:36
+#: bookwyrm/templates/layout.html:161 bookwyrm/templates/login.html:36
 msgid "Forgot your password?"
 msgstr "忘记了密码？"
 
-#: bookwyrm/templates/layout.html:161 bookwyrm/templates/login.html:10
+#: bookwyrm/templates/layout.html:164 bookwyrm/templates/login.html:10
 #: bookwyrm/templates/login.html:33
 msgid "Log in"
 msgstr "登录"
 
-#: bookwyrm/templates/layout.html:169
+#: bookwyrm/templates/layout.html:172
 msgid "Join"
 msgstr "加入"
 
-#: bookwyrm/templates/layout.html:195
+#: bookwyrm/templates/layout.html:198
 msgid "About this server"
 msgstr "关于本服务器"
 
-#: bookwyrm/templates/layout.html:199
+#: bookwyrm/templates/layout.html:202
 msgid "Contact site admin"
 msgstr "联系站点管理员"
 
 #: bookwyrm/templates/layout.html:206
-#, python-format
-msgid ""
-"Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">"
-"%(support_title)s</a>"
-msgstr ""
-"在 <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a> 上支"
-"持 %(site_name)s"
+#, fuzzy
+#| msgid "List curation:"
+msgid "Documentation"
+msgstr "列表策展:"
 
-#: bookwyrm/templates/layout.html:210
-msgid ""
-"BookWyrm is open source software. You can contribute or report issues on <a "
-"href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
-msgstr ""
-"BookWyrm 是开源软件。你可以在 <a href=\"https://github.com/mouse-reeve/"
-"bookwyrm\">GitHub</a> 贡献或报告问题。"
+#: bookwyrm/templates/layout.html:213
+#, python-format
+msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
+msgstr "在 <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a> 上支持 %(site_name)s"
+
+#: bookwyrm/templates/layout.html:217
+msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
+msgstr "BookWyrm 是开源软件。你可以在 <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:20
@@ -1315,27 +1292,27 @@ msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建并策展"
 msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
 msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建"
 
-#: bookwyrm/templates/lists/curate.html:6
+#: bookwyrm/templates/lists/curate.html:8
 msgid "Pending Books"
 msgstr "等候中的书目"
 
-#: bookwyrm/templates/lists/curate.html:7
+#: bookwyrm/templates/lists/curate.html:11
 msgid "Go to list"
 msgstr "前往列表"
 
-#: bookwyrm/templates/lists/curate.html:9
+#: bookwyrm/templates/lists/curate.html:15
 msgid "You're all set!"
 msgstr "都弄好了！"
 
-#: bookwyrm/templates/lists/curate.html:15
+#: bookwyrm/templates/lists/curate.html:45
 msgid "Suggested by"
 msgstr "推荐来自"
 
-#: bookwyrm/templates/lists/curate.html:35
+#: bookwyrm/templates/lists/curate.html:57
 msgid "Approve"
 msgstr "批准"
 
-#: bookwyrm/templates/lists/curate.html:41
+#: bookwyrm/templates/lists/curate.html:63
 msgid "Discard"
 msgstr "削除"
 
@@ -1387,62 +1364,62 @@ msgstr "任何人都可以向此列表中添加书目"
 msgid "This list is currently empty"
 msgstr "此列表当前是空的"
 
-#: bookwyrm/templates/lists/list.html:46
+#: bookwyrm/templates/lists/list.html:64
 #, python-format
 msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "由 <a href=\"%(user_path)s\">%(username)s</a> 添加"
 
-#: bookwyrm/templates/lists/list.html:58
+#: bookwyrm/templates/lists/list.html:76
 #, fuzzy
 #| msgid "Sent"
 msgid "Set"
 msgstr "已发送"
 
-#: bookwyrm/templates/lists/list.html:61
+#: bookwyrm/templates/lists/list.html:79
 #, fuzzy
 #| msgid "List curation:"
 msgid "List position"
 msgstr "列表策展:"
 
-#: bookwyrm/templates/lists/list.html:67
+#: bookwyrm/templates/lists/list.html:85
 #: bookwyrm/templates/snippets/shelf_selector.html:26
 msgid "Remove"
 msgstr "移除"
 
-#: bookwyrm/templates/lists/list.html:80 bookwyrm/templates/lists/list.html:92
+#: bookwyrm/templates/lists/list.html:98 bookwyrm/templates/lists/list.html:110
 #, fuzzy
 #| msgid "Your Lists"
 msgid "Sort List"
 msgstr "你的列表"
 
-#: bookwyrm/templates/lists/list.html:86
+#: bookwyrm/templates/lists/list.html:104
 #, fuzzy
 #| msgid "Directory"
 msgid "Direction"
 msgstr "目录"
 
-#: bookwyrm/templates/lists/list.html:97
+#: bookwyrm/templates/lists/list.html:115
 msgid "Add Books"
 msgstr "添加书目"
 
-#: bookwyrm/templates/lists/list.html:97
+#: bookwyrm/templates/lists/list.html:115
 msgid "Suggest Books"
 msgstr "推荐书目"
 
-#: bookwyrm/templates/lists/list.html:106
+#: bookwyrm/templates/lists/list.html:124
 msgid "search"
 msgstr "搜索"
 
-#: bookwyrm/templates/lists/list.html:112
+#: bookwyrm/templates/lists/list.html:130
 msgid "Clear search"
 msgstr "清除搜索"
 
-#: bookwyrm/templates/lists/list.html:117
+#: bookwyrm/templates/lists/list.html:135
 #, python-format
 msgid "No books found matching the query \"%(query)s\""
 msgstr "没有符合 \"%(query)s\" 请求的书目"
 
-#: bookwyrm/templates/lists/list.html:133
+#: bookwyrm/templates/lists/list.html:163
 msgid "Suggest"
 msgstr "推荐"
 
@@ -1484,7 +1461,7 @@ msgstr "监察员评论"
 
 #: bookwyrm/templates/moderation/report.html:41
 #: bookwyrm/templates/snippets/create_status.html:28
-#: bookwyrm/templates/snippets/create_status_form.html:53
+#: bookwyrm/templates/snippets/create_status_form.html:63
 msgid "Comment"
 msgstr "评论"
 
@@ -1563,27 +1540,18 @@ msgstr "删除通知"
 
 #: bookwyrm/templates/notifications.html:53
 #, python-format
-msgid ""
-"favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s</"
-"em></a>"
-msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
+msgid "favorited your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr "喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:55
 #, python-format
-msgid ""
-"favorited your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</"
-"em></a>"
-msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
+msgid "favorited your <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr "喜欢了你 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:57
 #, python-format
-msgid ""
-"favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</"
-"em></a>"
-msgstr ""
-"喜欢了你 <a href=\"%(related_path)s\">来自 <em>%(book_title)s</em> 的引用</a>"
+msgid "favorited your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr "喜欢了你 <a href=\"%(related_path)s\">来自 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications.html:59
 #, python-format
@@ -1592,30 +1560,18 @@ msgstr "喜欢了你的 <a href=\"%(related_path)s\">状态</a>"
 
 #: bookwyrm/templates/notifications.html:64
 #, python-format
-msgid ""
-"mentioned you in a <a href=\"%(related_path)s\">review of <em>"
-"%(book_title)s</em></a>"
-msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a> 里提到"
-"了你"
+msgid "mentioned you in a <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a> 里提到了你"
 
 #: bookwyrm/templates/notifications.html:66
 #, python-format
-msgid ""
-"mentioned you in a <a href=\"%(related_path)s\">comment on <em>"
-"%(book_title)s</em></a>"
-msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a> 里提到"
-"了你"
+msgid "mentioned you in a <a href=\"%(related_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a> 里提到了你"
 
 #: bookwyrm/templates/notifications.html:68
 #, python-format
-msgid ""
-"mentioned you in a <a href=\"%(related_path)s\">quote from <em>"
-"%(book_title)s</em></a>"
-msgstr ""
-"在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a> 中提到"
-"了你"
+msgid "mentioned you in a <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr "在 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a> 中提到了你"
 
 #: bookwyrm/templates/notifications.html:70
 #, python-format
@@ -1624,39 +1580,23 @@ msgstr "在 <a href=\"%(related_path)s\">状态</a> 中提到了你"
 
 #: bookwyrm/templates/notifications.html:75
 #, python-format
-msgid ""
-"<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
-"\">review of <em>%(book_title)s</em></a>"
-msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 "
-"<em>%(book_title)s</em> 的书评</a>"
+msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:77
 #, python-format
-msgid ""
-"<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
-"\">comment on <em>%(book_title)s</em></a>"
-msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 "
-"<em>%(book_title)s</em> 的评论</a>"
+msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">comment on <em>%(book_title)s</em></a>"
+msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:79
 #, python-format
-msgid ""
-"<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
-"\">quote from <em>%(book_title)s</em></a>"
-msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你 <a href=\"%(parent_path)s\">对 "
-"<em>%(book_title)s</em> 中的引用</a>"
+msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr "<a href=\"%(related_path)s\">回复</a> 了你 <a href=\"%(parent_path)s\">对 <em>%(book_title)s</em> 中的引用</a>"
 
 #: bookwyrm/templates/notifications.html:81
 #, python-format
-msgid ""
-"<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s"
-"\">status</a>"
-msgstr ""
-"<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">状态"
-"</a>"
+msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
+msgstr "<a href=\"%(related_path)s\">回复</a> 了你的 <a href=\"%(parent_path)s\">状态</a>"
 
 #: bookwyrm/templates/notifications.html:85
 msgid "followed you"
@@ -1668,27 +1608,18 @@ msgstr "向你发送了关注请求"
 
 #: bookwyrm/templates/notifications.html:94
 #, python-format
-msgid ""
-"boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></"
-"a>"
-msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
+msgid "boosted your <a href=\"%(related_path)s\">review of <em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的书评</a>"
 
 #: bookwyrm/templates/notifications.html:96
 #, python-format
-msgid ""
-"boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></"
-"a>"
-msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
+msgid "boosted your <a href=\"%(related_path)s\">comment on<em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的评论</a>"
 
 #: bookwyrm/templates/notifications.html:98
 #, python-format
-msgid ""
-"boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</"
-"em></a>"
-msgstr ""
-"转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
+msgid "boosted your <a href=\"%(related_path)s\">quote from <em>%(book_title)s</em></a>"
+msgstr "转发了你的 <a href=\"%(related_path)s\">对 <em>%(book_title)s</em> 的引用</a>"
 
 #: bookwyrm/templates/notifications.html:100
 #, python-format
@@ -1697,21 +1628,13 @@ msgstr "转发了你的 <a href=\"%(related_path)s\">状态</a>"
 
 #: bookwyrm/templates/notifications.html:104
 #, python-format
-msgid ""
-" added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list "
-"\"<a href=\"%(list_path)s\">%(list_name)s</a>\""
-msgstr ""
-" 添加了 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 "
-"\"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
+msgstr " 添加了 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications.html:106
 #, python-format
-msgid ""
-" suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to "
-"your list \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
-msgstr ""
-" 推荐添加 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 "
-"\"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
+msgid " suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
+msgstr " 推荐添加 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications.html:110
 #, python-format
@@ -1772,12 +1695,8 @@ msgstr "在消息流中显示设置阅读目标的提示:"
 
 #: bookwyrm/templates/preferences/edit_user.html:62
 #, python-format
-msgid ""
-"Your account will show up in the <a href=\"%(path)s\">directory</a>, and may "
-"be recommended to other BookWyrm users."
-msgstr ""
-"你的帐号会显示在 <a href=\"%(path)s\">目录</a> 中，并可能受其它 BookWyrm 用户"
-"推荐。"
+msgid "Your account will show up in the <a href=\"%(path)s\">directory</a>, and may be recommended to other BookWyrm users."
+msgstr "你的帐号会显示在 <a href=\"%(path)s\">目录</a> 中，并可能受其它 BookWyrm 用户推荐。"
 
 #: bookwyrm/templates/preferences/edit_user.html:65
 msgid "Preferred Timezone: "
@@ -1795,25 +1714,56 @@ msgstr "个人资料"
 msgid "Relationships"
 msgstr "关系"
 
-#: bookwyrm/templates/search_results.html:33
-msgid "Didn't find what you were looking for?"
-msgstr "没有找到你想找的？"
+#: bookwyrm/templates/search/book.html:30
+#, fuzzy
+#| msgid "Show more"
+msgid "Show"
+msgstr "显示更多"
 
-#: bookwyrm/templates/search_results.html:35
-msgid "Show results from other catalogues"
+#: bookwyrm/templates/search/book.html:64
+#, fuzzy
+#| msgid "Show results from other catalogues"
+msgid "Load results from other catalogues"
 msgstr "显示其它类别的结果"
 
-#: bookwyrm/templates/search_results.html:62
-msgid "Hide results from other catalogues"
-msgstr "隐藏其它类别的结果"
+#: bookwyrm/templates/search/book.html:68
+msgid "Manually add book"
+msgstr ""
 
-#: bookwyrm/templates/search_results.html:74
-msgid "Matching Users"
-msgstr "匹配的用户"
+#: bookwyrm/templates/search/book.html:73
+msgid "Log in to import or add books."
+msgstr ""
 
-#: bookwyrm/templates/search_results.html:93
-#, python-format
-msgid "No lists found for \"%(query)s\""
+#: bookwyrm/templates/search/layout.html:16
+#, fuzzy
+#| msgid "Search for a user"
+msgid "Search query"
+msgstr "搜索用户"
+
+#: bookwyrm/templates/search/layout.html:19
+#, fuzzy
+#| msgid "Search"
+msgid "Search type"
+msgstr "搜索"
+
+#: bookwyrm/templates/search/layout.html:21
+#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/templates/user/layout.html:73
+msgid "Books"
+msgstr "书目"
+
+#: bookwyrm/templates/search/layout.html:23
+#: bookwyrm/templates/search/layout.html:46
+#: bookwyrm/templates/settings/admin_layout.html:26
+#: bookwyrm/templates/user_admin/user_admin.html:3
+#: bookwyrm/templates/user_admin/user_admin.html:10
+msgid "Users"
+msgstr "用户"
+
+#: bookwyrm/templates/search/layout.html:58
+#, fuzzy, python-format
+#| msgid "No lists found for \"%(query)s\""
+msgid "No results found for \"%(query)s\""
 msgstr "没有找到 \"%(query)s\" 的列表"
 
 #: bookwyrm/templates/settings/admin_layout.html:4
@@ -1823,12 +1773,6 @@ msgstr "管理"
 #: bookwyrm/templates/settings/admin_layout.html:22
 msgid "Manage Users"
 msgstr "管理用户"
-
-#: bookwyrm/templates/settings/admin_layout.html:26
-#: bookwyrm/templates/user_admin/user_admin.html:3
-#: bookwyrm/templates/user_admin/user_admin.html:10
-msgid "Users"
-msgstr "用户"
 
 #: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
@@ -1862,7 +1806,7 @@ msgid "Footer Content"
 msgstr "页脚内容"
 
 #: bookwyrm/templates/settings/admin_layout.html:54
-#: bookwyrm/templates/settings/site.html:77
+#: bookwyrm/templates/settings/site.html:81
 msgid "Registration"
 msgstr "注册"
 
@@ -1931,7 +1875,7 @@ msgid "Details"
 msgstr "详细"
 
 #: bookwyrm/templates/settings/federated_server.html:36
-#: bookwyrm/templates/user/user_layout.html:50
+#: bookwyrm/templates/user/layout.html:55
 msgid "Activity"
 msgstr "活动"
 
@@ -2189,20 +2133,23 @@ msgstr "支持标题:"
 msgid "Admin email:"
 msgstr "管理员邮件:"
 
-#: bookwyrm/templates/settings/site.html:79
+#: bookwyrm/templates/settings/site.html:73
+msgid "Additional info:"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:83
 msgid "Allow registration:"
 msgstr "允许注册:"
 
-#: bookwyrm/templates/settings/site.html:83
+#: bookwyrm/templates/settings/site.html:87
 msgid "Allow invite requests:"
 msgstr "允许请求邀请:"
 
-#: bookwyrm/templates/settings/site.html:87
+#: bookwyrm/templates/settings/site.html:91
 msgid "Registration closed text:"
 msgstr "注册关闭文字:"
 
-#: bookwyrm/templates/snippets/book_cover.html:20
-#: bookwyrm/templates/snippets/search_result_text.html:10
+#: bookwyrm/templates/snippets/book_cover.html:32
 msgid "No cover"
 msgstr "没有封面"
 
@@ -2253,48 +2200,54 @@ msgstr "引用:"
 msgid "Review:"
 msgstr "书评:"
 
-#: bookwyrm/templates/snippets/create_status_form.html:42
+#: bookwyrm/templates/snippets/create_status_form.html:53
 #: bookwyrm/templates/snippets/status/layout.html:30
 #: bookwyrm/templates/snippets/status/layout.html:48
 #: bookwyrm/templates/snippets/status/layout.html:49
 msgid "Reply"
 msgstr "回复"
 
-#: bookwyrm/templates/snippets/create_status_form.html:67
+#: bookwyrm/templates/snippets/create_status_form.html:53
+#, fuzzy
+#| msgid "Footer Content"
+msgid "Content"
+msgstr "页脚内容"
+
+#: bookwyrm/templates/snippets/create_status_form.html:77
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:16
 msgid "Progress:"
 msgstr "进度:"
 
-#: bookwyrm/templates/snippets/create_status_form.html:75
+#: bookwyrm/templates/snippets/create_status_form.html:85
 #: bookwyrm/templates/snippets/readthrough_form.html:22
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:30
 msgid "pages"
 msgstr "页数"
 
-#: bookwyrm/templates/snippets/create_status_form.html:76
+#: bookwyrm/templates/snippets/create_status_form.html:86
 #: bookwyrm/templates/snippets/readthrough_form.html:23
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:31
 msgid "percent"
 msgstr "百分比"
 
-#: bookwyrm/templates/snippets/create_status_form.html:82
+#: bookwyrm/templates/snippets/create_status_form.html:92
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:36
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "全书 %(pages)s 页"
 
-#: bookwyrm/templates/snippets/create_status_form.html:97
+#: bookwyrm/templates/snippets/create_status_form.html:107
 msgid "Include spoiler alert"
 msgstr "加入剧透警告"
 
-#: bookwyrm/templates/snippets/create_status_form.html:104
+#: bookwyrm/templates/snippets/create_status_form.html:114
 #: bookwyrm/templates/snippets/privacy-icons.html:15
 #: bookwyrm/templates/snippets/privacy-icons.html:16
 #: bookwyrm/templates/snippets/privacy_select.html:19
 msgid "Private"
 msgstr "私密"
 
-#: bookwyrm/templates/snippets/create_status_form.html:115
+#: bookwyrm/templates/snippets/create_status_form.html:125
 msgid "Post"
 msgstr "发布"
 
@@ -2304,14 +2257,11 @@ msgstr "删除这些阅读日期吗？"
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:7
 #, python-format
-msgid ""
-"You are deleting this readthrough and its %(count)s associated progress "
-"updates."
+msgid "You are deleting this readthrough and its %(count)s associated progress updates."
 msgstr "你正要删除这篇阅读经过以及与之相关的 %(count)s 次进度更新。"
 
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:15
 #: bookwyrm/templates/snippets/follow_request_buttons.html:13
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:391
 msgid "Delete"
 msgstr "删除"
 
@@ -2372,21 +2322,15 @@ msgstr[0] "设定了在 %(year)s 内要读 %(counter)s 本书的目标"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
 #, python-format
-msgid ""
-"Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
-msgid_plural ""
-"Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
-msgstr[0] ""
-"为 <em><a href=\"%(path)s\">%(title)s</a></em> 打了分: %(display_rating)s 星"
+msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+msgstr[0] "为 <em><a href=\"%(path)s\">%(title)s</a></em> 打了分: %(display_rating)s 星"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
 #, python-format
-msgid ""
-"Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
-msgid_plural ""
-"Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
-msgstr[0] ""
-"\"%(book_title)s\" 的书评（%(display_rating)s 星）: %(review_title)s"
+msgid "Review of \"%(book_title)s\" (%(display_rating)s star): %(review_title)s"
+msgid_plural "Review of \"%(book_title)s\" (%(display_rating)s stars): %(review_title)s"
+msgstr[0] "\"%(book_title)s\" 的书评（%(display_rating)s 星）: %(review_title)s"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:8
 #, python-format
@@ -2395,12 +2339,8 @@ msgstr "\"%(book_title)s\" 的书评: %(review_title)s"
 
 #: bookwyrm/templates/snippets/goal_card.html:23
 #, python-format
-msgid ""
-"You can set or change your reading goal any time from your <a href=\"%(path)s"
-"\">profile page</a>"
-msgstr ""
-"你可以在任何时候从你的<a href=\"%(path)s\">个人资料页面</a> 中设置或改变你的"
-"阅读目标"
+msgid "You can set or change your reading goal any time from your <a href=\"%(path)s\">profile page</a>"
+msgstr "你可以在任何时候从你的<a href=\"%(path)s\">个人资料页面</a> 中设置或改变你的阅读目标"
 
 #: bookwyrm/templates/snippets/goal_form.html:9
 msgid "Reading goal:"
@@ -2432,20 +2372,13 @@ msgstr "完成了 %(percent)s%% ！"
 
 #: bookwyrm/templates/snippets/goal_progress.html:10
 #, python-format
-msgid ""
-"You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
-msgstr ""
-"你已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</"
-"a>。"
+msgid "You've read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
+msgstr "你已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</a>。"
 
 #: bookwyrm/templates/snippets/goal_progress.html:12
 #, python-format
-msgid ""
-"%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s "
-"books</a>."
-msgstr ""
-"%(username)s 已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 "
-"%(read_count)s 本</a>。"
+msgid "%(username)s has read <a href=\"%(path)s\">%(read_count)s of %(goal_count)s books</a>."
+msgstr "%(username)s 已经阅读了 <a href=\"%(path)s\">%(goal_count)s 本书中的 %(read_count)s 本</a>。"
 
 #: bookwyrm/templates/snippets/page_text.html:4
 #, python-format
@@ -2486,7 +2419,8 @@ msgid "Post privacy"
 msgstr "发文隐私"
 
 #: bookwyrm/templates/snippets/privacy_select.html:16
-#: bookwyrm/templates/user/followers.html:13
+#: bookwyrm/templates/user/relationships/followers.html:6
+#: bookwyrm/templates/user/relationships/layout.html:11
 msgid "Followers"
 msgstr "关注者"
 
@@ -2514,16 +2448,16 @@ msgstr "显示所有更新"
 msgid "Delete this progress update"
 msgstr "删除此进度更新"
 
-#: bookwyrm/templates/snippets/readthrough.html:51
+#: bookwyrm/templates/snippets/readthrough.html:52
 msgid "started"
 msgstr "已开始"
 
-#: bookwyrm/templates/snippets/readthrough.html:57
-#: bookwyrm/templates/snippets/readthrough.html:71
+#: bookwyrm/templates/snippets/readthrough.html:59
+#: bookwyrm/templates/snippets/readthrough.html:73
 msgid "Edit read dates"
 msgstr "编辑阅读日期"
 
-#: bookwyrm/templates/snippets/readthrough.html:61
+#: bookwyrm/templates/snippets/readthrough.html:63
 msgid "Delete these read dates"
 msgstr "删除这些阅读日期"
 
@@ -2570,12 +2504,7 @@ msgstr "评论了"
 msgid "quoted"
 msgstr "引用了"
 
-#: bookwyrm/templates/snippets/search_result_text.html:22
-#, python-format
-msgid "by %(author)s"
-msgstr "由 %(author)s 所著"
-
-#: bookwyrm/templates/snippets/search_result_text.html:30
+#: bookwyrm/templates/snippets/search_result_text.html:36
 msgid "Import book"
 msgstr "导入书目"
 
@@ -2625,17 +2554,17 @@ msgstr "开始 \"<em>%(book_title)s</em>\""
 msgid "Want to Read \"<em>%(book_title)s</em>\""
 msgstr "想要阅读 \"<em>%(book_title)s</em>\""
 
-#: bookwyrm/templates/snippets/status/content_status.html:67
+#: bookwyrm/templates/snippets/status/content_status.html:70
 #: bookwyrm/templates/snippets/trimmed_text.html:14
 msgid "Show more"
 msgstr "显示更多"
 
-#: bookwyrm/templates/snippets/status/content_status.html:82
+#: bookwyrm/templates/snippets/status/content_status.html:85
 #: bookwyrm/templates/snippets/trimmed_text.html:29
 msgid "Show less"
 msgstr "显示更少"
 
-#: bookwyrm/templates/snippets/status/content_status.html:112
+#: bookwyrm/templates/snippets/status/content_status.html:115
 msgid "Open image in new window"
 msgstr "在新窗口中打开图像"
 
@@ -2660,12 +2589,8 @@ msgstr "转发了"
 
 #: bookwyrm/templates/snippets/status/status_header.html:44
 #, python-format
-msgid ""
-"replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href="
-"\"%(status_path)s\">status</a>"
-msgstr ""
-"回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href="
-"\"%(status_path)s\">状态</a>"
+msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
+msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">状态</a>"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -2696,43 +2621,17 @@ msgstr "升序排序"
 msgid "Sorted descending"
 msgstr "降序排序"
 
-#: bookwyrm/templates/user/books_header.html:5
-#, python-format
-msgid "%(username)s's books"
-msgstr "%(username)s 的书目"
-
-#: bookwyrm/templates/user/create_shelf_form.html:5
-#: bookwyrm/templates/user/create_shelf_form.html:22
-msgid "Create Shelf"
-msgstr "创建书架"
-
-#: bookwyrm/templates/user/edit_shelf_form.html:5
-msgid "Edit Shelf"
-msgstr "编辑书架"
-
-#: bookwyrm/templates/user/edit_shelf_form.html:26
-msgid "Update shelf"
-msgstr "更新书架"
-
-#: bookwyrm/templates/user/followers.html:7
-#: bookwyrm/templates/user/following.html:7
-#: bookwyrm/templates/user/user.html:10
+#: bookwyrm/templates/user/layout.html:12 bookwyrm/templates/user/user.html:10
 msgid "User Profile"
 msgstr "用户个人资料"
 
-#: bookwyrm/templates/user/followers.html:29
-#, python-format
-msgid "%(username)s has no followers"
-msgstr "%(username)s 没有关注者"
+#: bookwyrm/templates/user/layout.html:36
+msgid "Follow Requests"
+msgstr "关注请求"
 
-#: bookwyrm/templates/user/following.html:13
-msgid "Following"
-msgstr "正在关注"
-
-#: bookwyrm/templates/user/following.html:29
-#, python-format
-msgid "%(username)s isn't following any users"
-msgstr "%(username)s 没有关注任何用户"
+#: bookwyrm/templates/user/layout.html:61
+msgid "Reading Goal"
+msgstr "阅读目标"
 
 #: bookwyrm/templates/user/lists.html:11
 #, python-format
@@ -2743,35 +2642,71 @@ msgstr "列表: %(username)s"
 msgid "Create list"
 msgstr "创建列表"
 
-#: bookwyrm/templates/user/shelf.html:24 bookwyrm/views/shelf.py:51
+#: bookwyrm/templates/user/relationships/followers.html:12
+#, python-format
+msgid "%(username)s has no followers"
+msgstr "%(username)s 没有关注者"
+
+#: bookwyrm/templates/user/relationships/following.html:6
+#: bookwyrm/templates/user/relationships/layout.html:15
+msgid "Following"
+msgstr "正在关注"
+
+#: bookwyrm/templates/user/relationships/following.html:12
+#, python-format
+msgid "%(username)s isn't following any users"
+msgstr "%(username)s 没有关注任何用户"
+
+#: bookwyrm/templates/user/shelf/books_header.html:5
+#, python-format
+msgid "%(username)s's books"
+msgstr "%(username)s 的书目"
+
+#: bookwyrm/templates/user/shelf/create_shelf_form.html:5
+#: bookwyrm/templates/user/shelf/create_shelf_form.html:22
+msgid "Create Shelf"
+msgstr "创建书架"
+
+#: bookwyrm/templates/user/shelf/edit_shelf_form.html:5
+msgid "Edit Shelf"
+msgstr "编辑书架"
+
+#: bookwyrm/templates/user/shelf/edit_shelf_form.html:26
+msgid "Update shelf"
+msgstr "更新书架"
+
+#: bookwyrm/templates/user/shelf/shelf.html:24 bookwyrm/views/shelf.py:48
 msgid "All books"
 msgstr "所有书目"
 
-#: bookwyrm/templates/user/shelf.html:37
+#: bookwyrm/templates/user/shelf/shelf.html:37
 msgid "Create shelf"
 msgstr "创建书架"
 
-#: bookwyrm/templates/user/shelf.html:58
+#: bookwyrm/templates/user/shelf/shelf.html:60
 msgid "Edit shelf"
 msgstr "编辑书架"
 
-#: bookwyrm/templates/user/shelf.html:77 bookwyrm/templates/user/shelf.html:99
+#: bookwyrm/templates/user/shelf/shelf.html:79
+#: bookwyrm/templates/user/shelf/shelf.html:101
 msgid "Shelved"
 msgstr "上架时间"
 
-#: bookwyrm/templates/user/shelf.html:78 bookwyrm/templates/user/shelf.html:103
+#: bookwyrm/templates/user/shelf/shelf.html:80
+#: bookwyrm/templates/user/shelf/shelf.html:105
 msgid "Started"
 msgstr "开始时间"
 
-#: bookwyrm/templates/user/shelf.html:79 bookwyrm/templates/user/shelf.html:106
+#: bookwyrm/templates/user/shelf/shelf.html:81
+#: bookwyrm/templates/user/shelf/shelf.html:108
 msgid "Finished"
 msgstr "完成时间"
 
-#: bookwyrm/templates/user/shelf.html:132
+#: bookwyrm/templates/user/shelf/shelf.html:134
 msgid "This shelf is empty."
 msgstr "此书架是空的。"
 
-#: bookwyrm/templates/user/shelf.html:138
+#: bookwyrm/templates/user/shelf/shelf.html:140
 msgid "Delete shelf"
 msgstr "删除书架"
 
@@ -2788,50 +2723,41 @@ msgstr "查看所有 %(size)s 本"
 msgid "View all books"
 msgstr "查看所有书目"
 
-#: bookwyrm/templates/user/user.html:59
-#, python-format
-msgid "Set a reading goal for %(year)s"
-msgstr "设定 %(year)s 的阅读目标"
-
-#: bookwyrm/templates/user/user.html:65
+#: bookwyrm/templates/user/user.html:60
 msgid "User Activity"
 msgstr "用户活动"
 
-#: bookwyrm/templates/user/user.html:68
+#: bookwyrm/templates/user/user.html:63
 msgid "RSS feed"
 msgstr "RSS 流"
 
-#: bookwyrm/templates/user/user.html:79
+#: bookwyrm/templates/user/user.html:74
 msgid "No activities yet!"
 msgstr "还没有活动！"
 
-#: bookwyrm/templates/user/user_layout.html:32
-msgid "Follow Requests"
-msgstr "关注请求"
-
-#: bookwyrm/templates/user/user_layout.html:56
-msgid "Reading Goal"
-msgstr "阅读目标"
-
-#: bookwyrm/templates/user/user_layout.html:68
-msgid "Books"
-msgstr "书目"
-
-#: bookwyrm/templates/user/user_preview.html:13
+#: bookwyrm/templates/user/user_preview.html:14
 #, python-format
 msgid "Joined %(date)s"
 msgstr "在 %(date)s 加入"
 
-#: bookwyrm/templates/user/user_preview.html:15
+#: bookwyrm/templates/user/user_preview.html:18
 #, python-format
 msgid "%(counter)s follower"
 msgid_plural "%(counter)s followers"
 msgstr[0] "%(counter)s 个关注者"
 
-#: bookwyrm/templates/user/user_preview.html:16
+#: bookwyrm/templates/user/user_preview.html:19
 #, python-format
 msgid "%(counter)s following"
 msgstr "关注着 %(counter)s 人"
+
+#: bookwyrm/templates/user/user_preview.html:25
+#, fuzzy, python-format
+#| msgid "%(mutuals)s follower you follow"
+#| msgid_plural "%(mutuals)s followers you follow"
+msgid "%(mutuals_display)s follower you follow"
+msgid_plural "%(mutuals_display)s followers you follow"
+msgstr[0] "%(mutuals)s 个你也关注的关注者"
 
 #: bookwyrm/templates/user_admin/user.html:11
 #, fuzzy
@@ -2915,1382 +2841,286 @@ msgstr "没有找到使用该邮箱的用户。"
 msgid "A password reset link sent to %s"
 msgstr "密码重置连接已发送给 %s"
 
-#: venv3/lib/python3.8/site-packages/_pytest/config/argparsing.py:442
-#, python-format
-msgid "ambiguous option: %(option)s could match %(matches)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/contrib/messages/apps.py:7
 #, fuzzy
-#| msgid "All messages"
-msgid "Messages"
-msgstr "所有消息"
+#~| msgid "All messages"
+#~ msgid "Messages"
+#~ msgstr "所有消息"
 
-#: venv3/lib/python3.8/site-packages/django/contrib/sitemaps/apps.py:7
-msgid "Site Maps"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/contrib/staticfiles/apps.py:9
-msgid "Static Files"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/contrib/syndication/apps.py:7
-msgid "Syndication"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/paginator.py:45
-msgid "That page number is not an integer"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/paginator.py:47
-msgid "That page number is less than 1"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/paginator.py:52
-msgid "That page contains no results"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:32
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid value."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid value."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:103
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:659
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid URL."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid URL."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:155
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid integer."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid integer."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:166
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid email address."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid email address."
+#~ msgstr "邮箱地址:"
 
-#. Translators: "letters" means latin letters: a-z and A-Z.
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:240
-msgid ""
-"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:247
-msgid ""
-"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
-"hyphens."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:256
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:276
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid IPv4 address."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv4 address."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:261
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:277
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid IPv6 address."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv6 address."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:271
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:275
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid IPv4 or IPv6 address."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid IPv4 or IPv6 address."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:305
-msgid "Enter only digits separated by commas."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:311
-#, python-format
-msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:343
-#, python-format
-msgid "Ensure this value is less than or equal to %(limit_value)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:352
-#, python-format
-msgid "Ensure this value is greater than or equal to %(limit_value)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:362
-#, python-format
-msgid ""
-"Ensure this value has at least %(limit_value)d character (it has "
-"%(show_value)d)."
-msgid_plural ""
-"Ensure this value has at least %(limit_value)d characters (it has "
-"%(show_value)d)."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:377
-#, python-format
-msgid ""
-"Ensure this value has at most %(limit_value)d character (it has "
-"%(show_value)d)."
-msgid_plural ""
-"Ensure this value has at most %(limit_value)d characters (it has "
-"%(show_value)d)."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:396
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:291
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:326
 #, fuzzy
-#| msgid "Series number:"
-msgid "Enter a number."
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgid "Enter a number."
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:398
-#, python-format
-msgid "Ensure that there are no more than %(max)s digit in total."
-msgid_plural "Ensure that there are no more than %(max)s digits in total."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:403
-#, python-format
-msgid "Ensure that there are no more than %(max)s decimal place."
-msgid_plural "Ensure that there are no more than %(max)s decimal places."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:408
-#, python-format
-msgid ""
-"Ensure that there are no more than %(max)s digit before the decimal point."
-msgid_plural ""
-"Ensure that there are no more than %(max)s digits before the decimal point."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:470
-#, python-format
-msgid ""
-"File extension “%(extension)s” is not allowed. Allowed extensions are: "
-"%(allowed_extensions)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/core/validators.py:522
-msgid "Null characters are not allowed."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/base.py:1181
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:759
-msgid "and"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/base.py:1183
 #, fuzzy, python-format
-#| msgid "A user with this email already exists."
-msgid "%(model_name)s with this %(field_labels)s already exists."
-msgstr "已经存在使用该邮箱的用户。"
+#~| msgid "A user with this email already exists."
+#~ msgid "%(model_name)s with this %(field_labels)s already exists."
+#~ msgstr "已经存在使用该邮箱的用户。"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:104
 #, fuzzy, python-format
-#| msgid "%(value)s is not a valid remote_id"
-msgid "Value %(value)r is not a valid choice."
-msgstr "%(value)s 不是有效的 remote_id"
+#~| msgid "%(value)s is not a valid remote_id"
+#~ msgid "Value %(value)r is not a valid choice."
+#~ msgstr "%(value)s 不是有效的 remote_id"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:105
 #, fuzzy
-#| msgid "This shelf is empty."
-msgid "This field cannot be null."
-msgstr "此书架是空的。"
+#~| msgid "This shelf is empty."
+#~ msgid "This field cannot be null."
+#~ msgstr "此书架是空的。"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:106
-msgid "This field cannot be blank."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:107
 #, fuzzy, python-format
-#| msgid "A user with this email already exists."
-msgid "%(model_name)s with this %(field_label)s already exists."
-msgstr "已经存在使用该邮箱的用户。"
+#~| msgid "A user with this email already exists."
+#~ msgid "%(model_name)s with this %(field_label)s already exists."
+#~ msgstr "已经存在使用该邮箱的用户。"
 
-#. Translators: The 'lookup_type' is one of 'date', 'year' or 'month'.
-#. Eg: "Title must be unique for pub_date year"
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:111
-#, python-format
-msgid ""
-"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:130
-#, python-format
-msgid "Field of type: %(field_type)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:937
-#, python-format
-msgid "“%(value)s” value must be either True or False."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:938
-#, python-format
-msgid "“%(value)s” value must be either True, False, or None."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:940
-msgid "Boolean (Either True or False)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:981
-#, python-format
-msgid "String (up to %(max_length)s)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1045
 #, fuzzy
-#| msgid "No active invites"
-msgid "Comma-separated integers"
-msgstr "无有效的邀请"
+#~| msgid "No active invites"
+#~ msgid "Comma-separated integers"
+#~ msgstr "无有效的邀请"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1094
-#, python-format
-msgid ""
-"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
-"format."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1096
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1239
-#, python-format
-msgid ""
-"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
-"date."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1099
-msgid "Date (without time)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1237
-#, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
-"uuuuuu]][TZ] format."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1241
-#, python-format
-msgid ""
-"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
-"[TZ]) but it is an invalid date/time."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1245
-msgid "Date (with time)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1393
-#, python-format
-msgid "“%(value)s” value must be a decimal number."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1395
 #, fuzzy
-#| msgid "Series number:"
-msgid "Decimal number"
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgid "Decimal number"
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1534
-#, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
-"uuuuuu] format."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1537
 #, fuzzy
-#| msgid "List curation:"
-msgid "Duration"
-msgstr "列表策展:"
+#~| msgid "List curation:"
+#~ msgid "Duration"
+#~ msgstr "列表策展:"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1587
 #, fuzzy
-#| msgid "Email address:"
-msgid "Email address"
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Email address"
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1610
-msgid "File path"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1676
-#, python-format
-msgid "“%(value)s” value must be a float."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1678
-msgid "Floating point number"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1716
-#, python-format
-msgid "“%(value)s” value must be an integer."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1718
-msgid "Integer"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1801
 #, fuzzy
-#| msgid "No active invites"
-msgid "Big (8 byte) integer"
-msgstr "无有效的邀请"
+#~| msgid "No active invites"
+#~ msgid "Big (8 byte) integer"
+#~ msgstr "无有效的邀请"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1817
 #, fuzzy
-#| msgid "Email address:"
-msgid "IPv4 address"
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "IPv4 address"
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1848
 #, fuzzy
-#| msgid "Email address:"
-msgid "IP address"
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "IP address"
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1928
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1929
-#, python-format
-msgid "“%(value)s” value must be either None, True or False."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1931
-msgid "Boolean (Either True, False or None)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1966
 #, fuzzy
-#| msgid "No active invites"
-msgid "Positive integer"
-msgstr "无有效的邀请"
+#~| msgid "No active invites"
+#~ msgid "Positive integer"
+#~ msgstr "无有效的邀请"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1979
 #, fuzzy
-#| msgid "No active invites"
-msgid "Positive small integer"
-msgstr "无有效的邀请"
+#~| msgid "No active invites"
+#~ msgid "Positive small integer"
+#~ msgstr "无有效的邀请"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:1993
-#, python-format
-msgid "Slug (up to %(max_length)s)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2025
-msgid "Small integer"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2032
-msgid "Text"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2060
-#, python-format
-msgid ""
-"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
-"format."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2062
-#, python-format
-msgid ""
-"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
-"invalid time."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2065
-msgid "Time"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2191
-msgid "URL"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2213
-msgid "Raw binary data"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2278
 #, fuzzy, python-format
-#| msgid "%(value)s is not a valid username"
-msgid "“%(value)s” is not a valid UUID."
-msgstr "%(value)s 不是有效的用户名"
+#~| msgid "%(value)s is not a valid username"
+#~ msgid "“%(value)s” is not a valid UUID."
+#~ msgstr "%(value)s 不是有效的用户名"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/__init__.py:2280
-msgid "Universally unique identifier"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/files.py:221
-msgid "File"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/files.py:360
 #, fuzzy
-#| msgid "Images"
-msgid "Image"
-msgstr "图像"
+#~| msgid "Images"
+#~ msgid "Image"
+#~ msgstr "图像"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:778
-#, python-format
-msgid "%(model)s instance with %(field)s %(value)r does not exist."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:780
-msgid "Foreign Key (type determined by related field)"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:1012
 #, fuzzy
-#| msgid "Relationships"
-msgid "One-to-one relationship"
-msgstr "关系"
+#~| msgid "Relationships"
+#~ msgid "One-to-one relationship"
+#~ msgstr "关系"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:1066
 #, fuzzy, python-format
-#| msgid "Relationships"
-msgid "%(from)s-%(to)s relationship"
-msgstr "关系"
+#~| msgid "Relationships"
+#~ msgid "%(from)s-%(to)s relationship"
+#~ msgstr "关系"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:1067
 #, fuzzy, python-format
-#| msgid "Relationships"
-msgid "%(from)s-%(to)s relationships"
-msgstr "关系"
+#~| msgid "Relationships"
+#~ msgid "%(from)s-%(to)s relationships"
+#~ msgstr "关系"
 
-#: venv3/lib/python3.8/site-packages/django/db/models/fields/related.py:1109
 #, fuzzy
-#| msgid "Relationships"
-msgid "Many-to-many relationship"
-msgstr "关系"
+#~| msgid "Relationships"
+#~ msgid "Many-to-many relationship"
+#~ msgstr "关系"
 
-#. Translators: If found as last label character, these punctuation
-#. characters will prevent the default label_suffix to be appended to the label
-#: venv3/lib/python3.8/site-packages/django/forms/boundfield.py:149
-msgid ":?.!"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:53
 #, fuzzy
-#| msgid "This shelf is empty."
-msgid "This field is required."
-msgstr "此书架是空的。"
+#~| msgid "This shelf is empty."
+#~ msgid "This field is required."
+#~ msgstr "此书架是空的。"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:246
 #, fuzzy
-#| msgid "Series number:"
-msgid "Enter a whole number."
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgid "Enter a whole number."
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:397
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:1127
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid date."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid date."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:421
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:1128
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid time."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid time."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:443
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid date/time."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid date/time."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:472
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid duration."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid duration."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:473
-#, python-brace-format
-msgid "The number of days must be between {min_days} and {max_days}."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:533
-msgid "No file was submitted. Check the encoding type on the form."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:534
-msgid "No file was submitted."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:535
 #, fuzzy
-#| msgid "This shelf is empty."
-msgid "The submitted file is empty."
-msgstr "此书架是空的。"
+#~| msgid "This shelf is empty."
+#~ msgid "The submitted file is empty."
+#~ msgstr "此书架是空的。"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:537
-#, python-format
-msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
-msgid_plural ""
-"Ensure this filename has at most %(max)d characters (it has %(length)d)."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:540
-msgid "Please either submit a file or check the clear checkbox, not both."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:601
-msgid ""
-"Upload a valid image. The file you uploaded was either not an image or a "
-"corrupted image."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:763
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:853
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:1275
-#, python-format
-msgid "Select a valid choice. %(value)s is not one of the available choices."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:854
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:969
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:1274
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a list of values."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a list of values."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:970
-msgid "Enter a complete value."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/fields.py:1186
 #, fuzzy
-#| msgid "Email address:"
-msgid "Enter a valid UUID."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "Enter a valid UUID."
+#~ msgstr "邮箱地址:"
 
-#. Translators: This is the default suffix added to form field labels
-#: venv3/lib/python3.8/site-packages/django/forms/forms.py:81
-msgid ":"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/forms.py:207
-#, python-format
-msgid "(Hidden field %(name)s) %(error)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:93
-msgid "ManagementForm data is missing or has been tampered with"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:345
-#, python-format
-msgid "Please submit %d or fewer forms."
-msgid_plural "Please submit %d or fewer forms."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:352
-#, python-format
-msgid "Please submit %d or more forms."
-msgid_plural "Please submit %d or more forms."
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:379
-#: venv3/lib/python3.8/site-packages/django/forms/formsets.py:386
 #, fuzzy
-#| msgid "Order by"
-msgid "Order"
-msgstr "排列顺序"
+#~| msgid "Order by"
+#~ msgid "Order"
+#~ msgstr "排列顺序"
 
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:754
-#, python-format
-msgid "Please correct the duplicate data for %(field)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:758
-#, python-format
-msgid "Please correct the duplicate data for %(field)s, which must be unique."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:764
-#, python-format
-msgid ""
-"Please correct the duplicate data for %(field_name)s which must be unique "
-"for the %(lookup)s in %(date_field)s."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:773
-msgid "Please correct the duplicate values below."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:1094
-msgid "The inline value did not match the parent instance."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:1161
-msgid "Select a valid choice. That choice is not one of the available choices."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/models.py:1277
 #, fuzzy, python-format
-#| msgid "%(value)s is not a valid username"
-msgid "“%(pk)s” is not a valid value."
-msgstr "%(value)s 不是有效的用户名"
+#~| msgid "%(value)s is not a valid username"
+#~ msgid "“%(pk)s” is not a valid value."
+#~ msgstr "%(value)s 不是有效的用户名"
 
-#: venv3/lib/python3.8/site-packages/django/forms/utils.py:162
-#, python-format
-msgid ""
-"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
-"may be ambiguous or it may not exist."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:395
-msgid "Clear"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:396
 #, fuzzy
-#| msgid "Start reading"
-msgid "Currently"
-msgstr "开始阅读"
+#~| msgid "Start reading"
+#~ msgid "Currently"
+#~ msgstr "开始阅读"
 
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:397
 #, fuzzy
-#| msgid "Change shelf"
-msgid "Change"
-msgstr "改变书架"
+#~| msgid "Change shelf"
+#~ msgid "Change"
+#~ msgstr "改变书架"
 
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:709
-msgid "Unknown"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:710
-msgid "Yes"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/forms/widgets.py:711
-msgid "No"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:788
-msgid "yes,no,maybe"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:817
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:834
-#, python-format
-msgid "%(size)d byte"
-msgid_plural "%(size)d bytes"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:836
-#, python-format
-msgid "%s KB"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:838
-#, python-format
-msgid "%s MB"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:840
-#, python-format
-msgid "%s GB"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:842
-#, python-format
-msgid "%s TB"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/template/defaultfilters.py:844
-#, python-format
-msgid "%s PB"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:62
-msgid "p.m."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:63
-msgid "a.m."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:68
-msgid "PM"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:69
-msgid "AM"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:150
-msgid "midnight"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dateformat.py:152
-msgid "noon"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:6
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:295
-msgid "Monday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:6
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:296
-msgid "Tuesday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:6
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:297
-msgid "Wednesday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:6
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:298
-msgid "Thursday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:6
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:299
-msgid "Friday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:7
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:300
-msgid "Saturday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:7
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:301
-msgid "Sunday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Mon"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Tue"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Wed"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Thu"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:10
-msgid "Fri"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:11
 #, fuzzy
-#| msgid "Status"
-msgid "Sat"
-msgstr "状态"
+#~| msgid "Status"
+#~ msgid "Sat"
+#~ msgstr "状态"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:11
-msgid "Sun"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:281
-msgid "January"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:282
-msgid "February"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:283
 #, fuzzy
-#| msgid "Search"
-msgid "March"
-msgstr "搜索"
+#~| msgid "Search"
+#~ msgid "March"
+#~ msgstr "搜索"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:284
-msgid "April"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:285
-msgid "May"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:14
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:286
-msgid "June"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:15
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:287
-msgid "July"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:15
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:288
-msgid "August"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:15
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:289
 #, fuzzy
-#| msgid "Series number:"
-msgid "September"
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgid "September"
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:15
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:290
-msgid "October"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:15
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:291
-msgid "November"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:16
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:292
 #, fuzzy
-#| msgid "Series number:"
-msgid "December"
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgid "December"
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "jan"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "feb"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "mar"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "apr"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "may"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:19
-msgid "jun"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "jul"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "aug"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "sep"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "oct"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "nov"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:20
-msgid "dec"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:23
-msgctxt "abbrev. month"
-msgid "Jan."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:24
-msgctxt "abbrev. month"
-msgid "Feb."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:25
 #, fuzzy
-#| msgid "Search"
-msgctxt "abbrev. month"
-msgid "March"
-msgstr "搜索"
+#~| msgid "Search"
+#~ msgctxt "abbrev. month"
+#~ msgid "March"
+#~ msgstr "搜索"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:26
-msgctxt "abbrev. month"
-msgid "April"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:27
-msgctxt "abbrev. month"
-msgid "May"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:28
-msgctxt "abbrev. month"
-msgid "June"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:29
-msgctxt "abbrev. month"
-msgid "July"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:30
-msgctxt "abbrev. month"
-msgid "Aug."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:31
-msgctxt "abbrev. month"
-msgid "Sept."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:32
-msgctxt "abbrev. month"
-msgid "Oct."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:33
-msgctxt "abbrev. month"
-msgid "Nov."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:34
-msgctxt "abbrev. month"
-msgid "Dec."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:37
-msgctxt "alt. month"
-msgid "January"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:38
-msgctxt "alt. month"
-msgid "February"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:39
 #, fuzzy
-#| msgid "Search"
-msgctxt "alt. month"
-msgid "March"
-msgstr "搜索"
+#~| msgid "Search"
+#~ msgctxt "alt. month"
+#~ msgid "March"
+#~ msgstr "搜索"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:40
-msgctxt "alt. month"
-msgid "April"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:41
-msgctxt "alt. month"
-msgid "May"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:42
-msgctxt "alt. month"
-msgid "June"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:43
-msgctxt "alt. month"
-msgid "July"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:44
-msgctxt "alt. month"
-msgid "August"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:45
 #, fuzzy
-#| msgid "Series number:"
-msgctxt "alt. month"
-msgid "September"
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "September"
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:46
-msgctxt "alt. month"
-msgid "October"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:47
-msgctxt "alt. month"
-msgid "November"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/dates.py:48
 #, fuzzy
-#| msgid "Series number:"
-msgctxt "alt. month"
-msgid "December"
-msgstr "系列编号:"
+#~| msgid "Series number:"
+#~ msgctxt "alt. month"
+#~ msgid "December"
+#~ msgstr "系列编号:"
 
-#: venv3/lib/python3.8/site-packages/django/utils/ipv6.py:8
 #, fuzzy
-#| msgid "Email address:"
-msgid "This is not a valid IPv6 address."
-msgstr "邮箱地址:"
+#~| msgid "Email address:"
+#~ msgid "This is not a valid IPv6 address."
+#~ msgstr "邮箱地址:"
 
-#: venv3/lib/python3.8/site-packages/django/utils/text.py:69
-#, python-format
-msgctxt "String to return when truncating text"
-msgid "%(truncated_text)s…"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/text.py:235
-msgid "or"
-msgstr ""
-
-#. Translators: This string is used as a separator between list elements
-#: venv3/lib/python3.8/site-packages/django/utils/text.py:254
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:83
-msgid ", "
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:9
-#, python-format
-msgid "%d year"
-msgid_plural "%d years"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:10
-#, python-format
-msgid "%d month"
-msgid_plural "%d months"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:11
-#, python-format
-msgid "%d week"
-msgid_plural "%d weeks"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:12
-#, python-format
-msgid "%d day"
-msgid_plural "%d days"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:13
-#, python-format
-msgid "%d hour"
-msgid_plural "%d hours"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:14
-#, python-format
-msgid "%d minute"
-msgid_plural "%d minutes"
-msgstr[0] ""
-
-#: venv3/lib/python3.8/site-packages/django/utils/timesince.py:72
-msgid "0 minutes"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:110
-msgid "Forbidden"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:111
-msgid "CSRF verification failed. Request aborted."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:115
-msgid ""
-"You are seeing this message because this HTTPS site requires a “Referer "
-"header” to be sent by your Web browser, but none was sent. This header is "
-"required for security reasons, to ensure that your browser is not being "
-"hijacked by third parties."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:120
-msgid ""
-"If you have configured your browser to disable “Referer” headers, please re-"
-"enable them, at least for this site, or for HTTPS connections, or for “same-"
-"origin” requests."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:124
-msgid ""
-"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
-"including the “Referrer-Policy: no-referrer” header, please remove them. The "
-"CSRF protection requires the “Referer” header to do strict referer checking. "
-"If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer"
-"\" …> for links to third-party sites."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:132
-msgid ""
-"You are seeing this message because this site requires a CSRF cookie when "
-"submitting forms. This cookie is required for security reasons, to ensure "
-"that your browser is not being hijacked by third parties."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:137
-msgid ""
-"If you have configured your browser to disable cookies, please re-enable "
-"them, at least for this site, or for “same-origin” requests."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/csrf.py:142
-msgid "More information is available with DEBUG=True."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:41
-msgid "No year specified"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:61
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:111
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:208
-msgid "Date out of range"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:90
-msgid "No month specified"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:142
-msgid "No day specified"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:188
-msgid "No week specified"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:338
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:367
-#, python-format
-msgid "No %(verbose_name_plural)s available"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:589
-#, python-format
-msgid ""
-"Future %(verbose_name_plural)s not available because %(class_name)s."
-"allow_future is False."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/dates.py:623
-#, python-format
-msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/detail.py:54
 #, fuzzy, python-format
-#| msgid "No books found matching the query \"%(query)s\""
-msgid "No %(verbose_name)s found matching the query"
-msgstr "没有符合 \"%(query)s\" 请求的书目"
+#~| msgid "No books found matching the query \"%(query)s\""
+#~ msgid "No %(verbose_name)s found matching the query"
+#~ msgstr "没有符合 \"%(query)s\" 请求的书目"
 
-#: venv3/lib/python3.8/site-packages/django/views/generic/list.py:67
-msgid "Page is not “last”, nor can it be converted to an int."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/list.py:72
-#, python-format
-msgid "Invalid page (%(page_number)s): %(message)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/generic/list.py:154
-#, python-format
-msgid "Empty list and “%(class_name)s.allow_empty” is False."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/static.py:40
-msgid "Directory indexes are not allowed here."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/static.py:42
-#, python-format
-msgid "“%(path)s” does not exist"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/static.py:80
-#, python-format
-msgid "Index of %(directory)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:7
-msgid "Django: the Web framework for perfectionists with deadlines."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:346
-#, python-format
-msgid ""
-"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
-"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:368
-msgid "The install worked successfully! Congratulations!"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:369
-#, python-format
-msgid ""
-"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
-"%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener"
-"\">DEBUG=True</a> is in your settings file and you have not configured any "
-"URLs."
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:384
-msgid "Django Documentation"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:385
-msgid "Topics, references, &amp; how-to’s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:396
-msgid "Tutorial: A Polling App"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:397
-msgid "Get started with Django"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:408
 #, fuzzy
-#| msgid "Community"
-msgid "Django Community"
-msgstr "社区"
+#~| msgid "Community"
+#~ msgid "Django Community"
+#~ msgstr "社区"
 
-#: venv3/lib/python3.8/site-packages/django/views/templates/default_urlconf.html:409
-msgid "Connect, get help, or contribute"
-msgstr ""
+#~ msgid "Didn't find what you were looking for?"
+#~ msgstr "没有找到你想找的？"
 
-#: venv3/lib/python3.8/site-packages/kombu/transport/qpid.py:1301
+#~ msgid "Hide results from other catalogues"
+#~ msgstr "隐藏其它类别的结果"
+
+#~ msgid "Matching Users"
+#~ msgstr "匹配的用户"
+
 #, python-format
-msgid "Attempting to connect to qpid with SASL mechanism %s"
-msgstr ""
+#~ msgid "Set a reading goal for %(year)s"
+#~ msgstr "设定 %(year)s 的阅读目标"
 
-#: venv3/lib/python3.8/site-packages/kombu/transport/qpid.py:1306
 #, python-format
-msgid "Connected to qpid with SASL mechanism %s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/kombu/transport/qpid.py:1324
-#, python-format
-msgid "Unable to connect to qpid with SASL mechanism %s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:371
-msgid "1 second ago"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:377
-msgid "1 minute ago"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:382
-msgid "1 hour ago"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:385
-#, python-format
-msgid "%(time)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:387
-msgid "yesterday"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:387
-#, python-format
-msgid "yesterday at %(time)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:389
-#, python-format
-msgid "%(weekday)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:389
-#, python-format
-msgid "%(weekday)s at %(time)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:392
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:445
-#, python-format
-msgid "%(month_name)s %(day)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:394
-#, python-format
-msgid "%(month_name)s %(day)s at %(time)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:399
-#, python-format
-msgid "%(month_name)s %(day)s, %(year)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:401
-#, python-format
-msgid "%(month_name)s %(day)s, %(year)s at %(time)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:439
-#, python-format
-msgid "%(weekday)s, %(month_name)s %(day)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/locale.py:462
-#, python-format
-msgid "%(commas)s and %(last)s"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:68
-msgctxt "law"
-msgid "right"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:69
-msgctxt "good"
-msgid "right"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:71
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:74
-msgctxt "organization"
-msgid "club"
-msgstr ""
-
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:76
-#: venv3/lib/python3.8/site-packages/tornado/test/locale_test.py:77
-msgctxt "stick"
-msgid "club"
-msgstr ""
+#~ msgid "by %(author)s"
+#~ msgstr "由 %(author)s 所著"
 
 #~ msgid "Deactivate user"
 #~ msgstr "停用用户"
@@ -4302,28 +3132,16 @@ msgstr ""
 #~ msgstr "日期"
 
 #, python-format
-#~ msgid ""
-#~ "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href="
-#~ "\"%(status_path)s\">review</a>"
-#~ msgstr ""
-#~ "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href="
-#~ "\"%(status_path)s\">书评</a>"
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
+#~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">书评</a>"
 
 #, python-format
-#~ msgid ""
-#~ "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href="
-#~ "\"%(status_path)s\">comment</a>"
-#~ msgstr ""
-#~ "恢复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href="
-#~ "\"%(status_path)s\">评论</a>"
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
+#~ msgstr "恢复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">评论</a>"
 
 #, python-format
-#~ msgid ""
-#~ "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href="
-#~ "\"%(status_path)s\">quote</a>"
-#~ msgstr ""
-#~ "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href="
-#~ "\"%(status_path)s\">引用</a>"
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+#~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">引用</a>"
 
 #~ msgid "Remove tag"
 #~ msgstr "移除标签"

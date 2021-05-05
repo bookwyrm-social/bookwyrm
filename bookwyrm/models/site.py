@@ -19,19 +19,28 @@ class SiteSettings(models.Model):
         max_length=150, default="Social Reading and Reviewing"
     )
     instance_description = models.TextField(default="This instance has no description.")
+
+    # about page
     registration_closed_text = models.TextField(
         default="Contact an administrator to get an invite"
     )
     code_of_conduct = models.TextField(default="Add a code of conduct here.")
     privacy_policy = models.TextField(default="Add a privacy policy here.")
+
+    # registration
     allow_registration = models.BooleanField(default=True)
     allow_invite_requests = models.BooleanField(default=True)
+
+    # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
     favicon = models.ImageField(upload_to="logos/", null=True, blank=True)
+
+    # footer
     support_link = models.CharField(max_length=255, null=True, blank=True)
     support_title = models.CharField(max_length=100, null=True, blank=True)
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
+    footer_item = models.TextField(null=True, blank=True)
 
     @classmethod
     def get(cls):

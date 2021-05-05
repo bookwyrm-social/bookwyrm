@@ -1,4 +1,4 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
 
@@ -11,7 +11,7 @@
     </div>
     {% if is_self %}
     <div class="column is-narrow">
-        <a href="/preferences/profile">
+        <a href="{% url 'prefs-profile' %}">
             <span class="icon icon-pencil" title="Edit profile">
                 <span class="is-sr-only">{% trans "Edit profile" %}</span>
             </span>
@@ -25,7 +25,7 @@
 {% if user.bookwyrm_user %}
 <div class="block">
     <h2 class="title">
-        {% include 'user/books_header.html' %}
+        {% include 'user/shelf/books_header.html' %}
     </h2>
     <div class="columns">
         {% for shelf in shelves %}
@@ -36,7 +36,7 @@
             {% for book in shelf.books %}
             <div class="control">
                 <a href="{{ book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m is-h-s-mobile' %}
                 </a>
             </div>
             {% endfor %}
@@ -52,11 +52,6 @@
 <div class="block">
     <h2 class="title">{% now 'Y' %} Reading Goal</h2>
     {% include 'snippets/goal_progress.html' with goal=goal %}
-</div>
-{% elif user == request.user %}
-<div class="block">
-    {% now 'Y' as year %}
-    <h2 class="title is-4"><a href="{{ user.local_path }}/goal/{{ year }}">{% blocktrans %}Set a reading goal for {{ year }}{% endblocktrans %}</a></h2>
 </div>
 {% endif %}
 

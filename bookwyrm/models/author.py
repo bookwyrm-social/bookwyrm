@@ -14,6 +14,15 @@ class Author(BookDataModel):
     wikipedia_link = fields.CharField(
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    isni = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    viaf_id = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
+    gutenberg_id = fields.CharField(
+        max_length=255, blank=True, null=True, deduplication_field=True
+    )
     # idk probably other keys would be useful here?
     born = fields.DateTimeField(blank=True, null=True)
     died = fields.DateTimeField(blank=True, null=True)

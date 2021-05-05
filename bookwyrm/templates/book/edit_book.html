@@ -133,7 +133,11 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
-                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
+                    <duet-date-picker
+                        identifier="id_first_published_date"
+                        name="first_published_date"
+                        {% if form.first_published_date.value %}value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}
+                    ></duet-date-picker>
                 </p>
                 {% for error in form.first_published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -141,7 +145,11 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
-                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %}>
+                    <duet-date-picker
+                        identifier="id_published_date"
+                        name="published_date"
+                        {% if form.published_date.value %}value="{{ form.published_date.value|date:'Y-m-d' }}"{% endif %}
+                    ></duet-date-picker>
                 </p>
                 {% for error in form.published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -169,10 +177,11 @@
         <div class="column is-half">
             <h2 class="title is-4">{% trans "Cover" %}</h2>
             <div class="columns">
-                <div class="column is-narrow">
-                    {% include 'snippets/book_cover.html' with book=book size="small" %}
+                <div class="column is-3 is-cover">
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' %}
                 </div>
-                <div class="column is-narrow">
+
+                <div class="column">
                     <div class="block">
                         <p>
                             <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
@@ -238,9 +247,13 @@
     {% if not confirm_mode %}
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-        <a class="button" href="/book/{{ book.id }}">{% trans "Cancel" %}</a>
+        <a class="button" href="{{ book.local_path}}">{% trans "Cancel" %}</a>
     </div>
     {% endif %}
 </form>
 
+{% endblock %}
+
+{% block scripts %}
+{% include 'snippets/datepicker_js.html' %}
 {% endblock %}
