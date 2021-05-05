@@ -11,7 +11,7 @@
         {% include 'snippets/stars.html' with rating=book|rating:request.user %}
 
         <h3 class="title is-6">
-            <a href="/book/{{ book.id }}">{{ book.title }}</a>
+            <a href="{{ book.local_path }}">{{ book.title }}</a>
         </h3>
 
         {% if book.authors %}

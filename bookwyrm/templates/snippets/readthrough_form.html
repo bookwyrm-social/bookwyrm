@@ -5,7 +5,11 @@
 <div class="field">
     <label class="label">
         {% trans "Started reading" %}
-        <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+        <duet-date-picker
+            identifier="id_start_date-{{ readthrough.id }}"
+            name="start_date"
+            value="{{ readthrough.start_date | date:'Y-m-d' }}">
+        </duet-date-picker>
     </label>
 </div>
 {# Only show progress for editing existing readthroughs #}
@@ -28,6 +32,10 @@
 <div class="field">
     <label class="label">
         {% trans "Finished reading" %}
-        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
+        <duet-date-picker
+            identifier="id_finish_date-{{ readthrough.id }}"
+            name="finish_date"
+            value="{{ readthrough.finish_date | date:'Y-m-d' }}">
+        </duet-date-picker>
     </label>
 </div>

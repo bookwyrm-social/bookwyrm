@@ -45,8 +45,12 @@ urlpatterns = [
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
-    re_path(r"^logout/?$", views.Logout.as_view()),
-    re_path(r"^password-reset/?$", views.PasswordResetRequest.as_view()),
+    re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
+    re_path(
+        r"^password-reset/?$",
+        views.PasswordResetRequest.as_view(),
+        name="password-reset",
+    ),
     re_path(
         r"^password-reset/(?P<code>[A-Za-z0-9]+)/?$", views.PasswordReset.as_view()
     ),
@@ -134,7 +138,7 @@ urlpatterns = [
     re_path(r"^about/?$", views.About.as_view(), name="about"),
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view()),
-    re_path(r"^notifications/?$", views.Notifications.as_view()),
+    re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
     # Get started
     re_path(
@@ -165,8 +169,8 @@ urlpatterns = [
     # search
     re_path(r"^search/?$", views.Search.as_view(), name="search"),
     # imports
-    re_path(r"^import/?$", views.Import.as_view()),
-    re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view()),
+    re_path(r"^import/?$", views.Import.as_view(), name="import"),
+    re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
     # users
     re_path(r"%s/?$" % user_path, views.User.as_view(), name="user-feed"),
     re_path(r"%s\.json$" % user_path, views.User.as_view()),
@@ -229,7 +233,7 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
-    re_path(r"^preferences/block/?$", views.Block.as_view()),
+    re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
     # statuses

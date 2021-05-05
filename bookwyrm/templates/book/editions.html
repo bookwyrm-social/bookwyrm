@@ -15,14 +15,14 @@
     {% for book in editions %}
     <div class="columns is-gapless mb-6">
         <div class="column is-cover">
-            <a href="/book/{{ book.id }}">
+            <a href="{{ book.local_path }}">
                 {% include 'snippets/book_cover.html' with book=book cover_class='is-w-m is-h-m align to-l-mobile' %}
             </a>
         </div>
 
         <div class="column my-3-mobile ml-3-tablet mr-auto">
             <h2 class="title is-5 mb-1">
-                <a href="/book/{{ book.id }}" class="has-text-black">
+                <a href="{{ book.local_path }}" class="has-text-black">
                     {{ book.title }}
                 </a>
             </h2>
@@ -50,4 +50,8 @@
 <div>
     {% include 'snippets/pagination.html' with page=editions path=request.path %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{% include 'snippets/datepicker_js.html' %}
 {% endblock %}

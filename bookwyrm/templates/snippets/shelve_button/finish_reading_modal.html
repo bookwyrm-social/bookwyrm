@@ -17,13 +17,21 @@
     <div class="field">
         <label class="label">
             {% trans "Started reading" %}
-            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+            <duet-date-picker
+                identifier="id_start_date-{{ uuid }}"
+                name="start_date"
+                value="{{ readthrough.start_date | date:'Y-m-d' }}"
+            ></duet-date-picker>
         </label>
     </div>
     <div class="field">
         <label class="label">
             {% trans "Finished reading" %}
-            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+            <duet-date-picker
+                identifier="id_finish_date-{{ uuid }}"
+                name="finish_date"
+                value="{{ readthrough.finish_date | date:'Y-m-d' }}"
+            ></duet-date-picker>
         </label>
     </div>
 </section>
