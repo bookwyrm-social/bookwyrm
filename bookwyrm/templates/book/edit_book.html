@@ -133,7 +133,11 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
-                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
+                    <duet-date-picker
+                        identifier="id_first_published_date"
+                        name="first_published_date"
+                        {% if form.first_published_date.value %}value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}
+                    ></duet-date-picker>
                 </p>
                 {% for error in form.first_published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -141,7 +145,11 @@
 
                 <p class="mb-2">
                     <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
-                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %}>
+                    <duet-date-picker
+                        identifier="id_published_date"
+                        name="published_date"
+                        {% if form.published_date.value %}value="{{ form.published_date.value|date:'Y-m-d' }}"{% endif %}
+                    ></duet-date-picker>
                 </p>
                 {% for error in form.published_date.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -244,4 +252,8 @@
     {% endif %}
 </form>
 
+{% endblock %}
+
+{% block scripts %}
+{% include 'snippets/datepicker_js.html' %}
 {% endblock %}
