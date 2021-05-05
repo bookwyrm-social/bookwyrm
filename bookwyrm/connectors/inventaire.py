@@ -123,8 +123,10 @@ class Connector(AbstractConnector):
 
     def load_edition_data(self, work_uri):
         """get a list of editions for a work"""
-        url = "{:s}?action=reverse-claims&property=wdt:P629&value={:s}".format(
-            self.books_url, work_uri
+        url = (
+            "{:s}?action=reverse-claims&property=wdt:P629&value={:s}&sort=true".format(
+                self.books_url, work_uri
+            )
         )
         return get_data(url)
 
