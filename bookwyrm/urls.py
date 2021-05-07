@@ -139,6 +139,11 @@ urlpatterns = [
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view()),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
+    re_path(
+        r"^notifications/(?P<notification_type>mentions)/?$",
+        views.Notifications.as_view(),
+        name="notifications",
+    ),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
     # Get started
     re_path(
