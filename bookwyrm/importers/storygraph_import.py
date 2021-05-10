@@ -17,7 +17,7 @@ class StorygraphImporter(Importer):
         data = {}
         data["import_source"] = self.service
         data["Title"] = entry["Title"]
-        data["Author"] = entry["Author"]
+        data["Author"] = entry["Authors"]
         data["ISBN13"] = entry["ISBN"]
         data["My Review"] = entry["Review"]
         if entry["Star Rating"]:
