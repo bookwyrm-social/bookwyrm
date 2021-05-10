@@ -31,18 +31,15 @@ def search(query, min_confidence=0.1, return_first=False):
 
     for connector in get_connectors():
         result_set = None
-        if maybe_isbn:
+        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url == "":
             # Search on ISBN
-            if not connector.isbn_search_url or connector.isbn_search_url == "":
-                result_set = []
-            else:
-                try:
-                    result_set = connector.isbn_search(isbn)
-                except Exception as e:  # pylint: disable=broad-except
-                    logger.exception(e)
-                    continue
+            try:
+                result_set = connector.isbn_search(isbn)
+            except Exception as e:  # pylint: disable=broad-except
+                logger.exception(e)
+                # if this fails, we can still try regular search
 
-        # if no isbn search or results, we fallback to generic search
+        # if no isbn search results, we fallback to generic search
         if result_set in (None, []):
             try:
                 result_set = connector.search(query, min_confidence=min_confidence)
@@ -52,6 +49,7 @@ def search(query, min_confidence=0.1, return_first=False):
                 continue
 
         if return_first and result_set:
+            # if we found anything, return it
             return result_set[0]
 
         results.append(
@@ -83,7 +81,7 @@ def isbn_local_search(query, raw=False):
 
 def first_search_result(query, min_confidence=0.1):
     """search until you find a result that fits"""
-    return search(query, min_confidence=min_confidence, return_first=True)
+    return search(query, min_confidence=min_confidence, return_first=True) or None
 
 
 def get_connectors():
