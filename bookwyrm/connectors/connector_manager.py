@@ -19,7 +19,7 @@ class ConnectorException(HTTPError):
     """when the connector can't do what was asked"""
 
 
-def search(query, min_confidence=0.1):
+def search(query, min_confidence=0.1, return_first=False):
     """find books based on arbitary keywords"""
     if not query:
         return []
@@ -51,12 +51,18 @@ def search(query, min_confidence=0.1):
                 logger.exception(e)
                 continue
 
+        if return_first and result_set:
+            return result_set[0]
+
         results.append(
             {
                 "connector": connector,
                 "results": result_set,
             }
         )
+
+    if return_first:
+        return None
 
     return results
 
@@ -77,12 +83,7 @@ def isbn_local_search(query, raw=False):
 
 def first_search_result(query, min_confidence=0.1):
     """search until you find a result that fits"""
-    for connector in get_connectors():
-        result = connector.search(query, min_confidence=min_confidence)
-        if result:
-            return result[0]
-    return None
-
+    return search(query, min_confidence=min_confidence, return_first=True)
 
 def get_connectors():
     """load all connectors"""
