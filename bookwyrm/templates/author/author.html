@@ -34,7 +34,12 @@
 
 <div class="block">
     <h3 class="title is-4">{% blocktrans with name=author.name %}Books by {{ name }}{% endblocktrans %}</h3>
-    {% include 'snippets/book_tiles.html' with books=books %}
+    <div class="columns is-multiline is-mobile">
+    {% for book in books %}
+        <div class="column is-one-fifth">
+            {% include 'discover/small-book.html' with book=book %}
+        </div>
+    {% endfor %}
+    </div>
 </div>
 {% endblock %}
-
