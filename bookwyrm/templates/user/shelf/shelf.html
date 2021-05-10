@@ -35,7 +35,9 @@
     {% if is_self %}
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+
+        <a class="button" href="{% url 'import' %}">{% trans "Import Books" %}</a>
     </div>
     {% endif %}
 </div>
