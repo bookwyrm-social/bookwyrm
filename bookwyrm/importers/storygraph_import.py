@@ -28,5 +28,7 @@ class StorygraphImporter(Importer):
         data["Date Added"] = re.sub(r"[/]", "-", entry["Date Added"])
         data["Date Read"] = re.sub(r"[/]", "-", entry["Last Date Read"])
 
-        data["Exclusive Shelf"] = ({"read": "read", "currently-reading": "reading", "to-read": "to-read"}).get(entry["Read Status"],None)
+        data["Exclusive Shelf"] = (
+            {"read": "read", "currently-reading": "reading", "to-read": "to-read"}
+        ).get(entry["Read Status"], None)
         return data

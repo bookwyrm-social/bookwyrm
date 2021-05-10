@@ -10,7 +10,12 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.importers import Importer, LibrarythingImporter, GoodreadsImporter, StorygraphImporter
+from bookwyrm.importers import (
+    Importer,
+    LibrarythingImporter,
+    GoodreadsImporter,
+    StorygraphImporter,
+)
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
