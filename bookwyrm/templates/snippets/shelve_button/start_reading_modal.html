@@ -15,11 +15,7 @@
     <div class="field">
         <label class="label">
             {% trans "Started reading" %}
-            <duet-date-picker
-                identifier="start_id_start_date-{{ uuid }}"
-                name="start_date"
-                value="{% now "Y-m-d" %}"
-            ></duet-date-picker>
+            <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
         </label>
     </div>
 </section>

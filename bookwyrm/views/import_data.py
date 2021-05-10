@@ -10,7 +10,12 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.importers import Importer, LibrarythingImporter, GoodreadsImporter
+from bookwyrm.importers import (
+    Importer,
+    LibrarythingImporter,
+    GoodreadsImporter,
+    StorygraphImporter,
+)
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
@@ -42,6 +47,8 @@ class Import(View):
             importer = None
             if source == "LibraryThing":
                 importer = LibrarythingImporter()
+            elif source == "Storygraph":
+                importer = StorygraphImporter()
             else:
                 # Default : GoodReads
                 importer = GoodreadsImporter()
