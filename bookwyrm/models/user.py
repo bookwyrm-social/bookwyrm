@@ -372,7 +372,10 @@ class AnnualGoal(BookWyrmModel):
     def books(self):
         """the books you've read this year"""
         return (
-            self.user.readthrough_set.filter(finish_date__year__gte=self.year)
+            self.user.readthrough_set.filter(
+                finish_date__year__gte=self.year,
+                finish_date__year__lt=self.year + 1,
+            )
             .order_by("-finish_date")
             .all()
         )
@@ -396,7 +399,8 @@ class AnnualGoal(BookWyrmModel):
     def book_count(self):
         """how many books you've read this year"""
         return self.user.readthrough_set.filter(
-            finish_date__year__gte=self.year
+            finish_date__year__gte=self.year,
+            finish_date__year__lt=self.year + 1,
         ).count()
 
 
