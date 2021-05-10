@@ -128,7 +128,9 @@ class ImportItem(models.Model):
     @property
     def rating(self):
         """x/5 star rating for a book"""
-        return int(self.data["My Rating"])
+        if self.data.get("My Rating", None):
+            return int(self.data["My Rating"])
+        return None
 
     @property
     def date_added(self):
