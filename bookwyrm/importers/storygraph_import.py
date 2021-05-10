@@ -10,14 +10,14 @@ class StorygraphImporter(Importer):
 
     service = "Storygraph"
     # mandatory_fields : fields matching the book title and author
-    mandatory_fields = ["Title", "Author"]
+    mandatory_fields = ["Title"]
 
     def parse_fields(self, entry):
         """custom parsing for storygraph"""
         data = {}
         data["import_source"] = self.service
         data["Title"] = entry["Title"]
-        data["Author"] = entry["Authors"]
+        data["Author"] = entry["Authors"] if "Authors" in entry else entry["Author"]
         data["ISBN13"] = entry["ISBN"]
         data["My Review"] = entry["Review"]
         if entry["Star Rating"]:
