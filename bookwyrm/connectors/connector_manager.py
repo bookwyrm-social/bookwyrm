@@ -43,7 +43,7 @@ def search(query, min_confidence=0.1):
                     continue
 
         # if no isbn search or results, we fallback to generic search
-        if result_set in (None, []):
+        if not result_set:
             try:
                 result_set = connector.search(query, min_confidence=min_confidence)
             except Exception as e:  # pylint: disable=broad-except
@@ -51,12 +51,13 @@ def search(query, min_confidence=0.1):
                 logger.exception(e)
                 continue
 
-        results.append(
-            {
-                "connector": connector,
-                "results": result_set,
-            }
-        )
+        if result_set or connector.local:
+            results.append(
+                {
+                    "connector": connector,
+                    "results": result_set,
+                }
+            )
 
     return results
 
