@@ -85,6 +85,7 @@ def first_search_result(query, min_confidence=0.1):
     """search until you find a result that fits"""
     return search(query, min_confidence=min_confidence, return_first=True)
 
+
 def get_connectors():
     """load all connectors"""
     for info in models.Connector.objects.order_by("priority").all():
