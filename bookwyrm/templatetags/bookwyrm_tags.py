@@ -81,11 +81,9 @@ def get_user_boosted(user, status):
 
 @register.filter(name="boosted_status")
 def get_boosted(boost):
-    """load a boosted status. have to do this or it wont get foregin keys"""
+    """load a boosted status. have to do this or it won't get foreign keys"""
     return (
-        models.Status.objects.select_subclasses()
-        .filter(id=boost.boosted_status.id)
-        .get()
+        models.Status.objects.select_subclasses().get(id=boost.boosted_status.id)
     )
 
 
@@ -116,19 +114,6 @@ def get_mentions(status, user):
     return (
         " ".join("@" + get_user_identifier(m) for m in mentions if not m == user) + " "
     )
-
-
-@register.filter(name="status_preview_name")
-def get_status_preview_name(obj):
-    """text snippet with book context for a status"""
-    name = obj.__class__.__name__.lower()
-    if name == "review":
-        return "%s of <em>%s</em>" % (name, obj.book.title)
-    if name == "comment":
-        return "%s on <em>%s</em>" % (name, obj.book.title)
-    if name == "quotation":
-        return "%s from <em>%s</em>" % (name, obj.book.title)
-    return name
 
 
 @register.filter(name="next_shelf")
@@ -182,18 +167,6 @@ def latest_read_through(book, user):
     """the most recent read activity"""
     return (
         models.ReadThrough.objects.filter(user=user, book=book)
-        .order_by("-start_date")
-        .first()
-    )
-
-
-@register.simple_tag(takes_context=False)
-def active_read_through(book, user):
-    """the most recent read activity"""
-    return (
-        models.ReadThrough.objects.filter(
-            user=user, book=book, finish_date__isnull=True
-        )
         .order_by("-start_date")
         .first()
     )

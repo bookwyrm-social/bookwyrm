@@ -157,31 +157,6 @@ class TemplateTags(TestCase):
         result = bookwyrm_tags.get_mentions(status, self.user)
         self.assertEqual(result, "@rat@example.com ")
 
-    def test_get_status_preview_name(self, _):
-        """status context string"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Status.objects.create(content="hi", user=self.user)
-            result = bookwyrm_tags.get_status_preview_name(status)
-            self.assertEqual(result, "status")
-
-            status = models.Review.objects.create(
-                content="hi", user=self.user, book=self.book
-            )
-            result = bookwyrm_tags.get_status_preview_name(status)
-            self.assertEqual(result, "review of <em>Test Book</em>")
-
-            status = models.Comment.objects.create(
-                content="hi", user=self.user, book=self.book
-            )
-            result = bookwyrm_tags.get_status_preview_name(status)
-            self.assertEqual(result, "comment on <em>Test Book</em>")
-
-            status = models.Quotation.objects.create(
-                content="hi", user=self.user, book=self.book
-            )
-        result = bookwyrm_tags.get_status_preview_name(status)
-        self.assertEqual(result, "quotation from <em>Test Book</em>")
-
     def test_related_status(self, _):
         """gets the subclass model for a notification status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
