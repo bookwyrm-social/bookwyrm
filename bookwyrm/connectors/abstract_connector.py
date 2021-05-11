@@ -102,13 +102,6 @@ class AbstractConnector(AbstractMinimalConnector):
         # title we handle separately.
         self.book_mappings = []
 
-    def is_available(self):
-        """check if you're allowed to use this connector"""
-        if self.max_query_count is not None:
-            if self.connector.query_count >= self.max_query_count:
-                return False
-        return True
-
     def get_or_create_book(self, remote_id):
         """translate arbitrary json into an Activitypub dataclass"""
         # first, check if we have the origin_id saved
