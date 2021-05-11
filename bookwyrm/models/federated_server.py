@@ -1,5 +1,6 @@
 """ connections to external ActivityPub servers """
 from urllib.parse import urlparse
+from django.apps import apps
 from django.db import models
 from .base_model import BookWyrmModel
 
@@ -34,6 +35,13 @@ class FederatedServer(BookWyrmModel):
             is_active=False, deactivation_reason="domain_block"
         )
 
+        # check for related connectors
+        if self.application_type == "bookwyrm":
+            connector_model = apps.get_model("bookwyrm.Connector", require_read=True)
+            connector_model.objects.filter(
+                identifier=self.server_name, active=True
+            ).update(active=False, deactivation_reason="domain_block")
+
     def unblock(self):
         """unblock a server"""
         self.status = "federated"
@@ -42,6 +50,15 @@ class FederatedServer(BookWyrmModel):
         self.user_set.filter(deactivation_reason="domain_block").update(
             is_active=True, deactivation_reason=None
         )
+
+        # check for related connectors
+        if self.application_type == "bookwyrm":
+            connector_model = apps.get_model("bookwyrm.Connector", require_read=True)
+            connector_model.objects.filter(
+                identifier=self.server_name,
+                active=False,
+                deactivation_reason="domain_block",
+            ).update(active=True, deactivation_reason=None)
 
     @classmethod
     def is_blocked(cls, url):
