@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load markdown %}
 
 {% block title %}{% trans "Welcome" %}{% endblock %}
 
@@ -49,7 +49,7 @@
             {% else %}
 
             <h2 class="title">{% trans "This instance is closed" %}</h2>
-            <p>{{ site.registration_closed_text | safe}}</p>
+            <p>{{ site.registration_closed_text|safe}}</p>
 
             {% if site.allow_invite_requests %}
             {% if request_received %}
@@ -64,7 +64,7 @@
                     <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
                     <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
                     {% for error in request_form.email.errors %}
-                    <p class="help is-danger">{{ error | escape }}</p>
+                    <p class="help is-danger">{{ error|escape }}</p>
                     {% endfor %}
                 </div>
                 <button type="submit" class="button is-link">{% trans "Submit" %}</button>
@@ -80,7 +80,7 @@
             {% include 'user/user_preview.html' with user=request.user %}
             {% if request.user.summary %}
             <div class="box content">
-                {{ request.user.summary | to_markdown | safe }}
+                {{ request.user.summary|to_markdown|safe }}
             </div>
             {% endif %}
         </div>

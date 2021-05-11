@@ -1,5 +1,7 @@
-{% load bookwyrm_tags %}
+{% load interaction %}
+{% load utilities %}
 {% load i18n %}
+
 {% with status.id|uuid as uuid %}
 <form name="favorite" action="/favorite/{{ status.id }}" method="POST" class="interaction fav-{{ status.id }}-{{ uuid }} {% if request.user|liked:status %}is-hidden{% endif %}" data-id="fav-{{ status.id }}-{{ uuid }}">
     {% csrf_token %}

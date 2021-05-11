@@ -1,12 +1,13 @@
 {% extends 'lists/list_layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load markdown %}
 
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
     <p>
-        <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count | pluralize }} awaiting your approval</a>
+        <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count|pluralize }} awaiting your approval</a>
     </p>
 </div>
 {% endif %}

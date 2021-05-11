@@ -1,7 +1,8 @@
 {% extends 'settings/admin_layout.html' %}
-{% block title %}{{ server.server_name }}{% endblock %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load markdown %}
+
+{% block title %}{{ server.server_name }}{% endblock %}
 
 {% block header %}
 {{ server.server_name }}

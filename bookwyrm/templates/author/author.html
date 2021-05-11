@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load markdown %}
 {% load humanize %}
 
 {% block title %}{{ author.name }}{% endblock %}
@@ -66,7 +66,7 @@
     {% endif %}
     <div class="column">
         {% if author.bio %}
-            {{ author.bio | to_markdown | safe }}
+            {{ author.bio|to_markdown|safe }}
         {% endif %}
     </div>
 </div>
