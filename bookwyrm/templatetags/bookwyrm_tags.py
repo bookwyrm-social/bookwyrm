@@ -79,19 +79,6 @@ def get_user_boosted(user, status):
     return user.id in status.boosters.all().values_list("user", flat=True)
 
 
-@register.filter(name="follow_request_exists")
-def follow_request_exists(user, requester):
-    """see if there is a pending follow request for a user"""
-    try:
-        models.UserFollowRequest.objects.filter(
-            user_subject=requester,
-            user_object=user,
-        ).get()
-        return True
-    except models.UserFollowRequest.DoesNotExist:
-        return False
-
-
 @register.filter(name="boosted_status")
 def get_boosted(boost):
     """load a boosted status. have to do this or it wont get foregin keys"""

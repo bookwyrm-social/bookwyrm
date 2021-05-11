@@ -113,24 +113,6 @@ class TemplateTags(TestCase):
             models.Boost.objects.create(user=self.user, boosted_status=status)
         self.assertTrue(bookwyrm_tags.get_user_boosted(self.user, status))
 
-    def test_follow_request_exists(self, _):
-        """does a user want to follow"""
-        self.assertFalse(
-            bookwyrm_tags.follow_request_exists(self.user, self.remote_user)
-        )
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.UserFollowRequest.objects.create(
-                user_subject=self.user, user_object=self.remote_user
-            )
-
-        self.assertFalse(
-            bookwyrm_tags.follow_request_exists(self.user, self.remote_user)
-        )
-        self.assertTrue(
-            bookwyrm_tags.follow_request_exists(self.remote_user, self.user)
-        )
-
     def test_get_boosted(self, _):
         """load a boosted status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
