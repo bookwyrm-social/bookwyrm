@@ -6,7 +6,13 @@ from django.test import TestCase
 from django.utils import timezone
 
 from bookwyrm import models
-from bookwyrm.templatetags import bookwyrm_tags
+from bookwyrm.templatetags import (
+    bookwyrm_tags,
+    interaction,
+    markdown,
+    status_display,
+    utilities,
+)
 
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
@@ -45,12 +51,12 @@ class TemplateTags(TestCase):
     def test_get_user_identifer_local(self, _):
         """fall back to the simplest uid available"""
         self.assertNotEqual(self.user.username, self.user.localname)
-        self.assertEqual(bookwyrm_tags.get_user_identifier(self.user), "mouse")
+        self.assertEqual(utilities.get_user_identifier(self.user), "mouse")
 
     def test_get_user_identifer_remote(self, _):
         """for a remote user, should be their full username"""
         self.assertEqual(
-            bookwyrm_tags.get_user_identifier(self.remote_user), "rat@example.com"
+            utilities.get_user_identifier(self.remote_user), "rat@example.com"
         )
 
     def test_get_replies(self, _):
@@ -75,7 +81,7 @@ class TemplateTags(TestCase):
                     deleted_date=timezone.now(),
                 )
 
-        replies = bookwyrm_tags.get_replies(parent)
+        replies = status_display.get_replies(parent)
         self.assertEqual(len(replies), 2)
         self.assertTrue(first_child in replies)
         self.assertTrue(second_child in replies)
@@ -91,7 +97,7 @@ class TemplateTags(TestCase):
                 reply_parent=parent, user=self.user, content="hi"
             )
 
-        result = bookwyrm_tags.get_parent(child)
+        result = status_display.get_parent(child)
         self.assertEqual(result, parent)
         self.assertIsInstance(result, models.Review)
 
@@ -99,26 +105,26 @@ class TemplateTags(TestCase):
         """did a user like a status"""
         status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
-        self.assertFalse(bookwyrm_tags.get_user_liked(self.user, status))
+        self.assertFalse(interaction.get_user_liked(self.user, status))
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Favorite.objects.create(user=self.user, status=status)
-        self.assertTrue(bookwyrm_tags.get_user_liked(self.user, status))
+        self.assertTrue(interaction.get_user_liked(self.user, status))
 
     def test_get_user_boosted(self, _):
         """did a user boost a status"""
         status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
-        self.assertFalse(bookwyrm_tags.get_user_boosted(self.user, status))
+        self.assertFalse(interaction.get_user_boosted(self.user, status))
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.Boost.objects.create(user=self.user, boosted_status=status)
-        self.assertTrue(bookwyrm_tags.get_user_boosted(self.user, status))
+        self.assertTrue(interaction.get_user_boosted(self.user, status))
 
     def test_get_boosted(self, _):
         """load a boosted status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             status = models.Review.objects.create(user=self.remote_user, book=self.book)
             boost = models.Boost.objects.create(user=self.user, boosted_status=status)
-        boosted = bookwyrm_tags.get_boosted(boost)
+        boosted = status_display.get_boosted(boost)
         self.assertIsInstance(boosted, models.Review)
         self.assertEqual(boosted, status)
 
@@ -140,21 +146,21 @@ class TemplateTags(TestCase):
 
     def test_get_uuid(self, _):
         """uuid functionality"""
-        uuid = bookwyrm_tags.get_uuid("hi")
+        uuid = utilities.get_uuid("hi")
         self.assertTrue(re.match(r"hi[A-Za-z0-9\-]", uuid))
 
     def test_get_markdown(self, _):
         """mardown format data"""
-        result = bookwyrm_tags.get_markdown("_hi_")
+        result = markdown.get_markdown("_hi_")
         self.assertEqual(result, "<p><em>hi</em></p>")
 
-        result = bookwyrm_tags.get_markdown("<marquee>_hi_</marquee>")
+        result = markdown.get_markdown("<marquee>_hi_</marquee>")
         self.assertEqual(result, "<p><em>hi</em></p>")
 
     def test_get_mentions(self, _):
         """list of people mentioned"""
         status = models.Status.objects.create(content="hi", user=self.remote_user)
-        result = bookwyrm_tags.get_mentions(status, self.user)
+        result = status_display.get_mentions(status, self.user)
         self.assertEqual(result, "@rat@example.com ")
 
     def test_related_status(self, _):
