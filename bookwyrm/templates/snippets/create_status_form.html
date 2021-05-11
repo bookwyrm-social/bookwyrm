@@ -1,4 +1,6 @@
 {% load bookwyrm_tags %}
+{% load utilities %}
+
 {% load i18n %}
 <form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}

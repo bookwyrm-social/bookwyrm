@@ -1,11 +1,10 @@
 """ template filters """
-from uuid import uuid4
-
-from django import template, utils
+from django import template
 from django.db.models import Avg
 
 from bookwyrm import models, views
 from bookwyrm.views.status import to_markdown
+from bookwyrm.templatetags.utilities import get_user_identifier
 
 
 register = template.Library()
@@ -35,12 +34,6 @@ def get_user_rating(book, user):
     if rating:
         return rating.rating
     return 0
-
-
-@register.filter(name="username")
-def get_user_identifier(user):
-    """use localname for local users, username for remote"""
-    return user.localname if user.localname else user.username
 
 
 @register.filter(name="replies")
@@ -77,12 +70,6 @@ def get_book_description(book):
     return book.description or book.parent_work.description
 
 
-@register.filter(name="uuid")
-def get_uuid(identifier):
-    """for avoiding clashing ids when there are many forms"""
-    return "%s%s" % (identifier, uuid4())
-
-
 @register.filter(name="to_markdown")
 def get_markdown(content):
     """convert markdown to html"""
@@ -110,17 +97,6 @@ def get_next_shelf(current_shelf):
     if current_shelf == "read":
         return "read"
     return "to-read"
-
-
-@register.filter(name="title")
-def get_title(book):
-    """display the subtitle if the title is short"""
-    if not book:
-        return ""
-    title = book.title
-    if len(title) < 6 and book.subtitle:
-        title = "{:s}: {:s}".format(title, book.subtitle)
-    return title
 
 
 @register.simple_tag(takes_context=False)
@@ -154,19 +130,6 @@ def latest_read_through(book, user):
         .order_by("-start_date")
         .first()
     )
-
-
-@register.simple_tag(takes_context=False)
-def comparison_bool(str1, str2):
-    """idk why I need to write a tag for this, it reutrns a bool"""
-    return str1 == str2
-
-
-@register.simple_tag(takes_context=False)
-def get_lang():
-    """get current language, strip to the first two letters"""
-    language = utils.translation.get_language()
-    return language[0 : language.find("-")]
 
 
 @register.simple_tag(takes_context=True)
