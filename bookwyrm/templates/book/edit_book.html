@@ -125,7 +125,7 @@
                 <p class="mb-2">
                     <label class="label" for="id_publishers">{% trans "Publisher:" %}</label>
                     {{ form.publishers }}
-                    <span class="help">{% trans "Separate multiple publishers with commas." %}</span>
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
                 </p>
                 {% for error in form.publishers.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -162,7 +162,7 @@
                 {% endif %}
                 <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
                 <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}" {% if confirm_mode %}readonly{% endif %}>
-                <p class="help">Separate multiple author names with commas.</p>
+                <span class="help">{% trans "Separate multiple values with commas." %}</span>
             </section>
         </div>
 
