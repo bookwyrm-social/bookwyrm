@@ -53,19 +53,6 @@ class TemplateTags(TestCase):
             bookwyrm_tags.get_user_identifier(self.remote_user), "rat@example.com"
         )
 
-    def test_get_notification_count(self, _):
-        """just countin'"""
-        self.assertEqual(bookwyrm_tags.get_notification_count(self.user), 0)
-
-        models.Notification.objects.create(user=self.user, notification_type="FAVORITE")
-        models.Notification.objects.create(user=self.user, notification_type="MENTION")
-
-        models.Notification.objects.create(
-            user=self.remote_user, notification_type="FOLLOW"
-        )
-
-        self.assertEqual(bookwyrm_tags.get_notification_count(self.user), 2)
-
     def test_get_replies(self, _):
         """direct replies to a status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
