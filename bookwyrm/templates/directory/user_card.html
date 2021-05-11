@@ -1,5 +1,6 @@
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load utilities %}
+{% load markdown %}
 {% load humanize %}
 
 <div class="card is-stretchable">
@@ -19,7 +20,7 @@
 
         <div>
         {% if user.summary %}
-            {{ user.summary | to_markdown | safe | truncatechars_html:40 }}
+            {{ user.summary|to_markdown|safe|truncatechars_html:40 }}
         {% else %}&nbsp;{% endif %}
         </div>
     </div>

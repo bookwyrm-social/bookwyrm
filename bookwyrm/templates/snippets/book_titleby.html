@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load utilities %}
 {% if book.authors %}
 {% blocktrans with path=book.local_path title=book|title %}<a href="{{ path }}">{{ title }}</a> by {% endblocktrans %}{% include 'snippets/authors.html' with book=book %}
 {% else %}
