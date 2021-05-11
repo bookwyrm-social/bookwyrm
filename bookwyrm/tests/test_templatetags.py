@@ -2,7 +2,6 @@
 import re
 from unittest.mock import patch
 
-from dateutil.relativedelta import relativedelta
 from django.test import TestCase
 from django.utils import timezone
 
@@ -32,12 +31,6 @@ class TemplateTags(TestCase):
                 local=False,
             )
         self.book = models.Edition.objects.create(title="Test Book")
-
-    def test_dict_key(self, _):
-        """just getting a value out of a dict"""
-        test_dict = {"a": 1, "b": 3}
-        self.assertEqual(bookwyrm_tags.dict_key(test_dict, "a"), 1)
-        self.assertEqual(bookwyrm_tags.dict_key(test_dict, "c"), 0)
 
     def test_get_user_rating(self, _):
         """get a user's most recent rating of a book"""

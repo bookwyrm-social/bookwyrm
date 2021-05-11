@@ -11,12 +11,6 @@ from bookwyrm.views.status import to_markdown
 register = template.Library()
 
 
-@register.filter(name="dict_key")
-def dict_key(d, k):
-    """Returns the given key from a dictionary."""
-    return d.get(k) or 0
-
-
 @register.filter(name="rating")
 def get_rating(book, user):
     """get the overall rating of a book"""
