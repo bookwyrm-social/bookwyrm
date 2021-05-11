@@ -138,6 +138,55 @@ class ListViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+    def test_list_page_sorted(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.List.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            for (i, book) in enumerate([self.book, self.book_two, self.book_three]):
+                models.ListItem.objects.create(
+                    book_list=self.list,
+                    user=self.local_user,
+                    book=book,
+                    approved=True,
+                    order=i + 1,
+                )
+
+        request = self.factory.get("/?sort_by=order")
+        request.user = self.local_user
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get("/?sort_by=title")
+        request.user = self.local_user
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get("/?sort_by=rating")
+        request.user = self.local_user
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
+        request = self.factory.get("/?sort_by=sdkfh")
+        request.user = self.local_user
+        with patch("bookwyrm.views.list.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.list.id)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+
     def test_list_page_empty(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.List.as_view()

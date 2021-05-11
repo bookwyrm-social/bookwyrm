@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count, Q, Max
+from django.db.models import Avg, Count, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -108,31 +108,23 @@ class List(View):
         if direction not in ("ascending", "descending"):
             direction = "ascending"
 
-        internal_sort_by = {
+        directional_sort_by = {
             "order": "order",
             "title": "book__title",
             "rating": "average_rating",
-        }
-        directional_sort_by = internal_sort_by[sort_by]
+        }[sort_by]
         if direction == "descending":
             directional_sort_by = "-" + directional_sort_by
 
-        if sort_by == "order":
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
-            )
-        elif sort_by == "title":
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
-            )
-        elif sort_by == "rating":
-            items = (
-                book_list.listitem_set.annotate(
-                    average_rating=Avg(Coalesce("book__review__rating", 0))
+        items = book_list.listitem_set
+        if sort_by == "rating":
+            items = items.annotate(
+                average_rating=Avg(
+                    Coalesce("book__review__rating", 0.0),
+                    output_field=DecimalField(),
                 )
-                .filter(approved=True)
-                .order_by(directional_sort_by)
             )
+        items = items.filter(approved=True).order_by(directional_sort_by)
 
         paginated = Paginator(items, PAGE_LENGTH)
 
