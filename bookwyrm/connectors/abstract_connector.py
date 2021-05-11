@@ -30,7 +30,6 @@ class AbstractMinimalConnector(ABC):
             "covers_url",
             "search_url",
             "isbn_search_url",
-            "max_query_count",
             "name",
             "identifier",
             "local",
