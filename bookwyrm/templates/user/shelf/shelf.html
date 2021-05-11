@@ -79,7 +79,9 @@
                     <th>{% trans "Shelved" %}</th>
                     <th>{% trans "Started" %}</th>
                     <th>{% trans "Finished" %}</th>
-                    {% if ratings %}<th>{% trans "Rating" %}</th>{% endif %}
+                    {% if request.user.is_authenticated %}
+                    <th>{% trans "Rating" %}</th>
+                    {% endif %}
                     {% if shelf.user == request.user %}
                     <th aria-hidden="true"></th>
                     {% endif %}
@@ -108,9 +110,9 @@
                     <td data-title="{% trans "Finished" %}">
                         {{ read_through.finish_date | naturalday |default_if_none:""}}
                     </td>
-                    {% if ratings %}
+                    {% if request.user.is_authenticated %}
                     <td data-title="{% trans "Rating" %}">
-                        {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
+                        {% include 'snippets/stars.html' with rating=book.rating %}
                     </td>
                     {% endif %}
                     {% if shelf.user == request.user %}
