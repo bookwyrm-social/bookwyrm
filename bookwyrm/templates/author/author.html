@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load humanize %}
 
 {% block title %}{{ author.name }}{% endblock %}
 
@@ -22,14 +23,52 @@
     </div>
 </div>
 
-<div class="block content">
-    {% if author.bio %}
-        {{ author.bio | to_markdown | safe }}
-    {% endif %}
+<div class="block content columns">
+    {% if author.aliases or author.born or author.died or author.wikipedia_link %}
+    <div class="column is-narrow">
+        <div class="box">
+            <dl>
+                {% if author.aliases %}
+                <div class="is-flex">
+                    <dt class="mr-1">{% trans "Aliases:" %}</dt>
+                    <dd itemprop="aliases">{{ author.aliases|join:', ' }}</dd>
+                </div>
+                {% endif %}
+                {% if author.born %}
+                <div class="is-flex">
+                    <dt class="mr-1">{% trans "Born:" %}</dt>
+                    <dd itemprop="aliases">{{ author.born|naturalday }}</dd>
+                </div>
+                {% endif %}
+                {% if author.aliases %}
+                <div class="is-flex">
+                    <dt class="mr-1">{% trans "Died:" %}</dt>
+                    <dd itemprop="aliases">{{ author.died|naturalday }}</dd>
+                </div>
+                {% endif %}
+            </dl>
 
-    {% if author.wikipedia_link %}
-    <p><a href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">{% trans "Wikipedia" %}</a></p>
+            {% if author.wikipedia_link %}
+            <p><a href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">{% trans "Wikipedia" %}</a></p>
+            {% endif %}
+            {% if author.openlibrary_key %}
+            <p class="mb-0">
+                <a href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a>
+            </p>
+            {% endif %}
+            {% if author.inventaire_id %}
+            <p class="mb-0">
+                <a href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a>
+            </p>
+            {% endif %}
+        </div>
+    </div>
     {% endif %}
+    <div class="column">
+        {% if author.bio %}
+            {{ author.bio | to_markdown | safe }}
+        {% endif %}
+    </div>
 </div>
 
 <div class="block">
