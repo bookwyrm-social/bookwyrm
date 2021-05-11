@@ -63,22 +63,6 @@ def get_parent(status):
     )
 
 
-@register.filter(name="liked")
-def get_user_liked(user, status):
-    """did the given user fav a status?"""
-    try:
-        models.Favorite.objects.get(user=user, status=status)
-        return True
-    except models.Favorite.DoesNotExist:
-        return False
-
-
-@register.filter(name="boosted")
-def get_user_boosted(user, status):
-    """did the given user fav a status?"""
-    return user.id in status.boosters.all().values_list("user", flat=True)
-
-
 @register.filter(name="boosted_status")
 def get_boosted(boost):
     """load a boosted status. have to do this or it won't get foreign keys"""
