@@ -92,7 +92,7 @@
 
         </h3>
         <p class="is-size-7 is-flex is-align-items-center">
-            <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
+            <a href="{{ status.remote_id }}">{{ status.published_date|published_date }}</a>
             {% if status.progress %}
             <span class="ml-1">
             {% if status.progress_mode == 'PG' %}

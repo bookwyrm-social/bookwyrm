@@ -1,6 +1,8 @@
 """ template filters """
+from dateutil.relativedelta import relativedelta
 from django import template
-
+from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
+from django.utils import timezone
 from bookwyrm import models
 from bookwyrm.templatetags.utilities import get_user_identifier
 
@@ -41,3 +43,17 @@ def get_parent(status):
 def get_boosted(boost):
     """load a boosted status. have to do this or it won't get foreign keys"""
     return models.Status.objects.select_subclasses().get(id=boost.boosted_status.id)
+
+
+@register.filter(name="published_date")
+def get_published_date(date):
+    """less verbose combo of humanize filters"""
+    if not date:
+        return ""
+    now = timezone.now()
+    delta = relativedelta(now, date)
+    if delta.years:
+        return naturalday(date)
+    if delta.days:
+        return naturalday(date, "M j")
+    return naturaltime(date)
