@@ -58,8 +58,6 @@ services:
       - ./redis.conf:/etc/redis/redis.conf
       - redis_activity_data:/data
     env_file: .env
-    ports:
-      - 6378:6378
     networks:
       - main
     restart: on-failure
