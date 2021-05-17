@@ -61,7 +61,7 @@ class Goal(View):
             models.GeneratedNote.objects.create(
                 user=request.user,
                 content=template.render({"goal": goal}).strip(),
-                privacy=goal.privacy
+                privacy=goal.privacy,
             )
 
         return redirect(request.headers.get("Referer", "/"))

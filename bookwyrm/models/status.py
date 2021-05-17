@@ -214,8 +214,16 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return self.to_activity_dataclass(pure=pure).serialize()
 
 
+NoteType = models.TextChoices(
+    "NoteType",
+    "TO_READ READING READ GOAL",
+)
+
+
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
+
+    note_type = fields.CharField(max_length=255, choices=NoteType.choices)
 
     @property
     def pure_content(self):
