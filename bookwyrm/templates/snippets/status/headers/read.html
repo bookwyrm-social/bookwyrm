@@ -1,0 +1,5 @@
+{% load i18n %}{% load utilities %}
+
+{% with book=status.mention_books.first %}
+{% blocktrans with book_path=book.local_path book=book|title %}finished reading <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}
+{% endwith %}

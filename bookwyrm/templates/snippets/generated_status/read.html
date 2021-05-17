@@ -1,3 +1,0 @@
-{% load i18n %}{% load utilities %}
-
-{% blocktrans with username=user.display_name user_path=user.local_path book_path=book.remote_id book=book|title %}<a href="{{ user_path }}">{{ username }}</a> finished reading <a href="{{ book_path }}">{{ book }}</a>{% endbocktrans %}

@@ -1,0 +1,48 @@
+{% load utilities %}
+{% load status_display %}
+{% load i18n %}
+{% load humanize %}
+
+<div class="media">
+    <figure class="media-left" aria-hidden="true">
+        <a class="image is-48x48" href="{{ status.user.local_path }}">
+            {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
+        </a>
+    </figure>
+
+    <div class="media-content">
+        <h3 class="has-text-weight-bold">
+            <span
+                itemprop="author"
+                itemscope
+                itemtype="https://schema.org/Person"
+            >
+                {% if status.user.avatar %}
+                    <meta itemprop="image" content="/images/{{ status.user.avatar }}">
+                {% endif %}
+
+                <a
+                    href="{{ status.user.local_path }}"
+                    itemprop="url"
+                >
+                    <span itemprop="name">{{ status.user.display_name }}</span>
+                </a>
+            </span>
+
+            {% include status|header_template %}
+        </h3>
+        <p class="is-size-7 is-flex is-align-items-center">
+            <a href="{{ status.remote_id }}">{{ status.published_date|published_date }}</a>
+            {% if status.progress %}
+            <span class="ml-1">
+            {% if status.progress_mode == 'PG' %}
+                ({% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %})
+            {% else %}
+                ({{ status.progress }}%)
+            {% endif %}
+            </span>
+            {% endif %}
+            {% include 'snippets/privacy-icons.html' with item=status %}
+        </p>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+{% load i18n %}{% load utilities %}
+
+{% blocktrans with book_path=status.book.local_path book=book|title %}rated <a href="{{ book_path }}">{{ book }}</a>:{% endblocktrans %} {% include 'snippets/stars.html' with rating=status.rating %}
+<span
+    itemprop="reviewRating"
+    itemscope
+    itemtype="https://schema.org/Rating"
+>
+    <span class="is-hidden" {{ rating_type }}>
+        <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+        <span
+            itemprop="reviewRating"
+            itemscope
+            itemtype="https://schema.org/Rating"
+        >
+            <span class="is-hidden" {{ rating_type }}>
+                <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                {# @todo Is it possible to not hard-code the value? #}
+                <meta itemprop="bestRating" content="5">
+            </span>
+        </span>
+    </span>
+</span>

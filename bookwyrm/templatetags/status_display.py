@@ -32,10 +32,11 @@ def get_replies(status):
 @register.filter(name="parent")
 def get_parent(status):
     """get the reply parent for a status"""
+    print(status, status.reply_parent)
     return (
         models.Status.objects.filter(id=status.reply_parent_id)
         .select_subclasses()
-        .get()
+        .first()
     )
 
 
@@ -57,3 +58,9 @@ def get_published_date(date):
     if delta.days:
         return naturalday(date, "M j")
     return naturaltime(date)
+
+@register.filter(name="header_template")
+def get_header_tempplate(status):
+    """ get the path for the status template """
+    filename = status.note_type if hasattr(status, "note_type") else status.status_type
+    return "snippets/status/headers/{:s}.html".format(filename.lower())
