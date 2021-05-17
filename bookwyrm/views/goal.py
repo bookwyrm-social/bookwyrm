@@ -9,7 +9,6 @@ from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import forms, models
-from bookwyrm.status import create_generated_note
 from .helpers import get_user_from_username
 
 
@@ -59,10 +58,10 @@ class Goal(View):
         if request.POST.get("post-status"):
             # create status, if appropraite
             template = get_template("snippets/generated_status/goal.html")
-            create_generated_note(
-                request.user,
-                template.render({"goal": goal, "user": request.user}).strip(),
-                privacy=goal.privacy,
+            models.GeneratedNote.objects.create(
+                user=request.user,
+                content=template.render({"goal": goal}).strip(),
+                privacy=goal.privacy
             )
 
         return redirect(request.headers.get("Referer", "/"))
