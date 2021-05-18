@@ -59,8 +59,9 @@ def get_published_date(date):
         return naturalday(date, "M j")
     return naturaltime(date)
 
+
 @register.filter(name="header_template")
 def get_header_tempplate(status):
-    """ get the path for the status template """
+    """get the path for the status template"""
     filename = status.note_type if hasattr(status, "note_type") else status.status_type
     return "snippets/status/headers/{:s}.html".format(filename.lower())
