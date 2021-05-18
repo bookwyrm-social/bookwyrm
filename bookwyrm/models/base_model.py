@@ -6,6 +6,16 @@ from bookwyrm.settings import DOMAIN
 from .fields import RemoteIdField
 
 
+DeactivationReason = models.TextChoices(
+    "DeactivationReason",
+    [
+        "self_deletion",
+        "moderator_deletion",
+        "domain_block",
+    ],
+)
+
+
 class BookWyrmModel(models.Model):
     """shared fields"""
 

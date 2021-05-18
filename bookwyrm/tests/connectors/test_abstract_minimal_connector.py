@@ -53,7 +53,6 @@ class AbstractConnector(TestCase):
         self.assertEqual(connector.isbn_search_url, "https://example.com/isbn?q=")
         self.assertIsNone(connector.name)
         self.assertEqual(connector.identifier, "example.com")
-        self.assertIsNone(connector.max_query_count)
         self.assertFalse(connector.local)
 
     @responses.activate
