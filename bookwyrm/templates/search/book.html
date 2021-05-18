@@ -7,7 +7,7 @@
 {% with results|first as local_results %}
 <ul class="block">
 {% for result in local_results.results %}
-    <li class="pd-4">
+    <li class="pd-4 mb-5">
         {% include 'snippets/search_result_text.html' with result=result %}
     </li>
 {% endfor %}
