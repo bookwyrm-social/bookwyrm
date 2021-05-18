@@ -54,7 +54,7 @@ class Book(View):
         # the reviews to show
         if user_statuses:
             if user_statuses == "review":
-                queryset = book.review_set
+                queryset = book.review_set.select_subclasses()
             elif user_statuses == "comment":
                 queryset = book.comment_set
             else:

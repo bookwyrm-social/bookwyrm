@@ -225,45 +225,23 @@
                 {% endif %}
                 {% endif %}
 
-                {% for review in statuses %}
+                {% for status in statuses %}
                     <div
                         class="block"
+                        {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
                         itemprop="review"
                         itemscope
                         itemtype="https://schema.org/Review"
+                        {% endif %}
                     >
-                        {% with status=review hide_book=True depth=1 %}
-                            {% include 'snippets/status/status.html' %}
-                        {% endwith %}
+                        {% include 'snippets/status/status.html' with status=status hide_book=True depth=1 %}
                     </div>
                 {% endfor %}
 
                 {% if ratings %}
                 <div class="block is-flex is-flex-wrap-wrap">
                     {% for rating in ratings %}
-                        {% with user=rating.user %}
-                            <div class="block mr-5">
-                                <div class="media">
-                                    <div class="media-left">
-                                        {% include 'snippets/avatar.html' %}
-                                    </div>
-
-                                    <div class="media-content">
-                                        <div>
-                                            <a href="{{ user.local_path }}">{{ user.display_name }}</a>
-                                        </div>
-                                        <div class="is-flex">
-                                            <p class="mr-1">{% trans "rated it" %}</p>
-
-                                            {% include 'snippets/stars.html' with rating=rating.rating %}
-                                        </div>
-                                        <div>
-                                            <a href="{{ rating.remote_id }}">{{ rating.published_date|naturaltime }}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endwith %}
+                        {% include 'book/rating.html' with user=rating.user rating=rating %}
                     {% endfor %}
                 </div>
                 {% endif %}

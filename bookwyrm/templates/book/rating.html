@@ -1,0 +1,22 @@
+{% load i18n %}{% load status_display %}
+<div class="block mr-5">
+    <div class="media">
+        <div class="media-left">
+            {% include 'snippets/avatar.html' with user=user %}
+        </div>
+
+        <div class="media-content">
+            <div>
+                <a href="{{ user.local_path }}">{{ user.display_name }}</a>
+            </div>
+            <div class="is-flex">
+                <p class="mr-1">{% trans "rated it" %}</p>
+
+                {% include 'snippets/stars.html' with rating=rating.rating %}
+            </div>
+            <div>
+                <a href="{{ rating.remote_id }}">{{ rating.published_date|published_date }}</a>
+            </div>
+        </div>
+    </div>
+</div>
