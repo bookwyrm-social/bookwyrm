@@ -36,7 +36,7 @@
     {% if is_self %}
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -59,7 +59,7 @@
     {% if is_self and shelf.id %}
     <div class="column is-narrow">
         {% trans "Edit shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
