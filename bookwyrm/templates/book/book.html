@@ -163,12 +163,9 @@
                     </div>
                     <div class="column is-narrow">
                         {% trans "Add read dates" as button_text %}
-                        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" class="is-small" controls_text="add-readthrough" %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" class="is-small" controls_text="add-readthrough" focus="add-readthrough-focus" %}
                     </div>
                 </header>
-                {% if not readthroughs.exists %}
-                <p>{% trans "You don't have any reading activity for this book." %}</p>
-                {% endif %}
                 <section class="is-hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
@@ -183,6 +180,9 @@
                         </div>
                     </form>
                 </section>
+                {% if not readthroughs.exists %}
+                <p>{% trans "You don't have any reading activity for this book." %}</p>
+                {% endif %}
                 {% for readthrough in readthroughs %}
                 {% include 'snippets/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
