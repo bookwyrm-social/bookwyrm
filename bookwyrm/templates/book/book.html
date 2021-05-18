@@ -195,7 +195,7 @@
             {% endif %}
             <div class="block" id="reviews">
                 {% if request.user.is_authenticated %}
-                {% if user_statuses.review_count or user_statuses.comment_count or user_stuatses.quotation_count %}
+                {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
                 <nav class="tabs">
                     <ul>
                         {% url 'book' book.id as tab_url %}
@@ -238,6 +238,7 @@
                     </div>
                 {% endfor %}
 
+                {% if ratings %}
                 <div class="block is-flex is-flex-wrap-wrap">
                     {% for rating in ratings %}
                         {% with user=rating.user %}
@@ -265,6 +266,7 @@
                         {% endwith %}
                     {% endfor %}
                 </div>
+                {% endif %}
                 <div class="block">
                     {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
                 </div>
