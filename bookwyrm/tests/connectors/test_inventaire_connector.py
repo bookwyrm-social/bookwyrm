@@ -64,7 +64,7 @@ class Inventaire(TestCase):
         )
         self.assertEqual(
             formatted.cover,
-            "https://covers.inventaire.io/img/entities/ddb32e115a28dcc0465023869ba19f6868ec4042",
+            "https://covers.inventaire.io/img/entities/ddb32",
         )
 
     def test_get_cover_url(self):
@@ -74,18 +74,18 @@ class Inventaire(TestCase):
         self.assertEqual(result, "https://covers.inventaire.io/img/entities/d46a8")
 
         cover_blob = {
-            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Moonstone%201st%20ed.jpg?width=1000",
+            "url": "https://commons.wikimedia.org/wiki/d.jpg?width=1000",
             "file": "The Moonstone 1st ed.jpg",
             "credits": {
                 "text": "Wikimedia Commons",
-                "url": "https://commons.wikimedia.org/wiki/File:The Moonstone 1st ed.jpg",
+                "url": "https://commons.wikimedia.org/wiki/File:The Moonstone.jpg",
             },
         }
 
         result = self.connector.get_cover_url(cover_blob)
         self.assertEqual(
             result,
-            "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Moonstone%201st%20ed.jpg?width=1000",
+            "https://commons.wikimedia.org/wiki/d.jpg?width=1000",
         )
 
     @responses.activate
