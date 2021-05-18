@@ -118,7 +118,7 @@ BOOKWYRM_DBS = {
         "USER": env("POSTGRES_USER", "fedireads"),
         "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
         "HOST": env("POSTGRES_HOST", ""),
-        "PORT": 5432,
+        "PORT": env("POSTGRES_PORT", 5432),
     },
 }
 
