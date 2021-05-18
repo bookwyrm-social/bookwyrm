@@ -6,9 +6,8 @@
 
 {% block edit-button %}
 <a href="{% url 'settings-import-blocklist' %}">
-    <span class="icon icon-plus" title="{% trans 'Add server' %}">
-        <span class="is-sr-only">{% trans "Add server" %}</span>
-    </span>
+    <span class="icon icon-plus" title="{% trans 'Add server' %}" aria-hidden="True"></span>
+    <span>{% trans "Add server" %}</span>
 </a>
 {% endblock %}
 

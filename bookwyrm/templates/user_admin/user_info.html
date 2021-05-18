@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load markdown %}
 <div class="block columns">
     <div class="column is-flex is-flex-direction-column">
         <h4 class="title is-4">{% trans "User details" %}</h4>
@@ -7,7 +7,7 @@
             {% include 'user/user_preview.html' with user=user %}
             {% if user.summary %}
             <div class="box content has-background-white-ter is-shadowless">
-                {{ user.summary | to_markdown | safe }}
+                {{ user.summary|to_markdown|safe }}
             </div>
             {% endif %}
 

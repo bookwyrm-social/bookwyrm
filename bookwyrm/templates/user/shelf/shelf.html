@@ -1,5 +1,6 @@
 {% extends 'user/layout.html' %}
 {% load bookwyrm_tags %}
+{% load utilities %}
 {% load humanize %}
 {% load i18n %}
 
@@ -35,7 +36,7 @@
     {% if is_self %}
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -58,7 +59,7 @@
     {% if is_self and shelf.id %}
     <div class="column is-narrow">
         {% trans "Edit shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -79,7 +80,9 @@
                     <th>{% trans "Shelved" %}</th>
                     <th>{% trans "Started" %}</th>
                     <th>{% trans "Finished" %}</th>
-                    {% if ratings %}<th>{% trans "Rating" %}</th>{% endif %}
+                    {% if request.user.is_authenticated %}
+                    <th>{% trans "Rating" %}</th>
+                    {% endif %}
                     {% if shelf.user == request.user %}
                     <th aria-hidden="true"></th>
                     {% endif %}
@@ -99,18 +102,18 @@
                         {% include 'snippets/authors.html' %}
                     </td>
                     <td data-title="{% trans "Shelved" %}">
-                        {{ book.created_date | naturalday }}
+                        {{ book.created_date|naturalday }}
                     </td>
                     {% latest_read_through book user as read_through %}
                     <td data-title="{% trans "Started" %}">
-                        {{ read_through.start_date | naturalday |default_if_none:""}}
+                        {{ read_through.start_date|naturalday|default_if_none:""}}
                     </td>
                     <td data-title="{% trans "Finished" %}">
-                        {{ read_through.finish_date | naturalday |default_if_none:""}}
+                        {{ read_through.finish_date|naturalday|default_if_none:""}}
                     </td>
-                    {% if ratings %}
+                    {% if request.user.is_authenticated %}
                     <td data-title="{% trans "Rating" %}">
-                        {% include 'snippets/stars.html' with rating=ratings|dict_key:book.id %}
+                        {% include 'snippets/stars.html' with rating=book.rating %}
                     </td>
                     {% endif %}
                     {% if shelf.user == request.user %}

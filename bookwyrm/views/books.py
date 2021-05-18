@@ -30,6 +30,7 @@ class Book(View):
 
     def get(self, request, book_id, user_statuses=False):
         """info about a book"""
+        user_statuses = user_statuses if request.user.is_authenticated else False
         try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
@@ -51,9 +52,9 @@ class Book(View):
         )
 
         # the reviews to show
-        if user_statuses and request.user.is_authenticated:
+        if user_statuses:
             if user_statuses == "review":
-                queryset = book.review_set
+                queryset = book.review_set.select_subclasses()
             elif user_statuses == "comment":
                 queryset = book.comment_set
             else:
@@ -67,7 +68,9 @@ class Book(View):
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
-            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
+            "ratings": reviews.filter(Q(content__isnull=True) | Q(content=""))
+            if not user_statuses
+            else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": privacy_filter(
                 request.user, book.list_set.filter(listitem__approved=True)

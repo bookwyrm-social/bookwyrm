@@ -1,4 +1,6 @@
 {% load bookwyrm_tags %}
+{% load utilities %}
+
 {% if request.user.is_authenticated %}
 
 {% with book.id|uuid as uuid %}

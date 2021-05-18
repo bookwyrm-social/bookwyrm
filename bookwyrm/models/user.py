@@ -19,19 +19,9 @@ from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, DeactivationReason
 from .federated_server import FederatedServer
 from . import fields, Review
-
-
-DeactivationReason = models.TextChoices(
-    "DeactivationReason",
-    [
-        "self_deletion",
-        "moderator_deletion",
-        "domain_block",
-    ],
-)
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
