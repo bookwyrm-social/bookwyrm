@@ -88,6 +88,7 @@
         <div class="column is-half">
             <section class="block">
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
+
                 <p class="mb-2">
                     <label class="label" for="id_title">{% trans "Title:" %}</label>
                     <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title">
@@ -228,18 +229,27 @@
                 {% for error in form.isbn_13.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label> {{ form.isbn_10 }} </p>
                 {% for error in form.isbn_10.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }} </p>
+
+                <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary ID:" %}</label> {{ form.openlibrary_key }} </p>
                 {% for error in form.openlibrary_key.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
+                <p class="mb-2"><label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label> {{ form.inventaire_id }} </p>
+                {% for error in form.inventaire_id.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
                 {% for error in form.oclc_number.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_asin">{% trans "ASIN:" %}</label> {{ form.asin }} </p>
                 {% for error in form.ASIN.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
