@@ -2,6 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError
+from django.db.models import Count, OuterRef, Subquery, F, Q
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -37,30 +38,41 @@ class Shelf(View):
                 return HttpResponseNotFound()
             if not shelf.visible_to_user(request.user):
                 return HttpResponseNotFound()
+            books = shelf.books
         # this is a constructed "all books" view, with a fake "shelf" obj
         else:
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
             books = models.Edition.objects.filter(
+                # privacy is ensured because the shelves are already filtered above
                 shelfbook__shelf__in=shelves.all()
             ).distinct()
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
-        is_self = request.user == user
-
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
+        reviews = privacy_filter(
+            request.user,
+            models.Review.objects.filter(
+                user=user,
+                rating__isnull=False,
+                book__id=OuterRef("id"),
+            ),
+        ).order_by("-published_date")
+
+        books = books.annotate(rating=Subquery(reviews.values("rating")[:1]))
+
         paginated = Paginator(
-            shelf.books.order_by("-updated_date"),
+            books.order_by("-updated_date"),
             PAGE_LENGTH,
         )
 
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "user": user,
-            "is_self": is_self,
+            "is_self": request.user == user,
             "shelves": shelves.all(),
             "shelf": shelf,
             "books": page,

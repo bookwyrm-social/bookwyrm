@@ -29,7 +29,7 @@ class Author(View):
             "author": author,
             "books": [b.default_edition for b in books],
         }
-        return TemplateResponse(request, "author.html", data)
+        return TemplateResponse(request, "author/author.html", data)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -43,7 +43,7 @@ class EditAuthor(View):
         """info about a book"""
         author = get_object_or_404(models.Author, id=author_id)
         data = {"author": author, "form": forms.AuthorForm(instance=author)}
-        return TemplateResponse(request, "edit_author.html", data)
+        return TemplateResponse(request, "author/edit_author.html", data)
 
     def post(self, request, author_id):
         """edit a author cool"""
@@ -52,7 +52,7 @@ class EditAuthor(View):
         form = forms.AuthorForm(request.POST, request.FILES, instance=author)
         if not form.is_valid():
             data = {"author": author, "form": form}
-            return TemplateResponse(request, "edit_author.html", data)
+            return TemplateResponse(request, "author/edit_author.html", data)
         author = form.save()
 
         return redirect("/author/%s" % author.id)

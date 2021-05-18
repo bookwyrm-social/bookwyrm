@@ -1,6 +1,5 @@
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% if request.user|follow_request_exists:user %}
+{% if request.user in user.follow_requests.all %}
 <div class="field is-grouped">
     <form action="/accept-follow-request/" method="POST">
         {% csrf_token %}

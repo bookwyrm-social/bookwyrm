@@ -29,44 +29,64 @@
     <div class="columns">
         <div class="column">
             <h2 class="title is-4">{% trans "Metadata" %}</h2>
-            <p><label class="label" for="id_name">{% trans "Name:" %}</label> {{ form.name }}</p>
+            <p class="mb-2"><label class="label" for="id_name">{% trans "Name:" %}</label> {{ form.name }}</p>
             {% for error in form.name.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_bio">{% trans "Bio:" %}</label> {{ form.bio }}</p>
+            <p class="mb-2">
+                <label class="label" for="id_aliases">{% trans "Aliases:" %}</label>
+                {{ form.aliases }}
+                <span class="help">{% trans "Separate multiple values with commas." %}</span>
+            </p>
+            {% for error in form.aliases.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p class="mb-2"><label class="label" for="id_bio">{% trans "Bio:" %}</label> {{ form.bio }}</p>
             {% for error in form.bio.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_wikipedia_link">{% trans "Wikipedia link:" %}</label> {{ form.wikipedia_link }}</p>
+            <p class="mb-2"><label class="label" for="id_wikipedia_link">{% trans "Wikipedia link:" %}</label> {{ form.wikipedia_link }}</p>
             {% for error in form.wikipedia_link.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_born">{% trans "Birth date:" %}</label> {{ form.born }}</p>
+            <p class="mb-2">
+                <label class="label" for="id_born">{% trans "Birth date:" %}</label>
+                <input type="date" name="born" value="{{ form.born.value|date:'Y-m-d' }}" class="input" id="id_born">
+            </p>
             {% for error in form.born.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_died">{% trans "Death date:" %}</label> {{ form.died }}</p>
+            <p class="mb-2">
+                <label class="label" for="id_died">{% trans "Death date:" %}</label>
+                <input type="date" name="died" value="{{ form.died.value|date:'Y-m-d' }}" class="input" id="id_died">
+            </p>
             {% for error in form.died.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
         </div>
         <div class="column">
             <h2 class="title is-4">{% trans "Author Identifiers" %}</h2>
-            <p><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }}</p>
+            <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }}</p>
             {% for error in form.openlibrary_key.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_librarything_key">{% trans "Librarything key:" %}</label> {{ form.librarything_key }}</p>
+            <p class="mb-2"><label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label> {{ form.inventaire_id }}</p>
+            {% for error in form.inventaire_id.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <p class="mb-2"><label class="label" for="id_librarything_key">{% trans "Librarything key:" %}</label> {{ form.librarything_key }}</p>
             {% for error in form.librarything_key.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}
 
-            <p><label class="label" for="id_goodreads_key">{% trans "Goodreads key:" %}</label> {{ form.goodreads_key }}</p>
+            <p class="mb-2"><label class="label" for="id_goodreads_key">{% trans "Goodreads key:" %}</label> {{ form.goodreads_key }}</p>
             {% for error in form.goodreads_key.errors %}
             <p class="help is-danger">{{ error | escape }}</p>
             {% endfor %}

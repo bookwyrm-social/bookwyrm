@@ -1,4 +1,4 @@
-{% load bookwyrm_tags %}
+{% load layout %}
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
@@ -209,7 +209,7 @@
                 </p>
                 {% endif %}
                 <p>
-                    {% trans 'BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.' %}
+                {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
                 </p>
             </div>
             {% if site.footer_item %}

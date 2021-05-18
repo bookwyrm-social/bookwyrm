@@ -1,7 +1,8 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load bookwyrm_tags %}
+{% load utilities %}
+{% load markdown %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -23,7 +24,7 @@
 
         {% if user.summary %}
         <div class="column box has-background-white-bis content">
-            {{ user.summary | to_markdown | safe }}
+            {{ user.summary|to_markdown|safe }}
         </div>
         {% endif %}
     </div>
