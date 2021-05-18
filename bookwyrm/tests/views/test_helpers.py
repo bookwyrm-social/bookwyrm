@@ -166,7 +166,7 @@ class ViewsHelpers(TestCase):
         status = models.GeneratedNote.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.content, "wants to read")
+        self.assertEqual(status.note_type, "TO_READ")
 
     def test_handle_reading_status_reading(self, _):
         """posts shelve activities"""
@@ -178,7 +178,7 @@ class ViewsHelpers(TestCase):
         status = models.GeneratedNote.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.content, "started reading")
+        self.assertEqual(status.note_type, "READING")
 
     def test_handle_reading_status_read(self, _):
         """posts shelve activities"""
@@ -190,7 +190,7 @@ class ViewsHelpers(TestCase):
         status = models.GeneratedNote.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.content, "finished reading")
+        self.assertEqual(status.note_type, "READ")
 
     def test_handle_reading_status_other(self, _):
         """posts shelve activities"""
