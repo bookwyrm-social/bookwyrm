@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 15:12-0700\n"
+"POT-Creation-Date: 2021-05-17 13:50-0700\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1305,7 +1305,6 @@ msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%
 msgstr "Soutenez %(site_name)s avec <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a>"
 
 #: bookwyrm/templates/layout.html:217
-#| msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm est un logiciel libre. Vous pouvez contribuer ou faire des rapports de bogues via <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 
@@ -2348,17 +2347,12 @@ msgstr "Accepter"
 msgid "No rating"
 msgstr "Aucune note"
 
-#: bookwyrm/templates/snippets/generated_status/goal.html:1
-#, python-format
-msgid "set a goal to read %(counter)s book in %(year)s"
-msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "souhaite lire %(counter)s livre en %(year)s"
-msgstr[1] "souhaite lire %(counter)s livres en %(year)s"
-
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
-#, python-format
-msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
-msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+#, fuzzy, python-format
+#| msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+#| msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+msgid_plural "<a href=\"%(user_path)s\">%(username)s</a> rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgstr[0] "A noté <a href=\"%(path)s\">%(title)s</a> : %(display_rating)s star"
 msgstr[1] "A noté <a href=\"%(path)s\">%(title)s</a> : %(display_rating)s stars"
 
@@ -2522,22 +2516,18 @@ msgid "Report"
 msgstr "Signaler"
 
 #: bookwyrm/templates/snippets/rss_title.html:5
-#: bookwyrm/templates/snippets/status/status_header.html:35
 msgid "rated"
 msgstr "a noté"
 
 #: bookwyrm/templates/snippets/rss_title.html:7
-#: bookwyrm/templates/snippets/status/status_header.html:37
 msgid "reviewed"
 msgstr "a écrit une critique de"
 
 #: bookwyrm/templates/snippets/rss_title.html:9
-#: bookwyrm/templates/snippets/status/status_header.html:39
 msgid "commented on"
 msgstr "a commenté"
 
 #: bookwyrm/templates/snippets/rss_title.html:11
-#: bookwyrm/templates/snippets/status/status_header.html:41
 msgid "quoted"
 msgstr "a cité"
 
@@ -2605,6 +2595,62 @@ msgstr "Replier"
 msgid "Open image in new window"
 msgstr "Ouvrir l’image dans une nouvelle fenêtre"
 
+#: bookwyrm/templates/snippets/status/headers/comment.html:2
+#, fuzzy, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "Éditions de <a href=\"%(work_path)s\">« %(work_title)s »</a>"
+
+#: bookwyrm/templates/snippets/status/headers/goal.html:3
+#, fuzzy, python-format
+#| msgid "set a goal to read %(counter)s book in %(year)s"
+#| msgid_plural "set a goal to read %(counter)s books in %(year)s"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> set a goal to read %(counter)s book in %(year)s"
+msgid_plural "<a href=\"%(user_path)s\">%(username)s</a> set a goal to read %(counter)s books in %(year)s"
+msgstr[0] "souhaite lire %(counter)s livre en %(year)s"
+msgstr[1] "souhaite lire %(counter)s livres en %(year)s"
+
+#: bookwyrm/templates/snippets/status/headers/note.html:5
+#, python-format
+msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
+msgstr "a répondu au <a href=\"%(status_path)s\">statut</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/quotation.html:2
+#, fuzzy, python-format
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
+msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "Supprimer <a href=\"%(path)s\">%(name)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/rating.html:3
+#, fuzzy, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
+msgstr "Créée par <a href=\"%(path)s\">%(username)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/read.html:4
+#, fuzzy, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "Éditions de <a href=\"%(work_path)s\">« %(work_title)s »</a>"
+
+#: bookwyrm/templates/snippets/status/headers/reading.html:4
+#, fuzzy, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "Créée par <a href=\"%(path)s\">%(username)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/review.html:3
+#, fuzzy, python-format
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
+msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "Supprimer <a href=\"%(path)s\">%(name)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/to_read.html:4
+#, fuzzy, python-format
+#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "a répondu à la <a href=\"%(status_path)s\">citation</a> de <a href=\"%(user_path)s\">%(username)s</a>"
+
 #: bookwyrm/templates/snippets/status/layout.html:21
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete status"
@@ -2623,11 +2669,6 @@ msgstr "Ajouter le statut aux favoris"
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
 msgstr "partagé"
-
-#: bookwyrm/templates/snippets/status/status_header.html:45
-#, python-format
-msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
-msgstr "a répondu au <a href=\"%(status_path)s\">statut</a> de <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -2869,11 +2910,11 @@ msgstr ""
 msgid "Access level:"
 msgstr ""
 
-#: bookwyrm/views/password.py:30 bookwyrm/views/password.py:35
+#: bookwyrm/views/password.py:32
 msgid "No user with that email address was found."
 msgstr "Aucun compte avec cette adresse email n’a été trouvé."
 
-#: bookwyrm/views/password.py:44
+#: bookwyrm/views/password.py:41
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un lien de réinitialisation a été envoyé à %s."
@@ -3188,10 +3229,6 @@ msgstr "Un lien de réinitialisation a été envoyé à %s."
 #, python-format
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "a répondu au <a href=\"%(status_path)s\">commentaire</a> de <a href=\"%(user_path)s\">%(username)s</a>"
-
-#, python-format
-#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
-#~ msgstr "a répondu à la <a href=\"%(status_path)s\">citation</a> de <a href=\"%(user_path)s\">%(username)s</a>"
 
 #~ msgid "Remove tag"
 #~ msgstr "Supprimer le tag"

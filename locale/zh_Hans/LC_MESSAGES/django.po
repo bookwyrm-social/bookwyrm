@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-14 15:12-0700\n"
+"POT-Creation-Date: 2021-05-17 13:50-0700\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1302,7 +1302,6 @@ msgid "Support %(site_name)s on <a href=\"%(support_link)s\" target=\"_blank\">%
 msgstr "在 <a href=\"%(support_link)s\" target=\"_blank\">%(support_title)s</a> 上支持 %(site_name)s"
 
 #: bookwyrm/templates/layout.html:217
-#| msgid "BookWyrm is open source software. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgid "BookWyrm's source code is freely available. You can contribute or report issues on <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a>."
 msgstr "BookWyrm 是开源软件。你可以在 <a href=\"https://github.com/mouse-reeve/bookwyrm\">GitHub</a> 贡献或报告问题。"
 
@@ -2349,16 +2348,12 @@ msgstr "接受"
 msgid "No rating"
 msgstr "没有评价"
 
-#: bookwyrm/templates/snippets/generated_status/goal.html:1
-#, python-format
-msgid "set a goal to read %(counter)s book in %(year)s"
-msgid_plural "set a goal to read %(counter)s books in %(year)s"
-msgstr[0] "设定了在 %(year)s 内要读 %(counter)s 本书的目标"
-
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
-#, python-format
-msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
-msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+#, fuzzy, python-format
+#| msgid "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+#| msgid_plural "Rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
+msgid_plural "<a href=\"%(user_path)s\">%(username)s</a> rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgstr[0] "为 <em><a href=\"%(path)s\">%(title)s</a></em> 打了分: %(display_rating)s 星"
 
 #: bookwyrm/templates/snippets/generated_status/review_pure_name.html:4
@@ -2520,22 +2515,18 @@ msgid "Report"
 msgstr "报告"
 
 #: bookwyrm/templates/snippets/rss_title.html:5
-#: bookwyrm/templates/snippets/status/status_header.html:35
 msgid "rated"
 msgstr "评价了"
 
 #: bookwyrm/templates/snippets/rss_title.html:7
-#: bookwyrm/templates/snippets/status/status_header.html:37
 msgid "reviewed"
 msgstr "写了书评给"
 
 #: bookwyrm/templates/snippets/rss_title.html:9
-#: bookwyrm/templates/snippets/status/status_header.html:39
 msgid "commented on"
 msgstr "评论了"
 
 #: bookwyrm/templates/snippets/rss_title.html:11
-#: bookwyrm/templates/snippets/status/status_header.html:41
 msgid "quoted"
 msgstr "引用了"
 
@@ -2603,6 +2594,61 @@ msgstr "显示更少"
 msgid "Open image in new window"
 msgstr "在新窗口中打开图像"
 
+#: bookwyrm/templates/snippets/status/headers/comment.html:2
+#, fuzzy, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "<a href=\"%(work_path)s\">\"%(work_title)s\"</a> 的各版本"
+
+#: bookwyrm/templates/snippets/status/headers/goal.html:3
+#, fuzzy, python-format
+#| msgid "set a goal to read %(counter)s book in %(year)s"
+#| msgid_plural "set a goal to read %(counter)s books in %(year)s"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> set a goal to read %(counter)s book in %(year)s"
+msgid_plural "<a href=\"%(user_path)s\">%(username)s</a> set a goal to read %(counter)s books in %(year)s"
+msgstr[0] "设定了在 %(year)s 内要读 %(counter)s 本书的目标"
+
+#: bookwyrm/templates/snippets/status/headers/note.html:5
+#, python-format
+msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
+msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">状态</a>"
+
+#: bookwyrm/templates/snippets/status/headers/quotation.html:2
+#, fuzzy, python-format
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
+msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "移除 <a href=\"%(path)s\">%(name)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/rating.html:3
+#, fuzzy, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
+msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建"
+
+#: bookwyrm/templates/snippets/status/headers/read.html:4
+#, fuzzy, python-format
+#| msgid "Editions of <a href=\"%(work_path)s\">\"%(work_title)s\"</a>"
+msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "<a href=\"%(work_path)s\">\"%(work_title)s\"</a> 的各版本"
+
+#: bookwyrm/templates/snippets/status/headers/reading.html:4
+#, fuzzy, python-format
+#| msgid "Created by <a href=\"%(path)s\">%(username)s</a>"
+msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "由 <a href=\"%(path)s\">%(username)s</a> 创建"
+
+#: bookwyrm/templates/snippets/status/headers/review.html:3
+#, fuzzy, python-format
+#| msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
+msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "移除 <a href=\"%(path)s\">%(name)s</a>"
+
+#: bookwyrm/templates/snippets/status/headers/to_read.html:4
+#, fuzzy, python-format
+#| msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
+msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">引用</a>"
+
 #: bookwyrm/templates/snippets/status/layout.html:21
 #: bookwyrm/templates/snippets/status/status_options.html:17
 msgid "Delete status"
@@ -2621,11 +2667,6 @@ msgstr "喜欢状态"
 #: bookwyrm/templates/snippets/status/status.html:10
 msgid "boosted"
 msgstr "转发了"
-
-#: bookwyrm/templates/snippets/status/status_header.html:45
-#, python-format
-msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
-msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">状态</a>"
 
 #: bookwyrm/templates/snippets/status/status_options.html:7
 #: bookwyrm/templates/snippets/user_options.html:7
@@ -2867,11 +2908,11 @@ msgstr ""
 msgid "Access level:"
 msgstr ""
 
-#: bookwyrm/views/password.py:30 bookwyrm/views/password.py:35
+#: bookwyrm/views/password.py:32
 msgid "No user with that email address was found."
 msgstr "没有找到使用该邮箱的用户。"
 
-#: bookwyrm/views/password.py:44
+#: bookwyrm/views/password.py:41
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "密码重置连接已发送给 %s"
@@ -3183,10 +3224,6 @@ msgstr "密码重置连接已发送给 %s"
 #, python-format
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "恢复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">评论</a>"
-
-#, python-format
-#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
-#~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">引用</a>"
 
 #~ msgid "Remove tag"
 #~ msgstr "移除标签"
