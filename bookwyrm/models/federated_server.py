@@ -37,7 +37,7 @@ class FederatedServer(BookWyrmModel):
 
         # check for related connectors
         if self.application_type == "bookwyrm":
-            connector_model = apps.get_model("bookwyrm.Connector", require_read=True)
+            connector_model = apps.get_model("bookwyrm.Connector", require_ready=True)
             connector_model.objects.filter(
                 identifier=self.server_name, active=True
             ).update(active=False, deactivation_reason="domain_block")
@@ -53,7 +53,7 @@ class FederatedServer(BookWyrmModel):
 
         # check for related connectors
         if self.application_type == "bookwyrm":
-            connector_model = apps.get_model("bookwyrm.Connector", require_read=True)
+            connector_model = apps.get_model("bookwyrm.Connector", require_ready=True)
             connector_model.objects.filter(
                 identifier=self.server_name,
                 active=False,

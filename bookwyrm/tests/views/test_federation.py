@@ -60,7 +60,12 @@ class FederationViews(TestCase):
 
     def test_server_page_block(self):
         """block a server"""
-        server = models.FederatedServer.objects.create(server_name="hi.there.com")
+        server = models.FederatedServer.objects.create(
+            server_name="hi.there.com", application_type="bookwyrm"
+        )
+        connector = models.Connector.objects.get(
+            identifier="hi.there.com",
+        )
         self.remote_user.federated_server = server
         self.remote_user.save()
 
@@ -72,17 +77,32 @@ class FederationViews(TestCase):
         request.user.is_superuser = True
 
         view(request, server.id)
+
         server.refresh_from_db()
         self.remote_user.refresh_from_db()
         self.assertEqual(server.status, "blocked")
+
         # and the user was deactivated
         self.assertFalse(self.remote_user.is_active)
+        self.assertEqual(self.remote_user.deactivation_reason, "domain_block")
+
+        # and the connector was disabled
+        connector.refresh_from_db()
+        self.assertFalse(connector.active)
+        self.assertEqual(connector.deactivation_reason, "domain_block")
 
     def test_server_page_unblock(self):
         """unblock a server"""
         server = models.FederatedServer.objects.create(
-            server_name="hi.there.com", status="blocked"
+            server_name="hi.there.com", status="blocked", application_type="bookwyrm"
         )
+        connector = models.Connector.objects.get(
+            identifier="hi.there.com",
+        )
+        connector.active = False
+        connector.deactivation_reason = "domain_block"
+        connector.save()
+
         self.remote_user.federated_server = server
         self.remote_user.is_active = False
         self.remote_user.deactivation_reason = "domain_block"
@@ -96,8 +116,15 @@ class FederationViews(TestCase):
         server.refresh_from_db()
         self.remote_user.refresh_from_db()
         self.assertEqual(server.status, "federated")
+
         # and the user was re-activated
         self.assertTrue(self.remote_user.is_active)
+        self.assertIsNone(self.remote_user.deactivation_reason)
+
+        # and the connector was re-enabled
+        connector.refresh_from_db()
+        self.assertTrue(connector.active)
+        self.assertIsNone(connector.deactivation_reason)
 
     def test_add_view_get(self):
         """there are so many views, this just makes sure it LOADS"""
