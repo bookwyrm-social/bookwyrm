@@ -1,5 +1,6 @@
 """ admin announcements """
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 from .base_model import BookWyrmModel
@@ -9,7 +10,6 @@ class Announcement(BookWyrmModel):
     """The admin has something to say"""
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
     preview = models.CharField(max_length=255)
     content = models.TextField()
     event_date = models.DateTimeField(blank=True, null=True)
@@ -21,4 +21,8 @@ class Announcement(BookWyrmModel):
     def active_announcements(cls):
         """announcements that should be displayed"""
         now = timezone.now()
-        return cls.objects.filter(active=True, start_date__lte=now, end_date__gte=now)
+        return cls.objects.filter(
+            Q(start_date__isnull=True) | Q(start_date__lte=now),
+            Q(end_date__isnull=True) | Q(end_date__gte=now),
+            active=True,
+        )

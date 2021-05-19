@@ -19,8 +19,8 @@
     <tr>
         {% url 'settings-announcements' as url %}
         <th>
-            {% trans "Name" as text %}
-            {% include 'snippets/table-sort-header.html' with field="name" sort=sort text=text %}
+            {% trans "Preview" as text %}
+            {% include 'snippets/table-sort-header.html' with field="preview" sort=sort text=text %}
         </th>
         <th>
             {% trans "Start date" as text %}
@@ -37,7 +37,7 @@
     </tr>
     {% for announcement in announcements %}
     <tr>
-        <td><a href="{% url 'settings-announcements' announcement.id %}">{{ announcement.name }}</a></td>
+        <td><a href="{% url 'settings-announcements' announcement.id %}">{{ announcement.preview }}</a></td>
         <td>{{ announcement.start_date|naturaltime|default:'' }}</td>
         <td>{{ announcement.end_date|naturaltime|default:'' }}</td>
         <td>{% if announcement.active %}{% trans "active" %}{% else %}{% trans "inactive" %}{% endif %}</td>

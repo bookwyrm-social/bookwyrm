@@ -6,5 +6,5 @@ def site_settings(request):  # pylint: disable=unused-argument
     """include the custom info about the site"""
     return {
         "site": models.SiteSettings.objects.get(),
-        "announcements": models.Announcement.active_announcements(),
+        "active_announcements": models.Announcement.active_announcements(),
     }

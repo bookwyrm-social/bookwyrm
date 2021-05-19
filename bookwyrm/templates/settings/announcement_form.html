@@ -10,14 +10,28 @@
 <form name="create-announcement" method="post" action="/settings/announcements">
     {% csrf_token %}
     <input type="hidden" name="user" value="{{ request.user.id }}">
-
     <p>
-        <label class="label" for="id_name">Name:</label>
-        {{ form.name }}
-        {% for error in form.name.errors %}
+        <label class="label" for="id_preview">Preview:</label>
+        {{ form.preview }}
+        {% for error in form.preview.errors %}
         <p class="help is-danger">{{ error | escape }}</p>
         {% endfor %}
     </p>
+    <p>
+        <label class="label" for="id_content">Content:</label>
+        {{ form.content }}
+        {% for error in form.content.errors %}
+        <p class="help is-danger">{{ error | escape }}</p>
+        {% endfor %}
+    </p>
+    <p>
+        <label class="label" for="id_event_date">Event date:</label>
+        <input type="date" name="event_date" value="{{ form.event_date.value }}" class="input" id="id_event_date">
+        {% for error in form.event_date.errors %}
+        <p class="help is-danger">{{ error | escape }}</p>
+        {% endfor %}
+    </p>
+    <hr aria-hidden="true">
     <div class="columns">
         <div class="column">
             <p>
@@ -47,28 +61,6 @@
             </p>
         </div>
     </div>
-    <hr aria-hidden="true">
-    <p>
-        <label class="label" for="id_preview">Preview:</label>
-        {{ form.preview }}
-        {% for error in form.preview.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </p>
-    <p>
-        <label class="label" for="id_content">Content:</label>
-        {{ form.content }}
-        {% for error in form.content.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </p>
-    <p>
-        <label class="label" for="id_event_date">Event date:</label>
-        <input type="date" name="event_date" value="{{ form.event_date.value }}" class="input" id="id_event_date">
-        {% for error in form.event_date.errors %}
-        <p class="help is-danger">{{ error | escape }}</p>
-        {% endfor %}
-    </p>
 
     <div class="field has-addons">
         <div class="control">
