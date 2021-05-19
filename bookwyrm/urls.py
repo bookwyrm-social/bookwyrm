@@ -57,6 +57,16 @@ urlpatterns = [
     # admin
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
+        r"^settings/announcements/?$",
+        views.Announcements.as_view(),
+        name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/??$",
+        views.Announcements.as_view(),
+        name="settings-announcements",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.site.email_preview,
         name="settings-email-preview",
