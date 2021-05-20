@@ -62,9 +62,14 @@ urlpatterns = [
         name="settings-announcements",
     ),
     re_path(
-        r"^settings/announcements/(?P<announcement_id>\d+)/??$",
+        r"^settings/announcements/(?P<announcement_id>\d+)/?$",
         views.Announcement.as_view(),
         name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
+        views.delete_announcement,
+        name="settings-announcements-delete",
     ),
     re_path(
         r"^settings/email-preview/?$",

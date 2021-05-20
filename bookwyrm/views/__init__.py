@@ -1,5 +1,5 @@
 """ make sure all our nice views are available """
-from .announcements import Announcements, Announcement
+from .announcements import Announcements, Announcement, delete_announcement
 from .authentication import Login, Register, Logout
 from .author import Author, EditAuthor
 from .block import Block, unblock

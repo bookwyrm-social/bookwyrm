@@ -9,8 +9,18 @@
 
 {% block edit-button %}
 {% trans "Edit Announcement" as button_text %}
-{% include 'snippets/toggle/open_button.html' with controls_text="edit-announcement" icon_with_text="plus" text=button_text focus="edit-announcement-header" %}
-</a>
+<div class="field has-addons">
+    <div class="control">
+        {% include 'snippets/toggle/open_button.html' with controls_text="edit-announcement" icon_with_text="pencil" text=button_text focus="edit-announcement-header" %}
+    </div>
+    <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button is-danger">
+            <span class="icon icon-x" aria-hidden="true"></span>
+            <span>{% trans "Delete" %}</span>
+        </button>
+    </form>
+</div>
 {% endblock %}
 
 {% block panel %}

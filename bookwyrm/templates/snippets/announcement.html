@@ -1,6 +1,9 @@
 {% load humanize %}{% load i18n %}{% load utilities %}
 {% with announcement.id|uuid as uuid %}
-<aside class="notification mb-1 p-3 is-hidden transition-y"{% if not admin_mode %} data-hide="hide-announcement-{{ announcement.id }}"{% endif %}>
+<aside
+    class="notification mb-1 p-3{% if not admin_mode %} is-hidden{% endif %} transition-y"
+    {% if not admin_mode %}data-hide="hide-announcement-{{ announcement.id }}"{% endif %}
+>
     <div class="columns mb-0">
         <div class="column pb-0">
             {% if announcement.event_date %}

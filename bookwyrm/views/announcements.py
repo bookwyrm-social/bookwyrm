@@ -1,7 +1,7 @@
 """ make announcements """
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -64,7 +64,7 @@ class Announcements(View):
     name="dispatch",
 )
 class Announcement(View):
-    """delete or edit an announcement"""
+    """edit an announcement"""
 
     def get(self, request, announcement_id):
         """view announcement"""
@@ -76,7 +76,7 @@ class Announcement(View):
         return TemplateResponse(request, "settings/announcement.html", data)
 
     def post(self, request, announcement_id):
-        """edit the site settings"""
+        """edit announcement"""
         announcement = get_object_or_404(models.Announcement, id=announcement_id)
         form = forms.AnnouncementForm(request.POST, instance=announcement)
         if form.is_valid():
@@ -86,3 +86,12 @@ class Announcement(View):
             "form": form,
         }
         return TemplateResponse(request, "settings/announcement.html", data)
+
+
+@login_required
+@permission_required("bookwyrm.edit_instance_settings", raise_exception=True)
+def delete_announcement(_, announcement_id):
+    """delete announcement"""
+    announcement = get_object_or_404(models.Announcement, id=announcement_id)
+    announcement.delete()
+    return redirect("settings-announcements")
