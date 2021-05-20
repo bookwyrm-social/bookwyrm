@@ -114,7 +114,7 @@ class AnnouncementViews(TestCase):
         announcement = models.Announcement.objects.create(
             preview="hi", user=self.local_user
         )
-        view = views.delete_announcement.as_view()
+        view = views.delete_announcement
 
         request = self.factory.post("")
         request.user = self.local_user
@@ -128,8 +128,9 @@ class AnnouncementViews(TestCase):
         """display announcement on other pages"""
         view = views.User.as_view()
         request = self.factory.get("")
+        request.user = self.local_user
 
-        result = view(request)
+        result = view(request, self.local_user.localname)
 
         self.assertIsInstance(result, TemplateResponse)
         result.render()
