@@ -58,6 +58,13 @@ class Connector(AbstractConnector):
             Mapping("bio", formatter=get_description),
         ]
 
+    def get_book_data(self, remote_id):
+        data = get_data(remote_id)
+        if data.get("type", {}).get("key") == "/type/redirect":
+            remote_id = self.base_url + data.get("location")
+            return get_data(remote_id)
+        return data
+
     def get_remote_id_from_data(self, data):
         """format a url from an openlibrary id field"""
         try:
@@ -75,8 +82,11 @@ class Connector(AbstractConnector):
         except KeyError:
             raise ConnectorException("Invalid book data")
         url = "%s%s/editions" % (self.books_url, key)
-        data = get_data(url)
-        return pick_default_edition(data["entries"])
+        data = self.get_book_data(url)
+        edition = pick_default_edition(data["entries"])
+        if not edition:
+            raise ConnectorException("No editions for work")
+        return edition
 
     def get_work_from_edition_data(self, data):
         try:
@@ -84,7 +94,7 @@ class Connector(AbstractConnector):
         except (IndexError, KeyError):
             raise ConnectorException("No work found for edition")
         url = "%s%s" % (self.books_url, key)
-        return get_data(url)
+        return self.get_book_data(url)
 
     def get_authors_from_data(self, data):
         """parse author json and load or create authors"""
@@ -143,7 +153,7 @@ class Connector(AbstractConnector):
     def load_edition_data(self, olkey):
         """query openlibrary for editions of a work"""
         url = "%s/works/%s/editions" % (self.books_url, olkey)
-        return get_data(url)
+        return self.get_book_data(url)
 
     def expand_book_data(self, book):
         work = book
