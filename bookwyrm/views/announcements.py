@@ -1,14 +1,16 @@
 """ make announcements """
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import forms, models
+from bookwyrm.settings import PAGE_LENGTH
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
     permission_required("bookwyrm.edit_instance_settings", raise_exception=True),
@@ -19,9 +21,24 @@ class Announcements(View):
 
     def get(self, request):
         """view and create announcements"""
+        announcements = models.Announcement.objects
+
+        sort = request.GET.get("sort", "-created_date")
+        sort_fields = [
+            "created_date",
+            "preview",
+            "start_date",
+            "end_date",
+            "active",
+        ]
+        if sort in sort_fields + ["-{:s}".format(f) for f in sort_fields]:
+            announcements = announcements.order_by(sort)
         data = {
-            "announcements": models.Announcement.objects.all(),
+            "announcements": Paginator(announcements, PAGE_LENGTH).get_page(
+                request.GET.get("page")
+            ),
             "form": forms.AnnouncementForm(),
+            "sort": sort,
         }
         return TemplateResponse(request, "settings/announcements.html", data)
 
@@ -33,7 +50,9 @@ class Announcements(View):
             # reset the create form
             form = forms.AnnouncementForm()
         data = {
-            "announcements": models.Announcement.objects.all(),
+            "announcements": Paginator(
+                models.Announcement.objects, PAGE_LENGTH
+            ).get_page(request.GET.get("page")),
             "form": form,
         }
         return TemplateResponse(request, "settings/announcements.html", data)
