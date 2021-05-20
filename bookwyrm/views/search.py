@@ -36,7 +36,7 @@ class Search(View):
             )
             return JsonResponse([r.json() for r in book_results], safe=False)
 
-        if not search_type:
+        if query and not search_type:
             search_type = "user" if "@" in query else "book"
 
         endpoints = {
