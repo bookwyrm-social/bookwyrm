@@ -11,7 +11,7 @@ class Announcement(BookWyrmModel):
 
     user = models.ForeignKey("User", on_delete=models.PROTECT)
     preview = models.CharField(max_length=255)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     event_date = models.DateTimeField(blank=True, null=True)
     start_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
