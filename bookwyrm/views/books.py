@@ -319,7 +319,10 @@ def upload_cover(request, book_id):
 
 def set_cover_from_url(url):
     """load it from a url"""
-    image_file = get_image(url)
+    try:
+        image_file = get_image(url)
+    except:  # pylint: disable=bare-except
+        return None
     if not image_file:
         return None
     image_name = str(uuid4()) + "." + url.split(".")[-1]
