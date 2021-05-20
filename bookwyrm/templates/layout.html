@@ -181,7 +181,7 @@
     </div>
 </nav>
 
-{% if active_announcements.exists %}
+{% if request.user.is_authenticated and active_announcements.exists %}
 <div class="block is-flex-grow-1">
     <div class="container">
         {% for announcement in active_announcements %}
