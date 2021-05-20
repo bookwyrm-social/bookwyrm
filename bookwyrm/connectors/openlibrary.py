@@ -76,7 +76,10 @@ class Connector(AbstractConnector):
             raise ConnectorException("Invalid book data")
         url = "%s%s/editions" % (self.books_url, key)
         data = get_data(url)
-        return pick_default_edition(data["entries"])
+        edition = pick_default_edition(data["entries"])
+        if not edition:
+            raise ConnectorException("No editions for work")
+        return edition
 
     def get_work_from_edition_data(self, data):
         try:
