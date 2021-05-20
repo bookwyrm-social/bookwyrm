@@ -48,3 +48,18 @@ class AnnouncementViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
+
+    def test_announcement_page(self):
+        """there are so many views, this just makes sure it LOADS"""
+        announcement = models.Announcement.objects.create(preview="hi", user=self.local_user)
+
+        view = views.Announcements.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        request.user.is_superuser = True
+
+        result = view(request, announcement.id)
+
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
