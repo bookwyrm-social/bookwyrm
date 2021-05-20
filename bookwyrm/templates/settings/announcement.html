@@ -1,0 +1,23 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Announcement" %} - {{ announcement.preview }}{% endblock %}
+
+{% block header %}{% trans "Announcement" %}{% endblock %}
+
+{% block edit-button %}
+{% trans "Edit Announcement" as button_text %}
+{% include 'snippets/toggle/open_button.html' with controls_text="create-announcement" icon_with_text="plus" text=button_text focus="create-announcement-header" %}
+</a>
+{% endblock %}
+
+{% block panel %}
+
+<div class="block">
+    {% include 'settings/announcement_form.html' with controls_text="create-announcement" %}
+</div>
+
+<div class="block content">
+    {% include 'snippets/announcement.html' with announcement=announcement pressed=True %}
+</div>
+
+{% endblock %}

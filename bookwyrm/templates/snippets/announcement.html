@@ -1,0 +1,22 @@
+{% load humanize %}{% load i18n %}{% load utilities %}
+{% with announcement.id|uuid as uuid %}
+<aside class="notification p-3">
+    <div class="columns mb-0">
+        <div class="column">
+            {% if announcement.event_date %}
+            <strong>{{ announcement.event_date|naturalday|title }}:</strong>
+            {% endif %}
+            {{ announcement.preview }}
+        </div>
+        <div class="column is-narrow">
+            {% trans "Open" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=uuid icon_with_text="arrow-down" %}
+            {% trans "Close" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=uuid icon_with_text="arrow-up" %}
+        </div>
+    </div>
+    <div class="box is-shadowless m-0{% if not pressed %} is-hidden{% endif %}" id="announcement-{{ uuid }}">
+        {{ announcement.content|safe }}
+    </div>
+</aside>
+{% endwith %}

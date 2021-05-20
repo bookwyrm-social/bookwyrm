@@ -8,7 +8,7 @@
         <option value="">{% trans "Any" %}</option>
         {% for format in formats %}{% if format %}
         <option value="{{ format }}" {% if request.GET.format == format %}selected{% endif %}>
-            {{ format|title }}
+            {{ format|book_title }}
         </option>
         {% endif %}{% endfor %}
     </select>

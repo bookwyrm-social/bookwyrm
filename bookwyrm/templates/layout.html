@@ -1,4 +1,4 @@
-{% load layout %}{% load i18n %}{% load humanize %}
+{% load layout %}{% load i18n %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
@@ -185,25 +185,7 @@
 <div class="block is-flex-grow-1">
     <div class="container">
         {% for announcement in active_announcements %}
-        <div class="notification p-3">
-            <div class="columns mb-0">
-                <div class="column">
-                    {% if announcement.event_date %}
-                    <strong>{{ announcement.event_date|naturalday|title }}:</strong>
-                    {% endif %}
-                    {{ announcement.preview }}
-                </div>
-                <div class="column is-narrow">
-                    {% trans "Open" as button_text %}
-                    {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=announcement.id icon_with_text="arrow-down" %}
-                    {% trans "Close" as button_text %}
-                    {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=announcement.id icon_with_text="arrow-up" %}
-                </div>
-            </div>
-            <div class="box is-shadowless m-0 is-hidden" id="announcement-{{ announcement.id }}">
-                {{ announcement.content|safe }}
-            </div>
-        </div>
+        {% include 'snippets/announcement.html' with announcement=announcement %}
         {% endfor %}
     </div>
 </div>

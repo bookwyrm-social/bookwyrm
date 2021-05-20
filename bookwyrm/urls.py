@@ -63,7 +63,7 @@ urlpatterns = [
     ),
     re_path(
         r"^settings/announcements/(?P<announcement_id>\d+)/??$",
-        views.Announcements.as_view(),
+        views.Announcement.as_view(),
         name="settings-announcements",
     ),
     re_path(
