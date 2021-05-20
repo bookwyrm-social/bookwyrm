@@ -61,9 +61,9 @@ class Announcement(View):
         announcement = get_object_or_404(models.Announcement, id=announcement_id)
         form = forms.AnnouncementForm(request.POST, instance=announcement)
         if form.is_valid():
-            form.save()
+            announcement = form.save()
         data = {
-            "announcements": models.Announcement.objects.all(),
+            "announcement": announcement,
             "form": form,
         }
         return TemplateResponse(request, "settings/announcement.html", data)

@@ -11,9 +11,9 @@
 {% endblock %}
 
 {% block panel %}
-<div class="block">
+<form name="create-announcement" method="post" action="{% url 'settings-announcements' %}" class="block">
     {% include 'settings/announcement_form.html' with controls_text="create-announcement" %}
-</div>
+</form>
 
 <table class="table is-striped">
     <tr>
