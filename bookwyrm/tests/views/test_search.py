@@ -64,7 +64,6 @@ class Views(TestCase):
         self.assertIsInstance(response, TemplateResponse)
         response.render()
 
-
     def test_search_books(self):
         """searches remote connectors"""
         view = views.Search.as_view()
