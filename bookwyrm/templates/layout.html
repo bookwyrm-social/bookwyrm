@@ -1,5 +1,4 @@
-{% load layout %}
-{% load i18n %}
+{% load layout %}{% load i18n %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
@@ -182,6 +181,15 @@
     </div>
 </nav>
 
+{% if active_announcements.exists %}
+<div class="block is-flex-grow-1">
+    <div class="container">
+        {% for announcement in active_announcements %}
+        {% include 'snippets/announcement.html' with announcement=announcement %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 <div class="section is-flex-grow-1">
     <div class="container">
@@ -230,6 +238,7 @@
     var csrf_token = '{{ csrf_token }}';
 </script>
 <script src="/static/js/bookwyrm.js"></script>
+<script src="/static/js/localstorage.js"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
