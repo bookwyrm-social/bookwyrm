@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 12:12-0700\n"
+"POT-Creation-Date: 2021-05-20 14:40-0700\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -626,7 +626,7 @@ msgstr "lo calificó con"
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
 #: bookwyrm/templates/search/book.html:32
-#: bookwyrm/templates/snippets/announcement.html:17
+#: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "Cerrar"
 
@@ -662,7 +662,7 @@ msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings
 msgstr "Puedes optar por no en cualquier hora en tus <a href=\"%(path)s\">configuraciones de perfil.</a>"
 
 #: bookwyrm/templates/directory/directory.html:29
-#: bookwyrm/templates/snippets/announcement.html:30
+#: bookwyrm/templates/snippets/announcement.html:34
 #: bookwyrm/templates/snippets/goal_card.html:22
 msgid "Dismiss message"
 msgstr "Desechar mensaje"
@@ -1385,7 +1385,7 @@ msgstr "Cualquier usuario puede sugerir libros, en cuanto lo hayas aprobado"
 #: bookwyrm/templates/lists/form.html:31
 #: bookwyrm/templates/moderation/reports.html:25
 #: bookwyrm/templates/search/book.html:30
-#: bookwyrm/templates/snippets/announcement.html:15
+#: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
 msgstr "Abierto"
 
@@ -2274,7 +2274,7 @@ msgstr "Permitir solicitudes de invitación:"
 msgid "Registration closed text:"
 msgstr "Texto de registración cerrada:"
 
-#: bookwyrm/templates/snippets/announcement.html:27
+#: bookwyrm/templates/snippets/announcement.html:31
 #, fuzzy, python-format
 #| msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -2956,6 +2956,12 @@ msgstr "Des-suspender usuario"
 msgid "Access level:"
 msgstr "Nivel de acceso:"
 
+#: bookwyrm/views/import_data.py:67
+#, fuzzy
+#| msgid "Enter a valid value."
+msgid "Not a valid csv file"
+msgstr "Ingrese un valor válido."
+
 #: bookwyrm/views/password.py:32
 msgid "No user with that email address was found."
 msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónico."
@@ -2999,9 +3005,6 @@ msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
 
 #~ msgid "That page contains no results"
 #~ msgstr "Esa pagina no contiene resultados"
-
-#~ msgid "Enter a valid value."
-#~ msgstr "Ingrese un valor válido."
 
 #~ msgid "Enter a valid URL."
 #~ msgstr "Ingrese una URL válida."
