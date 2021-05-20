@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 12:12-0700\n"
+"POT-Creation-Date: 2021-05-20 14:40-0700\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -631,7 +631,7 @@ msgstr "评价了"
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
 #: bookwyrm/templates/search/book.html:32
-#: bookwyrm/templates/snippets/announcement.html:17
+#: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "关闭"
 
@@ -669,7 +669,7 @@ msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings
 msgstr "你可以在任何时候从你的 <a href=\"%(path)s\">个人资料设定</a> 中退出。"
 
 #: bookwyrm/templates/directory/directory.html:29
-#: bookwyrm/templates/snippets/announcement.html:30
+#: bookwyrm/templates/snippets/announcement.html:34
 #: bookwyrm/templates/snippets/goal_card.html:22
 msgid "Dismiss message"
 msgstr "遣散消息"
@@ -1388,7 +1388,7 @@ msgstr "任何人都可以推荐书目、主题让你批准"
 #: bookwyrm/templates/lists/form.html:31
 #: bookwyrm/templates/moderation/reports.html:25
 #: bookwyrm/templates/search/book.html:30
-#: bookwyrm/templates/snippets/announcement.html:15
+#: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
 msgstr "开放"
 
@@ -2305,7 +2305,7 @@ msgstr "允许请求邀请:"
 msgid "Registration closed text:"
 msgstr "注册关闭文字:"
 
-#: bookwyrm/templates/snippets/announcement.html:27
+#: bookwyrm/templates/snippets/announcement.html:31
 #, fuzzy, python-format
 #| msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -2989,6 +2989,12 @@ msgstr ""
 msgid "Access level:"
 msgstr ""
 
+#: bookwyrm/views/import_data.py:67
+#, fuzzy
+#| msgid "Email address:"
+msgid "Not a valid csv file"
+msgstr "邮箱地址:"
+
 #: bookwyrm/views/password.py:32
 msgid "No user with that email address was found."
 msgstr "没有找到使用该邮箱的用户。"
@@ -3012,11 +3018,6 @@ msgstr "密码重置连接已发送给 %s"
 #~| msgid "All messages"
 #~ msgid "Messages"
 #~ msgstr "所有消息"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid value."
-#~ msgstr "邮箱地址:"
 
 #, fuzzy
 #~| msgid "Email address:"

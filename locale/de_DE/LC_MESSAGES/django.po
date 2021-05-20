@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 12:12-0700\n"
+"POT-Creation-Date: 2021-05-20 14:40-0700\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -658,7 +658,7 @@ msgstr "bewertet"
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
 #: bookwyrm/templates/search/book.html:32
-#: bookwyrm/templates/snippets/announcement.html:17
+#: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr "Schließen"
 
@@ -703,7 +703,7 @@ msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings
 msgstr "Du kannst dein Leseziel jederzeit auf deiner <a href=\"%(path)s\">Profilseite</a> setzen oder ändern."
 
 #: bookwyrm/templates/directory/directory.html:29
-#: bookwyrm/templates/snippets/announcement.html:30
+#: bookwyrm/templates/snippets/announcement.html:34
 #: bookwyrm/templates/snippets/goal_card.html:22
 msgid "Dismiss message"
 msgstr "Nachricht verwerfen"
@@ -1465,7 +1465,7 @@ msgstr "Alle können Bücher vorschlagen, du kannst diese bestätigen"
 #: bookwyrm/templates/lists/form.html:31
 #: bookwyrm/templates/moderation/reports.html:25
 #: bookwyrm/templates/search/book.html:30
-#: bookwyrm/templates/snippets/announcement.html:15
+#: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
 msgstr "Offen"
 
@@ -2429,7 +2429,7 @@ msgstr "Folgeanfragen"
 msgid "Registration closed text:"
 msgstr "Registrierungen geschlossen text"
 
-#: bookwyrm/templates/snippets/announcement.html:27
+#: bookwyrm/templates/snippets/announcement.html:31
 #, fuzzy, python-format
 #| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
@@ -3158,6 +3158,12 @@ msgstr ""
 msgid "Access level:"
 msgstr ""
 
+#: bookwyrm/views/import_data.py:67
+#, fuzzy
+#| msgid "Email address:"
+msgid "Not a valid csv file"
+msgstr "E-Mail Adresse"
+
 #: bookwyrm/views/password.py:32
 #, fuzzy
 #| msgid "A user with that username already exists."
@@ -3183,11 +3189,6 @@ msgstr ""
 #~| msgid "All messages"
 #~ msgid "Messages"
 #~ msgstr "Alle Nachrichten"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid value."
-#~ msgstr "E-Mail Adresse"
 
 #, fuzzy
 #~| msgid "Email address:"

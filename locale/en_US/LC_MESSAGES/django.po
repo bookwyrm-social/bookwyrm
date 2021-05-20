@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 12:12-0700\n"
+"POT-Creation-Date: 2021-05-20 14:40-0700\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -608,7 +608,7 @@ msgstr ""
 #: bookwyrm/templates/get_started/layout.html:19
 #: bookwyrm/templates/get_started/layout.html:52
 #: bookwyrm/templates/search/book.html:32
-#: bookwyrm/templates/snippets/announcement.html:17
+#: bookwyrm/templates/snippets/announcement.html:18
 msgid "Close"
 msgstr ""
 
@@ -644,7 +644,7 @@ msgid "You can opt-out at any time in your <a href=\"%(path)s\">profile settings
 msgstr ""
 
 #: bookwyrm/templates/directory/directory.html:29
-#: bookwyrm/templates/snippets/announcement.html:30
+#: bookwyrm/templates/snippets/announcement.html:34
 #: bookwyrm/templates/snippets/goal_card.html:22
 msgid "Dismiss message"
 msgstr ""
@@ -1365,7 +1365,7 @@ msgstr ""
 #: bookwyrm/templates/lists/form.html:31
 #: bookwyrm/templates/moderation/reports.html:25
 #: bookwyrm/templates/search/book.html:30
-#: bookwyrm/templates/snippets/announcement.html:15
+#: bookwyrm/templates/snippets/announcement.html:16
 msgid "Open"
 msgstr ""
 
@@ -2216,7 +2216,7 @@ msgstr ""
 msgid "Registration closed text:"
 msgstr ""
 
-#: bookwyrm/templates/snippets/announcement.html:27
+#: bookwyrm/templates/snippets/announcement.html:31
 #, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr ""
@@ -2884,6 +2884,10 @@ msgstr ""
 
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:21
 msgid "Access level:"
+msgstr ""
+
+#: bookwyrm/views/import_data.py:67
+msgid "Not a valid csv file"
 msgstr ""
 
 #: bookwyrm/views/password.py:32
