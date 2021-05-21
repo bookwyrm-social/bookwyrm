@@ -88,6 +88,7 @@
         <div class="column is-half">
             <section class="block">
                 <h2 class="title is-4">{% trans "Metadata" %}</h2>
+
                 <p class="mb-2">
                     <label class="label" for="id_title">{% trans "Title:" %}</label>
                     <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title">
@@ -117,15 +118,27 @@
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
-                <p class="mb-2"><label class="label" for="id_series_number">{% trans "Series number:" %}</label> {{ form.series_number }} </p>
+                <p class="mb-2">
+                    <label class="label" for="id_series_number">{% trans "Series number:" %}</label>
+                    {{ form.series_number }}
+                </p>
                 {% for error in form.series_number.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+
+                <p class="mb-2">
+                    <label class="label" for="id_languages">{% trans "Languages:" %}</label>
+                    {{ form.languages }}
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                </p>
+                {% for error in form.languages.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
 
                 <p class="mb-2">
                     <label class="label" for="id_publishers">{% trans "Publisher:" %}</label>
                     {{ form.publishers }}
-                    <span class="help">{% trans "Separate multiple publishers with commas." %}</span>
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
                 </p>
                 {% for error in form.publishers.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -162,17 +175,18 @@
                 {% endif %}
                 <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
                 <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}" {% if confirm_mode %}readonly{% endif %}>
-                <p class="help">Separate multiple author names with commas.</p>
+                <span class="help">{% trans "Separate multiple values with commas." %}</span>
             </section>
         </div>
 
         <div class="column is-half">
             <h2 class="title is-4">{% trans "Cover" %}</h2>
             <div class="columns">
-                <div class="column is-narrow">
-                    {% include 'snippets/book_cover.html' with book=book size="small" %}
+                <div class="column is-3 is-cover">
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' %}
                 </div>
-                <div class="column is-narrow">
+
+                <div class="column">
                     <div class="block">
                         <p>
                             <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
@@ -215,18 +229,27 @@
                 {% for error in form.isbn_13.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label> {{ form.isbn_10 }} </p>
                 {% for error in form.isbn_10.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
-                <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label> {{ form.openlibrary_key }} </p>
+
+                <p class="mb-2"><label class="label" for="id_openlibrary_key">{% trans "Openlibrary ID:" %}</label> {{ form.openlibrary_key }} </p>
                 {% for error in form.openlibrary_key.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
+                <p class="mb-2"><label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label> {{ form.inventaire_id }} </p>
+                {% for error in form.inventaire_id.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label> {{ form.oclc_number }} </p>
                 {% for error in form.oclc_number.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
+
                 <p class="mb-2"><label class="label" for="id_asin">{% trans "ASIN:" %}</label> {{ form.asin }} </p>
                 {% for error in form.ASIN.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
@@ -238,7 +261,7 @@
     {% if not confirm_mode %}
     <div class="block">
         <button class="button is-primary" type="submit">{% trans "Save" %}</button>
-        <a class="button" href="/book/{{ book.id }}">{% trans "Cancel" %}</a>
+        <a class="button" href="{{ book.local_path}}">{% trans "Cancel" %}</a>
     </div>
     {% endif %}
 </form>

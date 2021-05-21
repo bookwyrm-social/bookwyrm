@@ -10,11 +10,11 @@
         {% trans "Direct Messages" %}
         {% endif %}
     </h1>
-    {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
+    {% if partner %}<p class="subtitle"><a href="{% url 'direct-messages' %}"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
 </header>
 
 <div class="box">
-    {% include 'snippets/create_status_form.html' with type="direct" uuid=1 mentions=partner %}
+    {% include 'snippets/create_status_form.html' with type="direct" uuid=1 mention=partner %}
 </div>
 
 <section class="block">

@@ -7,10 +7,16 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import forms, models
-from bookwyrm.importers import Importer, LibrarythingImporter, GoodreadsImporter
+from bookwyrm.importers import (
+    Importer,
+    LibrarythingImporter,
+    GoodreadsImporter,
+    StorygraphImporter,
+)
 from bookwyrm.tasks import app
 
 # pylint: disable= no-self-use
@@ -42,6 +48,8 @@ class Import(View):
             importer = None
             if source == "LibraryThing":
                 importer = LibrarythingImporter()
+            elif source == "Storygraph":
+                importer = StorygraphImporter()
             else:
                 # Default : GoodReads
                 importer = GoodreadsImporter()
@@ -55,8 +63,8 @@ class Import(View):
                     include_reviews,
                     privacy,
                 )
-            except (UnicodeDecodeError, ValueError):
-                return HttpResponseBadRequest("Not a valid csv file")
+            except (UnicodeDecodeError, ValueError, KeyError):
+                return HttpResponseBadRequest(_("Not a valid csv file"))
 
             importer.start_import(job)
 

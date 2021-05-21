@@ -116,24 +116,33 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
         read.save()
 
     if include_reviews and (item.rating or item.review):
-        review_title = (
-            "Review of {!r} on {!r}".format(
-                item.book.title,
-                source,
-            )
-            if item.review
-            else ""
-        )
-
         # we don't know the publication date of the review,
         # but "now" is a bad guess
         published_date_guess = item.date_read or item.date_added
-        models.Review.objects.create(
-            user=user,
-            book=item.book,
-            name=review_title,
-            content=item.review,
-            rating=item.rating,
-            published_date=published_date_guess,
-            privacy=privacy,
-        )
+        if item.review:
+            review_title = (
+                "Review of {!r} on {!r}".format(
+                    item.book.title,
+                    source,
+                )
+                if item.review
+                else ""
+            )
+            models.Review.objects.create(
+                user=user,
+                book=item.book,
+                name=review_title,
+                content=item.review,
+                rating=item.rating,
+                published_date=published_date_guess,
+                privacy=privacy,
+            )
+        else:
+            # just a rating
+            models.ReviewRating.objects.create(
+                user=user,
+                book=item.book,
+                rating=item.rating,
+                published_date=published_date_guess,
+                privacy=privacy,
+            )

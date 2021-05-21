@@ -1,0 +1,78 @@
+{% extends 'search/layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+
+{% if results %}
+{% with results|first as local_results %}
+<ul class="block">
+{% for result in local_results.results %}
+    <li class="pd-4 mb-5">
+        {% include 'snippets/search_result_text.html' with result=result %}
+    </li>
+{% endfor %}
+</ul>
+{% endwith %}
+
+<div class="block">
+{% for result_set in results|slice:"1:" %}
+    {% if result_set.results %}
+    <section class="box has-background-white-bis">
+        {% if not result_set.connector.local %}
+        <header class="columns is-mobile">
+            <div class="column">
+                <h3 class="title is-5">
+                    Results from
+                    <a href="{{ result_set.connector.base_url }}" target="_blank">{{ result_set.connector.name|default:result_set.connector.identifier }}</a>
+                </h3>
+            </div>
+            <div class="column is-narrow">
+                {% trans "Open" as button_text %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
+                {% trans "Close" as button_text %}
+                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
+            </div>
+        </header>
+        {% endif %}
+
+        <div class="box has-background-white is-shadowless{% if not forloop.first %} is-hidden{% endif %}" id="more-results-panel-{{ result_set.connector.identifier }}">
+            <div class="is-flex is-flex-direction-row-reverse">
+                <div>
+                </div>
+
+                <ul class="is-flex-grow-1">
+                    {% for result in result_set.results %}
+                        <li class="mb-5">
+                            {% include 'snippets/search_result_text.html' with result=result remote_result=True %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    {% endfor %}
+</div>
+
+
+{% endif %}
+
+<p class="block">
+    {% if request.user.is_authenticated %}
+        {% if not remote %}
+        <a href="{{ request.path }}?q={{ query }}&type=book&remote=true">
+            {% trans "Load results from other catalogues" %}
+        </a>
+        {% else %}
+        <a href="{% url 'create-book' %}">
+            {% trans "Manually add book" %}
+        </a>
+        {% endif %}
+    {% else %}
+        <a href="{% url 'login' %}">
+            {% trans "Log in to import or add books." %}
+        </a>
+    {% endif %}
+</p>
+
+{% endblock %}

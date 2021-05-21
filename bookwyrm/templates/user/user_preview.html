@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load humanize %}
+{% load utilities %}
+{% load bookwyrm_tags %}
 
 <div class="media block">
     <div class="media-left">
@@ -12,8 +14,19 @@
         <p><a href="{{ user.remote_id }}">{{ user.username }}</a></p>
         <p>{% blocktrans with date=user.created_date|naturaltime %}Joined {{ date }}{% endblocktrans %}</p>
         <p>
-        <a href="{{ user.local_path }}/followers">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
-        <a href="{{ user.local_path }}/following">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
+            {% if is_self %}
+
+            <a href="{% url 'user-followers' user|username %}">{% blocktrans count counter=user.followers.count %}{{ counter }} follower{% plural %}{{ counter }} followers{% endblocktrans %}</a>,
+            <a href="{% url 'user-following' user|username %}">{% blocktrans with counter=user.following.count %}{{ counter }} following{% endblocktrans %}</a>
+
+            {% elif request.user.is_authenticated %}
+
+            {% mutuals_count user as mutuals %}
+            <a href="{% url 'user-followers' user|username %}">
+                {% blocktrans with mutuals_display=mutuals|intcomma count counter=mutuals %}{{ mutuals_display }} follower you follow{% plural %}{{ mutuals_display }} followers you follow{% endblocktrans %}
+            </a>
+
+            {% endif %}
         </p>
     </div>
 </div>

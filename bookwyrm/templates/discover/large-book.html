@@ -1,19 +1,38 @@
 {% load bookwyrm_tags %}
+{% load markdown %}
 {% load i18n %}
+
 {% if book %}
-<div class="columns">
-    <div class="column is-narrow">
-        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book size="large" %}</a>
-        {% include 'snippets/stars.html' with rating=book|rating:request.user %}
-    </div>
-    <div class="column">
-        <h3 class="title is-5"><a href="/book/{{ book.id }}">{{ book.title }}</a></h3>
-        {% if book.authors %}
-        <p class="subtitle is-5">{% trans "by" %} {% include 'snippets/authors.html' with book=book %}</p>
-        {% endif %}
-        {% if book|book_description %}
-        <blockquote class="content">{{ book|book_description|to_markdown|safe|truncatewords_html:50 }}</blockquote>
-        {% endif %}
-    </div>
-</div>
+    {% with book=book %}
+        <div class="columns is-gapless">
+            <div class="column is-5-tablet is-cover">
+                <a
+                    class="align to-b to-l"
+                    href="{{ book.local_path }}"
+                >{% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto-tablet' %}</a>
+
+                {% include 'snippets/stars.html' with rating=book|rating:request.user %}
+            </div>
+
+
+            <div class="column mt-3-mobile ml-3-tablet">
+                <h3 class="title is-5">
+                    <a href="{{ book.local_path }}">{{ book.title }}</a>
+                </h3>
+
+                {% if book.authors %}
+                    <p class="subtitle is-5">
+                        {% trans "by" %}
+                        {% include 'snippets/authors.html' %}
+                    </p>
+                {% endif %}
+
+                {% if book|book_description %}
+                    <blockquote class="content">
+                        {{ book|book_description|to_markdown|safe|truncatewords_html:50 }}
+                    </blockquote>
+                {% endif %}
+            </div>
+        </div>
+    {% endwith %}
 {% endif %}

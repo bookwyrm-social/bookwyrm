@@ -1,4 +1,4 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load i18n %}
 
 {% block header %}
@@ -15,7 +15,7 @@
     {% if is_self %}
     <div class="column is-narrow">
         {% trans "Create list" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text=button_text %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon_with_text="plus" text=button_text %}
     </div>
     {% endif %}
 </div>
@@ -23,7 +23,7 @@
 
 
 {% block panel %}
-<section class="block content">
+<section class="block">
     <form name="create-list" method="post" action="{% url 'lists' %}" class="box is-hidden" id="create-list">
         <header class="columns">
             <h3 class="title column">{% trans "Create list" %}</h3>

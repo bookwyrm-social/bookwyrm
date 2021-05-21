@@ -1,5 +1,6 @@
-{% load bookwyrm_tags %}
+{% load status_display %}
 {% load i18n %}
+
 {% if not status.deleted %}
     {% if status.status_type == 'Announce' %}
         <a href="{{ status.user.local_path }}">

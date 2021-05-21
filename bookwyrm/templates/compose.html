@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load utilities %}
 
 {% block title %}{% trans "Compose status" %}{% endblock %}
 {% block content %}
@@ -11,14 +11,15 @@
 {% with 0|uuid as uuid %}
 <div class="box columns">
     {% if book %}
-    <div class="column is-one-third">
+    <div class="column is-3 is-cover">
         <div class="block">
-            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book  %}</a>
+            <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto-tablet is-h-l-mobile' %}</a>
         </div>
+
         <h3 class="title is-6">{% include 'snippets/book_titleby.html' with book=book %}</h3>
     </div>
     {% endif %}
-    <div class="column is-two-thirds">
+    <div class="column">
         {% if draft.reply_parent %}
         {% include 'snippets/status/status.html' with status=draft.reply_parent no_interact=True %}
         {% endif %}

@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
 
 {% block title %}{% trans "Updates" %}{% endblock %}
 
@@ -37,7 +36,7 @@
                                         aria-label="{{ book.title }}"
                                         aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
                                         aria-controls="book-{{ book.id }}">
-                                        {% include 'snippets/book_cover.html' with book=book size="medium" %}
+                                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
                                     </a>
                                 </li>
                                 {% endfor %}

@@ -1,0 +1,46 @@
+{% extends 'user/layout.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block tabs %}
+{% with user|username as username %}
+<nav class="tabs">
+    <ul>
+        {% url 'user-followers' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Followers" %}</a>
+        </li>
+        {% url 'user-following' user|username as url %}
+        <li{% if url == request.path or url == request.path|add:'/' %} class="is-active"{% endif %}>
+            <a href="{{ url }}">{% trans "Following" %}</a>
+        </li>
+    </ul>
+</nav>
+{% endwith %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    {% for follow in follow_list %}
+    <div class="block columns">
+        <div class="column">
+            <a href="{{ follow.local_path }}">
+                {% include 'snippets/avatar.html' with user=follow %}
+                {{ follow.display_name }}
+            </a>
+            ({{ follow.username }})
+        </div>
+        <div class="column is-narrow">
+            {% include 'snippets/follow_button.html' with user=follow %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if not follow_list %}
+        {% block nullstate %}
+        {% endblock %}
+    {% endif %}
+</div>
+
+{% include 'snippets/pagination.html' with page=follow_list path=request.path %}
+{% endblock %}

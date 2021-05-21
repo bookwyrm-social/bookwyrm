@@ -1,0 +1,13 @@
+{% extends 'search/layout.html' %}
+
+{% block panel %}
+
+<div class="columns is-multiline">
+{% for user in results %}
+    <div class="column is-one-third">
+        {% include 'directory/user_card.html' %}
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

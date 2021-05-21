@@ -33,11 +33,14 @@
                         <button class="button is-primary" type="submit">{% trans "Log in" %}</button>
                     </div>
                     <div class="control">
-                        <small><a href="/password-reset">{% trans "Forgot your password?" %}</a></small>
+                        <small><a href="{% url 'password-reset' %}">{% trans "Forgot your password?" %}</a></small>
                     </div>
                 </div>
             </form>
         </div>
+    </div>
+
+    <div class="column">
         <div class="box has-background-primary-light">
             {% if site.allow_registration %}
             <h2 class="title">{% trans "Create an Account" %}</h2>
@@ -50,15 +53,15 @@
             {% endif %}
         </div>
     </div>
+</div>
 
-    <div class="column">
-        <div class="block">
-            {% include 'snippets/about.html' %}
+<div class="block">
+    <div class="box">
+        {% include 'snippets/about.html' %}
 
-            <p class="block">
-                <a href="/about/">{% trans "More about this site" %}</a>
-            </p>
-        </div>
+        <p class="block">
+        <a href="{% url 'about' %}">{% trans "More about this site" %}</a>
+        </p>
     </div>
 </div>
 {% endblock %}

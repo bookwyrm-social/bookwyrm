@@ -119,9 +119,10 @@ class GetStartedUsers(View):
         )
 
         if user_results.count() < 5:
-            suggested_users = None  # get_suggested_users(request.user)
+            suggested_users = []  # TODO: get_suggested_users(request.user)
+            user_results = list(user_results) + list(suggested_users))
 
         data = {
-            "suggested_users": list(user_results) + list(suggested_users),
+            "suggested_users": user_results,
         }
         return TemplateResponse(request, "get_started/users.html", data)

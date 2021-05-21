@@ -1,7 +1,6 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% load humanize %}
+{% load utilities %}
 
 {% block card-header %}
 <div class="card-header-title has-background-white-ter is-block">
@@ -44,7 +43,7 @@
 
 {% else %}
 <div class="card-footer-item">
-    <a href="/login">
+    <a href="{% url 'login' %}">
         <span class="icon icon-comment is-small" title="{% trans 'Reply' %}">
             <span class="is-sr-only">{% trans "Reply" %}</span>
         </span>

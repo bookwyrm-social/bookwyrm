@@ -1,29 +1,41 @@
 {% spaceless %}
 
-{% load bookwyrm_tags %}
 {% load i18n %}
 
-<div class="cover-container is-{{ size }}">
-    {% if book.cover %}
-        <img
-            class="book-cover"
-            src="/images/{{ book.cover }}"
-            alt="{{ book.alt_text }}"
-            title="{{ book.alt_text }}"
-            itemprop="thumbnailUrl"
-        >
-    {% else %}
-        <div class="no-cover book-cover">
-            <img
-                class="book-cover"
-                src="/static/images/no_cover.jpg"
-                alt="{% trans "No cover" %}"
-            >
+<figure
+    class="
+        cover-container
+        {{ cover_class }}
 
-            <div>
-                <p>{{ book.alt_text }}</p>
-            </div>
-        </div>
+        {% if not book.cover %}
+            no-cover
+        {% endif %}
+    "
+
+    {% if book.alt_text %}
+        title="{{ book.alt_text }}"
     {% endif %}
-</div>
+>
+    <img
+        class="book-cover"
+
+        {% if book.cover %}
+            src="{% if img_path is None %}/images/{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
+            itemprop="thumbnailUrl"
+
+            {% if book.alt_text %}
+                alt="{{ book.alt_text }}"
+            {% endif %}
+        {% else %}
+            src="/static/images/no_cover.jpg"
+            alt="{% trans "No cover" %}"
+        {% endif %}
+    >
+
+    {% if not book.cover and book.alt_text %}
+        <figcaption class="cover_caption">
+            <p>{{ book.alt_text }}</p>
+        </figcaption>
+    {% endif %}
+</figure>
 {% endspaceless %}

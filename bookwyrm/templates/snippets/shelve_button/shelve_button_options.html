@@ -1,5 +1,7 @@
 {% load bookwyrm_tags %}
+{% load utilities %}
 {% load i18n %}
+
 {% for shelf in shelves %}
 {% comparison_bool shelf.identifier active_shelf.shelf.identifier as is_current %}
 {% if dropdown %}<li role="menuitem" class="dropdown-item p-0">{% endif %}

@@ -1,4 +1,4 @@
-{% load bookwyrm_tags %}
+{% load markdown %}
 <div class="columns is-multiline">
     {% for list in lists %}
     <div class="column is-one-quarter">
@@ -8,13 +8,21 @@
                     <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
             </header>
-            <div class="card-image is-flex is-clipped">
-                {% for book in list.listitem_set.all|slice:5 %}
-                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book size="small" %}</a>
-                {% endfor %}
-            </div>
+
+            {% with list_books=list.listitem_set.all|slice:5 %}
+                {% if list_books %}
+                    <div class="card-image columns is-mobile is-gapless is-clipped">
+                        {% for book in list_books %}
+                            <a class="column is-cover" href="{{ book.book.local_path }}">
+                                {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-s' aria='show' %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             <div class="card-content is-flex-grow-0">
-                <div {% if list.description %}title="{{ list.description }}"{% endif %}>
+                <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
                 {% if list.description %}
                     {{ list.description|to_markdown|safe|truncatechars_html:30 }}
                 {% else %}

@@ -1,14 +1,16 @@
 """ book list views"""
 from typing import Optional
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count, Q, Max
+from django.db.models import Avg, Count, DecimalField, Q, Max
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -16,6 +18,7 @@ from django.views.decorators.http import require_POST
 from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.connectors import connector_manager
+from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, privacy_filter
 from .helpers import get_user_from_username
 
@@ -105,37 +108,33 @@ class List(View):
         if direction not in ("ascending", "descending"):
             direction = "ascending"
 
-        internal_sort_by = {
+        directional_sort_by = {
             "order": "order",
             "title": "book__title",
             "rating": "average_rating",
-        }
-        directional_sort_by = internal_sort_by[sort_by]
+        }[sort_by]
         if direction == "descending":
             directional_sort_by = "-" + directional_sort_by
 
-        if sort_by == "order":
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
-            )
-        elif sort_by == "title":
-            items = book_list.listitem_set.filter(approved=True).order_by(
-                directional_sort_by
-            )
-        elif sort_by == "rating":
-            items = (
-                book_list.listitem_set.annotate(
-                    average_rating=Avg(Coalesce("book__review__rating", 0))
+        items = book_list.listitem_set
+        if sort_by == "rating":
+            items = items.annotate(
+                average_rating=Avg(
+                    Coalesce("book__review__rating", 0.0),
+                    output_field=DecimalField(),
                 )
-                .filter(approved=True)
-                .order_by(directional_sort_by)
             )
+        items = items.filter(approved=True).order_by(directional_sort_by)
 
-        paginated = Paginator(items, 12)
+        paginated = Paginator(items, PAGE_LENGTH)
 
         if query and request.user.is_authenticated:
             # search for books
-            suggestions = connector_manager.local_search(query, raw=True)
+            suggestions = connector_manager.local_search(
+                query,
+                raw=True,
+                filters=[~Q(parent_work__editions__in=book_list.books.all())],
+            )
         elif request.user.is_authenticated:
             # just suggest whatever books are nearby
             suggestions = request.user.shelfbook_set.filter(
@@ -150,9 +149,13 @@ class List(View):
                     ).order_by("-updated_date")
                 ][: 5 - len(suggestions)]
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
             "list": book_list,
-            "items": paginated.get_page(request.GET.get("page")),
+            "items": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "pending_count": book_list.listitem_set.filter(approved=False).count(),
             "suggested_books": suggestions,
             "list_form": forms.ListForm(instance=book_list),
@@ -263,7 +266,10 @@ def add_book(request):
         # if the book is already on the list, don't flip out
         pass
 
-    return redirect("list", book_list.id)
+    path = reverse("list", args=[book_list.id])
+    params = request.GET.copy()
+    params["updated"] = True
+    return redirect("{:s}?{:s}".format(path, urlencode(params)))
 
 
 @require_POST

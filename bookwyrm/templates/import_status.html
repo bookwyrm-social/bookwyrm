@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
 {% load humanize %}
 
 {% block title %}{% trans "Import Status" %}{% endblock %}
@@ -54,8 +53,8 @@
                     <input class="checkbox" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
                     <label for="import-item-{{ item.id }}">
                         Line {{ item.index }}:
-                        <strong>{{ item.data|dict_key:'Title' }}</strong> by
-                        {{ item.data|dict_key:'Author' }}
+                        <strong>{{ item.data.Title }}</strong> by
+                        {{ item.data.Author }}
                     </label>
                     <p>
                         {{ item.fail_reason }}.
@@ -90,8 +89,8 @@
             <li class="pb-1">
                 <p>
                     Line {{ item.index }}:
-                    <strong>{{ item.data|dict_key:'Title' }}</strong> by
-                    {{ item.data|dict_key:'Author' }}
+                    <strong>{{ item.data.Title }}</strong> by
+                    {{ item.data.Author }}
                 </p>
                 <p>
                     {{ item.fail_reason }}.
@@ -124,16 +123,16 @@
         <tr>
             <td>
                 {% if item.book %}
-                <a href="/book/{{ item.book.id }}">
-                {% include 'snippets/book_cover.html' with book=item.book size='small' %}
+                <a href="{{ item.book.local_path }}">
+                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' %}
                 </a>
                 {% endif %}
             </td>
             <td>
-                {{ item.data|dict_key:'Title' }}
+                {{ item.data.Title }}
             </td>
             <td>
-                {{ item.data|dict_key:'Author' }}
+                {{ item.data.Author }}
             </td>
             <td>
                 {% if item.book %}

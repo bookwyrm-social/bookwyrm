@@ -11,12 +11,16 @@ from django.views import View
 class Notifications(View):
     """notifications view"""
 
-    def get(self, request):
+    def get(self, request, notification_type=None):
         """people are interacting with you, get hyped"""
         notifications = request.user.notification_set.all().order_by("-created_date")
-        unread = [n.id for n in notifications.filter(read=False)]
+        if notification_type == "mentions":
+            notifications = notifications.filter(
+                notification_type__in=["REPLY", "MENTION", "TAG"]
+            )
+        unread = [n.id for n in notifications.filter(read=False)[:50]]
         data = {
-            "notifications": notifications,
+            "notifications": notifications[:50],
             "unread": unread,
         }
         notifications.update(read=True)

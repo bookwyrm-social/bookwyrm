@@ -2,49 +2,71 @@
 {% load i18n %}
 {% block panel %}
 
-<section class="content block">
-    <h2>{% trans "Pending Books" %}</h2>
-    <p><a href="{% url 'list' list.id %}">{% trans "Go to list" %}</a></p>
+<section class="block">
+    <div class="columns is-mobile is-multiline is-align-items-baseline">
+        <div class="column is-narrow">
+            <h2 class="title is-4">{% trans "Pending Books" %}</h2>
+        </div>
+
+        <p class="column is-narrow"><a href="{% url 'list' list.id %}">{% trans "Go to list" %}</a></p>
+    </div>
+
     {% if not pending.exists %}
-    <p>{% trans "You're all set!" %}</p>
+        <p>{% trans "You're all set!" %}</p>
     {% else %}
-    <table class="table is-striped">
-        <tr>
-            <th></th>
-            <th>{% trans "Book" %}</th>
-            <th>{% trans "Suggested by" %}</th>
-            <th></th>
-        </tr>
+
+    <dl>
         {% for item in pending %}
-        <tr>
-            <td>
-                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=item.book size="small" %}</a>
-            </td>
-            <td>
-                {% include 'snippets/book_titleby.html' with book=item.book %}
-            </td>
-            <td>
-                <a href="{{ item.user.local_path }}">{{ item.user.display_name }}</a>
-            </td>
-            <td>
-                <div class="field has-addons">
-                    <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="item" value="{{ item.id }}">
-                        <input type="hidden" name="approved" value="true">
-                        <button class="button">{% trans "Approve" %}</button>
-                    </form>
-                    <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="item" value="{{ item.id }}">
-                        <input type="hidden" name="approved" value="false">
-                        <button class="button is-danger is-light">{% trans "Discard" %}</button>
-                    </div>
-                </form>
-            </td>
-        </tr>
+            {% with book=item.book %}
+                <div
+                    class="
+                        columns is-gapless
+                        is-vcentered is-justify-content-space-between
+                        mb-6
+                    "
+                >
+                    <dt class="column mr-auto">
+                        <div class="columns is-mobile is-gapless is-vcentered">
+                            <a
+                                class="column is-cover"
+                                href="{{ book.local_path }}"
+                                aria-hidden="true"
+                            >
+                                {% include 'snippets/book_cover.html' with cover_class='is-w-xs-mobile is-w-s is-h-xs-mobile is-h-s' %}
+                            </a>
+
+                            <div class="column ml-3">
+                                {% include 'snippets/book_titleby.html' %}
+                            </div>
+                        </div>
+                    </dt>
+
+                    <dd class="column is-4-tablet mx-3-tablet my-3-mobile">
+                        {% trans "Suggested by" %}
+
+                        <a href="{{ item.user.local_path }}">
+                            {{ item.user.display_name }}
+                        </a>
+                    </dd>
+
+                    <dd class="column is-narrow field has-addons">
+                        <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item" value="{{ item.id }}">
+                            <input type="hidden" name="approved" value="true">
+                            <button class="button">{% trans "Approve" %}</button>
+                        </form>
+                        <form class="control" method="POST" action="{% url 'list-curate' list.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item" value="{{ item.id }}">
+                            <input type="hidden" name="approved" value="false">
+                            <button class="button is-danger is-light">{% trans "Discard" %}</button>
+                        </form>
+                    </dd>
+                </div>
+            {% endwith %}
         {% endfor %}
-    </table>
+    </dl>
     {% endif %}
 </section>
 {% endblock %}

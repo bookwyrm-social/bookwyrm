@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% load bookwyrm_tags %}
+{% load utilities %}
 {% load i18n %}
 
 {% block title %}{% trans "Lists" %}{% endblock %}
@@ -18,7 +18,7 @@
     {% if request.user.is_authenticated %}
     <div class="column is-narrow">
         {% trans "Create List" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon="plus" text=button_text focus="create-list-header" %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="create-list" icon_with_text="plus" text=button_text focus="create-list-header" %}
     </div>
     {% endif %}
 </header>
@@ -28,7 +28,7 @@
 </div>
 
 {% if lists %}
-<section class="block content">
+<section class="block">
     {% include 'lists/list_items.html' with lists=lists %}
 </section>
 

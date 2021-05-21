@@ -3,6 +3,7 @@ import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
 from django.db.models import Count, Max, Q
+from django.http import Http404
 
 from bookwyrm import activitypub, models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -12,11 +13,17 @@ from bookwyrm.utils import regex
 
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
-    # raises DoesNotExist if user is now found
+    # raises 404 if the user isn't found
     try:
         return models.User.viewer_aware_objects(viewer).get(localname=username)
     except models.User.DoesNotExist:
+        pass
+
+    # if the localname didn't match, try the username
+    try:
         return models.User.viewer_aware_objects(viewer).get(username=username)
+    except models.User.DoesNotExist:
+        raise Http404()
 
 
 def is_api_request(request):
@@ -123,7 +130,7 @@ def get_edition(book_id):
     """look up a book in the db and return an edition"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
     if isinstance(book, models.Work):
-        book = book.get_default_edition()
+        book = book.default_edition
     return book
 
 

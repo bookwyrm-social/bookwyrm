@@ -1,7 +1,5 @@
 {% extends 'layout.html' %}
-{% load i18n %}
-{% load bookwyrm_tags %}
-{% load humanize %}
+{% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
 
 {% block title %}{{ book.title }}{% endblock %}
 
@@ -38,9 +36,8 @@
         {% if user_authenticated and can_edit_book %}
         <div class="column is-narrow">
             <a href="{{ book.id }}/edit">
-                <span class="icon icon-pencil" title="{% trans "Edit Book" %}">
-                    <span class="is-sr-only">{% trans "Edit Book" %}</span>
-                </span>
+                <span class="icon icon-pencil" title="{% trans "Edit Book" %}" aria-hidden=True></span>
+                <span>{% trans "Edit Book" %}</span>
             </a>
         </div>
         {% endif %}
@@ -48,10 +45,9 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            <div class="is-clipped">
-                {% include 'snippets/book_cover.html' with book=book size=large %}
-                {% include 'snippets/rate_action.html' with user=request.user book=book %}
-            </div>
+            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+
             <div class="mb-3">
                 {% include 'snippets/shelve_button/shelve_button.html' %}
             </div>
@@ -80,6 +76,9 @@
 
                 {% if book.openlibrary_key %}
                 <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
+                {% endif %}
+                {% if book.inventaire_id %}
+                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
                 {% endif %}
             </section>
         </div>
@@ -153,17 +152,17 @@
             </div>
 
             {% if user_authenticated %}
+            <hr aria-hidden="true">
             <section class="block">
                 <header class="columns">
-                    <h2 class="column title is-5 mb-1">{% trans "Your reading activity" %}</h2>
+                    <div class="column">
+                    <h2 class="title is-5">{% trans "Your reading activity" %}</h2>
+                    </div>
                     <div class="column is-narrow">
                         {% trans "Add read dates" as button_text %}
-                        {% include 'snippets/toggle/open_button.html' with text=button_text icon="plus" class="is-small" controls_text="add-readthrough" %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" class="is-small" controls_text="add-readthrough" focus="add-readthrough-focus" %}
                     </div>
                 </header>
-                {% if not readthroughs.exists %}
-                <p>{% trans "You don't have any reading activity for this book." %}</p>
-                {% endif %}
                 <section class="is-hidden box" id="add-readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
@@ -178,15 +177,75 @@
                         </div>
                     </form>
                 </section>
+                {% if not readthroughs.exists %}
+                <p>{% trans "You don't have any reading activity for this book." %}</p>
+                {% endif %}
                 {% for readthrough in readthroughs %}
                 {% include 'snippets/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
+            <hr aria-hidden="true">
 
             <section class="box">
                 {% include 'snippets/create_status.html' with book=book hide_cover=True %}
             </section>
             {% endif %}
+            <div class="block" id="reviews">
+                {% if request.user.is_authenticated %}
+                {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
+                <nav class="tabs">
+                    <ul>
+                        {% url 'book' book.id as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
+                        </li>
+                        {% if user_statuses.review_count %}
+                        {% url 'book-user-statuses' book.id 'review' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
+                        </li>
+                        {% endif %}
+                        {% if user_statuses.comment_count %}
+                        {% url 'book-user-statuses' book.id 'comment' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
+                        </li>
+                        {% endif %}
+                        {% if user_statuses.quotation_count %}
+                        {% url 'book-user-statuses' book.id 'quote' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% endif %}
+
+                {% for status in statuses %}
+                    <div
+                        class="block"
+                        {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
+                        itemprop="review"
+                        itemscope
+                        itemtype="https://schema.org/Review"
+                        {% endif %}
+                    >
+                        {% include 'snippets/status/status.html' with status=status hide_book=True depth=1 %}
+                    </div>
+                {% endfor %}
+
+                {% if ratings %}
+                <div class="block is-flex is-flex-wrap-wrap">
+                    {% for rating in ratings %}
+                        {% include 'book/rating.html' with user=rating.user rating=rating %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="block">
+                    {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
+                </div>
+            </div>
         </div>
         <div class="column is-one-fifth">
             {% if book.subjects %}
@@ -245,80 +304,6 @@
         </div>
     </div>
 
-    <div class="block" id="reviews">
-        {% if request.user.is_authenticated %}
-        <nav class="tabs">
-            <ul>
-                {% url 'book' book.id as tab_url %}
-                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                    <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
-                </li>
-                {% if user_statuses.review_count %}
-                {% url 'book-user-statuses' book.id 'review' as tab_url %}
-                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                    <a href="{{ tab_url }}">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
-                </li>
-                {% endif %}
-                {% if user_statuses.comment_count %}
-                {% url 'book-user-statuses' book.id 'comment' as tab_url %}
-                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                    <a href="{{ tab_url }}">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
-                </li>
-                {% endif %}
-                {% if user_statuses.quotation_count %}
-                {% url 'book-user-statuses' book.id 'quote' as tab_url %}
-                <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                    <a href="{{ tab_url }}">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-        {% endif %}
-
-        {% for review in statuses %}
-            <div
-                class="block"
-                itemprop="review"
-                itemscope
-                itemtype="https://schema.org/Review"
-            >
-                {% with status=review hide_book=True depth=1 %}
-                    {% include 'snippets/status/status.html' %}
-                {% endwith %}
-            </div>
-        {% endfor %}
-
-        <div class="block is-flex is-flex-wrap-wrap">
-            {% for rating in ratings %}
-                {% with user=rating.user %}
-                    <div class="block mr-5">
-                        <div class="media">
-                            <div class="media-left">
-                                {% include 'snippets/avatar.html' %}
-                            </div>
-
-                            <div class="media-content">
-                                <div>
-                                    <a href="{{ user.local_path }}">{{ user.display_name }}</a>
-                                </div>
-                                <div class="is-flex">
-                                    <p class="mr-1">{% trans "rated it" %}</p>
-
-                                    {% include 'snippets/stars.html' with rating=rating.rating %}
-                                </div>
-                                <div>
-                                    <a href="{{ rating.remote_id }}">{{ rating.published_date | naturaltime }}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endwith %}
-            {% endfor %}
-        </div>
-        <div class="block">
-            {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
-        </div>
-    </div>
 </div>
 {% endwith %}
 {% endblock %}

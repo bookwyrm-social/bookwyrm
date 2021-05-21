@@ -3,6 +3,7 @@ import json
 from unittest.mock import patch
 import pathlib
 from django.db.models import Q
+from django.http import Http404
 from django.test import TestCase
 from django.test.client import RequestFactory
 import responses
@@ -67,7 +68,7 @@ class ViewsHelpers(TestCase):
             views.helpers.get_user_from_username(self.local_user, "mouse@local.com"),
             self.local_user,
         )
-        with self.assertRaises(models.User.DoesNotExist):
+        with self.assertRaises(Http404):
             views.helpers.get_user_from_username(self.local_user, "mojfse@example.com")
 
     def test_is_api_request(self, _):
@@ -219,7 +220,7 @@ class ViewsHelpers(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             # 1 shared follow
             self.local_user.following.add(user_2)
-            user_1.following.add(user_2)
+            user_1.followers.add(user_2)
 
             # 1 shared book
             models.ShelfBook.objects.create(
@@ -264,7 +265,7 @@ class ViewsHelpers(TestCase):
                 local=True,
                 localname=i,
             )
-            user.followers.add(user_1)
+            user.following.add(user_1)
             user.followers.add(self.local_user)
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):

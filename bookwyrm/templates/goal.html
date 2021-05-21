@@ -1,4 +1,4 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
 {% load i18n %}
 
 {% block header %}
@@ -9,7 +9,7 @@
     {% if is_self and goal %}
     <div class="column is-narrow">
         {% trans "Edit Goal" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -45,21 +45,22 @@
 </section>
 
 {% if goal.books %}
-<section class="content">
-    <h2>
+<section>
+    <h2 class="title is-4">
         {% if goal.user == request.user %}
         {% blocktrans %}Your {{ year }} Books{% endblocktrans %}
         {% else %}
         {% blocktrans with username=goal.user.display_name %}{{ username }}'s {{ year }} Books{% endblocktrans %}
         {% endif %}
     </h2>
-    <div class="columns is-multiline">
+
+    <div class="columns is-mobile is-multiline">
         {% for book in goal.books %}
-        <div class="column is-one-fifth">
-            <div class="is-clipped">
-                <a href="{{ book.book.local_path }}">{% include 'snippets/book_cover.html' with book=book.book %}</a>
+            <div class="column is-cover">
+                <a href="{{ book.book.local_path }}">
+                    {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-xl is-h-l-mobile' %}
+                </a>
             </div>
-        </div>
         {% endfor %}
     </div>
 </section>

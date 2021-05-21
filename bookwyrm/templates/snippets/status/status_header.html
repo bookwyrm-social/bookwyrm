@@ -1,4 +1,5 @@
-{% load bookwyrm_tags %}
+{% load utilities %}
+{% load status_display %}
 {% load i18n %}
 {% load humanize %}
 
@@ -6,7 +7,7 @@
     <figure class="media-left" aria-hidden="true">
         <a class="image is-48x48" href="{{ status.user.local_path }}">
             {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
-        </a>    
+        </a>
     </figure>
 
     <div class="media-content">
@@ -29,7 +30,7 @@
             </span>
 
             {% if status.status_type == 'GeneratedNote' %}
-                {{ status.content | safe }}
+                {{ status.content|safe }}
             {% elif status.status_type == 'Rating' %}
                 {% trans "rated" %}
             {% elif status.status_type == 'Review' %}
@@ -47,7 +48,7 @@
 
             {% if status.book %}
                 {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                    <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
+                    <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}: {% include 'snippets/stars.html' with rating=status.rating %}
                     <span
                         itemprop="reviewRating"
                         itemscope
@@ -58,7 +59,7 @@
 
                         {% if status.book %}
                             {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                                <a href="/book/{{ status.book.id }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
+                                <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}:
                                 <span
                                     itemprop="reviewRating"
                                     itemscope
@@ -71,14 +72,13 @@
                                         <meta itemprop="bestRating" content="5">
                                 </span>
 
-                                {% include 'snippets/stars.html' with rating=status.rating %}
                                 {% endif %}
                             {% else %}
                                 {% include 'snippets/book_titleby.html' with book=status.book %}
                             {% endif %}
                         {% elif status.mention_books %}
-                            <a href="/book/{{ status.mention_books.first.id }}">
-                                {{ status.mention_books.first.title }}
+                            <a href="{{ status.mention_books.first.local_path }}">
+                                {{ status.mention_books.first|book_title }}
                             </a>
                         {% endif %}
                     {% include 'snippets/stars.html' with rating=status.rating %}
@@ -87,12 +87,12 @@
                     {% include 'snippets/book_titleby.html' with book=status.book %}
                 {% endif %}
             {% elif status.mention_books %}
-                <a href="/book/{{ status.mention_books.first.id }}">{{ status.mention_books.first|title }}</a>
+                <a href="{{ status.mention_books.first.local_path }}">{{ status.mention_books.first|book_title }}</a>
             {% endif %}
 
         </h3>
         <p class="is-size-7 is-flex is-align-items-center">
-            <a href="{{ status.remote_id }}">{{ status.published_date|timesince }}</a>
+            <a href="{{ status.remote_id }}">{{ status.published_date|published_date }}</a>
             {% if status.progress %}
             <span class="ml-1">
             {% if status.progress_mode == 'PG' %}

@@ -47,39 +47,6 @@ class BookViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
-    def test_date_regression(self):
-        """ensure that creating a new book actually saves the published date fields
-
-        this was initially a regression due to using a custom date picker tag
-        """
-        first_published_date = "2021-04-20"
-        published_date = "2022-04-20"
-        self.local_user.groups.add(self.group)
-        view = views.EditBook.as_view()
-        form = forms.EditionForm(
-            {
-                "title": "New Title",
-                "last_edited_by": self.local_user.id,
-                "first_published_date": first_published_date,
-                "published_date": published_date,
-            }
-        )
-        request = self.factory.post("", form.data)
-        request.user = self.local_user
-
-        with patch("bookwyrm.connectors.connector_manager.local_search"):
-            result = view(request)
-        result.render()
-
-        self.assertContains(
-            result,
-            f'<input type="date" name="first_published_date" class="input" id="id_first_published_date" value="{first_published_date}">',
-        )
-        self.assertContains(
-            result,
-            f'<input type="date" name="published_date" class="input" id="id_published_date" value="{published_date}">',
-        )
-
     def test_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Book.as_view()
@@ -92,7 +59,6 @@ class BookViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-        request = self.factory.get("")
         with patch("bookwyrm.views.books.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.book.id)

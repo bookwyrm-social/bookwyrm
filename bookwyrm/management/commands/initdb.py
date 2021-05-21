@@ -1,4 +1,5 @@
-from django.core.management.base import BaseCommand, CommandError
+""" What you need in the database to make it work """
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
@@ -7,12 +8,14 @@ from bookwyrm.settings import DOMAIN
 
 
 def init_groups():
+    """permission levels"""
     groups = ["admin", "moderator", "editor"]
     for group in groups:
         Group.objects.create(name=group)
 
 
 def init_permissions():
+    """permission types"""
     permissions = [
         {
             "codename": "edit_instance_settings",
@@ -69,6 +72,7 @@ def init_permissions():
 
 
 def init_connectors():
+    """access book data sources"""
     Connector.objects.create(
         identifier=DOMAIN,
         name="Local",
@@ -95,6 +99,18 @@ def init_connectors():
     )
 
     Connector.objects.create(
+        identifier="inventaire.io",
+        name="Inventaire",
+        connector_file="inventaire",
+        base_url="https://inventaire.io",
+        books_url="https://inventaire.io/api/entities",
+        covers_url="https://inventaire.io",
+        search_url="https://inventaire.io/api/search?types=works&types=works&search=",
+        isbn_search_url="https://inventaire.io/api/entities?action=by-uris&uris=isbn%3A",
+        priority=3,
+    )
+
+    Connector.objects.create(
         identifier="openlibrary.org",
         name="OpenLibrary",
         connector_file="openlibrary",
@@ -118,7 +134,11 @@ def init_federated_servers():
 
 
 def init_settings():
-    SiteSettings.objects.create()
+    """info about the instance"""
+    SiteSettings.objects.create(
+        support_link="https://www.patreon.com/bookwyrm",
+        support_title="Patreon",
+    )
 
 
 class Command(BaseCommand):

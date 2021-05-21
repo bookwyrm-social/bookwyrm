@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -63,7 +63,7 @@ class DirectMessage(View):
         if username:
             try:
                 user = get_user_from_username(request.user, username)
-            except models.User.DoesNotExist:
+            except Http404:
                 pass
         if user:
             queryset = queryset.filter(Q(user=user) | Q(mention_users=user))
@@ -95,7 +95,7 @@ class Status(View):
             status = models.Status.objects.select_subclasses().get(
                 id=status_id, deleted=False
             )
-        except (ValueError, models.Status.DoesNotExist, models.User.DoesNotExist):
+        except (ValueError, models.Status.DoesNotExist):
             return HttpResponseNotFound()
 
         # the url should have the poster's username in it

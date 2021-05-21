@@ -1,13 +1,18 @@
 {% extends 'layout.html' %}
 {% load i18n %}
 {% load humanize %}
-{% load bookwyrm_tags %}
+{% load utilities %}
+{% load markdown %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
 {% block content %}
 <header class="block">
-    {% block header %}{% endblock %}
+    {% block header %}
+    <h1 class="title">
+        {% trans "User Profile" %}
+    </h1>
+    {% endblock %}
 </header>
 
 {# user bio #}
@@ -19,7 +24,7 @@
 
         {% if user.summary %}
         <div class="column box has-background-white-bis content">
-            {{ user.summary | to_markdown | safe }}
+            {{ user.summary|to_markdown|safe }}
         </div>
         {% endif %}
     </div>
@@ -41,8 +46,9 @@
     </div>
     {% endif %}
 </div>
+
+{% block tabs %}
 {% with user|username as username %}
-{% if 'user/'|add:username|add:'/books' not in request.path and 'user/'|add:username|add:'/shelf' not in request.path %}
 <nav class="tabs">
     <ul>
         {% url 'user-feed' user|username as url %}
@@ -70,8 +76,8 @@
         {% endif %}
     </ul>
 </nav>
-{% endif %}
 {% endwith %}
+{% endblock %}
 
 {% block panel %}{% endblock %}
 
