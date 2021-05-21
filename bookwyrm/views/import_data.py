@@ -81,7 +81,10 @@ class ImportStatus(View):
         job = models.ImportJob.objects.get(id=job_id)
         if job.user != request.user:
             raise PermissionDenied
-        task = app.AsyncResult(job.task_id)
+        try:
+            task = app.AsyncResult(job.task_id)
+        except ValueError:
+            task = None
         items = job.items.order_by("index").all()
         failed_items = [i for i in items if i.fail_reason]
         items = [i for i in items if not i.fail_reason]
