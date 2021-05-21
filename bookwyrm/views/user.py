@@ -95,7 +95,7 @@ class Followers(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "follow_list": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/followers.html", data)
 
@@ -114,7 +114,7 @@ class Following(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "follow_list": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
 

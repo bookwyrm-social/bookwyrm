@@ -28,9 +28,9 @@
             </div>
             <div class="column is-narrow">
                 {% trans "Open" as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
                 {% trans "Close" as button_text %}
-                {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
+                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
             </div>
         </header>
         {% endif %}

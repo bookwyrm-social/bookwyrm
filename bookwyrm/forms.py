@@ -269,6 +269,12 @@ class SiteForm(CustomForm):
         exclude = []
 
 
+class AnnouncementForm(CustomForm):
+    class Meta:
+        model = models.Announcement
+        exclude = ["remote_id"]
+
+
 class ListForm(CustomForm):
     class Meta:
         model = models.List

@@ -7,6 +7,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 
 from bookwyrm import forms, models
@@ -62,8 +63,8 @@ class Import(View):
                     include_reviews,
                     privacy,
                 )
-            except (UnicodeDecodeError, ValueError):
-                return HttpResponseBadRequest("Not a valid csv file")
+            except (UnicodeDecodeError, ValueError, KeyError):
+                return HttpResponseBadRequest(_("Not a valid csv file"))
 
             importer.start_import(job)
 

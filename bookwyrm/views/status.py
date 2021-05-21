@@ -21,7 +21,7 @@ from .reading import edit_readthrough
 class CreateStatus(View):
     """the view for *posting*"""
 
-    def get(self, request):
+    def get(self, request, status_type):  # pylint: disable=unused-argument
         """compose view (used for delete-and-redraft"""
         book = get_object_or_404(models.Edition, id=request.GET.get("book"))
         data = {"book": book}

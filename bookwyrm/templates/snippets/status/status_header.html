@@ -48,7 +48,7 @@
 
             {% if status.book %}
                 {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                    <a href="{{ status.book.local_path }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}: {% include 'snippets/stars.html' with rating=status.rating %}
+                    <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}: {% include 'snippets/stars.html' with rating=status.rating %}
                     <span
                         itemprop="reviewRating"
                         itemscope
@@ -59,7 +59,7 @@
 
                         {% if status.book %}
                             {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
-                                <a href="{{ status.book.local_path }}">{{ status.book|title }}</a>{% if status.status_type == 'Rating' %}:
+                                <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}:
                                 <span
                                     itemprop="reviewRating"
                                     itemscope
@@ -78,7 +78,7 @@
                             {% endif %}
                         {% elif status.mention_books %}
                             <a href="{{ status.mention_books.first.local_path }}">
-                                {{ status.mention_books.first.title }}
+                                {{ status.mention_books.first|book_title }}
                             </a>
                         {% endif %}
                     {% include 'snippets/stars.html' with rating=status.rating %}
@@ -87,7 +87,7 @@
                     {% include 'snippets/book_titleby.html' with book=status.book %}
                 {% endif %}
             {% elif status.mention_books %}
-                <a href="{{ status.mention_books.first.local_path }}">{{ status.mention_books.first|title }}</a>
+                <a href="{{ status.mention_books.first.local_path }}">{{ status.mention_books.first|book_title }}</a>
             {% endif %}
 
         </h3>
