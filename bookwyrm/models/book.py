@@ -169,6 +169,13 @@ class Work(OrderedCollectionPageMixin, Book):
     deserialize_reverse_fields = [("editions", "editions")]
 
 
+# https://schema.org/BookFormatType
+FormatChoices = models.TextChoices(
+    "FormatChoices",
+    "AudiobookFormat EBook GraphicNovel Hardcover Paperback",
+)
+
+
 class Edition(Book):
     """an edition of a book"""
 
@@ -186,7 +193,10 @@ class Edition(Book):
         max_length=255, blank=True, null=True, deduplication_field=True
     )
     pages = fields.IntegerField(blank=True, null=True)
-    physical_format = fields.CharField(max_length=255, blank=True, null=True)
+    physical_format = fields.CharField(
+        max_length=255, choices=FormatChoices.choices, null=True, blank=True
+    )
+    physical_format_detail = fields.CharField(max_length=255, blank=True, null=True)
     publishers = fields.ArrayField(
         models.CharField(max_length=255), blank=True, default=list
     )
