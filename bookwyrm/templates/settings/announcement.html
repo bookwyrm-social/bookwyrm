@@ -16,8 +16,8 @@
     <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
         {% csrf_token %}
         <button type="submit" class="button is-danger">
-            <span class="icon icon-x" aria-hidden="true"></span>
-            <span>{% trans "Delete" %}</span>
+            <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
         </button>
     </form>
 </div>
