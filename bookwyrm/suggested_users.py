@@ -137,6 +137,11 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 # pylint: disable=unused-argument
 def update_rank_on_shelving(sender, instance, *args, **kwargs):
     """when a user shelves or unshelves a book, re-compute their rank"""
+    # if it's a local user, re-calculate who is rec'ed to them
+    if instance.user.local:
+        suggested_users.rerank_user_suggestions(instance.user)
+
+    # if the user is discoverable, update their rankings
     if not instance.user.discoverable:
         return
     suggested_users.rerank_obj(instance.user)
