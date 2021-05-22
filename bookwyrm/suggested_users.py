@@ -132,6 +132,16 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
     suggested_users.rerank_obj(instance.user_object)
 
 
+@receiver(signals.post_save, sender=models.UserBlocks)
+# pylint: disable=unused-argument
+def update_suggestions_on_block(sender, instance, *args, **kwargs):
+    """remove blocked users from recs"""
+    if instance.user_subject.local:
+        suggested_users.remove_suggestion(instance.user_subject, instance.user_object)
+    if instance.user_object.local:
+        suggested_users.remove_suggestion(instance.user_object, instance.user_subject)
+
+
 @receiver(signals.post_delete, sender=models.UserFollows)
 # pylint: disable=unused-argument
 def update_suggestions_on_unfollow(sender, instance, **kwargs):
@@ -163,7 +173,7 @@ def add_new_user(sender, instance, created, **kwargs):
         # a new user is found, create suggestions for them
         suggested_users.rerank_user_suggestions(instance)
 
-    # TODO: this happens on every save, not just when discoverability changes
+    # this happens on every save, not just when discoverability changes, annoyingly
     if instance.discoverable:
         suggested_users.rerank_obj(instance, update_only=False)
     elif not created:

@@ -13,6 +13,7 @@ from django.views import View
 
 from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
+from bookwyrm.suggested_users import suggested_users
 from .user import save_user_form
 
 
@@ -117,12 +118,12 @@ class GetStartedUsers(View):
             )
             .order_by("-similarity")[:5]
         )
+        data = {"no_results": not user_results}
 
         if user_results.count() < 5:
-            suggested_users = []  # TODO: get_suggested_users(request.user)
-            user_results = list(user_results) + list(suggested_users)
+            user_results = list(user_results) + suggested_users.get_suggestions(
+                request.user
+            )
 
-        data = {
-            "suggested_users": user_results,
-        }
+        data["suggested_users"] = user_results
         return TemplateResponse(request, "get_started/users.html", data)
