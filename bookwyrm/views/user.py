@@ -157,10 +157,7 @@ def save_user_form(form):
         filename = "%s.%s" % (uuid4(), extension)
         user.avatar.save(filename, image, save=False)
 
-    updated_fields = None
-    if form.initial["discoverable"] != form.cleaned_data["discoverable"]:
-        updated_fields = ["discoverable"]
-    user.save(updated_fields=updated_fields)
+    user.save()
     return user
 
 

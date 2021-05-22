@@ -40,5 +40,5 @@ class Directory(View):
     def post(self, request):
         """join the directory"""
         request.user.discoverable = True
-        request.user.save(update_fields=["discoverable"])
+        request.user.save()
         return redirect("directory")

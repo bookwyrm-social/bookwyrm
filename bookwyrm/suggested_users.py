@@ -67,7 +67,7 @@ class SuggestedUsers(RedisStore):
     def rerank_user_suggestions(self, user):
         """update the ranks of the follows suggested to a user"""
         if not user.local:
-            raise ValueError('Attempting to create suggestions for remote user: ', user.id)
+            raise ValueError("Trying to create suggestions for remote user: ", user.id)
         self.populate_store(self.store_id(user))
 
     def get_suggestions(self, user):
@@ -144,22 +144,38 @@ def update_rank_on_shelving(sender, instance, *args, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
-def add_or_remove_on_discoverability_change(
-    sender, instance, created, raw, using, update_fields, **kwargs
-):
-    """make a user (un)discoverable"""
-    if created and instance.local:
-        # a new user is found, create suggestions for them
-        suggested_users.rerank_user_suggestions(instance)
+def add_new_user(sender, instance, created, **kwargs):
+    """a new user, wow how cool"""
+    if not created or not instance.local:
+        return
+    # a new user is found, create suggestions for them
+    suggested_users.rerank_user_suggestions(instance)
 
-    if not created and (not update_fields or not "discoverable" in update_fields):
-        # this is just a regular old user update, not related to discoverability
+    if instance.discoverable:
+        # idk why this would happen, but the new user is already discoverable
+        # so we should add them to the suggestions
+        suggested_users.rerank_obj(instance, update_only=False)
+
+
+@receiver(signals.pre_save, sender=models.User)
+# pylint: disable=unused-argument, too-many-arguments
+def set_discoverability(sender, instance, **kwargs):
+    """make a user (un)discoverable"""
+    if not instance.id:
+        # this means the user was created, which is handled in `add_new_user`
         return
 
+    was_discoverable = models.User.objects.get(id=instance.id).discoverable
+    if was_discoverable == instance.discoverable:
+        # no change in discoverability, who cares
+        return
+
+    # the user is newly available
     if instance.discoverable:
         # add this user to all suitable stores
         suggested_users.rerank_obj(instance, update_only=False)
 
-    elif not created and not instance.discoverable:
+    # the user is newly un-available
+    else:
         # remove this user from all suitable stores
         suggested_users.remove_object_from_related_stores(instance)
