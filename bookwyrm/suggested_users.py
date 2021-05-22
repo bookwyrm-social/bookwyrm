@@ -70,6 +70,10 @@ class SuggestedUsers(RedisStore):
             raise ValueError("Trying to create suggestions for remote user: ", user.id)
         self.populate_store(self.store_id(user))
 
+    def remove_suggestion(self, user, suggested_user):
+        """take a user out of someone's suggestions"""
+        self.bulk_remove_objects_from_store([suggested_user], self.store_id(user))
+
     def get_suggestions(self, user):
         """get suggestions"""
         values = self.get_store(self.store_id(user), withscores=True)
@@ -120,16 +124,20 @@ suggested_users = SuggestedUsers()
 # pylint: disable=unused-argument
 def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
     """remove a follow from the recs and update the ranks"""
-    if (
-        not created
-        or not instance.user_subject.local
-        or not instance.user_object.discoverable
-    ):
+    if not created or not instance.user_object.discoverable:
         return
-    suggested_users.bulk_remove_objects_from_store(
-        [instance.user_object], instance.user_subject
-    )
+
+    if instance.user_subject.local:
+        suggested_users.remove_suggestion(instance.user_subject, instance.user_object)
     suggested_users.rerank_obj(instance.user_object)
+
+
+@receiver(signals.post_delete, sender=models.UserFollows)
+# pylint: disable=unused-argument
+def update_suggestions_on_unfollow(sender, instance, **kwargs):
+    """update rankings, but don't re-suggest because it was probably intentional"""
+    if instance.user_object.discoverable:
+        suggested_users.rerank_obj(instance.user_object)
 
 
 @receiver(signals.post_save, sender=models.ShelfBook)
