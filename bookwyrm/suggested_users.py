@@ -47,9 +47,7 @@ class SuggestedUsers(RedisStore):
 
     def get_users_for_object(self, obj):  # pylint: disable=no-self-use
         """given a user, who might want to follow them"""
-        return models.User.objects.filter(
-            local=True,
-        ).exclude(
+        return models.User.objects.filter(local=True,).exclude(
             Q(id=obj.id) | Q(followers=obj) | Q(id__in=obj.blocks.all()) | Q(blocks=obj)
         )
 
