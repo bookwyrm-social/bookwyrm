@@ -5,6 +5,7 @@ from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.tasks import app
 
 
 class SuggestedUsers(RedisStore):
@@ -18,6 +19,8 @@ class SuggestedUsers(RedisStore):
 
     def store_id(self, user):  # pylint: disable=no-self-use
         """the key used to store this user's recs"""
+        if isinstance(user, int):
+            return "{:d}-suggestions".format(user)
         return "{:d}-suggestions".format(user.id)
 
     def get_counts_from_rank(self, rank):  # pylint: disable=no-self-use
@@ -46,7 +49,9 @@ class SuggestedUsers(RedisStore):
         """given a user, who might want to follow them"""
         return models.User.objects.filter(
             local=True,
-        ).exclude(following=obj)
+        ).exclude(
+            Q(id=obj.id) | Q(followers=obj) | Q(id__in=obj.blocks.all()) | Q(blocks=obj)
+        )
 
     def rerank_obj(self, obj, update_only=True):
         """update all the instances of this user with new ranks"""
@@ -56,6 +61,8 @@ class SuggestedUsers(RedisStore):
                 store_user,
                 id=obj.id,
             ).first()
+            if not annotated_user:
+                continue
 
             pipeline.zadd(
                 self.store_id(store_user),
@@ -66,8 +73,6 @@ class SuggestedUsers(RedisStore):
 
     def rerank_user_suggestions(self, user):
         """update the ranks of the follows suggested to a user"""
-        if not user.local:
-            raise ValueError("Trying to create suggestions for remote user: ", user.id)
         self.populate_store(self.store_id(user))
 
     def remove_suggestion(self, user, suggested_user):
@@ -128,8 +133,8 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
         return
 
     if instance.user_subject.local:
-        suggested_users.remove_suggestion(instance.user_subject, instance.user_object)
-    suggested_users.rerank_obj(instance.user_object)
+        remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
+    rerank_user_task.delay(instance.user_object.id)
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -137,9 +142,9 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 def update_suggestions_on_block(sender, instance, *args, **kwargs):
     """remove blocked users from recs"""
     if instance.user_subject.local:
-        suggested_users.remove_suggestion(instance.user_subject, instance.user_object)
+        remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
     if instance.user_object.local:
-        suggested_users.remove_suggestion(instance.user_object, instance.user_subject)
+        remove_suggestion_task.delay(instance.user_object.id, instance.user_subject.id)
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
@@ -147,7 +152,7 @@ def update_suggestions_on_block(sender, instance, *args, **kwargs):
 def update_suggestions_on_unfollow(sender, instance, **kwargs):
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
-        suggested_users.rerank_obj(instance.user_object)
+        rerank_user_task.delay(instance.user_object.id)
 
 
 @receiver(signals.post_save, sender=models.ShelfBook)
@@ -157,24 +162,50 @@ def update_rank_on_shelving(sender, instance, *args, **kwargs):
     """when a user shelves or unshelves a book, re-compute their rank"""
     # if it's a local user, re-calculate who is rec'ed to them
     if instance.user.local:
-        suggested_users.rerank_user_suggestions(instance.user)
+        rerank_suggestions_task.delay(instance.user.id)
 
     # if the user is discoverable, update their rankings
-    if not instance.user.discoverable:
-        return
-    suggested_users.rerank_obj(instance.user)
+    if instance.user.discoverable:
+        rerank_user_task.delay(instance.user.id)
 
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
 def add_new_user(sender, instance, created, **kwargs):
     """a new user, wow how cool"""
+    # a new user is found, create suggestions for them
     if created and instance.local:
-        # a new user is found, create suggestions for them
-        suggested_users.rerank_user_suggestions(instance)
+        rerank_suggestions_task.delay(instance.id)
 
     # this happens on every save, not just when discoverability changes, annoyingly
     if instance.discoverable:
-        suggested_users.rerank_obj(instance, update_only=False)
+        rerank_user_task.delay(instance.id, update_only=False)
     elif not created:
-        suggested_users.remove_object_from_related_stores(instance)
+        remove_user_task.delay(instance.id)
+
+
+@app.task
+def rerank_suggestions_task(user_id):
+    """do the hard work in celery"""
+    suggested_users.rerank_user_suggestions(user_id)
+
+
+@app.task
+def rerank_user_task(user_id, update_only=False):
+    """do the hard work in celery"""
+    user = models.User.objects.get(id=user_id)
+    suggested_users.rerank_obj(user, update_only=update_only)
+
+
+@app.task
+def remove_user_task(user_id):
+    """do the hard work in celery"""
+    user = models.User.objects.get(id=user_id)
+    suggested_users.remove_object_from_related_stores(user)
+
+
+@app.task
+def remove_suggestion_task(user_id, suggested_user_id):
+    """remove a specific user from a specific user's suggestions"""
+    suggested_user = models.User.objects.get(id=suggested_user_id)
+    suggested_users.remove_suggestion(user_id, suggested_user)
