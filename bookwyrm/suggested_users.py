@@ -66,6 +66,8 @@ class SuggestedUsers(RedisStore):
 
     def rerank_user_suggestions(self, user):
         """update the ranks of the follows suggested to a user"""
+        if not user.local:
+            raise ValueError('Attempting to create suggestions for remote user: ', user.id)
         self.populate_store(self.store_id(user))
 
     def get_suggestions(self, user):
