@@ -120,7 +120,7 @@ class GetStartedUsers(View):
 
         if user_results.count() < 5:
             suggested_users = []  # TODO: get_suggested_users(request.user)
-            user_results = list(user_results) + list(suggested_users))
+            user_results = list(user_results) + list(suggested_users)
 
         data = {
             "suggested_users": user_results,
