@@ -146,36 +146,12 @@ def update_rank_on_shelving(sender, instance, *args, **kwargs):
 # pylint: disable=unused-argument, too-many-arguments
 def add_new_user(sender, instance, created, **kwargs):
     """a new user, wow how cool"""
-    if not created or not instance.local:
-        return
-    # a new user is found, create suggestions for them
-    suggested_users.rerank_user_suggestions(instance)
+    if created and instance.local:
+        # a new user is found, create suggestions for them
+        suggested_users.rerank_user_suggestions(instance)
 
+    # TODO: this happens on every save, not just when discoverability changes
     if instance.discoverable:
-        # idk why this would happen, but the new user is already discoverable
-        # so we should add them to the suggestions
         suggested_users.rerank_obj(instance, update_only=False)
-
-
-@receiver(signals.pre_save, sender=models.User)
-# pylint: disable=unused-argument, too-many-arguments
-def set_discoverability(sender, instance, **kwargs):
-    """make a user (un)discoverable"""
-    if not instance.id:
-        # this means the user was created, which is handled in `add_new_user`
-        return
-
-    was_discoverable = models.User.objects.get(id=instance.id).discoverable
-    if was_discoverable == instance.discoverable:
-        # no change in discoverability, who cares
-        return
-
-    # the user is newly available
-    if instance.discoverable:
-        # add this user to all suitable stores
-        suggested_users.rerank_obj(instance, update_only=False)
-
-    # the user is newly un-available
-    else:
-        # remove this user from all suitable stores
+    elif not created:
         suggested_users.remove_object_from_related_stores(instance)
