@@ -44,6 +44,10 @@
         <h2 class="menu-label">{% trans "Instance Settings" %}</h2>
         <ul class="menu-list">
             <li>
+                {% url 'settings-announcements' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Announcements" %}</a>
+            </li>
+            <li>
                 {% url 'settings-site' as url %}
                 <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Site Settings" %}</a>
                 {% if url in request.path %}

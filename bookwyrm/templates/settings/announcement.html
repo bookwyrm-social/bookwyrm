@@ -1,0 +1,70 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}{% load humanize %}
+{% block title %}{% trans "Announcement" %} - {{ announcement.preview }}{% endblock %}
+
+{% block header %}
+{% trans "Announcement" %}
+<a href="{% url 'settings-announcements' %}" class="has-text-weight-normal help">{% trans "Back to list" %}</a>
+{% endblock %}
+
+{% block edit-button %}
+{% trans "Edit Announcement" as button_text %}
+<div class="field has-addons">
+    <div class="control">
+        {% include 'snippets/toggle/open_button.html' with controls_text="edit-announcement" icon_with_text="pencil" text=button_text focus="edit-announcement-header" %}
+    </div>
+    <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="button is-danger">
+            <span class="icon icon-x m-0-mobile" aria-hidden="true"></span>
+            <span class="is-sr-only-mobile">{% trans "Delete" %}</span>
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block panel %}
+
+<form name="edit-announcement" method="post" action="{% url 'settings-announcements' announcement.id %}" class="block">
+    {% include 'settings/announcement_form.html' with controls_text="edit-announcement" %}
+</form>
+
+<div class="block content">
+    <dl>
+        <div class="is-flex notification pt-1 pb-1 mb-0 {% if announcement in active_announcements %}is-success{% else %}is-danger{% endif %}">
+            <dt class="mr-1 has-text-weight-bold">{% trans "Visible:" %}</dt>
+            <dd>
+                {% if announcement in active_announcements %}
+                {% trans "True" %}
+                {% else %}
+                {% trans "False" %}
+                {% endif %}
+            </dd>
+        </div>
+
+        {% if announcement.start_date %}
+        <div class="is-flex notificationi pt-1 pb-1 mb-0 has-background-white">
+            <dt class="mr-1 has-text-weight-bold">{% trans "Start date:" %}</dt>
+            <dd>{{ announcement.start_date|naturalday }}</dd>
+        </div>
+        {% endif %}
+
+        {% if announcement.end_date %}
+        <div class="is-flex notification pt-1 pb-1 mb-0 has-background-white">
+            <dt class="mr-1 has-text-weight-bold">{% trans "End date:" %}</dt>
+            <dd>{{ announcement.end_date|naturalday }}</dd>
+        </div>
+        {% endif %}
+
+        <div class="is-flex notification pt-1 pb-1 has-background-white">
+            <dt class="mr-1 has-text-weight-bold">{% trans "Active:" %}</dt>
+            <dd>{{ announcement.active }}</dd>
+        </div>
+    </dl>
+
+    <hr aria-hidden="true">
+
+    {% include 'snippets/announcement.html' with announcement=announcement pressed=True admin_mode=True %}
+</div>
+
+{% endblock %}

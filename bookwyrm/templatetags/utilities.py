@@ -18,7 +18,7 @@ def get_user_identifier(user):
     return user.localname if user.localname else user.username
 
 
-@register.filter(name="title")
+@register.filter(name="book_title")
 def get_title(book):
     """display the subtitle if the title is short"""
     if not book:

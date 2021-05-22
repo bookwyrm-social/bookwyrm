@@ -7,7 +7,7 @@
 {% with results|first as local_results %}
 <ul class="block">
 {% for result in local_results.results %}
-    <li class="pd-4">
+    <li class="pd-4 mb-5">
         {% include 'snippets/search_result_text.html' with result=result %}
     </li>
 {% endfor %}
@@ -28,9 +28,9 @@
             </div>
             <div class="column is-narrow">
                 {% trans "Open" as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-down" pressed=forloop.first %}
                 {% trans "Close" as button_text %}
-                {% include 'snippets/toggle/close_button.html' with text=button_text small=True controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
+                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="more-results-panel" controls_uid=result_set.connector.identifier class="is-small" icon_with_text="arrow-up" pressed=forloop.first %}
             </div>
         </header>
         {% endif %}

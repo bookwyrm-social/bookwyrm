@@ -7,8 +7,8 @@ from .helpers import get_user_from_username, privacy_filter
 class RssFeed(Feed):
     """serialize user's posts in rss feed"""
 
-    description_template = "snippets/rss_content.html"
-    title_template = "snippets/rss_title.html"
+    description_template = "rss/content.html"
+    title_template = "rss/title.html"
 
     def get_object(self, request, username):
         """the user who's posts get serialized"""
