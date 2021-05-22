@@ -146,14 +146,18 @@ def add_or_remove_on_discoverability_change(
     sender, instance, created, raw, using, update_fields, **kwargs
 ):
     """make a user (un)discoverable"""
-    if created:
+    if created and instance.local:
+        # a new user is found, create suggestions for them
         suggested_users.rerank_user_suggestions(instance)
 
     if not created and (not update_fields or not "discoverable" in update_fields):
+        # this is just a regular old user update, not related to discoverability
         return
 
     if instance.discoverable:
+        # add this user to all suitable stores
         suggested_users.rerank_obj(instance, update_only=False)
 
     elif not created and not instance.discoverable:
+        # remove this user from all suitable stores
         suggested_users.remove_object_from_related_stores(instance)
