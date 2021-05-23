@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block dropdown-list %}
-{% for shelf in request.user.shelf_set.all %}
+{% for shelf in user_shelves %}
 <li role="menuitem" class="dropdown-item p-0">
     <form name="shelve" action="/shelve/" method="post">
         {% csrf_token %}

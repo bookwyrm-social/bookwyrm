@@ -3,8 +3,6 @@ from django import template
 from django.db.models import Avg
 
 from bookwyrm import models, views
-from bookwyrm.views.status import to_markdown
-from bookwyrm.templatetags.utilities import get_user_identifier
 
 
 register = template.Library()
@@ -73,7 +71,7 @@ def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
     shelf = models.ShelfBook.objects.filter(
         shelf__user=context["request"].user, book__in=book.parent_work.editions.all()
-    ).first()
+    ).select_related("book", "shelf").first()
     return shelf if shelf else {"book": book}
 
 
