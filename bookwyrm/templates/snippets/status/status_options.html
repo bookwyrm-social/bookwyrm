@@ -39,7 +39,7 @@
     {% include 'snippets/report_button.html' with user=status.user status=status %}
 </li>
 <li role="menuitem" class="dropdown-item p-0">
-    {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" %}
+    {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" blocks=False %}
 </li>
 {% endif %}
 {% endblock %}
