@@ -134,12 +134,14 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
+                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not request.user.unread_notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
-                            <span data-poll="notifications">{{ request.user.unread_notification_count }}</span>
+                            <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
+                        {% endwith %}
                     </a>
                 </div>
                 {% else %}

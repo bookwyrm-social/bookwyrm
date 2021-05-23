@@ -42,7 +42,12 @@ def get_parent(status):
 @register.filter(name="boosted_status")
 def get_boosted(boost):
     """load a boosted status. have to do this or it won't get foreign keys"""
-    return models.Status.objects.select_subclasses().get(id=boost.boosted_status.id)
+    return (
+        models.Status.objects.select_subclasses()
+        .select_related("user", "reply_parent")
+        .prefetch_related("mention_books", "mention_users")
+        .get(id=boost.boosted_status.id)
+    )
 
 
 @register.filter(name="published_date")
