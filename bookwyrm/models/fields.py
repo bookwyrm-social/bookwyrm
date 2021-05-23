@@ -9,6 +9,7 @@ from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
+from django.forms import ClearableFileInput, ImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
@@ -332,6 +333,14 @@ class TagField(ManyToManyField):
         return items
 
 
+class ClearableFileInputWithWarning(ClearableFileInput):
+    template_name = 'widgets/clearable_file_input_with_warning.html'
+
+
+class CustomImageField(ImageField):
+    widget = ClearableFileInputWithWarning
+
+
 def image_serializer(value, alt):
     """helper for serializing images"""
     if value and hasattr(value, "url"):
@@ -394,6 +403,12 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         image_name = str(uuid4()) + "." + url.split(".")[-1]
         image_content = ContentFile(response.content)
         return [image_name, image_content]
+
+    def formfield(self, **kwargs):
+        return super().formfield(**{
+            'form_class': CustomImageField,
+            **kwargs,
+        })
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
