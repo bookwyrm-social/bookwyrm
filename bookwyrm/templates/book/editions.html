@@ -1,12 +1,11 @@
 {% extends 'layout.html' %}
-{% load i18n %}
-{% load bookwyrm_tags %}
+{% load i18n %}{% load utilities %}
 
-{% block title %}{% blocktrans with book_title=work.title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
+{% block title %}{% blocktrans with book_title=work|book_title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
 
 {% block content %}
 <div class="block">
-    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work.title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
+    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
 </div>
 
 {% include 'book/edition_filters.html' %}
@@ -23,7 +22,7 @@
         <div class="column my-3-mobile ml-3-tablet mr-auto">
             <h2 class="title is-5 mb-1">
                 <a href="{{ book.local_path }}" class="has-text-black">
-                    {{ book.title }}
+                    {{ book|book_title }}
                 </a>
             </h2>
 
@@ -50,8 +49,4 @@
 <div>
     {% include 'snippets/pagination.html' with page=editions path=request.path %}
 </div>
-{% endblock %}
-
-{% block scripts %}
-{% include 'snippets/datepicker_js.html' %}
 {% endblock %}

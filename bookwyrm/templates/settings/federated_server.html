@@ -1,7 +1,8 @@
 {% extends 'settings/admin_layout.html' %}
-{% block title %}{{ server.server_name }}{% endblock %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load markdown %}
+
+{% block title %}{{ server.server_name }}{% endblock %}
 
 {% block header %}
 {{ server.server_name }}
@@ -9,65 +10,69 @@
 {% if server.status == "blocked" %}<span class="icon icon-x has-text-danger is-size-5" title="{% trans 'Blocked' %}"><span class="is-sr-only">{% trans "Blocked" %}</span></span>
 {% endif %}
 
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to list" %}</a>
 {% endblock %}
 
 {% block panel %}
 <div class="columns">
-    <section class="column is-half content">
+    <section class="column is-half is-flex is-flex-direction-column">
         <h2 class="title is-4">{% trans "Details" %}</h2>
-        <dl>
-            <div class="is-flex">
-                <dt>{% trans "Software:" %}</dt>
-                <dd>{{ server.application_type }}</dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Version:" %}</dt>
-                <dd>{{ server.application_version }}</dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Status:" %}</dt>
-                <dd>{{ server.status }}</dd>
-            </div>
-        </dl>
+        <div class="box is-flex-grow-1 content">
+            <dl>
+                <div class="is-flex">
+                    <dt>{% trans "Software:" %}</dt>
+                    <dd>{{ server.application_type }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Version:" %}</dt>
+                    <dd>{{ server.application_version }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Status:" %}</dt>
+                    <dd>{{ server.status }}</dd>
+                </div>
+            </dl>
+        </div>
     </section>
 
-    <section class="column is-half content">
+    <section class="column is-half is-flex is-flex-direction-column">
         <h2 class="title is-4">{% trans "Activity" %}</h2>
-        <dl>
-            <div class="is-flex">
-                <dt>{% trans "Users:" %}</dt>
-                <dd>
-                    {{ users.count }}
-                    {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
-                </dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Reports:" %}</dt>
-                <dd>
-                    {{ reports.count }}
-                    {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
-                </dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Followed by us:" %}</dt>
-                <dd>
-                    {{ followed_by_us.count }}
-                </dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Followed by them:" %}</dt>
-                <dd>
-                    {{ followed_by_them.count }}
-                </dd>
-            </div>
-            <div class="is-flex">
-                <dt>{% trans "Blocked by us:" %}</dt>
-                <dd>
-                    {{ blocked_by_us.count }}
-                </dd>
-            </div>
-        </dl>
+        <div class="box is-flex-grow-1 content">
+            <dl>
+                <div class="is-flex">
+                    <dt>{% trans "Users:" %}</dt>
+                    <dd>
+                        {{ users.count }}
+                        {% if server.user_set.count %}(<a href="{% url 'settings-users' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                    </dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Reports:" %}</dt>
+                    <dd>
+                        {{ reports.count }}
+                        {% if reports.count %}(<a href="{% url 'settings-reports' %}?server={{ server.server_name }}">{% trans "View all" %}</a>){% endif %}
+                    </dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Followed by us:" %}</dt>
+                    <dd>
+                        {{ followed_by_us.count }}
+                    </dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Followed by them:" %}</dt>
+                    <dd>
+                        {{ followed_by_them.count }}
+                    </dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Blocked by us:" %}</dt>
+                    <dd>
+                        {{ blocked_by_us.count }}
+                    </dd>
+                </div>
+            </dl>
+        </div>
     </section>
 </div>
 
@@ -78,11 +83,11 @@
         </div>
         <div class="column is-narrow">
             {% trans "Edit" as button_text %}
-            {% include 'snippets/toggle/open_button.html' with text=button_text icon="pencil" controls_text="edit-notes" %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit-notes" %}
         </div>
     </header>
     {% if server.notes %}
-    <p id="hide-edit-notes">{{ server.notes|to_markdown|safe }}</p>
+    <div class="box" id="hide-edit-notes">{{ server.notes|to_markdown|safe }}</div>
     {% endif %}
     <form class="box is-hidden" method="POST" action="{% url 'settings-federated-server' server.id %}" id="edit-notes">
         {% csrf_token %}

@@ -3,13 +3,9 @@
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="book" value="{{ book.id }}">
 <div class="field">
-    <label class="label">
+    <label class="label" tabindex="0" id="add-readthrough-focus">
         {% trans "Started reading" %}
-        <duet-date-picker
-            identifier="id_start_date-{{ readthrough.id }}"
-            name="start_date"
-            value="{{ readthrough.start_date | date:'Y-m-d' }}">
-        </duet-date-picker>
+        <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </label>
 </div>
 {# Only show progress for editing existing readthroughs #}
@@ -32,10 +28,6 @@
 <div class="field">
     <label class="label">
         {% trans "Finished reading" %}
-        <duet-date-picker
-            identifier="id_finish_date-{{ readthrough.id }}"
-            name="finish_date"
-            value="{{ readthrough.finish_date | date:'Y-m-d' }}">
-        </duet-date-picker>
+        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
     </label>
 </div>

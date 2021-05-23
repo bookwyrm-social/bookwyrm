@@ -1,3 +1,2 @@
-{% load bookwyrm_tags %}
 <img class="avatar image {% if large %}is-96x96{% elif medium %}is-48x48{% else %}is-32x32{% endif %}" src="{% if user.avatar %}/images/{{ user.avatar }}{% else %}/static/images/default_avi.jpg{% endif %}" {% if ariaHide %}aria-hidden="true"{% endif %} alt="{{ user.alt_text }}">
 

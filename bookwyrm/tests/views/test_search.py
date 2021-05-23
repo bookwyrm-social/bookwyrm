@@ -53,6 +53,17 @@ class Views(TestCase):
         self.assertEqual(data[0]["title"], "Test Book")
         self.assertEqual(data[0]["key"], "https://%s/book/%d" % (DOMAIN, self.book.id))
 
+    def test_search_no_query(self):
+        """just the search page"""
+        view = views.Search.as_view()
+        # we need a connector for this, sorry
+        request = self.factory.get("")
+        with patch("bookwyrm.views.search.is_api_request") as is_api:
+            is_api.return_value = False
+            response = view(request)
+        self.assertIsInstance(response, TemplateResponse)
+        response.render()
+
     def test_search_books(self):
         """searches remote connectors"""
         view = views.Search.as_view()

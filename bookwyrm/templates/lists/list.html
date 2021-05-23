@@ -1,12 +1,13 @@
 {% extends 'lists/list_layout.html' %}
 {% load i18n %}
 {% load bookwyrm_tags %}
+{% load markdown %}
 
 {% block panel %}
 {% if request.user == list.user and pending_count %}
 <div class="block content">
     <p>
-        <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count | pluralize }} awaiting your approval</a>
+        <a href="{% url 'list-curate' list.id %}">{{ pending_count }} book{{ pending_count|pluralize }} awaiting your approval</a>
     </p>
 </div>
 {% endif %}
@@ -50,9 +51,9 @@
                                 <p>
                                     {% include 'snippets/stars.html' with rating=item.book|rating:request.user %}
                                 </p>
-                                <p>
+                                <div>
                                     {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
-                                </p>
+                                </div>
                                 {% include 'snippets/shelve_button/shelve_button.html' %}
                             </div>
                         </div>

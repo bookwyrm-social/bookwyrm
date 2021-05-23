@@ -2,7 +2,7 @@
 from django.db import models
 from bookwyrm.connectors.settings import CONNECTORS
 
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, DeactivationReason
 
 
 ConnectorFiles = models.TextChoices("ConnectorFiles", CONNECTORS)
@@ -17,19 +17,16 @@ class Connector(BookWyrmModel):
     local = models.BooleanField(default=False)
     connector_file = models.CharField(max_length=255, choices=ConnectorFiles.choices)
     api_key = models.CharField(max_length=255, null=True, blank=True)
+    active = models.BooleanField(default=True)
+    deactivation_reason = models.CharField(
+        max_length=255, choices=DeactivationReason.choices, null=True, blank=True
+    )
 
     base_url = models.CharField(max_length=255)
     books_url = models.CharField(max_length=255)
     covers_url = models.CharField(max_length=255)
     search_url = models.CharField(max_length=255, null=True, blank=True)
     isbn_search_url = models.CharField(max_length=255, null=True, blank=True)
-
-    politeness_delay = models.IntegerField(null=True, blank=True)  # seconds
-    max_query_count = models.IntegerField(null=True, blank=True)
-    # how many queries executed in a unit of time, like a day
-    query_count = models.IntegerField(default=0)
-    # when to reset the query count back to 0 (ie, after 1 day)
-    query_count_expiry = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return "{} ({})".format(

@@ -19,19 +19,9 @@ from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel
+from .base_model import BookWyrmModel, DeactivationReason
 from .federated_server import FederatedServer
 from . import fields, Review
-
-
-DeactivationReason = models.TextChoices(
-    "DeactivationReason",
-    [
-        "self_deletion",
-        "moderator_deletion",
-        "domain_block",
-    ],
-)
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
@@ -372,7 +362,10 @@ class AnnualGoal(BookWyrmModel):
     def books(self):
         """the books you've read this year"""
         return (
-            self.user.readthrough_set.filter(finish_date__year__gte=self.year)
+            self.user.readthrough_set.filter(
+                finish_date__year__gte=self.year,
+                finish_date__year__lt=self.year + 1,
+            )
             .order_by("-finish_date")
             .all()
         )
@@ -388,16 +381,16 @@ class AnnualGoal(BookWyrmModel):
         return {r.book.id: r.rating for r in reviews}
 
     @property
-    def progress_percent(self):
-        """how close to your goal, in percent form"""
-        return int(float(self.book_count / self.goal) * 100)
-
-    @property
-    def book_count(self):
+    def progress(self):
         """how many books you've read this year"""
-        return self.user.readthrough_set.filter(
-            finish_date__year__gte=self.year
+        count = self.user.readthrough_set.filter(
+            finish_date__year__gte=self.year,
+            finish_date__year__lt=self.year + 1,
         ).count()
+        return {
+            "count": count,
+            "percent": int(float(count / self.goal) * 100),
+        }
 
 
 @app.task

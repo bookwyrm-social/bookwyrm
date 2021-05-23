@@ -57,6 +57,21 @@ urlpatterns = [
     # admin
     re_path(r"^settings/site-settings/?$", views.Site.as_view(), name="settings-site"),
     re_path(
+        r"^settings/announcements/?$",
+        views.Announcements.as_view(),
+        name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/?$",
+        views.Announcement.as_view(),
+        name="settings-announcements",
+    ),
+    re_path(
+        r"^settings/announcements/(?P<announcement_id>\d+)/delete/?$",
+        views.delete_announcement,
+        name="settings-announcements-delete",
+    ),
+    re_path(
         r"^settings/email-preview/?$",
         views.site.email_preview,
         name="settings-email-preview",
@@ -139,6 +154,11 @@ urlpatterns = [
     path("", views.Home.as_view(), name="landing"),
     re_path(r"^discover/?$", views.Discover.as_view()),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
+    re_path(
+        r"^notifications/(?P<notification_type>mentions)/?$",
+        views.Notifications.as_view(),
+        name="notifications",
+    ),
     re_path(r"^directory/?", views.Directory.as_view(), name="directory"),
     # Get started
     re_path(

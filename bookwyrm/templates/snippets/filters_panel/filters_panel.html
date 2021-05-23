@@ -5,9 +5,9 @@
 
         <span class="column is-narrow pb-0">
             {% trans "Show filters" as text %}
-            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon="arrow-down" class="is-small" focus="filters" %}
+            {% include 'snippets/toggle/open_button.html' with text=text controls_text="filters" icon_with_text="arrow-down" class="is-small" focus="filters" %}
             {% trans "Hide filters" as text %}
-            {% include 'snippets/toggle/close_button.html' with text=text controls_text="filters" icon="x" class="is-small" %}
+            {% include 'snippets/toggle/close_button.html' with text=text controls_text="filters" icon_with_text="arrow-up" class="is-small" %}
         </span>
     </h2>
 

@@ -42,8 +42,6 @@ services:
     image: redis
     command: ["redis-server", "--appendonly", "yes"]
     env_file: .env
-    ports:
-      - 6378:6378
     networks:
       - main
     restart: on-failure
@@ -76,7 +74,7 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: flower --port=8888
+    command: flower --port=${FLOWER_PORT}
     env_file: .env
     environment:
       - CELERY_BROKER_URL=${CELERY_BROKER}

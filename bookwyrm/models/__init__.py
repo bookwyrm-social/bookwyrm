@@ -25,6 +25,7 @@ from .federated_server import FederatedServer
 from .import_job import ImportJob, ImportItem
 
 from .site import SiteSettings, SiteInvite, PasswordReset, InviteRequest
+from .announcement import Announcement
 
 cls_members = inspect.getmembers(sys.modules[__name__], inspect.isclass)
 activity_models = {

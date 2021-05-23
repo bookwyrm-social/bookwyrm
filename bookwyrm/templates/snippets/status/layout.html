@@ -1,7 +1,6 @@
 {% extends 'components/card.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
-{% load humanize %}
+{% load utilities %}
 
 {% block card-header %}
 <div class="card-header-title has-background-white-ter is-block">
@@ -16,7 +15,7 @@
 <div class="card-footer-item">
 
     {# moderation options #}
-    <form name="delete-{{status.id}}" action="/delete-status/{{ status.id }}" method="post">
+    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}" method="post">
         {% csrf_token %}
         <button class="button is-danger is-light" type="submit">
             {% trans "Delete status" %}

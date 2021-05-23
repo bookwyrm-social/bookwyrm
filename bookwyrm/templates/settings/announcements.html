@@ -1,0 +1,54 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}{% load humanize %}
+{% block title %}{% trans "Announcements" %}{% endblock %}
+
+{% block header %}{% trans "Announcements" %}{% endblock %}
+
+{% block edit-button %}
+{% trans "Create Announcement" as button_text %}
+{% include 'snippets/toggle/open_button.html' with controls_text="create-announcement" icon_with_text="plus" text=button_text focus="create-announcement-header" %}
+</a>
+{% endblock %}
+
+{% block panel %}
+<form name="create-announcement" method="post" action="{% url 'settings-announcements' %}" class="block">
+    {% include 'settings/announcement_form.html' with controls_text="create-announcement" %}
+</form>
+
+<table class="table is-striped">
+    <tr>
+        <th>
+            {% url 'settings-announcements' as url %}
+            {% trans "Date added" as text %}
+            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Preview" as text %}
+            {% include 'snippets/table-sort-header.html' with field="preview" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Start date" as text %}
+            {% include 'snippets/table-sort-header.html' with field="start_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "End date" as text %}
+            {% include 'snippets/table-sort-header.html' with field="end_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Status" as text %}
+            {% include 'snippets/table-sort-header.html' with field="active" sort=sort text=text %}
+        </th>
+    </tr>
+    {% for announcement in announcements %}
+    <tr>
+        <td>{{ announcement.created_date|naturalday }}</td>
+        <td><a href="{% url 'settings-announcements' announcement.id %}">{{ announcement.preview }}</a></td>
+        <td>{{ announcement.start_date|naturaltime|default:'' }}</td>
+        <td>{{ announcement.end_date|naturaltime|default:'' }}</td>
+        <td>{% if announcement.active %}{% trans "active" %}{% else %}{% trans "inactive" %}{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% include 'snippets/pagination.html' with page=announcements path=request.path %}
+{% endblock %}

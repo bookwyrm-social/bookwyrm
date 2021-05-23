@@ -59,10 +59,15 @@ class User(View):
                 break
 
         # user's posts
-        activities = privacy_filter(
-            request.user,
-            user.status_set.select_subclasses(),
+        activities = (
+            privacy_filter(
+                request.user,
+                user.status_set.select_subclasses(),
+            )
+            .select_related("reply_parent")
+            .prefetch_related("mention_books", "mention_users")
         )
+
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
@@ -95,7 +100,7 @@ class Followers(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "follow_list": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/followers.html", data)
 
@@ -114,7 +119,7 @@ class Following(View):
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
-            "follow_list": paginated.page(request.GET.get("page", 1)),
+            "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
 

@@ -30,6 +30,7 @@ class Book(View):
 
     def get(self, request, book_id, user_statuses=False):
         """info about a book"""
+        user_statuses = user_statuses if request.user.is_authenticated else False
         try:
             book = models.Book.objects.select_subclasses().get(id=book_id)
         except models.Book.DoesNotExist:
@@ -51,9 +52,9 @@ class Book(View):
         )
 
         # the reviews to show
-        if user_statuses and request.user.is_authenticated:
+        if user_statuses:
             if user_statuses == "review":
-                queryset = book.review_set
+                queryset = book.review_set.select_subclasses()
             elif user_statuses == "comment":
                 queryset = book.comment_set
             else:
@@ -61,13 +62,18 @@ class Book(View):
             queryset = queryset.filter(user=request.user)
         else:
             queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
+        queryset = queryset.select_related("user")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
         data = {
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
-            "ratings": reviews.filter(Q(content__isnull=True) | Q(content="")),
+            "ratings": reviews.filter(
+                Q(content__isnull=True) | Q(content="")
+            ).select_related("user")
+            if not user_statuses
+            else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
             "lists": privacy_filter(
                 request.user, book.list_set.filter(listitem__approved=True)
@@ -86,15 +92,15 @@ class Book(View):
                 )
             data["readthroughs"] = readthroughs
 
-            data["user_shelves"] = models.ShelfBook.objects.filter(
+            data["user_shelfbooks"] = models.ShelfBook.objects.filter(
                 user=request.user, book=book
-            )
+            ).select_related("shelf")
 
             data["other_edition_shelves"] = models.ShelfBook.objects.filter(
                 ~Q(book=book),
                 user=request.user,
                 book__parent_work=book.parent_work,
-            )
+            ).select_related("shelf", "book")
 
             data["user_statuses"] = {
                 "review_count": book.review_set.filter(user=request.user).count(),
@@ -316,7 +322,10 @@ def upload_cover(request, book_id):
 
 def set_cover_from_url(url):
     """load it from a url"""
-    image_file = get_image(url)
+    try:
+        image_file = get_image(url)
+    except:  # pylint: disable=bare-except
+        return None
     if not image_file:
         return None
     image_name = str(uuid4()) + "." + url.split(".")[-1]

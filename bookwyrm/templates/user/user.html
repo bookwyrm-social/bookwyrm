@@ -1,6 +1,6 @@
 {% extends 'user/layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load utilities %}
 
 {% block title %}{{ user.display_name }}{% endblock %}
 
@@ -12,9 +12,8 @@
     {% if is_self %}
     <div class="column is-narrow">
         <a href="{% url 'prefs-profile' %}">
-            <span class="icon icon-pencil" title="Edit profile">
-                <span class="is-sr-only">{% trans "Edit profile" %}</span>
-            </span>
+            <span class="icon icon-pencil" title="Edit profile" aria-hidden="true"></span>
+            <span>{% trans "Edit profile" %}</span>
         </a>
     </div>
     {% endif %}
@@ -59,8 +58,9 @@
     <div class="columns is-mobile">
         <h2 class="title column">{% trans "User Activity" %}</h2>
         <div class="column is-narrow">
-            <a class="icon icon-rss" target="_blank" href="{{ user.local_path }}/rss">
-                <span class="is-sr-only">{% trans "RSS feed" %}</span>
+            <a target="_blank" href="{{ user.local_path }}/rss">
+                <span class="icon icon-rss" aria-hidden="true"></span>
+                <span>{% trans "RSS feed" %}</span>
             </a>
         </div>
     </div>

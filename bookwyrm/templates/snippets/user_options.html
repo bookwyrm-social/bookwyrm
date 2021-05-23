@@ -1,6 +1,6 @@
 {% extends 'components/dropdown.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
+{% load utilities %}
 
 {% block dropdown-trigger %}
 <span class="icon icon-dots-three">
@@ -16,6 +16,6 @@
     {% include 'snippets/report_button.html' with user=user class="is-fullwidth" %}
 </li>
 <li role="menuitem">
-    {% include 'snippets/block_button.html' with user=user class="is-fullwidth" %}
+    {% include 'snippets/block_button.html' with user=user class="is-fullwidth" blocks=False %}
 </li>
 {% endblock %}

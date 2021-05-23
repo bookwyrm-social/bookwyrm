@@ -1,18 +1,35 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load humanize %}
 {% load bookwyrm_tags %}
+{% load humanize %}
 
 {% block title %}{% trans "Notifications" %}{% endblock %}
 
 {% block content %}
-<div class="block">
-    <h1 class="title">{% trans "Notifications" %}</h1>
+<header class="columns">
+    <div class="column">
+        <h1 class="title">{% trans "Notifications" %}</h1>
+    </div>
 
-    <form name="clear" action="/notifications" method="POST">
+    <form name="clear" action="/notifications" method="POST" class="column is-narrow">
         {% csrf_token %}
         <button class="button is-danger is-light" type="submit" class="secondary">{% trans "Delete notifications" %}</button>
     </form>
+</header>
+
+<div class="block">
+    <nav class="tabs">
+        <ul>
+            {% url 'notifications' as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}">{% trans "All" %}</a>
+            </li>
+            {% url 'notifications' 'mentions' as tab_url %}
+            <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                <a href="{{ tab_url }}">{% trans "Mentions" %}</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <div class="block">

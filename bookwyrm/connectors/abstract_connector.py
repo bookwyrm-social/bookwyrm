@@ -30,7 +30,6 @@ class AbstractMinimalConnector(ABC):
             "covers_url",
             "search_url",
             "isbn_search_url",
-            "max_query_count",
             "name",
             "identifier",
             "local",
@@ -101,13 +100,6 @@ class AbstractConnector(AbstractMinimalConnector):
         # fields we want to look for in book data to copy over
         # title we handle separately.
         self.book_mappings = []
-
-    def is_available(self):
-        """check if you're allowed to use this connector"""
-        if self.max_query_count is not None:
-            if self.connector.query_count >= self.max_query_count:
-                return False
-        return True
 
     def get_or_create_book(self, remote_id):
         """translate arbitrary json into an Activitypub dataclass"""

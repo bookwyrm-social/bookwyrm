@@ -2,6 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError
+from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -27,7 +28,12 @@ class Shelf(View):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
 
-        shelves = privacy_filter(request.user, user.shelf_set)
+        is_self = user == request.user
+
+        if is_self:
+            shelves = user.shelf_set
+        else:
+            shelves = privacy_filter(request.user, user.shelf_set)
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -37,23 +43,36 @@ class Shelf(View):
                 return HttpResponseNotFound()
             if not shelf.visible_to_user(request.user):
                 return HttpResponseNotFound()
+            books = shelf.books
         # this is a constructed "all books" view, with a fake "shelf" obj
         else:
             FakeShelf = namedtuple(
                 "Shelf", ("identifier", "name", "user", "books", "privacy")
             )
             books = models.Edition.objects.filter(
+                # privacy is ensured because the shelves are already filtered above
                 shelfbook__shelf__in=shelves.all()
             ).distinct()
             shelf = FakeShelf("all", _("All books"), user, books, "public")
 
-        is_self = request.user == user
-
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
+        reviews = models.Review.objects.filter(
+            user=user,
+            rating__isnull=False,
+            book__id=OuterRef("id"),
+        ).order_by("-published_date")
+
+        if not is_self:
+            reviews = privacy_filter(request.user, reviews)
+
+        books = books.annotate(
+            rating=Subquery(reviews.values("rating")[:1])
+        ).prefetch_related("authors")
+
         paginated = Paginator(
-            shelf.books.order_by("-updated_date"),
+            books.order_by("-shelfbook__updated_date"),
             PAGE_LENGTH,
         )
 

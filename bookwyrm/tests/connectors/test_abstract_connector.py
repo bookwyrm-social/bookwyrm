@@ -84,13 +84,6 @@ class AbstractConnector(TestCase):
         """barebones connector for search with defaults"""
         self.assertIsInstance(self.connector.book_mappings, list)
 
-    def test_is_available(self):
-        """this isn't used...."""
-        self.assertTrue(self.connector.is_available())
-        self.connector.max_query_count = 1
-        self.connector.connector.query_count = 2
-        self.assertFalse(self.connector.is_available())
-
     def test_get_or_create_book_existing(self):
         """find an existing book by remote/origin id"""
         self.assertEqual(models.Book.objects.count(), 1)

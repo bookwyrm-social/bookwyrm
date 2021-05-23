@@ -1,4 +1,7 @@
 {% load bookwyrm_tags %}
+{% load utilities %}
+{% load status_display %}
+
 {% load i18n %}
 <form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}
@@ -100,7 +103,7 @@
 
     {# bottom bar #}
     <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
-    
+
     <div class="columns mt-1">
         <div class="field has-addons column">
             <div class="control">

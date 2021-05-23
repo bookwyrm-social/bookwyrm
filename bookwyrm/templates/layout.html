@@ -1,5 +1,4 @@
-{% load bookwyrm_tags %}
-{% load i18n %}
+{% load layout %}{% load i18n %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
@@ -135,12 +134,14 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
+                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not request.user.unread_notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
-                            <span data-poll="notifications">{{ request.user.unread_notification_count }}</span>
+                            <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
+                        {% endwith %}
                     </a>
                 </div>
                 {% else %}
@@ -182,11 +183,23 @@
     </div>
 </nav>
 
+{% if request.user.is_authenticated and active_announcements.exists %}
+<div class="block is-flex-grow-1">
+    <div class="container">
+        {% for announcement in active_announcements %}
+        {% include 'snippets/announcement.html' with announcement=announcement %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 <div class="section is-flex-grow-1">
     <div class="container">
+        {# almost every view needs to know the user shelves #}
+        {% with request.user.shelf_set.all as user_shelves %}
         {% block content %}
         {% endblock %}
+        {% endwith %}
     </div>
 </div>
 
@@ -214,7 +227,7 @@
                 </p>
                 {% endif %}
                 <p>
-                    {% trans 'BookWyrm is open source software. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.' %}
+                {% blocktrans %}BookWyrm's source code is freely available. You can contribute or report issues on <a href="https://github.com/mouse-reeve/bookwyrm">GitHub</a>.{% endblocktrans %}
                 </p>
             </div>
             {% if site.footer_item %}
@@ -230,6 +243,7 @@
     var csrf_token = '{{ csrf_token }}';
 </script>
 <script src="/static/js/bookwyrm.js"></script>
+<script src="/static/js/localstorage.js"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

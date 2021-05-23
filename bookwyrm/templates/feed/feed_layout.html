@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% load i18n %}
-{% load bookwyrm_tags %}
 
 {% block title %}{% trans "Updates" %}{% endblock %}
 
@@ -105,5 +104,4 @@
 
 {% block scripts %}
 <script src="/static/js/vendor/tabs.js"></script>
-{% include 'snippets/datepicker_js.html' %}
 {% endblock %}

@@ -1,4 +1,4 @@
-{% load bookwyrm_tags %}
+{% load markdown %}
 <div class="columns is-multiline">
     {% for list in lists %}
     <div class="column is-one-quarter">
@@ -22,7 +22,7 @@
             {% endwith %}
 
             <div class="card-content is-flex-grow-0">
-                <div {% if list.description %}title="{{ list.description }}"{% endif %}>
+                <div class="is-clipped" {% if list.description %}title="{{ list.description }}"{% endif %}>
                 {% if list.description %}
                     {{ list.description|to_markdown|safe|truncatechars_html:30 }}
                 {% else %}

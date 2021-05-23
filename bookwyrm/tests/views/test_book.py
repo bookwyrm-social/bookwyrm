@@ -59,7 +59,6 @@ class BookViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-        request = self.factory.get("")
         with patch("bookwyrm.views.books.is_api_request") as is_api:
             is_api.return_value = True
             result = view(request, self.book.id)

@@ -38,7 +38,7 @@ LOCALE_PATHS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -107,7 +107,7 @@ MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
 STREAMS = ["home", "local", "federated"]
 
 # Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 BOOKWYRM_DATABASE_BACKEND = env("BOOKWYRM_DATABASE_BACKEND", "postgres")
 
@@ -118,7 +118,7 @@ BOOKWYRM_DBS = {
         "USER": env("POSTGRES_USER", "fedireads"),
         "PASSWORD": env("POSTGRES_PASSWORD", "fedireads"),
         "HOST": env("POSTGRES_HOST", ""),
-        "PORT": 5432,
+        "PORT": env("POSTGRES_PORT", 5432),
     },
 }
 
@@ -129,7 +129,7 @@ LOGIN_URL = "/login/"
 AUTH_USER_MODEL = "bookwyrm.User"
 
 # Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -148,7 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 LANGUAGES = [
@@ -170,7 +170,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = "/static/"

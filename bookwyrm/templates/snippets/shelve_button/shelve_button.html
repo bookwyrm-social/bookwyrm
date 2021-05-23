@@ -1,4 +1,6 @@
 {% load bookwyrm_tags %}
+{% load utilities %}
+
 {% if request.user.is_authenticated %}
 
 {% with book.id|uuid as uuid %}
@@ -11,7 +13,7 @@
     </div>
     {% else %}
     <div class="control">
-        {% include 'snippets/shelve_button/shelve_button_options.html' with class="shelf-option is-small" shelves=request.user.shelf_set.all active_shelf=active_shelf button_uuid=uuid %}
+        {% include 'snippets/shelve_button/shelve_button_options.html' with class="shelf-option is-small" shelves=user_shelves active_shelf=active_shelf button_uuid=uuid %}
     </div>
     {% include 'snippets/shelve_button/shelve_button_dropdown.html' with class="is-small" button_uuid=uuid%}
     {% endif %}
@@ -23,7 +25,7 @@
 
 {% include 'snippets/shelve_button/finish_reading_modal.html' with book=active_shelf.book controls_text="finish-reading" controls_uid=uuid readthrough=readthrough %}
 
-{% include 'snippets/shelve_button/progress_update_modal.html' with book=shelf_book.book controls_text="progress-update" controls_uid=uuid readthrough=readthrough %}
+{% include 'snippets/shelve_button/progress_update_modal.html' with book=active_shelf_book.book controls_text="progress-update" controls_uid=uuid readthrough=readthrough %}
 
 {% endwith %}
 {% endif %}
