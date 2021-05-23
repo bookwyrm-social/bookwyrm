@@ -1,16 +1,19 @@
 {% load i18n %}
 {% load humanize %}
+
+{% with goal.progress as progress %}
 <p>
-    {% if goal.progress_percent >= 100 %}
+    {% if progress.percent >= 100 %}
         {% trans "Success!" %}
-    {% elif goal.progress_percent %}
-        {% blocktrans with percent=goal.progress_percent %}{{ percent }}% complete!{% endblocktrans %}
+    {% elif progress.percent %}
+        {% blocktrans with percent=progress.percent %}{{ percent }}% complete!{% endblocktrans %}
     {% endif %}
     {% if goal.user == request.user %}
-    {% blocktrans with read_count=goal.book_count|intcomma goal_count=goal.goal|intcomma path=goal.local_path %}You've read <a href="{{ path }}">{{ read_count }} of {{ goal_count}} books</a>.{% endblocktrans %}
+    {% blocktrans with read_count=progress.count|intcomma goal_count=goal.goal|intcomma path=goal.local_path %}You've read <a href="{{ path }}">{{ read_count }} of {{ goal_count}} books</a>.{% endblocktrans %}
     {% else %}
-    {% blocktrans with username=goal.user.display_name read_count=goal.book_count|intcomma goal_count=goal.goal|intcomma path=goal.local_path %}{{ username }} has read <a href="{{ path }}">{{ read_count }} of {{ goal_count}} books</a>.{% endblocktrans %}
+    {% blocktrans with username=goal.user.display_name read_count=progress.count|intcomma goal_count=goal.goal|intcomma path=goal.local_path %}{{ username }} has read <a href="{{ path }}">{{ read_count }} of {{ goal_count}} books</a>.{% endblocktrans %}
     {% endif %}
 </p>
-<progress class="progress is-large" value="{{ goal.book_count }}" max="{{ goal.goal }}" aria-hidden="true">{{ goal.progress_percent }}%</progress>
+<progress class="progress is-large" value="{{ progress.count }}" max="{{ goal.goal }}" aria-hidden="true">{{ progress.percent }}%</progress>
 
+{% endwith %}

@@ -162,14 +162,15 @@ def get_suggested_books(user, max_books=5):
             else max_books - book_count
         )
         shelf = user.shelf_set.get(identifier=preset)
-
-        shelf_books = shelf.shelfbook_set.order_by("-updated_date")[:limit]
-        if not shelf_books:
+        if not shelf.books.exists():
             continue
+
         shelf_preview = {
             "name": shelf.name,
             "identifier": shelf.identifier,
-            "books": [s.book for s in shelf_books],
+            "books": shelf.books.order_by("shelfbook").prefetch_related("authors")[
+                :limit
+            ],
         }
         suggested_books.append(shelf_preview)
         book_count += len(shelf_preview["books"])
