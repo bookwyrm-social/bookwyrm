@@ -13,7 +13,7 @@ from bookwyrm.utils import regex
 
 def get_user_from_username(viewer, username):
     """helper function to resolve a localname or a username to a user"""
-    if viewer.localname == username:
+    if viewer.is_authenticated and viewer.localname == username:
         # that's yourself, fool
         return viewer
 
