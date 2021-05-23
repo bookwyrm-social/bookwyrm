@@ -27,7 +27,7 @@
         {% if not items.object_list.exists %}
         <p>{% trans "This list is currently empty" %}</p>
         {% else %}
-        <ol start="{{ items.start_index }}">
+        <ol start="{{ items.start_index }}" class="ordered-list">
         {% for item in items %}
             <li class="block mb-5">
                 <div class="card">
@@ -35,16 +35,17 @@
                         <div
                             class="
                                 card-content p-0 mb-0
-                                columns is-mobile is-gapless
+                                columns is-gapless
+                                is-mobile
                             "
                         >
-                            <div class="column is-2-mobile is-cover align to-t">
+                            <div class="column is-3-mobile is-2-tablet is-cover align to-t">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' %}
                                 </a>
                             </div>
 
-                            <div class="column ml-3">
+                            <div class="column mx-3 my-2">
                                 <p>
                                     {% include 'snippets/book_titleby.html' %}
                                 </p>
@@ -59,7 +60,7 @@
                         </div>
                     {% endwith %}
 
-                    <div class="card-footer has-background-white-bis is-align-items-baseline">
+                    <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
                             <div>
                             <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
@@ -69,6 +70,9 @@
                         <div class="card-footer-item">
                             <form name="set-position" method="post" action="{% url 'list-set-book-position' item.id %}">
                                 <div class="field has-addons mb-0">
+                                    <div class="control">
+                                        <label for="input-list-position" class="button is-transparent is-small">{% trans "List position" %}</label>
+                                    </div>
                                     {% csrf_token %}
                                     <div class="control">
                                         <input id="input-list-position" class="input is-small" type="number" min="1" name="position" value="{{ item.order }}">
@@ -77,7 +81,6 @@
                                         <button type="submit" class="button is-info is-small is-tablet">{% trans "Set" %}</button>
                                     </div>
                                 </div>
-                                <label for="input-list-position" class="help">{% trans "List position" %}</label>
                             </form>
                         </div>
                         <form name="add-book" method="post" action="{% url 'list-remove-book' list.id %}" class="card-footer-item">
@@ -96,24 +99,36 @@
     </section>
 
     <section class="column is-one-quarter">
-        <h2>{% trans "Sort List" %}</h2>
+        <h2 class="title is-5">
+            {% trans "Sort List" %}
+        </h2>
         <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
-            <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
-            <div class="select is-fullwidth">
-                {{ sort_form.sort_by }}
+            <div class="field">
+                <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
+                <div class="select is-fullwidth">
+                    {{ sort_form.sort_by }}
+                </div>
             </div>
-            <label class="label" for="id_direction">{% trans "Direction" %}</label>
-            <div class="select is-fullwidth">
-                {{ sort_form.direction }}
+            <div class="field">
+                <label class="label" for="id_direction">{% trans "Direction" %}</label>
+                <div class="select is-fullwidth">
+                    {{ sort_form.direction }}
+                </div>
             </div>
-            <div>
+            <div class="field">
                 <button class="button is-primary is-fullwidth" type="submit">
                     {% trans "Sort List" %}
                 </button>
             </div>
         </form>
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
-        <h2>{% if list.curation == 'open' or request.user == list.user %}{% trans "Add Books" %}{% else %}{% trans "Suggest Books" %}{% endif %}</h2>
+        <h2 class="title is-5 mt-6">
+            {% if list.curation == 'open' or request.user == list.user %}
+                {% trans "Add Books" %}
+            {% else %}
+                {% trans "Suggest Books" %}
+            {% endif %}
+        </h2>
         <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
