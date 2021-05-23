@@ -35,16 +35,17 @@
                         <div
                             class="
                                 card-content p-0 mb-0
-                                columns is-mobile is-gapless
+                                columns is-gapless
+                                is-mobile
                             "
                         >
-                            <div class="column is-2-mobile is-cover align to-t">
+                            <div class="column is-3-mobile is-2-tablet is-cover align to-t">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' %}
                                 </a>
                             </div>
 
-                            <div class="column ml-3">
+                            <div class="column mx-3 my-2">
                                 <p>
                                     {% include 'snippets/book_titleby.html' %}
                                 </p>
@@ -59,7 +60,7 @@
                         </div>
                     {% endwith %}
 
-                    <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-baseline">
+                    <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
                             <div>
                             <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
