@@ -2,7 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError
-from django.db.models import Count, OuterRef, Subquery, F, Q
+from django.db.models import OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -28,7 +28,12 @@ class Shelf(View):
         """display a shelf"""
         user = get_user_from_username(request.user, username)
 
-        shelves = privacy_filter(request.user, user.shelf_set)
+        is_self = user == request.user
+
+        if is_self:
+            shelves = user.shelf_set
+        else:
+            shelves = privacy_filter(request.user, user.shelf_set)
 
         # get the shelf and make sure the logged in user should be able to see it
         if shelf_identifier:
@@ -53,26 +58,28 @@ class Shelf(View):
         if is_api_request(request):
             return ActivitypubResponse(shelf.to_activity(**request.GET))
 
-        reviews = privacy_filter(
-            request.user,
-            models.Review.objects.filter(
-                user=user,
-                rating__isnull=False,
-                book__id=OuterRef("id"),
-            ),
+        reviews = models.Review.objects.filter(
+            user=user,
+            rating__isnull=False,
+            book__id=OuterRef("id"),
         ).order_by("-published_date")
 
-        books = books.annotate(rating=Subquery(reviews.values("rating")[:1]))
+        if not is_self:
+            reviews = privacy_filter(request.user, reviews)
+
+        books = books.annotate(
+            rating=Subquery(reviews.values("rating")[:1])
+        ).prefetch_related("authors")
 
         paginated = Paginator(
-            books.order_by("-updated_date"),
+            books.order_by("-shelfbook__updated_date"),
             PAGE_LENGTH,
         )
 
         page = paginated.get_page(request.GET.get("page"))
         data = {
             "user": user,
-            "is_self": request.user == user,
+            "is_self": is_self,
             "shelves": shelves.all(),
             "shelf": shelf,
             "books": page,
