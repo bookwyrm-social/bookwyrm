@@ -1,11 +1,11 @@
+include /etc/nginx/conf.d/server_config;
+
 upstream web {
     server web:8000;
 }
 
 server {
     listen 80;
-
-    include /etc/nginx/conf.d/server_config;
 
     location / {
         proxy_pass http://web;
