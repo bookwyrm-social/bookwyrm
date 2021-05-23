@@ -69,9 +69,14 @@ def related_status(notification):
 @register.simple_tag(takes_context=True)
 def active_shelf(context, book):
     """check what shelf a user has a book on, if any"""
-    shelf = models.ShelfBook.objects.filter(
-        shelf__user=context["request"].user, book__in=book.parent_work.editions.all()
-    ).select_related("book", "shelf").first()
+    shelf = (
+        models.ShelfBook.objects.filter(
+            shelf__user=context["request"].user,
+            book__in=book.parent_work.editions.all(),
+        )
+        .select_related("book", "shelf")
+        .first()
+    )
     return shelf if shelf else {"book": book}
 
 
