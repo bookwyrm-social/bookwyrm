@@ -3,7 +3,7 @@
 
 let BookWyrm = new class {
     constructor() {
-        this.MAX_FILE_SIZE = 10000000
+        this.MAX_FILE_SIZE_BYTES = 10 * 1000000
         this.initOnDOMLoaded();
         this.initReccuringTasks();
         this.initEventListeners();
@@ -298,14 +298,14 @@ let BookWyrm = new class {
     }
 
     disableIfTooLarge(eventOrElement) {
-        const { addRemoveClass, MAX_FILE_SIZE } = this
+        const { addRemoveClass, MAX_FILE_SIZE_BYTES } = this
         const element = eventOrElement.currentTarget || eventOrElement
 
         const submits = element.form.querySelectorAll('[type="submit"]')
         const warns = element.parentElement.querySelectorAll('.file-too-big')
         const isTooBig = element.files &&
             element.files[0] &&
-            element.files[0].size > MAX_FILE_SIZE
+            element.files[0].size > MAX_FILE_SIZE_BYTES
 
         if (isTooBig) {
             submits.forEach(submitter => submitter.disabled = true)
