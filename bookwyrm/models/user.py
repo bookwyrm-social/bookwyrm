@@ -381,17 +381,16 @@ class AnnualGoal(BookWyrmModel):
         return {r.book.id: r.rating for r in reviews}
 
     @property
-    def progress_percent(self):
-        """how close to your goal, in percent form"""
-        return int(float(self.book_count / self.goal) * 100)
-
-    @property
-    def book_count(self):
+    def progress(self):
         """how many books you've read this year"""
-        return self.user.readthrough_set.filter(
+        count = self.user.readthrough_set.filter(
             finish_date__year__gte=self.year,
             finish_date__year__lt=self.year + 1,
         ).count()
+        return {
+            "count": count,
+            "percent": int(float(count / self.goal) * 100),
+        }
 
 
 @app.task

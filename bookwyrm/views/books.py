@@ -62,13 +62,16 @@ class Book(View):
             queryset = queryset.filter(user=request.user)
         else:
             queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
+        queryset = queryset.select_related("user")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
         data = {
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
             "review_count": reviews.count(),
-            "ratings": reviews.filter(Q(content__isnull=True) | Q(content=""))
+            "ratings": reviews.filter(
+                Q(content__isnull=True) | Q(content="")
+            ).select_related("user")
             if not user_statuses
             else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
@@ -89,15 +92,15 @@ class Book(View):
                 )
             data["readthroughs"] = readthroughs
 
-            data["user_shelves"] = models.ShelfBook.objects.filter(
+            data["user_shelfbooks"] = models.ShelfBook.objects.filter(
                 user=request.user, book=book
-            )
+            ).select_related("shelf")
 
             data["other_edition_shelves"] = models.ShelfBook.objects.filter(
                 ~Q(book=book),
                 user=request.user,
                 book__parent_work=book.parent_work,
-            )
+            ).select_related("shelf", "book")
 
             data["user_statuses"] = {
                 "review_count": book.review_set.filter(user=request.user).count(),

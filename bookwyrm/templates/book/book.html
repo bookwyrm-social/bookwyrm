@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
 
-{% block title %}{{ book.title }}{% endblock %}
+{% block title %}{{ book|title }}{% endblock %}
 
 {% block content %}
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
@@ -137,7 +137,7 @@
 
             {# user's relationship to the book #}
             <div class="block">
-                {% for shelf in user_shelves %}
+                {% for shelf in user_shelfbooks %}
                 <p>
                     {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}This edition is on your <a href="{{ path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
                     {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
