@@ -22,42 +22,59 @@
     </div>
 </div>
 
-<div class="block content columns">
-    {% if author.aliases or author.born or author.died or author.wikipedia_link %}
+<div class="block content columns" itemscope itemtype="https://schema.org/Person">
+    <meta itemprop="name" content="{{ author.name }}">
+
+    {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id %}
     <div class="column is-narrow">
         <div class="box">
             <dl>
                 {% if author.aliases %}
                 <div class="is-flex">
                     <dt class="mr-1">{% trans "Aliases:" %}</dt>
-                    <dd itemprop="aliases">{{ author.aliases|join:', ' }}</dd>
+                    <dd>
+                        {% for alias in author.aliases %}
+                        <span itemprop="alternateName">{{alias}}</span>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    </dd>
                 </div>
                 {% endif %}
                 {% if author.born %}
                 <div class="is-flex">
                     <dt class="mr-1">{% trans "Born:" %}</dt>
-                    <dd itemprop="aliases">{{ author.born|naturalday }}</dd>
+                    <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
                 {% if author.died %}
                 <div class="is-flex">
                     <dt class="mr-1">{% trans "Died:" %}</dt>
-                    <dd itemprop="aliases">{{ author.died|naturalday }}</dd>
+                    <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
             </dl>
 
             {% if author.wikipedia_link %}
-            <p><a href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">{% trans "Wikipedia" %}</a></p>
+            <p>
+                <link itemprop="sameAs" href="{{ author.wikipedia_link }}" />
+                <a href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">
+                    {% trans "Wikipedia" %}
+                </a>
+            </p>
             {% endif %}
             {% if author.openlibrary_key %}
             <p class="mb-0">
-                <a href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a>
+                <link itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" />
+                <a href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
+                    {% trans "View on OpenLibrary" %}
+                </a>
             </p>
             {% endif %}
             {% if author.inventaire_id %}
             <p class="mb-0">
-                <a href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a>
+                <link itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" />
+                <a href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
+                    {% trans "View on Inventaire" %}
+                </a>
             </p>
             {% endif %}
         </div>
