@@ -98,7 +98,9 @@
     </section>
 
     <section class="column is-one-quarter">
-        <h2>{% trans "Sort List" %}</h2>
+        <h2 class="title is-5">
+            {% trans "Sort List" %}
+        </h2>
         <form name="sort" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field">
                 <label class="label" for="id_sort_by">{% trans "Sort By" %}</label>
@@ -119,7 +121,13 @@
             </div>
         </form>
     {% if request.user.is_authenticated and not list.curation == 'closed' or request.user == list.user %}
-        <h2>{% if list.curation == 'open' or request.user == list.user %}{% trans "Add Books" %}{% else %}{% trans "Suggest Books" %}{% endif %}</h2>
+        <h2 class="title is-5 mt-6">
+            {% if list.curation == 'open' or request.user == list.user %}
+                {% trans "Add Books" %}
+            {% else %}
+                {% trans "Suggest Books" %}
+            {% endif %}
+        </h2>
         <form name="search" action="{% url 'list' list.id %}" method="GET" class="block">
             <div class="field has-addons">
                 <div class="control">
