@@ -94,7 +94,7 @@
                 {% spaceless %}
                 <tr class="book-preview">
                     <td class="book-preview-top-row">
-                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' %}</a>
+                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' size='small' %}</a>
                     </td>
                     <td data-title="{% trans "Title" %}">
                         <a href="{{ book.local_path }}">{{ book.title }}</a>

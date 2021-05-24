@@ -45,7 +45,7 @@
 
     <div class="columns">
         <div class="column is-one-fifth">
-            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+            {% include 'snippets/book_cover.html' with size='xxlarge' size_mobile='medium' book=book cover_class='is-h-m-mobile' %}
             {% include 'snippets/rate_action.html' with user=request.user book=book %}
 
             <div class="mb-3">
