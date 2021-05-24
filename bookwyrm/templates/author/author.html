@@ -27,10 +27,10 @@
 
     {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id %}
     <div class="column is-two-fifths">
-        <div class="box">
+        <div class="box py-2">
             <dl>
                 {% if author.aliases %}
-                <div class="is-flex is-flex-wrap-wrap mb-2">
+                <div class="is-flex is-flex-wrap-wrap my-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Aliases:" %}</dt>
                     {% for alias in author.aliases %}
                         <dd itemprop="alternateName" content="{{alias}}">
@@ -39,14 +39,16 @@
                     {% endfor %}
                 </div>
                 {% endif %}
+
                 {% if author.born %}
-                <div class="is-flex mb-2">
+                <div class="is-flex my-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
                     <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
+
                 {% if author.died %}
-                <div class="is-flex mb-2">
+                <div class="is-flex my-1">
                     <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
                     <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
@@ -54,7 +56,7 @@
             </dl>
 
             {% if author.wikipedia_link %}
-            <p class="mb-1">
+            <p class="my-1">
                 <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">
                     {% trans "Wikipedia" %}
                 </a>
@@ -62,7 +64,7 @@
             {% endif %}
 
             {% if author.openlibrary_key %}
-            <p class="mb-1">
+            <p class="my-1">
                 <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
                     {% trans "View on OpenLibrary" %}
                 </a>
@@ -70,7 +72,7 @@
             {% endif %}
             
             {% if author.inventaire_id %}
-            <p class="mb-1">
+            <p class="my-1">
                 <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
                     {% trans "View on Inventaire" %}
                 </a>
@@ -78,7 +80,7 @@
             {% endif %}
 
             {% if author.librarything_key %}
-            <p class="mb-1">
+            <p class="my-1">
                 <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
                     {% trans "View on LibraryThing" %}
                 </a>
@@ -86,7 +88,7 @@
             {% endif %}
             
             {% if author.goodreads_key %}
-            <p class="mb-1">
+            <p class="my-1">
                 <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
                     {% trans "View on Goodreads" %}
                 </a>
