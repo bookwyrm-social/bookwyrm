@@ -62,6 +62,7 @@ class Shelf(View):
             user=user,
             rating__isnull=False,
             book__id=OuterRef("id"),
+            deleted=False,
         ).order_by("-published_date")
 
         if not is_self:

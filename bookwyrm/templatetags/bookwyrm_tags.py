@@ -25,6 +25,7 @@ def get_user_rating(book, user):
             user=user,
             book=book,
             rating__isnull=False,
+            deleted=False,
         )
         .order_by("-published_date")
         .first()

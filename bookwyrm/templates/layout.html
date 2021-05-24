@@ -54,14 +54,14 @@
         <div class="navbar-menu" id="main-nav">
             <div class="navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                    {% trans "Your books" %}
-                </a>
                 <a href="/#feed" class="navbar-item">
                     {% trans "Feed" %}
                 </a>
                 <a href="{% url 'lists' %}" class="navbar-item">
                     {% trans "Lists" %}
+                </a>
+                <a href="{% url 'directory' %}" class="navbar-item">
+                    {% trans "Directory" %}
                 </a>
                 {% endif %}
             </div>
@@ -83,18 +83,13 @@
                     </a>
                     <ul class="navbar-dropdown" id="navbar-dropdown">
                         <li>
+                            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
+                                {% trans 'Your Books' %}
+                            </a>
+                        </li>
+                        <li>
                             <a href="{% url 'direct-messages' %}" class="navbar-item">
                                 {% trans "Direct Messages" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'directory' %}" class="navbar-item">
-                                {% trans 'Directory' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'import' %}" class="navbar-item">
-                                {% trans 'Import Books' %}
                             </a>
                         </li>
                         <li>
