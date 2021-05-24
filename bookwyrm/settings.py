@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "django_rename_app",
     "bookwyrm",
     "celery",
+    "imagekit",
 ]
 
 MIDDLEWARE = [

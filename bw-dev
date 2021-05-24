@@ -107,7 +107,10 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams
         ;;
+    generateimages)
+        runweb python manage.py generateimages
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, generateimages"
         ;;
 esac
