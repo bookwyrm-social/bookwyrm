@@ -1,41 +1,144 @@
 {% spaceless %}
 
 {% load i18n %}
+{% load imagekit %}
 
-<figure
-    class="
-        cover-container
-        {{ cover_class }}
+{% if book.cover %}
+    <picture class="cover-container {{ cover_class }}">
+        {% with external_path|yesno:',/images/' as image_path %}
 
-        {% if not book.cover %}
-            no-cover
+        {% if size_mobile == 'xsmall' %}
+            {% generateimage 'bw:book:xsmall:webp' source=book.cover as th_xsmall_webp %}
+            {% generateimage 'bw:book:xsmall:jpg' source=book.cover as th_xsmall_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_xsmall_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_xsmall_jpg }}"
+            />
+        {% elif size_mobile == 'small' %}
+            {% generateimage 'bw:book:small:webp' source=book.cover as th_small_webp %}
+            {% generateimage 'bw:book:small:jpg' source=book.cover as th_small_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_small_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_small_jpg }}"
+            />
+        {% elif size_mobile == 'medium' %}
+            {% generateimage 'bw:book:medium:webp' source=book.cover as th_medium_webp %}
+            {% generateimage 'bw:book:medium:jpg' source=book.cover as th_medium_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_medium_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_medium_jpg }}"
+            />
+        {% elif size_mobile == 'large' %}
+            {% generateimage 'bw:book:large:webp' source=book.cover as th_large_webp %}
+            {% generateimage 'bw:book:large:jpg' source=book.cover as th_large_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_large_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_large_jpg }}"
+            />
+        {% elif size_mobile == 'xlarge' %}
+            {% generateimage 'bw:book:xlarge:webp' source=book.cover as th_xlarge_webp %}
+            {% generateimage 'bw:book:xlarge:jpg' source=book.cover as th_xlarge_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_xlarge_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_xlarge_jpg }}"
+            />
+        {% elif size_mobile == 'xxlarge' %}
+            {% generateimage 'bw:book:xxlarge:webp' source=book.cover as th_xxlarge_webp %}
+            {% generateimage 'bw:book:xxlarge:jpg' source=book.cover as th_xxlarge_jpg %}
+            <source
+                media="(max-width: 768px)"
+                type="image/webp"
+                srcset="{{ image_path }}{{ th_xxlarge_webp }}"
+            />
+            <source
+                media="(max-width: 768px)"
+                type="image/jpg"
+                srcset="{{ image_path }}{{ th_xxlarge_jpg }}"
+            />
         {% endif %}
-    "
 
-    {% if book.alt_text %}
-        title="{{ book.alt_text }}"
-    {% endif %}
->
-    <img
-        class="book-cover"
+        {% if size == 'xsmall' %}
+            {% generateimage 'bw:book:xsmall:webp' source=book.cover as th_xsmall_webp %}
+            {% generateimage 'bw:book:xsmall:jpg' source=book.cover as th_xsmall_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_xsmall_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_xsmall_jpg }}"/>
+        {% elif size == 'small' %}
+            {% generateimage 'bw:book:small:webp' source=book.cover as th_small_webp %}
+            {% generateimage 'bw:book:small:jpg' source=book.cover as th_small_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_small_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_small_jpg }}"/>
+        {% elif size == 'medium' %}
+            {% generateimage 'bw:book:medium:webp' source=book.cover as th_medium_webp %}
+            {% generateimage 'bw:book:medium:jpg' source=book.cover as th_medium_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_medium_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_medium_jpg }}"/>
+        {% elif size == 'large' %}
+            {% generateimage 'bw:book:large:webp' source=book.cover as th_large_webp %}
+            {% generateimage 'bw:book:large:jpg' source=book.cover as th_large_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_large_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_large_jpg }}"/>
+        {% elif size == 'xlarge' %}
+            {% generateimage 'bw:book:xlarge:webp' source=book.cover as th_xlarge_webp %}
+            {% generateimage 'bw:book:xlarge:jpg' source=book.cover as th_xlarge_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_xlarge_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_xlarge_jpg }}"/>
+        {% elif size == 'xxlarge' %}
+            {% generateimage 'bw:book:xxlarge:webp' source=book.cover as th_xxlarge_webp %}
+            {% generateimage 'bw:book:xxlarge:jpg' source=book.cover as th_xxlarge_jpg %}
+            <source type="image/webp" srcset="{{ image_path }}{{ th_xxlarge_webp }}"/>
+            <source type="image/jpg" srcset="{{ image_path }}{{ th_xxlarge_jpg }}"/>
+        {% endif %}
 
-        {% if book.cover %}
-            src="{% if img_path is None %}/images/{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
+        <img
+            class="book-cover"
+            src="{{ image_path }}{{ book.cover }}"
             itemprop="thumbnailUrl"
+            alt="{{ book.alt_text|default:'' }}"
+        >
+        {% endwith %}
+    </picture>
+{% endif %}
 
-            {% if book.alt_text %}
-                alt="{{ book.alt_text }}"
-            {% endif %}
-        {% else %}
+{% if not book.cover and book.alt_text %}
+    <figure class="cover-container no-cover {{ cover_class }}">
+        <img
+            class="book-cover"
             src="/static/images/no_cover.jpg"
             alt="{% trans "No cover" %}"
-        {% endif %}
-    >
-
-    {% if not book.cover and book.alt_text %}
         <figcaption class="cover_caption">
+        >
             <p>{{ book.alt_text }}</p>
         </figcaption>
-    {% endif %}
-</figure>
+    </figure>
+{% endif %}
 {% endspaceless %}
