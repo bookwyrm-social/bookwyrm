@@ -334,7 +334,7 @@ class TagField(ManyToManyField):
 
 
 class ClearableFileInputWithWarning(ClearableFileInput):
-    template_name = 'widgets/clearable_file_input_with_warning.html'
+    template_name = "widgets/clearable_file_input_with_warning.html"
 
 
 class CustomImageField(ImageField):
@@ -405,10 +405,12 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         return [image_name, image_content]
 
     def formfield(self, **kwargs):
-        return super().formfield(**{
-            'form_class': CustomImageField,
-            **kwargs,
-        })
+        return super().formfield(
+            **{
+                "form_class": CustomImageField,
+                **kwargs,
+            }
+        )
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
