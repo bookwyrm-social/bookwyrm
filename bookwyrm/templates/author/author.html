@@ -26,43 +26,43 @@
     <meta itemprop="name" content="{{ author.name }}">
 
     {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id %}
-    <div class="column is-narrow">
+    <div class="column is-two-fifths">
         <div class="box">
             <dl>
                 {% if author.aliases %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Aliases:" %}</dt>
+                <div class="is-flex is-flex-wrap-wrap mb-2">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Aliases:" %}</dt>
                     {% for alias in author.aliases %}
                         <dd itemprop="alternateName" content="{{alias}}">
-                            {{alias}}{% if not forloop.last %},{% endif %}
+                            {{alias}}{% if not forloop.last %},&nbsp;{% endif %}
                         </dd>
                     {% endfor %}
                 </div>
                 {% endif %}
                 {% if author.born %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Born:" %}</dt>
+                <div class="is-flex mb-2">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
                     <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
                 {% if author.died %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Died:" %}</dt>
+                <div class="is-flex mb-2">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
                     <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
             </dl>
 
             {% if author.wikipedia_link %}
-            <p class="mt-1">
+            <p class="mb-1">
                 <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">
                     {% trans "Wikipedia" %}
                 </a>
             </p>
             {% endif %}
-            
+
             {% if author.openlibrary_key %}
-            <p class="mt-1">
+            <p class="mb-1">
                 <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
                     {% trans "View on OpenLibrary" %}
                 </a>
@@ -70,7 +70,7 @@
             {% endif %}
             
             {% if author.inventaire_id %}
-            <p class="mt-1">
+            <p class="mb-1">
                 <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
                     {% trans "View on Inventaire" %}
                 </a>
