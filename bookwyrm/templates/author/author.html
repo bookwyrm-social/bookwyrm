@@ -76,6 +76,22 @@
                 </a>
             </p>
             {% endif %}
+
+            {% if author.librarything_key %}
+            <p class="mb-1">
+                <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
+                    {% trans "View on LibraryThing" %}
+                </a>
+            </p>
+            {% endif %}
+            
+            {% if author.goodreads_key %}
+            <p class="mb-1">
+                <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
+                    {% trans "View on Goodreads" %}
+                </a>
+            </p>
+            {% endif %}
         </div>
     </div>
     {% endif %}
