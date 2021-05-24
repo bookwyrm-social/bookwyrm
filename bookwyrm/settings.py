@@ -37,6 +37,11 @@ LOCALE_PATHS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+# preview image
+
+PREVIEW_IMG_WIDTH = 1200
+PREVIEW_IMG_HEIGHT = 630
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 

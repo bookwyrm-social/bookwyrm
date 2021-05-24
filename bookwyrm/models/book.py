@@ -2,10 +2,13 @@
 import re
 
 from django.db import models
+from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
+from bookwyrm.preview_images import generate_preview_image_task
 from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
+from bookwyrm.tasks import app
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -204,6 +207,9 @@ class Edition(Book):
         activitypub_field="work",
     )
     edition_rank = fields.IntegerField(default=0)
+    preview_image = fields.ImageField(
+        upload_to="previews/", blank=True, null=True, alt_field="alt_text"
+    )
 
     activity_serializer = activitypub.Edition
     name_field = "title"
@@ -293,3 +299,9 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
+
+
+@receiver(models.signals.post_save, sender=Edition)
+# pylint: disable=unused-argument
+def preview_image(instance, *args, **kwargs):
+    generate_preview_image_task(instance, *args, **kwargs)
