@@ -195,7 +195,11 @@ def generate_preview_image(book_id, rating=None):
         # Lighten color
         image_bg_color_rgb = [x / 255.0 for x in ImageColor.getrgb(image_bg_color)]
         image_bg_color_hls = colorsys.rgb_to_hls(*image_bg_color_rgb)
-        image_bg_color_hls = (image_bg_color_hls[0], 0.9, image_bg_color_hls[2])
+        image_bg_color_hls = (
+            image_bg_color_hls[0],
+            max(0.9, image_bg_color_hls[1]),
+            image_bg_color_hls[2],
+        )
         image_bg_color = tuple(
             [math.ceil(x * 255) for x in colorsys.hls_to_rgb(*image_bg_color_hls)]
         )
