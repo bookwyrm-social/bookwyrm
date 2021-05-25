@@ -12,8 +12,10 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='book',
-            name='preview_image',
-            field=bookwyrm.models.fields.ImageField(blank=True, null=True, upload_to='cover_previews/'),
+            model_name="book",
+            name="preview_image",
+            field=bookwyrm.models.fields.ImageField(
+                blank=True, null=True, upload_to="cover_previews/"
+            ),
         ),
     ]

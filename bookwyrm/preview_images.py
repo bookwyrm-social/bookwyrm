@@ -33,6 +33,7 @@ path = Path(__file__).parent.absolute()
 font_dir = path.joinpath("static/fonts/public_sans")
 icon_font_dir = path.joinpath("static/css/fonts")
 
+
 def get_font(font_name, size=28):
     if font_name == "light":
         font_path = "%s/PublicSans-Light.ttf" % font_dir
@@ -99,7 +100,9 @@ def generate_instance_layer(content_width):
 
     line_width = 50 + 10 + font_instance.getsize(site.name)[0]
 
-    line_layer = Image.new("RGBA", (line_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50))
+    line_layer = Image.new(
+        "RGBA", (line_width, 2), color=(*(ImageColor.getrgb(TEXT_COLOR)), 50)
+    )
     instance_layer.alpha_composite(line_layer, (0, 60))
 
     return instance_layer
@@ -115,9 +118,13 @@ def generate_rating_layer(rating, content_width):
     icon_size = 64
     icon_margin = 10
 
-    rating_layer_base = Image.new("RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR)
+    rating_layer_base = Image.new(
+        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+    )
     rating_layer_color = Image.new("RGBA", (content_width, icon_size), color=TEXT_COLOR)
-    rating_layer_mask = Image.new("RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR)
+    rating_layer_mask = Image.new(
+        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+    )
 
     position_x = 0
 
@@ -136,7 +143,9 @@ def generate_rating_layer(rating, content_width):
     rating_layer_mask = rating_layer_mask.getchannel("A")
     rating_layer_mask = ImageOps.invert(rating_layer_mask)
 
-    rating_layer_composite = Image.composite(rating_layer_base, rating_layer_color, rating_layer_mask)
+    rating_layer_composite = Image.composite(
+        rating_layer_base, rating_layer_color, rating_layer_mask
+    )
 
     return rating_layer_composite
 
@@ -144,15 +153,19 @@ def generate_rating_layer(rating, content_width):
 def generate_default_cover():
     font_cover = get_font("light", size=28)
 
-    cover_width = math.floor(cover_img_limits * .7)
-    default_cover = Image.new("RGB", (cover_width, cover_img_limits), color=DEFAULT_COVER_COLOR)
+    cover_width = math.floor(cover_img_limits * 0.7)
+    default_cover = Image.new(
+        "RGB", (cover_width, cover_img_limits), color=DEFAULT_COVER_COLOR
+    )
     default_cover_draw = ImageDraw.Draw(default_cover)
 
     text = "no cover :("
     text_dimensions = font_cover.getsize(text)
-    text_coords = (math.floor((cover_width - text_dimensions[0]) / 2),
-                   math.floor((cover_img_limits - text_dimensions[1]) / 2))
-    default_cover_draw.text(text_coords, text, font=font_cover, fill='white')
+    text_coords = (
+        math.floor((cover_width - text_dimensions[0]) / 2),
+        math.floor((cover_img_limits - text_dimensions[1]) / 2),
+    )
+    default_cover_draw.text(text_coords, text, font=font_cover, fill="white")
 
     return default_cover
 
@@ -168,22 +181,24 @@ def generate_preview_image(book_id, rating=None):
 
     # Cover
     try:
-      cover_img_layer = Image.open(book.cover)
-      cover_img_layer.thumbnail((cover_img_limits, cover_img_limits), Image.ANTIALIAS)
-      color_thief = ColorThief(book.cover)
-      dominant_color = color_thief.get_color(quality=1)
+        cover_img_layer = Image.open(book.cover)
+        cover_img_layer.thumbnail((cover_img_limits, cover_img_limits), Image.ANTIALIAS)
+        color_thief = ColorThief(book.cover)
+        dominant_color = color_thief.get_color(quality=1)
     except:
-      cover_img_layer = generate_default_cover()
-      dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
+        cover_img_layer = generate_default_cover()
+        dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
 
     # Color
-    if BG_COLOR == 'use_dominant_color':
+    if BG_COLOR == "use_dominant_color":
         image_bg_color = "rgb(%s, %s, %s)" % dominant_color
         # Lighten color
-        image_bg_color_rgb = [x/255.0 for x in ImageColor.getrgb(image_bg_color)]
+        image_bg_color_rgb = [x / 255.0 for x in ImageColor.getrgb(image_bg_color)]
         image_bg_color_hls = colorsys.rgb_to_hls(*image_bg_color_rgb)
         image_bg_color_hls = (image_bg_color_hls[0], 0.9, image_bg_color_hls[1])
-        image_bg_color = tuple([math.ceil(x * 255) for x in colorsys.hls_to_rgb(*image_bg_color_hls)])
+        image_bg_color = tuple(
+            [math.ceil(x * 255) for x in colorsys.hls_to_rgb(*image_bg_color_hls)]
+        )
     else:
         image_bg_color = BG_COLOR
 
@@ -197,7 +212,9 @@ def generate_preview_image(book_id, rating=None):
     instance_layer = generate_instance_layer(content_width)
     texts_layer = generate_texts_layer(book, content_width)
 
-    contents_layer = Image.new("RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR)
+    contents_layer = Image.new(
+        "RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR
+    )
     contents_composite_y = 0
     contents_layer.alpha_composite(instance_layer, (0, contents_composite_y))
     contents_composite_y = contents_composite_y + instance_layer.height + gutter
@@ -217,7 +234,7 @@ def generate_preview_image(book_id, rating=None):
     contents_y = math.floor((IMG_HEIGHT - contents_layer_height) / 2)
     # Remove Instance Layer from centering calculations
     contents_y = contents_y - math.floor((instance_layer.height + gutter) / 2)
-    
+
     if contents_y < margin:
         contents_y = margin
 
@@ -234,7 +251,7 @@ def generate_preview_image(book_id, rating=None):
         try:
             old_path = book.preview_image.path
         except ValueError:
-            old_path = ''
+            old_path = ""
 
         # Save
         img.save(image_buffer, format="png")
