@@ -37,6 +37,7 @@ class Book(BookData):
     publishedDate: str = ""
 
     cover: Document = None
+    preview_image: Document = None
     type: str = "Book"
 
 

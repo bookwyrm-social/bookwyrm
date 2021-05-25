@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.preview_images import generate_preview_image_task
+from bookwyrm.preview_images import generate_preview_image_from_edition_task
 from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
 from bookwyrm.tasks import app
 
@@ -84,6 +84,9 @@ class Book(BookDataModel):
     authors = fields.ManyToManyField("Author")
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
+    )
+    preview_image = fields.ImageField(
+        upload_to="cover_previews/", blank=True, null=True, alt_field="alt_text"
     )
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
@@ -207,9 +210,6 @@ class Edition(Book):
         activitypub_field="work",
     )
     edition_rank = fields.IntegerField(default=0)
-    preview_image = fields.ImageField(
-        upload_to="previews/", blank=True, null=True, alt_field="alt_text"
-    )
 
     activity_serializer = activitypub.Edition
     name_field = "title"
@@ -302,6 +302,7 @@ def isbn_13_to_10(isbn_13):
 
 
 @receiver(models.signals.post_save, sender=Edition)
-# pylint: disable=unused-argument
-def preview_image(instance, *args, **kwargs):
-    generate_preview_image_task(instance, *args, **kwargs)
+def preview_image(instance, **kwargs):
+    updated_fields = kwargs["update_fields"]
+
+    generate_preview_image_from_edition_task.delay(instance.id, updated_fields)
