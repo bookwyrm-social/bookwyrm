@@ -17,9 +17,6 @@ from bookwyrm import models, settings
 from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app
 
-# dev
-import logging
-
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
 BG_COLOR = settings.PREVIEW_BG_COLOR
@@ -29,7 +26,8 @@ TRANSPARENT_COLOR = (0, 0, 0, 0)
 
 margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
-inner_img_limits = math.floor(IMG_HEIGHT * 0.8)
+inner_img_height = math.floor(IMG_HEIGHT * 0.8)
+inner_img_width = math.floor(inner_img_height * 0.7)
 path = Path(__file__).parent.absolute()
 font_dir = path.joinpath("static/fonts/public_sans")
 
@@ -172,17 +170,16 @@ def generate_rating_layer(rating, content_width):
 def generate_default_inner_img():
     font_cover = get_font("light", size=28)
 
-    cover_width = math.floor(inner_img_limits * 0.7)
     default_cover = Image.new(
-        "RGB", (cover_width, inner_img_limits), color=DEFAULT_COVER_COLOR
+        "RGB", (inner_img_width, inner_img_height), color=DEFAULT_COVER_COLOR
     )
     default_cover_draw = ImageDraw.Draw(default_cover)
 
     text = "no image :("
     text_dimensions = font_cover.getsize(text)
     text_coords = (
-        math.floor((cover_width - text_dimensions[0]) / 2),
-        math.floor((inner_img_limits - text_dimensions[1]) / 2),
+        math.floor((inner_img_width - text_dimensions[0]) / 2),
+        math.floor((inner_img_height - text_dimensions[1]) / 2),
     )
     default_cover_draw.text(text_coords, text, font=font_cover, fill="white")
 
@@ -195,7 +192,7 @@ def generate_preview_image(
     # Cover
     try:
         inner_img_layer = Image.open(picture)
-        inner_img_layer.thumbnail((inner_img_limits, inner_img_limits), Image.ANTIALIAS)
+        inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.ANTIALIAS)
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
     except:
@@ -230,7 +227,9 @@ def generate_preview_image(
     img = Image.new("RGBA", (IMG_WIDTH, IMG_HEIGHT), color=image_bg_color)
 
     # Contents
-    content_x = margin + inner_img_layer.width + gutter
+    inner_img_x = margin + inner_img_width - inner_img_layer.width
+    inner_img_y = math.floor((IMG_HEIGHT - inner_img_layer.height) / 2)
+    content_x = margin + inner_img_width + gutter
     content_width = IMG_WIDTH - content_x - margin
 
     contents_layer = Image.new(
@@ -266,10 +265,8 @@ def generate_preview_image(
     if contents_y < margin:
         contents_y = margin
 
-    cover_y = math.floor((IMG_HEIGHT - inner_img_layer.height) / 2)
-
     # Composite layers
-    img.paste(inner_img_layer, (margin, cover_y), inner_img_layer.convert("RGBA"))
+    img.paste(inner_img_layer, (inner_img_x, inner_img_y), inner_img_layer.convert("RGBA"))
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
     return img
