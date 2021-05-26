@@ -86,7 +86,7 @@ class Book(BookDataModel):
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
     preview_image = models.ImageField(
-        upload_to="cover_previews/", blank=True, null=True
+        upload_to="previews/covers/", blank=True, null=True
     )
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)

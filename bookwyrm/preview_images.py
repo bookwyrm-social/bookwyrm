@@ -14,6 +14,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Avg
 
 from bookwyrm import models, settings
+from bookwyrm.settings import DOMAIN
 from bookwyrm.tasks import app
 
 # dev
@@ -182,7 +183,7 @@ def generate_default_cover():
     return default_cover
 
 
-def generate_preview_image(book, texts={}, picture=None, rating=None):
+def generate_preview_image(texts={}, picture=None, rating=None, show_instance_layer=True):
     # Cover
     try:
         cover_img_layer = Image.open(picture)
@@ -217,31 +218,35 @@ def generate_preview_image(book, texts={}, picture=None, rating=None):
     content_x = margin + cover_img_layer.width + gutter
     content_width = IMG_WIDTH - content_x - margin
 
-    instance_layer = generate_instance_layer(content_width)
-    texts_layer = generate_texts_layer(texts, content_width)
-
     contents_layer = Image.new(
         "RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR
     )
     contents_composite_y = 0
-    contents_layer.alpha_composite(instance_layer, (0, contents_composite_y))
-    contents_composite_y = contents_composite_y + instance_layer.height + gutter
+
+    if show_instance_layer:
+        instance_layer = generate_instance_layer(content_width)
+        contents_layer.alpha_composite(instance_layer, (0, contents_composite_y))
+        contents_composite_y = contents_composite_y + instance_layer.height + gutter
+
+    texts_layer = generate_texts_layer(texts, content_width)
     contents_layer.alpha_composite(texts_layer, (0, contents_composite_y))
-    contents_composite_y = contents_composite_y + texts_layer.height + 30
+    contents_composite_y = contents_composite_y + texts_layer.height + gutter
 
     if rating:
         # Add some more margin
-        contents_composite_y = contents_composite_y + 30
+        contents_composite_y = contents_composite_y + gutter
         rating_layer = generate_rating_layer(rating, content_width)
         contents_layer.alpha_composite(rating_layer, (0, contents_composite_y))
-        contents_composite_y = contents_composite_y + rating_layer.height + 30
+        contents_composite_y = contents_composite_y + rating_layer.height + gutter
 
     contents_layer_box = contents_layer.getbbox()
     contents_layer_height = contents_layer_box[3] - contents_layer_box[1]
 
     contents_y = math.floor((IMG_HEIGHT - contents_layer_height) / 2)
-    # Remove Instance Layer from centering calculations
-    contents_y = contents_y - math.floor((instance_layer.height + gutter) / 2)
+
+    if show_instance_layer:
+        # Remove Instance Layer from centering calculations
+        contents_y = contents_y - math.floor((instance_layer.height + gutter) / 2)
 
     if contents_y < margin:
         contents_y = margin
@@ -256,8 +261,55 @@ def generate_preview_image(book, texts={}, picture=None, rating=None):
 
 
 @app.task
+def generate_site_preview_image_task():
+    """generate preview_image for the website"""
+    site = models.SiteSettings.objects.get()
+
+    if site.logo:
+        logo = site.logo
+    else:
+        logo = path.joinpath("static/images/logo-small.png")
+
+    texts = {
+        'text_zero': DOMAIN,
+        'text_one': site.name,
+        'text_three': site.instance_tagline,
+    }
+
+    img = generate_preview_image(texts=texts,
+                                 picture=logo,
+                                 show_instance_layer=False)
+
+    file_name = "%s.png" % str(uuid4())
+    image_buffer = BytesIO()
+    try:
+        try:
+            old_path = site.preview_image.path
+        except ValueError:
+            old_path = ""
+
+        # Save
+        img.save(image_buffer, format="png")
+        site.preview_image = InMemoryUploadedFile(
+            ContentFile(image_buffer.getvalue()),
+            "preview_image",
+            file_name,
+            "image/png",
+            image_buffer.tell(),
+            None,
+        )
+        site.save(update_fields=["preview_image"])
+
+        # Clean up old file after saving
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    finally:
+        image_buffer.close()
+
+
+@app.task
 def generate_edition_preview_image_task(book_id):
-    """generate preview_image"""
+    """generate preview_image for a book"""
     book = models.Book.objects.select_subclasses().get(id=book_id)
 
     rating = models.Review.objects.filter(
@@ -267,14 +319,12 @@ def generate_edition_preview_image_task(book_id):
     ).aggregate(Avg("rating"))["rating__avg"]
 
     texts = {
-        'text_zero': "ADDED A REVIEW",
         'text_one': book.title,
         'text_two': book.subtitle,
         'text_three': book.author_text
     }
 
-    img = generate_preview_image(book=book,
-                                 texts=texts,
+    img = generate_preview_image(texts=texts,
                                  picture=book.cover,
                                  rating=rating)
 

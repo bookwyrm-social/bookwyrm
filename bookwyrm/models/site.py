@@ -4,9 +4,12 @@ import datetime
 
 from Crypto import Random
 from django.db import models, IntegrityError
+from django.dispatch import receiver
 from django.utils import timezone
 
+from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tasks import app
 from .base_model import BookWyrmModel
 from .user import User
 
@@ -35,6 +38,7 @@ class SiteSettings(models.Model):
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
     favicon = models.ImageField(upload_to="logos/", null=True, blank=True)
+    preview_image = models.ImageField(upload_to="previews/logos/", null=True, blank=True)
 
     # footer
     support_link = models.CharField(max_length=255, null=True, blank=True)
@@ -119,3 +123,12 @@ class PasswordReset(models.Model):
     def link(self):
         """formats the invite link"""
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+
+
+@receiver(models.signals.post_save, sender=SiteSettings)
+# pylint: disable=unused-argument
+def preview_image(instance, *args, **kwargs):
+    updated_fields = kwargs["update_fields"]
+
+    if not updated_fields or "preview_image" not in updated_fields:
+        generate_site_preview_image_task.delay()
