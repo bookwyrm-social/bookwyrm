@@ -344,6 +344,7 @@ def generate_edition_preview_image_task(book_id):
 
     save_and_cleanup(image, instance=book)
 
+
 @app.task
 def generate_user_preview_image_task(user_id):
     """generate preview_image for a book"""
