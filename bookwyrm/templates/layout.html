@@ -16,8 +16,10 @@
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
-    <meta name="twitter:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
-    <meta name="og:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
+    {% block opengraph_images %}
+    <meta name="twitter:image" content="{{ get_path }}/images/{{ site.preview_image }}">
+    <meta name="og:image" content="{{ get_path }}/images/{{ site.preview_image }}">
+    {% endblock %}
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>
