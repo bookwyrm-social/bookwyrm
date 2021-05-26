@@ -31,7 +31,6 @@ gutter = math.floor(margin / 2)
 cover_img_limits = math.floor(IMG_HEIGHT * 0.8)
 path = Path(__file__).parent.absolute()
 font_dir = path.joinpath("static/fonts/public_sans")
-icon_font_dir = path.joinpath("static/css/fonts")
 
 
 def get_font(font_name, size=28):
@@ -41,8 +40,6 @@ def get_font(font_name, size=28):
         font_path = "%s/PublicSans-Regular.ttf" % font_dir
     elif font_name == "bold":
         font_path = "%s/PublicSans-Bold.ttf" % font_dir
-    elif font_name == "icomoon":
-        font_path = "%s/icomoon.ttf" % icon_font_dir
 
     try:
         font = ImageFont.truetype(font_path, size)
@@ -52,27 +49,44 @@ def get_font(font_name, size=28):
     return font
 
 
-def generate_texts_layer(book, content_width):
-    font_title = get_font("bold", size=48)
-    font_authors = get_font("regular", size=40)
+def generate_texts_layer(texts, content_width):
+    font_text_zero = get_font("bold", size=20)
+    font_text_one = get_font("bold", size=48)
+    font_text_two = get_font("bold", size=40)
+    font_text_three = get_font("regular", size=40)
 
     text_layer = Image.new("RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR)
     text_layer_draw = ImageDraw.Draw(text_layer)
 
     text_y = 0
 
-    # title
-    title = textwrap.fill(book.title, width=28)
-    text_layer_draw.multiline_text((0, text_y), title, font=font_title, fill=TEXT_COLOR)
+    if 'text_zero' in texts:
+        # Text one (Book title)
+        text_zero = textwrap.fill(texts['text_zero'], width=72)
+        text_layer_draw.multiline_text((0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR)
 
-    text_y = text_y + font_title.getsize_multiline(title)[1] + 16
+        text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
 
-    # subtitle
-    authors_text = book.author_text
-    authors = textwrap.fill(authors_text, width=36)
-    text_layer_draw.multiline_text(
-        (0, text_y), authors, font=font_authors, fill=TEXT_COLOR
-    )
+    if 'text_one' in texts:
+        # Text one (Book title)
+        text_one = textwrap.fill(texts['text_one'], width=28)
+        text_layer_draw.multiline_text((0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR)
+
+        text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
+
+    if 'text_two' in texts:
+        # Text one (Book subtitle)
+        text_two = textwrap.fill(texts['text_two'], width=36)
+        text_layer_draw.multiline_text((0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR)
+
+        text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
+
+    if 'text_three' in texts:
+        # Text three (Book authors)
+        text_three = textwrap.fill(texts['text_three'], width=36)
+        text_layer_draw.multiline_text(
+            (0, text_y), text_three, font=font_text_three, fill=TEXT_COLOR
+        )
 
     text_layer_box = text_layer.getbbox()
     return text_layer.crop(text_layer_box)
@@ -109,8 +123,6 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
-    font_icons = get_font("icomoon", size=60)
-
     icon_star_full = Image.open(path.joinpath("static/images/icons/star-full.png"))
     icon_star_empty = Image.open(path.joinpath("static/images/icons/star-empty.png"))
     icon_star_half = Image.open(path.joinpath("static/images/icons/star-half.png"))
@@ -159,7 +171,7 @@ def generate_default_cover():
     )
     default_cover_draw = ImageDraw.Draw(default_cover)
 
-    text = "no cover :("
+    text = "no image :("
     text_dimensions = font_cover.getsize(text)
     text_coords = (
         math.floor((cover_width - text_dimensions[0]) / 2),
@@ -170,20 +182,12 @@ def generate_default_cover():
     return default_cover
 
 
-def generate_preview_image(book_id, rating=None):
-    book = models.Book.objects.select_subclasses().get(id=book_id)
-
-    rating = models.Review.objects.filter(
-        privacy="public",
-        deleted=False,
-        book__in=[book_id],
-    ).aggregate(Avg("rating"))["rating__avg"]
-
+def generate_preview_image(book, texts={}, picture=None, rating=None):
     # Cover
     try:
-        cover_img_layer = Image.open(book.cover)
+        cover_img_layer = Image.open(picture)
         cover_img_layer.thumbnail((cover_img_limits, cover_img_limits), Image.ANTIALIAS)
-        color_thief = ColorThief(book.cover)
+        color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
     except:
         cover_img_layer = generate_default_cover()
@@ -214,7 +218,7 @@ def generate_preview_image(book_id, rating=None):
     content_width = IMG_WIDTH - content_x - margin
 
     instance_layer = generate_instance_layer(content_width)
-    texts_layer = generate_texts_layer(book, content_width)
+    texts_layer = generate_texts_layer(texts, content_width)
 
     contents_layer = Image.new(
         "RGBA", (content_width, IMG_HEIGHT), color=TRANSPARENT_COLOR
@@ -248,8 +252,33 @@ def generate_preview_image(book_id, rating=None):
     img.paste(cover_img_layer, (margin, cover_y))
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
-    file_name = "%s.png" % str(uuid4())
+    return img
 
+
+@app.task
+def generate_edition_preview_image_task(book_id):
+    """generate preview_image"""
+    book = models.Book.objects.select_subclasses().get(id=book_id)
+
+    rating = models.Review.objects.filter(
+        privacy="public",
+        deleted=False,
+        book__in=[book_id],
+    ).aggregate(Avg("rating"))["rating__avg"]
+
+    texts = {
+        'text_zero': "ADDED A REVIEW",
+        'text_one': book.title,
+        'text_two': book.subtitle,
+        'text_three': book.author_text
+    }
+
+    img = generate_preview_image(book=book,
+                                 texts=texts,
+                                 picture=book.cover,
+                                 rating=rating)
+
+    file_name = "%s.png" % str(uuid4())
     image_buffer = BytesIO()
     try:
         try:
@@ -274,9 +303,3 @@ def generate_preview_image(book_id, rating=None):
             os.remove(old_path)
     finally:
         image_buffer.close()
-
-
-@app.task
-def generate_preview_image_from_edition_task(book_id):
-    """generate preview_image"""
-    generate_preview_image(book_id=book_id)

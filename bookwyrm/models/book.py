@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.preview_images import generate_preview_image_from_edition_task
+from bookwyrm.preview_images import generate_edition_preview_image_task
 from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
 from bookwyrm.tasks import app
 
@@ -307,4 +307,4 @@ def preview_image(instance, *args, **kwargs):
     updated_fields = kwargs["update_fields"]
 
     if not updated_fields or "preview_image" not in updated_fields:
-        generate_preview_image_from_edition_task.delay(instance.id)
+        generate_edition_preview_image_task.delay(instance.id)
