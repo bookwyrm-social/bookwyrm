@@ -29,7 +29,7 @@ TRANSPARENT_COLOR = (0, 0, 0, 0)
 
 margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
-cover_img_limits = math.floor(IMG_HEIGHT * 0.8)
+inner_img_limits = math.floor(IMG_HEIGHT * 0.8)
 path = Path(__file__).parent.absolute()
 font_dir = path.joinpath("static/fonts/public_sans")
 
@@ -163,12 +163,12 @@ def generate_rating_layer(rating, content_width):
     return rating_layer_composite
 
 
-def generate_default_cover():
+def generate_default_inner_img():
     font_cover = get_font("light", size=28)
 
-    cover_width = math.floor(cover_img_limits * 0.7)
+    cover_width = math.floor(inner_img_limits * 0.7)
     default_cover = Image.new(
-        "RGB", (cover_width, cover_img_limits), color=DEFAULT_COVER_COLOR
+        "RGB", (cover_width, inner_img_limits), color=DEFAULT_COVER_COLOR
     )
     default_cover_draw = ImageDraw.Draw(default_cover)
 
@@ -176,7 +176,7 @@ def generate_default_cover():
     text_dimensions = font_cover.getsize(text)
     text_coords = (
         math.floor((cover_width - text_dimensions[0]) / 2),
-        math.floor((cover_img_limits - text_dimensions[1]) / 2),
+        math.floor((inner_img_limits - text_dimensions[1]) / 2),
     )
     default_cover_draw.text(text_coords, text, font=font_cover, fill="white")
 
@@ -186,13 +186,14 @@ def generate_default_cover():
 def generate_preview_image(texts={}, picture=None, rating=None, show_instance_layer=True):
     # Cover
     try:
-        cover_img_layer = Image.open(picture)
-        cover_img_layer.thumbnail((cover_img_limits, cover_img_limits), Image.ANTIALIAS)
+        inner_img_layer = Image.open(picture)
+        inner_img_layer.thumbnail((inner_img_limits, inner_img_limits), Image.ANTIALIAS)
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
     except:
-        cover_img_layer = generate_default_cover()
+        inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
+
 
     # Color
     if BG_COLOR == "use_dominant_color":
@@ -215,7 +216,7 @@ def generate_preview_image(texts={}, picture=None, rating=None, show_instance_la
     img = Image.new("RGBA", (IMG_WIDTH, IMG_HEIGHT), color=image_bg_color)
 
     # Contents
-    content_x = margin + cover_img_layer.width + gutter
+    content_x = margin + inner_img_layer.width + gutter
     content_width = IMG_WIDTH - content_x - margin
 
     contents_layer = Image.new(
@@ -251,13 +252,43 @@ def generate_preview_image(texts={}, picture=None, rating=None, show_instance_la
     if contents_y < margin:
         contents_y = margin
 
-    cover_y = math.floor((IMG_HEIGHT - cover_img_layer.height) / 2)
+    cover_y = math.floor((IMG_HEIGHT - inner_img_layer.height) / 2)
 
     # Composite layers
-    img.paste(cover_img_layer, (margin, cover_y))
+    img.paste(inner_img_layer, (margin, cover_y), inner_img_layer.convert('RGBA'))
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
     return img
+
+
+def save_and_cleanup(image, instance=None):
+    if instance:
+        file_name = "%s.png" % str(uuid4())
+        image_buffer = BytesIO()
+
+        try:
+            try:
+                old_path = instance.preview_image.path
+            except ValueError:
+                old_path = ""
+
+            # Save
+            image.save(image_buffer, format="png")
+            instance.preview_image = InMemoryUploadedFile(
+                ContentFile(image_buffer.getvalue()),
+                "preview_image",
+                file_name,
+                "image/png",
+                image_buffer.tell(),
+                None,
+            )
+            instance.save(update_fields=["preview_image"])
+
+            # Clean up old file after saving
+            if os.path.exists(old_path):
+                os.remove(old_path)
+        finally:
+            image_buffer.close()
 
 
 @app.task
@@ -268,7 +299,7 @@ def generate_site_preview_image_task():
     if site.logo:
         logo = site.logo
     else:
-        logo = path.joinpath("static/images/logo-small.png")
+        logo = path.joinpath("static/images/logo.png")
 
     texts = {
         'text_zero': DOMAIN,
@@ -276,35 +307,11 @@ def generate_site_preview_image_task():
         'text_three': site.instance_tagline,
     }
 
-    img = generate_preview_image(texts=texts,
-                                 picture=logo,
-                                 show_instance_layer=False)
+    image = generate_preview_image(texts=texts,
+                                   picture=logo,
+                                   show_instance_layer=False)
 
-    file_name = "%s.png" % str(uuid4())
-    image_buffer = BytesIO()
-    try:
-        try:
-            old_path = site.preview_image.path
-        except ValueError:
-            old_path = ""
-
-        # Save
-        img.save(image_buffer, format="png")
-        site.preview_image = InMemoryUploadedFile(
-            ContentFile(image_buffer.getvalue()),
-            "preview_image",
-            file_name,
-            "image/png",
-            image_buffer.tell(),
-            None,
-        )
-        site.save(update_fields=["preview_image"])
-
-        # Clean up old file after saving
-        if os.path.exists(old_path):
-            os.remove(old_path)
-    finally:
-        image_buffer.close()
+    save_and_cleanup(image, instance=site)
 
 
 @app.task
@@ -324,32 +331,28 @@ def generate_edition_preview_image_task(book_id):
         'text_three': book.author_text
     }
 
-    img = generate_preview_image(texts=texts,
-                                 picture=book.cover,
-                                 rating=rating)
+    image = generate_preview_image(texts=texts,
+                                   picture=book.cover,
+                                   rating=rating)
 
-    file_name = "%s.png" % str(uuid4())
-    image_buffer = BytesIO()
-    try:
-        try:
-            old_path = book.preview_image.path
-        except ValueError:
-            old_path = ""
+    save_and_cleanup(image, instance=book)
 
-        # Save
-        img.save(image_buffer, format="png")
-        book.preview_image = InMemoryUploadedFile(
-            ContentFile(image_buffer.getvalue()),
-            "preview_image",
-            file_name,
-            "image/png",
-            image_buffer.tell(),
-            None,
-        )
-        book.save(update_fields=["preview_image"])
+@app.task
+def generate_user_preview_image_task(user_id):
+    """generate preview_image for a book"""
+    user = models.User.objects.get(id=user_id)
 
-        # Clean up old file after saving
-        if os.path.exists(old_path):
-            os.remove(old_path)
-    finally:
-        image_buffer.close()
+    texts = {
+        'text_one': user.display_name,
+        'text_three': "@{}@{}".format(user.localname, DOMAIN)
+    }
+
+    if user.avatar:
+        avatar = user.avatar
+    else:
+        avatar = path.joinpath("static/images/default_avi.jpg")
+
+    image = generate_preview_image(texts=texts,
+                                   picture=avatar)
+
+    save_and_cleanup(image, instance=user)

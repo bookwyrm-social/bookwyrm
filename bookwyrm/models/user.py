@@ -6,6 +6,7 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
+from django.dispatch import receiver
 from django.db import models
 from django.utils import timezone
 import pytz
@@ -14,6 +15,7 @@ from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
+from bookwyrm.preview_images import generate_user_preview_image_task
 from bookwyrm.settings import DOMAIN
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
@@ -69,6 +71,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         null=True,
         activitypub_field="icon",
         alt_field="alt_text",
+    )
+    preview_image = models.ImageField(
+        upload_to="previews/avatars/", blank=True, null=True
     )
     followers = fields.ManyToManyField(
         "self",
@@ -443,3 +448,12 @@ def get_remote_reviews(outbox):
         if not activity["type"] == "Review":
             continue
         activitypub.Review(**activity).to_model()
+
+
+@receiver(models.signals.post_save, sender=User)
+# pylint: disable=unused-argument
+def preview_image(instance, *args, **kwargs):
+    updated_fields = kwargs["update_fields"]
+
+    if not updated_fields or "preview_image" not in updated_fields:
+        generate_user_preview_image_task.delay(instance.id)
