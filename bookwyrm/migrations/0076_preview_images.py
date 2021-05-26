@@ -6,23 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0075_announcement'),
+        ("bookwyrm", "0075_announcement"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='book',
-            name='preview_image',
-            field=models.ImageField(blank=True, null=True, upload_to='previews/covers/'),
+            model_name="book",
+            name="preview_image",
+            field=models.ImageField(
+                blank=True, null=True, upload_to="previews/covers/"
+            ),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='preview_image',
-            field=models.ImageField(blank=True, null=True, upload_to='previews/logos/'),
+            model_name="sitesettings",
+            name="preview_image",
+            field=models.ImageField(blank=True, null=True, upload_to="previews/logos/"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='preview_image',
-            field=models.ImageField(blank=True, null=True, upload_to='previews/avatars/'),
+            model_name="user",
+            name="preview_image",
+            field=models.ImageField(
+                blank=True, null=True, upload_to="previews/avatars/"
+            ),
         ),
     ]
