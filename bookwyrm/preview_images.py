@@ -196,14 +196,21 @@ def generate_preview_image(texts={}, picture=None, rating=None, show_instance_la
 
 
     # Color
-    if BG_COLOR == "use_dominant_color":
+    if BG_COLOR in ["use_dominant_color_light", "use_dominant_color_dark"]:
         image_bg_color = "rgb(%s, %s, %s)" % dominant_color
-        # Lighten color
+
+        # Adjust color
         image_bg_color_rgb = [x / 255.0 for x in ImageColor.getrgb(image_bg_color)]
         image_bg_color_hls = colorsys.rgb_to_hls(*image_bg_color_rgb)
+
+        if BG_COLOR == "use_dominant_color_light":
+            lightness = max(0.9, image_bg_color_hls[1])
+        else:
+            lightness = min(0.15, image_bg_color_hls[1])
+
         image_bg_color_hls = (
             image_bg_color_hls[0],
-            max(0.9, image_bg_color_hls[1]),
+            lightness,
             image_bg_color_hls[2],
         )
         image_bg_color = tuple(
