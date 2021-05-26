@@ -5,11 +5,13 @@ import re
 from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
+from bookwyrm.preview_images import generate_preview_image_from_edition_task
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -398,3 +400,11 @@ class Boost(ActivityMixin, Status):
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
+
+
+@receiver(models.signals.post_save)
+# pylint: disable=unused-argument
+def preview_image(instance, sender, *args, **kwargs):
+    if sender in (Review, ReviewRating):
+        edition = instance.book
+        generate_preview_image_from_edition_task.delay(edition.id)
