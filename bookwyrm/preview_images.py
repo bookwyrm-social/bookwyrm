@@ -6,7 +6,6 @@ import textwrap
 from colorthief import ColorThief
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
-from pathlib import Path
 from uuid import uuid4
 
 from django.core.files.base import ContentFile
@@ -14,7 +13,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Avg
 
 from bookwyrm import models, settings
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, STATIC_ROOT
 from bookwyrm.tasks import app
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
@@ -28,17 +27,16 @@ margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
 inner_img_height = math.floor(IMG_HEIGHT * 0.8)
 inner_img_width = math.floor(inner_img_height * 0.7)
-path = Path(__file__).parent.absolute()
-font_dir = path.joinpath("static/fonts/public_sans")
+font_dir = os.path.join(STATIC_ROOT, "fonts/public_sans")
 
 
 def get_font(font_name, size=28):
     if font_name == "light":
-        font_path = "%s/PublicSans-Light.ttf" % font_dir
+        font_path = os.path.join(font_dir, "PublicSans-Light.ttf")
     if font_name == "regular":
-        font_path = "%s/PublicSans-Regular.ttf" % font_dir
+        font_path = os.path.join(font_dir, "PublicSans-Regular.ttf")
     elif font_name == "bold":
-        font_path = "%s/PublicSans-Bold.ttf" % font_dir
+        font_path = os.path.join(font_dir, "PublicSans-Bold.ttf")
 
     try:
         font = ImageFont.truetype(font_path, size)
@@ -105,7 +103,7 @@ def generate_instance_layer(content_width):
     if site.logo_small:
         logo_img = Image.open(site.logo_small)
     else:
-        static_path = path.joinpath("static/images/logo-small.png")
+        static_path = os.path.join(STATIC_ROOT, "images/logo-small.png")
         logo_img = Image.open(static_path)
 
     instance_layer = Image.new("RGBA", (content_width, 62), color=TRANSPARENT_COLOR)
@@ -128,9 +126,11 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
-    icon_star_full = Image.open(path.joinpath("static/images/icons/star-full.png"))
-    icon_star_empty = Image.open(path.joinpath("static/images/icons/star-empty.png"))
-    icon_star_half = Image.open(path.joinpath("static/images/icons/star-half.png"))
+    icon_star_full = Image.open(os.path.join(STATIC_ROOT, "images/icons/star-full.png"))
+    icon_star_empty = Image.open(
+        os.path.join(STATIC_ROOT, "images/icons/star-empty.png")
+    )
+    icon_star_half = Image.open(os.path.join(STATIC_ROOT, "images/icons/star-half.png"))
 
     icon_size = 64
     icon_margin = 10
@@ -312,7 +312,7 @@ def generate_site_preview_image_task():
     if site.logo:
         logo = site.logo
     else:
-        logo = path.joinpath("static/images/logo.png")
+        logo = os.path.join(STATIC_ROOT, "images/logo.png")
 
     texts = {
         "text_zero": DOMAIN,
@@ -360,7 +360,7 @@ def generate_user_preview_image_task(user_id):
     if user.avatar:
         avatar = user.avatar
     else:
-        avatar = path.joinpath("static/images/default_avi.jpg")
+        avatar = os.path.join(STATIC_ROOT, "images/default_avi.jpg")
 
     image = generate_preview_image(texts=texts, picture=avatar)
 
