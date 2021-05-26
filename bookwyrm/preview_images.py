@@ -266,7 +266,9 @@ def generate_preview_image(
         contents_y = margin
 
     # Composite layers
-    img.paste(inner_img_layer, (inner_img_x, inner_img_y), inner_img_layer.convert("RGBA"))
+    img.paste(
+        inner_img_layer, (inner_img_x, inner_img_y), inner_img_layer.convert("RGBA")
+    )
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
     return img
