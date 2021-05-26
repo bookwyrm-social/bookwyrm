@@ -188,9 +188,10 @@ class ActivitypubFields(TestCase):
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_privacy_field_set_activity_from_field(self, *_):
         """translate between to/cc fields and privacy"""
-        user = User.objects.create_user(
-            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
         public = "https://www.w3.org/ns/activitystreams#Public"
         followers = "%s/followers" % user.remote_id
 
@@ -248,9 +249,10 @@ class ActivitypubFields(TestCase):
         del userdata["icon"]
 
         # it shouldn't match with this unrelated user:
-        unrelated_user = User.objects.create_user(
-            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            unrelated_user = User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
 
         # test receiving an unknown remote id and loading data
         responses.add(
@@ -272,9 +274,10 @@ class ActivitypubFields(TestCase):
         del userdata["icon"]
 
         # it shouldn't match with this unrelated user:
-        unrelated_user = User.objects.create_user(
-            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            unrelated_user = User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertIsInstance(value, User)
@@ -288,14 +291,16 @@ class ActivitypubFields(TestCase):
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
-        user = User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
-        user.remote_id = "https://example.com/user/mouse"
-        user.save(broadcast=False)
-        User.objects.create_user(
-            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
+            user.remote_id = "https://example.com/user/mouse"
+            user.save(broadcast=False)
+
+            User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
 
         with patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast"):
             value = instance.field_from_activity(activitypub.Person(**userdata))
@@ -304,12 +309,13 @@ class ActivitypubFields(TestCase):
     def test_foreign_key_from_activity_str_existing(self):
         """test receiving a remote id of an existing object in the db"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
-        user = User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
-        User.objects.create_user(
-            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
+            User.objects.create_user(
+                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+            )
 
         value = instance.field_from_activity(user.remote_id)
         self.assertEqual(value, user)
@@ -386,16 +392,17 @@ class ActivitypubFields(TestCase):
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
     def test_image_field(self, _):
         """storing images"""
-        user = User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
-        image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/default_avi.jpg"
-        )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        user.avatar.save("test.jpg", ContentFile(output.getvalue()))
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
+            image_file = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            image = Image.open(image_file)
+            output = BytesIO()
+            image.save(output, format=image.format)
+            user.avatar.save("test.jpg", ContentFile(output.getvalue()))
 
         output = fields.image_serializer(user.avatar, alt="alt text")
         self.assertIsNotNone(

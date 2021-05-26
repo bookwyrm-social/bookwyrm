@@ -11,15 +11,16 @@ from bookwyrm.settings import DOMAIN
 # pylint: disable=missing-function-docstring
 class User(TestCase):
     def setUp(self):
-        self.user = models.User.objects.create_user(
-            "mouse@%s" % DOMAIN,
-            "mouse@mouse.mouse",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            name="hi",
-            bookwyrm_user=False,
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse@%s" % DOMAIN,
+                "mouse@mouse.mouse",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                name="hi",
+                bookwyrm_user=False,
+            )
 
     def test_computed_fields(self):
         """username instead of id here"""

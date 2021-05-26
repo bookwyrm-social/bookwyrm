@@ -15,15 +15,17 @@ class ReadThrough(TestCase):
         """basic user and book data"""
         self.client = Client()
 
-        self.work = models.Work.objects.create(title="Example Work")
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="Example Work")
 
-        self.edition = models.Edition.objects.create(
-            title="Example Edition", parent_work=self.work
-        )
+            self.edition = models.Edition.objects.create(
+                title="Example Edition", parent_work=self.work
+            )
 
-        self.user = models.User.objects.create_user(
-            "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.user = models.User.objects.create_user(
+                "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
+            )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.client.force_login(self.user)

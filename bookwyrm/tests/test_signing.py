@@ -37,15 +37,20 @@ class Signature(TestCase):
 
     def setUp(self):
         """create users and test data"""
-        self.mouse = models.User.objects.create_user(
-            "mouse@%s" % DOMAIN, "mouse@example.com", "", local=True, localname="mouse"
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
-        )
-        self.cat = models.User.objects.create_user(
-            "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.mouse = models.User.objects.create_user(
+                "mouse@%s" % DOMAIN,
+                "mouse@example.com",
+                "",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
+            )
+            self.cat = models.User.objects.create_user(
+                "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
+            )
 
         private_key, public_key = create_key_pair()
 
@@ -53,7 +58,8 @@ class Signature(TestCase):
             "http://localhost/user/remote", KeyPair(private_key, public_key)
         )
 
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
         """test request"""

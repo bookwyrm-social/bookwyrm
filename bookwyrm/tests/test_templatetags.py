@@ -21,13 +21,14 @@ class TemplateTags(TestCase):
 
     def setUp(self):
         """create some filler objects"""
-        self.user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.mouse",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.mouse",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -36,12 +37,14 @@ class TemplateTags(TestCase):
                 remote_id="http://example.com/rat",
                 local=False,
             )
-        self.book = models.Edition.objects.create(title="Test Book")
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(title="Test Book")
 
     def test_get_user_rating(self, _):
         """get a user's most recent rating of a book"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.Review.objects.create(user=self.user, book=self.book, rating=3)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                models.Review.objects.create(user=self.user, book=self.book, rating=3)
         self.assertEqual(bookwyrm_tags.get_user_rating(self.book, self.user), 3)
 
     def test_get_user_rating_doesnt_exist(self, _):
@@ -62,9 +65,12 @@ class TemplateTags(TestCase):
     def test_get_replies(self, _):
         """direct replies to a status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            parent = models.Review.objects.create(
-                user=self.user, book=self.book, content="hi"
-            )
+            with patch(
+                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+            ):
+                parent = models.Review.objects.create(
+                    user=self.user, book=self.book, content="hi"
+                )
             first_child = models.Status.objects.create(
                 reply_parent=parent, user=self.user, content="hi"
             )
@@ -90,9 +96,12 @@ class TemplateTags(TestCase):
     def test_get_parent(self, _):
         """get the reply parent of a status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            parent = models.Review.objects.create(
-                user=self.user, book=self.book, content="hi"
-            )
+            with patch(
+                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+            ):
+                parent = models.Review.objects.create(
+                    user=self.user, book=self.book, content="hi"
+                )
             child = models.Status.objects.create(
                 reply_parent=parent, user=self.user, content="hi"
             )
@@ -103,7 +112,8 @@ class TemplateTags(TestCase):
 
     def test_get_user_liked(self, _):
         """did a user like a status"""
-        status = models.Review.objects.create(user=self.remote_user, book=self.book)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
         self.assertFalse(interaction.get_user_liked(self.user, status))
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -112,7 +122,8 @@ class TemplateTags(TestCase):
 
     def test_get_user_boosted(self, _):
         """did a user boost a status"""
-        status = models.Review.objects.create(user=self.remote_user, book=self.book)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            status = models.Review.objects.create(user=self.remote_user, book=self.book)
 
         self.assertFalse(interaction.get_user_boosted(self.user, status))
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -121,9 +132,14 @@ class TemplateTags(TestCase):
 
     def test_get_boosted(self, _):
         """load a boosted status"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Review.objects.create(user=self.remote_user, book=self.book)
-            boost = models.Boost.objects.create(user=self.user, boosted_status=status)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                status = models.Review.objects.create(
+                    user=self.remote_user, book=self.book
+                )
+                boost = models.Boost.objects.create(
+                    user=self.user, boosted_status=status
+                )
         boosted = status_display.get_boosted(boost)
         self.assertIsInstance(boosted, models.Review)
         self.assertEqual(boosted, status)

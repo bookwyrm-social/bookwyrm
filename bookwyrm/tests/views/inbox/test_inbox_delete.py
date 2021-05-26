@@ -13,15 +13,16 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            self.local_user.remote_id = "https://example.com/user/mouse"
+            self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -47,7 +48,8 @@ class InboxActivities(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_delete_status(self):
         """remove a status"""

@@ -12,15 +12,16 @@ class InboxRemove(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            self.local_user.remote_id = "https://example.com/user/mouse"
+            self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -31,14 +32,17 @@ class InboxRemove(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.work = models.Work.objects.create(title="work title")
-        self.book = models.Edition.objects.create(
-            title="Test",
-            remote_id="https://bookwyrm.social/book/37292",
-            parent_work=self.work,
-        )
 
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="work title")
+            self.book = models.Edition.objects.create(
+                title="Test",
+                remote_id="https://bookwyrm.social/book/37292",
+                parent_work=self.work,
+            )
+
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_handle_unshelve_book(self):
         """remove a book from a shelf"""

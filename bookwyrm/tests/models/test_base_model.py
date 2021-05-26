@@ -12,9 +12,10 @@ class BaseModel(TestCase):
 
     def setUp(self):
         """shared data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",

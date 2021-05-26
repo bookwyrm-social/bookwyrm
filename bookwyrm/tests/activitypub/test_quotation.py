@@ -22,10 +22,11 @@ class Quotation(TestCase):
                 outbox="https://example.com/user/mouse/outbox",
                 remote_id="https://example.com/user/mouse",
             )
-        self.book = models.Edition.objects.create(
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
+            )
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_quotation.json")
         self.status_data = json.loads(datafile.read_bytes())
 

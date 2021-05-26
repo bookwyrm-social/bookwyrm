@@ -15,15 +15,16 @@ class InboxCreate(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            self.local_user.remote_id = "https://example.com/user/mouse"
+            self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
                 self.status = models.Status.objects.create(
@@ -50,7 +51,8 @@ class InboxCreate(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_create_status(self):
         """the "it justs works" mode"""
@@ -60,9 +62,11 @@ class InboxCreate(TestCase):
             "../../data/ap_quotation.json"
         )
         status_data = json.loads(datafile.read_bytes())
-        models.Edition.objects.create(
-            title="Test Book", remote_id="https://example.com/book/1"
-        )
+
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            models.Edition.objects.create(
+                title="Test Book", remote_id="https://example.com/book/1"
+            )
         activity = self.create_json
         activity["object"] = status_data
 
@@ -129,9 +133,10 @@ class InboxCreate(TestCase):
 
     def test_create_rating(self):
         """a remote rating activity"""
-        book = models.Edition.objects.create(
-            title="Test Book", remote_id="https://example.com/book/1"
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            book = models.Edition.objects.create(
+                title="Test Book", remote_id="https://example.com/book/1"
+            )
         activity = self.create_json
         activity["object"] = {
             "id": "https://example.com/user/mouse/reviewrating/12",

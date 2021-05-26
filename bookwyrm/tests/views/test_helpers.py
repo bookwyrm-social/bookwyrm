@@ -19,21 +19,23 @@ class ViewsHelpers(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            discoverable=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1",
-            parent_work=self.work,
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                discoverable=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Test Book",
+                remote_id="https://example.com/book/1",
+                parent_work=self.work,
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -202,21 +204,22 @@ class ViewsHelpers(TestCase):
 
     def test_get_annotated_users(self, _):
         """list of people you might know"""
-        user_1 = models.User.objects.create_user(
-            "nutria@local.com",
-            "nutria@nutria.com",
-            "nutriaword",
-            local=True,
-            localname="nutria",
-            discoverable=True,
-        )
-        user_2 = models.User.objects.create_user(
-            "fish@local.com",
-            "fish@fish.com",
-            "fishword",
-            local=True,
-            localname="fish",
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user_1 = models.User.objects.create_user(
+                "nutria@local.com",
+                "nutria@nutria.com",
+                "nutriaword",
+                local=True,
+                localname="nutria",
+                discoverable=True,
+            )
+            user_2 = models.User.objects.create_user(
+                "fish@local.com",
+                "fish@fish.com",
+                "fishword",
+                local=True,
+                localname="fish",
+            )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             # 1 shared follow
             self.local_user.following.add(user_2)
@@ -249,39 +252,42 @@ class ViewsHelpers(TestCase):
 
     def test_get_annotated_users_counts(self, _):
         """correct counting for multiple shared attributed"""
-        user_1 = models.User.objects.create_user(
-            "nutria@local.com",
-            "nutria@nutria.com",
-            "nutriaword",
-            local=True,
-            localname="nutria",
-            discoverable=True,
-        )
-        for i in range(3):
-            user = models.User.objects.create_user(
-                "{:d}@local.com".format(i),
-                "{:d}@nutria.com".format(i),
-                "password",
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user_1 = models.User.objects.create_user(
+                "nutria@local.com",
+                "nutria@nutria.com",
+                "nutriaword",
                 local=True,
-                localname=i,
+                localname="nutria",
+                discoverable=True,
             )
-            user.following.add(user_1)
-            user.followers.add(self.local_user)
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
             for i in range(3):
-                book = models.Edition.objects.create(
-                    title=i,
-                    parent_work=models.Work.objects.create(title=i),
+                user = models.User.objects.create_user(
+                    "{:d}@local.com".format(i),
+                    "{:d}@nutria.com".format(i),
+                    "password",
+                    local=True,
+                    localname=i,
                 )
-                models.ShelfBook.objects.create(
-                    user=self.local_user,
-                    book=book,
-                    shelf=self.local_user.shelf_set.first(),
-                )
-                models.ShelfBook.objects.create(
-                    user=user_1, book=book, shelf=user_1.shelf_set.first()
-                )
+                user.following.add(user_1)
+                user.followers.add(self.local_user)
+
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                for i in range(3):
+                    book = models.Edition.objects.create(
+                        title=i,
+                        parent_work=models.Work.objects.create(title=i),
+                    )
+                    models.ShelfBook.objects.create(
+                        user=self.local_user,
+                        book=book,
+                        shelf=self.local_user.shelf_set.first(),
+                    )
+                    models.ShelfBook.objects.create(
+                        user=user_1, book=book, shelf=user_1.shelf_set.first()
+                    )
 
         result = views.helpers.get_annotated_users(
             self.local_user,

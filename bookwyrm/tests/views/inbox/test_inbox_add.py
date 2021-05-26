@@ -13,15 +13,16 @@ class InboxAdd(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        local_user.remote_id = "https://example.com/user/mouse"
-        local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            local_user.remote_id = "https://example.com/user/mouse"
+            local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -32,14 +33,15 @@ class InboxAdd(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        work = models.Work.objects.create(title="work title")
-        self.book = models.Edition.objects.create(
-            title="Test",
-            remote_id="https://example.com/book/37292",
-            parent_work=work,
-        )
-
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="work title")
+            self.book = models.Edition.objects.create(
+                title="Test",
+                remote_id="https://example.com/book/37292",
+                parent_work=work,
+            )
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     @responses.activate
     def test_handle_add_book_to_shelf(self):

@@ -13,22 +13,25 @@ class GetStartedViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        self.book = models.Edition.objects.create(
-            parent_work=models.Work.objects.create(title="hi"),
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(
+                parent_work=models.Work.objects.create(title="hi"),
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
+            )
         models.Connector.objects.create(
             identifier="self", connector_file="self_connector", local=True
         )
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_profile_view(self):
         """there are so many views, this just makes sure it LOADS"""

@@ -15,20 +15,22 @@ class ReadingViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1",
-            parent_work=self.work,
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Test Book",
+                remote_id="https://example.com/book/1",
+                parent_work=self.work,
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",

@@ -18,15 +18,17 @@ class Inbox(TestCase):
         """basic user and book data"""
         self.client = Client()
         self.factory = RequestFactory()
-        local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        local_user.remote_id = "https://example.com/user/mouse"
-        local_user.save(broadcast=False)
+
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            local_user.remote_id = "https://example.com/user/mouse"
+            local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -45,7 +47,8 @@ class Inbox(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
         """shouldn't try to handle if the user is not found"""

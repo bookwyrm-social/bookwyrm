@@ -12,12 +12,17 @@ class Activitystreams(TestCase):
 
     def setUp(self):
         """we need some stuff"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
-        )
-        self.another_user = models.User.objects.create_user(
-            "nutria", "nutria@nutria.nutria", "password", local=True, localname="nutria"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
+            )
+            self.another_user = models.User.objects.create_user(
+                "nutria",
+                "nutria@nutria.nutria",
+                "password",
+                local=True,
+                localname="nutria",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -28,7 +33,8 @@ class Activitystreams(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        self.book = models.Edition.objects.create(title="test book")
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(title="test book")
 
     def test_populate_streams(self, _):
         """make sure the function on the redis manager gets called"""

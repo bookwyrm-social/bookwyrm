@@ -13,15 +13,16 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
-        self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
+            self.local_user.remote_id = "https://example.com/user/mouse"
+            self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -32,13 +33,14 @@ class InboxActivities(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-                self.status = models.Status.objects.create(
-                    user=self.local_user,
-                    content="Test status",
-                    remote_id="https://example.com/status/1",
-                )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+                    self.status = models.Status.objects.create(
+                        user=self.local_user,
+                        content="Test status",
+                        remote_id="https://example.com/status/1",
+                    )
 
         self.create_json = {
             "id": "hi",
@@ -48,7 +50,8 @@ class InboxActivities(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_boost(self, redis_mock):
@@ -83,12 +86,13 @@ class InboxActivities(TestCase):
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_boost_remote_status(self, redis_mock):
         """boost a status from a remote server"""
-        work = models.Work.objects.create(title="work title")
-        book = models.Edition.objects.create(
-            title="Test",
-            remote_id="https://bookwyrm.social/book/37292",
-            parent_work=work,
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="work title")
+            book = models.Edition.objects.create(
+                title="Test",
+                remote_id="https://bookwyrm.social/book/37292",
+                parent_work=work,
+            )
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
             "type": "Announce",

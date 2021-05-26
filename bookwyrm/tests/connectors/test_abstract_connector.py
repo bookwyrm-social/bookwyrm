@@ -74,11 +74,12 @@ class AbstractConnector(TestCase):
             Mapping("openlibraryKey"),
         ]
 
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1234",
-            openlibrary_key="OL1234M",
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(
+                title="Test Book",
+                remote_id="https://example.com/book/1234",
+                openlibrary_key="OL1234M",
+            )
 
     def test_abstract_connector_init(self):
         """barebones connector for search with defaults"""

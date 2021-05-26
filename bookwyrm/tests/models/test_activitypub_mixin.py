@@ -19,11 +19,12 @@ class ActivitypubMixins(TestCase):
 
     def setUp(self):
         """shared data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
-        self.local_user.remote_id = "http://example.com/a/b"
-        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+            )
+            self.local_user.remote_id = "http://example.com/a/b"
+            self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -70,9 +71,10 @@ class ActivitypubMixins(TestCase):
         """attempt to match a remote id to an object in the db"""
         # uses a different remote id scheme
         # this isn't really part of this test directly but it's helpful to state
-        book = models.Edition.objects.create(
-            title="Test Edition", remote_id="http://book.com/book"
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            book = models.Edition.objects.create(
+                title="Test Edition", remote_id="http://book.com/book"
+            )
 
         self.assertEqual(book.origin_id, "http://book.com/book")
         self.assertNotEqual(book.remote_id, "http://book.com/book")
@@ -101,10 +103,11 @@ class ActivitypubMixins(TestCase):
 
     def test_find_existing(self, _):
         """match a blob of data to a model"""
-        book = models.Edition.objects.create(
-            title="Test edition",
-            openlibrary_key="OL1234",
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            book = models.Edition.objects.create(
+                title="Test edition",
+                openlibrary_key="OL1234",
+            )
 
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
