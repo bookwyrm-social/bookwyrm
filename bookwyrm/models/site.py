@@ -38,7 +38,9 @@ class SiteSettings(models.Model):
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
     favicon = models.ImageField(upload_to="logos/", null=True, blank=True)
-    preview_image = models.ImageField(upload_to="previews/logos/", null=True, blank=True)
+    preview_image = models.ImageField(
+        upload_to="previews/logos/", null=True, blank=True
+    )
 
     # footer
     support_link = models.CharField(max_length=255, null=True, blank=True)

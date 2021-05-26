@@ -44,7 +44,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 PREVIEW_BG_COLOR = "use_dominant_color_light"
 PREVIEW_IMG_WIDTH = 1200
 PREVIEW_IMG_HEIGHT = 630
-PREVIEW_TEXT_COLOR = "#363636" # Change to "#FFF" if you use "use_dominant_color_dark"
+PREVIEW_TEXT_COLOR = "#363636"  # Change to "#FFF" if you use "use_dominant_color_dark"
 PREVIEW_DEFAULT_COVER_COLOR = "#002549"
 
 # Quick-start development settings - unsuitable for production

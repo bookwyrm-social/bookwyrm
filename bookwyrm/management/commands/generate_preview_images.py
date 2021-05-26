@@ -9,14 +9,15 @@ from bookwyrm import activitystreams, models, settings, preview_images
 def generate_preview_images():
     """generate preview images"""
     print("   | Hello! I will be generating preview images for your instance.")
-    print("🧑‍🎨 ⎨ This might take quite long if your instance has a lot of books and users.")
+    print(
+        "🧑‍🎨 ⎨ This might take quite long if your instance has a lot of books and users."
+    )
     print("   | ✧ Thank you for your patience ✧")
 
     # Site
     sys.stdout.write("   → Site preview image: ")
     preview_images.generate_site_preview_image_task()
     sys.stdout.write(" OK 🖼\n")
-
 
     # Users
     users = models.User.objects.filter(

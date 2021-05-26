@@ -61,30 +61,36 @@ def generate_texts_layer(texts, content_width):
 
     text_y = 0
 
-    if 'text_zero' in texts:
+    if "text_zero" in texts:
         # Text one (Book title)
-        text_zero = textwrap.fill(texts['text_zero'], width=72)
-        text_layer_draw.multiline_text((0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR)
+        text_zero = textwrap.fill(texts["text_zero"], width=72)
+        text_layer_draw.multiline_text(
+            (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
+        )
 
         text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
 
-    if 'text_one' in texts:
+    if "text_one" in texts:
         # Text one (Book title)
-        text_one = textwrap.fill(texts['text_one'], width=28)
-        text_layer_draw.multiline_text((0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR)
+        text_one = textwrap.fill(texts["text_one"], width=28)
+        text_layer_draw.multiline_text(
+            (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
+        )
 
         text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
 
-    if 'text_two' in texts:
+    if "text_two" in texts:
         # Text one (Book subtitle)
-        text_two = textwrap.fill(texts['text_two'], width=36)
-        text_layer_draw.multiline_text((0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR)
+        text_two = textwrap.fill(texts["text_two"], width=36)
+        text_layer_draw.multiline_text(
+            (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
+        )
 
         text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
 
-    if 'text_three' in texts:
+    if "text_three" in texts:
         # Text three (Book authors)
-        text_three = textwrap.fill(texts['text_three'], width=36)
+        text_three = textwrap.fill(texts["text_three"], width=36)
         text_layer_draw.multiline_text(
             (0, text_y), text_three, font=font_text_three, fill=TEXT_COLOR
         )
@@ -183,7 +189,9 @@ def generate_default_inner_img():
     return default_cover
 
 
-def generate_preview_image(texts={}, picture=None, rating=None, show_instance_layer=True):
+def generate_preview_image(
+    texts={}, picture=None, rating=None, show_instance_layer=True
+):
     # Cover
     try:
         inner_img_layer = Image.open(picture)
@@ -193,7 +201,6 @@ def generate_preview_image(texts={}, picture=None, rating=None, show_instance_la
     except:
         inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
-
 
     # Color
     if BG_COLOR in ["use_dominant_color_light", "use_dominant_color_dark"]:
@@ -262,7 +269,7 @@ def generate_preview_image(texts={}, picture=None, rating=None, show_instance_la
     cover_y = math.floor((IMG_HEIGHT - inner_img_layer.height) / 2)
 
     # Composite layers
-    img.paste(inner_img_layer, (margin, cover_y), inner_img_layer.convert('RGBA'))
+    img.paste(inner_img_layer, (margin, cover_y), inner_img_layer.convert("RGBA"))
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
     return img
@@ -309,14 +316,12 @@ def generate_site_preview_image_task():
         logo = path.joinpath("static/images/logo.png")
 
     texts = {
-        'text_zero': DOMAIN,
-        'text_one': site.name,
-        'text_three': site.instance_tagline,
+        "text_zero": DOMAIN,
+        "text_one": site.name,
+        "text_three": site.instance_tagline,
     }
 
-    image = generate_preview_image(texts=texts,
-                                   picture=logo,
-                                   show_instance_layer=False)
+    image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
 
     save_and_cleanup(image, instance=site)
 
@@ -333,14 +338,12 @@ def generate_edition_preview_image_task(book_id):
     ).aggregate(Avg("rating"))["rating__avg"]
 
     texts = {
-        'text_one': book.title,
-        'text_two': book.subtitle,
-        'text_three': book.author_text
+        "text_one": book.title,
+        "text_two": book.subtitle,
+        "text_three": book.author_text,
     }
 
-    image = generate_preview_image(texts=texts,
-                                   picture=book.cover,
-                                   rating=rating)
+    image = generate_preview_image(texts=texts, picture=book.cover, rating=rating)
 
     save_and_cleanup(image, instance=book)
 
@@ -351,8 +354,8 @@ def generate_user_preview_image_task(user_id):
     user = models.User.objects.get(id=user_id)
 
     texts = {
-        'text_one': user.display_name,
-        'text_three': "@{}@{}".format(user.localname, DOMAIN)
+        "text_one": user.display_name,
+        "text_three": "@{}@{}".format(user.localname, DOMAIN),
     }
 
     if user.avatar:
@@ -360,7 +363,6 @@ def generate_user_preview_image_task(user_id):
     else:
         avatar = path.joinpath("static/images/default_avi.jpg")
 
-    image = generate_preview_image(texts=texts,
-                                   picture=avatar)
+    image = generate_preview_image(texts=texts, picture=avatar)
 
     save_and_cleanup(image, instance=user)
