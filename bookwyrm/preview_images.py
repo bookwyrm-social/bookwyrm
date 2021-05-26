@@ -277,7 +277,6 @@ def generate_preview_image(book_id, rating=None):
 
 
 @app.task
-def generate_preview_image_from_edition_task(book_id, updated_fields=None):
-    """generate preview_image after save"""
-    if not updated_fields or "preview_image" not in updated_fields:
-        generate_preview_image(book_id=book_id)
+def generate_preview_image_from_edition_task(book_id):
+    """generate preview_image"""
+    generate_preview_image(book_id=book_id)

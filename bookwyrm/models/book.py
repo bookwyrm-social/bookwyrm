@@ -85,8 +85,8 @@ class Book(BookDataModel):
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
-    preview_image = fields.ImageField(
-        upload_to="cover_previews/", blank=True, null=True, alt_field="alt_text"
+    preview_image = models.ImageField(
+        upload_to="cover_previews/", blank=True, null=True
     )
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
@@ -302,7 +302,9 @@ def isbn_13_to_10(isbn_13):
 
 
 @receiver(models.signals.post_save, sender=Edition)
-def preview_image(instance, **kwargs):
+# pylint: disable=unused-argument
+def preview_image(instance, *args, **kwargs):
     updated_fields = kwargs["update_fields"]
 
-    generate_preview_image_from_edition_task.delay(instance.id, updated_fields)
+    if not updated_fields or "preview_image" not in updated_fields:
+        generate_preview_image_from_edition_task.delay(instance.id)
