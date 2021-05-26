@@ -1,8 +1,6 @@
 """ template filters used for creating the layout"""
 from django import template, utils
 
-from bookwyrm.settings import DOMAIN
-
 register = template.Library()
 
 
@@ -11,9 +9,3 @@ def get_lang():
     """get current language, strip to the first two letters"""
     language = utils.translation.get_language()
     return language[0 : language.find("-")]
-
-
-@register.simple_tag(takes_context=False)
-def get_path():
-    """get protocol and host"""
-    return "https://%s" % DOMAIN
