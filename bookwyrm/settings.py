@@ -182,10 +182,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+SITE_PATH = "https://%s" % DOMAIN
+
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = "/static/"
+STATIC_PATH = "%s/%s" % (SITE_PATH, env("STATIC_ROOT", "static"))
 STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
 MEDIA_URL = "/images/"
+MEDIA_PATH = "%s/%s" % (SITE_PATH, env("MEDIA_ROOT", "images"))
 MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 
 USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (

@@ -4,8 +4,8 @@
 {% block title %}{{ book|book_title }}{% endblock %}
 
 {% block opengraph_images %}
-<meta name="twitter:image" content="{{ site_path }}/images/{{ book.preview_image }}">
-<meta name="og:image" content="{{ site_path }}/images/{{ book.preview_image }}">
+<meta name="twitter:image" content="{{ media_path }}{{ book.preview_image }}">
+<meta name="og:image" content="{{ media_path }}{{ book.preview_image }}">
 {% endblock %}
 
 {% block content %}

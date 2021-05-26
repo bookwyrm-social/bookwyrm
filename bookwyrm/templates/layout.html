@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/static/css/vendor/icons.css">
     <link rel="stylesheet" href="/static/css/bookwyrm.css">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{{ media_url }}{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
 
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
@@ -17,8 +17,8 @@
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
     {% block opengraph_images %}
-    <meta name="twitter:image" content="{{ site_path }}/images/{{ site.preview_image }}">
-    <meta name="og:image" content="{{ site_path }}/images/{{ site.preview_image }}">
+    <meta name="twitter:image" content="{{ media_path }}{{ site.preview_image }}">
+    <meta name="og:image" content="{{ media_path }}{{ site.preview_image }}">
     {% endblock %}
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
@@ -27,7 +27,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
+                <img class="image logo" src="{% if site.logo_small %}{{ media_url }}{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
             </a>
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">

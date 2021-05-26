@@ -8,8 +8,8 @@
 {% block title %}{{ user.display_name }}{% endblock %}
 
 {% block opengraph_images %}
-<meta name="twitter:image" content="{{ site_path }}/images/{{ user.preview_image }}">
-<meta name="og:image" content="{{ site_path }}/images/{{ user.preview_image }}">
+<meta name="twitter:image" content="{{ media_path }}{{ user.preview_image }}">
+<meta name="og:image" content="{{ media_path }}{{ user.preview_image }}">
 {% endblock %}
 
 {% block content %}
