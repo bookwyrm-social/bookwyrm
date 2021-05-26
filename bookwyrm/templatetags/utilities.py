@@ -25,7 +25,7 @@ def get_title(book):
         return ""
     title = book.title
     if len(title) < 6 and book.subtitle:
-        title = "{:s}: {:s}".format(title, book.subtitle)
+        title = "{:s} ({:s})".format(title, book.subtitle)
     return title
 
 
