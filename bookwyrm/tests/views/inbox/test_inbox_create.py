@@ -163,7 +163,9 @@ class InboxCreate(TestCase):
             "@context": "https://www.w3.org/ns/activitystreams",
         }
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.add_status"
+            ) as redis_mock:
                 views.inbox.activity_task(activity)
                 self.assertTrue(redis_mock.called)
         rating = models.ReviewRating.objects.first()

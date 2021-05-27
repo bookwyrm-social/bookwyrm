@@ -256,7 +256,10 @@ class ActivitypubFields(TestCase):
 
             # test receiving an unknown remote id and loading data
             responses.add(
-                responses.GET, "https://example.com/user/mouse", json=userdata, status=200
+                responses.GET,
+                "https://example.com/user/mouse",
+                json=userdata,
+                status=200,
             )
             with patch("bookwyrm.models.user.set_remote_server.delay"):
                 value = instance.field_from_activity("https://example.com/user/mouse")

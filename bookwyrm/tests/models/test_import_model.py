@@ -175,7 +175,9 @@ class ImportJob(TestCase):
                 with patch(
                     "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
                 ):
-                    with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+                    with patch(
+                        "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+                    ):
                         book = self.item_1.get_book_from_isbn()
 
         self.assertEqual(book.title, "Sabriel")

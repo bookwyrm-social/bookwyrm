@@ -98,7 +98,7 @@ class InboxUpdate(TestCase):
         del userdata["icon"]
         self.assertIsNone(self.remote_user.name)
         self.assertFalse(self.remote_user.discoverable)
-        
+
         with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
             views.inbox.activity_task(
                 {
