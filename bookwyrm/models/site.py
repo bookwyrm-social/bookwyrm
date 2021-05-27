@@ -6,6 +6,7 @@ from Crypto import Random
 from django.db import models, IntegrityError
 from django.dispatch import receiver
 from django.utils import timezone
+from model_utils import FieldTracker
 
 from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN
@@ -47,6 +48,8 @@ class SiteSettings(models.Model):
     support_title = models.CharField(max_length=100, null=True, blank=True)
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
+
+    field_tracker = FieldTracker(fields=['name', 'instance_tagline', 'logo'])
 
     @classmethod
     def get(cls):
@@ -130,7 +133,7 @@ class PasswordReset(models.Model):
 @receiver(models.signals.post_save, sender=SiteSettings)
 # pylint: disable=unused-argument
 def preview_image(instance, *args, **kwargs):
-    updated_fields = kwargs["update_fields"]
+    changed_fields = instance.field_tracker.changed()
 
-    if not updated_fields or "preview_image" not in updated_fields:
+    if len(changed_fields) > 0:
         generate_site_preview_image_task.delay()

@@ -9,6 +9,7 @@ from django.core.validators import MinValueValidator
 from django.dispatch import receiver
 from django.db import models
 from django.utils import timezone
+from model_utils import FieldTracker
 import pytz
 
 from bookwyrm import activitypub
@@ -122,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     name_field = "username"
     property_fields = [("following_link", "following")]
+    field_tracker = FieldTracker(fields=['name', 'avatar'])
 
     @property
     def following_link(self):
@@ -453,7 +455,7 @@ def get_remote_reviews(outbox):
 @receiver(models.signals.post_save, sender=User)
 # pylint: disable=unused-argument
 def preview_image(instance, *args, **kwargs):
-    updated_fields = kwargs["update_fields"]
+    changed_fields = instance.field_tracker.changed()
 
-    if not updated_fields or "preview_image" not in updated_fields:
+    if len(changed_fields) > 0:
         generate_user_preview_image_task.delay(instance.id)

@@ -8,6 +8,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
+from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -306,6 +307,8 @@ class Review(Status):
         max_digits=3,
     )
 
+    field_tracker = FieldTracker(fields=['rating'])
+
     @property
     def pure_name(self):
         """clarify review names for mastodon serialization"""
@@ -406,5 +409,8 @@ class Boost(ActivityMixin, Status):
 # pylint: disable=unused-argument
 def preview_image(instance, sender, *args, **kwargs):
     if sender in (Review, ReviewRating):
-        edition = instance.book
-        generate_edition_preview_image_task.delay(edition.id)
+        changed_fields = instance.field_tracker.changed()
+        
+        if len(changed_fields) > 0:
+            edition = instance.book
+            generate_edition_preview_image_task.delay(edition.id)

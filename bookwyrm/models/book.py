@@ -3,6 +3,7 @@ import re
 
 from django.db import models
 from django.dispatch import receiver
+from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
@@ -92,6 +93,7 @@ class Book(BookDataModel):
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
+    field_tracker = FieldTracker(fields=['authors', 'title', 'subtitle', 'cover'])
 
     @property
     def author_text(self):
@@ -304,7 +306,9 @@ def isbn_13_to_10(isbn_13):
 @receiver(models.signals.post_save, sender=Edition)
 # pylint: disable=unused-argument
 def preview_image(instance, *args, **kwargs):
-    updated_fields = kwargs["update_fields"]
+    changed_fields = {}
+    if instance.field_tracker:
+        changed_fields = instance.field_tracker.changed()
 
-    if not updated_fields or "preview_image" not in updated_fields:
+    if len(changed_fields) > 0:
         generate_edition_preview_image_task.delay(instance.id)
