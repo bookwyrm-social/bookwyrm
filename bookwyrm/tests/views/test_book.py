@@ -74,7 +74,8 @@ class BookViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        result = view(request, self.book.id)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
@@ -89,7 +90,7 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
                 view(request, self.book.id)
 
@@ -127,7 +128,7 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
                 view(request, self.book.id)
 
@@ -149,8 +150,9 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, self.book.id)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
         self.assertFalse(self.book.authors.exists())
@@ -165,7 +167,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
 
@@ -180,7 +183,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work, self.work)
 
@@ -196,7 +200,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        view(request)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            view(request)
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
         self.assertEqual(book.authors.first().name, "Sappho")

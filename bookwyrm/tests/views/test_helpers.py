@@ -144,10 +144,11 @@ class ViewsHelpers(TestCase):
             json=self.userdata,
             status=200,
         )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            result = views.helpers.handle_remote_webfinger("@mouse@example.com")
-            self.assertIsInstance(result, models.User)
-            self.assertEqual(result.username, "mouse@example.com")
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                result = views.helpers.handle_remote_webfinger("@mouse@example.com")
+                self.assertIsInstance(result, models.User)
+                self.assertEqual(result.username, "mouse@example.com")
 
     def test_user_on_blocked_server(self, _):
         """find a remote user using webfinger"""

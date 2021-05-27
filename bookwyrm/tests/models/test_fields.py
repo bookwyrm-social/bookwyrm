@@ -254,12 +254,12 @@ class ActivitypubFields(TestCase):
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
 
-        # test receiving an unknown remote id and loading data
-        responses.add(
-            responses.GET, "https://example.com/user/mouse", json=userdata, status=200
-        )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            value = instance.field_from_activity("https://example.com/user/mouse")
+            # test receiving an unknown remote id and loading data
+            responses.add(
+                responses.GET, "https://example.com/user/mouse", json=userdata, status=200
+            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                value = instance.field_from_activity("https://example.com/user/mouse")
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, "https://example.com/user/mouse")
@@ -278,8 +278,8 @@ class ActivitypubFields(TestCase):
             unrelated_user = User.objects.create_user(
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            value = instance.field_from_activity(activitypub.Person(**userdata))
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, "https://example.com/user/mouse")
@@ -302,8 +302,8 @@ class ActivitypubFields(TestCase):
                 "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
             )
 
-        with patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast"):
-            value = instance.field_from_activity(activitypub.Person(**userdata))
+            with patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast"):
+                value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertEqual(value, user)
 
     def test_foreign_key_from_activity_str_existing(self):
@@ -357,10 +357,11 @@ class ActivitypubFields(TestCase):
         responses.add(
             responses.GET, "https://example.com/user/mouse", json=userdata, status=200
         )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            value = instance.field_from_activity(
-                ["https://example.com/user/mouse", "bleh"]
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                value = instance.field_from_activity(
+                    ["https://example.com/user/mouse", "bleh"]
+                )
         self.assertIsInstance(value, list)
         self.assertEqual(len(value), 1)
         self.assertIsInstance(value[0], User)

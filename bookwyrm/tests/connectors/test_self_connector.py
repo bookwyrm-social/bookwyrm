@@ -36,7 +36,7 @@ class SelfConnector(TestCase):
                 published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
             )
             edition.authors.add(author)
-        result = self.connector.search("Edition of Example")[0]
+            result = self.connector.search("Edition of Example")[0]
         self.assertEqual(result.title, "Edition of Example Work")
         self.assertEqual(result.key, edition.remote_id)
         self.assertEqual(result.author, "Anonymous")
@@ -46,7 +46,7 @@ class SelfConnector(TestCase):
     def test_search_rank(self):
         """prioritize certain results"""
         author = models.Author.objects.create(name="Anonymous")
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             edition = models.Edition.objects.create(
                 title="Edition of Example Work",
                 published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
@@ -74,7 +74,7 @@ class SelfConnector(TestCase):
                 title="An Edition", parent_work=models.Work.objects.create(title="")
             )
 
-        results = self.connector.search("Anonymous")
+            results = self.connector.search("Anonymous")
         self.assertEqual(len(results), 3)
         self.assertEqual(results[0].title, "Anonymous")
         self.assertEqual(results[1].title, "More Editions")
@@ -94,17 +94,17 @@ class SelfConnector(TestCase):
             )
             edition_3 = models.Edition.objects.create(title="Fish", parent_work=work)
 
-        # pick the best edition
-        results = self.connector.search("Edition 1 Title")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].key, edition_1.remote_id)
+            # pick the best edition
+            results = self.connector.search("Edition 1 Title")
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].key, edition_1.remote_id)
 
-        # pick the default edition when no match is best
-        results = self.connector.search("Edition Title")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].key, edition_2.remote_id)
+            # pick the default edition when no match is best
+            results = self.connector.search("Edition Title")
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].key, edition_2.remote_id)
 
-        # only matches one edition, so no deduplication takes place
-        results = self.connector.search("Fish")
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].key, edition_3.remote_id)
+            # only matches one edition, so no deduplication takes place
+            results = self.connector.search("Fish")
+            self.assertEqual(len(results), 1)
+            self.assertEqual(results[0].key, edition_3.remote_id)

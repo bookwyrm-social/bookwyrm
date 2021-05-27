@@ -98,10 +98,11 @@ class BaseActivity(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            result = resolve_remote_id(
-                "https://example.com/user/mouse", model=models.User
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                result = resolve_remote_id(
+                    "https://example.com/user/mouse", model=models.User
+                )
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.remote_id, "https://example.com/user/mouse")
         self.assertEqual(result.name, "MOUSE?? MOUSE!!")

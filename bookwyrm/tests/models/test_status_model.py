@@ -60,7 +60,7 @@ class Status(TestCase):
         child = models.Status.objects.create(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        with patch("bookwyrm.preview_images.generate_edition_image_task.delay"):
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             models.Review.objects.create(
                 content="hey", reply_parent=parent, user=self.local_user, book=self.book
             )

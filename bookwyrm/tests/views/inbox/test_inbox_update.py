@@ -98,16 +98,18 @@ class InboxUpdate(TestCase):
         del userdata["icon"]
         self.assertIsNone(self.remote_user.name)
         self.assertFalse(self.remote_user.discoverable)
-        views.inbox.activity_task(
-            {
-                "type": "Update",
-                "to": [],
-                "cc": [],
-                "actor": "hi",
-                "id": "sdkjf",
-                "object": userdata,
-            }
-        )
+        
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            views.inbox.activity_task(
+                {
+                    "type": "Update",
+                    "to": [],
+                    "cc": [],
+                    "actor": "hi",
+                    "id": "sdkjf",
+                    "object": userdata,
+                }
+            )
         user = models.User.objects.get(id=self.remote_user.id)
         self.assertEqual(user.name, "RAT???")
         self.assertEqual(user.username, "rat@example.com")
@@ -130,20 +132,20 @@ class InboxUpdate(TestCase):
                 title="Test Book", remote_id="https://bookwyrm.social/book/5989"
             )
 
-        del bookdata["authors"]
-        self.assertEqual(book.title, "Test Book")
+            del bookdata["authors"]
+            self.assertEqual(book.title, "Test Book")
 
-        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
-            views.inbox.activity_task(
-                {
-                    "type": "Update",
-                    "to": [],
-                    "cc": [],
-                    "actor": "hi",
-                    "id": "sdkjf",
-                    "object": bookdata,
-                }
-            )
+            with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
+                views.inbox.activity_task(
+                    {
+                        "type": "Update",
+                        "to": [],
+                        "cc": [],
+                        "actor": "hi",
+                        "id": "sdkjf",
+                        "object": bookdata,
+                    }
+                )
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
         self.assertEqual(book.last_edited_by, self.remote_user)

@@ -230,11 +230,12 @@ class Openlibrary(TestCase):
             json={"hi": "there"},
             status=200,
         )
-        with patch(
-            "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
-        ) as mock:
-            mock.return_value = []
-            result = self.connector.create_edition_from_data(work, self.edition_data)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
+            ) as mock:
+                mock.return_value = []
+                result = self.connector.create_edition_from_data(work, self.edition_data)
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, "Sabriel")
         self.assertEqual(result.isbn_10, "0060273224")

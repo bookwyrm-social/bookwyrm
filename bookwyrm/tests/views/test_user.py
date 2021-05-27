@@ -162,11 +162,12 @@ class UserViews(TestCase):
         request.user = self.local_user
 
         self.assertIsNone(self.local_user.name)
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-        ) as delay_mock:
-            view(request)
-            self.assertEqual(delay_mock.call_count, 1)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            ) as delay_mock:
+                view(request)
+                self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
 
@@ -186,11 +187,12 @@ class UserViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-        ) as delay_mock:
-            view(request)
-            self.assertEqual(delay_mock.call_count, 1)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            ) as delay_mock:
+                view(request)
+                self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
         self.assertIsNotNone(self.local_user.avatar)
