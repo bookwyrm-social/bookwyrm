@@ -25,16 +25,16 @@ class ActivitypubMixins(TestCase):
             )
             self.local_user.remote_id = "http://example.com/a/b"
             self.local_user.save(broadcast=False)
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
 
         self.object_mock = {
             "to": "to field",
@@ -143,16 +143,17 @@ class ActivitypubMixins(TestCase):
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            another_remote_user = models.User.objects.create_user(
-                "nutria",
-                "nutria@nutria.com",
-                "nutriaword",
-                local=False,
-                remote_id="https://example.com/users/nutria",
-                inbox="https://example.com/users/nutria/inbox",
-                outbox="https://example.com/users/nutria/outbox",
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                another_remote_user = models.User.objects.create_user(
+                    "nutria",
+                    "nutria@nutria.com",
+                    "nutriaword",
+                    local=False,
+                    remote_id="https://example.com/users/nutria",
+                    inbox="https://example.com/users/nutria/inbox",
+                    outbox="https://example.com/users/nutria/outbox",
+                )
         MockSelf = namedtuple("Self", ("privacy", "user", "recipients"))
         mock_self = MockSelf("public", self.local_user, [another_remote_user])
 
@@ -166,16 +167,17 @@ class ActivitypubMixins(TestCase):
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            another_remote_user = models.User.objects.create_user(
-                "nutria",
-                "nutria@nutria.com",
-                "nutriaword",
-                local=False,
-                remote_id="https://example.com/users/nutria",
-                inbox="https://example.com/users/nutria/inbox",
-                outbox="https://example.com/users/nutria/outbox",
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                another_remote_user = models.User.objects.create_user(
+                    "nutria",
+                    "nutria@nutria.com",
+                    "nutriaword",
+                    local=False,
+                    remote_id="https://example.com/users/nutria",
+                    inbox="https://example.com/users/nutria/inbox",
+                    outbox="https://example.com/users/nutria/outbox",
+                )
         MockSelf = namedtuple("Self", ("privacy", "user", "recipients"))
         mock_self = MockSelf("direct", self.local_user, [another_remote_user])
 
@@ -187,17 +189,18 @@ class ActivitypubMixins(TestCase):
         """should combine users with the same shared_inbox"""
         self.remote_user.shared_inbox = "http://example.com/inbox"
         self.remote_user.save(broadcast=False)
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            another_remote_user = models.User.objects.create_user(
-                "nutria",
-                "nutria@nutria.com",
-                "nutriaword",
-                local=False,
-                remote_id="https://example.com/users/nutria",
-                inbox="https://example.com/users/nutria/inbox",
-                shared_inbox="http://example.com/inbox",
-                outbox="https://example.com/users/nutria/outbox",
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                another_remote_user = models.User.objects.create_user(
+                    "nutria",
+                    "nutria@nutria.com",
+                    "nutriaword",
+                    local=False,
+                    remote_id="https://example.com/users/nutria",
+                    inbox="https://example.com/users/nutria/inbox",
+                    shared_inbox="http://example.com/inbox",
+                    outbox="https://example.com/users/nutria/outbox",
+                )
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)
@@ -209,17 +212,18 @@ class ActivitypubMixins(TestCase):
 
     def test_get_recipients_software(self, _):
         """should differentiate between bookwyrm and other remote users"""
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            another_remote_user = models.User.objects.create_user(
-                "nutria",
-                "nutria@nutria.com",
-                "nutriaword",
-                local=False,
-                remote_id="https://example.com/users/nutria",
-                inbox="https://example.com/users/nutria/inbox",
-                outbox="https://example.com/users/nutria/outbox",
-                bookwyrm_user=False,
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                another_remote_user = models.User.objects.create_user(
+                    "nutria",
+                    "nutria@nutria.com",
+                    "nutriaword",
+                    local=False,
+                    remote_id="https://example.com/users/nutria",
+                    inbox="https://example.com/users/nutria/inbox",
+                    outbox="https://example.com/users/nutria/outbox",
+                    bookwyrm_user=False,
+                )
         MockSelf = namedtuple("Self", ("privacy", "user"))
         mock_self = MockSelf("public", self.local_user)
         self.local_user.followers.add(self.remote_user)

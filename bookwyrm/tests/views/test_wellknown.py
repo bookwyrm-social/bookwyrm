@@ -27,16 +27,16 @@ class UserViews(TestCase):
             models.User.objects.create_user(
                 "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            models.User.objects.create_user(
-                "rat",
-                "rat@remote.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                models.User.objects.create_user(
+                    "rat",
+                    "rat@remote.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
         with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
             models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser

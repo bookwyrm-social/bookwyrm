@@ -16,16 +16,16 @@ class BaseModel(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
 
         class BookWyrmTestModel(base_model.BookWyrmModel):
             """just making it not abstract"""

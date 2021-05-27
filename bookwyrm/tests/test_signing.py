@@ -119,9 +119,10 @@ class Signature(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-            response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+                response = self.send_test_request(sender=self.fake_remote)
+                self.assertEqual(response.status_code, 200)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -142,22 +143,23 @@ class Signature(TestCase):
         data["publicKey"]["publicKeyPem"] = key_pair.public_key
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
 
-        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-            # Key correct:
-            response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+                # Key correct:
+                response = self.send_test_request(sender=self.fake_remote)
+                self.assertEqual(response.status_code, 200)
 
-            # Old key is cached, so still works:
-            response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 200)
+                # Old key is cached, so still works:
+                response = self.send_test_request(sender=self.fake_remote)
+                self.assertEqual(response.status_code, 200)
 
-            # Try with new key:
-            response = self.send_test_request(sender=new_sender)
-            self.assertEqual(response.status_code, 200)
+                # Try with new key:
+                response = self.send_test_request(sender=new_sender)
+                self.assertEqual(response.status_code, 200)
 
-            # Now the old key will fail:
-            response = self.send_test_request(sender=self.fake_remote)
-            self.assertEqual(response.status_code, 401)
+                # Now the old key will fail:
+                response = self.send_test_request(sender=self.fake_remote)
+                self.assertEqual(response.status_code, 401)
 
     @responses.activate
     def test_nonexistent_signer(self):

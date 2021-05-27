@@ -25,16 +25,16 @@ class Status(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.book = models.Edition.objects.create(title="Test Edition")
 
@@ -356,11 +356,12 @@ class Status(TestCase):
         status = models.Status.objects.create(
             content="test content", user=self.local_user
         )
-        fav = models.Favorite.objects.create(status=status, user=self.local_user)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            fav = models.Favorite.objects.create(status=status, user=self.local_user)
 
-        # can't fav a status twice
-        with self.assertRaises(IntegrityError):
-            models.Favorite.objects.create(status=status, user=self.local_user)
+            # can't fav a status twice
+            with self.assertRaises(IntegrityError):
+                models.Favorite.objects.create(status=status, user=self.local_user)
 
         activity = fav.to_activity()
         self.assertEqual(activity["type"], "Like")

@@ -25,16 +25,16 @@ class BookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-        with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@email.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@email.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(

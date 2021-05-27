@@ -82,7 +82,7 @@ class SelfConnector(TestCase):
 
     def test_search_multiple_editions(self):
         """it should get rid of duplicate editions for the same work"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             work = models.Work.objects.create(title="Work Title")
             edition_1 = models.Edition.objects.create(
                 title="Edition 1 Title", parent_work=work

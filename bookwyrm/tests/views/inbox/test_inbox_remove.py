@@ -22,16 +22,16 @@ class InboxRemove(TestCase):
             )
             self.local_user.remote_id = "https://example.com/user/mouse"
             self.local_user.save(broadcast=False)
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
 
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.work = models.Work.objects.create(title="work title")

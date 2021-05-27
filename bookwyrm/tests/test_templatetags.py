@@ -29,14 +29,14 @@ class TemplateTags(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.rat",
-                "ratword",
-                remote_id="http://example.com/rat",
-                local=False,
-            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.rat",
+                    "ratword",
+                    remote_id="http://example.com/rat",
+                    local=False,
+                )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.book = models.Edition.objects.create(title="Test Book")
 
@@ -146,19 +146,20 @@ class TemplateTags(TestCase):
 
     def test_get_book_description(self, _):
         """grab it from the edition or the parent"""
-        work = models.Work.objects.create(title="Test Work")
-        self.book.parent_work = work
-        self.book.save()
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="Test Work")
+            self.book.parent_work = work
+            self.book.save()
 
-        self.assertIsNone(bookwyrm_tags.get_book_description(self.book))
+            self.assertIsNone(bookwyrm_tags.get_book_description(self.book))
 
-        work.description = "hi"
-        work.save()
-        self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hi")
+            work.description = "hi"
+            work.save()
+            self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hi")
 
-        self.book.description = "hello"
-        self.book.save()
-        self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
+            self.book.description = "hello"
+            self.book.save()
+            self.assertEqual(bookwyrm_tags.get_book_description(self.book), "hello")
 
     def test_get_uuid(self, _):
         """uuid functionality"""

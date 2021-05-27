@@ -35,15 +35,16 @@ class User(TestCase):
         self.assertIsNotNone(self.user.key_pair.public_key)
 
     def test_remote_user(self):
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.rat",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/dfjkg",
-                bookwyrm_user=False,
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.rat",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/dfjkg",
+                    bookwyrm_user=False,
+                )
         self.assertEqual(user.username, "rat@example.com")
 
     def test_user_shelves(self):
