@@ -307,7 +307,7 @@ class Review(Status):
         max_digits=3,
     )
 
-    field_tracker = FieldTracker(fields=['rating'])
+    field_tracker = FieldTracker(fields=["rating"])
 
     @property
     def pure_name(self):
@@ -410,7 +410,7 @@ class Boost(ActivityMixin, Status):
 def preview_image(instance, sender, *args, **kwargs):
     if sender in (Review, ReviewRating):
         changed_fields = instance.field_tracker.changed()
-        
+
         if len(changed_fields) > 0:
             edition = instance.book
             generate_edition_preview_image_task.delay(edition.id)

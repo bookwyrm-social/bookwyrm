@@ -93,7 +93,7 @@ class Book(BookDataModel):
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
-    field_tracker = FieldTracker(fields=['authors', 'title', 'subtitle', 'cover'])
+    field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
 
     @property
     def author_text(self):

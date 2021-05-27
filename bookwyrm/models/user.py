@@ -123,7 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     name_field = "username"
     property_fields = [("following_link", "following")]
-    field_tracker = FieldTracker(fields=['name', 'avatar'])
+    field_tracker = FieldTracker(fields=["name", "avatar"])
 
     @property
     def following_link(self):

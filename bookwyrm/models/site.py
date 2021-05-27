@@ -49,7 +49,7 @@ class SiteSettings(models.Model):
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
 
-    field_tracker = FieldTracker(fields=['name', 'instance_tagline', 'logo'])
+    field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     @classmethod
     def get(cls):
