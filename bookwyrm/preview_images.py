@@ -64,7 +64,10 @@ def generate_texts_layer(texts, content_width):
             (0, text_y), text_zero, font=font_text_zero, fill=TEXT_COLOR
         )
 
-        text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
+        try:
+            text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
+        except:
+            text_y = text_y + 26
 
     if "text_one" in texts and texts["text_one"]:
         # Text one (Book title)
@@ -73,7 +76,10 @@ def generate_texts_layer(texts, content_width):
             (0, text_y), text_one, font=font_text_one, fill=TEXT_COLOR
         )
 
-        text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
+        try:
+            text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
+        except:
+            text_y = text_y + 26
 
     if "text_two" in texts and texts["text_two"]:
         # Text one (Book subtitle)
@@ -82,7 +88,10 @@ def generate_texts_layer(texts, content_width):
             (0, text_y), text_two, font=font_text_two, fill=TEXT_COLOR
         )
 
-        text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
+        try:
+            text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
+        except:
+            text_y = text_y + 26
 
     if "text_three" in texts and texts["text_three"]:
         # Text three (Book authors)
