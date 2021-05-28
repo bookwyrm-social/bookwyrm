@@ -103,17 +103,27 @@ def generate_instance_layer(content_width):
     if site.logo_small:
         logo_img = Image.open(site.logo_small)
     else:
-        static_path = os.path.join(settings.STATIC_ROOT, "images/logo-small.png")
-        logo_img = Image.open(static_path)
+        try:
+            static_path = os.path.join(settings.STATIC_ROOT, "images/logo-small.png")
+            logo_img = Image.open(static_path)
+        except FileNotFoundError:
+            logo_img = None
 
     instance_layer = Image.new("RGBA", (content_width, 62), color=TRANSPARENT_COLOR)
 
-    logo_img.thumbnail((50, 50), Image.ANTIALIAS)
+    instance_text_x = 0
 
-    instance_layer.paste(logo_img, (0, 0))
+    if logo_img:
+        logo_img.thumbnail((50, 50), Image.ANTIALIAS)
+
+        instance_layer.paste(logo_img, (0, 0))
+
+        instance_text_x = instance_text_x + 60
 
     instance_layer_draw = ImageDraw.Draw(instance_layer)
-    instance_layer_draw.text((60, 10), site.name, font=font_instance, fill=TEXT_COLOR)
+    instance_layer_draw.text(
+        (instance_text_x, 10), site.name, font=font_instance, fill=TEXT_COLOR
+    )
 
     line_width = 50 + 10 + font_instance.getsize(site.name)[0]
 
