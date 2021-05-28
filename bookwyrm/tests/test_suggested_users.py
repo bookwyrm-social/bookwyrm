@@ -15,12 +15,13 @@ class SuggestedUsers(TestCase):
 
     def setUp(self):
         """use a test csv"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
+            )
         self.book = models.Edition.objects.create(title="test book")
 
-    def test_get_ramk(self, *_):
+    def test_get_rank(self, *_):
         """a float that reflects both the mutuals count and shared books"""
         Mock = namedtuple("AnnotatedUserMock", ("mutuals", "shared_books"))
         annotated_user_mock = Mock(3, 27)
@@ -67,3 +68,12 @@ class SuggestedUsers(TestCase):
         match = results.first()
         self.assertEqual(match.id, suggestable_user.id)
         self.assertEqual(match.mutuals, 1)
+
+    def test_create_user_signal(self, *_):
+        """build suggestions for new users"""
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay") as mock:
+            models.User.objects.create_user(
+                "nutria", "nutria@nu.tria", "password", local=True, localname="nutria"
+            )
+
+        self.assertEqual(mock.call_count, 1)
