@@ -145,49 +145,54 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
-    icon_star_full = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
-    )
-    icon_star_empty = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
-    )
-    icon_star_half = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
-    )
+    try:
+        icon_star_full = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
+        )
+        icon_star_empty = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
+        )
+        icon_star_half = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
+        )
 
-    icon_size = 64
-    icon_margin = 10
+        icon_size = 64
+        icon_margin = 10
 
-    rating_layer_base = Image.new(
-        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
-    )
-    rating_layer_color = Image.new("RGBA", (content_width, icon_size), color=TEXT_COLOR)
-    rating_layer_mask = Image.new(
-        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
-    )
+        rating_layer_base = Image.new(
+            "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+        )
+        rating_layer_color = Image.new(
+            "RGBA", (content_width, icon_size), color=TEXT_COLOR
+        )
+        rating_layer_mask = Image.new(
+            "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+        )
 
-    position_x = 0
+        position_x = 0
 
-    for r in range(math.floor(rating)):
-        rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+        for r in range(math.floor(rating)):
+            rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
+            position_x = position_x + icon_size + icon_margin
 
-    if math.floor(rating) != math.ceil(rating):
-        rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+        if math.floor(rating) != math.ceil(rating):
+            rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
+            position_x = position_x + icon_size + icon_margin
 
-    for r in range(5 - math.ceil(rating)):
-        rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
-        position_x = position_x + icon_size + icon_margin
+        for r in range(5 - math.ceil(rating)):
+            rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
+            position_x = position_x + icon_size + icon_margin
 
-    rating_layer_mask = rating_layer_mask.getchannel("A")
-    rating_layer_mask = ImageOps.invert(rating_layer_mask)
+        rating_layer_mask = rating_layer_mask.getchannel("A")
+        rating_layer_mask = ImageOps.invert(rating_layer_mask)
 
-    rating_layer_composite = Image.composite(
-        rating_layer_base, rating_layer_color, rating_layer_mask
-    )
+        rating_layer_composite = Image.composite(
+            rating_layer_base, rating_layer_color, rating_layer_mask
+        )
 
-    return rating_layer_composite
+        return rating_layer_composite
+    except:
+        return None
 
 
 def generate_default_inner_img():
@@ -273,8 +278,10 @@ def generate_preview_image(
         # Add some more margin
         contents_composite_y = contents_composite_y + gutter
         rating_layer = generate_rating_layer(rating, content_width)
-        contents_layer.alpha_composite(rating_layer, (0, contents_composite_y))
-        contents_composite_y = contents_composite_y + rating_layer.height + gutter
+
+        if rating_layer:
+            contents_layer.alpha_composite(rating_layer, (0, contents_composite_y))
+            contents_composite_y = contents_composite_y + rating_layer.height + gutter
 
     contents_layer_box = contents_layer.getbbox()
     contents_layer_height = contents_layer_box[3] - contents_layer_box[1]
