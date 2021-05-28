@@ -301,12 +301,12 @@ def generate_preview_image(
     )
     img.alpha_composite(contents_layer, (content_x, contents_y))
 
-    return img
+    return img.convert("RGB")
 
 
 def save_and_cleanup(image, instance=None):
     if instance:
-        file_name = "%s.png" % str(uuid4())
+        file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
         image_buffer = BytesIO()
 
         try:
@@ -316,12 +316,12 @@ def save_and_cleanup(image, instance=None):
                 old_path = ""
 
             # Save
-            image.save(image_buffer, format="png")
+            image.save(image_buffer, format="jpeg", quality=75)
             instance.preview_image = InMemoryUploadedFile(
                 ContentFile(image_buffer.getvalue()),
                 "preview_image",
                 file_name,
-                "image/png",
+                "image/jpg",
                 image_buffer.tell(),
                 None,
             )
