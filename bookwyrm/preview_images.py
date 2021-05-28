@@ -126,11 +126,15 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
-    icon_star_full = Image.open(os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png"))
+    icon_star_full = Image.open(
+        os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
+    )
     icon_star_empty = Image.open(
         os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
     )
-    icon_star_half = Image.open(os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png"))
+    icon_star_half = Image.open(
+        os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
+    )
 
     icon_size = 64
     icon_margin = 10
@@ -321,7 +325,9 @@ def generate_site_preview_image_task():
             "text_three": site.instance_tagline,
         }
 
-        image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
+        image = generate_preview_image(
+            texts=texts, picture=logo, show_instance_layer=False
+        )
 
         save_and_cleanup(image, instance=site)
 
