@@ -17,8 +17,7 @@
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
     {% block opengraph_images %}
-    <meta name="twitter:image" content="{{ request.protocol }}{{ media_path }}{{ site.preview_image }}">
-    <meta name="og:image" content="{{ request.protocol }}{{ media_path }}{{ site.preview_image }}">
+        {% include 'snippets/opengraph_images.html' %}
     {% endblock %}
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>

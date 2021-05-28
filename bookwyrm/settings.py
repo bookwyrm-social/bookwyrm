@@ -38,14 +38,12 @@ LOCALE_PATHS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Preview image
-
-# Specify RGB tuple or RGB hex strings,
-# or "use_dominant_color_light" / "use_dominant_color_dark"
-PREVIEW_BG_COLOR = "use_dominant_color_light"
-PREVIEW_IMG_WIDTH = 1200
-PREVIEW_IMG_HEIGHT = 630
-PREVIEW_TEXT_COLOR = "#363636"  # Change to "#FFF" if you use "use_dominant_color_dark"
-PREVIEW_DEFAULT_COVER_COLOR = "#002549"
+ENABLE_PREVIEW_IMAGES = env.bool("ENABLE_PREVIEW_IMAGES", False)
+PREVIEW_BG_COLOR = env.str("PREVIEW_BG_COLOR", "use_dominant_color_light")
+PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
+PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
+PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
+PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

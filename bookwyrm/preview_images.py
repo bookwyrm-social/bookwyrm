@@ -13,8 +13,8 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Avg
 
 from bookwyrm import models, settings
-from bookwyrm.settings import DOMAIN, STATIC_ROOT
 from bookwyrm.tasks import app
+
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
@@ -27,7 +27,7 @@ margin = math.floor(IMG_HEIGHT / 10)
 gutter = math.floor(margin / 2)
 inner_img_height = math.floor(IMG_HEIGHT * 0.8)
 inner_img_width = math.floor(inner_img_height * 0.7)
-font_dir = os.path.join(STATIC_ROOT, "fonts/public_sans")
+font_dir = os.path.join(settings.STATIC_ROOT, "fonts/public_sans")
 
 
 def get_font(font_name, size=28):
@@ -103,7 +103,7 @@ def generate_instance_layer(content_width):
     if site.logo_small:
         logo_img = Image.open(site.logo_small)
     else:
-        static_path = os.path.join(STATIC_ROOT, "images/logo-small.png")
+        static_path = os.path.join(settings.STATIC_ROOT, "images/logo-small.png")
         logo_img = Image.open(static_path)
 
     instance_layer = Image.new("RGBA", (content_width, 62), color=TRANSPARENT_COLOR)
@@ -126,11 +126,11 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
-    icon_star_full = Image.open(os.path.join(STATIC_ROOT, "images/icons/star-full.png"))
+    icon_star_full = Image.open(os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png"))
     icon_star_empty = Image.open(
-        os.path.join(STATIC_ROOT, "images/icons/star-empty.png")
+        os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
     )
-    icon_star_half = Image.open(os.path.join(STATIC_ROOT, "images/icons/star-half.png"))
+    icon_star_half = Image.open(os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png"))
 
     icon_size = 64
     icon_margin = 10
@@ -307,61 +307,64 @@ def save_and_cleanup(image, instance=None):
 @app.task
 def generate_site_preview_image_task():
     """generate preview_image for the website"""
-    site = models.SiteSettings.objects.get()
+    if settings.ENABLE_PREVIEW_IMAGES == True:
+        site = models.SiteSettings.objects.get()
 
-    if site.logo:
-        logo = site.logo
-    else:
-        logo = os.path.join(STATIC_ROOT, "images/logo.png")
+        if site.logo:
+            logo = site.logo
+        else:
+            logo = os.path.join(settings.STATIC_ROOT, "images/logo.png")
 
-    texts = {
-        "text_zero": DOMAIN,
-        "text_one": site.name,
-        "text_three": site.instance_tagline,
-    }
+        texts = {
+            "text_zero": settings.DOMAIN,
+            "text_one": site.name,
+            "text_three": site.instance_tagline,
+        }
 
-    image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
+        image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
 
-    save_and_cleanup(image, instance=site)
+        save_and_cleanup(image, instance=site)
 
 
 @app.task
 def generate_edition_preview_image_task(book_id):
     """generate preview_image for a book"""
-    book = models.Book.objects.select_subclasses().get(id=book_id)
+    if settings.ENABLE_PREVIEW_IMAGES == True:
+        book = models.Book.objects.select_subclasses().get(id=book_id)
 
-    rating = models.Review.objects.filter(
-        privacy="public",
-        deleted=False,
-        book__in=[book_id],
-    ).aggregate(Avg("rating"))["rating__avg"]
+        rating = models.Review.objects.filter(
+            privacy="public",
+            deleted=False,
+            book__in=[book_id],
+        ).aggregate(Avg("rating"))["rating__avg"]
 
-    texts = {
-        "text_one": book.title,
-        "text_two": book.subtitle,
-        "text_three": book.author_text,
-    }
+        texts = {
+            "text_one": book.title,
+            "text_two": book.subtitle,
+            "text_three": book.author_text,
+        }
 
-    image = generate_preview_image(texts=texts, picture=book.cover, rating=rating)
+        image = generate_preview_image(texts=texts, picture=book.cover, rating=rating)
 
-    save_and_cleanup(image, instance=book)
+        save_and_cleanup(image, instance=book)
 
 
 @app.task
 def generate_user_preview_image_task(user_id):
     """generate preview_image for a book"""
-    user = models.User.objects.get(id=user_id)
+    if settings.ENABLE_PREVIEW_IMAGES == True:
+        user = models.User.objects.get(id=user_id)
 
-    texts = {
-        "text_one": user.display_name,
-        "text_three": "@{}@{}".format(user.localname, DOMAIN),
-    }
+        texts = {
+            "text_one": user.display_name,
+            "text_three": "@{}@{}".format(user.localname, settings.DOMAIN),
+        }
 
-    if user.avatar:
-        avatar = user.avatar
-    else:
-        avatar = os.path.join(STATIC_ROOT, "images/default_avi.jpg")
+        if user.avatar:
+            avatar = user.avatar
+        else:
+            avatar = os.path.join(settings.STATIC_ROOT, "images/default_avi.jpg")
 
-    image = generate_preview_image(texts=texts, picture=avatar)
+        image = generate_preview_image(texts=texts, picture=avatar)
 
-    save_and_cleanup(image, instance=user)
+        save_and_cleanup(image, instance=user)
