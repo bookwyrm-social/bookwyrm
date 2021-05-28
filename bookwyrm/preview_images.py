@@ -57,7 +57,7 @@ def generate_texts_layer(texts, content_width):
 
     text_y = 0
 
-    if "text_zero" in texts:
+    if "text_zero" in texts and texts["text_zero"]:
         # Text one (Book title)
         text_zero = textwrap.fill(texts["text_zero"], width=72)
         text_layer_draw.multiline_text(
@@ -66,7 +66,7 @@ def generate_texts_layer(texts, content_width):
 
         text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
 
-    if "text_one" in texts:
+    if "text_one" in texts and texts["text_one"]:
         # Text one (Book title)
         text_one = textwrap.fill(texts["text_one"], width=28)
         text_layer_draw.multiline_text(
@@ -75,7 +75,7 @@ def generate_texts_layer(texts, content_width):
 
         text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
 
-    if "text_two" in texts:
+    if "text_two" in texts and texts["text_two"]:
         # Text one (Book subtitle)
         text_two = textwrap.fill(texts["text_two"], width=36)
         text_layer_draw.multiline_text(
@@ -84,7 +84,7 @@ def generate_texts_layer(texts, content_width):
 
         text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
 
-    if "text_three" in texts:
+    if "text_three" in texts and texts["text_three"]:
         # Text three (Book authors)
         text_three = textwrap.fill(texts["text_three"], width=36)
         text_layer_draw.multiline_text(
@@ -299,7 +299,12 @@ def save_and_cleanup(image, instance=None):
                 image_buffer.tell(),
                 None,
             )
-            instance.save(update_fields=["preview_image"])
+
+            save_without_broadcast = isinstance(instance, (models.Book, models.User))
+            if save_without_broadcast:
+                instance.save(update_fields=["preview_image"], broadcast=False)
+            else:
+                instance.save(update_fields=["preview_image"])
 
             # Clean up old file after saving
             if os.path.exists(old_path):
