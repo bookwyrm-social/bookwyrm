@@ -20,6 +20,7 @@ from bookwyrm.preview_images import (
 
 import logging
 
+
 @patch("bookwyrm.emailing.send_email.delay")
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
@@ -38,8 +39,10 @@ class PreviewImages(TestCase):
                 local=True,
                 localname="possum",
                 avatar=SimpleUploadedFile(
-                    avatar_file, open(avatar_file, "rb").read(), content_type="image/jpeg"
-                )
+                    avatar_file,
+                    open(avatar_file, "rb").read(),
+                    content_type="image/jpeg",
+                ),
             )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.work = models.Work.objects.create(title="Test Work")
@@ -63,7 +66,9 @@ class PreviewImages(TestCase):
 
         result = generate_preview_image(texts=texts, picture=image_file, rating=5)
         self.assertIsInstance(result, Image.Image)
-        self.assertEqual(result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT))
+        self.assertEqual(
+            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
+        )
 
     def test_site_preview(self, *args, **kwargs):
         """generate site preview"""
@@ -74,7 +79,9 @@ class PreviewImages(TestCase):
 
         self.assertIsInstance(site_preview_image, ImageFieldFile)
         result = Image.open(site_preview_image)
-        self.assertEqual(result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT))
+        self.assertEqual(
+            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
+        )
 
     def test_edition_preview(self, *args, **kwargs):
         """generate user preview"""
@@ -85,7 +92,9 @@ class PreviewImages(TestCase):
 
         self.assertIsInstance(book_preview_image, ImageFieldFile)
         result = Image.open(book_preview_image)
-        self.assertEqual(result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT))
+        self.assertEqual(
+            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
+        )
 
     def test_user_preview(self, *args, **kwargs):
         """generate user preview"""
@@ -96,4 +105,6 @@ class PreviewImages(TestCase):
 
         self.assertIsInstance(user_preview_image, ImageFieldFile)
         result = Image.open(user_preview_image)
-        self.assertEqual(result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT))
+        self.assertEqual(
+            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
+        )
