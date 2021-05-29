@@ -16,6 +16,7 @@ from bookwyrm.preview_images import (
     generate_edition_preview_image_task,
     generate_user_preview_image_task,
     generate_preview_image,
+    save_and_cleanup,
 )
 
 import logging
@@ -69,6 +70,19 @@ class PreviewImages(TestCase):
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
         )
+
+    def test_store_preview_image(self, *args, **kwargs):
+        image = Image.new("RGB", (200, 200), color="#F00")
+
+        result = save_and_cleanup(image, instance=self.local_user)
+        self.assertTrue(result)
+
+        self.local_user.refresh_from_db()
+        self.assertIsInstance(self.local_user.preview_image, ImageFieldFile)
+        self.assertIsNotNone(self.local_user.preview_image)
+        self.assertEqual(self.local_user.preview_image.width, 200)
+        self.assertEqual(self.local_user.preview_image.height, 200)
+
 
     def test_site_preview(self, *args, **kwargs):
         """generate site preview"""        
