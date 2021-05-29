@@ -1,5 +1,4 @@
 """ test generating preview images """
-import sys
 import pathlib
 from unittest.mock import patch
 from PIL import Image
@@ -22,7 +21,6 @@ from bookwyrm.preview_images import (
 import logging
 
 
-@patch("bookwyrm.emailing.send_email.delay")
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 
@@ -83,9 +81,8 @@ class PreviewImages(TestCase):
         self.assertEqual(self.local_user.preview_image.width, 200)
         self.assertEqual(self.local_user.preview_image.height, 200)
 
-
     def test_site_preview(self, *args, **kwargs):
-        """generate site preview"""        
+        """generate site preview"""
         generate_site_preview_image_task()
 
         self.site.refresh_from_db()
@@ -96,7 +93,7 @@ class PreviewImages(TestCase):
         self.assertEqual(self.site.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
 
     def test_edition_preview(self, *args, **kwargs):
-        """generate edition preview"""        
+        """generate edition preview"""
         generate_edition_preview_image_task(self.edition.id)
 
         self.edition.refresh_from_db()
@@ -107,12 +104,16 @@ class PreviewImages(TestCase):
         self.assertEqual(self.edition.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
 
     def test_user_preview(self, *args, **kwargs):
-        """generate user preview"""        
+        """generate user preview"""
         generate_user_preview_image_task(self.local_user.id)
 
         self.local_user.refresh_from_db()
 
         self.assertIsInstance(self.local_user.preview_image, ImageFieldFile)
         self.assertIsNotNone(self.local_user.preview_image)
-        self.assertEqual(self.local_user.preview_image.width, settings.PREVIEW_IMG_WIDTH)
-        self.assertEqual(self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
+        self.assertEqual(
+            self.local_user.preview_image.width, settings.PREVIEW_IMG_WIDTH
+        )
+        self.assertEqual(
+            self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT
+        )

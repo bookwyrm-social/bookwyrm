@@ -15,9 +15,6 @@ from django.db.models import Avg
 from bookwyrm import models, settings
 from bookwyrm.tasks import app
 
-# remove after testing in Github Actions
-import logging
-
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
@@ -308,12 +305,8 @@ def generate_preview_image(
 
 
 def save_and_cleanup(image, instance=None):
-    logging.warn("/start save_and_cleanup")
-
-    if instance:
-        logging.warn("\nInstance OK, ")
+    if isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
-        logging.warn("%s, " % file_name)
         image_buffer = BytesIO()
 
         try:
@@ -321,11 +314,10 @@ def save_and_cleanup(image, instance=None):
                 old_path = instance.preview_image.path
             except ValueError:
                 old_path = ""
-            
-            logging.warn("path: %s, " % old_path)
 
             # Save
             image.save(image_buffer, format="jpeg", quality=75)
+
             instance.preview_image = InMemoryUploadedFile(
                 ContentFile(image_buffer.getvalue()),
                 "preview_image",
@@ -334,26 +326,23 @@ def save_and_cleanup(image, instance=None):
                 image_buffer.tell(),
                 None,
             )
-            logging.warn("before save: %sx" % instance.preview_image.width)
-            logging.warn("%s, " % instance.preview_image.height)
 
             save_without_broadcast = isinstance(instance, (models.Book, models.User))
             if save_without_broadcast:
-                instance.save(broadcast=False)
+                result = instance.save(broadcast=False)
             else:
                 instance.save()
-
-            instance.refresh_from_db()
-            logging.warn("after save: %sx" % instance.preview_image.width)
-            logging.warn("%s\n" % instance.preview_image.height)
 
             # Clean up old file after saving
             if os.path.exists(old_path):
                 os.remove(old_path)
+
         finally:
             image_buffer.close()
+            return True
+    else:
+        return False
 
-    logging.warn("end save_and_cleanup/\n")
 
 @app.task
 def generate_site_preview_image_task():
