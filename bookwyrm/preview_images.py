@@ -309,33 +309,33 @@ def save_and_cleanup(image, instance=None):
         file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
         image_buffer = BytesIO()
 
+        # try:
         try:
-            try:
-                old_path = instance.preview_image.path
-            except ValueError:
-                old_path = ""
+            old_path = instance.preview_image.path
+        except ValueError:
+            old_path = ""
 
-            # Save
-            image.save(image_buffer, format="jpeg", quality=75)
-            instance.preview_image = InMemoryUploadedFile(
-                ContentFile(image_buffer.getvalue()),
-                "preview_image",
-                file_name,
-                "image/jpg",
-                image_buffer.tell(),
-                None,
-            )
+        # Save
+        image.save(image_buffer, format="jpeg", quality=75)
+        instance.preview_image = InMemoryUploadedFile(
+            ContentFile(image_buffer.getvalue()),
+            "preview_image",
+            file_name,
+            "image/jpg",
+            image_buffer.tell(),
+            None,
+        )
 
-            save_without_broadcast = isinstance(instance, (models.Book, models.User))
-            if save_without_broadcast:
-                instance.save(update_fields=["preview_image"], broadcast=False)
-            else:
-                instance.save(update_fields=["preview_image"])
+        save_without_broadcast = isinstance(instance, (models.Book, models.User))
+        if save_without_broadcast:
+            instance.save(update_fields=["preview_image"], broadcast=False)
+        else:
+            instance.save(update_fields=["preview_image"])
 
-            # Clean up old file after saving
-            if os.path.exists(old_path):
-                os.remove(old_path)
-        finally:
+        # Clean up old file after saving
+        if os.path.exists(old_path):
+            os.remove(old_path)
+        # finally:
             image_buffer.close()
 
 
