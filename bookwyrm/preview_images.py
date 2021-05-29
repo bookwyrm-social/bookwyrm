@@ -15,6 +15,9 @@ from django.db.models import Avg
 from bookwyrm import models, settings
 from bookwyrm.tasks import app
 
+# remove after testing in Github Actions
+import sys
+
 
 IMG_WIDTH = settings.PREVIEW_IMG_WIDTH
 IMG_HEIGHT = settings.PREVIEW_IMG_HEIGHT
@@ -305,8 +308,12 @@ def generate_preview_image(
 
 
 def save_and_cleanup(image, instance=None):
+    sys.stdout.write("/start save_and_cleanup")
+
     if instance:
+        sys.stdout.write("\nInstance OK, ")
         file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
+        sys.stdout.write("%s, " % file_name)
         image_buffer = BytesIO()
 
         try:
@@ -314,6 +321,8 @@ def save_and_cleanup(image, instance=None):
                 old_path = instance.preview_image.path
             except ValueError:
                 old_path = ""
+            
+            sys.stdout.write("path: %s, " % old_path)
 
             # Save
             image.save(image_buffer, format="jpeg", quality=75)
@@ -325,6 +334,8 @@ def save_and_cleanup(image, instance=None):
                 image_buffer.tell(),
                 None,
             )
+            sys.stdout.write("before save: %sx" % instance.preview_image.width)
+            sys.stdout.write("%s, " % instance.preview_image.height)
 
             save_without_broadcast = isinstance(instance, (models.Book, models.User))
             if save_without_broadcast:
@@ -332,12 +343,17 @@ def save_and_cleanup(image, instance=None):
             else:
                 instance.save(update_fields=["preview_image"])
 
+            instance.refresh_from_db()
+            sys.stdout.write("after save: %sx" % instance.preview_image.width)
+            sys.stdout.write("%s\n" % instance.preview_image.height)
+
             # Clean up old file after saving
             if os.path.exists(old_path):
                 os.remove(old_path)
         finally:
             image_buffer.close()
 
+    sys.stdout.write("end save_and_cleanup/\n")
 
 @app.task
 def generate_site_preview_image_task():
