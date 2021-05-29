@@ -52,7 +52,7 @@ class PreviewImages(TestCase):
                 parent_work=self.work,
             )
         with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+            self.site = models.SiteSettings.objects.create()
 
     def test_generate_preview_image(self, *args, **kwargs):
         image_file = pathlib.Path(__file__).parent.joinpath(
@@ -74,11 +74,10 @@ class PreviewImages(TestCase):
         """generate site preview"""
         generate_site_preview_image_task()
 
-        updated_site = models.SiteSettings.objects.get()
-        site_preview_image = updated_site.preview_image
+        self.site.refresh_from_db()
 
-        self.assertIsInstance(site_preview_image, ImageFieldFile)
-        result = Image.open(site_preview_image)
+        self.assertIsInstance(self.site.preview_image, ImageFieldFile)
+        result = Image.open(self.site.preview_image)
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
         )
@@ -87,11 +86,10 @@ class PreviewImages(TestCase):
         """generate user preview"""
         generate_edition_preview_image_task(self.book.id)
 
-        updated_book = models.Book.objects.get(id=self.book.id)
-        book_preview_image = updated_book.preview_image
+        self.book.refresh_from_db()
 
-        self.assertIsInstance(book_preview_image, ImageFieldFile)
-        result = Image.open(book_preview_image)
+        self.assertIsInstance(self.book.preview_image, ImageFieldFile)
+        result = Image.open(self.book.preview_image)
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
         )
@@ -100,11 +98,10 @@ class PreviewImages(TestCase):
         """generate user preview"""
         generate_user_preview_image_task(self.local_user.id)
 
-        updated_user = models.User.objects.get(id=self.local_user.id)
-        user_preview_image = updated_user.preview_image
+        self.local_user.refresh_from_db()
 
-        self.assertIsInstance(user_preview_image, ImageFieldFile)
-        result = Image.open(user_preview_image)
+        self.assertIsInstance(self.local_user.preview_image, ImageFieldFile)
+        result = Image.open(self.local_user.preview_image)
         self.assertEqual(
             result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
         )
