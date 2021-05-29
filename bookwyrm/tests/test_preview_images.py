@@ -46,7 +46,7 @@ class PreviewImages(TestCase):
             )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
+            self.edition = models.Edition.objects.create(
                 title="Example Edition",
                 remote_id="https://example.com/book/1",
                 parent_work=self.work,
@@ -71,37 +71,34 @@ class PreviewImages(TestCase):
         )
 
     def test_site_preview(self, *args, **kwargs):
-        """generate site preview"""
+        """generate site preview"""        
         generate_site_preview_image_task()
 
         self.site.refresh_from_db()
 
         self.assertIsInstance(self.site.preview_image, ImageFieldFile)
-        result = Image.open(self.site.preview_image)
-        self.assertEqual(
-            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
-        )
+        self.assertIsNotNone(self.site.preview_image)
+        self.assertEqual(self.site.preview_image.width, settings.PREVIEW_IMG_WIDTH)
+        self.assertEqual(self.site.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
 
     def test_edition_preview(self, *args, **kwargs):
-        """generate user preview"""
-        generate_edition_preview_image_task(self.book.id)
+        """generate edition preview"""        
+        generate_edition_preview_image_task(self.edition.id)
 
-        self.book.refresh_from_db()
+        self.edition.refresh_from_db()
 
-        self.assertIsInstance(self.book.preview_image, ImageFieldFile)
-        result = Image.open(self.book.preview_image)
-        self.assertEqual(
-            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
-        )
+        self.assertIsInstance(self.edition.preview_image, ImageFieldFile)
+        self.assertIsNotNone(self.edition.preview_image)
+        self.assertEqual(self.edition.preview_image.width, settings.PREVIEW_IMG_WIDTH)
+        self.assertEqual(self.edition.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
 
     def test_user_preview(self, *args, **kwargs):
-        """generate user preview"""
+        """generate user preview"""        
         generate_user_preview_image_task(self.local_user.id)
 
         self.local_user.refresh_from_db()
 
         self.assertIsInstance(self.local_user.preview_image, ImageFieldFile)
-        result = Image.open(self.local_user.preview_image)
-        self.assertEqual(
-            result.size, (settings.PREVIEW_IMG_WIDTH, settings.PREVIEW_IMG_HEIGHT)
-        )
+        self.assertIsNotNone(self.local_user.preview_image)
+        self.assertEqual(self.local_user.preview_image.width, settings.PREVIEW_IMG_WIDTH)
+        self.assertEqual(self.local_user.preview_image.height, settings.PREVIEW_IMG_HEIGHT)
