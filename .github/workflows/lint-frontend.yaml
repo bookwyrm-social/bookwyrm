@@ -27,7 +27,7 @@ jobs:
       # See .stylelintignore for files that are not linted.
       - name: Run stylelint
         run: >
-          yarn stylelint bookwyrm/static/**/**.(css|scss) \
+          yarn stylelint bookwyrm/static/**/**.scss \
             --report-needless-disables \
             --report-invalid-scope-disables
 
