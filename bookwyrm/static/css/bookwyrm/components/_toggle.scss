@@ -1,0 +1,13 @@
+/** Toggle
+ ******************************************************************************/
+
+.toggle-button[aria-pressed=true],
+.toggle-button[aria-pressed=true]:hover {
+    background-color: hsl(171, 100%, 41%);
+    color: white;
+}
+
+.hide-active[aria-pressed=true],
+.hide-inactive[aria-pressed=false] {
+    display: none;
+}

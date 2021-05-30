@@ -1,0 +1,54 @@
+/** Imports
+ ******************************************************************************/
+
+@import "components/avatar";
+@import "components/book-cover";
+@import "components/book-list";
+@import "components/mobile-table";
+@import "components/stars";
+@import "components/status-quote";
+@import "components/toggle";
+
+@import "overrides/bulma-overrides";
+
+@import "utilities/a11y";
+@import "utilities/alignment";
+@import "utilities/size";
+@import "utilities/spacing";
+@import "utilities/transition";
+
+
+/** Small fixes
+ ******************************************************************************/
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    overflow: hidden;
+}
+
+/** Shelving
+ ******************************************************************************/
+
+/** @todo Replace icons with SVG symbols.
+    @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
+.shelf-option:disabled > *::after {
+    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    content: "\e918";
+    margin-left: 0.5em;
+}
+
+/* Book preview table
+ ******************************************************************************/
+
+.book-preview td {
+    vertical-align: middle;
+}

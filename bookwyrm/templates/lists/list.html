@@ -27,7 +27,7 @@
         {% if not items.object_list.exists %}
         <p>{% trans "This list is currently empty" %}</p>
         {% else %}
-        <ol start="{{ items.start_index }}" class="ordered-list">
+        <ol start="{{ items.start_index }}" class="book-list">
         {% for item in items %}
             <li class="block mb-5">
                 <div class="card">
