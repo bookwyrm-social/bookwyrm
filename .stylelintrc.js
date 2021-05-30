@@ -1,7 +1,7 @@
 /* global module */
 
 module.exports = {
-    "extends": "stylelint-config-standard",
+    "extends": "stylelint-config-sass-guidelines",
 
     "plugins": [
         "stylelint-order"
