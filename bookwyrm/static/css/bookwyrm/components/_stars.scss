@@ -15,24 +15,26 @@
 
 .form-rate-stars {
     width: max-content;
-}
 
-/* All stars are visually filled by default. */
-.form-rate-stars .icon::before {
-    content: '\e9d9';
-}
+    /* All stars are visually filled by default. */
+    .icon::before {
+        content: '\e9d9';
+    }
+    /* stylelint-disable selector-no-id, declaration-no-important */
 
-/* Icons directly following inputs that follow the checked input are emptied. */
-.form-rate-stars input:checked ~ input + .icon::before {
-    content: '\e9d7';
-}
+    /* Icons directly following inputs that follow the checked input are emptied. */
+    /* stylelint-disable-next-line selector-max-compound-selectors */
+    input:checked ~ input + .icon::before {
+        content: '\e9d7';
+    }
+    
+    /* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
+    &:hover .icon.icon::before {
+        content: '\e9d9';
+    }
 
-/* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
-.form-rate-stars:hover .icon.icon::before {
-    content: '\e9d9';
-}
-
-.form-rate-stars .icon:hover ~ .icon::before {
-    content: '\e9d7';
+    .icon:hover ~ .icon::before {
+        content: '\e9d7';
+    }
 }
 

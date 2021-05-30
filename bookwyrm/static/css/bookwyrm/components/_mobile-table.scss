@@ -1,3 +1,5 @@
+/* stylelint-disable selector-no-qualifying-type */
+
 @media only screen and (max-width: 768px) {
     table.is-mobile,
     table.is-mobile tbody {
@@ -5,23 +7,23 @@
     }
 
     table.is-mobile tr {
+        border-top: 1px solid #dbdbdb;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        border-top: 1px solid #dbdbdb;
     }
 
     table.is-mobile td {
-        display: block;
+        border-bottom: 0;
         box-sizing: border-box;
+        display: block;
         flex: 1 0 100%;
         order: 2;
-        border-bottom: 0;
     }
 
     table.is-mobile td.book-preview-top-row {
-        order: 1;
         flex-basis: auto;
+        order: 1;
     }
 
     table.is-mobile td[data-title]:not(:empty)::before {

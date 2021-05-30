@@ -1,0 +1,46 @@
+.card {
+    overflow: visible;
+}
+
+.scroll-x {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.modal-card.is-fullwidth {
+    min-width: 75% !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .card-footer.is-stacked-mobile {
+        flex-direction: column;
+    }
+
+    .card-footer.is-stacked-mobile .card-footer-item:not(:last-child) {
+        border-bottom: 1px solid #ededed;
+        border-right: 0;
+    }
+}
+
+.button.is-transparent {
+    background-color: transparent;
+}
+
+.card.is-stretchable {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card.is-stretchable .card-content {
+    flex-grow: 1;
+}
+
+.is-disabled {
+    background-color: #dbdbdb;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    color: #7a7a7a;
+    cursor: not-allowed;
+    opacity: 0.5;
+}

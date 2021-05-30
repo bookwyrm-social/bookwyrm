@@ -18,8 +18,8 @@
  ******************************************************************************/
 
 .quote > blockquote {
-    position: relative;
     padding-left: 2em;
+    position: relative;
 }
 
 .quote > blockquote::before,
@@ -29,13 +29,13 @@
 }
 
 .quote > blockquote::before {
-    content: "\e906";
-    top: 0;
+    content: '\e906';
     left: 0;
+    top: 0;
 }
 
 .quote > blockquote::after {
-    content: "\e905";
+    content: '\e905';
     right: 0;
 }
 

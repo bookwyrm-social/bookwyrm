@@ -25,13 +25,13 @@
 }
 
 .cover-container {
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
-    position: relative;
-    width: max-content;
     max-width: 100%;
     overflow: hidden;
+    position: relative;
+    width: max-content;
 }
 
 /* Book cover
@@ -39,25 +39,25 @@
 
 .book-cover {
     display: block;
-    max-width: 100%;
-    max-height: 100%;
 
     /* Useful when stretching under-sized images. */
     image-rendering: optimizeQuality;
     image-rendering: smooth;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 /* Cover caption
  * -------------------------------------------------------------------------- */
 
-.no-cover .cover_caption {
-    position: absolute;
-    top: 0;
-    right: 0;
+.no-cover .cover-caption {
+    background-color: #002549;
     bottom: 0;
+    color: #fff;
+    font-size: 0.75em;
     left: 0;
     padding: 0.25em;
-    font-size: 0.75em;
-    color: white;
-    background-color: #002549;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
