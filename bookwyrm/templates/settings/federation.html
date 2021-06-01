@@ -1,13 +1,13 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
-{% block title %}{% trans "Federated Servers" %}{% endblock %}
+{% block title %}{% trans "Federated Instances" %}{% endblock %}
 
-{% block header %}{% trans "Federated Servers" %}{% endblock %}
+{% block header %}{% trans "Federated Instances" %}{% endblock %}
 
 {% block edit-button %}
 <a href="{% url 'settings-import-blocklist' %}">
-    <span class="icon icon-plus" title="{% trans 'Add server' %}" aria-hidden="True"></span>
-    <span>{% trans "Add server" %}</span>
+    <span class="icon icon-plus" title="{% trans 'Add instance' %}" aria-hidden="True"></span>
+    <span>{% trans "Add instance" %}</span>
 </a>
 {% endblock %}
 
@@ -16,7 +16,7 @@
     <tr>
         {% url 'settings-federation' as url %}
         <th>
-            {% trans "Server name" as text %}
+            {% trans "Instance name" as text %}
             {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
         </th>
         <th>

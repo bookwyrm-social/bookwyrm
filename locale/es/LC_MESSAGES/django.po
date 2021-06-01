@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-25 01:44+0000\n"
+"POT-Creation-Date: 2021-06-01 14:49-0700\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,41 +73,41 @@ msgstr "Ascendente"
 msgid "Descending"
 msgstr "Descendente"
 
-#: bookwyrm/models/fields.py:24
+#: bookwyrm/models/fields.py:25
 #, python-format
 msgid "%(value)s is not a valid remote_id"
 msgstr "%(value)s no es un remote_id válido"
 
-#: bookwyrm/models/fields.py:33 bookwyrm/models/fields.py:42
+#: bookwyrm/models/fields.py:34 bookwyrm/models/fields.py:43
 #, python-format
 msgid "%(value)s is not a valid username"
 msgstr "%(value)s no es un usuario válido"
 
-#: bookwyrm/models/fields.py:165 bookwyrm/templates/layout.html:152
+#: bookwyrm/models/fields.py:166 bookwyrm/templates/layout.html:152
 msgid "username"
 msgstr "nombre de usuario"
 
-#: bookwyrm/models/fields.py:170
+#: bookwyrm/models/fields.py:171
 msgid "A user with that username already exists."
 msgstr "Ya existe un usuario con ese nombre."
 
-#: bookwyrm/settings.py:155
+#: bookwyrm/settings.py:156
 msgid "English"
 msgstr "Inglés"
 
-#: bookwyrm/settings.py:156
+#: bookwyrm/settings.py:157
 msgid "German"
 msgstr "Aléman"
 
-#: bookwyrm/settings.py:157
+#: bookwyrm/settings.py:158
 msgid "Spanish"
 msgstr "Español"
 
-#: bookwyrm/settings.py:158
+#: bookwyrm/settings.py:159
 msgid "French"
 msgstr "Francés"
 
-#: bookwyrm/settings.py:159
+#: bookwyrm/settings.py:160
 msgid "Simplified Chinese"
 msgstr "Chino simplificado"
 
@@ -1281,7 +1281,9 @@ msgid "Join"
 msgstr "Unirse"
 
 #: bookwyrm/templates/layout.html:206
-msgid "About this server"
+#, fuzzy
+#| msgid "About this server"
+msgid "About this instance"
 msgstr "Sobre este servidor"
 
 #: bookwyrm/templates/layout.html:210
@@ -1526,8 +1528,9 @@ msgid "Resolve"
 msgstr "Resolver"
 
 #: bookwyrm/templates/moderation/reports.html:6
-#, python-format
-msgid "Reports: %(server_name)s"
+#, fuzzy, python-format
+#| msgid "Reports: %(server_name)s"
+msgid "Reports: %(instance_name)s"
 msgstr "Informes: %(server_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
@@ -1537,9 +1540,10 @@ msgid "Reports"
 msgstr "Informes"
 
 #: bookwyrm/templates/moderation/reports.html:14
-#, python-format
-msgid "Reports: <small>%(server_name)s</small>"
-msgstr "Informes: <small>%(server_name)s</small>"
+#, fuzzy, python-format
+#| msgid "Users: <small>%(server_name)s</small>"
+msgid "Reports: <small>%(instance_name)s</small>"
+msgstr "Usuarios <small>%(server_name)s</small>"
 
 #: bookwyrm/templates/moderation/reports.html:28
 msgid "Resolved"
@@ -1660,6 +1664,7 @@ msgid " suggested adding <em><a href=\"%(book_path)s\">%(book_title)s</a></em> t
 msgstr " sugirió agregar <em><a href=\"%(book_path)s\">%(book_title)s</a></em> a tu lista \"<a href=\"%(list_path)s/curate\">%(list_name)s</a>\""
 
 #: bookwyrm/templates/notifications.html:128
+#, python-format
 msgid "Your <a href=\"%(url)s\">import</a> completed."
 msgstr "Tu <a href=\"%(url)s\">importación</a> ha terminado."
 
@@ -1791,6 +1796,7 @@ msgid "Users"
 msgstr "Usuarios"
 
 #: bookwyrm/templates/search/layout.html:58
+#, python-format
 msgid "No results found for \"%(query)s\""
 msgstr "No se encontró ningún resultado correspondiente a \"%(query)s\""
 
@@ -1805,7 +1811,9 @@ msgstr "Administrar usuarios"
 #: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
-msgid "Federated Servers"
+#, fuzzy
+#| msgid "Federated Servers"
+msgid "Federated Instances"
 msgstr "Servidores federalizados"
 
 #: bookwyrm/templates/settings/admin_layout.html:44
@@ -1933,12 +1941,16 @@ msgstr "inactivo"
 #: bookwyrm/templates/settings/federation.html:10
 #: bookwyrm/templates/settings/server_blocklist.html:3
 #: bookwyrm/templates/settings/server_blocklist.html:20
-msgid "Add server"
-msgstr "Agregar servidor"
+#, fuzzy
+#| msgid "View instance"
+msgid "Add instance"
+msgstr "Ver instancia"
 
 #: bookwyrm/templates/settings/edit_server.html:7
 #: bookwyrm/templates/settings/server_blocklist.html:7
-msgid "Back to server list"
+#, fuzzy
+#| msgid "Back to server list"
+msgid "Back to instance list"
 msgstr "Volver a la lista de servidores"
 
 #: bookwyrm/templates/settings/edit_server.html:16
@@ -2045,8 +2057,10 @@ msgstr "Todos los usuarios en esta instancia serán re-activados."
 
 #: bookwyrm/templates/settings/federation.html:19
 #: bookwyrm/templates/user_admin/server_filter.html:5
-msgid "Server name"
-msgstr "Nombre de servidor"
+#, fuzzy
+#| msgid "Instance Name:"
+msgid "Instance name"
+msgstr "Nombre de instancia:"
 
 #: bookwyrm/templates/settings/federation.html:23
 msgid "Date federated"
@@ -2240,6 +2254,7 @@ msgid "Registration closed text:"
 msgstr "Texto de registración cerrada:"
 
 #: bookwyrm/templates/snippets/announcement.html:31
+#, python-format
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Publicado por <a href=\"%(user_path)s\">%(username)s</a>"
 
@@ -2395,14 +2410,6 @@ msgstr "Aceptar"
 msgid "No rating"
 msgstr "No calificación"
 
-#: bookwyrm/templates/snippets/form_rate_stars.html:44
-#: bookwyrm/templates/snippets/stars.html:7
-#, python-format
-msgid "%(rating)s star"
-msgid_plural "%(rating)s stars"
-msgstr[0] "%(rating)s estrella"
-msgstr[1] "%(rating)s estrellas"
-
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
@@ -2478,6 +2485,8 @@ msgid "page %(page)s of %(total_pages)s"
 msgstr "página %(page)s de %(total_pages)s"
 
 #: bookwyrm/templates/snippets/page_text.html:6
+#, fuzzy, python-format
+#| msgid "page %(page)s"
 msgid "page %(page)s"
 msgstr "página %(pages)s"
 
@@ -2822,6 +2831,7 @@ msgid "%(counter)s following"
 msgstr "%(counter)s siguiendo"
 
 #: bookwyrm/templates/user/user_preview.html:26
+#, python-format
 msgid "%(mutuals_display)s follower you follow"
 msgid_plural "%(mutuals_display)s followers you follow"
 msgstr[0] "%(mutuals_display)s seguidor que sigues"
@@ -2832,8 +2842,9 @@ msgid "Back to users"
 msgstr "Volver a usuarios"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
-#, python-format
-msgid "Users: <small>%(server_name)s</small>"
+#, fuzzy, python-format
+#| msgid "Users: <small>%(server_name)s</small>"
+msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Usuarios <small>%(server_name)s</small>"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
@@ -2850,8 +2861,10 @@ msgid "Last Active"
 msgstr "Actividad reciente"
 
 #: bookwyrm/templates/user_admin/user_admin.html:38
-msgid "Remote server"
-msgstr "Quitar servidor"
+#, fuzzy
+#| msgid "View instance"
+msgid "Remote instance"
+msgstr "Ver instancia"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
 msgid "Active"
@@ -2894,6 +2907,10 @@ msgstr "Des-suspender usuario"
 msgid "Access level:"
 msgstr "Nivel de acceso:"
 
+#: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:3
+msgid "File exceeds maximum size: 10MB"
+msgstr ""
+
 #: bookwyrm/views/import_data.py:67
 msgid "Not a valid csv file"
 msgstr "No un archivo csv válido"
@@ -2906,6 +2923,28 @@ msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónic
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
+
+#, python-format
+#~ msgid "Reports: <small>%(server_name)s</small>"
+#~ msgstr "Informes: <small>%(server_name)s</small>"
+
+#~ msgid "Federated Servers"
+#~ msgstr "Servidores federalizados"
+
+#~ msgid "Server name"
+#~ msgstr "Nombre de servidor"
+
+#~ msgid "Add server"
+#~ msgstr "Agregar servidor"
+
+#~ msgid "Remote server"
+#~ msgstr "Quitar servidor"
+
+#, python-format
+#~ msgid "%(rating)s star"
+#~ msgid_plural "%(rating)s stars"
+#~ msgstr[0] "%(rating)s estrella"
+#~ msgstr[1] "%(rating)s estrellas"
 
 #, fuzzy
 #~| msgid "BookWyrm users"
