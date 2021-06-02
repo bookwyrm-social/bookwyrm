@@ -38,7 +38,7 @@
         </label>
         {% include 'snippets/privacy_select.html' %}
     </div>
-    <div class="column">
+    <div class="column has-text-right">
         <button type="submit" class="button is-success">{% trans "Save" %}</button>
         {% trans "Cancel" as button_text %}
         {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="finish-reading" controls_uid=uuid %}
