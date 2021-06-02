@@ -15,16 +15,16 @@
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}">
     <div class="field">
-        <label class="label">
+        <label class="label" for="finish_id_start_date-{{ uuid }}">
             {% trans "Started reading" %}
-            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
         </label>
+        <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </div>
     <div class="field">
-        <label class="label">
+        <label class="label" for="id_finish_date-{{ uuid }}">
             {% trans "Finished reading" %}
-            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
         </label>
+        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
     </div>
 </section>
 {% endblock %}
