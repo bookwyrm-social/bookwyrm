@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
 
-{% block title %}{{ book|title }}{% endblock %}
+{% block title %}{{ book|book_title }}{% endblock %}
 
 {% block content %}
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
