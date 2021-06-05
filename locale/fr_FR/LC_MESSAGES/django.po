@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-02 16:08+0000\n"
+"POT-Creation-Date: 2021-06-05 20:35+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -91,23 +91,23 @@ msgstr "nom du compte :"
 msgid "A user with that username already exists."
 msgstr "Ce nom est déjà associé à un compte."
 
-#: bookwyrm/settings.py:156
+#: bookwyrm/settings.py:160
 msgid "English"
 msgstr "English"
 
-#: bookwyrm/settings.py:157
+#: bookwyrm/settings.py:161
 msgid "German"
 msgstr "Deutsch"
 
-#: bookwyrm/settings.py:158
+#: bookwyrm/settings.py:162
 msgid "Spanish"
 msgstr "Español"
 
-#: bookwyrm/settings.py:159
+#: bookwyrm/settings.py:163
 msgid "French"
 msgstr "Français"
 
-#: bookwyrm/settings.py:160
+#: bookwyrm/settings.py:164
 msgid "Simplified Chinese"
 msgstr "简化字"
 
@@ -136,34 +136,42 @@ msgstr "Une erreur s’est produite ; désolé !"
 msgid "Edit Author"
 msgstr "Modifier l’auteur ou autrice"
 
-#: bookwyrm/templates/author/author.html:32
+#: bookwyrm/templates/author/author.html:34
 #: bookwyrm/templates/author/edit_author.html:41
 msgid "Aliases:"
 msgstr "Pseudonymes :"
 
-#: bookwyrm/templates/author/author.html:38
+#: bookwyrm/templates/author/author.html:45
 msgid "Born:"
 msgstr "Naissance :"
 
-#: bookwyrm/templates/author/author.html:44
+#: bookwyrm/templates/author/author.html:52
 msgid "Died:"
 msgstr "Décès :"
 
-#: bookwyrm/templates/author/author.html:51
+#: bookwyrm/templates/author/author.html:61
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: bookwyrm/templates/author/author.html:55
+#: bookwyrm/templates/author/author.html:69
 #: bookwyrm/templates/book/book.html:78
 msgid "View on OpenLibrary"
 msgstr "Voir sur OpenLibrary"
 
-#: bookwyrm/templates/author/author.html:60
+#: bookwyrm/templates/author/author.html:77
 #: bookwyrm/templates/book/book.html:81
 msgid "View on Inventaire"
 msgstr "Voir sur Inventaire"
 
-#: bookwyrm/templates/author/author.html:74
+#: bookwyrm/templates/author/author.html:85
+msgid "View on LibraryThing"
+msgstr "Voir sur LibraryThing"
+
+#: bookwyrm/templates/author/author.html:93
+msgid "View on Goodreads"
+msgstr "Voir sur Goodreads"
+
+#: bookwyrm/templates/author/author.html:108
 #, python-format
 msgid "Books by %(name)s"
 msgstr "Livres par %(name)s"
