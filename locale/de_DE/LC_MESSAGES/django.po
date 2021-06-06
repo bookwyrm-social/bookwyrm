@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-01 14:50-0700\n"
+"POT-Creation-Date: 2021-06-06 20:52+0000\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -2642,6 +2642,14 @@ msgstr "Annehmen"
 msgid "No rating"
 msgstr "Kein Rating"
 
+#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/stars.html:7
+#, python-format
+msgid "%(rating)s star"
+msgid_plural "%(rating)s stars"
+msgstr[0] ""
+msgstr[1] ""
+
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
@@ -3193,7 +3201,7 @@ msgstr "Dieser Benutzename ist bereits vergeben."
 msgid "A password reset link sent to %s"
 msgstr ""
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Lists: %(username)s"
 #~ msgid "Reports: <small>%(server_name)s</small>"
 #~ msgstr "Listen: %(username)s"
@@ -3264,12 +3272,12 @@ msgstr ""
 #~ msgid "Enter a number."
 #~ msgstr "Seriennummer:"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "A user with that username already exists."
 #~ msgid "%(model_name)s with this %(field_labels)s already exists."
 #~ msgstr "Dieser Benutzename ist bereits vergeben."
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid remote_id"
 #~ msgid "Value %(value)r is not a valid choice."
 #~ msgstr "%(value)s ist keine gültige remote_id"
@@ -3279,7 +3287,7 @@ msgstr ""
 #~ msgid "This field cannot be null."
 #~ msgstr "Dieses Regal ist leer."
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "A user with that username already exists."
 #~ msgid "%(model_name)s with this %(field_label)s already exists."
 #~ msgstr "Dieser Benutzename ist bereits vergeben."
@@ -3289,7 +3297,7 @@ msgstr ""
 #~ msgid "Comma-separated integers"
 #~ msgstr "Keine aktiven Einladungen"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(value)s” value must be a decimal number."
 #~ msgstr "%(value)s ist kein gültiger Username"
@@ -3309,7 +3317,7 @@ msgstr ""
 #~ msgid "Email address"
 #~ msgstr "E-Mail Adresse"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(value)s” value must be a float."
 #~ msgstr "%(value)s ist kein gültiger Username"
@@ -3339,7 +3347,7 @@ msgstr ""
 #~ msgid "Positive small integer"
 #~ msgstr "Keine aktiven Einladungen"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(value)s” is not a valid UUID."
 #~ msgstr "%(value)s ist kein gültiger Username"
@@ -3354,12 +3362,12 @@ msgstr ""
 #~ msgid "One-to-one relationship"
 #~ msgstr "Beziehungen"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationship"
 #~ msgstr "Beziehungen"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationships"
 #~ msgstr "Beziehungen"
@@ -3414,7 +3422,7 @@ msgstr ""
 #~ msgid "Enter a valid UUID."
 #~ msgstr "E-Mail Adresse"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(pk)s” is not a valid value."
 #~ msgstr "%(value)s ist kein gültiger Username"
@@ -3478,12 +3486,12 @@ msgstr ""
 #~ msgid "This is not a valid IPv6 address."
 #~ msgstr "E-Mail Adresse"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "No books found matching the query \"%(query)s\""
 #~ msgid "No %(verbose_name)s found matching the query"
 #~ msgstr "Keine passenden Bücher zu \"%(query)s\" gefunden"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(path)s” does not exist"
 #~ msgstr "%(value)s ist kein gültiger Username"
@@ -3502,11 +3510,9 @@ msgstr ""
 #~ msgid "Matching Users"
 #~ msgstr "Passende Nutzer*innen"
 
-#, python-format
 #~ msgid "Set a reading goal for %(year)s"
 #~ msgstr "Leseziel für %(year)s setzen"
 
-#, python-format
 #~ msgid "by %(author)s"
 #~ msgstr "von %(author)s"
 
@@ -3516,17 +3522,17 @@ msgstr ""
 #~ msgid "Reactivate user"
 #~ msgstr "Nutzer:in reaktivieren"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
 #~ msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "hat auf deinen <a href=\"%(parent_path)s\">Status</a> geantwortet</a>"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
 #~ msgstr "hat auf deinen <a href=\"%(parent_path)s\">Status</a> <a href=\"%(related_path)s\">geantwortet</a>"
@@ -3537,7 +3543,6 @@ msgstr ""
 #~ msgid "Add tag"
 #~ msgstr "Tag hinzufügen"
 
-#, python-format
 #~ msgid "Books tagged \"%(tag.name)s\""
 #~ msgstr "Mit \"%(tag.name)s\" markierte Bücher"
 
@@ -3546,7 +3551,7 @@ msgstr ""
 #~ msgid "Getting Started"
 #~ msgstr "Gestartet"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "No users found for \"%(query)s\""
 #~ msgid "No users were found for \"%(query)s\""
 #~ msgstr "Keine Nutzer*innen für \"%(query)s\" gefunden"
@@ -3554,7 +3559,7 @@ msgstr ""
 #~ msgid "Your lists"
 #~ msgstr "Deine Listen"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "See all %(size)s"
 #~ msgid "See all %(size)s lists"
 #~ msgstr "Alle %(size)s anzeigen"
@@ -3577,14 +3582,12 @@ msgstr ""
 #~ msgid "Your Shelves"
 #~ msgstr "Deine Regale"
 
-#, python-format
 #~ msgid "%(username)s: Shelves"
 #~ msgstr "%(username)s: Regale"
 
 #~ msgid "Shelves"
 #~ msgstr "Regale"
 
-#, python-format
 #~ msgid "See all %(shelf_count)s shelves"
 #~ msgstr "Alle %(shelf_count)s Regale anzeigen"
 

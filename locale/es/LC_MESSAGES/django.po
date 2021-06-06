@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-01 14:50-0700\n"
+"POT-Creation-Date: 2021-06-06 20:52+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1528,10 +1528,9 @@ msgid "Resolve"
 msgstr "Resolver"
 
 #: bookwyrm/templates/moderation/reports.html:6
-#, fuzzy, python-format
-#| msgid "Reports: %(server_name)s"
+#, python-format
 msgid "Reports: %(instance_name)s"
-msgstr "Informes: %(server_name)s"
+msgstr "Informes: %(instance_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:17
@@ -1540,10 +1539,9 @@ msgid "Reports"
 msgstr "Informes"
 
 #: bookwyrm/templates/moderation/reports.html:14
-#, fuzzy, python-format
-#| msgid "Users: <small>%(server_name)s</small>"
+#, python-format
 msgid "Reports: <small>%(instance_name)s</small>"
-msgstr "Usuarios <small>%(server_name)s</small>"
+msgstr "Informes: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/moderation/reports.html:28
 msgid "Resolved"
@@ -2410,6 +2408,14 @@ msgstr "Aceptar"
 msgid "No rating"
 msgstr "No calificación"
 
+#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/stars.html:7
+#, python-format
+msgid "%(rating)s star"
+msgid_plural "%(rating)s stars"
+msgstr[0] "%(rating)s estrella"
+msgstr[1] "%(rating)s estrellas"
+
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
@@ -2842,10 +2848,9 @@ msgid "Back to users"
 msgstr "Volver a usuarios"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
-#, fuzzy, python-format
-#| msgid "Users: <small>%(server_name)s</small>"
+#, python-format
 msgid "Users: <small>%(instance_name)s</small>"
-msgstr "Usuarios <small>%(server_name)s</small>"
+msgstr "Usuarios <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
 #: bookwyrm/templates/user_admin/username_filter.html:5
@@ -2924,10 +2929,6 @@ msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónic
 msgid "A password reset link sent to %s"
 msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
 
-#, python-format
-#~ msgid "Reports: <small>%(server_name)s</small>"
-#~ msgstr "Informes: <small>%(server_name)s</small>"
-
 #~ msgid "Federated Servers"
 #~ msgstr "Servidores federalizados"
 
@@ -2939,12 +2940,6 @@ msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
 
 #~ msgid "Remote server"
 #~ msgstr "Quitar servidor"
-
-#, python-format
-#~ msgid "%(rating)s star"
-#~ msgid_plural "%(rating)s stars"
-#~ msgstr[0] "%(rating)s estrella"
-#~ msgstr[1] "%(rating)s estrellas"
 
 #, fuzzy
 #~| msgid "BookWyrm users"

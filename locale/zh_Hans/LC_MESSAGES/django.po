@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-01 14:50-0700\n"
+"POT-Creation-Date: 2021-06-06 20:52+0000\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1565,10 +1565,9 @@ msgid "Resolve"
 msgstr "已解决"
 
 #: bookwyrm/templates/moderation/reports.html:6
-#, fuzzy, python-format
-#| msgid "Reports: %(server_name)s"
+#, python-format
 msgid "Reports: %(instance_name)s"
-msgstr "报告: %(server_name)s"
+msgstr "报告: %(instance_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:17
@@ -1577,10 +1576,9 @@ msgid "Reports"
 msgstr "报告"
 
 #: bookwyrm/templates/moderation/reports.html:14
-#, fuzzy, python-format
-#| msgid "Users: <small>%(server_name)s</small>"
+#, python-format
 msgid "Reports: <small>%(instance_name)s</small>"
-msgstr "用户: <small>%(server_name)s</small>"
+msgstr "报告: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/moderation/reports.html:28
 msgid "Resolved"
@@ -2508,6 +2506,13 @@ msgstr "接受"
 msgid "No rating"
 msgstr "没有评价"
 
+#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/stars.html:7
+#, python-format
+msgid "%(rating)s star"
+msgid_plural "%(rating)s stars"
+msgstr[0] ""
+
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
@@ -2940,10 +2945,9 @@ msgid "Back to users"
 msgstr "回到报告"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
-#, fuzzy, python-format
-#| msgid "Users: <small>%(server_name)s</small>"
+#, python-format
 msgid "Users: <small>%(instance_name)s</small>"
-msgstr "用户: <small>%(server_name)s</small>"
+msgstr "用户: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
 #: bookwyrm/templates/user_admin/username_filter.html:5
@@ -2959,10 +2963,8 @@ msgid "Last Active"
 msgstr "最后或缺"
 
 #: bookwyrm/templates/user_admin/user_admin.html:38
-#, fuzzy
-#| msgid "Instance Name:"
 msgid "Remote instance"
-msgstr "实例名称"
+msgstr "移除服务器"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
 msgid "Active"
@@ -3028,7 +3030,6 @@ msgstr "没有找到使用该邮箱的用户。"
 msgid "A password reset link sent to %s"
 msgstr "密码重置连接已发送给 %s"
 
-#, python-format
 #~ msgid "Reports: <small>%(server_name)s</small>"
 #~ msgstr "报告: <small>%(server_name)s</small>"
 
@@ -3096,12 +3097,12 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Enter a number."
 #~ msgstr "系列编号:"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "A user with this email already exists."
 #~ msgid "%(model_name)s with this %(field_labels)s already exists."
 #~ msgstr "已经存在使用该邮箱的用户。"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid remote_id"
 #~ msgid "Value %(value)r is not a valid choice."
 #~ msgstr "%(value)s 不是有效的 remote_id"
@@ -3111,7 +3112,7 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "This field cannot be null."
 #~ msgstr "此书架是空的。"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "A user with this email already exists."
 #~ msgid "%(model_name)s with this %(field_label)s already exists."
 #~ msgstr "已经存在使用该邮箱的用户。"
@@ -3161,7 +3162,7 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Positive small integer"
 #~ msgstr "无有效的邀请"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(value)s” is not a valid UUID."
 #~ msgstr "%(value)s 不是有效的用户名"
@@ -3176,12 +3177,12 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "One-to-one relationship"
 #~ msgstr "关系"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationship"
 #~ msgstr "关系"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "Relationships"
 #~ msgid "%(from)s-%(to)s relationships"
 #~ msgstr "关系"
@@ -3241,7 +3242,7 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Order"
 #~ msgstr "排列顺序"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "%(value)s is not a valid username"
 #~ msgid "“%(pk)s” is not a valid value."
 #~ msgstr "%(value)s 不是有效的用户名"
@@ -3305,7 +3306,7 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "This is not a valid IPv6 address."
 #~ msgstr "邮箱地址:"
 
-#, fuzzy, python-format
+#, fuzzy
 #~| msgid "No books found matching the query \"%(query)s\""
 #~ msgid "No %(verbose_name)s found matching the query"
 #~ msgstr "没有符合 \"%(query)s\" 请求的书目"
@@ -3324,11 +3325,9 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Matching Users"
 #~ msgstr "匹配的用户"
 
-#, python-format
 #~ msgid "Set a reading goal for %(year)s"
 #~ msgstr "设定 %(year)s 的阅读目标"
 
-#, python-format
 #~ msgid "by %(author)s"
 #~ msgstr "由 %(author)s 所著"
 
@@ -3341,15 +3340,12 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Date"
 #~ msgstr "日期"
 
-#, python-format
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">review</a>"
 #~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">书评</a>"
 
-#, python-format
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "恢复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">评论</a>"
 
-#, python-format
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
 #~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">引用</a>"
 
@@ -3359,7 +3355,6 @@ msgstr "密码重置连接已发送给 %s"
 #~ msgid "Add tag"
 #~ msgstr "添加标签"
 
-#, python-format
 #~ msgid "Books tagged \"%(tag.name)s\""
 #~ msgstr "标有 \"%(tag.name)s\" 标签的书"
 

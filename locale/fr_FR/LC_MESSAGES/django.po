@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-01 14:50-0700\n"
+"POT-Creation-Date: 2021-06-06 20:52+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1528,6 +1528,7 @@ msgid "Resolve"
 msgstr "Résoudre"
 
 #: bookwyrm/templates/moderation/reports.html:6
+#, python-format
 msgid "Reports: %(instance_name)s"
 msgstr "Signalements : %(instance_name)s"
 
@@ -1538,6 +1539,7 @@ msgid "Reports"
 msgstr "Signalements"
 
 #: bookwyrm/templates/moderation/reports.html:14
+#, python-format
 msgid "Reports: <small>%(instance_name)s</small>"
 msgstr "Signalements : <small>%(instance_name)s</small>"
 
@@ -2398,6 +2400,14 @@ msgstr "Accepter"
 msgid "No rating"
 msgstr "Aucune note"
 
+#: bookwyrm/templates/snippets/form_rate_stars.html:44
+#: bookwyrm/templates/snippets/stars.html:7
+#, python-format
+msgid "%(rating)s star"
+msgid_plural "%(rating)s stars"
+msgstr[0] "%(rating)s étoile"
+msgstr[1] "%(rating)s étoiles"
+
 #: bookwyrm/templates/snippets/generated_status/goal.html:1
 #, python-format
 msgid "set a goal to read %(counter)s book in %(year)s"
@@ -2829,6 +2839,7 @@ msgid "Back to users"
 msgstr "Retour aux comptes"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
+#, python-format
 msgid "Users: <small>%(instance_name)s</small>"
 msgstr "Comptes : <small>%(instance_name)s</small>"
 
@@ -2907,7 +2918,6 @@ msgstr "Aucun compte avec cette adresse email n’a été trouvé."
 msgid "A password reset link sent to %s"
 msgstr "Un lien de réinitialisation a été envoyé à %s."
 
-#, python-format
 #~ msgid "Reports: <small>%(server_name)s</small>"
 #~ msgstr "Signalements: <small>%(server_name)s</small>"
 
@@ -2922,12 +2932,6 @@ msgstr "Un lien de réinitialisation a été envoyé à %s."
 
 #~ msgid "Remote server"
 #~ msgstr "Serveur distant"
-
-#, python-format
-#~ msgid "%(rating)s star"
-#~ msgid_plural "%(rating)s stars"
-#~ msgstr[0] "%(rating)s étoile"
-#~ msgstr[1] "%(rating)s étoiles"
 
 #, fuzzy
 #~| msgid "BookWyrm users"
