@@ -185,3 +185,6 @@ USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
     VERSION,
     DOMAIN,
 )
+
+# Imagekit generated thumbnails
+IMAGEKIT_CACHEFILE_DIR = "thumbnails"
