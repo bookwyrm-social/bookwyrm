@@ -188,7 +188,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Storage
 
-USE_S3 = env.bool('USE_S3', False)
+USE_S3 = env.bool("USE_S3", False)
 
 if USE_S3:
     # AWS settings
@@ -199,15 +199,15 @@ if USE_S3:
     AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
     AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
     AWS_DEFAULT_ACL = "public-read"
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     # S3 Static settings
-    STATIC_LOCATION = 'static'
-    STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, STATIC_LOCATION)
-    STATICFILES_STORAGE = 'bookwyrm.storage_backends.StaticStorage'
+    STATIC_LOCATION = "static"
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATIC_LOCATION)
+    STATICFILES_STORAGE = "bookwyrm.storage_backends.StaticStorage"
     # S3 Media settings
-    MEDIA_LOCATION = 'images'
-    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
-    DEFAULT_FILE_STORAGE = 'bookwyrm.storage_backends.ImagesStorage'
+    MEDIA_LOCATION = "images"
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     # I don't know if it's used, but the site crashes without it
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 else:
@@ -217,5 +217,5 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "static"),
 ]
