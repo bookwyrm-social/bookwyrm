@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-07 17:37+0000\n"
+"POT-Creation-Date: 2021-06-07 19:33+0000\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1326,7 +1326,9 @@ msgid "Join"
 msgstr "加入"
 
 #: bookwyrm/templates/layout.html:206
-msgid "About this server"
+#, fuzzy
+#| msgid "About this server"
+msgid "About this instance"
 msgstr "关于本服务器"
 
 #: bookwyrm/templates/layout.html:210
@@ -1586,8 +1588,8 @@ msgstr "已解决"
 
 #: bookwyrm/templates/moderation/reports.html:6
 #, python-format
-msgid "Reports: %(server_name)s"
-msgstr "报告: %(server_name)s"
+msgid "Reports: %(instance_name)s"
+msgstr "报告: %(instance_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:17
@@ -1597,8 +1599,8 @@ msgstr "报告"
 
 #: bookwyrm/templates/moderation/reports.html:14
 #, python-format
-msgid "Reports: <small>%(server_name)s</small>"
-msgstr "报告: <small>%(server_name)s</small>"
+msgid "Reports: <small>%(instance_name)s</small>"
+msgstr "报告: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/moderation/reports.html:28
 msgid "Resolved"
@@ -1872,7 +1874,9 @@ msgstr "管理用户"
 #: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
-msgid "Federated Servers"
+#, fuzzy
+#| msgid "Federated Servers"
+msgid "Federated Instances"
 msgstr "互联的服务器"
 
 #: bookwyrm/templates/settings/admin_layout.html:44
@@ -2027,13 +2031,15 @@ msgstr "停用"
 #: bookwyrm/templates/settings/server_blocklist.html:3
 #: bookwyrm/templates/settings/server_blocklist.html:20
 #, fuzzy
-#| msgid "Add cover"
-msgid "Add server"
-msgstr "添加封面"
+#| msgid "Instance Name:"
+msgid "Add instance"
+msgstr "实例名称"
 
 #: bookwyrm/templates/settings/edit_server.html:7
 #: bookwyrm/templates/settings/server_blocklist.html:7
-msgid "Back to server list"
+#, fuzzy
+#| msgid "Back to server list"
+msgid "Back to instance list"
 msgstr "回到服务器列表"
 
 #: bookwyrm/templates/settings/edit_server.html:16
@@ -2148,8 +2154,10 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation.html:19
 #: bookwyrm/templates/user_admin/server_filter.html:5
-msgid "Server name"
-msgstr "服务器名称"
+#, fuzzy
+#| msgid "Instance Name:"
+msgid "Instance name"
+msgstr "实例名称"
 
 #: bookwyrm/templates/settings/federation.html:23
 msgid "Date federated"
@@ -3006,8 +3014,8 @@ msgstr "回到报告"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
 #, python-format
-msgid "Users: <small>%(server_name)s</small>"
-msgstr "用户: <small>%(server_name)s</small>"
+msgid "Users: <small>%(instance_name)s</small>"
+msgstr "用户: <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
 #: bookwyrm/templates/user_admin/username_filter.html:5
@@ -3023,7 +3031,7 @@ msgid "Last Active"
 msgstr "最后或缺"
 
 #: bookwyrm/templates/user_admin/user_admin.html:38
-msgid "Remote server"
+msgid "Remote instance"
 msgstr "移除服务器"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
@@ -3090,8 +3098,22 @@ msgstr "没有找到使用该邮箱的用户。"
 msgid "A password reset link sent to %s"
 msgstr "密码重置连接已发送给 %s"
 
-#~ msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
-#~ msgstr "移除 <a href=\"%(path)s\">%(name)s</a>"
+#~ msgid "Reports: <small>%(server_name)s</small>"
+#~ msgstr "报告: <small>%(server_name)s</small>"
+
+#~ msgid "Federated Servers"
+#~ msgstr "互联的服务器"
+
+#~ msgid "Server name"
+#~ msgstr "服务器名称"
+
+#, fuzzy
+#~| msgid "Add cover"
+#~ msgid "Add server"
+#~ msgstr "添加封面"
+
+#~ msgid "Remote server"
+#~ msgstr "移除服务器"
 
 #, fuzzy
 #~| msgid "BookWyrm users"
@@ -3391,6 +3413,9 @@ msgstr "密码重置连接已发送给 %s"
 
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "恢复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">评论</a>"
+
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+#~ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(status_path)s\">引用</a>"
 
 #~ msgid "Remove tag"
 #~ msgstr "移除标签"

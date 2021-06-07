@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-07 17:37+0000\n"
+"POT-Creation-Date: 2021-06-07 19:33+0000\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -1400,7 +1400,9 @@ msgid "Join"
 msgstr ""
 
 #: bookwyrm/templates/layout.html:206
-msgid "About this server"
+#, fuzzy
+#| msgid "About this server"
+msgid "About this instance"
 msgstr "Über diesen Server"
 
 #: bookwyrm/templates/layout.html:210
@@ -1670,7 +1672,7 @@ msgstr "Lösen"
 #: bookwyrm/templates/moderation/reports.html:6
 #, fuzzy, python-format
 #| msgid "Lists: %(username)s"
-msgid "Reports: %(server_name)s"
+msgid "Reports: %(instance_name)s"
 msgstr "Listen: %(username)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
@@ -1684,7 +1686,7 @@ msgstr "Aktuelle Importe"
 #: bookwyrm/templates/moderation/reports.html:14
 #, fuzzy, python-format
 #| msgid "Lists: %(username)s"
-msgid "Reports: <small>%(server_name)s</small>"
+msgid "Reports: <small>%(instance_name)s</small>"
 msgstr "Listen: %(username)s"
 
 #: bookwyrm/templates/moderation/reports.html:28
@@ -1965,7 +1967,9 @@ msgstr "Nutzer*innen verwalten"
 #: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
-msgid "Federated Servers"
+#, fuzzy
+#| msgid "Federated Servers"
+msgid "Federated Instances"
 msgstr "Föderierende Server"
 
 #: bookwyrm/templates/settings/admin_layout.html:44
@@ -2120,15 +2124,15 @@ msgstr "Aktivität"
 #: bookwyrm/templates/settings/server_blocklist.html:3
 #: bookwyrm/templates/settings/server_blocklist.html:20
 #, fuzzy
-#| msgid "Add cover"
-msgid "Add server"
-msgstr "Cover hinzufügen"
+#| msgid "Instance Name:"
+msgid "Add instance"
+msgstr "Instanzname"
 
 #: bookwyrm/templates/settings/edit_server.html:7
 #: bookwyrm/templates/settings/server_blocklist.html:7
 #, fuzzy
 #| msgid "Back to reports"
-msgid "Back to server list"
+msgid "Back to instance list"
 msgstr "Zurück zu den Meldungen"
 
 #: bookwyrm/templates/settings/edit_server.html:16
@@ -2257,8 +2261,10 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation.html:19
 #: bookwyrm/templates/user_admin/server_filter.html:5
-msgid "Server name"
-msgstr "Servername"
+#, fuzzy
+#| msgid "Instance Name:"
+msgid "Instance name"
+msgstr "Instanzname"
 
 #: bookwyrm/templates/settings/federation.html:23
 #, fuzzy
@@ -3162,9 +3168,10 @@ msgid "Back to users"
 msgstr "Zurück zu den Meldungen"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
-#, python-format
-msgid "Users: <small>%(server_name)s</small>"
-msgstr ""
+#, fuzzy, python-format
+#| msgid "Lists: %(username)s"
+msgid "Users: <small>%(instance_name)s</small>"
+msgstr "Listen: %(username)s"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
 #: bookwyrm/templates/user_admin/username_filter.html:5
@@ -3185,9 +3192,9 @@ msgstr ""
 
 #: bookwyrm/templates/user_admin/user_admin.html:38
 #, fuzzy
-#| msgid "Remove"
-msgid "Remote server"
-msgstr "Entfernen"
+#| msgid "Instance Name:"
+msgid "Remote instance"
+msgstr "Instanzname"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
 #, fuzzy
@@ -3258,9 +3265,25 @@ msgid "A password reset link sent to %s"
 msgstr ""
 
 #, fuzzy
-#~| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
-#~ msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
-#~ msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
+#~| msgid "Lists: %(username)s"
+#~ msgid "Reports: <small>%(server_name)s</small>"
+#~ msgstr "Listen: %(username)s"
+
+#~ msgid "Federated Servers"
+#~ msgstr "Föderierende Server"
+
+#~ msgid "Server name"
+#~ msgstr "Servername"
+
+#, fuzzy
+#~| msgid "Add cover"
+#~ msgid "Add server"
+#~ msgstr "Cover hinzufügen"
+
+#, fuzzy
+#~| msgid "Remove"
+#~ msgid "Remote server"
+#~ msgstr "Entfernen"
 
 #, fuzzy
 #~| msgid "Book"
@@ -3571,6 +3594,11 @@ msgstr ""
 #~| msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
 #~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">comment</a>"
 #~ msgstr "hat auf deinen <a href=\"%(parent_path)s\">Status</a> geantwortet</a>"
+
+#, fuzzy
+#~| msgid "<a href=\"%(related_path)s\">replied</a> to your <a href=\"%(parent_path)s\">status</a>"
+#~ msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">quote</a>"
+#~ msgstr "hat auf deinen <a href=\"%(parent_path)s\">Status</a> <a href=\"%(related_path)s\">geantwortet</a>"
 
 #~ msgid "Remove tag"
 #~ msgstr "Tag entfernen"

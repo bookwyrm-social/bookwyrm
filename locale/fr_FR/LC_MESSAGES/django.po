@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-07 17:37+0000\n"
+"POT-Creation-Date: 2021-06-07 19:33+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -1329,16 +1329,14 @@ msgid "Join"
 msgstr "Rejoindre"
 
 #: bookwyrm/templates/layout.html:206
-msgid "About this server"
-msgstr "À propos de ce serveur"
+msgid "About this instance"
+msgstr "À propos de cette instance"
 
 #: bookwyrm/templates/layout.html:210
 msgid "Contact site admin"
 msgstr "Contacter l’administrateur du site"
 
 #: bookwyrm/templates/layout.html:214
-#, fuzzy
-#| msgid "List curation:"
 msgid "Documentation"
 msgstr "Modération de la liste :"
 
@@ -1446,16 +1444,12 @@ msgid "Added by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Ajoutée par <a href=\"%(user_path)s\">%(username)s</a>"
 
 #: bookwyrm/templates/lists/list.html:74
-#, fuzzy
-#| msgid "List curation:"
 msgid "List position"
 msgstr "Modération de la liste :"
 
 #: bookwyrm/templates/lists/list.html:81
-#, fuzzy
-#| msgid "Sent"
 msgid "Set"
-msgstr "Envoyé(e)s"
+msgstr "Appliquer"
 
 #: bookwyrm/templates/lists/list.html:89
 #: bookwyrm/templates/snippets/shelf_selector.html:26
@@ -1464,14 +1458,10 @@ msgstr "Supprimer"
 
 #: bookwyrm/templates/lists/list.html:103
 #: bookwyrm/templates/lists/list.html:120
-#, fuzzy
-#| msgid "Your Lists"
 msgid "Sort List"
 msgstr "Vos listes"
 
 #: bookwyrm/templates/lists/list.html:113
-#, fuzzy
-#| msgid "Directory"
 msgid "Direction"
 msgstr "Répertoire"
 
@@ -1589,8 +1579,8 @@ msgstr "Résoudre"
 
 #: bookwyrm/templates/moderation/reports.html:6
 #, python-format
-msgid "Reports: %(server_name)s"
-msgstr "Signalements : %(server_name)s"
+msgid "Reports: %(instance_name)s"
+msgstr "Signalements : %(instance_name)s"
 
 #: bookwyrm/templates/moderation/reports.html:8
 #: bookwyrm/templates/moderation/reports.html:17
@@ -1600,8 +1590,8 @@ msgstr "Signalements"
 
 #: bookwyrm/templates/moderation/reports.html:14
 #, python-format
-msgid "Reports: <small>%(server_name)s</small>"
-msgstr "Signalements: <small>%(server_name)s</small>"
+msgid "Reports: <small>%(instance_name)s</small>"
+msgstr "Signalements : <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/moderation/reports.html:28
 msgid "Resolved"
@@ -1875,8 +1865,8 @@ msgstr "Gérer les comptes"
 #: bookwyrm/templates/settings/admin_layout.html:39
 #: bookwyrm/templates/settings/federation.html:3
 #: bookwyrm/templates/settings/federation.html:5
-msgid "Federated Servers"
-msgstr "Serveurs fédérés"
+msgid "Federated Instances"
+msgstr "Instances fédérées"
 
 #: bookwyrm/templates/settings/admin_layout.html:44
 msgid "Instance Settings"
@@ -2029,15 +2019,13 @@ msgstr "Inactif"
 #: bookwyrm/templates/settings/federation.html:10
 #: bookwyrm/templates/settings/server_blocklist.html:3
 #: bookwyrm/templates/settings/server_blocklist.html:20
-#, fuzzy
-#| msgid "Add cover"
-msgid "Add server"
-msgstr "Ajouter une couverture"
+msgid "Add instance"
+msgstr "Ajouter une instance"
 
 #: bookwyrm/templates/settings/edit_server.html:7
 #: bookwyrm/templates/settings/server_blocklist.html:7
-msgid "Back to server list"
-msgstr "Retour à la liste des serveurs"
+msgid "Back to instance list"
+msgstr "Retour à la liste des instances"
 
 #: bookwyrm/templates/settings/edit_server.html:16
 #: bookwyrm/templates/settings/server_blocklist.html:16
@@ -2151,8 +2139,8 @@ msgstr ""
 
 #: bookwyrm/templates/settings/federation.html:19
 #: bookwyrm/templates/user_admin/server_filter.html:5
-msgid "Server name"
-msgstr "Nom du serveur"
+msgid "Instance name"
+msgstr "Nom de l’instance"
 
 #: bookwyrm/templates/settings/federation.html:23
 msgid "Date federated"
@@ -3009,8 +2997,8 @@ msgstr "Retour aux signalements"
 
 #: bookwyrm/templates/user_admin/user_admin.html:7
 #, python-format
-msgid "Users: <small>%(server_name)s</small>"
-msgstr "Comptes : <small>%(server_name)s</small>"
+msgid "Users: <small>%(instance_name)s</small>"
+msgstr "Comptes : <small>%(instance_name)s</small>"
 
 #: bookwyrm/templates/user_admin/user_admin.html:22
 #: bookwyrm/templates/user_admin/username_filter.html:5
@@ -3026,8 +3014,8 @@ msgid "Last Active"
 msgstr "Dernière activité"
 
 #: bookwyrm/templates/user_admin/user_admin.html:38
-msgid "Remote server"
-msgstr "Serveur distant"
+msgid "Remote instance"
+msgstr "Instance distante"
 
 #: bookwyrm/templates/user_admin/user_admin.html:47
 msgid "Active"
@@ -3076,7 +3064,7 @@ msgstr ""
 
 #: bookwyrm/templates/widgets/clearable_file_input_with_warning.html:22
 msgid "File exceeds maximum size: 10MB"
-msgstr ""
+msgstr "Ce fichier dépasse la taille limite : 10 Mo"
 
 #: bookwyrm/views/import_data.py:67
 #, fuzzy
@@ -3093,8 +3081,20 @@ msgstr "Aucun compte avec cette adresse email n’a été trouvé."
 msgid "A password reset link sent to %s"
 msgstr "Un lien de réinitialisation a été envoyé à %s."
 
-#~ msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
-#~ msgstr "Supprimer <a href=\"%(path)s\">%(name)s</a>"
+#~ msgid "Reports: <small>%(server_name)s</small>"
+#~ msgstr "Signalements: <small>%(server_name)s</small>"
+
+#~ msgid "Federated Servers"
+#~ msgstr "Serveurs fédérés"
+
+#~ msgid "Server name"
+#~ msgstr "Nom du serveur"
+
+#~ msgid "Add server"
+#~ msgstr "Ajouter un serveur"
+
+#~ msgid "Remote server"
+#~ msgstr "Serveur distant"
 
 #, fuzzy
 #~| msgid "BookWyrm users"

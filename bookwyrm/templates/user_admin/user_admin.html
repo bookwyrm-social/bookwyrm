@@ -4,7 +4,7 @@
 
 {% block header %}
 {% if server %}
-{% blocktrans with server_name=server.server_name %}Users: <small>{{ server_name }}</small>{% endblocktrans %}
+{% blocktrans with instance_name=server.server_name %}Users: <small>{{ instance_name }}</small>{% endblocktrans %}
 <a href="{% url 'settings-users' %}" class="help has-text-weight-normal">Clear filters</a>
 {% else %}
 {% trans "Users" %}
@@ -35,7 +35,7 @@
             {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
         </th>
         <th>
-            {% trans "Remote server" as text %}
+            {% trans "Remote instance" as text %}
             {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
         </th>
     </tr>
