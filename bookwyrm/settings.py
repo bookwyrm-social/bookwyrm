@@ -187,4 +187,5 @@ USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
 )
 
 # Imagekit generated thumbnails
+ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
 IMAGEKIT_CACHEFILE_DIR = "thumbnails"

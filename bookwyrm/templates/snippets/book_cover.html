@@ -1,6 +1,7 @@
 {% spaceless %}
 
 {% load i18n %}
+{% load static %}
 {% load imagekit %}
 
 {% if book.cover %}
@@ -14,97 +15,101 @@
             >
         {% else %}
 
-            {% if size_mobile == 'xsmall' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_xsmall_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_xsmall_jpg.url }}"
-                />
-            {% elif size_mobile == 'small' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_small_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_small_jpg.url }}"
-                />
-            {% elif size_mobile == 'medium' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_medium_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_medium_jpg.url }}"
-                />
-            {% elif size_mobile == 'large' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_large_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_large_jpg.url }}"
-                />
-            {% elif size_mobile == 'xlarge' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_xlarge_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_xlarge_jpg.url }}"
-                />
-            {% elif size_mobile == 'xxlarge' %}
-                <source
-                    media="(max-width: 768px)"
-                    type="image/webp"
-                    srcset="{{ book.cover_bw_book_xxlarge_webp.url }}"
-                />
-                <source
-                    media="(max-width: 768px)"
-                    type="image/jpg"
-                    srcset="{{ book.cover_bw_book_xxlarge_jpg.url }}"
-                />
-            {% endif %}
+            {% if enable_thumbnail_generation %}
 
-            {% if size == 'xsmall' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_xsmall_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_xsmall_jpg.url }}"/>
-            {% elif size == 'small' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_small_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_small_jpg.url }}"/>
-            {% elif size == 'medium' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_medium_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_medium_jpg.url }}"/>
-            {% elif size == 'large' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_large_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_large_jpg.url }}"/>
-            {% elif size == 'xlarge' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_xlarge_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_xlarge_jpg.url }}"/>
-            {% elif size == 'xxlarge' %}
-                <source type="image/webp" srcset="{{ book.cover_bw_book_xxlarge_webp.url }}"/>
-                <source type="image/jpg" srcset="{{ book.cover_bw_book_xxlarge_jpg.url }}"/>
+                {% if size_mobile == 'xsmall' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_xsmall_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_xsmall_jpg.url }}"
+                    />
+                {% elif size_mobile == 'small' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_small_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_small_jpg.url }}"
+                    />
+                {% elif size_mobile == 'medium' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_medium_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_medium_jpg.url }}"
+                    />
+                {% elif size_mobile == 'large' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_large_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_large_jpg.url }}"
+                    />
+                {% elif size_mobile == 'xlarge' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_xlarge_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_xlarge_jpg.url }}"
+                    />
+                {% elif size_mobile == 'xxlarge' %}
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/webp"
+                        srcset="{{ book.cover_bw_book_xxlarge_webp.url }}"
+                    />
+                    <source
+                        media="(max-width: 768px)"
+                        type="image/jpg"
+                        srcset="{{ book.cover_bw_book_xxlarge_jpg.url }}"
+                    />
+                {% endif %}
+
+                {% if size == 'xsmall' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_xsmall_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_xsmall_jpg.url }}"/>
+                {% elif size == 'small' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_small_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_small_jpg.url }}"/>
+                {% elif size == 'medium' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_medium_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_medium_jpg.url }}"/>
+                {% elif size == 'large' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_large_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_large_jpg.url }}"/>
+                {% elif size == 'xlarge' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_xlarge_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_xlarge_jpg.url }}"/>
+                {% elif size == 'xxlarge' %}
+                    <source type="image/webp" srcset="{{ book.cover_bw_book_xxlarge_webp.url }}"/>
+                    <source type="image/jpg" srcset="{{ book.cover_bw_book_xxlarge_jpg.url }}"/>
+                {% endif %}
+
             {% endif %}
 
             <img
                 class="book-cover"
-                src="/images/{{ book.cover }}"
+                src="{% get_media_prefix %}{{ book.cover }}"
                 itemprop="thumbnailUrl"
                 alt="{{ book.alt_text|default:'' }}"
             >
@@ -116,7 +121,7 @@
     <figure class="cover-container no-cover {{ cover_class }}">
         <img
             class="book-cover"
-            src="/static/images/no_cover.jpg"
+            src="{% static "images/no_cover.jpg" %}"
             alt="{% trans "No cover" %}"
         >
         <figcaption class="cover-caption">

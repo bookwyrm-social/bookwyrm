@@ -1,5 +1,5 @@
 """ customize the info available in context for rendering templates """
-from bookwyrm import models
+from bookwyrm import models, settings
 
 
 def site_settings(request):  # pylint: disable=unused-argument
@@ -7,4 +7,5 @@ def site_settings(request):  # pylint: disable=unused-argument
     return {
         "site": models.SiteSettings.objects.get(),
         "active_announcements": models.Announcement.active_announcements(),
+        "enable_thumbnail_generation": settings.ENABLE_THUMBNAIL_GENERATION,
     }
