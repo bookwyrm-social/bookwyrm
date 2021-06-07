@@ -89,20 +89,38 @@ class Book(BookDataModel):
     objects = InheritanceManager()
 
     if ENABLE_THUMBNAIL_GENERATION:
-        cover_bw_book_xsmall_webp = ImageSpecField(source="cover", id="bw:book:xsmall:webp")
-        cover_bw_book_xsmall_jpg = ImageSpecField(source="cover", id="bw:book:xsmall:jpg")
-        cover_bw_book_small_webp = ImageSpecField(source="cover", id="bw:book:small:webp")
+        cover_bw_book_xsmall_webp = ImageSpecField(
+            source="cover", id="bw:book:xsmall:webp"
+        )
+        cover_bw_book_xsmall_jpg = ImageSpecField(
+            source="cover", id="bw:book:xsmall:jpg"
+        )
+        cover_bw_book_small_webp = ImageSpecField(
+            source="cover", id="bw:book:small:webp"
+        )
         cover_bw_book_small_jpg = ImageSpecField(source="cover", id="bw:book:small:jpg")
-        cover_bw_book_medium_webp = ImageSpecField(source="cover", id="bw:book:medium:webp")
-        cover_bw_book_medium_jpg = ImageSpecField(source="cover", id="bw:book:medium:jpg")
-        cover_bw_book_large_webp = ImageSpecField(source="cover", id="bw:book:large:webp")
+        cover_bw_book_medium_webp = ImageSpecField(
+            source="cover", id="bw:book:medium:webp"
+        )
+        cover_bw_book_medium_jpg = ImageSpecField(
+            source="cover", id="bw:book:medium:jpg"
+        )
+        cover_bw_book_large_webp = ImageSpecField(
+            source="cover", id="bw:book:large:webp"
+        )
         cover_bw_book_large_jpg = ImageSpecField(source="cover", id="bw:book:large:jpg")
-        cover_bw_book_xlarge_webp = ImageSpecField(source="cover", id="bw:book:xlarge:webp")
-        cover_bw_book_xlarge_jpg = ImageSpecField(source="cover", id="bw:book:xlarge:jpg")
+        cover_bw_book_xlarge_webp = ImageSpecField(
+            source="cover", id="bw:book:xlarge:webp"
+        )
+        cover_bw_book_xlarge_jpg = ImageSpecField(
+            source="cover", id="bw:book:xlarge:jpg"
+        )
         cover_bw_book_xxlarge_webp = ImageSpecField(
             source="cover", id="bw:book:xxlarge:webp"
         )
-        cover_bw_book_xxlarge_jpg = ImageSpecField(source="cover", id="bw:book:xxlarge:jpg")
+        cover_bw_book_xxlarge_jpg = ImageSpecField(
+            source="cover", id="bw:book:xxlarge:jpg"
+        )
 
     @property
     def author_text(self):
