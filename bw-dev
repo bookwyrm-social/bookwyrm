@@ -38,6 +38,16 @@ function makeitblack {
     docker-compose run --rm web black celerywyrm bookwyrm
 }
 
+function copytos3 {
+    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    export AWS_DEFAULT_REGION=${AWS_S3_REGION_NAME}
+    docker run --rm -it -v bookwyrm_media_volume:/images\
+        -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION\
+        amazon/aws-cli s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+        --recursive --endpoint-url ${AWS_S3_ENDPOINT_URL} --acl public-read
+}
+
 CMD=$1
 shift
 
@@ -107,7 +117,10 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams
         ;;
+    copy_media_to_s3)
+        copytos3
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, copy_media_to_s3"
         ;;
 esac
