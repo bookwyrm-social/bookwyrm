@@ -341,6 +341,11 @@ class ReviewRating(Review):
         template = get_template("snippets/generated_status/rating.html")
         return template.render({"book": self.book, "rating": self.rating}).strip()
 
+    @property
+    def pure_name(self):
+        """don't inherit the review's name property"""
+        return None
+
     activity_serializer = activitypub.Rating
     pure_type = "Note"
 

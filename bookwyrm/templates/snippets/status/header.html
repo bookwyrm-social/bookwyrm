@@ -29,7 +29,7 @@
                 </a>
             </span>
 
-            {% include status|header_template %}
+            {% include "snippets/status/header_content.html" %}
         </h3>
         <p class="is-size-7 is-flex is-align-items-center">
             <a href="{{ status.remote_id }}">{{ status.published_date|published_date }}</a>
