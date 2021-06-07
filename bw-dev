@@ -48,6 +48,18 @@ function copytos3 {
         --recursive --endpoint-url ${AWS_S3_ENDPOINT_URL} --acl public-read
 }
 
+function setcorstos3 {
+    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    export AWS_DEFAULT_REGION=${AWS_S3_REGION_NAME}
+    docker run --rm -it -v $(pwd):/bw\
+        -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_ACCESS_KEY_ID\
+        amazon/aws-cli s3api put-bucket-cors\
+        --bucket ${AWS_STORAGE_BUCKET_NAME}\
+        --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+        --cors-configuration file:///bw/$@
+}
+
 CMD=$1
 shift
 
@@ -120,7 +132,10 @@ case "$CMD" in
     copy_media_to_s3)
         copytos3
         ;;
+    set_cors_to_s3)
+        setcorstos3 $@
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, copy_media_to_s3"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, copy_media_to_s3, set_cors_to_s3"
         ;;
 esac
