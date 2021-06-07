@@ -324,7 +324,7 @@ class Status(TestCase):
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
             activity["content"],
-            'Rated <em><a href="%s">%s</a></em>: 3 stars'
+            'rated <em><a href="%s">%s</a></em>: 3 stars'
             % (self.book.remote_id, self.book.title),
         )
         self.assertEqual(activity["attachment"][0].type, "Document")

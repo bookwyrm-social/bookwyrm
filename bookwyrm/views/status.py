@@ -1,6 +1,7 @@
 """ what are we here for if not for posting """
 import re
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -27,8 +28,9 @@ class CreateStatus(View):
         data = {"book": book}
         return TemplateResponse(request, "compose.html", data)
 
+    @transaction.atomic
     def post(self, request, status_type):
-        """create  status of whatever type"""
+        """create status of whatever type"""
         status_type = status_type[0].upper() + status_type[1:]
 
         try:
@@ -39,12 +41,14 @@ class CreateStatus(View):
             return redirect(request.headers.get("Referer", "/"))
 
         status = form.save(commit=False)
+
         if not status.sensitive and status.content_warning:
             # the cw text field remains populated when you click "remove"
             status.content_warning = None
+        # we don't want to broadcast yet because we need to add post-save fields
         status.save(broadcast=False)
 
-        # inspect the text for user tags
+        # inspect the text for tagged users
         content = status.content
         for (mention_text, mention_user) in find_mentions(content):
             # add them to status mentions fk
@@ -59,17 +63,11 @@ class CreateStatus(View):
         # add reply parent to mentions
         if status.reply_parent:
             status.mention_users.add(status.reply_parent.user)
-
         # deduplicate mentions
         status.mention_users.set(set(status.mention_users.all()))
+        status.content = content
 
-        # don't apply formatting to generated notes
-        if not isinstance(status, models.GeneratedNote) and content:
-            status.content = to_markdown(content)
-        # do apply formatting to quotes
-        if hasattr(status, "quote"):
-            status.quote = to_markdown(status.quote)
-
+        # save with broadcast
         status.save(created=True)
 
         # update a readthorugh, if needed
