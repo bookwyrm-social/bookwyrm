@@ -61,7 +61,7 @@ class StatusViews(TestCase):
             self.assertTrue(redis_mock.called)
 
         status = models.Comment.objects.get()
-        self.assertEqual(status.content, "<p>hi</p>")
+        self.assertEqual(status.content, "hi")
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
 
@@ -91,7 +91,7 @@ class StatusViews(TestCase):
             self.assertTrue(redis_mock.called)
 
         status = models.Status.objects.get(user=user)
-        self.assertEqual(status.content, "<p>hi</p>")
+        self.assertEqual(status.content, "hi")
         self.assertEqual(status.user, user)
         self.assertEqual(models.Notification.objects.get().user, self.local_user)
 
@@ -120,7 +120,7 @@ class StatusViews(TestCase):
         self.assertEqual(list(status.mention_users.all()), [user])
         self.assertEqual(models.Notification.objects.get().user, user)
         self.assertEqual(
-            status.content, '<p>hi <a href="%s">@rat</a></p>' % user.remote_id
+            status.content, 'hi <a href="%s">@rat</a>' % user.remote_id
         )
 
     def test_handle_status_reply_with_mentions(self, _):
@@ -161,7 +161,7 @@ class StatusViews(TestCase):
             self.assertTrue(redis_mock.called)
 
         reply = models.Status.replies(status).first()
-        self.assertEqual(reply.content, "<p>right</p>")
+        self.assertEqual(reply.content, "right")
         self.assertEqual(reply.user, user)
         # the mentioned user in the parent post is only included if @'ed
         self.assertFalse(self.remote_user in reply.mention_users.all())
@@ -296,21 +296,6 @@ class StatusViews(TestCase):
             '<a href="%s">openlibrary.org/search'
             "?q=arkady+strugatsky&mode=everything</a>" % url,
         )
-
-    def test_to_markdown(self, _):
-        """this is mostly handled in other places, but nonetheless"""
-        text = "_hi_ and http://fish.com is <marquee>rad</marquee>"
-        result = views.status.to_markdown(text)
-        self.assertEqual(
-            result,
-            '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
-        )
-
-    def test_to_markdown_link(self, _):
-        """this is mostly handled in other places, but nonetheless"""
-        text = "[hi](http://fish.com) is <marquee>rad</marquee>"
-        result = views.status.to_markdown(text)
-        self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
     def test_handle_delete_status(self, mock):
         """marks a status as deleted"""
