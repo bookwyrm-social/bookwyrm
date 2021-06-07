@@ -14,7 +14,7 @@ class RssFeed(Feed):
 
     def item_title(self, item):
         """render the item title"""
-        if hasattr(item, 'pure_name') and item.pure_name:
+        if hasattr(item, "pure_name") and item.pure_name:
             return item.pure_name
         title_template = get_template("snippets/status/header_content.html")
         title = title_template.render({"status": item})
