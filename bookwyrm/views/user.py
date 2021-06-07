@@ -59,10 +59,15 @@ class User(View):
                 break
 
         # user's posts
-        activities = privacy_filter(
-            request.user,
-            user.status_set.select_subclasses(),
+        activities = (
+            privacy_filter(
+                request.user,
+                user.status_set.select_subclasses(),
+            )
+            .select_related("reply_parent")
+            .prefetch_related("mention_books", "mention_users")
         )
+
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year

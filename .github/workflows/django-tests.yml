@@ -58,7 +58,8 @@ jobs:
         POSTGRES_DB: github_actions
         POSTGRES_HOST: 127.0.0.1
         CELERY_BROKER: ""
-        CELERY_RESULT_BACKEND: ""
+        REDIS_BROKER_PORT: 6379
+        FLOWER_PORT: 8888
         EMAIL_HOST: "smtp.mailgun.org"
         EMAIL_PORT: 587
         EMAIL_HOST_USER: ""

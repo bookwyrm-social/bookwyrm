@@ -3,10 +3,10 @@
 <input type="hidden" name="id" value="{{ readthrough.id }}">
 <input type="hidden" name="book" value="{{ book.id }}">
 <div class="field">
-    <label class="label" tabindex="0" id="add-readthrough-focus">
+    <label class="label" tabindex="0" id="add-readthrough-focus" for="id_start_date-{{ readthrough.id }}">
         {% trans "Started reading" %}
-        <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </label>
+    <input type="date" name="start_date" class="input" id="id_start_date-{{ readthrough.id }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
 </div>
 {# Only show progress for editing existing readthroughs #}
 {% if readthrough.id and not readthrough.finish_date %}
@@ -26,8 +26,8 @@
 </div>
 {% endif %}
 <div class="field">
-    <label class="label">
+    <label class="label" for="id_finish_date-{{ readthrough.id }}">
         {% trans "Finished reading" %}
-        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
     </label>
+    <input type="date" name="finish_date" class="input" id="id_finish_date-{{ readthrough.id }}" value="{{ readthrough.finish_date | date:"Y-m-d" }}">
 </div>
