@@ -1,14 +1,16 @@
-{% load layout %}{% load i18n %}
+{% load layout %}
+{% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/vendor/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/vendor/icons.css">
-    <link rel="stylesheet" href="/static/css/bookwyrm.css">
+    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
@@ -16,8 +18,8 @@
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
-    <meta name="twitter:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
-    <meta name="og:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
+    <meta name="twitter:image" content="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    <meta name="og:image" content="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>
@@ -25,7 +27,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
@@ -237,8 +239,8 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="/static/js/bookwyrm.js"></script>
-<script src="/static/js/localstorage.js"></script>
+<script src="{% static "js/bookwyrm.js" %}"></script>
+<script src="{% static "js/localstorage.js" %}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

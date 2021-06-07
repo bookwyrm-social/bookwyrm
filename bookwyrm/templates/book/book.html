@@ -1,5 +1,9 @@
 {% extends 'layout.html' %}
-{% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
+{% load i18n %}
+{% load bookwyrm_tags %}
+{% load humanize %}
+{% load utilities %}
+{% load static %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
 
@@ -309,5 +313,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/vendor/tabs.js"></script>
+<script src="{% static "js/vendor/tabs.js" %}"></script>
 {% endblock %}
