@@ -215,7 +215,3 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
