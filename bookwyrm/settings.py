@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "django_rename_app",
     "bookwyrm",
     "celery",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -174,17 +175,47 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
-MEDIA_URL = "/images/"
-MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
-
 USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
     requests.utils.default_user_agent(),
     VERSION,
     DOMAIN,
 )
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Storage
+
+USE_S3 = env.bool('USE_S3', False)
+
+if USE_S3:
+    # AWS settings
+    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+    AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
+    AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL")
+    AWS_DEFAULT_ACL = "public-read"
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    # S3 Static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, STATIC_LOCATION)
+    STATICFILES_STORAGE = 'bookwyrm.storage_backends.StaticStorage'
+    # S3 Media settings
+    MEDIA_LOCATION = 'images'
+    MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    DEFAULT_FILE_STORAGE = 'bookwyrm.storage_backends.ImagesStorage'
+    # I don't know if it's used, but the site crashes without it
+    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+else:
+    STATIC_URL = "/static/"
+    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
+    MEDIA_URL = "/images/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
