@@ -1,4 +1,5 @@
 """ template filters for really common utilities """
+import os
 from uuid import uuid4
 from django import template
 
@@ -33,3 +34,15 @@ def get_title(book):
 def comparison_bool(str1, str2):
     """idk why I need to write a tag for this, it reutrns a bool"""
     return str1 == str2
+
+
+@register.filter(is_safe=True)
+def truncatepath(value, arg):
+    """Truncate a path by removing all directories except the first and truncating ."""
+    path = os.path.normpath(value.name)
+    path_list = path.split(os.sep)
+    try:
+        length = int(arg)
+    except ValueError:  # invalid literal for int()
+        return path_list[-1]  # Fail silently.
+    return "%s/…%s" % (path_list[0], path_list[-1][-length:])

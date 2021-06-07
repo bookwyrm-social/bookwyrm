@@ -90,7 +90,7 @@ case "$CMD" in
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        runweb django-admin makemessages --no-wrap --ignore=venv $@
+        runweb django-admin makemessages --no-wrap --ignore=venv --all $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
