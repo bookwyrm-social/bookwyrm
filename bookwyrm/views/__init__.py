@@ -25,7 +25,7 @@ from .list import Lists, List, Curate, UserLists
 from .notifications import Notifications
 from .outbox import Outbox
 from .reading import edit_readthrough, create_readthrough, delete_readthrough
-from .reading import start_reading, finish_reading, delete_progressupdate
+from .reading import StartReading, FinishReading, delete_progressupdate
 from .reports import Report, Reports, make_report, resolve_report, suspend_user
 from .rss_feed import RssFeed
 from .password import PasswordResetRequest, PasswordReset, ChangePassword

@@ -7,6 +7,8 @@ from dateutil.parser import ParserError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
@@ -14,88 +16,95 @@ from .helpers import get_edition, handle_reading_status
 from .shelf import handle_unshelve
 
 
-# pylint: disable= no-self-use
-@login_required
-@require_POST
-def start_reading(request, book_id):
-    """begin reading a book"""
-    book = get_edition(book_id)
-    reading_shelf = models.Shelf.objects.filter(
-        identifier=models.Shelf.READING, user=request.user
-    ).first()
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
+class StartReading(View):
+    """begin a book"""
 
-    # create a readthrough
-    readthrough = update_readthrough(request, book=book)
-    if readthrough:
-        readthrough.save()
+    def post(self, request, book_id):
+        """begin reading a book"""
+        book = get_edition(book_id)
+        reading_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.READING, user=request.user
+        ).first()
 
-        # create a progress update if we have a page
-        readthrough.create_update()
+        # create a readthrough
+        readthrough = update_readthrough(request, book=book)
+        if readthrough:
+            readthrough.save()
 
-    current_status_shelfbook = (
-        models.ShelfBook.objects.select_related("shelf")
-        .filter(
-            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-            user=request.user,
-            book=book,
+            # create a progress update if we have a page
+            readthrough.create_update()
+
+        current_status_shelfbook = (
+            models.ShelfBook.objects.select_related("shelf")
+            .filter(
+                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+                user=request.user,
+                book=book,
+            )
+            .first()
         )
-        .first()
-    )
-    if current_status_shelfbook is not None:
-        if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
-            handle_unshelve(book, current_status_shelfbook.shelf)
-        else:  # It already was on the shelf
-            return redirect(request.headers.get("Referer", "/"))
+        if current_status_shelfbook is not None:
+            if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
+                handle_unshelve(book, current_status_shelfbook.shelf)
+            else:  # It already was on the shelf
+                return redirect(request.headers.get("Referer", "/"))
 
-    models.ShelfBook.objects.create(book=book, shelf=reading_shelf, user=request.user)
-
-    # post about it (if you want)
-    if request.POST.get("post-status"):
-        privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, reading_shelf, book, privacy)
-
-    return redirect(request.headers.get("Referer", "/"))
-
-
-@login_required
-@require_POST
-def finish_reading(request, book_id):
-    """a user completed a book, yay"""
-    book = get_edition(book_id)
-    finished_read_shelf = models.Shelf.objects.filter(
-        identifier=models.Shelf.READ_FINISHED, user=request.user
-    ).first()
-
-    # update or create a readthrough
-    readthrough = update_readthrough(request, book=book)
-    if readthrough:
-        readthrough.save()
-
-    current_status_shelfbook = (
-        models.ShelfBook.objects.select_related("shelf")
-        .filter(
-            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-            user=request.user,
-            book=book,
+        models.ShelfBook.objects.create(
+            book=book, shelf=reading_shelf, user=request.user
         )
-        .first()
-    )
-    if current_status_shelfbook is not None:
-        if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
-            handle_unshelve(book, current_status_shelfbook.shelf)
-        else:  # It already was on the shelf
-            return redirect(request.headers.get("Referer", "/"))
 
-    models.ShelfBook.objects.create(
-        book=book, shelf=finished_read_shelf, user=request.user
-    )
+        # post about it (if you want)
+        if request.POST.get("post-status"):
+            privacy = request.POST.get("privacy")
+            handle_reading_status(request.user, reading_shelf, book, privacy)
 
-    # post about it (if you want)
-    if request.POST.get("post-status"):
-        privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, finished_read_shelf, book, privacy)
+        return redirect(request.headers.get("Referer", "/"))
 
-    return redirect(request.headers.get("Referer", "/"))
+
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
+class FinishReading(View):
+    """finish a book"""
+
+    def post(self, request, book_id):
+        """a user completed a book, yay"""
+        book = get_edition(book_id)
+        finished_read_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.READ_FINISHED, user=request.user
+        ).first()
+
+        # update or create a readthrough
+        readthrough = update_readthrough(request, book=book)
+        if readthrough:
+            readthrough.save()
+
+        current_status_shelfbook = (
+            models.ShelfBook.objects.select_related("shelf")
+            .filter(
+                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+                user=request.user,
+                book=book,
+            )
+            .first()
+        )
+        if current_status_shelfbook is not None:
+            if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
+                handle_unshelve(book, current_status_shelfbook.shelf)
+            else:  # It already was on the shelf
+                return redirect(request.headers.get("Referer", "/"))
+
+        models.ShelfBook.objects.create(
+            book=book, shelf=finished_read_shelf, user=request.user
+        )
+
+        # post about it (if you want)
+        if request.POST.get("post-status"):
+            privacy = request.POST.get("privacy")
+            handle_reading_status(request.user, finished_read_shelf, book, privacy)
+
+        return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required

@@ -20,7 +20,7 @@ from .helpers import is_api_request, get_edition, get_user_from_username
 from .helpers import handle_reading_status, privacy_filter
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
