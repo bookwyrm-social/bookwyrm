@@ -18,13 +18,52 @@ from .shelf import handle_unshelve
 
 @method_decorator(login_required, name="dispatch")
 # pylint: disable=no-self-use
+class WantToRead(View):
+    """consider reading a book"""
+
+    def post(self, request, book_id):
+        """desire a book"""
+        book = get_edition(book_id)
+        desired_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.TO_READ, user=request.user
+        ).first()
+
+        current_status_shelfbook = (
+            models.ShelfBook.objects.select_related("shelf")
+            .filter(
+                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+                user=request.user,
+                book=book,
+            )
+            .first()
+        )
+        if current_status_shelfbook is not None:
+            if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
+                handle_unshelve(book, current_status_shelfbook.shelf)
+            else:  # It already was on the shelf
+                return redirect(request.headers.get("Referer", "/"))
+
+        models.ShelfBook.objects.create(
+            book=book, shelf=desired_shelf, user=request.user
+        )
+
+        # post about it (if you want)
+        if request.POST.get("post-status"):
+            privacy = request.POST.get("privacy")
+            handle_reading_status(request.user, desired_shelf, book, privacy)
+
+        return redirect(request.headers.get("Referer", "/"))
+
+
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
 class StartReading(View):
     """begin a book"""
 
     def post(self, request, book_id):
         """begin reading a book"""
         book = get_edition(book_id)
-        reading_shelf = models.Shelf.objects.filter(
+        desired_shelf = models.Shelf.objects.filter(
             identifier=models.Shelf.READING, user=request.user
         ).first()
 
@@ -52,13 +91,13 @@ class StartReading(View):
                 return redirect(request.headers.get("Referer", "/"))
 
         models.ShelfBook.objects.create(
-            book=book, shelf=reading_shelf, user=request.user
+            book=book, shelf=desired_shelf, user=request.user
         )
 
         # post about it (if you want)
         if request.POST.get("post-status"):
             privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, reading_shelf, book, privacy)
+            handle_reading_status(request.user, desired_shelf, book, privacy)
 
         return redirect(request.headers.get("Referer", "/"))
 
@@ -71,7 +110,7 @@ class FinishReading(View):
     def post(self, request, book_id):
         """a user completed a book, yay"""
         book = get_edition(book_id)
-        finished_read_shelf = models.Shelf.objects.filter(
+        desired_shelf = models.Shelf.objects.filter(
             identifier=models.Shelf.READ_FINISHED, user=request.user
         ).first()
 
@@ -96,13 +135,13 @@ class FinishReading(View):
                 return redirect(request.headers.get("Referer", "/"))
 
         models.ShelfBook.objects.create(
-            book=book, shelf=finished_read_shelf, user=request.user
+            book=book, shelf=desired_shelf, user=request.user
         )
 
         # post about it (if you want)
         if request.POST.get("post-status"):
             privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, finished_read_shelf, book, privacy)
+            handle_reading_status(request.user, desired_shelf, book, privacy)
 
         return redirect(request.headers.get("Referer", "/"))
 

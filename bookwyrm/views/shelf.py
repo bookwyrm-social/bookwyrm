@@ -178,11 +178,6 @@ def shelve(request):
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
         )
-        if desired_shelf.identifier == models.Shelf.TO_READ and request.POST.get(
-            "post-status"
-        ):
-            privacy = request.POST.get("privacy") or desired_shelf.privacy
-            handle_reading_status(request.user, desired_shelf, book, privacy=privacy)
     else:
         try:
             models.ShelfBook.objects.create(
