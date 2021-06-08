@@ -183,6 +183,7 @@ let BookWyrm = new class {
         if (focus) {
             this.toggleFocus(focus);
         }
+
         return false;
     }
 

@@ -17,7 +17,7 @@ let LocalStorageTools = new class {
      * @return {undefined}
      */
     updateDisplay(event) {
-        // used in set reading goal
+        // Used in set reading goal
         let key = event.target.dataset.id;
         let value = event.target.dataset.value;
 
@@ -34,10 +34,10 @@ let LocalStorageTools = new class {
      * @return {undefined}
      */
     setDisplay(node) {
-        // used in set reading goal
+        // Used in set reading goal
         let key = node.dataset.hide;
         let value = window.localStorage.getItem(key);
 
         BookWyrm.addRemoveClass(node, 'is-hidden', value);
     }
-}
+}();
