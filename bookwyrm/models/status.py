@@ -228,11 +228,8 @@ class GeneratedNote(Status):
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
-        books = ", ".join(
-            '<a href="%s">"%s"</a>' % (book.remote_id, book.title)
-            for book in self.mention_books.all()
-        )
-        return "%s %s %s" % (self.user.display_name, self.content, books)
+        template = get_template("snippets/generated_status/generated_note_pure.html")
+        return template.render({"status": self})
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"

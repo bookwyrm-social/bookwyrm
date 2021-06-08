@@ -1,3 +1,7 @@
 {% load i18n %}{% load humanize %}
 
-{% blocktrans count counter=goal.goal with counter=goal.goal year=goal.year username=user.display_name user_path=user.local_path %}<a href="{{ user_path }}">{{ username }}</a> set a goal to read {{ counter }} book in {{ year }}{% plural %}<a href="{{ user_path }}">{{ username }}</a> set a goal to read {{ counter }} books in {{ year }}{% endblocktrans %}
+{% blocktranslate trimmed count counter=goal.goal|add:0 with counter=goal.goal|intcomma year=goal.year %}
+set a goal to read {{ counter }} book in {{ year }}
+{% plural %}
+set a goal to read {{ counter }} books in {{ year }}
+{% endblocktranslate %}
