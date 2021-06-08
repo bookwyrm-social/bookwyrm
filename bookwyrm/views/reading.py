@@ -7,6 +7,7 @@ from dateutil.parser import ParserError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -19,6 +20,11 @@ from .helpers import get_edition, handle_reading_status
 # pylint: disable=no-self-use
 class WantToRead(View):
     """consider reading a book"""
+
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/want.html", {"book": book})
 
     def post(self, request, book_id):
         """desire a book"""
@@ -33,6 +39,11 @@ class WantToRead(View):
 class StartReading(View):
     """begin a book"""
 
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/start.html", {"book": book})
+
     def post(self, request, book_id):
         """begin reading a book"""
         desired_shelf = models.Shelf.objects.filter(
@@ -45,6 +56,11 @@ class StartReading(View):
 # pylint: disable=no-self-use
 class FinishReading(View):
     """finish a book"""
+
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/finish.html", {"book": book})
 
     def post(self, request, book_id):
         """a user completed a book, yay"""
