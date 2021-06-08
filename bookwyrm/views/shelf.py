@@ -201,7 +201,6 @@ def unshelve(request):
     return redirect(request.headers.get("Referer", "/"))
 
 
-# pylint: disable=unused-argument
 def handle_unshelve(book, shelf):
     """unshelve a book"""
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)

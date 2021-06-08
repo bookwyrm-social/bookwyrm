@@ -316,9 +316,19 @@ urlpatterns = [
     re_path(r"^create-readthrough/?$", views.create_readthrough),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
     # shelve actions
-    re_path(r"^to-read/(?P<book_id>\d+)/?$", views.WantToRead.as_view(), name="to-read"),
-    re_path(r"^start-reading/(?P<book_id>\d+)/?$", views.StartReading.as_view(), name="start-reading"),
-    re_path(r"^finish-reading/(?P<book_id>\d+)/?$", views.FinishReading.as_view(), name="finish-reading"),
+    re_path(
+        r"^to-read/(?P<book_id>\d+)/?$", views.WantToRead.as_view(), name="to-read"
+    ),
+    re_path(
+        r"^start-reading/(?P<book_id>\d+)/?$",
+        views.StartReading.as_view(),
+        name="start-reading",
+    ),
+    re_path(
+        r"^finish-reading/(?P<book_id>\d+)/?$",
+        views.FinishReading.as_view(),
+        name="finish-reading",
+    ),
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),

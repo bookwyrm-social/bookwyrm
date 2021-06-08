@@ -13,7 +13,6 @@ from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from .helpers import get_edition, handle_reading_status
-from .shelf import handle_unshelve
 
 
 @method_decorator(login_required, name="dispatch")
@@ -23,36 +22,10 @@ class WantToRead(View):
 
     def post(self, request, book_id):
         """desire a book"""
-        book = get_edition(book_id)
         desired_shelf = models.Shelf.objects.filter(
             identifier=models.Shelf.TO_READ, user=request.user
         ).first()
-
-        current_status_shelfbook = (
-            models.ShelfBook.objects.select_related("shelf")
-            .filter(
-                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-                user=request.user,
-                book=book,
-            )
-            .first()
-        )
-        if current_status_shelfbook is not None:
-            if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
-                handle_unshelve(book, current_status_shelfbook.shelf)
-            else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
-
-        models.ShelfBook.objects.create(
-            book=book, shelf=desired_shelf, user=request.user
-        )
-
-        # post about it (if you want)
-        if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
-
-        return redirect(request.headers.get("Referer", "/"))
+        return handle_shelve(request, book_id, desired_shelf)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -62,44 +35,10 @@ class StartReading(View):
 
     def post(self, request, book_id):
         """begin reading a book"""
-        book = get_edition(book_id)
         desired_shelf = models.Shelf.objects.filter(
             identifier=models.Shelf.READING, user=request.user
         ).first()
-
-        # create a readthrough
-        readthrough = update_readthrough(request, book=book)
-        if readthrough:
-            readthrough.save()
-
-            # create a progress update if we have a page
-            readthrough.create_update()
-
-        current_status_shelfbook = (
-            models.ShelfBook.objects.select_related("shelf")
-            .filter(
-                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-                user=request.user,
-                book=book,
-            )
-            .first()
-        )
-        if current_status_shelfbook is not None:
-            if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
-                handle_unshelve(book, current_status_shelfbook.shelf)
-            else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
-
-        models.ShelfBook.objects.create(
-            book=book, shelf=desired_shelf, user=request.user
-        )
-
-        # post about it (if you want)
-        if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
-
-        return redirect(request.headers.get("Referer", "/"))
+        return handle_shelve(request, book_id, desired_shelf)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -109,41 +48,50 @@ class FinishReading(View):
 
     def post(self, request, book_id):
         """a user completed a book, yay"""
-        book = get_edition(book_id)
         desired_shelf = models.Shelf.objects.filter(
             identifier=models.Shelf.READ_FINISHED, user=request.user
         ).first()
+        return handle_shelve(request, book_id, desired_shelf)
 
+
+def handle_shelve(request, book_id, desired_shelf):
+    """these are all basically the same"""
+    book = get_edition(book_id)
+
+    reshelve_book(request.user, book, desired_shelf)
+
+    if desired_shelf.identifier != models.Shelf.TO_READ:
         # update or create a readthrough
         readthrough = update_readthrough(request, book=book)
         if readthrough:
             readthrough.save()
 
-        current_status_shelfbook = (
-            models.ShelfBook.objects.select_related("shelf")
-            .filter(
-                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-                user=request.user,
-                book=book,
-            )
-            .first()
+    # post about it (if you want)
+    if request.POST.get("post-status"):
+        privacy = request.POST.get("privacy")
+        handle_reading_status(request.user, desired_shelf, book, privacy)
+
+    return redirect(request.headers.get("Referer", "/"))
+
+
+def reshelve_book(user, book, desired_shelf):
+    """move a book to a new shelf"""
+    current_status_shelfbook = (
+        models.ShelfBook.objects.select_related("shelf")
+        .filter(
+            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+            user=user,
+            book=book,
         )
-        if current_status_shelfbook is not None:
-            if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
-                handle_unshelve(book, current_status_shelfbook.shelf)
-            else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
+        .first()
+    )
+    if current_status_shelfbook is not None:
+        if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
+            current_status_shelfbook.delete()
+        else:  # It already was on the shelf
+            return
 
-        models.ShelfBook.objects.create(
-            book=book, shelf=desired_shelf, user=request.user
-        )
-
-        # post about it (if you want)
-        if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
-
-        return redirect(request.headers.get("Referer", "/"))
+    models.ShelfBook.objects.create(book=book, shelf=desired_shelf, user=user)
 
 
 @login_required
