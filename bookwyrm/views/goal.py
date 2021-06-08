@@ -2,6 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
+from django.template.loader import get_template
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -56,9 +57,11 @@ class Goal(View):
 
         if request.POST.get("post-status"):
             # create status, if appropriate
+            template = get_template("snippets/generated_status/goal.html")
             models.GeneratedNote.objects.create(
                 user=request.user,
                 note_type="GOAL",
+                content=template.render({"goal": goal, "user": request.user}).strip(),
                 privacy=goal.privacy,
             )
 
