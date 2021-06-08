@@ -1,11 +1,9 @@
 """ helper functions used in various views """
 import re
 from requests import HTTPError
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ValidationError
 from django.db.models import Count, Max, Q
 from django.http import Http404
-from django.template.loader import get_template
-from django.template.exceptions import TemplateDoesNotExist
 
 from bookwyrm import activitypub, models
 from bookwyrm.connectors import ConnectorException, get_data
@@ -143,18 +141,14 @@ def handle_reading_status(user, shelf, book, privacy):
     """post about a user reading a book"""
     # tell the world about this cool thing that happened
     try:
-        template = get_template(
-            "snippets/generated_status/{:s}.html".format(shelf.identifier)
+        status = models.GeneratedNote(
+            user=user,
+            note_type=shelf.identifier.upper(),
+            privacy=privacy,
         )
-    except TemplateDoesNotExist:
+    except ValidationError:
         # it's a non-standard shelf, don't worry about it
         return
-
-    status = models.GeneratedNote(
-        user=user,
-        content=template.render({"user": user, "book": book}).strip(),
-        privacy=privacy,
-    )
     status.save(broadcast=False)
     # the books related field can't be set until the status is saved
     status.mention_books.set([book])

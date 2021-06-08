@@ -119,9 +119,7 @@ class StatusViews(TestCase):
         status = models.Status.objects.get()
         self.assertEqual(list(status.mention_users.all()), [user])
         self.assertEqual(models.Notification.objects.get().user, user)
-        self.assertEqual(
-            status.content, 'hi <a href="%s">@rat</a>' % user.remote_id
-        )
+        self.assertEqual(status.content, 'hi <a href="%s">@rat</a>' % user.remote_id)
 
     def test_handle_status_reply_with_mentions(self, _):
         """reply to a post with an @mention'ed user"""
