@@ -26,8 +26,8 @@ class ReadingStatus(View):
         book = get_edition(book_id)
         template = {
             "want": "want.html",
-            "finish": "start.html",
-            "start": "finish.html",
+            "start": "start.html",
+            "finish": "finish.html",
         }.get(status)
         if not template:
             return HttpResponseNotFound()
