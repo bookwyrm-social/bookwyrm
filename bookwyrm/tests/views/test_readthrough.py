@@ -33,7 +33,7 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/start-reading/{}".format(self.edition.id),
+            "/reading-status/start/{}".format(self.edition.id),
             {
                 "start_date": "2020-11-27",
             },
@@ -54,7 +54,7 @@ class ReadThrough(TestCase):
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
         self.client.post(
-            "/start-reading/{}".format(self.edition.id),
+            "/reading-status/start/{}".format(self.edition.id),
             {
                 "start_date": "2020-11-27",
             },

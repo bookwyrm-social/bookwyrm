@@ -9,7 +9,7 @@
     {% if shelf.identifier == 'reading' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
 
         {% trans "Start reading" as button_text %}
-        {% url 'start-reading' book.id as fallback_url %}
+        {% url 'reading-status' 'start' book.id as fallback_url %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="start-reading" controls_uid=button_uuid focus="modal-title-start-reading" disabled=is_current fallback_url=fallback_url %}
 
     {% endif %}{% elif shelf.identifier == 'read' and active_shelf.shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
@@ -17,13 +17,13 @@
     {% endif %}{% elif shelf.identifier == 'read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
 
         {% trans "Finish reading" as button_text %}
-        {% url 'finish-reading' book.id as fallback_url %}
+        {% url 'reading-status' 'finish' book.id as fallback_url %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="finish-reading" controls_uid=button_uuid focus="modal-title-finish-reading" disabled=is_current fallback_url=fallback_url %}
 
     {% endif %}{% elif shelf.identifier == 'to-read' %}{% if not dropdown or active_shelf.shelf.identifier|next_shelf != shelf.identifier %}
 
         {% trans "Want to read" as button_text %}
-        {% url 'to-read' book.id as fallback_url %}
+        {% url 'reading-status' 'want' book.id as fallback_url %}
         {% include 'snippets/toggle/toggle_button.html' with class=class text=button_text controls_text="want-to-read" controls_uid=button_uuid focus="modal-title-want-to-read" disabled=is_current fallback_url=fallback_url %}
 
     {% endif %}{% elif shelf.editable %}
