@@ -3,6 +3,7 @@
 
 let BookWyrm = new class {
     constructor() {
+        this.MAX_FILE_SIZE_BYTES = 10 * 1000000
         this.initOnDOMLoaded();
         this.initReccuringTasks();
         this.initEventListeners();
@@ -32,15 +33,26 @@ let BookWyrm = new class {
                 'click',
                 this.back)
             );
+
+        document.querySelectorAll('input[type="file"]')
+            .forEach(node => node.addEventListener(
+                'change',
+                this.disableIfTooLarge.bind(this)
+            ));
     }
 
     /**
      * Execute code once the DOM is loaded.
      */
     initOnDOMLoaded() {
+        const bookwyrm = this
+
         window.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.tab-group')
                 .forEach(tabs => new TabGroup(tabs));
+            document.querySelectorAll('input[type="file"]').forEach(
+                bookwyrm.disableIfTooLarge.bind(bookwyrm)
+            )
         });
     }
 
@@ -282,6 +294,29 @@ let BookWyrm = new class {
             node.classList.add(classname);
         } else {
             node.classList.remove(classname);
+        }
+    }
+
+    disableIfTooLarge(eventOrElement) {
+        const { addRemoveClass, MAX_FILE_SIZE_BYTES } = this
+        const element = eventOrElement.currentTarget || eventOrElement
+
+        const submits = element.form.querySelectorAll('[type="submit"]')
+        const warns = element.parentElement.querySelectorAll('.file-too-big')
+        const isTooBig = element.files &&
+            element.files[0] &&
+            element.files[0].size > MAX_FILE_SIZE_BYTES
+
+        if (isTooBig) {
+            submits.forEach(submitter => submitter.disabled = true)
+            warns.forEach(
+                sib => addRemoveClass(sib, 'is-hidden', false)
+            )
+        } else {
+            submits.forEach(submitter => submitter.disabled = false)
+            warns.forEach(
+                sib => addRemoveClass(sib, 'is-hidden', true)
+            )
         }
     }
 }

@@ -1,3 +1,5 @@
+include /etc/nginx/conf.d/server_config;
+
 upstream web {
     server web:8000;
 }
