@@ -92,7 +92,7 @@
 
         <div class="column is-three-fifths">
             <div class="block">
-                <h3
+                <div
                     class="field is-grouped"
                     itemprop="aggregateRating"
                     itemscope
@@ -110,7 +110,7 @@
                     {% plural %}
                         ({{ review_count }} reviews)
                     {% endblocktrans %}
-                </h3>
+                </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
                     {% include 'snippets/trimmed_text.html' %}
