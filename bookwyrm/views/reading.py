@@ -7,95 +7,107 @@ from dateutil.parser import ParserError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
+from django.template.response import TemplateResponse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.http import require_POST
 
 from bookwyrm import models
 from .helpers import get_edition, handle_reading_status
-from .shelf import handle_unshelve
 
 
-# pylint: disable= no-self-use
-@login_required
-@require_POST
-def start_reading(request, book_id):
-    """begin reading a book"""
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
+class WantToRead(View):
+    """consider reading a book"""
+
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/want.html", {"book": book})
+
+    def post(self, request, book_id):
+        """desire a book"""
+        desired_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.TO_READ, user=request.user
+        ).first()
+        return handle_shelve(request, book_id, desired_shelf)
+
+
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
+class StartReading(View):
+    """begin a book"""
+
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/start.html", {"book": book})
+
+    def post(self, request, book_id):
+        """begin reading a book"""
+        desired_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.READING, user=request.user
+        ).first()
+        return handle_shelve(request, book_id, desired_shelf)
+
+
+@method_decorator(login_required, name="dispatch")
+# pylint: disable=no-self-use
+class FinishReading(View):
+    """finish a book"""
+
+    def get(self, request, book_id):
+        """modal page"""
+        book = get_edition(book_id)
+        return TemplateResponse(request, "reading_progress/finish.html", {"book": book})
+
+    def post(self, request, book_id):
+        """a user completed a book, yay"""
+        desired_shelf = models.Shelf.objects.filter(
+            identifier=models.Shelf.READ_FINISHED, user=request.user
+        ).first()
+        return handle_shelve(request, book_id, desired_shelf)
+
+
+def handle_shelve(request, book_id, desired_shelf):
+    """these are all basically the same"""
     book = get_edition(book_id)
-    reading_shelf = models.Shelf.objects.filter(
-        identifier=models.Shelf.READING, user=request.user
-    ).first()
 
-    # create a readthrough
-    readthrough = update_readthrough(request, book=book)
-    if readthrough:
-        readthrough.save()
+    reshelve_book(request.user, book, desired_shelf)
 
-        # create a progress update if we have a page
-        readthrough.create_update()
+    if desired_shelf.identifier != models.Shelf.TO_READ:
+        # update or create a readthrough
+        readthrough = update_readthrough(request, book=book)
+        if readthrough:
+            readthrough.save()
 
+    # post about it (if you want)
+    if request.POST.get("post-status"):
+        privacy = request.POST.get("privacy")
+        handle_reading_status(request.user, desired_shelf, book, privacy)
+
+    return redirect(request.headers.get("Referer", "/"))
+
+
+def reshelve_book(user, book, desired_shelf):
+    """move a book to a new shelf"""
     current_status_shelfbook = (
         models.ShelfBook.objects.select_related("shelf")
         .filter(
             shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-            user=request.user,
+            user=user,
             book=book,
         )
         .first()
     )
     if current_status_shelfbook is not None:
-        if current_status_shelfbook.shelf.identifier != models.Shelf.READING:
-            handle_unshelve(book, current_status_shelfbook.shelf)
+        if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
+            current_status_shelfbook.delete()
         else:  # It already was on the shelf
-            return redirect(request.headers.get("Referer", "/"))
+            return
 
-    models.ShelfBook.objects.create(book=book, shelf=reading_shelf, user=request.user)
-
-    # post about it (if you want)
-    if request.POST.get("post-status"):
-        privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, reading_shelf, book, privacy)
-
-    return redirect(request.headers.get("Referer", "/"))
-
-
-@login_required
-@require_POST
-def finish_reading(request, book_id):
-    """a user completed a book, yay"""
-    book = get_edition(book_id)
-    finished_read_shelf = models.Shelf.objects.filter(
-        identifier=models.Shelf.READ_FINISHED, user=request.user
-    ).first()
-
-    # update or create a readthrough
-    readthrough = update_readthrough(request, book=book)
-    if readthrough:
-        readthrough.save()
-
-    current_status_shelfbook = (
-        models.ShelfBook.objects.select_related("shelf")
-        .filter(
-            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-            user=request.user,
-            book=book,
-        )
-        .first()
-    )
-    if current_status_shelfbook is not None:
-        if current_status_shelfbook.shelf.identifier != models.Shelf.READ_FINISHED:
-            handle_unshelve(book, current_status_shelfbook.shelf)
-        else:  # It already was on the shelf
-            return redirect(request.headers.get("Referer", "/"))
-
-    models.ShelfBook.objects.create(
-        book=book, shelf=finished_read_shelf, user=request.user
-    )
-
-    # post about it (if you want)
-    if request.POST.get("post-status"):
-        privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, finished_read_shelf, book, privacy)
-
-    return redirect(request.headers.get("Referer", "/"))
+    models.ShelfBook.objects.create(book=book, shelf=desired_shelf, user=user)
 
 
 @login_required

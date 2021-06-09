@@ -2,11 +2,13 @@
 {% load i18n %}
 
 {% block modal-title %}
-{% blocktrans with book_title=book.title %}Start "<em>{{ book_title }}</em>"{% endblocktrans %}
+{% blocktrans trimmed with book_title=book.title %}
+Start "<em>{{ book_title }}</em>"
+{% endblocktrans %}
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="start-reading" action="/start-reading/{{ book.id }}" method="post">
+<form name="start-reading" action="{% url 'start-reading' book.id %}" method="post">
 {% endblock %}
 
 {% block modal-body %}
