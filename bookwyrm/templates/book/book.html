@@ -13,14 +13,16 @@
             </h1>
 
             {% if book.subtitle or book.series %}
-                <p class="subtitle">
+                <p class="subtitle is-5 mb-1">
                     {% if book.subtitle %}
                         <meta
                             itemprop="alternativeHeadline"
                             content="{{ book.subtitle | escape }}"
                         >
 
-                        {{ book.subtitle }}
+                        <span class="has-text-weight-bold">
+                            {{ book.subtitle }}
+                        </span>
                     {% endif %}
 
                     {% if book.series %}
