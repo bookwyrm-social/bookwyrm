@@ -21,12 +21,12 @@ def get_user_identifier(user):
 
 
 @register.filter(name="book_title")
-def get_title(book, too_short=6):
+def get_title(book, too_short=5):
     """display the subtitle if the title is short"""
     if not book:
         return ""
     title = book.title
-    if len(title) < too_short and book.subtitle:
+    if len(title) <= too_short and book.subtitle:
         title = _("%(title)s: %(subtitle)s") % {
             "title": title,
             "subtitle": book.subtitle,
