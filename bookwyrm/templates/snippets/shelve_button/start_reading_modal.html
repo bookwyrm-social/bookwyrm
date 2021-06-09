@@ -8,7 +8,7 @@ Start "<em>{{ book_title }}</em>"
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="start-reading" action="{% url 'start-reading' book.id %}" method="post">
+<form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post">
 {% endblock %}
 
 {% block modal-body %}

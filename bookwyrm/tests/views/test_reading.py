@@ -56,7 +56,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.StartReading.as_view()(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -112,7 +112,7 @@ class ReadingViews(TestCase):
         request.user = self.local_user
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.FinishReading.as_view()(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "finish", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 

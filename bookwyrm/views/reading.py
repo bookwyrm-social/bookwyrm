@@ -18,96 +18,68 @@ from .helpers import get_edition, handle_reading_status
 
 @method_decorator(login_required, name="dispatch")
 # pylint: disable=no-self-use
-class WantToRead(View):
+class ReadingStatus(View):
     """consider reading a book"""
 
-    def get(self, request, book_id):
+    def get(self, request, status, book_id):
         """modal page"""
         book = get_edition(book_id)
-        return TemplateResponse(request, "reading_progress/want.html", {"book": book})
+        template = {
+            "want": "want.html",
+            "finish": "start.html",
+            "start": "finish.html",
+        }.get(status)
+        if not template:
+            return HttpResponseNotFound()
+        return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
 
-    def post(self, request, book_id):
+    def post(self, request, status, book_id):
         """desire a book"""
+        identifier = {
+            "want": models.Shelf.TO_READ,
+            "start": models.Shelf.READING,
+            "finish": models.Shelf.READ_FINISHED,
+        }.get(status)
+        if not identifier:
+            return HttpResponseBadRequest()
+
         desired_shelf = models.Shelf.objects.filter(
-            identifier=models.Shelf.TO_READ, user=request.user
+            identifier=identifier, user=request.user
         ).first()
-        return handle_shelve(request, book_id, desired_shelf)
 
-
-@method_decorator(login_required, name="dispatch")
-# pylint: disable=no-self-use
-class StartReading(View):
-    """begin a book"""
-
-    def get(self, request, book_id):
-        """modal page"""
         book = get_edition(book_id)
-        return TemplateResponse(request, "reading_progress/start.html", {"book": book})
 
-    def post(self, request, book_id):
-        """begin reading a book"""
-        desired_shelf = models.Shelf.objects.filter(
-            identifier=models.Shelf.READING, user=request.user
-        ).first()
-        return handle_shelve(request, book_id, desired_shelf)
-
-
-@method_decorator(login_required, name="dispatch")
-# pylint: disable=no-self-use
-class FinishReading(View):
-    """finish a book"""
-
-    def get(self, request, book_id):
-        """modal page"""
-        book = get_edition(book_id)
-        return TemplateResponse(request, "reading_progress/finish.html", {"book": book})
-
-    def post(self, request, book_id):
-        """a user completed a book, yay"""
-        desired_shelf = models.Shelf.objects.filter(
-            identifier=models.Shelf.READ_FINISHED, user=request.user
-        ).first()
-        return handle_shelve(request, book_id, desired_shelf)
-
-
-def handle_shelve(request, book_id, desired_shelf):
-    """these are all basically the same"""
-    book = get_edition(book_id)
-
-    reshelve_book(request.user, book, desired_shelf)
-
-    if desired_shelf.identifier != models.Shelf.TO_READ:
-        # update or create a readthrough
-        readthrough = update_readthrough(request, book=book)
-        if readthrough:
-            readthrough.save()
-
-    # post about it (if you want)
-    if request.POST.get("post-status"):
-        privacy = request.POST.get("privacy")
-        handle_reading_status(request.user, desired_shelf, book, privacy)
-
-    return redirect(request.headers.get("Referer", "/"))
-
-
-def reshelve_book(user, book, desired_shelf):
-    """move a book to a new shelf"""
-    current_status_shelfbook = (
-        models.ShelfBook.objects.select_related("shelf")
-        .filter(
-            shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
-            user=user,
-            book=book,
+        current_status_shelfbook = (
+            models.ShelfBook.objects.select_related("shelf")
+            .filter(
+                shelf__identifier__in=models.Shelf.READ_STATUS_IDENTIFIERS,
+                user=request.user,
+                book=book,
+            )
+            .first()
         )
-        .first()
-    )
-    if current_status_shelfbook is not None:
-        if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
-            current_status_shelfbook.delete()
-        else:  # It already was on the shelf
-            return
+        if current_status_shelfbook is not None:
+            if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
+                current_status_shelfbook.delete()
+            else:  # It already was on the shelf
+                return redirect(request.headers.get("Referer", "/"))
 
-    models.ShelfBook.objects.create(book=book, shelf=desired_shelf, user=user)
+        models.ShelfBook.objects.create(
+            book=book, shelf=desired_shelf, user=request.user
+        )
+
+        if desired_shelf.identifier != models.Shelf.TO_READ:
+            # update or create a readthrough
+            readthrough = update_readthrough(request, book=book)
+            if readthrough:
+                readthrough.save()
+
+        # post about it (if you want)
+        if request.POST.get("post-status"):
+            privacy = request.POST.get("privacy")
+            handle_reading_status(request.user, desired_shelf, book, privacy)
+
+        return redirect(request.headers.get("Referer", "/"))
 
 
 @login_required
