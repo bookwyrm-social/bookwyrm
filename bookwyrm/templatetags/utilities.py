@@ -29,7 +29,7 @@ def get_title(book, too_short=6):
     if len(title) < too_short and book.subtitle:
         title = _("%(title)s: %(subtitle)s") % {
             "title": title,
-            "subtitle": book.subtitle
+            "subtitle": book.subtitle,
         }
     return title
 
