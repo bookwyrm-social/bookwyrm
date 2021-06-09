@@ -86,7 +86,7 @@ class ReadingViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.StartReading.as_view()(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertFalse(to_read_shelf.books.exists())
         self.assertEqual(shelf.books.get(), self.book)
