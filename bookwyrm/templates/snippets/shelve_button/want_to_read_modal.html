@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="shelve" action="/shelve/" method="post">
+<form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ active_shelf.book.id }}">
     <input type="hidden" name="shelf" value="to-read">

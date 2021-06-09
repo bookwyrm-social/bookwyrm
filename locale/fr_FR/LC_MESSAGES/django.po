@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-07 19:33+0000\n"
+"POT-Creation-Date: 2021-06-07 14:09+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -181,6 +181,14 @@ msgstr "Voir sur OpenLibrary"
 msgid "View on Goodreads"
 msgstr ""
 
+#: bookwyrm/templates/author/author.html:85
+msgid "View on LibraryThing"
+msgstr "Voir sur LibraryThing"
+
+#: bookwyrm/templates/author/author.html:93
+msgid "View on Goodreads"
+msgstr "Voir sur Goodreads"
+
 #: bookwyrm/templates/author/author.html:108
 #, python-format
 msgid "Books by %(name)s"
@@ -193,7 +201,7 @@ msgstr "Modifier l’auteur ou l’autrice :"
 #: bookwyrm/templates/author/edit_author.html:13
 #: bookwyrm/templates/book/edit_book.html:19
 msgid "Added:"
-msgstr "AJouté :"
+msgstr "Ajouté :"
 
 #: bookwyrm/templates/author/edit_author.html:14
 #: bookwyrm/templates/book/edit_book.html:24
@@ -221,8 +229,6 @@ msgstr "Nom :"
 #: bookwyrm/templates/book/edit_book.html:162
 #: bookwyrm/templates/book/edit_book.html:171
 #: bookwyrm/templates/book/edit_book.html:214
-#, fuzzy
-#| msgid "Separate multiple publishers with commas."
 msgid "Separate multiple values with commas."
 msgstr "Séparez plusieurs éditeurs par une virgule."
 
@@ -252,8 +258,6 @@ msgstr "Clé Openlibrary :"
 
 #: bookwyrm/templates/author/edit_author.html:89
 #: bookwyrm/templates/book/edit_book.html:293
-#, fuzzy
-#| msgid "View on OpenLibrary"
 msgid "Inventaire ID:"
 msgstr "Voir sur OpenLibrary"
 
@@ -457,12 +461,12 @@ msgstr "Confirmer les informations de ce livre"
 #: bookwyrm/templates/book/edit_book.html:62
 #, python-format
 msgid "Is \"%(name)s\" an existing author?"
-msgstr "Est‑ce que l’auteur ou l’autrice « %(name)s » existe déjà ?"
+msgstr "Est‑ce que l’auteur/autrice « %(name)s » existe déjà ?"
 
 #: bookwyrm/templates/book/edit_book.html:71
 #, python-format
 msgid "Author of <em>%(book_title)s</em>"
-msgstr "Commencer « <em>%(book_title)s</em> »"
+msgstr "Auteur/autrice de <em>%(book_title)s</em>"
 
 #: bookwyrm/templates/book/edit_book.html:75
 msgid "This is a new author"
@@ -471,7 +475,7 @@ msgstr "Il s’agit d’un nouvel auteur ou d’une nouvelle autrice."
 #: bookwyrm/templates/book/edit_book.html:82
 #, python-format
 msgid "Creating a new author: %(name)s"
-msgstr "Création d’un nouvel auteur ou d’une nouvelle autrice : %(name)s"
+msgstr "Création d’un nouvel auteur/autrice : %(name)s"
 
 #: bookwyrm/templates/book/edit_book.html:89
 msgid "Is this an edition of an existing work?"
@@ -508,8 +512,6 @@ msgid "Series number:"
 msgstr "Numéro dans la série :"
 
 #: bookwyrm/templates/book/edit_book.html:160
-#, fuzzy
-#| msgid "Language:"
 msgid "Languages:"
 msgstr "Langue :"
 
@@ -530,16 +532,14 @@ msgid "Authors"
 msgstr "Auteurs ou autrices"
 
 #: bookwyrm/templates/book/edit_book.html:202
-#, fuzzy, python-format
-#| msgid "Remove from %(name)s"
+#, python-format
 msgid "Remove %(name)s"
-msgstr "Retirer de %(name)s"
+msgstr "Retirer %(name)s"
 
 #: bookwyrm/templates/book/edit_book.html:205
-#, fuzzy, python-format
-#| msgid "Remove from %(name)s"
+#, python-format
 msgid "Author page for %(name)s"
-msgstr "Retirer de %(name)s"
+msgstr "Page de %(name)s"
 
 #: bookwyrm/templates/book/edit_book.html:212
 msgid "Add Authors:"
@@ -580,8 +580,6 @@ msgid "ISBN 10:"
 msgstr "ISBN 10 :"
 
 #: bookwyrm/templates/book/edit_book.html:285
-#, fuzzy
-#| msgid "Openlibrary key:"
 msgid "Openlibrary ID:"
 msgstr "Clé Openlibrary :"
 
@@ -1170,11 +1168,11 @@ msgstr "Statut de l’importation"
 
 #: bookwyrm/templates/import_status.html:13
 msgid "Import started:"
-msgstr "Importation en cours :"
+msgstr "Début de l’importation :"
 
 #: bookwyrm/templates/import_status.html:18
 msgid "Import completed:"
-msgstr "Importation terminé :"
+msgstr "Fin de l’importation :"
 
 #: bookwyrm/templates/import_status.html:23
 msgid "TASK FAILED"
@@ -1186,11 +1184,11 @@ msgstr "L’importation est toujours en cours"
 
 #: bookwyrm/templates/import_status.html:32
 msgid "(Hit reload to update!)"
-msgstr "(Rechargez la page pour mettre à jour !"
+msgstr "(Rechargez la page pour la mettre à jour !)"
 
 #: bookwyrm/templates/import_status.html:39
 msgid "Failed to load"
-msgstr "Items non importés"
+msgstr "Éléments non importés"
 
 #: bookwyrm/templates/import_status.html:48
 #, python-format
@@ -1200,7 +1198,7 @@ msgstr "Sauter en bas de liste pour sélectionner les %(failed_count)s items n�
 #: bookwyrm/templates/import_status.html:60
 #, python-format
 msgid "Line %(index)s: <strong>%(title)s</strong> by %(author)s"
-msgstr ""
+msgstr "Ligne %(index)s : <strong>%(title)s</strong> par %(author)s"
 
 #: bookwyrm/templates/import_status.html:80
 msgid "Select all"
@@ -1208,7 +1206,7 @@ msgstr "Tout sélectionner"
 
 #: bookwyrm/templates/import_status.html:83
 msgid "Retry items"
-msgstr "Essayer d’importer les items sélectionnés de nouveau"
+msgstr "Réessayer l’importation de ces éléments"
 
 #: bookwyrm/templates/import_status.html:109
 msgid "Successfully imported"
@@ -1229,7 +1227,7 @@ msgstr "Titre"
 #: bookwyrm/templates/user/shelf/shelf.html:80
 #: bookwyrm/templates/user/shelf/shelf.html:102
 msgid "Author"
-msgstr "Auteur ou autrice"
+msgstr "Auteur/autrice"
 
 #: bookwyrm/templates/import_status.html:142
 msgid "Imported"
@@ -1274,10 +1272,8 @@ msgid "Feed"
 msgstr "Fil d’actualité"
 
 #: bookwyrm/templates/layout.html:87
-#, fuzzy
-#| msgid "Your books"
 msgid "Your Books"
-msgstr "Vos livres"
+msgstr "Vos Livres"
 
 #: bookwyrm/templates/layout.html:97
 msgid "Settings"
@@ -1902,7 +1898,7 @@ msgstr "Contenu du pied de page"
 #: bookwyrm/templates/settings/admin_layout.html:58
 #: bookwyrm/templates/settings/site.html:81
 msgid "Registration"
-msgstr "Enregistrement"
+msgstr "Inscription"
 
 #: bookwyrm/templates/settings/announcement.html:3
 #: bookwyrm/templates/settings/announcement.html:6
@@ -2155,7 +2151,7 @@ msgstr "Logiciel"
 #: bookwyrm/templates/settings/manage_invite_requests.html:25
 #: bookwyrm/templates/settings/manage_invites.html:11
 msgid "Invite Requests"
-msgstr "Invitations"
+msgstr "Demandes d’invitation"
 
 #: bookwyrm/templates/settings/manage_invite_requests.html:23
 msgid "Ignored Invite Requests"
@@ -2326,20 +2322,16 @@ msgid "Additional info:"
 msgstr ""
 
 #: bookwyrm/templates/settings/site.html:85
-#, fuzzy
-#| msgid "Allow registration:"
 msgid "Allow registration"
-msgstr "Autoriser l’enregistrement :"
+msgstr "Autoriser les inscriptions"
 
 #: bookwyrm/templates/settings/site.html:91
-#, fuzzy
-#| msgid "Allow invite requests:"
 msgid "Allow invite requests"
-msgstr "Autoriser les demandes d’invitation :"
+msgstr "Autoriser les demandes d’invitation"
 
 #: bookwyrm/templates/settings/site.html:95
 msgid "Registration closed text:"
-msgstr "Texte affiché lorsque les enregistrements sont clos :"
+msgstr "Texte affiché lorsque les inscriptions sont closes :"
 
 #: bookwyrm/templates/snippets/announcement.html:31
 #, fuzzy, python-format
@@ -2731,7 +2723,7 @@ msgstr "Commencer « <em>%(book_title)s</em> »"
 #: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:5
 #, python-format
 msgid "Want to Read \"<em>%(book_title)s</em>\""
-msgstr "A envie de lire « <em>%(book_title)s</em> »"
+msgstr "Ajouter « <em>%(book_title)s</em> » aux envies de lecture"
 
 #: bookwyrm/templates/snippets/status/content_status.html:71
 #: bookwyrm/templates/snippets/trimmed_text.html:15
@@ -3080,21 +3072,6 @@ msgstr "Aucun compte avec cette adresse email n’a été trouvé."
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un lien de réinitialisation a été envoyé à %s."
-
-#~ msgid "Reports: <small>%(server_name)s</small>"
-#~ msgstr "Signalements: <small>%(server_name)s</small>"
-
-#~ msgid "Federated Servers"
-#~ msgstr "Serveurs fédérés"
-
-#~ msgid "Server name"
-#~ msgstr "Nom du serveur"
-
-#~ msgid "Add server"
-#~ msgstr "Ajouter un serveur"
-
-#~ msgid "Remote server"
-#~ msgstr "Serveur distant"
 
 #, fuzzy
 #~| msgid "BookWyrm users"
