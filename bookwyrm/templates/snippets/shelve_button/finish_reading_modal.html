@@ -7,7 +7,7 @@
 
 
 {% block modal-form-open %}
-<form name="finish-reading" action="/finish-reading/{{ book.id }}" method="post">
+<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post">
 {% endblock %}
 
 {% block modal-body %}
