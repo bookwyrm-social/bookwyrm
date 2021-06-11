@@ -13,7 +13,7 @@
             </h1>
 
             {% if book.subtitle or book.series %}
-                <p class="subtitle is-5 mb-1">
+                <p class="subtitle title is-5">
                     {% if book.subtitle %}
                         <meta
                             itemprop="alternativeHeadline"
@@ -36,7 +36,7 @@
             {% endif %}
 
             {% if book.authors %}
-                <div>
+                <div class="subtitle">
                     {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
                 </div>
             {% endif %}
