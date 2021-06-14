@@ -59,7 +59,8 @@ class DeleteUser(View):
         # idk why but I couldn't get check_password to work on request.user
         user = models.User.objects.get(id=request.user.id)
         if form.is_valid() and user.check_password(form.cleaned_data["password"]):
-            request.user.delete()
+            user.deactivation_reason = "self_deletion"
+            user.delete()
             logout(request)
             return redirect("/")
 

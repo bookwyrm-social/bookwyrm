@@ -106,7 +106,7 @@ class EditUserViews(TestCase):
         )
         image = Image.open(image_file)
 
-        result = views.user.crop_avatar(image)
+        result = views.edit_user.crop_avatar(image)
         self.assertIsInstance(result, ContentFile)
         image_result = Image.open(result)
         self.assertEqual(image_result.size, (120, 120))
@@ -145,4 +145,6 @@ class EditUserViews(TestCase):
             activity["cc"][0], "https://www.w3.org/ns/activitystreams#Public"
         )
 
+        self.local_user.refresh_from_db()
         self.assertFalse(self.local_user.is_active)
+        self.assertEqual(self.local_user.deactivation_reason, "self_deletion")
