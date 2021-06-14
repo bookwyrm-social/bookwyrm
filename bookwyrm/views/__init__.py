@@ -6,7 +6,7 @@ from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .directory import Directory
-from .edit_user import EditUser
+from .edit_user import EditUser, DeleteUser
 from .federation import Federation, FederatedServer
 from .federation import AddFederatedServer, ImportServerBlocklist
 from .federation import block_server, unblock_server
