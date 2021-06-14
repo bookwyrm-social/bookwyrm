@@ -7,6 +7,7 @@
 {% block content %}{% spaceless %}
 <div class="block">
     <h1 class="title">{% trans "Import Status" %}</h1>
+    <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
 
     <dl>
         <div class="is-flex">
@@ -106,7 +107,11 @@
 {% endif %}
 
 <div class="block">
+    {% if job.complete %}
     <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
+    {% else %}
+    <h2 class="title is-4">{% trans "Import Progress" %}</h2>
+    {% endif %}
     <table class="table">
         <tr>
             <th>
