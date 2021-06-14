@@ -336,11 +336,13 @@ class TagField(ManyToManyField):
 
 class ClearableFileInputWithWarning(ClearableFileInput):
     """max file size warning"""
+
     template_name = "widgets/clearable_file_input_with_warning.html"
 
 
 class CustomImageField(DjangoImageField):
     """overwrites image field for form"""
+
     widget = ClearableFileInputWithWarning
 
 
@@ -408,7 +410,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         return [image_name, image_content]
 
     def formfield(self, **kwargs):
-        """ special case for forms """
+        """special case for forms"""
         return super().formfield(
             **{
                 "form_class": CustomImageField,
