@@ -121,6 +121,12 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
+class ProgressStatusForm(CustomForm):
+    class Meta:
+        model = models.GeneratedNote
+        fields = ["privacy", "content", "content_warning", "mention_books", "note_type", "user"]
+
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User

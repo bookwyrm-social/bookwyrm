@@ -98,7 +98,7 @@
                     </div>
                 {% endif %}
 
-                {% if status.content and status_type != 'GeneratedNote' and status_type != 'Announce' %}
+                {% if status.content and status_type != 'Announce' %}
                     {% with full=status.content|to_markdown|safe no_trim=status.content_warning itemprop="reviewBody" %}
                         {% include 'snippets/trimmed_text.html' %}
                     {% endwith %}

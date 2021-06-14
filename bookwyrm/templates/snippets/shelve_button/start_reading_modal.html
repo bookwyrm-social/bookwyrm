@@ -14,11 +14,20 @@ Start "<em>{{ book_title }}</em>"
 {% block modal-body %}
 <section class="modal-card-body">
     {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <input type="hidden" name="mention_books" value="{{ book.id }}">
+    <input type="hidden" name="note_type" value="READING">
     <div class="field">
         <label class="label" for="start_id_start_date-{{ uuid }}">
             {% trans "Started reading" %}
         </label>
         <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+    </div>
+    <div class="field">
+        <label class="label" for="content-{{ uuid }}">
+            {% trans "Comment" %}
+        </label>
+        <textarea name="content" class="textarea"></textarea>
     </div>
 </section>
 {% endblock %}

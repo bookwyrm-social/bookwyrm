@@ -12,8 +12,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
-from .helpers import get_edition, handle_reading_status
+from bookwyrm import forms, models
+from .helpers import get_edition
 
 
 @method_decorator(login_required, name="dispatch")
@@ -24,14 +24,11 @@ class ReadingStatus(View):
     def get(self, request, status, book_id):
         """modal page"""
         book = get_edition(book_id)
-        template = {
-            "want": "want.html",
-            "start": "start.html",
-            "finish": "finish.html",
-        }.get(status)
-        if not template:
+        if not status in ["want", "start", "finish"]:
             return HttpResponseNotFound()
-        return TemplateResponse(request, f"reading_progress/{template}", {"book": book})
+        return TemplateResponse(
+            request, f"reading_progress/{status}.html", {"book": book}
+        )
 
     def post(self, request, status, book_id):
         """desire a book"""
@@ -62,7 +59,7 @@ class ReadingStatus(View):
             if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
                 current_status_shelfbook.delete()
             else:  # It already was on the shelf
-                return redirect(request.headers.get("Referer", "/"))
+                return redirect("/")
 
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
@@ -76,8 +73,12 @@ class ReadingStatus(View):
 
         # post about it (if you want)
         if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
+            form = forms.ProgressStatusForm(request.POST)
+            if not form.is_valid():
+                return TemplateResponse(
+                    request, f"reading_progress/{status}.html", {"book": book}
+                )
+            form.save()
 
         return redirect(request.headers.get("Referer", "/"))
 

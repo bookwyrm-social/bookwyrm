@@ -13,11 +13,11 @@ def forward_func(apps, schema_editor):
     )
 
     for note in generated_notes:
-        if "started" in note.content:
+        if note.content and "started" in note.content:
             note.note_type = "READING"
-        elif "finished" in note.content:
+        elif note.content and "finished" in note.content:
             note.note_type = "READ"
-        elif "wants" in note.content:
+        elif note.content and "wants" in note.content:
             note.note_type = "TO_READ"
         else:
             note.note_type = "GOAL"
