@@ -6,6 +6,7 @@ from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .directory import Directory
+from .edit_user import EditUser
 from .federation import Federation, FederatedServer
 from .federation import AddFederatedServer, ImportServerBlocklist
 from .federation import block_server, unblock_server
@@ -37,6 +38,6 @@ from .shelf import shelve, unshelve
 from .site import Site
 from .status import CreateStatus, DeleteStatus, DeleteAndRedraft
 from .updates import get_notification_count, get_unread_status_count
-from .user import User, EditUser, Followers, Following
+from .user import User, Followers, Following
 from .user_admin import UserAdmin, UserAdminList
 from .wellknown import *
