@@ -132,7 +132,6 @@ class EditUserViews(TestCase):
         middleware.process_request(request)
         request.session.save()
 
-
         self.assertIsNone(self.local_user.name)
         with patch(
             "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
