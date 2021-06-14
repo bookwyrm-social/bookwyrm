@@ -15,7 +15,7 @@
         <div class="column is-narrow">
             <a href="{{ author.local_path }}/edit">
                 <span class="icon icon-pencil" title="{% trans 'Edit Author' %}" aria-hidden="True"></span>
-                <span>{% trans "Edit Author" %}</span>
+                <span class="is-hidden-mobile">{% trans "Edit Author" %}</span>
             </a>
         </div>
         {% endif %}

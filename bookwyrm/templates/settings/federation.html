@@ -7,7 +7,7 @@
 {% block edit-button %}
 <a href="{% url 'settings-import-blocklist' %}">
     <span class="icon icon-plus" title="{% trans 'Add instance' %}" aria-hidden="True"></span>
-    <span>{% trans "Add instance" %}</span>
+    <span class="is-hidden-mobile">{% trans "Add instance" %}</span>
 </a>
 {% endblock %}
 
