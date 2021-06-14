@@ -180,7 +180,7 @@
                 <p>{% trans "You don't have any reading activity for this book." %}</p>
                 {% endif %}
                 {% for readthrough in readthroughs %}
-                {% include 'snippets/readthrough.html' with readthrough=readthrough %}
+                {% include 'book/readthrough.html' with readthrough=readthrough %}
                 {% endfor %}
             </section>
             <hr aria-hidden="true">
