@@ -16,6 +16,7 @@ from bookwyrm import activitypub, models, settings
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
 class Status(TestCase):
     """lotta types of statuses"""
 
