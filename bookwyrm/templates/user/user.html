@@ -13,7 +13,7 @@
     <div class="column is-narrow">
         <a href="{% url 'prefs-profile' %}">
             <span class="icon icon-pencil" title="Edit profile" aria-hidden="true"></span>
-            <span>{% trans "Edit profile" %}</span>
+            <span class="is-hidden-mobile">{% trans "Edit profile" %}</span>
         </a>
     </div>
     {% endif %}
@@ -60,7 +60,7 @@
         <div class="column is-narrow">
             <a target="_blank" href="{{ user.local_path }}/rss">
                 <span class="icon icon-rss" aria-hidden="true"></span>
-                <span>{% trans "RSS feed" %}</span>
+                <span class="is-hidden-mobile">{% trans "RSS feed" %}</span>
             </a>
         </div>
     </div>
