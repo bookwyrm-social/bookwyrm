@@ -83,7 +83,10 @@ class InteractionViews(TestCase):
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
-            view(request, status.id)
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+            ):
+                view(request, status.id)
 
         boost = models.Boost.objects.get()
 
@@ -157,8 +160,11 @@ class InteractionViews(TestCase):
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
 
-            view(request, status.id)
-            view(request, status.id)
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+            ):
+                view(request, status.id)
+                view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
 
     def test_unboost(self, _):
@@ -168,7 +174,10 @@ class InteractionViews(TestCase):
         request.user = self.remote_user
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.Status.objects.create(user=self.local_user, content="hi")
-            views.Boost.as_view()(request, status.id)
+            with patch(
+                "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+            ):
+                views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
         self.assertEqual(models.Notification.objects.count(), 1)

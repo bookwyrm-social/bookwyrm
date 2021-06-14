@@ -84,7 +84,7 @@ case "$CMD" in
         runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        execweb pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
