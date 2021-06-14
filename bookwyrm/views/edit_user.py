@@ -68,7 +68,6 @@ class DeleteUser(View):
         return TemplateResponse(request, "preferences/delete_user.html", data)
 
 
-
 def save_user_form(form):
     """special handling for the user form"""
     user = form.save(commit=False)
