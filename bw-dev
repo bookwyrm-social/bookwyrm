@@ -47,9 +47,6 @@ case "$CMD" in
     initdb)
         initdb
         ;;
-    makemigrations)
-        runweb python manage.py makemigrations "$@"
-        ;;
     migrate)
         runweb python manage.py migrate "$@"
         ;;
@@ -82,6 +79,6 @@ case "$CMD" in
         runweb python manage.py populate_streams
         ;;
     *)
-        echo "Unrecognised command. Try: build, up, initdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, update, populate_feeds"
+        echo "Unrecognised command. Try: build, up, initdb, migrate, bash, shell, dbshell, restart_celery, update, populate_feeds"
         ;;
 esac

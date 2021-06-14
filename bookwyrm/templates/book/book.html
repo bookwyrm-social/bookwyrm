@@ -20,8 +20,7 @@
                     <meta itemprop="volumeNumber" content="{{ book.series_number }}">
 
                     <small class="has-text-grey-dark">
-                        ({{ book.series }}
-                        {% if book.series_number %} #{{ book.series_number }}{% endif %})
+                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
                     </small>
                     <br>
                 {% endif %}
