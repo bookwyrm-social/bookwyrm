@@ -1,5 +1,8 @@
-<a href="/book/{{ book.id }}">{{ book.title }}</a>
+{% load i18n %}
+{% load utilities %}
 {% if book.authors %}
-by {% include 'snippets/authors.html' with book=book %}
+{% blocktrans with path=book.local_path title=book|book_title %}<a href="{{ path }}">{{ title }}</a> by {% endblocktrans %}{% include 'snippets/authors.html' with book=book %}
+{% else %}
+<a href="{{ book.local_path }}">{{ book|book_title }}</a>
 {% endif %}
 

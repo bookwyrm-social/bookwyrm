@@ -1,0 +1,156 @@
+{% extends 'user/layout.html' %}
+{% load bookwyrm_tags %}
+{% load utilities %}
+{% load humanize %}
+{% load i18n %}
+
+{% block title %}
+{% include 'user/shelf/books_header.html' %}
+{% endblock %}
+
+{% block header %}
+<header class="columns">
+    <h1 class="title">
+        {% include 'user/shelf/books_header.html' %}
+    </h1>
+</header>
+{% endblock %}
+
+{% block tabs %}
+<div class="block columns">
+    <div class="column">
+        <div class="tabs">
+            <ul>
+            <li class="{% if shelf.identifier == 'all' %}is-active{% endif %}">
+                <a href="{% url 'user-shelves' user|username %}"{% if shelf.identifier == 'all' %} aria-current="page"{% endif %}>{% trans "All books" %}</a>
+            </li>
+            {% for shelf_tab in shelves %}
+            <li class="{% if shelf_tab.identifier == shelf.identifier %}is-active{% endif %}">
+                <a href="{{ shelf_tab.local_path }}"{% if shelf_tab.identifier == shelf.identifier %} aria-current="page"{% endif %}>{% if shelf_tab.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_tab.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_tab.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_tab.name }}{% endif %}</a>
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% if is_self %}
+    <div class="column is-narrow">
+        {% trans "Create shelf" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        <a class="button" href="{% url 'import' %}">{% trans "Import Books" %}</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    {% include 'user/shelf/create_shelf_form.html' with controls_text='create-shelf-form' %}
+</div>
+
+<div class="block columns is-mobile">
+    <div class="column">
+        <h2 class="title is-3">
+            {{ shelf.name }}
+            <span class="subtitle">
+                {% include 'snippets/privacy-icons.html' with item=shelf %}
+            </span>
+        </h2>
+    </div>
+    {% if is_self and shelf.id %}
+    <div class="column is-narrow">
+        {% trans "Edit shelf" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="block">
+    {% include 'user/shelf/edit_shelf_form.html' with controls_text="edit-shelf-form" %}
+</div>
+
+<div class="block">
+    <div>
+        {% if books|length > 0 %}
+        <table class="table is-striped is-fullwidth is-mobile">
+            <thead>
+                <tr>
+                    <th>{% trans "Cover" %}</th>
+                    <th>{% trans "Title" %}</th>
+                    <th>{% trans "Author" %}</th>
+                    <th>{% trans "Shelved" %}</th>
+                    <th>{% trans "Started" %}</th>
+                    <th>{% trans "Finished" %}</th>
+                    {% if request.user.is_authenticated %}
+                    <th>{% trans "Rating" %}</th>
+                    {% endif %}
+                    {% if shelf.user == request.user %}
+                    <th aria-hidden="true"></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                {% spaceless %}
+                <tr class="book-preview">
+                    <td class="book-preview-top-row">
+                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' %}</a>
+                    </td>
+                    <td data-title="{% trans "Title" %}">
+                        <a href="{{ book.local_path }}">{{ book.title }}</a>
+                    </td>
+                    <td data-title="{% trans "Author" %}">
+                        {% include 'snippets/authors.html' %}
+                    </td>
+                    <td data-title="{% trans "Shelved" %}">
+                        {{ book.created_date|naturalday }}
+                    </td>
+                    {% latest_read_through book user as read_through %}
+                    <td data-title="{% trans "Started" %}">
+                        {{ read_through.start_date|naturalday|default_if_none:""}}
+                    </td>
+                    <td data-title="{% trans "Finished" %}">
+                        {{ read_through.finish_date|naturalday|default_if_none:""}}
+                    </td>
+                    {% if request.user.is_authenticated %}
+                    <td data-title="{% trans "Rating" %}">
+                        {% include 'snippets/stars.html' with rating=book.rating %}
+                    </td>
+                    {% endif %}
+                    {% if shelf.user == request.user %}
+                    <td class="book-preview-top-row has-text-right">
+                        {% with right=True %}
+                        {% if not shelf.id %}
+                        {% active_shelf book as current %}
+                        {% include 'snippets/shelf_selector.html' with current=current.shelf class="is-small" %}
+                        {% else %}
+                        {% include 'snippets/shelf_selector.html' with current=shelf class="is-small" %}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endspaceless %}
+                {% endfor %} 
+            </tbody>
+        </table>
+        {% else %}
+        <p>{% trans "This shelf is empty." %}</p>
+        {% if shelf.id and shelf.editable %}
+        <form name="delete-shelf" action="/delete-shelf/{{ shelf.id }}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user" value="{{ request.user.id }}">
+            <button class="button is-danger is-light" type="submit">
+                {% trans "Delete shelf" %}
+            </button>
+        </form>
+        {% endif %}
+
+        {% endif %}
+
+    </div>
+</div>
+<div>
+    {% include 'snippets/pagination.html' with page=books path=request.path %}
+</div>
+{% endblock %}

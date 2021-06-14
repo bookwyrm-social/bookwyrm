@@ -1,0 +1,75 @@
+{% extends 'components/card.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block card-header %}
+<div class="card-header-title has-background-white-ter is-block">
+    {% include 'snippets/status/status_header.html' with status=status %}
+</div>
+{% endblock %}
+
+{% block card-content %}{% endblock %}
+
+{% block card-footer %}
+{% if moderation_mode and perms.bookwyrm.moderate_post %}
+<div class="card-footer-item">
+
+    {# moderation options #}
+    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}" method="post">
+        {% csrf_token %}
+        <button class="button is-danger is-light" type="submit">
+            {% trans "Delete status" %}
+        </button>
+    </form>
+</div>
+{% elif no_interact %}
+{# nothing here #}
+{% elif request.user.is_authenticated %}
+<div class="card-footer-item">
+    {% trans "Reply" as button_text %}
+    {% include 'snippets/toggle/toggle_button.html' with controls_text="show-comment" controls_uid=status.id text=button_text icon_with_text="comment" class="is-small is-light is-transparent toggle-button" focus="id_content_reply" %}
+</div>
+<div class="card-footer-item">
+    {% include 'snippets/boost_button.html' with status=status %}
+</div>
+<div class="card-footer-item">
+    {% include 'snippets/fav_button.html' with status=status %}
+</div>
+{% if not moderation_mode %}
+<div class="card-footer-item">
+    {% include 'snippets/status/status_options.html' with class="is-small is-light is-transparent" right=True %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="card-footer-item">
+    <a href="{% url 'login' %}">
+        <span class="icon icon-comment is-small" title="{% trans 'Reply' %}">
+            <span class="is-sr-only">{% trans "Reply" %}</span>
+        </span>
+
+        <span class="icon icon-boost is-small ml-4" title="{% trans 'Boost status' %}">
+            <span class="is-sr-only">{% trans "Boost status" %}</span>
+        </span>
+
+        <span class="icon icon-heart is-small ml-4" title="{% trans 'Like status' %}">
+            <span class="is-sr-only">{% trans "Like status" %}</span>
+        </span>
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block card-bonus %}
+{% if request.user.is_authenticated and not moderation_mode %}
+{% with status.id|uuid as uuid %}
+<section class="is-hidden" id="show-comment-{{ status.id }}">
+    <div class="card-footer">
+        <div class="card-footer-item">
+            {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}
+        </div>
+    </div>
+</section>
+{% endwith %}
+{% endif %}
+{% endblock %}

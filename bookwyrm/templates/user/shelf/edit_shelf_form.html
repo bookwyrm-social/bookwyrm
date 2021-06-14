@@ -1,0 +1,31 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Edit Shelf" %}
+{% endblock %}
+
+{% block form %}
+<form name="edit-shelf" action="{{ shelf.local_path }}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    {% if shelf.editable %}
+    <div class="field">
+        <label class="label" for="id_name">{% trans "Name:" %}</label>
+        <input type="text" name="name" maxlength="100" class="input" required="true" value="{{ shelf.name }}" id="id_name">
+    </div>
+    {% else %}
+    <input type="hidden" name="name" required="true" value="{{ shelf.name }}">
+    {% endif %}
+
+    <div class="field has-addons">
+        <div class="control">
+            {% include 'snippets/privacy_select.html' with current=shelf.privacy %}
+        </div>
+        <div class="control">
+            <button class="button is-primary" type="submit">{% trans "Update shelf" %}</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+

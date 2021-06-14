@@ -1,0 +1,61 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Users" %}{% endblock %}
+
+{% block header %}
+{% if server %}
+{% blocktrans with instance_name=server.server_name %}Users: <small>{{ instance_name }}</small>{% endblocktrans %}
+<a href="{% url 'settings-users' %}" class="help has-text-weight-normal">Clear filters</a>
+{% else %}
+{% trans "Users" %}
+{% endif %}
+{% endblock %}
+
+{% block panel %}
+
+{% include 'user_admin/user_admin_filters.html' %}
+
+<table class="table is-striped">
+    <tr>
+        {% url 'settings-users' as url %}
+        <th>
+            {% trans "Username" as text %}
+            {% include 'snippets/table-sort-header.html' with field="username" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Date Added" as text %}
+            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Last Active" as text %}
+            {% include 'snippets/table-sort-header.html' with field="last_active_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Status" as text %}
+            {% include 'snippets/table-sort-header.html' with field="is_active" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Remote instance" as text %}
+            {% include 'snippets/table-sort-header.html' with field="federated_server__server_name" sort=sort text=text %}
+        </th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td><a href="{% url 'settings-user' user.id %}">{{ user.username }}</a></td>
+        <td>{{ user.created_date }}</td>
+        <td>{{ user.last_active_date }}</td>
+        <td>{% if user.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}</td>
+        <td>
+            {% if user.federated_server %}
+            <a href="{% url 'settings-federated-server' user.federated_server.id %}">{{ user.federated_server.server_name }}</a>
+            {% elif not user.local %}
+            <em>{% trans "Not set" %}</em>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% include 'snippets/pagination.html' with page=users path=request.path %}
+{% endblock %}
+

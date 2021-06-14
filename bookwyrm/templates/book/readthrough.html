@@ -1,0 +1,83 @@
+{% load i18n %}
+{% load humanize %}
+{% load tz %}
+<div class="content">
+    <div id="hide-edit-readthrough-{{ readthrough.id }}" class="box is-shadowless has-background-white-bis">
+        <div class="columns">
+            <div class="column">
+                {% trans "Progress Updates:" %}
+                </dl>
+                <ul>
+                    {% if readthrough.finish_date or readthrough.progress %}
+                    <li>
+                        {% if readthrough.finish_date %}
+                        {{ readthrough.finish_date | localtime | naturalday }}: {% trans "finished" %}
+                        {% else %}
+
+                        {% if readthrough.progress_mode == 'PG' %}
+                        {% include 'snippets/page_text.html' with page=readthrough.progress total_pages=book.pages %}
+                        {% else %}
+                        {{ readthrough.progress }}%
+                        {% endif %}
+                        {% endif %}
+
+                        {% if readthrough.progress %}
+                        {% trans "Show all updates" as button_text %}
+                        {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="updates" controls_uid=readthrough.id class="is-small" %}
+                        <ul id="updates-{{ readthrough.id }}" class="is-hidden">
+                            {% for progress_update in readthrough.progress_updates %}
+                            <li>
+                                <form name="delete-update" action="/delete-progressupdate" method="POST">
+                                    {% csrf_token %}
+                                    {{ progress_update.created_date | naturalday }}:
+                                    {% if progress_update.mode == 'PG' %}
+                                    {% include 'snippets/page_text.html' with page=progress_update.progress total_pages=book.pages %}
+                                    {% else %}
+                                    {{ progress_update.progress }}%
+                                    {% endif %}
+                                    <input type="hidden" name="id" value="{{ progress_update.id }}"/>
+                                    <button type="submit" class="button is-small" for="delete-progressupdate-{{ progress_update.id }}" role="button" tabindex="0">
+                                        <span class="icon icon-x" title="Delete this progress update">
+                                            <span class="is-sr-only">{% trans "Delete this progress update" %}</span>
+                                        </span>
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                    {% if readthrough.start_date %}
+                    <li>{{ readthrough.start_date | localtime | naturalday }}: {% trans "started" %}</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="column is-narrow">
+                <div class="field has-addons">
+                    <div class="control">
+                        {% trans "Edit read dates" as button_text %}
+                        {% include 'snippets/toggle/toggle_button.html' with class="is-small" text=button_text icon="pencil" controls_text="edit-readthrough" controls_uid=readthrough.id focus="edit-readthrough" %}
+                    </div>
+                    <div class="control">
+                        {% trans "Delete these read dates" as button_text %}
+                        {% include 'snippets/toggle/toggle_button.html' with class="is-small" text=button_text icon="x" controls_text="delete-readthrough" controls_uid=readthrough.id focus="modal-title-delete-readthrough" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box is-hidden" id="edit-readthrough-{{ readthrough.id }}" tabindex="0">
+    <h3 class="title is-5">{% trans "Edit read dates" %}</h3>
+    <form name="edit-readthrough" action="/edit-readthrough" method="post">
+        {% include 'snippets/readthrough_form.html' with readthrough=readthrough %}
+        <div class="field is-grouped">
+            <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+            {% trans "Cancel" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="edit-readthrough" controls_uid=readthrough.id %}
+        </div>
+    </form>
+</div>
+{% include 'snippets/delete_readthrough_modal.html' with controls_text="delete-readthrough" controls_uid=readthrough.id no_body=True %}

@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load markdown %}
+
+{% block title %}{% trans "Welcome" %}{% endblock %}
+
+{% block content %}
+<header class="block has-text-centered">
+    <h1 class="title">{{ site.name }}</h1>
+    <h2 class="subtitle">{{ site.instance_tagline }}</h2>
+</header>
+
+<section class="level is-mobile">
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-paperplane"></span></p>
+            <p class="heading">{% trans "Decentralized" %}</p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-heart"></span></p>
+            <p class="heading">{% trans "Friendly" %}</p>
+        </div>
+    </div>
+    <div class="level-item has-text-centered">
+        <div>
+            <p class="title has-text-weight-normal"><span class="icon icon-graphic-banknote"></span></p>
+            <p class="heading">{% trans "Anti-Corporate" %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="tile is-ancestor">
+    <div class="tile is-7 is-parent">
+        <div class="tile is-child box">
+            {% include 'snippets/about.html' %}
+        </div>
+    </div>
+    <div class="tile is-5 is-parent">
+        {% if not request.user.is_authenticated %}
+        <div class="tile is-child box has-background-primary-light content">
+            {% if site.allow_registration %}
+            <h2 class="title">{% blocktrans with name=site.name %}Join {{ name }}{% endblocktrans %}</h2>
+            <form name="register" method="post" action="/register">
+                {% include 'snippets/register_form.html' %}
+            </form>
+
+            {% else %}
+
+            <h2 class="title">{% trans "This instance is closed" %}</h2>
+            <p>{{ site.registration_closed_text|safe}}</p>
+
+            {% if site.allow_invite_requests %}
+            {% if request_received %}
+            <p>
+                {% trans "Thank you! Your request has been received." %}
+            </p>
+            {% else %}
+            <h3>{% trans "Request an Invitation" %}</h3>
+            <form name="invite-request" action="{% url 'invite-request' %}" method="post">
+                {% csrf_token %}
+                <div class="block">
+                    <label for="id_request_email" class="label">{% trans "Email address:" %}</label>
+                    <input type="email" name="email" maxlength="255" class="input" required="" id="id_request_email">
+                    {% for error in request_form.email.errors %}
+                    <p class="help is-danger">{{ error|escape }}</p>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="button is-link">{% trans "Submit" %}</button>
+            </form>
+            {% endif %}
+            {% endif %}
+
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="tile is-child box has-background-white-bis">
+            <h2 class="title is-4">{% trans "Your Account" %}</h2>
+            {% include 'user/user_preview.html' with user=request.user %}
+            {% if request.user.summary %}
+            <div class="box content">
+                {{ request.user.summary|to_markdown|safe }}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% block panel %}{% endblock %}
+
+{% endblock %}

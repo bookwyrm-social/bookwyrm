@@ -1,0 +1,45 @@
+{% extends 'components/dropdown.html' %}
+{% load i18n %}
+{% load utilities %}
+
+{% block dropdown-trigger %}
+<span class="icon icon-dots-three m-0-mobile"></span>
+<span class="is-sr-only-mobile">{% trans "More options" %}</span>
+{% endblock %}
+
+{% block dropdown-list %}
+{% if status.user == request.user %}
+{# things you can do to your own statuses #}
+<li role="menuitem" class="dropdown-item p-0">
+    <form name="delete-{{ status.id }}" action="/delete-status/{{ status.id }}" method="post">
+        {% csrf_token %}
+        <button class="button is-radiusless is-danger is-light is-fullwidth is-small" type="submit">
+            {% trans "Delete status" %}
+        </button>
+    </form>
+</li>
+{% if status.status_type != 'GeneratedNote' and status.status_type != 'Rating' %}
+<li role="menuitem" class="dropdown-item p-0">
+    <form class="" name="delete-{{ status.id }}" action="{% url 'redraft' status.id %}" method="post">
+        {% csrf_token %}
+        <button class="button is-radiusless is-danger is-light is-fullwidth is-small" type="submit">
+            {% trans "Delete & re-draft" %}
+        </button>
+    </form>
+</li>
+{% endif %}
+{% else %}
+{# things you can do to other people's statuses #}
+<li role="menuitem" class="dropdown-item p-0">
+    <a href="{% url 'direct-messages-user' status.user|username %}" class="button is-small is-white is-radiusless is-fullwidth">
+        {% trans "Send direct message" %}
+    </a>
+</li>
+<li role="menuitem" class="dropdown-item p-0">
+    {% include 'snippets/report_button.html' with user=status.user status=status %}
+</li>
+<li role="menuitem" class="dropdown-item p-0">
+    {% include 'snippets/block_button.html' with user=status.user class="is-fullwidth" blocks=False %}
+</li>
+{% endif %}
+{% endblock %}

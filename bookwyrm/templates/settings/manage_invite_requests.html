@@ -1,0 +1,113 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% load humanize %}
+{% block header %}{% trans "Invite Requests" %}{% endblock %}
+{% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-invite-requests' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invite Requests" %}</a>
+        </li>
+        {% url 'settings-invites' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Invites" %}</a>
+        </li>
+    </ul>
+</div>
+
+<section class="block">
+    <h2 class="title is-4">
+        {% if ignored %}
+        {% trans "Ignored Invite Requests" %}
+        {% else %}
+        {% trans "Invite Requests" %}
+        {% endif %} ({{ count }})
+    </h2>
+
+    {% include 'settings/invite_request_filters.html' %}
+
+    <table class="table is-striped is-fullwidth">
+        {% url 'settings-invite-requests' as url %}
+        <tr>
+            <th>
+                {% trans "Date requested" as text %}
+                {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+            </th>
+            <th>
+                {% trans "Date accepted" as text %}
+                {% include 'snippets/table-sort-header.html' with field="invite__invitees__created_date" sort=sort text=text %}
+            </th>
+            <th>{% trans "Email" %}</th>
+            <th>
+                {% trans "Status" as text %}
+                {% include 'snippets/table-sort-header.html' with field="invite__times_used" sort=sort text=text %}
+            </th>
+            <th>{% trans "Action" %}</th>
+        </tr>
+        {% if not requests %}
+        <tr><td colspan="4">{% trans "No requests" %}</td></tr>
+        {% endif %}
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.created_date | naturaltime }}</td>
+            <td>{{ req.invite.invitees.first.created_date | naturaltime }}</td>
+            <td>{{ req.email }}</td>
+            <td>
+                {% if req.invite.times_used %}
+                {% trans "Accepted" %}
+                {% elif req.invite %}
+                {% trans "Sent" %}
+                {% else %}
+                {% trans "Requested" %}
+                {% endif %}
+            </td>
+            <td><div class="field is-grouped">
+                {# no invite OR invite not yet used #}
+                {% if not req.invite.times_used %}
+                <form name="send-invite" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.invite %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Send invite" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-link is-light is-small">{% trans "Re-send invite" %}</button>
+                    {% endif %}
+                </form>
+                {% endif %}
+
+                {# invite created but not used #}
+                {% if req.invite and not req.invite.times_used %}
+                {# <button class="button is-danger is-light is-small">{% trans "Revoke invite" %}</button> #}
+                {% elif req.invite %}
+                {# accepted #}
+                {% if req.invite.invitees.exists %}
+                <a href="{{ req.invite.invitees.first.local_path }}">@{{ req.invite.invitees.first.localname }}</a>
+                {% else %}
+                &nbsp;
+                {% endif %}
+                {% else %}
+                <form name="ignore-request" method="post" action="{% url 'settings-invite-requests-ignore' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="invite-request" value="{{ req.id }}">
+                    {% if not req.ignored %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Ignore" %}</button>
+                    {% else %}
+                    <button type="submit" class="button is-danger is-light is-small">{% trans "Un-ignore" %}</button>
+                    {% endif %}
+                </form>
+                {% endif %}
+            </div></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include 'snippets/pagination.html' with page=requests path=request.path %}
+
+    {% if ignored %}
+    <p><a href="{% url 'settings-invite-requests' %}">{% trans "Back to pending requests" %}</a></p>
+    {% else %}
+    <p><a href="{% url 'settings-invite-requests' %}?ignored=True">{% trans "View ignored requests" %}</a></p>
+    {% endif %}
+</section>
+{% endblock %}

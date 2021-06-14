@@ -1,11 +1,12 @@
-{% if not user in request.user.blocks.all %}
+{% load i18n %}
+{% if not blocks %}
 <form name="blocks" method="post" action="/block/{{ user.id }}">
     {% csrf_token %}
-    <button class="button is-danger is-light is-small {{ class }}" type="submit">Block</button>
+    <button class="button is-danger is-light is-small {{ class }}" type="submit">{% trans "Block" %}</button>
 </form>
 {% else %}
 <form name="unblocks" method="post" action="/unblock/{{ user.id }}">
     {% csrf_token %}
-    <button class="button is-small {{ class }}" type="submit">Un-block</button>
+    <button class="button is-small {{ class }}" type="submit">{% trans "Un-block" %}</button>
 </form>
 {% endif %}

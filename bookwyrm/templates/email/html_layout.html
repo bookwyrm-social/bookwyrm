@@ -1,0 +1,26 @@
+{% load i18n %}
+<div style="font-family: BlinkMacSystemFont,-apple-system,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Fira Sans','Droid Sans','Helvetica Neue',Helvetica,Arial,sans-serif; border-radius: 6px; background-color: #efefef; max-width: 632px;">
+    <div style="padding: 1rem; overflow: auto;">
+        <div style="float: left; margin-right: 1rem;">
+            <a style="color: #3273dc;" href="https://{{ domain }}" style="text-decoration: none;"><img src="https://{{ domain }}/{{ logo }}" alt="logo"></a>
+        </div>
+        <div>
+            <a style="color: black; text-decoration: none" href="https://{{ domain }}" style="text-decoration: none;"><strong>{{ site_name }}</strong><br>
+            {{ domain }}</a>
+        </div>
+    </div>
+
+    <div style="padding: 1rem; background-color: white;">
+        <p>
+            {% if user %}{{ user }},{% else %}{% trans "Hi there," %}{% endif %}
+        </p>
+        {% block content %}{% endblock %}
+    </div>
+
+    <div style="padding: 1rem; font-size: 0.8rem;">
+        <p style="margin: 0; color: #333;">{% blocktrans %}BookWyrm hosted on <a style="color: #3273dc;" href="https://{{ domain }}">{{ site_name }}</a>{% endblocktrans %}</p>
+        {% if user %}
+        <p style="margin: 0; color: #333;"><a style="color: #3273dc;" href="https://{{ domain }}{% url 'prefs-profile' %}">{% trans "Email preference" %}</a></p>
+        {% endif %}
+    </div>
+</div>

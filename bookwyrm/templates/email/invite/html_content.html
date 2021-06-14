@@ -1,0 +1,17 @@
+{% extends 'email/html_layout.html' %}
+{% load i18n %}
+
+{% block content %}
+<p>
+    {% blocktrans %}You're invited to join {{ site_name }}!{% endblocktrans %}
+</p>
+
+{% trans "Join Now" as text %}
+{% include 'email/snippets/action.html' with path=invite_link text=text %}
+
+<p>
+    {% url 'code-of-conduct' as coc_path %}
+    {% url 'about' as about_path %}
+    {% blocktrans %}Learn more <a href="https://{{ domain }}{{ about_path }}">about this instance</a>.{% endblocktrans %}
+</p>
+{% endblock %}

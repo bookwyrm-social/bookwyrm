@@ -1,0 +1,27 @@
+{% extends 'components/inline_form.html' %}
+{% load i18n %}
+
+{% block header %}
+{% trans "Create Shelf" %}
+{% endblock %}
+
+{% block form %}
+<form name="create-shelf" action="{% url 'shelf-create' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <div class="field">
+        <label class="label" for="id_name_create">{% trans "Name:" %}</label>
+        <input type="text" name="name" maxlength="100" class="input" required="true" id="id_name_create">
+    </div>
+
+    <div class="field has-addons">
+        <div class="control">
+            {% include 'snippets/privacy_select.html' %}
+        </div>
+        <div class="control">
+            <button class="button is-primary" type="submit">{% trans "Create Shelf" %}</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+

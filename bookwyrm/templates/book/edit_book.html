@@ -1,0 +1,327 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% if book %}{% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}{% else %}{% trans "Add Book" %}{% endif %}{% endblock %}
+
+{% block content %}
+<header class="block">
+    <h1 class="title level-left">
+        {% if book %}
+        {% blocktrans with book_title=book.title %}Edit "{{ book_title }}"{% endblocktrans %}
+        {% else %}
+        {% trans "Add Book" %}
+        {% endif %}
+    </h1>
+    {% if book %}
+    <dl>
+        <div class="is-flex">
+            <dt class="has-text-weight-semibold">{% trans "Added:" %}</dt>
+            <dd class="ml-2">{{ book.created_date | naturaltime }}</dd>
+        </div>
+
+        <div class="is-flex">
+            <dt class="has-text-weight-semibold">{% trans "Updated:" %}</dt>
+            <dd class="ml-2">{{ book.updated_date | naturaltime }}</dd>
+        </div>
+
+        {% if book.last_edited_by %}
+        <div class="is-flex">
+            <dt class="has-text-weight-semibold">{% trans "Last edited by:" %}</dt>
+            <dd class="ml-2"><a href="{{ book.last_edited_by.remote_id }}">{{ book.last_edited_by.display_name }}</a></dd>
+        </div>
+        {% endif %}
+
+    </dl>
+    {% endif %}
+</header>
+
+{% if form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+</div>
+{% endif %}
+
+{% if book %}
+<form class="block" name="edit-book" action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}" method="post" enctype="multipart/form-data">
+{% else %}
+<form class="block" name="create-book" action="/create-book{% if confirm_mode %}/confirm{% endif %}" method="post" enctype="multipart/form-data">
+{% endif %}
+
+    {% csrf_token %}
+    {% if confirm_mode %}
+    <div class="box">
+        <h2 class="title is-4">{% trans "Confirm Book Info" %}</h2>
+        <div class="columns mb-4">
+            {% if author_matches %}
+            <input type="hidden" name="author-match-count" value="{{ author_matches|length }}">
+            <div class="column is-half">
+                {% for author in author_matches %}
+                <fieldset>
+                    <legend class="title is-5 mb-1">
+                        {% blocktrans with name=author.name %}Is "{{ name }}" an existing author?{% endblocktrans %}
+                    </legend>
+                    {% with forloop.counter0 as counter %}
+                    {% for match in author.matches %}
+                    <label class="label mb-2">
+                        <input type="radio" name="author_match-{{ counter }}" value="{{ match.id }}" required>
+                        {{ match.name }}
+                    </label>
+                    <p class="help">
+                        <a href="{{ match.local_path }}" target="_blank">{% blocktrans with book_title=match.book_set.first.title %}Author of <em>{{ book_title }}</em>{% endblocktrans %}</a>
+                    </p>
+                    {% endfor %}
+                    <label class="label">
+                        <input type="radio" name="author_match-{{ counter }}" value="{{ author.name }}" required> {% trans "This is a new author" %}
+                    </label>
+                    {% endwith %}
+                </fieldset>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="column is-half">{% blocktrans with name=add_author %}Creating a new author: {{ name }}{% endblocktrans %}</p>
+            {% endif %}
+
+            {% if not book %}
+            <div class="column is-half">
+                <fieldset>
+                    <legend class="title is-5 mb-1">
+                        {% trans "Is this an edition of an existing work?" %}
+                    </legend>
+                    {% for match in book_matches %}
+                    <label class="label">
+                        <input type="radio" name="parent_work" value="{{ match.parent_work.id }}"> {{ match.parent_work.title }}
+                    </label>
+                    {% endfor %}
+                    <label>
+                        <input type="radio" name="parent_work" value="0" required> {% trans "This is a new work" %}
+                    </label>
+                </fieldset>
+            </div>
+            {% endif %}
+        </div>
+
+        <button class="button is-primary" type="submit">{% trans "Confirm" %}</button>
+        <a href="#" class="button" data-back>
+            <span>{% trans "Back" %}</span>
+        </a>
+    </div>
+
+    <hr class="block">
+    {% endif %}
+
+    <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+    <div class="columns">
+        <div class="column is-half">
+            <section class="block">
+                <h2 class="title is-4">{% trans "Metadata" %}</h2>
+
+                <div class="field">
+                    <label class="label" for="id_title">{% trans "Title:" %}</label>
+                    <input type="text" name="title" value="{{ form.title.value|default:'' }}" maxlength="255" class="input" required="" id="id_title">
+                    {% for error in form.title.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_subtitle">{% trans "Subtitle:" %}</label>
+                    <input type="text" name="subtitle" value="{{ form.subtitle.value|default:'' }}" maxlength="255" class="input" id="id_subtitle">
+                    {% for error in form.subtitle.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_description">{% trans "Description:" %}</label>
+                    {{ form.description }}
+                    {% for error in form.description.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_series">{% trans "Series:" %}</label>
+                    <input type="text" class="input" name="series" id="id_series" value="{{ form.series.value|default:'' }}">
+                    {% for error in form.series.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_series_number">{% trans "Series number:" %}</label>
+                    {{ form.series_number }}
+                    {% for error in form.series_number.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_languages">{% trans "Languages:" %}</label>
+                    {{ form.languages }}
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                    {% for error in form.languages.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_publishers">{% trans "Publisher:" %}</label>
+                    {{ form.publishers }}
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                    {% for error in form.publishers.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_first_published_date">{% trans "First published date:" %}</label>
+                    <input type="date" name="first_published_date" class="input" id="id_first_published_date"{% if form.first_published_date.value %} value="{{ form.first_published_date.value|date:'Y-m-d' }}"{% endif %}>
+                    {% for error in form.first_published_date.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_published_date">{% trans "Published date:" %}</label>
+                    <input type="date" name="published_date" class="input" id="id_published_date"{% if form.published_date.value %} value="{{ form.published_date.value|date:'Y-m-d'}}"{% endif %}>
+                    {% for error in form.published_date.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="block">
+                <h2 class="title is-4">{% trans "Authors" %}</h2>
+                {% if book.authors.exists %}
+                <fieldset>
+                    {% for author in book.authors.all %}
+                    <div class="is-flex is-justify-content-space-between">
+                        <label class="label mb-2">
+                            <input type="checkbox" name="remove_authors" value="{{ author.id }}" {% if author.id|stringformat:"i" in remove_authors %}checked{% endif %}>
+                            {% blocktrans with name=author.name %}Remove {{ name }}{% endblocktrans %}
+                        </label>
+                        <p class="help">
+                            <a href="{{ author.local_path }}">{% blocktrans with name=author.name %}Author page for {{ name }}{% endblocktrans %}</a>
+                        </p>
+                    </div>
+                    {% endfor %}
+                </fieldset>
+                {% endif %}
+                <div class="field">
+                    <label class="label" for="id_add_author">{% trans "Add Authors:" %}</label>
+                    <input class="input" type="text" name="add_author" id="id_add_author" placeholder="{% trans 'John Doe, Jane Smith' %}" value="{{ add_author }}" {% if confirm_mode %}readonly{% endif %}>
+                    <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                </div>
+            </section>
+        </div>
+
+        <div class="column is-half">
+            <h2 class="title is-4">{% trans "Cover" %}</h2>
+            <div class="columns">
+                <div class="column is-3 is-cover">
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' %}
+                </div>
+
+                <div class="column">
+                    <div class="block">
+                        <div class="field">
+                            <label class="label" for="id_cover">{% trans "Upload cover:" %}</label>
+                            {{ form.cover }}
+                        </div>
+                        {% if book %}
+                        <div class="field">
+                            <label class="label" for="id_cover_url">
+                                {% trans "Load cover from url:" %}
+                            </label>
+                            <input class="input" name="cover-url" id="id_cover_url">
+                        </div>
+                        {% endif %}
+                        {% for error in form.cover.errors %}
+                        <p class="help is-danger">{{ error | escape }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <h2 class="title is-4">{% trans "Physical Properties" %}</h2>
+                <div class="field">
+                    <label class="label" for="id_physical_format">{% trans "Format:" %}</label>
+                    {{ form.physical_format }}
+                    {% for error in form.physical_format.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_pages">{% trans "Pages:" %}</label>
+                    {{ form.pages }}
+                    {% for error in form.pages.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="block">
+                <h2 class="title is-4">{% trans "Book Identifiers" %}</h2>
+                <div class="field">
+                    <label class="label" for="id_isbn_13">{% trans "ISBN 13:" %}</label>
+                    {{ form.isbn_13 }}
+                    {% for error in form.isbn_13.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_isbn_10">{% trans "ISBN 10:" %}</label>
+                    {{ form.isbn_10 }}
+                    {% for error in form.isbn_10.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_openlibrary_key">{% trans "Openlibrary ID:" %}</label>
+                    {{ form.openlibrary_key }}
+                    {% for error in form.openlibrary_key.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label>
+                    {{ form.inventaire_id }}
+                    {% for error in form.inventaire_id.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_oclc_number">{% trans "OCLC Number:" %}</label>
+                    {{ form.oclc_number }}
+                    {% for error in form.oclc_number.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label class="label" for="id_asin">{% trans "ASIN:" %}</label>
+                    {{ form.asin }}
+                    {% for error in form.ASIN.errors %}
+                    <p class="help is-danger">{{ error | escape }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if not confirm_mode %}
+    <div class="block">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+        <a class="button" href="{{ book.local_path }}">{% trans "Cancel" %}</a>
+    </div>
+    {% endif %}
+</form>
+
+{% endblock %}

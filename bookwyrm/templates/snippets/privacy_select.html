@@ -1,21 +1,22 @@
-{% load bookwyrm_tags %}
+{% load i18n %}
+{% load utilities %}
 <div class="select {{ class }}">
     {% with 0|uuid as uuid %}
     {% if not no_label %}
-    <label class="is-sr-only" for="privacy-{{ uuid }}">Post privacy</label>
+    <label class="is-sr-only" for="privacy-{{ uuid }}">{% trans "Post privacy" %}</label>
     {% endif %}
     <select name="privacy" id="privacy-{{ uuid }}">
         <option value="public" {% if user.default_post_privacy == 'public' or current == 'public' %}selected{% endif %}>
-            Public
+            {% trans "Public" %}
         </option>
         <option value="unlisted" {% if user.default_post_privacy == 'unlisted' or current == 'unlisted' %}selected{% endif %}>
-            Unlisted
+            {% trans "Unlisted" %}
         </option>
         <option value="followers" {% if user.default_post_privacy == 'followers' or current == 'followers' %}selected{% endif %}>
-            Followers
+            {% trans "Followers" %}
         </option>
         <option value="direct" {% if user.default_post_privacy == 'direct' or current == 'direct' %}selected{% endif %}>
-            Private
+            {% trans "Private" %}
         </option>
     </select>
     {% endwith %}

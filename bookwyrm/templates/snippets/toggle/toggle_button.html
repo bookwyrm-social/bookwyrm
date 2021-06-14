@@ -1,5 +1,12 @@
+{% if fallback_url %}
+<form name="fallback-form-{{ controls_uuid}}" method="GET" action="{{ fallback_url }}">
+{% endif %}
 <button
-    type="button"
+    {% if not fallback_url %}
+        type="button"
+    {% else %}
+        type="submit"
+    {% endif %}
     class="{% if not nonbutton %}button {% endif %}{{ class }}{% if button_type %} {{ button_type }}{% endif %}"
     data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
     {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
@@ -10,10 +17,16 @@
     >
 
     {% if icon %}
-    <span class="icon icon-{{ icon }}" title="{{ text }}">
+    <span class="icon icon-{{ icon }} m-0-mobile" title="{{ text }}">
         <span class="is-sr-only">{{ text }}</span>
     </span>
+    {% elif icon_with_text %}
+    <span class="icon icon-{{ icon_with_text }} m-0-mobile" title="{{ text }}"></span>
+    <span class="is-sr-only-mobile">{{ text }}</span>
     {% else %}
     <span>{{ text }}</span>
     {% endif %}
 </button>
+{% if fallback_url %}
+</form>
+{% endif %}

@@ -1,0 +1,36 @@
+{% extends 'components/modal.html' %}
+{% load i18n %}
+
+{% block modal-title %}
+{% trans "Add cover" %}
+{% endblock %}
+
+{% block modal-form-open %}
+<form name="add-cover" method="POST" action="{% url 'upload-cover' book.id %}" enctype="multipart/form-data">
+{% endblock %}
+
+{% block modal-body %}
+<section class="modal-card-body columns">
+    {% csrf_token %}
+    <div class="column">
+        <label class="label" for="id_cover">
+            {% trans "Upload cover:" %}
+        </label>
+        <input type="file" name="cover" accept="image/*" enctype="multipart/form-data" id="id_cover">
+    </div>
+    <div class="column">
+        <label class="label" for="id_cover_url">
+            {% trans "Load cover from url:" %}
+        </label>
+        <input class="input" name="cover-url" id="id_cover_url">
+    </div>
+</section>
+{% endblock %}
+
+{% block modal-footer %}
+<button class="button is-primary" type="submit">{% trans "Add" %}</button>
+{% trans "Cancel" as button_text %}
+{% include 'snippets/toggle/toggle_button.html' with text=button_text %}
+{% endblock %}
+{% block modal-form-close %}</form>{% endblock %}
+

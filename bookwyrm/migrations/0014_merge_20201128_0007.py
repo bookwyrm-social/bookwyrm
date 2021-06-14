@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0013_book_origin_id'),
-        ('bookwyrm', '0012_progressupdate'),
+        ("bookwyrm", "0013_book_origin_id"),
+        ("bookwyrm", "0012_progressupdate"),
     ]
 
-    operations = [
-    ]
+    operations = []

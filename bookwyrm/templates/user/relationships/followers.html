@@ -1,0 +1,14 @@
+{% extends 'user/relationships/layout.html' %}
+{% load i18n %}
+
+{% block header %}
+<h1 class="title">
+    {% trans "Followers" %}
+</h1>
+{% endblock %}
+
+{% block nullstate %}
+<div>
+    {% blocktrans with username=user.display_name %}{{ username }} has no followers{% endblocktrans %}
+</div>
+{% endblock %}

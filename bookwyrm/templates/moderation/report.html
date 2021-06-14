@@ -1,0 +1,62 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
+{% block header %}{% blocktrans with report_id=report.id username=report.user.username %}Report #{{ report_id }}: {{ username }}{% endblocktrans %}{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <a href="{% url 'settings-reports' %}">{% trans "Back to reports" %}</a>
+</div>
+
+<div class="block">
+    {% include 'moderation/report_preview.html' with report=report %}
+</div>
+
+{% include 'user_admin/user_info.html' with user=report.user %}
+
+{% include 'user_admin/user_moderation_actions.html' with user=report.user %}
+
+<div class="block">
+    <h3 class="title is-4">{% trans "Moderator Comments" %}</h3>
+    {% for comment in report.reportcomment_set.all %}
+    <div class="card block">
+        <p class="card-content">{{ comment.note }}</p>
+        <div class="card-footer">
+            <div class="card-footer-item">
+                <a href="{{ comment.user.local_path }}">{{ comment.user.display_name }}</a>
+            </div>
+            <div class="card-footer-item">
+                {{ comment.created_date|naturaltime }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <form class="block" name="report-comment" method="post" action="{% url 'settings-report' report.id %}">
+        {% csrf_token %}
+        <label for="report_comment" class="label">Comment on report</label>
+        <textarea name="note" id="report_comment" class="textarea"></textarea>
+        <button class="button">{% trans "Comment" %}</button>
+    </form>
+</div>
+
+<div class="block">
+    <h3 class="title is-4">{% trans "Reported statuses" %}</h3>
+    {% if not report.statuses.exists %}
+    <em>{% trans "No statuses reported" %}</em>
+    {% else %}
+    <ul>
+        {% for status in report.statuses.select_subclasses.all %}
+        <li>
+            {% if status.deleted %}
+            <em>{% trans "Status has been deleted" %}</em>
+            {% else %}
+            {% include 'snippets/status/status.html' with status=status moderation_mode=True %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,21 +1,43 @@
 {% extends 'settings/admin_layout.html' %}
-{% block header %}Federated Servers{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Federated Instances" %}{% endblock %}
+
+{% block header %}{% trans "Federated Instances" %}{% endblock %}
+
+{% block edit-button %}
+<a href="{% url 'settings-import-blocklist' %}">
+    <span class="icon icon-plus" title="{% trans 'Add instance' %}" aria-hidden="True"></span>
+    <span class="is-hidden-mobile">{% trans "Add instance" %}</span>
+</a>
+{% endblock %}
 
 {% block panel %}
-
 <table class="table is-striped">
     <tr>
-        <th>Server name</th>
-        <th>Software</th>
-        <th>Status</th>
+        {% url 'settings-federation' as url %}
+        <th>
+            {% trans "Instance name" as text %}
+            {% include 'snippets/table-sort-header.html' with field="server_name" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Date federated" as text %}
+            {% include 'snippets/table-sort-header.html' with field="created_date" sort=sort text=text %}
+        </th>
+        <th>
+            {% trans "Software" as text %}
+            {% include 'snippets/table-sort-header.html' with field="application_type" sort=sort text=text %}
+        </th>
+        <th>{% trans "Status" %}</th>
     </tr>
     {% for server in servers %}
     <tr>
-        <td>{{ server.server_name }}</td>
+        <td><a href="{% url 'settings-federated-server' server.id %}">{{ server.server_name }}</a></td>
+        <td>{{ server.created_date }}</td>
         <td>{{ server.application_type }} ({{ server.application_version }})</td>
         <td>{{ server.status }}</td>
     </tr>
     {% endfor %}
 </table>
 
+{% include 'snippets/pagination.html' with page=servers path=request.path %}
 {% endblock %}

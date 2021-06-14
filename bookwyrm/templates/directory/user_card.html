@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load utilities %}
+{% load markdown %}
+{% load humanize %}
+
+<div class="card is-stretchable">
+    <div class="card-content">
+        <div class="media">
+            <a href="{{ user.local_path }}" class="media-left">
+                {% include 'snippets/avatar.html' with user=user large=True %}
+            </a>
+            <div class="media-content">
+                <a href="{{ user.local_path }}" class="is-block mb-2">
+                    <span class="title is-4 is-block">{{ user.display_name }}</span>
+                    <span class="subtitle is-7 is-block">@{{ user|username }}</span>
+                </a>
+                {% include 'snippets/follow_button.html' with user=user %}
+            </div>
+        </div>
+
+        <div>
+        {% if user.summary %}
+            {{ user.summary|to_markdown|safe|truncatechars_html:40 }}
+        {% else %}&nbsp;{% endif %}
+        </div>
+    </div>
+    <footer class="card-footer">
+        {% if user != request.user %}
+        {% if user.mutuals %}
+        <div class="card-footer-item">
+            <div class="has-text-centered">
+                <p class="title is-6 mb-0">{{ user.mutuals }}</p>
+                <p class="help">{% blocktrans count counter=user.mutuals %}follower you follow{% plural %}followers you follow{% endblocktrans %}</p>
+            </div>
+        </div>
+        {% elif user.shared_books %}
+        <div class="card-footer-item">
+            <div class="has-text-centered">
+                <p class="title is-6 mb-0">{{ user.shared_books }}</p>
+                <p class="help">{% blocktrans count counter=user.shared_books %}book on your shelves{% plural %}books on your shelves{% endblocktrans %}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        <div class="card-footer-item">
+            <div class="has-text-centered">
+                <p class="title is-6 mb-0">{{ user.status_set.count|intword }}</p>
+                <p class="help">{% trans "posts" %}</p>
+            </div>
+        </div>
+        <div class="card-footer-item">
+            <div class="has-text-centered">
+                <p class="title is-6 mb-0">{{ user.last_active_date|naturalday }}</p>
+                <p class="help">{% trans "last active" %}</p>
+            </div>
+        </div>
+    </footer>
+</div>

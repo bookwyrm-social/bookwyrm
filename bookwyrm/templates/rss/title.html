@@ -1,0 +1,16 @@
+{% load i18n %}
+{{ obj.user.display_name }}{% if obj.status_type == 'GeneratedNote' %}
+    {{ obj.content | safe }}
+{% elif obj.status_type == 'Review' and not obj.name and not obj.content%}
+    {% trans "rated" %}
+{% elif obj.status_type == 'Review' %}
+    {% trans "reviewed" %}
+{% elif obj.status_type == 'Comment' %}
+    {% trans "commented on" %}
+{% elif obj.status_type == 'Quotation' %}
+    {% trans "quoted" %}
+{% endif %}
+{% if obj.book %}{{ obj.book.title | safe}}
+{% elif obj.mention_books %}
+{{ obj.mention_books.first.title }}
+{% endif %}

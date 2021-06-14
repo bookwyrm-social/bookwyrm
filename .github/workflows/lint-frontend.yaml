@@ -1,0 +1,38 @@
+# @url https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+name: Lint Frontend
+
+on:
+  push:
+    branches: [ main, ci, frontend ]
+    paths:
+      - '.github/workflows/**'
+      - 'static/**'
+      - '.eslintrc'
+      - '.stylelintrc'
+  pull_request:
+    branches: [ main, ci, frontend ]
+
+jobs:
+  lint:
+    name: Lint with stylelint and ESLint.
+    runs-on: ubuntu-20.04
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
+      - uses: actions/checkout@v2
+
+      - name: Install modules
+        run: yarn
+
+      # See .stylelintignore for files that are not linted.
+      - name: Run stylelint
+        run: >
+          yarn stylelint bookwyrm/static/**/*.css \
+            --report-needless-disables \
+            --report-invalid-scope-disables
+
+      # See .eslintignore for files that are not linted.
+      - name: Run ESLint
+        run: >
+          yarn eslint bookwyrm/static \
+            --ext .js,.jsx,.ts,.tsx

@@ -1,17 +1,21 @@
 {% extends 'components/dropdown.html' %}
-{% load bookwyrm_tags %}
+{% load i18n %}
+{% load utilities %}
 
 {% block dropdown-trigger %}
 <span class="icon icon-dots-three">
-    <span class="is-sr-only">More options</span>
+    <span class="is-sr-only">{% trans "More options" %}</span>
 </span>
 {% endblock %}
 
 {% block dropdown-list %}
 <li role="menuitem">
-    <a href="/direct-messages/{{ user|username }}" class="button is-fullwidth is-small">Send direct message</a>
+    <a href="{% url 'direct-messages-user' user|username %}" class="button is-fullwidth is-small">{% trans "Send direct message" %}</a>
 </li>
 <li role="menuitem">
-    {% include 'snippets/block_button.html' with user=user class="is-fullwidth" %}
+    {% include 'snippets/report_button.html' with user=user class="is-fullwidth" %}
+</li>
+<li role="menuitem">
+    {% include 'snippets/block_button.html' with user=user class="is-fullwidth" blocks=False %}
 </li>
 {% endblock %}

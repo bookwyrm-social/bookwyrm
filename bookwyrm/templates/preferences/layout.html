@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% block content %}
+
+<header class="block column is-offset-one-quarter pl-1">
+    <h1 class="title">{% block header %}{% endblock %}</h1>
+</header>
+
+<div class="block columns">
+    <nav class="menu column is-one-quarter">
+        <h2 class="menu-label">{% trans "Account" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'prefs-profile' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Profile" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-password' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Change Password" %}</a>
+            </li>
+            <li>
+                {% url 'prefs-delete' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Delete Account" %}</a>
+            </li>
+        </ul>
+        <h2 class="menu-label">{% trans "Relationships" %}</h2>
+        <ul class="menu-list">
+            <li>
+                {% url 'prefs-block' as url %}
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Blocked Users" %}</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="column content">
+        {% block panel %}{% endblock %}
+    </div>
+</div>
+
+{% endblock %}

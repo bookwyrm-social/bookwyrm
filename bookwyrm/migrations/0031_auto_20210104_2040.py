@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0030_auto_20201224_1939'),
+        ("bookwyrm", "0030_auto_20201224_1939"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='sitesettings',
-            name='favicon',
-            field=models.ImageField(blank=True, null=True, upload_to='logos/'),
+            model_name="sitesettings",
+            name="favicon",
+            field=models.ImageField(blank=True, null=True, upload_to="logos/"),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='logo',
-            field=models.ImageField(blank=True, null=True, upload_to='logos/'),
+            model_name="sitesettings",
+            name="logo",
+            field=models.ImageField(blank=True, null=True, upload_to="logos/"),
         ),
         migrations.AddField(
-            model_name='sitesettings',
-            name='logo_small',
-            field=models.ImageField(blank=True, null=True, upload_to='logos/'),
+            model_name="sitesettings",
+            name="logo_small",
+            field=models.ImageField(blank=True, null=True, upload_to="logos/"),
         ),
     ]

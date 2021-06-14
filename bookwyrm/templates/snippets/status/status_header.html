@@ -1,0 +1,108 @@
+{% load utilities %}
+{% load status_display %}
+{% load i18n %}
+{% load humanize %}
+
+<div class="media">
+    <figure class="media-left" aria-hidden="true">
+        <a class="image is-48x48" href="{{ status.user.local_path }}">
+            {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
+        </a>
+    </figure>
+
+    <div class="media-content">
+        <h3 class="has-text-weight-bold">
+            <span
+                itemprop="author"
+                itemscope
+                itemtype="https://schema.org/Person"
+            >
+                {% if status.user.avatar %}
+                    <meta itemprop="image" content="/images/{{ status.user.avatar }}">
+                {% endif %}
+
+                <a
+                    href="{{ status.user.local_path }}"
+                    itemprop="url"
+                >
+                    <span itemprop="name">{{ status.user.display_name }}</span>
+                </a>
+            </span>
+
+            {% if status.status_type == 'GeneratedNote' %}
+                {{ status.content|safe }}
+            {% elif status.status_type == 'Rating' %}
+                {% trans "rated" %}
+            {% elif status.status_type == 'Review' %}
+                {% trans "reviewed" %}
+            {% elif status.status_type == 'Comment' %}
+                {% trans "commented on" %}
+            {% elif status.status_type == 'Quotation' %}
+                {% trans "quoted" %}
+            {% elif status.reply_parent %}
+                {% with parent_status=status|parent %}
+
+                {% blocktrans with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">status</a>{% endblocktrans %}
+                {% endwith %}
+            {% endif %}
+
+            {% if status.book %}
+                {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
+                    <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}: {% include 'snippets/stars.html' with rating=status.rating %}
+                    <span
+                        itemprop="reviewRating"
+                        itemscope
+                        itemtype="https://schema.org/Rating"
+                    >
+                    <span class="is-hidden" {{ rating_type }}>
+                        <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                        {% if status.book %}
+                            {% if status.status_type == 'GeneratedNote' or status.status_type == 'Rating' %}
+                                <a href="{{ status.book.local_path }}">{{ status.book|book_title }}</a>{% if status.status_type == 'Rating' %}:
+                                <span
+                                    itemprop="reviewRating"
+                                    itemscope
+                                    itemtype="https://schema.org/Rating"
+                                >
+                                <span class="is-hidden" {{ rating_type }}>
+                                    <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                                        {# @todo Is it possible to not hard-code the value? #}
+                                        <meta itemprop="bestRating" content="5">
+                                </span>
+
+                                {% endif %}
+                            {% else %}
+                                {% include 'snippets/book_titleby.html' with book=status.book %}
+                            {% endif %}
+                        {% elif status.mention_books %}
+                            <a href="{{ status.mention_books.first.local_path }}">
+                                {{ status.mention_books.first|book_title }}
+                            </a>
+                        {% endif %}
+                    {% include 'snippets/stars.html' with rating=status.rating %}
+                    {% endif %}
+                {% else %}
+                    {% include 'snippets/book_titleby.html' with book=status.book %}
+                {% endif %}
+            {% elif status.mention_books %}
+                <a href="{{ status.mention_books.first.local_path }}">{{ status.mention_books.first|book_title }}</a>
+            {% endif %}
+
+        </h3>
+        <p class="is-size-7 is-flex is-align-items-center">
+            <a href="{{ status.remote_id }}">{{ status.published_date|published_date }}</a>
+            {% if status.progress %}
+            <span class="ml-1">
+            {% if status.progress_mode == 'PG' %}
+                ({% include 'snippets/page_text.html' with page=status.progress total_pages=status.book.pages %})
+            {% else %}
+                ({{ status.progress }}%)
+            {% endif %}
+            </span>
+            {% endif %}
+            {% include 'snippets/privacy-icons.html' with item=status %}
+        </p>
+    </div>
+</div>

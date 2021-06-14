@@ -1,0 +1,67 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+{% block title %}{% trans "Add instance" %}{% endblock %}
+
+{% block header %}
+{% trans "Import Blocklist" %}
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
+{% endblock %}
+
+{% block panel %}
+
+<div class="tabs">
+    <ul>
+        {% url 'settings-import-blocklist' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Import block list" %}</a>
+        </li>
+        {% url 'settings-add-federated-server' as url %}
+        <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
+            <a href="{{ url }}">{% trans "Add instance" %}</a>
+        </li>
+    </ul>
+</div>
+
+{% if succeeded and not failed %}
+<p class="notification is-primary">{% trans "Success!" %}</p>
+{% elif succeeded or failed %}
+<div class="block content">
+    {% if succeeded %}
+    <p>{% trans "Successfully blocked:" %} {{ succeeded }}</p>
+    {% endif %}
+    <p>{% trans "Failed:" %}</p>
+    <ul>
+        {% for item in failed %}
+        <li>
+            <pre>
+{{ item }}
+</pre>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="POST" action="{% url 'settings-import-blocklist' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field">
+        <label class="label" for="id_file">JSON data:</label>
+        <aside class="help">
+            Expects a json file in the format provided by <a href="https://fediblock.org/" target="_blank" rel=”noopener”>FediBlock</a>, with a list of entries that have <code>instance</code> and <code>url</code> fields. For example:
+            <pre>
+[
+    {
+        "instance": "example.instance.com",
+        "url": "https://link.to.more/info"
+    },
+    ...
+]
+</pre>
+        </aside>
+        <input type="file" name="json_file" required="" id="id_file">
+    </div>
+
+    <button type="submit" class="button is-primary">{% trans "Import" %}</button>
+</form>
+
+{% endblock %}

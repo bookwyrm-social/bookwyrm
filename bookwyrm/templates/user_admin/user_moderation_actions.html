@@ -1,0 +1,51 @@
+{% load i18n %}
+<div class="block content">
+    {% if not user.is_active and user.deactivation_reason == "self_deletion" %}
+    <div class="notification is-danger">
+        {% trans "Permanently deleted" %}
+    </div>
+    {% else %}
+    <h3>{% trans "Actions" %}</h3>
+
+    <div class="is-flex">
+        <p class="mr-1">
+            <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
+        </p>
+        <form name="suspend" method="post" action="{% url 'settings-report-suspend' user.id  %}">
+            {% csrf_token %}
+            {% if user.is_active %}
+            <button type="submit" class="button is-danger is-light">{% trans "Suspend user" %}</button>
+            {% else %}
+            <button class="button">{% trans "Un-suspend user" %}</button>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if user.local %}
+    <div>
+        <form name="permission" method="post" action="{% url 'settings-user' user.id %}">
+            {% csrf_token %}
+            <label class="label" for="id_user_group">{% trans "Access level:" %}</label>
+            {% if group_form.non_field_errors %}
+            {{ group_form.non_field_errors }}
+            {% endif %}
+            {% with group=user.groups.first %}
+            <div class="select">
+                <select name="groups" id="id_user_group">
+                    {% for value, name in group_form.fields.groups.choices %}
+                    <option value="{{ value }}" {% if name == group.name %}selected{% endif %}>{{ name|title }}</option>
+                    {% endfor %}
+                    <option value="" {% if not group %}selected{% endif %}>User</option>
+                </select>
+            </div>
+            {% for error in group_form.groups.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+            {% endwith %}
+            <button class="button">{% trans "Save" %}</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% endif %}
+</div>

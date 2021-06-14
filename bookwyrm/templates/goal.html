@@ -1,13 +1,15 @@
-{% extends 'user/user_layout.html' %}
+{% extends 'user/layout.html' %}
+{% load i18n %}
 
 {% block header %}
 <div class="columns is-mobile">
     <div class="column">
-        <h1 class="title">{{ year }} Reading Progress</h1>
+        <h1 class="title">{% blocktrans %}{{ year }} Reading Progress{% endblocktrans %}</h1>
     </div>
     {% if is_self and goal %}
     <div class="column is-narrow">
-        {% include 'snippets/toggle/open_button.html' with text="Edit goal" icon="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
+        {% trans "Edit Goal" as button_text %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
     </div>
     {% endif %}
 </div>
@@ -18,14 +20,14 @@
     {% if user == request.user %}
     <div class="block">
         {% now 'Y' as year %}
-        <section class="card {% if goal %}hidden{% endif %}" id="show-edit-goal">
+        <section class="card {% if goal %}is-hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
                 <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
-                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {{ year }} reading goal
+                    <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
                 </h2>
             </header>
             <section class="card-content content">
-                <p>Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.</p>
+                <p>{% blocktrans %}Set a goal for how many books you'll finish reading in {{ year }}, and track your progress throughout the year.{% endblocktrans %}</p>
 
                 {% include 'snippets/goal_form.html' with goal=goal year=year %}
             </section>
@@ -34,7 +36,7 @@
     {% endif %}
 
     {% if not goal and user != request.user %}
-    <p>{{ user.display_name }} hasn't set a reading goal for {{ year }}.</p>
+    <p>{% blocktrans with name=user.display_name %}{{ name }} hasn't set a reading goal for {{ year }}.{% endblocktrans %}</p>
     {% endif %}
 
     {% if goal %}
@@ -43,17 +45,22 @@
 </section>
 
 {% if goal.books %}
-<section class="content">
-    <h2>{% if goal.user == request.user %}Your{% else %}{{ goal.user.display_name }}'s{% endif %} {{ year }} Books</h2>
-    <div class="columns is-multiline">
+<section>
+    <h2 class="title is-4">
+        {% if goal.user == request.user %}
+        {% blocktrans %}Your {{ year }} Books{% endblocktrans %}
+        {% else %}
+        {% blocktrans with username=goal.user.display_name %}{{ username }}'s {{ year }} Books{% endblocktrans %}
+        {% endif %}
+    </h2>
+
+    <div class="columns is-mobile is-multiline">
         {% for book in goal.books %}
-        <div class="column is-narrow">
-            <div class="box">
+            <div class="column is-cover">
                 <a href="{{ book.book.local_path }}">
-                    {% include 'snippets/discover/small-book.html' with book=book.book rating=goal.ratings %}
+                    {% include 'snippets/book_cover.html' with book=book.book cover_class='is-h-xl is-h-l-mobile' %}
                 </a>
             </div>
-        </div>
         {% endfor %}
     </div>
 </section>

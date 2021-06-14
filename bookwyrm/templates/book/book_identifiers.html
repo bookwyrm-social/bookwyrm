@@ -1,0 +1,26 @@
+{% spaceless %}
+{% load i18n %}
+
+<dl>
+    {% if book.isbn_13 %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "ISBN:" %}</dt>
+            <dd itemprop="isbn">{{ book.isbn_13 }}</dd>
+        </div>
+    {% endif %}
+
+    {% if book.oclc_number %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "OCLC Number:" %}</dt>
+            <dd>{{ book.oclc_number }}</dd>
+        </div>
+    {% endif %}
+
+    {% if book.asin %}
+        <div class="is-flex">
+            <dt class="mr-1">{% trans "ASIN:" %}</dt>
+            <dd>{{ book.asin }}</dd>
+        </div>
+    {% endif %}
+</dl>
+{% endspaceless %}

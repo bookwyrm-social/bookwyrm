@@ -1,69 +1,99 @@
 {% extends 'layout.html' %}
-{% load bookwyrm_tags %}
+{% load i18n %}
 {% load humanize %}
-{% block content %}
-<div class="block">
-    <h1 class="title">Import Status</h1>
 
-    <p>
-        Import started: {{ job.created_date | naturaltime }}
-    </p>
-    {% if job.complete %}
-    <p>
-        Import completed: {{ task.date_done | naturaltime }}
-    </p>
+{% block title %}{% trans "Import Status" %}{% endblock %}
+
+{% block content %}{% spaceless %}
+<div class="block">
+    <h1 class="title">{% trans "Import Status" %}</h1>
+    <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
+
+    <dl>
+        <div class="is-flex">
+            <dt class="has-text-weight-medium">{% trans "Import started:" %}</dt>
+            <dd class="ml-2">{{ job.created_date | naturaltime }}</dd>
+        </div>
+        {% if job.complete %}
+        <div class="is-flex">
+            <dt class="has-text-weight-medium">{% trans "Import completed:" %}</dt>
+            <dd class="ml-2">{{ task.date_done | naturaltime }}</dd>
+        </div>
+    </dl>
     {% elif task.failed %}
-    <div class="notification is-danger">TASK FAILED</div>
+    <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
     {% endif %}
 </div>
 
 <div class="block">
     {% if not job.complete %}
-    Import still in progress.
     <p>
-        (Hit reload to update!)
+        {% trans "Import still in progress." %}
+        <br/>
+        {% trans "(Hit reload to update!)" %}
     </p>
     {% endif %}
 </div>
 
 {% if failed_items %}
 <div class="block">
-    <h2 class="title is-4">Failed to load</h2>
+    <h2 class="title is-4">{% trans "Failed to load" %}</h2>
     {% if not job.retry %}
     <form name="retry" action="/import/{{ job.id }}" method="post">
         {% csrf_token %}
-        <ul>
-            <fieldset>
+
+        {% with failed_count=failed_items|length %}
+            {% if failed_count > 10 %}
+                <p class="block">
+                    <a href="#select-all-failed-imports">
+                        {% blocktrans %}Jump to the bottom of the list to select the {{ failed_count }} items which failed to import.{% endblocktrans %}
+                    </a>
+                </p>
+            {% endif %}
+        {% endwith %}
+
+        <fieldset id="failed-imports">
+            <ul>
             {% for item in failed_items %}
-                <li class="pb-1">
-                    <input class="checkbox" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
-                    <label for="import-item-{{ item.id }}">
-                        Line {{ item.index }}:
-                        <strong>{{ item.data|dict_key:'Title' }}</strong> by
-                        {{ item.data|dict_key:'Author' }}
-                    </label>
-                    <p>
+                <li class="mb-2 is-flex is-align-items-start">
+                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
+                    <label class="ml-1" for="import-item-{{ item.id }}">
+                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
+                        <br/>
                         {{ item.fail_reason }}.
-                    </p>
+                    </label>
                 </li>
             {% endfor %}
-            </fieldset>
-        </ul>
-        <div class="block pt-1 select-all">
-            <label class="label">
-                <input type="checkbox" class="checkbox">
-                Select all
+            </ul>
+        </fieldset>
+
+        <fieldset class="mt-3">
+            <a name="select-all-failed-imports"></a>
+
+            <label class="label is-inline">
+                <input
+                    id="toggle-all-checkboxes-failed-imports"
+                    class="checkbox"
+                    type="checkbox"
+                    data-action="toggle-all"
+                    data-target="failed-imports"
+                />
+                {% trans "Select all" %}
             </label>
-        </div>
-        <button class="button" type="submit">Retry items</button>
+
+            <button class="button is-block mt-3" type="submit">{% trans "Retry items" %}</button>
+        </fieldset>
+
+        <hr>
+
         {% else %}
         <ul>
             {% for item in failed_items %}
             <li class="pb-1">
                 <p>
                     Line {{ item.index }}:
-                    <strong>{{ item.data|dict_key:'Title' }}</strong> by
-                    {{ item.data|dict_key:'Author' }}
+                    <strong>{{ item.data.Title }}</strong> by
+                    {{ item.data.Author }}
                 </p>
                 <p>
                     {{ item.fail_reason }}.
@@ -77,17 +107,21 @@
 {% endif %}
 
 <div class="block">
-    <h2 class="title is-4">Successfully imported</h2>
+    {% if job.complete %}
+    <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
+    {% else %}
+    <h2 class="title is-4">{% trans "Import Progress" %}</h2>
+    {% endif %}
     <table class="table">
         <tr>
             <th>
-                Book
+                {% trans "Book" %}
             </th>
             <th>
-                Title
+                {% trans "Title" %}
             </th>
             <th>
-                Author
+                {% trans "Author" %}
             </th>
             <th>
             </th>
@@ -96,21 +130,21 @@
         <tr>
             <td>
                 {% if item.book %}
-                <a href="/book/{{ item.book.id }}">
-                {% include 'snippets/book_cover.html' with book=item.book size='small' %}
+                <a href="{{ item.book.local_path }}">
+                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' %}
                 </a>
                 {% endif %}
             </td>
             <td>
-                {{ item.data|dict_key:'Title' }}
+                {{ item.data.Title }}
             </td>
             <td>
-                {{ item.data|dict_key:'Author' }}
+                {{ item.data.Author }}
             </td>
             <td>
                 {% if item.book %}
                 <span class="icon icon-check">
-                    <span class="is-sr-only">Imported</span>
+                    <span class="is-sr-only">{% trans "Imported" %}</span>
                 </span>
                 {% endif %}
             </td>
@@ -119,4 +153,8 @@
     </table>
 </div>
 </div>
+{% endspaceless %}{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/check_all.js"></script>
 {% endblock %}

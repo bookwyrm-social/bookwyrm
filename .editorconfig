@@ -1,0 +1,39 @@
+# @see https://editorconfig.org/
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 100
+
+# C-style doc comments
+block_comment_start = /*
+block_comment = *
+block_comment_end = */
+
+[{bw-dev,fr-dev,LICENSE}]
+max_line_length = off
+
+[*.{csv,json,html,md,po,py,svg,tsv}]
+max_line_length = off
+
+# `  ` at the end of a line is a line-break in markdown
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_size = 2
+max_line_length = off
+
+# Computer generated files
+[{package.json,*.lock,*.mo}]
+indent_size = unset
+indent_style = unset
+max_line_length = unset
+insert_final_newline = unset

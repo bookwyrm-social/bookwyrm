@@ -1,0 +1,38 @@
+{% load humanize %}{% load i18n %}{% load utilities %}
+{% with announcement.id|uuid as uuid %}
+<aside
+    class="notification mb-1 p-3{% if not admin_mode %} is-hidden{% endif %} transition-y"
+    {% if not admin_mode %}data-hide="hide-announcement-{{ announcement.id }}"{% endif %}
+>
+    <div class="columns mb-0 is-mobile">
+        <div class="column pb-0">
+            {% if announcement.event_date %}
+            <strong>{{ announcement.event_date|naturalday|title }}:</strong>
+            {% endif %}
+            {{ announcement.preview }}
+        </div>
+        {% if announcement.content %}
+        <div class="column is-narrow pb-0">
+            {% trans "Open" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=uuid icon_with_text="arrow-down" %}
+            {% trans "Close" as button_text %}
+            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="announcement" class="is-small" controls_uid=uuid icon_with_text="arrow-up" %}
+        </div>
+        {% endif %}
+    </div>
+    {% if announcement.content %}
+    <div class="mb-2 mt-2 {% if not pressed %}is-hidden{% endif %}" id="announcement-{{ uuid }}">
+        <div class="box is-shadowless mb-0">
+            {{ announcement.content|safe }}
+        </div>
+    </div>
+    {% endif %}
+    <div class="is-flex mt-0 help">
+        <p>{% blocktrans with user_path=announcement.user.local_path username=announcement.user.display_name %}Posted by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
+        {% if not admin_mode %}
+        <span class="mr-2 ml-2" aria-hidden="true">&middot;</span>
+        <a class="set-display" data-id="hide-announcement-{{ announcement.id }}" data-value="true">{% trans "Dismiss message" %}</a>
+        {% endif %}
+    </div>
+</aside>
+{% endwith %}

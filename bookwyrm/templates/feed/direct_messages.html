@@ -1,26 +1,32 @@
 {% extends 'feed/feed_layout.html' %}
+{% load i18n %}
 {% block panel %}
 
 <header class="block">
-    <h1 class="title">Direct Messages{% if partner %} with {% include 'snippets/username.html' with user=partner %}{% endif %}</h1>
-    {% if partner %}<p class="subtitle"><a href="/direct-messages"><span class="icon icon-arrow-left" aria-hidden="true"></span> All messages</a></p>{% endif %}
+    <h1 class="title">
+        {% if partner %}
+        {% blocktrans with username=partner.display_name path=partner.local_path %}Direct Messages with <a href="{{ path }}">{{ username }}</a>{% endblocktrans %}
+        {% else %}
+        {% trans "Direct Messages" %}
+        {% endif %}
+    </h1>
+    {% if partner %}<p class="subtitle"><a href="{% url 'direct-messages' %}"><span class="icon icon-arrow-left" aria-hidden="true"></span> {% trans "All messages" %}</a></p>{% endif %}
 </header>
 
 <div class="box">
-    {% include 'snippets/create_status_form.html' with type="direct" uuid=1 mentions=partner %}
+    {% include 'snippets/create_status_form.html' with type="direct" uuid=1 mention=partner %}
 </div>
 
 <section class="block">
     {% if not activities %}
-    <p>You have no messages right now.</p>
+    <p>{% trans "You have no messages right now." %}</p>
     {% endif %}
     {% for activity in activities %}
     <div class="block">
-    {% include 'snippets/status.html' with status=activity %}
+    {% include 'snippets/status/status.html' with status=activity %}
     </div>
     {% endfor %}
 
-    {% include 'snippets/pagination.html' with page=activities path="direct-messages" %}
 </section>
 
 {% endblock %}

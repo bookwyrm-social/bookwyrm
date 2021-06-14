@@ -1,0 +1,771 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    overflow: hidden;
+}
+
+.navbar .logo {
+    max-height: 50px;
+}
+
+.card {
+    overflow: visible;
+}
+
+.scroll-x {
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.modal-card.is-fullwidth {
+    min-width: 75% !important;
+}
+
+/** Utilities not covered by Bulma
+ ******************************************************************************/
+
+@media only screen and (max-width: 768px) {
+    .is-sr-only-mobile {
+        border: none !important;
+        clip: rect(0, 0, 0, 0) !important;
+        height: 0.01em !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        white-space: nowrap !important;
+        width: 0.01em !important;
+    }
+
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+
+    .card-footer.is-stacked-mobile {
+        flex-direction: column;
+    }
+
+    .card-footer.is-stacked-mobile .card-footer-item:not(:last-child) {
+        border-bottom: 1px solid #ededed;
+        border-right: 0;
+    }
+}
+
+.button.is-transparent {
+    background-color: transparent;
+}
+
+.card.is-stretchable {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card.is-stretchable .card-content {
+    flex-grow: 1;
+}
+
+/** Shelving
+ ******************************************************************************/
+
+/** @todo Replace icons with SVG symbols.
+    @see https://www.youtube.com/watch?v=9xXBYcWgCHA */
+.shelf-option:disabled > *::after {
+    font-family: "icomoon"; /* stylelint-disable font-family-no-missing-generic-family-keyword */
+    content: "\e918";
+    margin-left: 0.5em;
+}
+
+/** Toggles
+ ******************************************************************************/
+
+.toggle-button[aria-pressed=true],
+.toggle-button[aria-pressed=true]:hover {
+    background-color: hsl(171, 100%, 41%);
+    color: white;
+}
+
+.hide-active[aria-pressed=true],
+.hide-inactive[aria-pressed=false] {
+    display: none;
+}
+
+.transition-x.is-hidden,
+.transition-y.is-hidden {
+    display: block !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto;
+}
+
+.transition-x,
+.transition-y {
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+
+.transition-x {
+    transition-property: width, margin-left, margin-right, padding-left, padding-right;
+}
+
+.transition-y {
+    transition-property: height, margin-top, margin-bottom, padding-top, padding-bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transition-x,
+    .transition-y {
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/** Stars
+ ******************************************************************************/
+
+.stars {
+    white-space: nowrap;
+}
+
+/** Stars in a review form
+ *
+ * Specificity makes hovering taking over checked inputs.
+ *
+ * \e9d9: filled star
+ * \e9d7: empty star;
+ * -------------------------------------------------------------------------- */
+
+.form-rate-stars {
+    width: max-content;
+}
+
+/* All stars are visually filled by default. */
+.form-rate-stars .icon::before {
+    content: '\e9d9';
+}
+
+/* Icons directly following inputs that follow the checked input are emptied. */
+.form-rate-stars input:checked ~ input + .icon::before {
+    content: '\e9d7';
+}
+
+/* When a label is hovered, repeat the fill-all-then-empty-following pattern. */
+.form-rate-stars:hover .icon.icon::before {
+    content: '\e9d9';
+}
+
+.form-rate-stars .icon:hover ~ .icon::before {
+    content: '\e9d7';
+}
+
+/** Book covers
+ *
+ * - .is-cover gives the behaviour of the cover and its surrounding. (optional)
+ * - .cover-container gives the dimensions and position (for borders, image and other elements).
+ * - .book-cover is positioned and sized based on its container.
+ *
+ * To have the cover within specific dimensions, specify a width or height for
+ * standard bulma’s named breapoints:
+ *
+ * `is-(w|h)-(auto|xs|s|m|l|xl|xxl)[-(mobile|tablet|desktop)]`
+ *
+ * The cover will be centered horizontally and vertically within those dimensions.
+ *
+ * When using `.column.is-N`, add `.is-w-auto` to the container so that the flex
+ * calculations are not biased by the default `max-content`.
+ ******************************************************************************/
+
+.column.is-cover {
+    flex-grow: 0 !important;
+}
+
+.column.is-cover,
+.column.is-cover + .column {
+    flex-basis: auto !important;
+}
+
+.cover-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: max-content;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Book cover
+ * -------------------------------------------------------------------------- */
+
+.book-cover {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+
+    /* Useful when stretching under-sized images. */
+    image-rendering: optimizeQuality;
+    image-rendering: smooth;
+}
+
+/* Cover caption
+ * -------------------------------------------------------------------------- */
+
+.no-cover .cover_caption {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.25em;
+    font-size: 0.75em;
+    color: white;
+    background-color: #002549;
+}
+
+/** Avatars
+ ******************************************************************************/
+
+.avatar {
+    vertical-align: middle;
+    display: inline;
+}
+
+/** Statuses: Quotes
+ *
+ * \e906: icon-quote-open
+ * \e905: icon-quote-close
+ *
+ * The `content` class on the blockquote allows to apply styles to markdown
+ * generated HTML in the quote: https://bulma.io/documentation/elements/content/
+ *
+ * ```html
+ * <div class="quote block">
+ *     <blockquote dir="auto" class="content mb-2">
+ *         User generated quote in markdown…
+ *     </blockquote>
+ *
+ *     <p> — <a…>Book Title</a> by <a…class="author">Author</a></p>
+ * </div>
+ * ```
+ ******************************************************************************/
+
+.quote > blockquote {
+    position: relative;
+    padding-left: 2em;
+}
+
+.quote > blockquote::before,
+.quote > blockquote::after {
+    font-family: 'icomoon';
+    position: absolute;
+}
+
+.quote > blockquote::before {
+    content: "\e906";
+    top: 0;
+    left: 0;
+}
+
+.quote > blockquote::after {
+    content: "\e905";
+    right: 0;
+}
+
+/* States
+ ******************************************************************************/
+
+/* "disabled" for non-buttons */
+
+.is-disabled {
+    background-color: #dbdbdb;
+    border-color: #dbdbdb;
+    box-shadow: none;
+    color: #7a7a7a;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Book preview table
+ ******************************************************************************/
+
+.book-preview td {
+    vertical-align: middle;
+}
+
+@media only screen and (max-width: 768px) {
+    table.is-mobile,
+    table.is-mobile tbody {
+        display: block;
+    }
+
+    table.is-mobile tr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        border-top: 1px solid #dbdbdb;
+    }
+
+    table.is-mobile td {
+        display: block;
+        box-sizing: border-box;
+        flex: 1 0 100%;
+        order: 2;
+        border-bottom: 0;
+    }
+
+    table.is-mobile td.book-preview-top-row {
+        order: 1;
+        flex-basis: auto;
+    }
+
+    table.is-mobile td[data-title]:not(:empty)::before {
+        content: attr(data-title);
+        display: block;
+        font-size: 0.75em;
+        font-weight: bold;
+    }
+
+    table.is-mobile td:empty {
+        padding: 0;
+    }
+
+    table.is-mobile th,
+    table.is-mobile thead {
+        display: none;
+    }
+}
+
+/* Book list
+ ******************************************************************************/
+
+ol.ordered-list {
+    list-style: none;
+    counter-reset: list-counter;
+}
+
+ol.ordered-list li {
+    counter-increment: list-counter;
+}
+
+ol.ordered-list li::before {
+    content: counter(list-counter);
+    position: absolute;
+    left: -20px;
+    width: 20px;
+    height: 24px;
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-right: 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 768px) {
+    ol.ordered-list li::before {
+        left: 0;
+        z-index: 1;
+        border: 0;
+        border-right: 1px solid #dbdbdb;
+        border-bottom: 1px solid #dbdbdb;
+        border-radius: 0;
+        border-bottom-right-radius: 2px;
+    }
+}
+
+/* Dimensions
+ * @todo These could be in rem.
+ ******************************************************************************/
+
+.is-32x32 {
+    min-width: 32px !important;
+    min-height: 32px !important;
+}
+
+.is-96x96 {
+    min-width: 96px !important;
+    min-height: 96px !important;
+}
+
+.is-w-auto {
+    width: auto !important;
+}
+
+.is-w-xs {
+    width: 80px !important;
+}
+
+.is-w-s {
+    width: 100px !important;
+}
+
+.is-w-m {
+    width: 150px !important;
+}
+
+.is-w-l {
+    width: 200px !important;
+}
+
+.is-w-xl {
+    width: 250px !important;
+}
+
+.is-w-xxl {
+    width: 500px !important;
+}
+
+.is-h-xs {
+    height: 80px !important;
+}
+
+.is-h-s {
+    height: 100px !important;
+}
+
+.is-h-m {
+    height: 150px !important;
+}
+
+.is-h-l {
+    height: 200px !important;
+}
+
+.is-h-xl {
+    height: 250px !important;
+}
+
+.is-h-xxl {
+    height: 500px !important;
+}
+
+@media only screen and (max-width: 768px) {
+    .is-w-auto-mobile {
+        width: auto !important;
+    }
+
+    .is-w-xs-mobile {
+        width: 80px !important;
+    }
+
+    .is-w-s-mobile {
+        width: 100px !important;
+    }
+
+    .is-w-m-mobile {
+        width: 150px !important;
+    }
+
+    .is-w-l-mobile {
+        width: 200px !important;
+    }
+
+    .is-w-xl-mobile {
+        width: 250px !important;
+    }
+
+    .is-w-xxl-mobile {
+        width: 500px !important;
+    }
+
+    .is-h-xs-mobile {
+        height: 80px !important;
+    }
+
+    .is-h-s-mobile {
+        height: 100px !important;
+    }
+
+    .is-h-m-mobile {
+        height: 150px !important;
+    }
+
+    .is-h-l-mobile {
+        height: 200px !important;
+    }
+
+    .is-h-xl-mobile {
+        height: 250px !important;
+    }
+
+    .is-h-xxl-mobile {
+        height: 500px !important;
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .is-w-auto-tablet {
+        width: auto !important;
+    }
+
+    .is-w-xs-tablet {
+        width: 80px !important;
+    }
+
+    .is-w-s-tablet {
+        width: 100px !important;
+    }
+
+    .is-w-m-tablet {
+        width: 150px !important;
+    }
+
+    .is-w-l-tablet {
+        width: 200px !important;
+    }
+
+    .is-w-xl-tablet {
+        width: 250px !important;
+    }
+
+    .is-w-xxl-tablet {
+        width: 500px !important;
+    }
+
+    .is-h-xs-tablet {
+        height: 80px !important;
+    }
+
+    .is-h-s-tablet {
+        height: 100px !important;
+    }
+
+    .is-h-m-tablet {
+        height: 150px !important;
+    }
+
+    .is-h-l-tablet {
+        height: 200px !important;
+    }
+
+    .is-h-xl-tablet {
+        height: 250px !important;
+    }
+
+    .is-h-xxl-tablet {
+        height: 500px !important;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .is-w-auto-desktop {
+        width: auto !important;
+    }
+
+    .is-w-xs-desktop {
+        width: 80px !important;
+    }
+
+    .is-w-s-desktop {
+        width: 100px !important;
+    }
+
+    .is-w-m-desktop {
+        width: 150px !important;
+    }
+
+    .is-w-l-desktop {
+        width: 200px !important;
+    }
+
+    .is-w-xl-desktop {
+        width: 250px !important;
+    }
+
+    .is-w-xxl-desktop {
+        width: 500px !important;
+    }
+
+    .is-h-xs-desktop {
+        height: 80px !important;
+    }
+
+    .is-h-s-desktop {
+        height: 100px !important;
+    }
+
+    .is-h-m-desktop {
+        height: 150px !important;
+    }
+
+    .is-h-l-desktop {
+        height: 200px !important;
+    }
+
+    .is-h-xl-desktop {
+        height: 250px !important;
+    }
+
+    .is-h-xxl-desktop {
+        height: 500px !important;
+    }
+}
+
+/* Alignments
+ *
+ * Use them with `.align.to-(c|t|r|b|l)[-(mobile|tablet)]`
+ ******************************************************************************/
+
+/* Flex item position
+ * -------------------------------------------------------------------------- */
+
+.align {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+.align.to-c {
+    justify-content: center !important;
+}
+
+.align.to-t {
+    align-items: flex-start !important;
+}
+
+.align.to-r {
+    justify-content: flex-end !important;
+}
+
+.align.to-b {
+    align-items: flex-end !important;
+}
+
+.align.to-l {
+    justify-content: flex-start !important;
+}
+
+@media screen and (max-width: 768px) {
+    .align.to-c-mobile {
+        justify-content: center !important;
+    }
+
+    .align.to-t-mobile {
+        align-items: flex-start !important;
+    }
+
+    .align.to-r-mobile {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-b-mobile {
+        align-items: flex-end !important;
+    }
+
+    .align.to-l-mobile {
+        justify-content: flex-start !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .align.to-c-tablet {
+        justify-content: center !important;
+    }
+
+    .align.to-t-tablet {
+        align-items: flex-start !important;
+    }
+
+    .align.to-r-tablet {
+        justify-content: flex-end !important;
+    }
+
+    .align.to-b-tablet {
+        align-items: flex-end !important;
+    }
+
+    .align.to-l-tablet {
+        justify-content: flex-start !important;
+    }
+}
+
+/* Spacings
+ *
+ * Those are supplementary rules to Bulma’s. They follow the same conventions.
+ * Add those you’ll need.
+ ******************************************************************************/
+
+.mr-auto {
+    margin-right: auto !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+@media screen and (max-width: 768px) {
+    .m-0-mobile {
+        margin: 0 !important;
+    }
+
+    .mr-auto-mobile {
+        margin-right: auto !important;
+    }
+
+    .ml-auto-mobile {
+        margin-left: auto !important;
+    }
+
+    .mt-3-mobile {
+        margin-top: 0.75rem !important;
+    }
+
+    .ml-3-mobile {
+        margin-left: 0.75rem !important;
+    }
+
+    .mx-3-mobile {
+        margin-right: 0.75rem !important;
+        margin-left: 0.75rem !important;
+    }
+
+    .my-3-mobile {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .m-0-tablet {
+        margin: 0 !important;
+    }
+
+    .mr-auto-tablet {
+        margin-right: auto !important;
+    }
+
+    .ml-auto-tablet {
+        margin-left: auto !important;
+    }
+
+    .mt-3-tablet {
+        margin-top: 0.75rem !important;
+    }
+
+    .ml-3-tablet {
+        margin-left: 0.75rem !important;
+    }
+
+    .mx-3-tablet {
+        margin-right: 0.75rem !important;
+        margin-left: 0.75rem !important;
+    }
+
+    .my-3-tablet {
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+}

@@ -1,31 +1,22 @@
+{% load i18n %}
 {% load bookwyrm_tags %}
 {% if request.user.is_authenticated %}
-<span class="is-sr-only">Leave a rating</span>
+<span class="is-sr-only">{% trans "Leave a rating" %}</span>
 <div class="block">
     <form class="hidden-form" name="rate" action="/post/rating" method="POST">
         {% csrf_token %}
         <input type="hidden" name="user" value="{{ request.user.id }}">
         <input type="hidden" name="book" value="{{ book.id }}">
         <input type="hidden" name="privacy" value="public">
-        <input type="hidden" name="rating" value="{{ forloop.counter }}">
 
-        <div class="field is-grouped stars form-rate-stars mb-1">
-            <label class="is-sr-only" for="rating-no-rating-{{ book.id }}">No rating</label>
-            <input class="is-sr-only" type="radio" name="rating" value="" id="rating-no-rating-{{ book.id }}" checked>
-            {% for i in '12345'|make_list %}
-            <input class="is-sr-only" id="rating-book{{book.id}}-star-{{ forloop.counter }}" type="radio" name="rating" value="{{ forloop.counter }}" {% if book|user_rating:user == forloop.counter %}checked{% endif %}>
-            <label class="icon icon-star-empty" for="rating-book{{book.id}}-star-{{ forloop.counter }}">
-                <span class="is-sr-only">{{ forloop.counter }} star{{ forloop.counter | pluralize }}</span>
-            </label>
-            {% endfor %}
-        </div>
+        {% include 'snippets/form_rate_stars.html' with book=book classes='mb-1 has-text-warning-dark' default_rating=book|user_rating:request.user %}
 
-        <div class="field has-addons hidden">
+        <div class="field has-addons is-hidden">
             <div class="control">
                 {% include 'snippets/privacy_select.html' with class="is-small" %}
             </div>
             <div class="control">
-                <button class="button is-small is-primary" type="submit">Rate</button>
+                <button class="button is-small is-primary" type="submit">{% trans "Rate" %}</button>
             </div>
         </div>
     </form>

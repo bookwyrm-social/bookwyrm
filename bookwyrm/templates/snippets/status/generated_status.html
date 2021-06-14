@@ -1,0 +1,29 @@
+{% spaceless %}
+
+{% load bookwyrm_tags %}
+{% load markdown %}
+{% load i18n %}
+
+{% if not hide_book %}
+    {% with book=status.book|default:status.mention_books.first %}
+        <div class="columns is-mobile is-gapless">
+            <a class="column is-cover is-narrow" href="{{ book.local_path }}">
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xs is-h-s-tablet' %}
+            </a>
+
+            <div class="column ml-3">
+                <h3 class="title is-6 mb-1">
+                    {% include 'snippets/book_titleby.html' with book=book %}
+                </h3>
+
+                <p>
+                    {{ book|book_description|to_markdown|default:""|safe|truncatewords_html:20 }}
+                </p>
+
+                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+            </div>
+        </div>
+    {% endwith %}
+{% endif %}
+
+{% endspaceless %}

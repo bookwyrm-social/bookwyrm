@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}{% trans "Edit Author:" %} {{ author.name }}{% endblock %}
+
+{% block content %}
+<header class="block">
+    <h1 class="title">
+        Edit "{{ author.name }}"
+    </h1>
+    <div>
+        <p>{% trans "Added:" %} {{ author.created_date | naturaltime }}</p>
+        <p>{% trans "Updated:" %} {{ author.updated_date | naturaltime }}</p>
+        <p>{% trans "Last edited by:" %} <a href="{{ author.last_edited_by.remote_id }}">{{ author.last_edited_by.display_name }}</a></p>
+    </div>
+</header>
+
+{% if form.non_field_errors %}
+<div class="block">
+    <p class="notification is-danger">{{ form.non_field_errors }}</p>
+</div>
+{% endif %}
+
+<form class="block" name="edit-author" action="{{ author.local_path }}/edit" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="last_edited_by" value="{{ request.user.id }}">
+
+    <div class="columns">
+        <div class="column">
+            <h2 class="title is-4">{% trans "Metadata" %}</h2>
+            <div class="field">
+                <label class="label" for="id_name">{% trans "Name:" %}</label>
+                {{ form.name }}
+                {% for error in form.name.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_aliases">{% trans "Aliases:" %}</label>
+                {{ form.aliases }}
+                <span class="help">{% trans "Separate multiple values with commas." %}</span>
+                {% for error in form.aliases.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_bio">{% trans "Bio:" %}</label>
+                {{ form.bio }}
+                {% for error in form.bio.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <p class="field"><label class="label" for="id_wikipedia_link">{% trans "Wikipedia link:" %}</label> {{ form.wikipedia_link }}</p>
+            {% for error in form.wikipedia_link.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+
+            <div class="field">
+                <label class="label" for="id_born">{% trans "Birth date:" %}</label>
+                <input type="date" name="born" value="{{ form.born.value|date:'Y-m-d' }}" class="input" id="id_born">
+                {% for error in form.born.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_died">{% trans "Death date:" %}</label>
+                <input type="date" name="died" value="{{ form.died.value|date:'Y-m-d' }}" class="input" id="id_died">
+                {% for error in form.died.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="column">
+            <h2 class="title is-4">{% trans "Author Identifiers" %}</h2>
+            <div class="field">
+                <label class="label" for="id_openlibrary_key">{% trans "Openlibrary key:" %}</label>
+                {{ form.openlibrary_key }}
+                {% for error in form.openlibrary_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_inventaire_id">{% trans "Inventaire ID:" %}</label>
+                {{ form.inventaire_id }}
+                {% for error in form.inventaire_id.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_librarything_key">{% trans "Librarything key:" %}</label>
+                {{ form.librarything_key }}
+                {% for error in form.librarything_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                <label class="label" for="id_goodreads_key">{% trans "Goodreads key:" %}</label>
+                {{ form.goodreads_key }}
+                {% for error in form.goodreads_key.errors %}
+                <p class="help is-danger">{{ error | escape }}</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="block">
+        <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+        <a class="button" href="{{ author.local_path }}">{% trans "Cancel" %}</a>
+    </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'get_started/layout.html' %}
+{% load i18n %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Who to follow" %}</h2>
+
+    <p class="subtitle is-6">You can follow users on other BookWyrm instances and federated services like Mastodon.</p>
+    <form class="field has-addons" method="get" action="{% url 'get-started-users' %}">
+        <div class="control">
+            <input type="text" name="query" value="{{ request.GET.query }}" class="input" placeholder="{% trans 'Search for a user' %}" aria-label="{% trans 'Search for a user' %}">
+            {% if request.GET.query and not user_results %}
+            <p class="help">{% blocktrans with query=request.GET.query %}No users found for "{{ query }}"{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+        <div class="control">
+            <button class="button" type="submit">
+                <span class="icon icon-search" title="{% trans 'Search' %}">
+                    <span class="is-sr-only">{% trans "Search" %}</span>
+                </span>
+            </button>
+        </div>
+    </form>
+
+    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+</div>
+{% endblock %}
+

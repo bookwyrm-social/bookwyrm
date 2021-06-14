@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="column is-cover">
+    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-l is-h-m-mobile' %}
+
+    <div class="select is-small mt-1 mb-3">
+        <select name="{{ book.id }}" aria-label="{% blocktrans with book_title=book.title %}Have you read {{ book_title }}?{% endblocktrans %}">
+            <option disabled selected value>Add to your books</option>
+            {% for shelf in user_shelves %}
+            <option value="{{ shelf.id }}">{{ shelf.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+

@@ -1,0 +1,48 @@
+{% extends 'settings/admin_layout.html' %}
+{% load i18n %}
+
+{% block title %}
+{% if server %}
+{% blocktrans with instance_name=server.server_name %}Reports: {{ instance_name }}{% endblocktrans %}
+{% else %}
+{% trans "Reports" %}
+{% endif %}
+{% endblock %}
+
+{% block header %}
+{% if server %}
+{% blocktrans with instance_name=server.server_name %}Reports: <small>{{ instance_name }}</small>{% endblocktrans %}
+<a href="{% url 'settings-reports' %}" class="help has-text-weight-normal">Clear filters</a>
+{% else %}
+{% trans "Reports" %}
+{% endif %}
+{% endblock %}
+
+{% block panel %}
+<div class="tabs">
+    <ul>
+        <li class="{% if not resolved %}is-active{% endif %}"{% if not resolved == 'open' %} aria-current="page"{% endif %}>
+            <a href="{% url 'settings-reports' %}?resolved=false">{% trans "Open" %}</a>
+        </li>
+        <li class="{% if resolved %}is-active{% endif %}"{% if resolved %} aria-current="page"{% endif %}>
+            <a href="{% url 'settings-reports' %}?resolved=true">{% trans "Resolved" %}</a>
+        </li>
+    </ul>
+</div>
+
+{% include 'user_admin/user_admin_filters.html' %}
+
+<div class="block">
+    {% if not reports %}
+    <em>{% trans "No reports found." %}</em>
+    {% endif %}
+
+    {% for report in reports %}
+    <div class="block">
+        {% include 'moderation/report_preview.html' with report=report %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+

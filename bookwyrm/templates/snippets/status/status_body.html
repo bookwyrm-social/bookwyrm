@@ -1,0 +1,14 @@
+{% extends 'snippets/status/layout.html' %}
+
+{% block card-content %}
+{% with status_type=status.status_type %}
+
+{% if status_type == 'GeneratedNote' or status_type == 'Rating' %}
+    {% include 'snippets/status/generated_status.html' with status=status %}
+{% else %}
+    {% include 'snippets/status/content_status.html' with status=status %}
+{% endif %}
+
+{% endwith %}
+{% endblock %}
+

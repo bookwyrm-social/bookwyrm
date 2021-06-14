@@ -1,0 +1,19 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<legend class="label">{% trans "Status" %}</legend>
+<label class="is-block">
+    <input type="checkbox" class="checkbox" name="status" value="requested" {% if not request.GET.status or "requested" in request.GET.status %}checked{% endif %}>
+    {% trans "Requested" %}
+</label>
+<label class="is-block">
+    <input type="checkbox" class="checkbox" name="status" value="sent" {% if not request.GET.status or "sent" in request.GET.status %}checked{% endif %}>
+    {% trans "Sent" %}
+</label>
+<label class="is-block">
+    <input type="checkbox" class="checkbox" name="status" value="accepted" {% if not request.GET.status or "accepted" in request.GET.status %}checked{% endif %}>
+    {% trans "Accepted" %}
+</label>
+{% endblock %}
+

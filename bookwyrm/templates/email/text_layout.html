@@ -1,0 +1,3 @@
+{% load i18n %}
+{% if user %}{{ user.display_name }},{% else %}{% trans "Hi there," %}{% endif %}
+{% block content %}{% endblock %}

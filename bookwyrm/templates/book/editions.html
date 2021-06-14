@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+{% load i18n %}{% load utilities %}
+
+{% block title %}{% blocktrans with book_title=work|book_title %}Editions of {{ book_title }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+<div class="block">
+    <h1 class="title">{% blocktrans with work_path=work.local_path work_title=work|book_title %}Editions of <a href="{{ work_path }}">"{{ work_title }}"</a>{% endblocktrans %}</h1>
+</div>
+
+{% include 'book/edition_filters.html' %}
+
+<div class="block">
+    {% for book in editions %}
+    <div class="columns is-gapless mb-6">
+        <div class="column is-cover">
+            <a href="{{ book.local_path }}">
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-w-m is-h-m align to-l-mobile' %}
+            </a>
+        </div>
+
+        <div class="column my-3-mobile ml-3-tablet mr-auto">
+            <h2 class="title is-5 mb-1">
+                <a href="{{ book.local_path }}" class="has-text-black">
+                    {{ book|book_title }}
+                </a>
+            </h2>
+
+            {% with book=book %}
+                <div class="columns is-multiline is-gapless ml-3-tablet">
+                    <div class="column is-half">
+                        {% include 'book/publisher_info.html' %}
+                    </div>
+
+                    <div class="column ml-3-tablet">
+                        {% include 'book/book_identifiers.html' %}
+                    </div>
+                </div>
+            {% endwith %}
+        </div>
+
+        <div class="column is-narrow">
+            {% include 'snippets/shelve_button/shelve_button.html' with book=book switch_mode=True right=True %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div>
+    {% include 'snippets/pagination.html' with page=editions path=request.path %}
+</div>
+{% endblock %}

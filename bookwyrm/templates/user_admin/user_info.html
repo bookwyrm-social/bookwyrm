@@ -1,0 +1,56 @@
+{% load i18n %}
+{% load markdown %}
+<div class="block columns">
+    <div class="column is-flex is-flex-direction-column">
+        <h4 class="title is-4">{% trans "User details" %}</h4>
+        <div class="box is-flex-grow-1">
+            {% include 'user/user_preview.html' with user=user %}
+            {% if user.summary %}
+            <div class="box content has-background-white-ter is-shadowless">
+                {{ user.summary|to_markdown|safe }}
+            </div>
+            {% endif %}
+
+            <p class="mt-2"><a href="{{ user.local_path }}">{% trans "View user profile" %}</a></p>
+        </div>
+    </div>
+    {% if not user.local %}
+    {% with server=user.federated_server %}
+    <div class="column is-half is-flex is-flex-direction-column">
+        <h4 class="title is-4">{% trans "Instance details" %}</h4>
+        <div class="box content is-flex-grow-1">
+            {% if server %}
+            <h5>{{ server.server_name }}</h5>
+            <dl>
+                <div class="is-flex">
+                    <dt>{% trans "Software:" %}</dt>
+                    <dd>{{ server.application_type }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Version:" %}</dt>
+                    <dd>{{ server.application_version }}</dd>
+                </div>
+                <div class="is-flex">
+                    <dt>{% trans "Status:" %}</dt>
+                    <dd>{{ server.status }}</dd>
+                </div>
+            </dl>
+            {% if server.notes %}
+            <h5>{% trans "Notes" %}</h5>
+            <div class="box content has-background-white-ter is-shadowless">
+                {{ server.notes }}
+            </div>
+            {% endif %}
+
+            <p>
+                <a href="{% url 'settings-federated-server' server.id %}">{% trans "View instance" %}</a>
+            </p>
+            {% else %}
+            <em>{% trans "Not set" %}</em>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% endif %}
+</div>
+

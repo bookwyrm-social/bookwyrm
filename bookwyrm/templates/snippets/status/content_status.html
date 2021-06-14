@@ -1,0 +1,139 @@
+{% load bookwyrm_tags %}
+{% load markdown %}
+{% load i18n %}
+
+{% with status_type=status.status_type %}
+<div
+    class="block"
+    {% if status_type == "Review" %}
+        itemprop="rating"
+        itemtype="https://schema.org/Rating"
+    {% endif %}
+>
+
+    <div class="columns is-gapless">
+        {% if not hide_book %}
+            {% with book=status.book|default:status.mention_books.first %}
+                {% if book %}
+                    <div class="column is-cover">
+                        <div class="columns is-mobile is-gapless">
+                            <div class="column is-cover">
+                                <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-mobile is-h-l-tablet' %}</a>
+
+                                {% include 'snippets/stars.html' with rating=book|rating:request.user %}
+
+                                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                            </div>
+
+                            <div class="column ml-3-mobile is-hidden-tablet">
+                                <p>{{ book|book_description|to_markdown|default:""|safe|truncatewords_html:15 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endif %}
+
+        <article class="column ml-3-tablet my-3-mobile">
+            {% if status_type == 'Review' %}
+            <header class="mb-2">
+                <h3
+                    class="title is-5 has-subtitle"
+                    dir="auto"
+                    itemprop="name"
+                >
+                    {{ status.name|escape }}
+                </h3>
+
+                <h4 class="subtitle is-6">
+                    <span
+                        class="is-hidden"
+                        {% if status_type == "Review" %}
+                            itemprop="reviewRating"
+                            itemscope
+                            itemtype="https://schema.org/Rating"
+                        {% endif %}
+                    >
+                        <meta itemprop="ratingValue" content="{{ status.rating|floatformat }}">
+
+                        {# @todo Is it possible to not hard-code the value? #}
+                        <meta itemprop="bestRating" content="5">
+                    </span>
+                    {% include 'snippets/stars.html' with rating=status.rating %}
+                </h4>
+            </header>
+            {% endif %}
+
+            {% if status.content_warning %}
+                <div>
+                    <p>{{ status.content_warning }}</p>
+
+                    {% trans "Show more" as button_text %}
+
+                    {% with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+                        {% include 'snippets/toggle/open_button.html' %}
+                    {% endwith %}
+                </div>
+            {% endif %}
+
+            <div
+                {% if status.content_warning %}
+                    id="show-status-cw-{{ status.id }}"
+                    class="is-hidden"
+                {% endif %}
+            >
+                {% if status.content_warning %}
+                    {% trans "Show less" as button_text %}
+
+                    {% with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+                        {% include 'snippets/toggle/close_button.html' %}
+                    {% endwith %}
+                {% endif %}
+
+                {% if status.quote %}
+                    <div class="quote block">
+                        <blockquote dir="auto" class="content mb-2">{{ status.quote | safe }}</blockquote>
+
+                        <p> &mdash; {% include 'snippets/book_titleby.html' with book=status.book %}</p>
+                    </div>
+                {% endif %}
+
+                {% if status.content and status_type != 'GeneratedNote' and status_type != 'Announce' %}
+                    {% with full=status.content|safe no_trim=status.content_warning itemprop="reviewBody" %}
+                        {% include 'snippets/trimmed_text.html' %}
+                    {% endwith %}
+                {% endif %}
+
+                {% if status.attachments.exists %}
+                    <div class="block">
+                        <div class="columns">
+                            {% for attachment in status.attachments.all %}
+                                <div class="column is-narrow">
+                                    <figure class="image is-128x128">
+                                        <a
+                                            href="/images/{{ attachment.image }}"
+                                            target="_blank"
+                                            aria-label="{% trans 'Open image in new window' %}"
+                                        >
+                                            <img
+                                                src="/images/{{ attachment.image }}"
+
+                                                {% if attachment.caption %}
+                                                    alt="{{ attachment.caption }}"
+                                                    title="{{ attachment.caption }}"
+                                                {% endif %}
+                                            >
+                                        </a>
+                                    </figure>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+    </div>
+</div>
+
+{% endwith %}
+

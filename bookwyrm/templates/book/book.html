@@ -1,0 +1,312 @@
+{% extends 'layout.html' %}
+{% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
+
+{% block title %}{{ book|book_title }}{% endblock %}
+
+{% block content %}
+{% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}
+<div class="block" itemscope itemtype="https://schema.org/Book">
+    <div class="columns is-mobile">
+        <div class="column">
+            <h1 class="title">
+                <span itemprop="name">
+                    {{ book.title }}{% if book.subtitle %}:
+                        <small>{{ book.subtitle }}</small>
+                    {% endif %}
+                </span>
+
+                {% if book.series %}
+                    <meta itemprop="isPartOf" content="{{ book.series }}">
+                    <meta itemprop="volumeNumber" content="{{ book.series_number }}">
+
+                    <small class="has-text-grey-dark">
+                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
+                    </small>
+                    <br>
+                {% endif %}
+            </h1>
+            {% if book.authors %}
+            <h2 class="subtitle">
+            {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
+            </h2>
+            {% endif %}
+        </div>
+
+        {% if user_authenticated and can_edit_book %}
+        <div class="column is-narrow">
+            <a href="{{ book.id }}/edit">
+                <span class="icon icon-pencil" title="{% trans "Edit Book" %}" aria-hidden=True></span>
+                <span class="is-hidden-mobile">{% trans "Edit Book" %}</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="columns">
+        <div class="column is-one-fifth">
+            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m-mobile' %}
+            {% include 'snippets/rate_action.html' with user=request.user book=book %}
+
+            <div class="mb-3">
+                {% include 'snippets/shelve_button/shelve_button.html' %}
+            </div>
+
+            {% if user_authenticated and not book.cover %}
+            <div class="block">
+                {% trans "Add cover" as button_text %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
+                {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
+                {% if request.GET.cover_error %}
+                <p class="help is-danger">{% trans "Failed to load cover" %}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <section class="is-clipped">
+                {% with book=book %}
+                    <div class="content">
+                        {% include 'book/publisher_info.html' %}
+                    </div>
+
+                    <div class="my-3">
+                        {% include 'book/book_identifiers.html' %}
+                    </div>
+                {% endwith %}
+
+                {% if book.openlibrary_key %}
+                <p><a href="https://openlibrary.org/books/{{ book.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a></p>
+                {% endif %}
+                {% if book.inventaire_id %}
+                <p><a href="https://inventaire.io/entity/{{ book.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a></p>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="column is-three-fifths">
+            <div class="block">
+                <h3
+                    class="field is-grouped"
+                    itemprop="aggregateRating"
+                    itemscope
+                    itemtype="https://schema.org/AggregateRating"
+                >
+                    <meta itemprop="ratingValue" content="{{ rating|floatformat }}">
+                    {# @todo Is it possible to not hard-code the value? #}
+                    <meta itemprop="bestRating" content="5">
+                    <meta itemprop="reviewCount" content="{{ review_count }}">
+
+                    {% include 'snippets/stars.html' with rating=rating %}
+
+                    {% blocktrans count counter=review_count trimmed %}
+                        ({{ review_count }} review)
+                    {% plural %}
+                        ({{ review_count }} reviews)
+                    {% endblocktrans %}
+                </h3>
+
+                {% with full=book|book_description itemprop='abstract' %}
+                    {% include 'snippets/trimmed_text.html' %}
+                {% endwith %}
+
+                {% if user_authenticated and can_edit_book and not book|book_description %}
+                {% trans 'Add Description' as button_text %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
+
+                <div class="box is-hidden" id="add-description-{{ book.id }}">
+                    <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
+                        {% csrf_token %}
+                        <p class="fields is-grouped">
+                            <label class="label"for="id_description">{% trans "Description:" %}</label>
+                            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
+                        </p>
+                        <div class="field">
+                            <button class="button is-primary" type="submit">{% trans "Save" %}</button>
+                            {% trans "Cancel" as button_text %}
+                            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-description" controls_uid=book.id hide_inactive=True %}
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+
+
+                {% if book.parent_work.editions.count > 1 %}
+                <p>{% blocktrans with path=book.parent_work.local_path count=book.parent_work.editions.count %}<a href="{{ path }}/editions">{{ count }} editions</a>{% endblocktrans %}</p>
+                {% endif %}
+            </div>
+
+            {# user's relationship to the book #}
+            <div class="block">
+                {% for shelf in user_shelfbooks %}
+                <p>
+                    {% blocktrans with path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}This edition is on your <a href="{{ path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
+                    {% include 'snippets/shelf_selector.html' with current=shelf.shelf %}
+                </p>
+                {% endfor %}
+                {% for shelf in other_edition_shelves %}
+                <p>
+                {% blocktrans with book_path=shelf.book.local_path shelf_path=shelf.shelf.local_path shelf_name=shelf.shelf.name %}A <a href="{{ book_path }}">different edition</a> of this book is on your <a href="{{ shelf_path }}">{{ shelf_name }}</a> shelf.{% endblocktrans %}
+                    {% include 'snippets/switch_edition_button.html' with edition=book %}
+                </p>
+                {% endfor %}
+            </div>
+
+            {% if user_authenticated %}
+            <hr aria-hidden="true">
+            <section class="block">
+                <header class="columns">
+                    <div class="column">
+                    <h2 class="title is-5">{% trans "Your reading activity" %}</h2>
+                    </div>
+                    <div class="column is-narrow">
+                        {% trans "Add read dates" as button_text %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" class="is-small" controls_text="add-readthrough" focus="add-readthrough-focus" %}
+                    </div>
+                </header>
+                <section class="is-hidden box" id="add-readthrough">
+                    <form name="add-readthrough" action="/create-readthrough" method="post">
+                        {% include 'snippets/readthrough_form.html' with readthrough=None %}
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-primary" type="submit">{% trans "Create" %}</button>
+                            </div>
+                            <div class="control">
+                                {% trans "Cancel" as button_text %}
+                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-readthrough" %}
+                            </div>
+                        </div>
+                    </form>
+                </section>
+                {% if not readthroughs.exists %}
+                <p>{% trans "You don't have any reading activity for this book." %}</p>
+                {% endif %}
+                {% for readthrough in readthroughs %}
+                {% include 'book/readthrough.html' with readthrough=readthrough %}
+                {% endfor %}
+            </section>
+            <hr aria-hidden="true">
+
+            <section class="box">
+                {% include 'snippets/create_status.html' with book=book hide_cover=True %}
+            </section>
+            {% endif %}
+            <div class="block" id="reviews">
+                {% if request.user.is_authenticated %}
+                {% if user_statuses.review_count or user_statuses.comment_count or user_statuses.quotation_count %}
+                <nav class="tabs">
+                    <ul>
+                        {% url 'book' book.id as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
+                        </li>
+                        {% if user_statuses.review_count %}
+                        {% url 'book-user-statuses' book.id 'review' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
+                        </li>
+                        {% endif %}
+                        {% if user_statuses.comment_count %}
+                        {% url 'book-user-statuses' book.id 'comment' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
+                        </li>
+                        {% endif %}
+                        {% if user_statuses.quotation_count %}
+                        {% url 'book-user-statuses' book.id 'quote' as tab_url %}
+                        <li {% if tab_url == request.path %}class="is-active"{% endif %}>
+                            <a href="{{ tab_url }}">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                {% endif %}
+
+                {% for status in statuses %}
+                    <div
+                        class="block"
+                        {% if status.status_type == 'Review' or status.status_type == 'Rating' %}
+                        itemprop="review"
+                        itemscope
+                        itemtype="https://schema.org/Review"
+                        {% endif %}
+                    >
+                        {% include 'snippets/status/status.html' with status=status hide_book=True depth=1 %}
+                    </div>
+                {% endfor %}
+
+                {% if ratings %}
+                <div class="block is-flex is-flex-wrap-wrap">
+                    {% for rating in ratings %}
+                        {% include 'book/rating.html' with user=rating.user rating=rating %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <div class="block">
+                    {% include 'snippets/pagination.html' with page=statuses path=request.path anchor="#reviews" %}
+                </div>
+            </div>
+        </div>
+        <div class="column is-one-fifth">
+            {% if book.subjects %}
+                <section class="content block">
+                    <h2 class="title is-5">{% trans "Subjects" %}</h2>
+
+                    <ul>
+                        {% for subject in book.subjects %}
+                            <li itemprop="about">{{ subject }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+
+            {% if book.subject_places %}
+            <section class="content block">
+                <h2 class="title is-5">{% trans "Places" %}</h2>
+                <ul>
+                {% for place in book.subject_places %}
+                    <li>{{ place }}</li>
+                {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
+
+            {% if lists.exists or request.user.list_set.exists %}
+            <section class="content block">
+                <h2 class="title is-5">{% trans "Lists" %}</h2>
+                <ul>
+                {% for list in lists %}
+                <li><a href="{{ list.local_path }}">{{ list.name }}</a></li>
+                {% endfor %}
+                </ul>
+
+                {% if request.user.list_set.exists %}
+                <form name="list-add" method="post" action="{% url 'list-add-book' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="book" value="{{ book.id }}">
+                    <label class="label" for="id_list">{% trans "Add to list" %}</label>
+                    <div class="field has-addons">
+                        <div class="select control">
+                            <select name="list" id="id_list">
+                                {% for list in user.list_set.all %}
+                                <option value="{{ list.id }}">{{ list.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-link">{% trans "Add" %}</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </section>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endwith %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/vendor/tabs.js"></script>
+{% endblock %}

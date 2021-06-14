@@ -1,0 +1,14 @@
+{% extends 'snippets/filters_panel/filter_field.html' %}
+{% load i18n %}
+
+{% block filter %}
+<legend class="label">{% trans "Community" %}</legend>
+<label class="is-block">
+    <input type="radio" class="radio" name="scope" value="local" {% if request.GET.scope == "local" %}checked{% endif %}>
+    {% trans "Local users" %}
+</label>
+<label class="is-block">
+    <input type="radio" class="radio" name="scope" value="federated" {% if not request.GET.sort or request.GET.scope == "federated" %}checked{% endif %}>
+    {% trans "Federated community" %}
+</label>
+{% endblock %}

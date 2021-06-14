@@ -7,18 +7,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0026_status_content_warning'),
+        ("bookwyrm", "0026_status_content_warning"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='name',
-            field=bookwyrm.models.fields.CharField(blank=True, max_length=100, null=True),
+            model_name="user",
+            name="name",
+            field=bookwyrm.models.fields.CharField(
+                blank=True, max_length=100, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='summary',
+            model_name="user",
+            name="summary",
             field=bookwyrm.models.fields.HtmlField(blank=True, null=True),
         ),
     ]
