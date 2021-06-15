@@ -8,9 +8,7 @@ from bookwyrm import models, views
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-@patch(
-    "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-)
+@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
 class InteractionViews(TestCase):
     """viewing and creating statuses"""
 
