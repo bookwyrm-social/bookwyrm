@@ -29,8 +29,7 @@
                         <meta itemprop="isPartOf" content="{{ book.series | escape }}">
                         <meta itemprop="volumeNumber" content="{{ book.series_number }}">
 
-                        ({{ book.series }}
-                        {% if book.series_number %} #{{ book.series_number }}{% endif %})
+                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
                     {% endif %}
                 </p>
             {% endif %}
