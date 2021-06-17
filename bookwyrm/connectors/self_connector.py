@@ -131,8 +131,9 @@ def search_identifiers(query, *filters):
         parent_work=OuterRef("parent_work")
     ).order_by("-edition_rank")
     return (
-        results.annotate(default_id=Subquery(default_editions.values("id")[:1]))
-        .filter(default_id=F("id"))
+        results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
+            default_id=F("id")
+        )
         or results
     )
 
@@ -147,17 +148,13 @@ def search_title_author(query, min_confidence, *filters):
     )
 
     results = (
-        models.Edition.objects
-        .annotate(rank=SearchRank(vector, query))
+        models.Edition.objects.annotate(rank=SearchRank(vector, query))
         .filter(*filters, rank__gt=min_confidence)
         .order_by("-rank")
     )
 
     # when there are multiple editions of the same work, pick the closest
-    editions_of_work = (
-        results.values("parent_work__id")
-        .values_list("parent_work__id")
-    )
+    editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
 
     # filter out multiple editions of the same work
     for work_id in set(editions_of_work):
