@@ -385,7 +385,8 @@ class Status(TestCase):
                 user=self.local_user, notification_type="GLORB"
             )
 
-    def test_create_broadcast(self, broadcast_mock, *_):
+    # pylint: disable=unused-argument
+    def test_create_broadcast(self, one, two, broadcast_mock, *_):
         """should send out two verions of a status on create"""
         models.Comment.objects.create(
             content="hi", user=self.local_user, book=self.book
