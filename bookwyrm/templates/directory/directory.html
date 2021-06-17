@@ -20,8 +20,8 @@
         {% csrf_token %}
         <button class="button is-primary" type="submit">Join Directory</button>
         <p class="help">
-            {% url 'settings-profile' as path %}
-            {% blocktrans %}You can opt-out at any time in your <a href="{{ path }}">profile settings.</a>{% endblocktrans %}
+            {% url 'prefs-profile' as path %}
+            {% blocktrans with path=path %}You can opt-out at any time in your <a href="{{ path }}">profile settings.</a>{% endblocktrans %}
         </p>
     </form>
     </div>

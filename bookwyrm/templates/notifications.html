@@ -56,7 +56,7 @@
                 <span class="icon icon-warning"></span>
                 {% endif %}
             </div>
-            <div class="column">
+            <div class="column is-clipped">
                 <div class="block">
                     <p>
                         {# DESCRIPTION #}
@@ -137,7 +137,7 @@
                     {# PREVIEW #}
                     <div class="notification py-2 {% if notification.id in unread %}is-primary is-light{% else %}has-background-white{% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %} has-text-black{% else %}-bis has-text-grey-dark{% endif %}{% endif %}">
                         <div class="columns">
-                            <div class="column">
+                            <div class="column is-clipped">
                                 {% include 'snippets/status_preview.html' with status=related_status %}
                             </div>
                             <div class="column is-narrow {% if notification.notification_type == 'REPLY' or notification.notification_type == 'MENTION' %}has-text-black{% else %}has-text-grey-dark{% endif %}">
