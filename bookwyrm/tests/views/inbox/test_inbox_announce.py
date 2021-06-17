@@ -51,7 +51,8 @@ class InboxActivities(TestCase):
         models.SiteSettings.objects.create()
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_boost(self, redis_mock):
+    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+    def test_boost(self, redis_mock, _):
         """boost a status"""
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
@@ -81,7 +82,8 @@ class InboxActivities(TestCase):
 
     @responses.activate
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_boost_remote_status(self, redis_mock):
+    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+    def test_boost_remote_status(self, redis_mock, _):
         """boost a status from a remote server"""
         work = models.Work.objects.create(title="work title")
         book = models.Edition.objects.create(
@@ -153,12 +155,13 @@ class InboxActivities(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Boost.objects.count(), 0)
 
-    def test_unboost(self):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
+    def test_unboost(self, *_):
         """undo a boost"""
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            boost = models.Boost.objects.create(
-                boosted_status=self.status, user=self.remote_user
-            )
+        boost = models.Boost.objects.create(
+            boosted_status=self.status, user=self.remote_user
+        )
         activity = {
             "type": "Undo",
             "actor": "hi",
@@ -175,11 +178,7 @@ class InboxActivities(TestCase):
                 "published": "Mon, 25 May 2020 19:31:20 GMT",
             },
         }
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
-        ) as redis_mock:
-            views.inbox.activity_task(activity)
-            self.assertTrue(redis_mock.called)
+        views.inbox.activity_task(activity)
         self.assertFalse(models.Boost.objects.exists())
 
     def test_unboost_unknown_boost(self):
