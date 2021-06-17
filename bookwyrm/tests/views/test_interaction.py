@@ -162,13 +162,17 @@ class InteractionViews(TestCase):
             view(request, status.id)
         self.assertEqual(models.Boost.objects.count(), 1)
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_unboost(self, *_):
         """undo a boost"""
         view = views.Unboost.as_view()
         request = self.factory.post("")
         request.user = self.remote_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            status = models.Status.objects.create(user=self.local_user, content="hi")
+        status = models.Status.objects.create(user=self.local_user, content="hi")
+
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
+        ):
             views.Boost.as_view()(request, status.id)
 
         self.assertEqual(models.Boost.objects.count(), 1)
