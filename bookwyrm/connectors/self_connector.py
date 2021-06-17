@@ -3,7 +3,7 @@ from functools import reduce
 import operator
 
 from django.contrib.postgres.search import SearchRank, SearchVector
-from django.db.models import Count, OuterRef, Subquery, F, Q
+from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -122,6 +122,8 @@ def search_identifiers(query, *filters):
     results = models.Edition.objects.filter(
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
+    if results.count() <= 1:
+        return results
 
     # when there are multiple editions of the same work, pick the default.
     # it would be odd for this to happen.
@@ -129,9 +131,8 @@ def search_identifiers(query, *filters):
         parent_work=OuterRef("parent_work")
     ).order_by("-edition_rank")
     return (
-        results.annotate(default_id=Subquery(default_editions.values("id")[:1])).filter(
-            default_id=F("id")
-        )
+        results.annotate(default_id=Subquery(default_editions.values("id")[:1]))
+        .filter(default_id=F("id"))
         or results
     )
 
@@ -146,7 +147,7 @@ def search_title_author(query, min_confidence, *filters):
     )
 
     results = (
-        models.Edition.objects.annotate(search=vector)
+        models.Edition.objects
         .annotate(rank=SearchRank(vector, query))
         .filter(*filters, rank__gt=min_confidence)
         .order_by("-rank")
@@ -154,11 +155,11 @@ def search_title_author(query, min_confidence, *filters):
 
     # when there are multiple editions of the same work, pick the closest
     editions_of_work = (
-        results.values("parent_work")
-        .annotate(Count("parent_work"))
-        .values_list("parent_work")
+        results.values("parent_work__id")
+        .values_list("parent_work__id")
     )
 
+    # filter out multiple editions of the same work
     for work_id in set(editions_of_work):
         editions = results.filter(parent_work=work_id)
         default = editions.order_by("-edition_rank").first()
