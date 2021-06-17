@@ -1,10 +1,10 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
-{% block title %}{% trans "Add server" %}{% endblock %}
+{% block title %}{% trans "Add instance" %}{% endblock %}
 
 {% block header %}
-{% trans "Add server" %}
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+{% trans "Add instance" %}
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
 {% endblock %}
 
 {% block panel %}
@@ -17,7 +17,7 @@
         </li>
         {% url 'settings-add-federated-server' as url %}
         <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Add server" %}</a>
+            <a href="{{ url }}">{% trans "Add instance" %}</a>
         </li>
     </ul>
 </div>
@@ -26,14 +26,14 @@
     {% csrf_token %}
     <div class="columns">
         <div class="column is-half">
-            <div>
+            <div class="field">
                 <label class="label" for="id_server_name">{% trans "Instance:" %}</label>
                 <input type="text" name="server_name" maxlength="255" class="input" required id="id_server_name" value="{{ form.server_name.value|default:'' }}" placeholder="domain.com">
                 {% for error in form.server_name.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
             </div>
-            <div>
+            <div class="field">
                 <label class="label" for="id_status">{% trans "Status:" %}</label>
                 <div class="select">
                     <select name="status" class="" id="id_status">
@@ -44,14 +44,14 @@
             </div>
         </div>
         <div class="column is-half">
-            <div>
+            <div class="field">
                 <label class="label" for="id_application_type">{% trans "Software:" %}</label>
                 <input type="text" name="application_type" maxlength="255" class="input" id="id_application_type" value="{{ form.application_type.value|default:'' }}">
                 {% for error in form.application_type.errors %}
                 <p class="help is-danger">{{ error | escape }}</p>
                 {% endfor %}
             </div>
-            <div>
+            <div class="field">
                 <label class="label" for="id_application_version">{% trans "Version:" %}</label>
                 <input type="text" name="application_version" maxlength="255" class="input" id="id_application_version" value="{{ form.application_version.value|default:'' }}">
                 {% for error in form.application_version.errors %}
@@ -60,10 +60,10 @@
             </div>
         </div>
     </div>
-    <p>
+    <div class="field">
         <label class="label" for="id_notes">{% trans "Notes:" %}</label>
         <textarea name="notes" cols="None" rows="None" class="textarea" id="id_notes">{{ form.notes.value|default:'' }}</textarea>
-    </p>
+    </div>
 
     <button type="submit" class="button is-primary">{% trans "Save" %}</button>
 </form>

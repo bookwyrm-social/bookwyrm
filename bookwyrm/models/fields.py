@@ -1,5 +1,6 @@
 """ activitypub-aware django model fields """
 from dataclasses import MISSING
+import imghdr
 import re
 from uuid import uuid4
 
@@ -9,6 +10,7 @@ from django.contrib.postgres.fields import ArrayField as DjangoArrayField
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
+from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
@@ -332,6 +334,18 @@ class TagField(ManyToManyField):
         return items
 
 
+class ClearableFileInputWithWarning(ClearableFileInput):
+    """max file size warning"""
+
+    template_name = "widgets/clearable_file_input_with_warning.html"
+
+
+class CustomImageField(DjangoImageField):
+    """overwrites image field for form"""
+
+    widget = ClearableFileInputWithWarning
+
+
 def image_serializer(value, alt):
     """helper for serializing images"""
     if value and hasattr(value, "url"):
@@ -391,9 +405,18 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         if not response:
             return None
 
-        image_name = str(uuid4()) + "." + url.split(".")[-1]
         image_content = ContentFile(response.content)
+        image_name = str(uuid4()) + "." + imghdr.what(None, image_content.read())
         return [image_name, image_content]
+
+    def formfield(self, **kwargs):
+        """special case for forms"""
+        return super().formfield(
+            **{
+                "form_class": CustomImageField,
+                **kwargs,
+            }
+        )
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):

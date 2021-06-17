@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load utilities %}
+
+{% if widget.is_initial %}
+<p class="mb-1">
+    {{ widget.initial_text }}:
+    <a href="{{ widget.value.url }}">{{ widget.value|truncatepath:10 }}</a>
+</p>
+{% if not widget.required %}
+<p class="mb-1">
+    <label class="has-text-weight-normal">
+            <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+            {{ widget.clear_checkbox_label }}
+    </label>{% endif %}
+</p>
+<p class="mb-1">
+{{ widget.input_text }}:
+{% else %}
+<p class="mb-1">
+{% endif %}
+        <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+        <span class="help file-cta is-hidden file-too-big">{% trans "File exceeds maximum size: 10MB" %}</span>
+</p>
+

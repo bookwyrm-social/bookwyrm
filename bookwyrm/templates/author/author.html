@@ -15,49 +15,83 @@
         <div class="column is-narrow">
             <a href="{{ author.local_path }}/edit">
                 <span class="icon icon-pencil" title="{% trans 'Edit Author' %}" aria-hidden="True"></span>
-                <span>{% trans "Edit Author" %}</span>
+                <span class="is-hidden-mobile">{% trans "Edit Author" %}</span>
             </a>
         </div>
         {% endif %}
     </div>
 </div>
 
-<div class="block content columns">
-    {% if author.aliases or author.born or author.died or author.wikipedia_link %}
-    <div class="column is-narrow">
-        <div class="box">
+<div class="block columns" itemscope itemtype="https://schema.org/Person">
+    <meta itemprop="name" content="{{ author.name }}">
+
+    {% if author.aliases or author.born or author.died or author.wikipedia_link or author.openlibrary_key or author.inventaire_id %}
+    <div class="column is-two-fifths">
+        <div class="box py-2">
             <dl>
                 {% if author.aliases %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Aliases:" %}</dt>
-                    <dd itemprop="aliases">{{ author.aliases|join:', ' }}</dd>
+                <div class="is-flex is-flex-wrap-wrap my-1">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Aliases:" %}</dt>
+                    {% for alias in author.aliases %}
+                        <dd itemprop="alternateName" content="{{alias}}">
+                            {{alias}}{% if not forloop.last %},&nbsp;{% endif %}
+                        </dd>
+                    {% endfor %}
                 </div>
                 {% endif %}
+
                 {% if author.born %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Born:" %}</dt>
-                    <dd itemprop="aliases">{{ author.born|naturalday }}</dd>
+                <div class="is-flex my-1">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Born:" %}</dt>
+                    <dd itemprop="birthDate">{{ author.born|naturalday }}</dd>
                 </div>
                 {% endif %}
+
                 {% if author.died %}
-                <div class="is-flex">
-                    <dt class="mr-1">{% trans "Died:" %}</dt>
-                    <dd itemprop="aliases">{{ author.died|naturalday }}</dd>
+                <div class="is-flex my-1">
+                    <dt class="has-text-weight-bold mr-1">{% trans "Died:" %}</dt>
+                    <dd itemprop="deathDate">{{ author.died|naturalday }}</dd>
                 </div>
                 {% endif %}
             </dl>
 
             {% if author.wikipedia_link %}
-            <p><a href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">{% trans "Wikipedia" %}</a></p>
-            {% endif %}
-            {% if author.openlibrary_key %}
-            <p class="mb-0">
-                <a href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">{% trans "View on OpenLibrary" %}</a>
+            <p class="my-1">
+                <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">
+                    {% trans "Wikipedia" %}
+                </a>
             </p>
             {% endif %}
+
+            {% if author.openlibrary_key %}
+            <p class="my-1">
+                <a itemprop="sameAs" href="https://openlibrary.org/authors/{{ author.openlibrary_key }}" target="_blank" rel="noopener">
+                    {% trans "View on OpenLibrary" %}
+                </a>
+            </p>
+            {% endif %}
+            
             {% if author.inventaire_id %}
-            <p class="mb-0">
-                <a href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">{% trans "View on Inventaire" %}</a>
+            <p class="my-1">
+                <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
+                    {% trans "View on Inventaire" %}
+                </a>
+            </p>
+            {% endif %}
+
+            {% if author.librarything_key %}
+            <p class="my-1">
+                <a itemprop="sameAs" href="https://www.librarything.com/author/{{ author.librarything_key }}" target="_blank" rel="noopener">
+                    {% trans "View on LibraryThing" %}
+                </a>
+            </p>
+            {% endif %}
+            
+            {% if author.goodreads_key %}
+            <p class="my-1">
+                <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
+                    {% trans "View on Goodreads" %}
+                </a>
             </p>
             {% endif %}
         </div>

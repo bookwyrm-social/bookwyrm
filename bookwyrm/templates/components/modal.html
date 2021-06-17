@@ -1,7 +1,7 @@
 {% load i18n %}
 <div
     role="dialog"
-    class="modal is-hidden"
+    class="modal {% if active %}is-active{% else %}is-hidden{% endif %}"
     id="{{ controls_text }}-{{ controls_uid }}"
     aria-labelledby="modal-card-title-{{ controls_text }}-{{ controls_uid }}"
     aria-modal="true"
@@ -11,7 +11,7 @@
     {% trans "Close" as label %}
     <div class="modal-card">
         <header class="modal-card-head" tabindex="0" id="modal-title-{{ controls_text }}-{{ controls_uid }}">
-            <h2 class="modal-card-title" id="modal-card-title-{{ controls_text }}-{{ controls_uid }}">
+            <h2 class="modal-card-title is-flex-shrink-1" id="modal-card-title-{{ controls_text }}-{{ controls_uid }}">
                 {% block modal-title %}{% endblock %}
             </h2>
             {% include 'snippets/toggle/toggle_button.html' with label=label class="delete" nonbutton=True %}

@@ -16,6 +16,7 @@ from bookwyrm import activitypub, models, settings
 # pylint: disable=too-many-public-methods
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
 class Status(TestCase):
     """lotta types of statuses"""
 
@@ -393,7 +394,8 @@ class Status(TestCase):
                 user=self.local_user, notification_type="GLORB"
             )
 
-    def test_create_broadcast(self, _, broadcast_mock):
+    # pylint: disable=unused-argument
+    def test_create_broadcast(self, one, two, broadcast_mock, *_):
         """should send out two verions of a status on create"""
         models.Comment.objects.create(
             content="hi", user=self.local_user, book=self.book

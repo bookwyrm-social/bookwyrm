@@ -20,7 +20,7 @@ from .helpers import is_api_request, get_edition, get_user_from_username
 from .helpers import handle_reading_status, privacy_filter
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 class Shelf(View):
     """shelf page"""
 
@@ -178,11 +178,6 @@ def shelve(request):
         models.ShelfBook.objects.create(
             book=book, shelf=desired_shelf, user=request.user
         )
-        if desired_shelf.identifier == models.Shelf.TO_READ and request.POST.get(
-            "post-status"
-        ):
-            privacy = request.POST.get("privacy") or desired_shelf.privacy
-            handle_reading_status(request.user, desired_shelf, book, privacy=privacy)
     else:
         try:
             models.ShelfBook.objects.create(
@@ -206,7 +201,6 @@ def unshelve(request):
     return redirect(request.headers.get("Referer", "/"))
 
 
-# pylint: disable=unused-argument
 def handle_unshelve(book, shelf):
     """unshelve a book"""
     row = models.ShelfBook.objects.get(book=book, shelf=shelf)

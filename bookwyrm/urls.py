@@ -223,7 +223,7 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
-    # Uyser books
+    # User books
     re_path(r"%s/books/?$" % user_path, views.Shelf.as_view(), name="user-shelves"),
     re_path(
         r"^%s/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
@@ -253,6 +253,7 @@ urlpatterns = [
         views.ChangePassword.as_view(),
         name="prefs-password",
     ),
+    re_path(r"^preferences/delete/?$", views.DeleteUser.as_view(), name="prefs-delete"),
     re_path(r"^preferences/block/?$", views.Block.as_view(), name="prefs-block"),
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
@@ -315,8 +316,12 @@ urlpatterns = [
     re_path(r"^delete-readthrough/?$", views.delete_readthrough),
     re_path(r"^create-readthrough/?$", views.create_readthrough),
     re_path(r"^delete-progressupdate/?$", views.delete_progressupdate),
-    re_path(r"^start-reading/(?P<book_id>\d+)/?$", views.start_reading),
-    re_path(r"^finish-reading/(?P<book_id>\d+)/?$", views.finish_reading),
+    # shelve actions
+    re_path(
+        r"^reading-status/(?P<status>want|start|finish)/(?P<book_id>\d+)/?$",
+        views.ReadingStatus.as_view(),
+        name="reading-status",
+    ),
     # following
     re_path(r"^follow/?$", views.follow, name="follow"),
     re_path(r"^unfollow/?$", views.unfollow, name="unfollow"),

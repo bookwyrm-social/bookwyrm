@@ -3,7 +3,7 @@
 
 {% block title %}
 {% if server %}
-{% blocktrans with server_name=server.server_name %}Reports: {{ server_name }}{% endblocktrans %}
+{% blocktrans with instance_name=server.server_name %}Reports: {{ instance_name }}{% endblocktrans %}
 {% else %}
 {% trans "Reports" %}
 {% endif %}
@@ -11,7 +11,7 @@
 
 {% block header %}
 {% if server %}
-{% blocktrans with server_name=server.server_name %}Reports: <small>{{ server_name }}</small>{% endblocktrans %}
+{% blocktrans with instance_name=server.server_name %}Reports: <small>{{ instance_name }}</small>{% endblocktrans %}
 <a href="{% url 'settings-reports' %}" class="help has-text-weight-normal">Clear filters</a>
 {% else %}
 {% trans "Reports" %}

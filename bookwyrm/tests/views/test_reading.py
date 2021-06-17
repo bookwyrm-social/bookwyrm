@@ -58,7 +58,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.start_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -88,7 +88,7 @@ class ReadingViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.start_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertFalse(to_read_shelf.books.exists())
         self.assertEqual(shelf.books.get(), self.book)
@@ -114,7 +114,7 @@ class ReadingViews(TestCase):
         request.user = self.local_user
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.finish_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "finish", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 
