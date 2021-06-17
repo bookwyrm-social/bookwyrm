@@ -8,27 +8,36 @@
 <div class="block" itemscope itemtype="https://schema.org/Book">
     <div class="columns is-mobile">
         <div class="column">
-            <h1 class="title">
-                <span itemprop="name">
-                    {{ book.title }}{% if book.subtitle %}:
-                        <small>{{ book.subtitle }}</small>
-                    {% endif %}
-                </span>
-
-                {% if book.series %}
-                    <meta itemprop="isPartOf" content="{{ book.series }}">
-                    <meta itemprop="volumeNumber" content="{{ book.series_number }}">
-
-                    <small class="has-text-grey-dark">
-                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
-                    </small>
-                    <br>
-                {% endif %}
+            <h1 class="title" itemprop="name">
+                {{ book.title }}
             </h1>
+
+            {% if book.subtitle or book.series %}
+                <p class="subtitle title is-5">
+                    {% if book.subtitle %}
+                        <meta
+                            itemprop="alternativeHeadline"
+                            content="{{ book.subtitle | escape }}"
+                        >
+
+                        <span class="has-text-weight-bold">
+                            {{ book.subtitle }}
+                        </span>
+                    {% endif %}
+
+                    {% if book.series %}
+                        <meta itemprop="isPartOf" content="{{ book.series | escape }}">
+                        <meta itemprop="volumeNumber" content="{{ book.series_number }}">
+
+                        ({{ book.series }}{% if book.series_number %} #{{ book.series_number }}{% endif %})
+                    {% endif %}
+                </p>
+            {% endif %}
+
             {% if book.authors %}
-            <h2 class="subtitle">
-            {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
-            </h2>
+                <div class="subtitle">
+                    {% trans "by" %} {% include 'snippets/authors.html' with book=book %}
+                </div>
             {% endif %}
         </div>
 
@@ -84,7 +93,7 @@
 
         <div class="column is-three-fifths">
             <div class="block">
-                <h3
+                <div
                     class="field is-grouped"
                     itemprop="aggregateRating"
                     itemscope
@@ -102,7 +111,7 @@
                     {% plural %}
                         ({{ review_count }} reviews)
                     {% endblocktrans %}
-                </h3>
+                </div>
 
                 {% with full=book|book_description itemprop='abstract' %}
                     {% include 'snippets/trimmed_text.html' %}
