@@ -356,7 +356,7 @@ class AnnualGoal(BookWyrmModel):
 
     def get_remote_id(self):
         """put the year in the path"""
-        return "%s/goal/%d" % (self.user.remote_id, self.year)
+        return "{:s}/goal/{:d}".format(self.user.remote_id, self.year)
 
     @property
     def books(self):

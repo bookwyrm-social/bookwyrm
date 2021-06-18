@@ -181,8 +181,6 @@ class EditionForm(CustomForm):
             "authors",
             "parent_work",
             "shelves",
-            "subjects",  # TODO
-            "subject_places",  # TODO
             "connector",
         ]
 
