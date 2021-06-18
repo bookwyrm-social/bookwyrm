@@ -2,7 +2,7 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db.models import Count, Max, Q
+from django.db.models import Max, Q
 from django.http import Http404
 
 from bookwyrm import activitypub, models
