@@ -150,15 +150,18 @@ def generate_instance_layer(content_width):
 
 def generate_rating_layer(rating, content_width):
     """Places components for rating preview"""
-    icon_star_full = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
-    )
-    icon_star_empty = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
-    )
-    icon_star_half = Image.open(
-        os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
-    )
+    try:
+        icon_star_full = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
+        )
+        icon_star_empty = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-empty.png")
+        )
+        icon_star_half = Image.open(
+            os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
+        )
+    except FileNotFoundError:
+        return None
 
     icon_size = 64
     icon_margin = 10
