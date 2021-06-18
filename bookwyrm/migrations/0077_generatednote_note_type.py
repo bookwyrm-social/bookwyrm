@@ -41,7 +41,7 @@ def reverse_func(apps, schema_editor):
             "READ": "finished reading",
         }
         if note.note_type in message:
-            note.content = message
+            note.content = message[note.note_type]
             note.save()
 
 
