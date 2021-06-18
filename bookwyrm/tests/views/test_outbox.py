@@ -18,20 +18,22 @@ class OutboxView(TestCase):
     def setUp(self):
         """we'll need some data"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-            parent_work=work,
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
+                parent_work=work,
+            )
 
     def test_outbox(self, _):
         """returns user's statuses"""
@@ -79,13 +81,16 @@ class OutboxView(TestCase):
     def test_outbox_filter(self, _):
         """if we only care about reviews, only get reviews"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            models.Review.objects.create(
-                content="look at this",
-                name="hi",
-                rating=1,
-                book=self.book,
-                user=self.local_user,
-            )
+            with patch(
+                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+            ):
+                models.Review.objects.create(
+                    content="look at this",
+                    name="hi",
+                    rating=1,
+                    book=self.book,
+                    user=self.local_user,
+                )
             models.Status.objects.create(content="look at this", user=self.local_user)
 
         request = self.factory.get("", {"type": "bleh"})
@@ -105,13 +110,16 @@ class OutboxView(TestCase):
     def test_outbox_bookwyrm_request_true(self, _):
         """should differentiate between bookwyrm and outside requests"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            models.Review.objects.create(
-                name="hi",
-                content="look at this",
-                user=self.local_user,
-                book=self.book,
-                privacy="public",
-            )
+            with patch(
+                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+            ):
+                models.Review.objects.create(
+                    name="hi",
+                    content="look at this",
+                    user=self.local_user,
+                    book=self.book,
+                    privacy="public",
+                )
 
         request = self.factory.get("", {"page": 1}, HTTP_USER_AGENT=USER_AGENT)
         result = views.Outbox.as_view()(request, "mouse")
@@ -123,13 +131,16 @@ class OutboxView(TestCase):
     def test_outbox_bookwyrm_request_false(self, _):
         """should differentiate between bookwyrm and outside requests"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            models.Review.objects.create(
-                name="hi",
-                content="look at this",
-                user=self.local_user,
-                book=self.book,
-                privacy="public",
-            )
+            with patch(
+                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+            ):
+                models.Review.objects.create(
+                    name="hi",
+                    content="look at this",
+                    user=self.local_user,
+                    book=self.book,
+                    privacy="public",
+                )
 
         request = self.factory.get("", {"page": 1})
         result = views.Outbox.as_view()(request, "mouse")

@@ -12,20 +12,22 @@ class Quotation(TestCase):
 
     def setUp(self):
         """model objects we'll need"""
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.user = models.User.objects.create_user(
-                "mouse",
-                "mouse@mouse.mouse",
-                "mouseword",
-                local=False,
-                inbox="https://example.com/user/mouse/inbox",
-                outbox="https://example.com/user/mouse/outbox",
-                remote_id="https://example.com/user/mouse",
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.user = models.User.objects.create_user(
+                    "mouse",
+                    "mouse@mouse.mouse",
+                    "mouseword",
+                    local=False,
+                    inbox="https://example.com/user/mouse/inbox",
+                    outbox="https://example.com/user/mouse/outbox",
+                    remote_id="https://example.com/user/mouse",
+                )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
             )
-        self.book = models.Edition.objects.create(
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-        )
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_quotation.json")
         self.status_data = json.loads(datafile.read_bytes())
 

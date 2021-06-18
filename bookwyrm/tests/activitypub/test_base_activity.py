@@ -25,24 +25,25 @@ class BaseActivity(TestCase):
 
     def setUp(self):
         """we're probably going to re-use this so why copy/paste"""
-        self.user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
-        self.user.remote_id = "http://example.com/a/b"
-        self.user.save(broadcast=False)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
+            self.user.remote_id = "http://example.com/a/b"
+            self.user.save(broadcast=False)
 
-        datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
-        self.userdata = json.loads(datafile.read_bytes())
-        # don't try to load the user icon
-        del self.userdata["icon"]
+            datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
+            self.userdata = json.loads(datafile.read_bytes())
+            # don't try to load the user icon
+            del self.userdata["icon"]
 
-        image_file = pathlib.Path(__file__).parent.joinpath(
-            "../../static/images/default_avi.jpg"
-        )
-        image = Image.open(image_file)
-        output = BytesIO()
-        image.save(output, format=image.format)
-        self.image_data = output.getvalue()
+            image_file = pathlib.Path(__file__).parent.joinpath(
+                "../../static/images/default_avi.jpg"
+            )
+            image = Image.open(image_file)
+            output = BytesIO()
+            image.save(output, format=image.format)
+            self.image_data = output.getvalue()
 
     def test_init(self, _):
         """simple successfuly init"""
@@ -97,10 +98,11 @@ class BaseActivity(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            result = resolve_remote_id(
-                "https://example.com/user/mouse", model=models.User
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                result = resolve_remote_id(
+                    "https://example.com/user/mouse", model=models.User
+                )
         self.assertIsInstance(result, models.User)
         self.assertEqual(result.remote_id, "https://example.com/user/mouse")
         self.assertEqual(result.name, "MOUSE?? MOUSE!!")
@@ -139,8 +141,9 @@ class BaseActivity(TestCase):
             self.user.avatar.file  # pylint: disable=pointless-statement
 
         # this would trigger a broadcast because it's a local user
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            activity.to_model(model=models.User, instance=self.user)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                activity.to_model(model=models.User, instance=self.user)
         self.assertIsNotNone(self.user.avatar.file)
         self.assertEqual(self.user.name, "New Name")
         self.assertEqual(self.user.key_pair.public_key, "hi")
@@ -152,9 +155,10 @@ class BaseActivity(TestCase):
                 content="test status",
                 user=self.user,
             )
-        book = models.Edition.objects.create(
-            title="Test Edition", remote_id="http://book.com/book"
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            book = models.Edition.objects.create(
+                title="Test Edition", remote_id="http://book.com/book"
+            )
         update_data = activitypub.Note(
             id=status.remote_id,
             content=status.content,
