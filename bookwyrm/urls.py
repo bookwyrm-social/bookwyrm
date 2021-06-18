@@ -7,8 +7,8 @@ from django.views.generic.base import TemplateView
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
 
-USER_PATH = r"^user/(?P<username>%s)" % regex.username
-LOCAL_USER_PATH = r"^user/(?P<username>%s)" % regex.localname
+USER_PATH = r"^user/(?P<username>%s)" % regex.USERNAME
+LOCAL_USER_PATH = r"^user/(?P<username>%s)" % regex.LOCALNAME
 
 status_types = [
     "status",
@@ -182,7 +182,7 @@ urlpatterns = [
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),
     re_path(
-        r"^direct-messages/(?P<username>%s)?$" % regex.username,
+        r"^direct-messages/(?P<username>%s)?$" % regex.USERNAME,
         views.DirectMessage.as_view(),
         name="direct-messages-user",
     ),
