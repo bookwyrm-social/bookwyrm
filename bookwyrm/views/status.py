@@ -133,7 +133,7 @@ def find_mentions(content):
     """detect @mentions in raw status content"""
     if not content:
         return
-    for match in re.finditer(rhandle_reading_status, egex.STRICT_USERNAME, content):
+    for match in re.finditer(regex.STRICT_USERNAME, content):
         username = match.group().strip().split("@")[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
