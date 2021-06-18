@@ -93,7 +93,8 @@ class ListItem(CollectionItemMixin, BookWyrmModel):
             )
 
     class Meta:
-        # A book may only be placed into a list once, and each order in the list may be used only
-        # once
+        """A book may only be placed into a list once,
+        and each order in the list may be used only once"""
+
         unique_together = (("book", "book_list"), ("order", "book_list"))
         ordering = ("-created_date",)

@@ -36,7 +36,7 @@
             </li>
             <li>
                 {% url 'settings-federation' as url %}
-                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Servers" %}</a>
+                <a href="{{ url }}"{% if url in request.path %} class="is-active" aria-selected="true"{% endif %}>{% trans "Federated Instances" %}</a>
             </li>
         </ul>
         {% endif %}

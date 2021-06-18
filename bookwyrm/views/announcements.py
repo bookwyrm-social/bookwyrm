@@ -81,6 +81,7 @@ class Announcement(View):
         form = forms.AnnouncementForm(request.POST, instance=announcement)
         if form.is_valid():
             announcement = form.save()
+            form = forms.AnnouncementForm(instance=announcement)
         data = {
             "announcement": announcement,
             "form": form,

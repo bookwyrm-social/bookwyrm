@@ -8,16 +8,21 @@
     <link rel="stylesheet" href="/static/css/vendor/icons.css">
     <link rel="stylesheet" href="/static/css/bookwyrm.css">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}/images/{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{{ media_url }}{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
 
+    {% if preview_images_enabled is True %}
+    <meta name="twitter:card" content="summary_large_image">
+    {% else %}
     <meta name="twitter:card" content="summary">
+    {% endif %}
     <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
     <meta name="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
-    <meta name="twitter:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
-    <meta name="og:image" content="{% if site.logo %}/images/{{ site.logo }}{% else %}/static/images/logo.png{% endif %}">
+    {% block opengraph_images %}
+        {% include 'snippets/opengraph_images.html' %}
+    {% endblock %}
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>
@@ -25,7 +30,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}/images/{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
+                <img class="image logo" src="{% if site.logo_small %}{{ media_url }}{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
             </a>
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
@@ -54,14 +59,14 @@
         <div class="navbar-menu" id="main-nav">
             <div class="navbar-start">
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
-                    {% trans "Your books" %}
-                </a>
                 <a href="/#feed" class="navbar-item">
                     {% trans "Feed" %}
                 </a>
                 <a href="{% url 'lists' %}" class="navbar-item">
                     {% trans "Lists" %}
+                </a>
+                <a href="{% url 'directory' %}" class="navbar-item">
+                    {% trans "Directory" %}
                 </a>
                 {% endif %}
             </div>
@@ -83,18 +88,13 @@
                     </a>
                     <ul class="navbar-dropdown" id="navbar-dropdown">
                         <li>
+                            <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
+                                {% trans 'Your Books' %}
+                            </a>
+                        </li>
+                        <li>
                             <a href="{% url 'direct-messages' %}" class="navbar-item">
                                 {% trans "Direct Messages" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'directory' %}" class="navbar-item">
-                                {% trans 'Directory' %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'import' %}" class="navbar-item">
-                                {% trans 'Import Books' %}
                             </a>
                         </li>
                         <li>
@@ -134,12 +134,14 @@
                                 <span class="is-sr-only">{% trans "Notifications" %}</span>
                             </span>
                         </span>
+                        {% with request.user.unread_notification_count as notification_count %}
                         <span
-                            class="{% if not request.user.unread_notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
+                            class="{% if not notification_count %}is-hidden {% elif request.user.has_unread_mentions %}is-danger {% endif %}tag is-medium transition-x"
                             data-poll-wrapper
                         >
-                            <span data-poll="notifications">{{ request.user.unread_notification_count }}</span>
+                            <span data-poll="notifications">{{ notification_count }}</span>
                         </span>
+                        {% endwith %}
                     </a>
                 </div>
                 {% else %}
@@ -193,8 +195,11 @@
 
 <div class="section is-flex-grow-1">
     <div class="container">
+        {# almost every view needs to know the user shelves #}
+        {% with request.user.shelf_set.all as user_shelves %}
         {% block content %}
         {% endblock %}
+        {% endwith %}
     </div>
 </div>
 
@@ -203,7 +208,7 @@
         <div class="columns">
             <div class="column is-one-fifth">
                 <p>
-                <a href="{% url 'about' %}">{% trans "About this server" %}</a>
+                <a href="{% url 'about' %}">{% trans "About this instance" %}</a>
                 </p>
                 {% if site.admin_email %}
                 <p>

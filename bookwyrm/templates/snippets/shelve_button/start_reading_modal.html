@@ -2,21 +2,23 @@
 {% load i18n %}
 
 {% block modal-title %}
-{% blocktrans with book_title=book.title %}Start "<em>{{ book_title }}</em>"{% endblocktrans %}
+{% blocktrans trimmed with book_title=book.title %}
+Start "<em>{{ book_title }}</em>"
+{% endblocktrans %}
 {% endblock %}
 
 {% block modal-form-open %}
-<form name="start-reading" action="/start-reading/{{ book.id }}" method="post">
+<form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post">
 {% endblock %}
 
 {% block modal-body %}
 <section class="modal-card-body">
     {% csrf_token %}
     <div class="field">
-        <label class="label">
+        <label class="label" for="start_id_start_date-{{ uuid }}">
             {% trans "Started reading" %}
-            <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
         </label>
+        <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
     </div>
 </section>
 {% endblock %}
@@ -30,7 +32,7 @@
         </label>
         {% include 'snippets/privacy_select.html' %}
     </div>
-    <div class="column">
+    <div class="column has-text-right">
         <button class="button is-success" type="submit">{% trans "Save" %}</button>
         {% trans "Cancel" as button_text %}
         {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="start-reading" controls_uid=uuid %}

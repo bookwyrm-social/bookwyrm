@@ -67,8 +67,8 @@ def import_data(source, job_id):
         for item in job.items.all():
             try:
                 item.resolve()
-            except Exception as e:  # pylint: disable=broad-except
-                logger.exception(e)
+            except Exception as err:  # pylint: disable=broad-except
+                logger.exception(err)
                 item.fail_reason = "Error loading book"
                 item.save()
                 continue

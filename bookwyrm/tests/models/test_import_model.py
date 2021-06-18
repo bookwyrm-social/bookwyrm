@@ -59,9 +59,10 @@ class ImportJob(TestCase):
         unknown_read_data["Exclusive Shelf"] = "read"
         unknown_read_data["Date Read"] = ""
 
-        user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
         job = models.ImportJob.objects.create(user=user)
         self.item_1 = models.ImportItem.objects.create(
             job=job, index=1, data=currently_reading_data
@@ -174,6 +175,9 @@ class ImportJob(TestCase):
                 with patch(
                     "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
                 ):
-                    book = self.item_1.get_book_from_isbn()
+                    with patch(
+                        "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
+                    ):
+                        book = self.item_1.get_book_from_isbn()
 
         self.assertEqual(book.title, "Sabriel")

@@ -74,10 +74,10 @@ services:
     restart: on-failure
   flower:
     build: .
-    command: flower --port=${FLOWER_PORT}
+    command: flower -A celerywyrm
     env_file: .env
-    environment:
-      - CELERY_BROKER_URL=${CELERY_BROKER}
+    volumes:
+      - .:/app
     networks:
       - main
     depends_on:

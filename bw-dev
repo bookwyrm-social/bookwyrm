@@ -90,7 +90,7 @@ case "$CMD" in
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        runweb django-admin makemessages --no-wrap --ignore=venv $@
+        runweb django-admin makemessages --no-wrap --ignore=venv --all $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
@@ -112,5 +112,11 @@ case "$CMD" in
         ;;
     *)
         echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_streams, populate_suggestions"
+        ;;
+    generate_preview_images)
+        runweb python manage.py generate_preview_images $@
+        ;;
+    *)
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, generate_preview_images"
         ;;
 esac

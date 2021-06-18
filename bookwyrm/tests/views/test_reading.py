@@ -15,29 +15,31 @@ class ReadingViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Test Book",
-            remote_id="https://example.com/book/1",
-            parent_work=self.work,
-        )
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Test Book",
+                remote_id="https://example.com/book/1",
+                parent_work=self.work,
             )
 
     def test_start_reading(self, _):
@@ -56,7 +58,7 @@ class ReadingViews(TestCase):
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.start_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 
@@ -86,7 +88,7 @@ class ReadingViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.start_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "start", self.book.id)
 
         self.assertFalse(to_read_shelf.books.exists())
         self.assertEqual(shelf.books.get(), self.book)
@@ -112,7 +114,7 @@ class ReadingViews(TestCase):
         request.user = self.local_user
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.finish_reading(request, self.book.id)
+            views.ReadingStatus.as_view()(request, "finish", self.book.id)
 
         self.assertEqual(shelf.books.get(), self.book)
 

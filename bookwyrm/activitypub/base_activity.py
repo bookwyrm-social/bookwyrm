@@ -37,6 +37,7 @@ class Mention(Link):
 
 
 @dataclass
+# pylint: disable=invalid-name
 class Signature:
     """public key block"""
 
@@ -56,11 +57,11 @@ def naive_parse(activity_objects, activity_json, serializer=None):
         activity_type = activity_json.get("type")
         try:
             serializer = activity_objects[activity_type]
-        except KeyError as e:
+        except KeyError as err:
             # we know this exists and that we can't handle it
             if activity_type in ["Question"]:
                 return None
-            raise ActivitySerializerError(e)
+            raise ActivitySerializerError(err)
 
     return serializer(activity_objects=activity_objects, **activity_json)
 

@@ -1,7 +1,6 @@
 """ template filters used for creating the layout"""
 from django import template, utils
 
-
 register = template.Library()
 
 

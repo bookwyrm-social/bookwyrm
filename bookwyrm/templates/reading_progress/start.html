@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block title %}
+{% blocktrans trimmed with book_title=book.title %}
+Start "{{ book_title }}"
+{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+
+{% include "snippets/shelve_button/start_reading_modal.html" with book=book active=True %}
+
+{% endblock %}

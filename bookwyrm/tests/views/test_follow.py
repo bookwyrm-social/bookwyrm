@@ -16,24 +16,25 @@ class BookViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@email.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
             )
+            with patch("bookwyrm.models.user.set_remote_server"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@email.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(
@@ -42,12 +43,13 @@ class BookViews(TestCase):
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        self.work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-            parent_work=self.work,
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
+                parent_work=self.work,
+            )
 
     def test_handle_follow_remote(self):
         """send a follow request"""
@@ -66,15 +68,16 @@ class BookViews(TestCase):
 
     def test_handle_follow_local_manually_approves(self):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-            manually_approves_followers=True,
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+                manually_approves_followers=True,
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -89,14 +92,15 @@ class BookViews(TestCase):
 
     def test_handle_follow_local(self):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
