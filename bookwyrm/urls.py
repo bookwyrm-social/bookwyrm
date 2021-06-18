@@ -7,8 +7,8 @@ from django.views.generic.base import TemplateView
 from bookwyrm import settings, views
 from bookwyrm.utils import regex
 
-user_path = r"^user/(?P<username>%s)" % regex.username
-local_user_path = r"^user/(?P<username>%s)" % regex.localname
+USER_PATH = r"^user/(?P<username>%s)" % regex.username
+LOCAL_USER_PATH = r"^user/(?P<username>%s)" % regex.localname
 
 status_types = [
     "status",
@@ -19,9 +19,9 @@ status_types = [
     "boost",
     "generatednote",
 ]
-status_path = r"%s/(%s)/(?P<status_id>\d+)" % (user_path, "|".join(status_types))
+STATUS_PATH = r"%s/(%s)/(?P<status_id>\d+)" % (USER_PATH, "|".join(status_types))
 
-book_path = r"^book/(?P<book_id>\d+)"
+BOOK_PATH = r"^book/(?P<book_id>\d+)"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,8 +31,8 @@ urlpatterns = [
     ),
     # federation endpoints
     re_path(r"^inbox/?$", views.Inbox.as_view()),
-    re_path(r"%s/inbox/?$" % local_user_path, views.Inbox.as_view()),
-    re_path(r"%s/outbox/?$" % local_user_path, views.Outbox.as_view()),
+    re_path(r"%s/inbox/?$" % LOCAL_USER_PATH, views.Inbox.as_view()),
+    re_path(r"%s/outbox/?$" % LOCAL_USER_PATH, views.Outbox.as_view()),
     re_path(r"^\.well-known/webfinger/?$", views.webfinger),
     re_path(r"^\.well-known/nodeinfo/?$", views.nodeinfo_pointer),
     re_path(r"^\.well-known/host-meta/?$", views.host_meta),
@@ -192,21 +192,21 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
     # users
-    re_path(r"%s/?$" % user_path, views.User.as_view(), name="user-feed"),
-    re_path(r"%s\.json$" % user_path, views.User.as_view()),
-    re_path(r"%s/rss" % user_path, views.rss_feed.RssFeed(), name="user-rss"),
+    re_path(r"%s/?$" % USER_PATH, views.User.as_view(), name="user-feed"),
+    re_path(r"%s\.json$" % USER_PATH, views.User.as_view()),
+    re_path(r"%s/rss" % USER_PATH, views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
-        r"%s/followers(.json)?/?$" % user_path,
+        r"%s/followers(.json)?/?$" % USER_PATH,
         views.Followers.as_view(),
         name="user-followers",
     ),
     re_path(
-        r"%s/following(.json)?/?$" % user_path,
+        r"%s/following(.json)?/?$" % USER_PATH,
         views.Following.as_view(),
         name="user-following",
     ),
     # lists
-    re_path(r"%s/lists/?$" % user_path, views.UserLists.as_view(), name="user-lists"),
+    re_path(r"%s/lists/?$" % USER_PATH, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
     re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
@@ -224,14 +224,14 @@ urlpatterns = [
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
     # User books
-    re_path(r"%s/books/?$" % user_path, views.Shelf.as_view(), name="user-shelves"),
+    re_path(r"%s/books/?$" % USER_PATH, views.Shelf.as_view(), name="user-shelves"),
     re_path(
-        r"^%s/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % user_path,
+        r"^%s/(helf|books)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % USER_PATH,
         views.Shelf.as_view(),
         name="shelf",
     ),
     re_path(
-        r"^%s/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % local_user_path,
+        r"^%s/(books|shelf)/(?P<shelf_identifier>[\w-]+)(.json)?/?$" % LOCAL_USER_PATH,
         views.Shelf.as_view(),
         name="shelf",
     ),
@@ -241,7 +241,7 @@ urlpatterns = [
     re_path(r"^unshelve/?$", views.unshelve),
     # goals
     re_path(
-        r"%s/goal/(?P<year>\d{4})/?$" % user_path,
+        r"%s/goal/(?P<year>\d{4})/?$" % USER_PATH,
         views.Goal.as_view(),
         name="user-goal",
     ),
@@ -258,10 +258,10 @@ urlpatterns = [
     re_path(r"^block/(?P<user_id>\d+)/?$", views.Block.as_view()),
     re_path(r"^unblock/(?P<user_id>\d+)/?$", views.unblock),
     # statuses
-    re_path(r"%s(.json)?/?$" % status_path, views.Status.as_view(), name="status"),
-    re_path(r"%s/activity/?$" % status_path, views.Status.as_view(), name="status"),
+    re_path(r"%s(.json)?/?$" % STATUS_PATH, views.Status.as_view(), name="status"),
+    re_path(r"%s/activity/?$" % STATUS_PATH, views.Status.as_view(), name="status"),
     re_path(
-        r"%s/replies(.json)?/?$" % status_path, views.Replies.as_view(), name="replies"
+        r"%s/replies(.json)?/?$" % STATUS_PATH, views.Replies.as_view(), name="replies"
     ),
     re_path(
         r"^post/?$",
@@ -289,17 +289,17 @@ urlpatterns = [
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books
-    re_path(r"%s(.json)?/?$" % book_path, views.Book.as_view(), name="book"),
+    re_path(r"%s(.json)?/?$" % BOOK_PATH, views.Book.as_view(), name="book"),
     re_path(
-        r"%s/(?P<user_statuses>review|comment|quote)/?$" % book_path,
+        r"%s/(?P<user_statuses>review|comment|quote)/?$" % BOOK_PATH,
         views.Book.as_view(),
         name="book-user-statuses",
     ),
-    re_path(r"%s/edit/?$" % book_path, views.EditBook.as_view()),
-    re_path(r"%s/confirm/?$" % book_path, views.ConfirmEditBook.as_view()),
+    re_path(r"%s/edit/?$" % BOOK_PATH, views.EditBook.as_view()),
+    re_path(r"%s/confirm/?$" % BOOK_PATH, views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
-    re_path(r"%s/editions(.json)?/?$" % book_path, views.Editions.as_view()),
+    re_path(r"%s/editions(.json)?/?$" % BOOK_PATH, views.Editions.as_view()),
     re_path(
         r"^upload-cover/(?P<book_id>\d+)/?$", views.upload_cover, name="upload-cover"
     ),

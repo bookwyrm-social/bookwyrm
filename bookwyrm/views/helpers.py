@@ -38,7 +38,7 @@ def is_api_request(request):
 def is_bookwyrm_request(request):
     """check if the request is coming from another bookwyrm instance"""
     user_agent = request.headers.get("User-Agent")
-    if user_agent is None or re.search(regex.bookwyrm_user_agent, user_agent) is None:
+    if user_agent is None or re.search(regex.BOOKWYRM_USER_AGENT, user_agent) is None:
         return False
     return True
 

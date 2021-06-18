@@ -232,7 +232,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
-        if not self.local and not re.match(regex.full_username, self.username):
+        if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)

@@ -21,6 +21,7 @@ from bookwyrm.utils import regex
 class Inbox(View):
     """requests sent by outside servers"""
 
+    # pylint: disable=too-many-return-statements
     def post(self, request, username=None):
         """only works as POST request"""
         # first check if this server is on our shitlist
@@ -70,7 +71,7 @@ def is_blocked_user_agent(request):
     user_agent = request.headers.get("User-Agent")
     if not user_agent:
         return False
-    url = re.search(r"https?://{:s}/?".format(regex.domain), user_agent)
+    url = re.search(r"https?://{:s}/?".format(regex.DOMAIN), user_agent)
     if not url:
         return False
     url = url.group()

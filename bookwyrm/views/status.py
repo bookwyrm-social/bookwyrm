@@ -133,7 +133,7 @@ def find_mentions(content):
     """detect @mentions in raw status content"""
     if not content:
         return
-    for match in re.finditer(regex.strict_username, content):
+    for match in re.finditer(rhandle_reading_status, egex.STRICT_USERNAME, content):
         username = match.group().strip().split("@")[1:]
         if len(username) == 1:
             # this looks like a local user (@user), fill in the domain
@@ -150,7 +150,7 @@ def find_mentions(content):
 def format_links(content):
     """detect and format links"""
     return re.sub(
-        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % regex.domain,
+        r'([^(href=")]|^|\()(https?:\/\/(%s([\w\.\-_\/+&\?=:;,])*))' % regex.DOMAIN,
         r'\g<1><a href="\g<2>">\g<3></a>',
         content,
     )
