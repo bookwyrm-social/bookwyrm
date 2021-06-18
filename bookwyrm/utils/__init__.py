@@ -1,1 +1,1 @@
-from .regex import username
+from .regex import USERNAME
