@@ -17,7 +17,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
@@ -452,9 +452,12 @@ def get_remote_reviews(outbox):
         activitypub.Review(**activity).to_model()
 
 
-@receiver(models.signals.post_save, sender=User)
 # pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=User)
 def preview_image(instance, *args, **kwargs):
+    """create preview images when user is updated"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

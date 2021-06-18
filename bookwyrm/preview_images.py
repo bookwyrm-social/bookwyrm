@@ -166,9 +166,7 @@ def generate_rating_layer(rating, content_width):
     rating_layer_base = Image.new(
         "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
     )
-    rating_layer_color = Image.new(
-        "RGBA", (content_width, icon_size), color=TEXT_COLOR
-    )
+    rating_layer_color = Image.new("RGBA", (content_width, icon_size), color=TEXT_COLOR)
     rating_layer_mask = Image.new(
         "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
     )
@@ -369,9 +367,7 @@ def generate_site_preview_image_task():
         "text_three": site.instance_tagline,
     }
 
-    image = generate_preview_image(
-        texts=texts, picture=logo, show_instance_layer=False
-    )
+    image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
 
     save_and_cleanup(image, instance=site)
 

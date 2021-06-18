@@ -7,6 +7,7 @@ from bookwyrm import models, preview_images
 # pylint: disable=line-too-long
 class Command(BaseCommand):
     """Creates previews for existing objects"""
+
     help = "Generate preview images"
 
     def add_arguments(self, parser):
