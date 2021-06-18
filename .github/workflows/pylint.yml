@@ -20,4 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint
       run: |
-        pylint bookwyrm/ -d --ignore=migrations --disable=E1101
+        pylint bookwyrm/ --ignore=migrations --disable=R,C,E1101
