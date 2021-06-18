@@ -1,12 +1,12 @@
 """ Generate preview images """
-import sys
-
 from django.core.management.base import BaseCommand
 
-from bookwyrm import activitystreams, models, settings, preview_images
+from bookwyrm import models, preview_images
 
 
+# pylint: disable=line-too-long
 class Command(BaseCommand):
+    """Creates previews for existing objects"""
     help = "Generate preview images"
 
     def add_arguments(self, parser):
