@@ -178,20 +178,26 @@ class Openlibrary(TestCase):
     @responses.activate
     def test_expand_book_data(self):
         """given a book, get more editions"""
-        work = models.Work.objects.create(title="Test Work", openlibrary_key="OL1234W")
-        edition = models.Edition.objects.create(title="Test Edition", parent_work=work)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(
+                title="Test Work", openlibrary_key="OL1234W"
+            )
+            edition = models.Edition.objects.create(
+                title="Test Edition", parent_work=work
+            )
 
         responses.add(
             responses.GET,
             "https://openlibrary.org/works/OL1234W/editions",
             json={"entries": []},
         )
-        with patch(
-            "bookwyrm.connectors.abstract_connector.AbstractConnector."
-            "create_edition_from_data"
-        ):
-            self.connector.expand_book_data(edition)
-            self.connector.expand_book_data(work)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.connectors.abstract_connector.AbstractConnector."
+                "create_edition_from_data"
+            ):
+                self.connector.expand_book_data(edition)
+                self.connector.expand_book_data(work)
 
     def test_get_description(self):
         """should do some cleanup on the description data"""
@@ -224,11 +230,14 @@ class Openlibrary(TestCase):
             json={"hi": "there"},
             status=200,
         )
-        with patch(
-            "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
-        ) as mock:
-            mock.return_value = []
-            result = self.connector.create_edition_from_data(work, self.edition_data)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
+            ) as mock:
+                mock.return_value = []
+                result = self.connector.create_edition_from_data(
+                    work, self.edition_data
+                )
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, "Sabriel")
         self.assertEqual(result.isbn_10, "0060273224")

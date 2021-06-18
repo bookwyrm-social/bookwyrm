@@ -15,32 +15,35 @@ class StatusViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
-        with patch("bookwyrm.models.user.set_remote_server"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@email.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
             )
+            with patch("bookwyrm.models.user.set_remote_server"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@email.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
 
-        work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="Example Edition",
-            remote_id="https://example.com/book/1",
-            parent_work=work,
-        )
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="Test Work")
+            self.book = models.Edition.objects.create(
+                title="Example Edition",
+                remote_id="https://example.com/book/1",
+                parent_work=work,
+            )
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_handle_status(self, _):
         """create a status"""
@@ -68,9 +71,10 @@ class StatusViews(TestCase):
     def test_handle_status_reply(self, _):
         """create a status in reply to an existing status"""
         view = views.CreateStatus.as_view()
-        user = models.User.objects.create_user(
-            "rat", "rat@rat.com", "password", local=True
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = models.User.objects.create_user(
+                "rat", "rat@rat.com", "password", local=True
+            )
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             parent = models.Status.objects.create(
                 content="parent status", user=self.local_user
@@ -98,9 +102,14 @@ class StatusViews(TestCase):
     def test_handle_status_mentions(self, _):
         """@mention a user in a post"""
         view = views.CreateStatus.as_view()
-        user = models.User.objects.create_user(
-            "rat@%s" % DOMAIN, "rat@rat.com", "password", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = models.User.objects.create_user(
+                "rat@%s" % DOMAIN,
+                "rat@rat.com",
+                "password",
+                local=True,
+                localname="rat",
+            )
         form = forms.CommentForm(
             {
                 "content": "hi @rat",
@@ -124,9 +133,10 @@ class StatusViews(TestCase):
     def test_handle_status_reply_with_mentions(self, _):
         """reply to a post with an @mention'ed user"""
         view = views.CreateStatus.as_view()
-        user = models.User.objects.create_user(
-            "rat", "rat@rat.com", "password", local=True, localname="rat"
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = models.User.objects.create_user(
+                "rat", "rat@rat.com", "password", local=True, localname="rat"
+            )
         form = forms.CommentForm(
             {
                 "content": "hi @rat@example.com",
@@ -191,10 +201,11 @@ class StatusViews(TestCase):
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            status = models.ReviewRating.objects.create(
-                book=self.book, rating=2.0, user=self.local_user
-            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+                status = models.ReviewRating.objects.create(
+                    book=self.book, rating=2.0, user=self.local_user
+                )
 
         with patch(
             "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
@@ -228,13 +239,14 @@ class StatusViews(TestCase):
 
     def test_find_mentions(self, _):
         """detect and look up @ mentions of users"""
-        user = models.User.objects.create_user(
-            "nutria@%s" % DOMAIN,
-            "nutria@nutria.com",
-            "password",
-            local=True,
-            localname="nutria",
-        )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            user = models.User.objects.create_user(
+                "nutria@%s" % DOMAIN,
+                "nutria@nutria.com",
+                "password",
+                local=True,
+                localname="nutria",
+            )
         self.assertEqual(user.username, "nutria@%s" % DOMAIN)
 
         self.assertEqual(

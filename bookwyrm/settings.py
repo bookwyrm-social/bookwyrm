@@ -42,6 +42,14 @@ LOCALE_PATHS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+# Preview image
+ENABLE_PREVIEW_IMAGES = env.bool("ENABLE_PREVIEW_IMAGES", False)
+PREVIEW_BG_COLOR = env.str("PREVIEW_BG_COLOR", "use_dominant_color_light")
+PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
+PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
+PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
+PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -175,8 +183,10 @@ USE_TZ = True
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = "/static/"
+STATIC_PATH = "%s/%s" % (DOMAIN, env("STATIC_ROOT", "static"))
 STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
 MEDIA_URL = "/images/"
+MEDIA_PATH = "%s/%s" % (DOMAIN, env("MEDIA_ROOT", "images"))
 MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 
 USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (

@@ -4,9 +4,13 @@ import datetime
 
 from Crypto import Random
 from django.db import models, IntegrityError
+from django.dispatch import receiver
 from django.utils import timezone
+from model_utils import FieldTracker
 
+from bookwyrm.preview_images import generate_site_preview_image_task
 from bookwyrm.settings import DOMAIN
+from bookwyrm.tasks import app
 from .base_model import BookWyrmModel
 from .user import User
 
@@ -35,12 +39,17 @@ class SiteSettings(models.Model):
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
     logo_small = models.ImageField(upload_to="logos/", null=True, blank=True)
     favicon = models.ImageField(upload_to="logos/", null=True, blank=True)
+    preview_image = models.ImageField(
+        upload_to="previews/logos/", null=True, blank=True
+    )
 
     # footer
     support_link = models.CharField(max_length=255, null=True, blank=True)
     support_title = models.CharField(max_length=100, null=True, blank=True)
     admin_email = models.EmailField(max_length=255, null=True, blank=True)
     footer_item = models.TextField(null=True, blank=True)
+
+    field_tracker = FieldTracker(fields=["name", "instance_tagline", "logo"])
 
     @classmethod
     def get(cls):
@@ -119,3 +128,12 @@ class PasswordReset(models.Model):
     def link(self):
         """formats the invite link"""
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)
+
+
+@receiver(models.signals.post_save, sender=SiteSettings)
+# pylint: disable=unused-argument
+def preview_image(instance, *args, **kwargs):
+    changed_fields = instance.field_tracker.changed()
+
+    if len(changed_fields) > 0:
+        generate_site_preview_image_task.delay()

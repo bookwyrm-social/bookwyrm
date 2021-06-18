@@ -156,6 +156,12 @@ class LimitedEditUserForm(CustomForm):
         help_texts = {f: None for f in fields}
 
 
+class DeleteUserForm(CustomForm):
+    class Meta:
+        model = models.User
+        fields = ["password"]
+
+
 class UserGroupForm(CustomForm):
     class Meta:
         model = models.User
