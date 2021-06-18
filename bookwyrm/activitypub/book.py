@@ -6,6 +6,7 @@ from .base_activity import ActivityObject
 from .image import Document
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class BookData(ActivityObject):
     """shared fields for all book data and authors"""
@@ -18,6 +19,7 @@ class BookData(ActivityObject):
     lastEditedBy: str = None
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Book(BookData):
     """serializes an edition or work, abstract"""
@@ -40,6 +42,7 @@ class Book(BookData):
     type: str = "Book"
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Edition(Book):
     """Edition instance of a book object"""
@@ -57,6 +60,7 @@ class Edition(Book):
     type: str = "Edition"
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Work(Book):
     """work instance of a book object"""
@@ -66,6 +70,7 @@ class Work(Book):
     type: str = "Work"
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Author(BookData):
     """author of a book"""

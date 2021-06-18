@@ -9,8 +9,7 @@ from django.utils import timezone
 from model_utils import FieldTracker
 
 from bookwyrm.preview_images import generate_site_preview_image_task
-from bookwyrm.settings import DOMAIN
-from bookwyrm.tasks import app
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
 from .base_model import BookWyrmModel
 from .user import User
 
@@ -130,9 +129,12 @@ class PasswordReset(models.Model):
         return "https://{}/password-reset/{}".format(DOMAIN, self.code)
 
 
-@receiver(models.signals.post_save, sender=SiteSettings)
 # pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=SiteSettings)
 def preview_image(instance, *args, **kwargs):
+    """Update image preview for the default site image"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

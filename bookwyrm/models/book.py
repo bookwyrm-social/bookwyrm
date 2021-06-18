@@ -8,8 +8,7 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
-from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
-from bookwyrm.tasks import app
+from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE, ENABLE_PREVIEW_IMAGES
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -303,9 +302,12 @@ def isbn_13_to_10(isbn_13):
     return converted + str(checkdigit)
 
 
-@receiver(models.signals.post_save, sender=Edition)
 # pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=Edition)
 def preview_image(instance, *args, **kwargs):
+    """create preview image on book create"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
     changed_fields = {}
     if instance.field_tracker:
         changed_fields = instance.field_tracker.changed()

@@ -1,12 +1,13 @@
-import colorsys
+""" Generate social media preview images for twitter/mastodon/etc """
 import math
 import os
 import textwrap
-
-from colorthief import ColorThief
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 from uuid import uuid4
+
+import colorsys
+from colorthief import ColorThief
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -31,6 +32,7 @@ font_dir = os.path.join(settings.STATIC_ROOT, "fonts/public_sans")
 
 
 def get_font(font_name, size=28):
+    """Loads custom font"""
     if font_name == "light":
         font_path = os.path.join(font_dir, "PublicSans-Light.ttf")
     if font_name == "regular":
@@ -47,6 +49,7 @@ def get_font(font_name, size=28):
 
 
 def generate_texts_layer(texts, content_width):
+    """Adds text for images"""
     font_text_zero = get_font("bold", size=20)
     font_text_one = get_font("bold", size=48)
     font_text_two = get_font("bold", size=40)
@@ -66,7 +69,7 @@ def generate_texts_layer(texts, content_width):
 
         try:
             text_y = text_y + font_text_zero.getsize_multiline(text_zero)[1] + 16
-        except:
+        except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_one" in texts and texts["text_one"]:
@@ -78,7 +81,7 @@ def generate_texts_layer(texts, content_width):
 
         try:
             text_y = text_y + font_text_one.getsize_multiline(text_one)[1] + 16
-        except:
+        except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_two" in texts and texts["text_two"]:
@@ -90,7 +93,7 @@ def generate_texts_layer(texts, content_width):
 
         try:
             text_y = text_y + font_text_one.getsize_multiline(text_two)[1] + 16
-        except:
+        except (AttributeError, IndexError):
             text_y = text_y + 26
 
     if "text_three" in texts and texts["text_three"]:
@@ -105,6 +108,7 @@ def generate_texts_layer(texts, content_width):
 
 
 def generate_instance_layer(content_width):
+    """Places components for instance preview"""
     font_instance = get_font("light", size=28)
 
     site = models.SiteSettings.objects.get()
@@ -145,6 +149,7 @@ def generate_instance_layer(content_width):
 
 
 def generate_rating_layer(rating, content_width):
+    """Places components for rating preview"""
     try:
         icon_star_full = Image.open(
             os.path.join(settings.STATIC_ROOT, "images/icons/star-full.png")
@@ -155,47 +160,46 @@ def generate_rating_layer(rating, content_width):
         icon_star_half = Image.open(
             os.path.join(settings.STATIC_ROOT, "images/icons/star-half.png")
         )
-
-        icon_size = 64
-        icon_margin = 10
-
-        rating_layer_base = Image.new(
-            "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
-        )
-        rating_layer_color = Image.new(
-            "RGBA", (content_width, icon_size), color=TEXT_COLOR
-        )
-        rating_layer_mask = Image.new(
-            "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
-        )
-
-        position_x = 0
-
-        for r in range(math.floor(rating)):
-            rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
-            position_x = position_x + icon_size + icon_margin
-
-        if math.floor(rating) != math.ceil(rating):
-            rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
-            position_x = position_x + icon_size + icon_margin
-
-        for r in range(5 - math.ceil(rating)):
-            rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
-            position_x = position_x + icon_size + icon_margin
-
-        rating_layer_mask = rating_layer_mask.getchannel("A")
-        rating_layer_mask = ImageOps.invert(rating_layer_mask)
-
-        rating_layer_composite = Image.composite(
-            rating_layer_base, rating_layer_color, rating_layer_mask
-        )
-
-        return rating_layer_composite
-    except:
+    except FileNotFoundError:
         return None
+
+    icon_size = 64
+    icon_margin = 10
+
+    rating_layer_base = Image.new(
+        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+    )
+    rating_layer_color = Image.new("RGBA", (content_width, icon_size), color=TEXT_COLOR)
+    rating_layer_mask = Image.new(
+        "RGBA", (content_width, icon_size), color=TRANSPARENT_COLOR
+    )
+
+    position_x = 0
+
+    for _ in range(math.floor(rating)):
+        rating_layer_mask.alpha_composite(icon_star_full, (position_x, 0))
+        position_x = position_x + icon_size + icon_margin
+
+    if math.floor(rating) != math.ceil(rating):
+        rating_layer_mask.alpha_composite(icon_star_half, (position_x, 0))
+        position_x = position_x + icon_size + icon_margin
+
+    for _ in range(5 - math.ceil(rating)):
+        rating_layer_mask.alpha_composite(icon_star_empty, (position_x, 0))
+        position_x = position_x + icon_size + icon_margin
+
+    rating_layer_mask = rating_layer_mask.getchannel("A")
+    rating_layer_mask = ImageOps.invert(rating_layer_mask)
+
+    rating_layer_composite = Image.composite(
+        rating_layer_base, rating_layer_color, rating_layer_mask
+    )
+
+    return rating_layer_composite
 
 
 def generate_default_inner_img():
+    """Adds cover image"""
     font_cover = get_font("light", size=28)
 
     default_cover = Image.new(
@@ -214,16 +218,19 @@ def generate_default_inner_img():
     return default_cover
 
 
+# pylint: disable=too-many-locals
 def generate_preview_image(
-    texts={}, picture=None, rating=None, show_instance_layer=True
+    texts=None, picture=None, rating=None, show_instance_layer=True
 ):
+    """Puts everything together"""
+    texts = texts or {}
     # Cover
     try:
         inner_img_layer = Image.open(picture)
         inner_img_layer.thumbnail((inner_img_width, inner_img_height), Image.ANTIALIAS)
         color_thief = ColorThief(picture)
         dominant_color = color_thief.get_color(quality=1)
-    except:
+    except:  # pylint: disable=bare-except
         inner_img_layer = generate_default_inner_img()
         dominant_color = ImageColor.getrgb(DEFAULT_COVER_COLOR)
 
@@ -246,7 +253,7 @@ def generate_preview_image(
             image_bg_color_hls[2],
         )
         image_bg_color = tuple(
-            [math.ceil(x * 255) for x in colorsys.hls_to_rgb(*image_bg_color_hls)]
+            math.ceil(x * 255) for x in colorsys.hls_to_rgb(*image_bg_color_hls)
         )
     else:
         image_bg_color = BG_COLOR
@@ -292,8 +299,7 @@ def generate_preview_image(
         # Remove Instance Layer from centering calculations
         contents_y = contents_y - math.floor((instance_layer.height + gutter) / 2)
 
-    if contents_y < margin:
-        contents_y = margin
+    contents_y = max(contents_y, margin)
 
     # Composite layers
     img.paste(
@@ -305,108 +311,114 @@ def generate_preview_image(
 
 
 def save_and_cleanup(image, instance=None):
-    if isinstance(instance, (models.Book, models.User, models.SiteSettings)):
-        file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
-        image_buffer = BytesIO()
-
-        try:
-            try:
-                old_path = instance.preview_image.path
-            except ValueError:
-                old_path = ""
-
-            # Save
-            image.save(image_buffer, format="jpeg", quality=75)
-
-            instance.preview_image = InMemoryUploadedFile(
-                ContentFile(image_buffer.getvalue()),
-                "preview_image",
-                file_name,
-                "image/jpg",
-                image_buffer.tell(),
-                None,
-            )
-
-            save_without_broadcast = isinstance(instance, (models.Book, models.User))
-            if save_without_broadcast:
-                result = instance.save(broadcast=False)
-            else:
-                instance.save()
-
-            # Clean up old file after saving
-            if os.path.exists(old_path):
-                os.remove(old_path)
-
-        finally:
-            image_buffer.close()
-            return True
-    else:
+    """Save and close the file"""
+    if not isinstance(instance, (models.Book, models.User, models.SiteSettings)):
         return False
+    file_name = "%s-%s.jpg" % (str(instance.id), str(uuid4()))
+    image_buffer = BytesIO()
+
+    try:
+        try:
+            old_path = instance.preview_image.path
+        except ValueError:
+            old_path = ""
+
+        # Save
+        image.save(image_buffer, format="jpeg", quality=75)
+
+        instance.preview_image = InMemoryUploadedFile(
+            ContentFile(image_buffer.getvalue()),
+            "preview_image",
+            file_name,
+            "image/jpg",
+            image_buffer.tell(),
+            None,
+        )
+
+        save_without_broadcast = isinstance(instance, (models.Book, models.User))
+        if save_without_broadcast:
+            instance.save(broadcast=False)
+        else:
+            instance.save()
+
+        # Clean up old file after saving
+        if os.path.exists(old_path):
+            os.remove(old_path)
+
+    finally:
+        image_buffer.close()
+    return True
 
 
+# pylint: disable=invalid-name
 @app.task
 def generate_site_preview_image_task():
     """generate preview_image for the website"""
-    if settings.ENABLE_PREVIEW_IMAGES == True:
-        site = models.SiteSettings.objects.get()
+    if not settings.ENABLE_PREVIEW_IMAGES:
+        return
 
-        if site.logo:
-            logo = site.logo
-        else:
-            logo = os.path.join(settings.STATIC_ROOT, "images/logo.png")
+    site = models.SiteSettings.objects.get()
 
-        texts = {
-            "text_zero": settings.DOMAIN,
-            "text_one": site.name,
-            "text_three": site.instance_tagline,
-        }
+    if site.logo:
+        logo = site.logo
+    else:
+        logo = os.path.join(settings.STATIC_ROOT, "images/logo.png")
 
-        image = generate_preview_image(
-            texts=texts, picture=logo, show_instance_layer=False
-        )
+    texts = {
+        "text_zero": settings.DOMAIN,
+        "text_one": site.name,
+        "text_three": site.instance_tagline,
+    }
 
-        save_and_cleanup(image, instance=site)
+    image = generate_preview_image(texts=texts, picture=logo, show_instance_layer=False)
+
+    save_and_cleanup(image, instance=site)
 
 
+# pylint: disable=invalid-name
 @app.task
 def generate_edition_preview_image_task(book_id):
     """generate preview_image for a book"""
-    if settings.ENABLE_PREVIEW_IMAGES == True:
-        book = models.Book.objects.select_subclasses().get(id=book_id)
+    if not settings.ENABLE_PREVIEW_IMAGES:
+        return
 
-        rating = models.Review.objects.filter(
-            privacy="public",
-            deleted=False,
-            book__in=[book_id],
-        ).aggregate(Avg("rating"))["rating__avg"]
+    book = models.Book.objects.select_subclasses().get(id=book_id)
 
-        texts = {
-            "text_one": book.title,
-            "text_two": book.subtitle,
-            "text_three": book.author_text,
-        }
+    rating = models.Review.objects.filter(
+        privacy="public",
+        deleted=False,
+        book__in=[book_id],
+    ).aggregate(Avg("rating"))["rating__avg"]
 
-        image = generate_preview_image(texts=texts, picture=book.cover, rating=rating)
+    texts = {
+        "text_one": book.title,
+        "text_two": book.subtitle,
+        "text_three": book.author_text,
+    }
 
-        save_and_cleanup(image, instance=book)
+    image = generate_preview_image(texts=texts, picture=book.cover, rating=rating)
+
+    save_and_cleanup(image, instance=book)
 
 
 @app.task
 def generate_user_preview_image_task(user_id):
     """generate preview_image for a book"""
-    if settings.ENABLE_PREVIEW_IMAGES == True:
-        user = models.User.objects.get(id=user_id)
+    if not settings.ENABLE_PREVIEW_IMAGES:
+        return
 
-        texts = {
-            "text_one": user.display_name,
-            "text_three": "@{}@{}".format(user.localname, settings.DOMAIN),
-        }
+    user = models.User.objects.get(id=user_id)
 
-        if user.avatar:
-            avatar = user.avatar
-        else:
-            avatar = os.path.join(settings.STATIC_ROOT, "images/default_avi.jpg")
+    texts = {
+        "text_one": user.display_name,
+        "text_three": "@{}@{}".format(user.localname, settings.DOMAIN),
+    }
 
-        image = generate_preview_image(texts=texts, picture=avatar)
+    if user.avatar:
+        avatar = user.avatar
+    else:
+        avatar = os.path.join(settings.STATIC_ROOT, "images/default_avi.jpg")
 
-        save_and_cleanup(image, instance=user)
+    image = generate_preview_image(texts=texts, picture=avatar)
+
+    save_and_cleanup(image, instance=user)

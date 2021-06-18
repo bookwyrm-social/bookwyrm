@@ -1,9 +1,12 @@
+""" Makes the app aware of the users timezone """
 import pytz
 
 from django.utils import timezone
 
 
 class TimezoneMiddleware:
+    """Determine the timezone based on the request"""
+
     def __init__(self, get_response):
         self.get_response = get_response
 

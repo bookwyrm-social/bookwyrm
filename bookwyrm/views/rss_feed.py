@@ -10,7 +10,7 @@ class RssFeed(Feed):
     description_template = "rss/content.html"
     title_template = "rss/title.html"
 
-    def get_object(self, request, username):
+    def get_object(self, request, username):  # pylint: disable=arguments-differ
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 
