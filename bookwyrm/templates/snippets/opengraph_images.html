@@ -1,0 +1,12 @@
+{% if preview_images_enabled is True %}
+    {% if image %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ media_path }}{{ image }}">
+        <meta name="og:image" content="{{ request.scheme }}://{{ media_path }}{{ image }}">
+    {% else %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ media_path }}{{ site.preview_image }}">
+        <meta name="og:image" content="{{ request.scheme }}://{{ media_path }}{{ site.preview_image }}">
+    {% endif %}
+{% else %}
+    <meta name="twitter:image" content="{{ request.scheme }}://{% if site.logo %}{{ media_path }}{{ site.logo }}{% else %}{{ static_path }}/images/logo.png{% endif %}">
+    <meta name="og:image" content="{{ request.scheme }}://{% if site.logo %}{{ media_path }}{{ site.logo }}{% else %}{{ static_path }}/images/logo.png{% endif %}">
+{% endif %}

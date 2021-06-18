@@ -2,6 +2,7 @@
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from unittest.mock import patch
 
 from bookwyrm import forms, models, views
 
@@ -12,21 +13,23 @@ class ReportViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@mouse.mouse",
-            "password",
-            local=True,
-            localname="rat",
-        )
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@mouse.mouse",
+                "password",
+                local=True,
+                localname="rat",
+            )
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
 
     def test_reports_page(self):
         """there are so many views, this just makes sure it LOADS"""

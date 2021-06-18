@@ -11,29 +11,30 @@ class FederatedServer(TestCase):
     def setUp(self):
         """we'll need a user"""
         self.server = models.FederatedServer.objects.create(server_name="test.server")
-        with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                federated_server=self.server,
-                local=False,
-                remote_id="https://example.com/users/rat",
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
-            self.inactive_remote_user = models.User.objects.create_user(
-                "nutria",
-                "nutria@nutria.com",
-                "nutriaword",
-                federated_server=self.server,
-                local=False,
-                remote_id="https://example.com/users/nutria",
-                inbox="https://example.com/users/nutria/inbox",
-                outbox="https://example.com/users/nutria/outbox",
-                is_active=False,
-                deactivation_reason="self_deletion",
-            )
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch("bookwyrm.models.user.set_remote_server.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    federated_server=self.server,
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
+                self.inactive_remote_user = models.User.objects.create_user(
+                    "nutria",
+                    "nutria@nutria.com",
+                    "nutriaword",
+                    federated_server=self.server,
+                    local=False,
+                    remote_id="https://example.com/users/nutria",
+                    inbox="https://example.com/users/nutria/inbox",
+                    outbox="https://example.com/users/nutria/outbox",
+                    is_active=False,
+                    deactivation_reason="self_deletion",
+                )
 
     def test_block_unblock(self):
         """block a server and all users on it"""

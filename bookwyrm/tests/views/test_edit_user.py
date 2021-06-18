@@ -21,25 +21,29 @@ class EditUserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
-        )
-        self.book = models.Edition.objects.create(title="test")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=self.local_user.shelf_set.first(),
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
             )
 
-        models.SiteSettings.objects.create()
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.book = models.Edition.objects.create(title="test")
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                models.ShelfBook.objects.create(
+                    book=self.book,
+                    user=self.local_user,
+                    shelf=self.local_user.shelf_set.first(),
+                )
+
+        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
+            models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
@@ -64,11 +68,12 @@ class EditUserViews(TestCase):
         request.user = self.local_user
 
         self.assertIsNone(self.local_user.name)
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-        ) as delay_mock:
-            view(request)
-            self.assertEqual(delay_mock.call_count, 1)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            ) as delay_mock:
+                view(request)
+                self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
 
@@ -88,11 +93,12 @@ class EditUserViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch(
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-        ) as delay_mock:
-            view(request)
-            self.assertEqual(delay_mock.call_count, 1)
+        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+            with patch(
+                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            ) as delay_mock:
+                view(request)
+                self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
         self.assertIsNotNone(self.local_user.avatar)
