@@ -21,17 +21,34 @@ def forward_func(apps, schema_editor):
             note.note_type = "TO_READ"
         else:
             note.note_type = "GOAL"
+        if note.note_type != "GOAL":
+            note.content = None
         note.save()
 
 
 def reverse_func(apps, schema_editor):
     """nothing to do here"""
+    db_alias = schema_editor.connection.alias
+
+    generated_notes = apps.get_model("bookwyrm", "GeneratedNote").objects.using(
+        db_alias
+    )
+
+    for note in generated_notes:
+        message = {
+            "TO_READ": "wants to read",
+            "READING": "started reading",
+            "READ": "finished reading",
+        }
+        if note.note_type in message:
+            note.content = message
+            note.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0076_preview_images'),
+        ("bookwyrm", "0076_preview_images"),
     ]
 
     operations = [
