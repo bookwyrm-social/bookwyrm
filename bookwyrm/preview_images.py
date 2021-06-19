@@ -322,7 +322,7 @@ def save_and_cleanup(image, instance=None):
         try:
             old_path = instance.preview_image.name
         except ValueError:
-            old_path = ""
+            old_path = None
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
@@ -343,7 +343,7 @@ def save_and_cleanup(image, instance=None):
             instance.save()
 
         # Clean up old file after saving
-        if default_storage.exists(old_path):
+        if old_path and default_storage.exists(old_path):
             default_storage.delete(old_path)
 
     finally:
