@@ -1,1 +1,2 @@
-from .regex import username
+""" useful regex """
+from .regex import USERNAME

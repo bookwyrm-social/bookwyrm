@@ -1,4 +1,5 @@
 """ testing book data connectors """
+from unittest.mock import patch
 import json
 import pathlib
 from django.test import TestCase
@@ -25,8 +26,9 @@ class BookWyrmConnector(TestCase):
 
     def test_get_or_create_book_existing(self):
         """load book activity"""
-        work = models.Work.objects.create(title="Test Work")
-        book = models.Edition.objects.create(title="Test Edition", parent_work=work)
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            work = models.Work.objects.create(title="Test Work")
+            book = models.Edition.objects.create(title="Test Edition", parent_work=work)
         result = self.connector.get_or_create_book(book.remote_id)
         self.assertEqual(book, result)
 

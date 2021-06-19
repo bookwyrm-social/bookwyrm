@@ -83,7 +83,7 @@ def user_search(query, viewer, *_):
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
-    if re.match(regex.full_username, query):
+    if re.match(regex.FULL_USERNAME, query):
         handle_remote_webfinger(query)
 
     return (

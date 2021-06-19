@@ -10,7 +10,6 @@
         <p class="subtitle help">
             {% include 'lists/created_text.html' with list=list %}
         </p>
-        {% include 'snippets/trimmed_text.html' with full=list.description %}
     </div>
     {% if request.user == list.user %}
     <div class="column is-narrow">
@@ -19,6 +18,10 @@
     </div>
     {% endif %}
 </header>
+
+<div class="block content">
+    {% include 'snippets/trimmed_text.html' with full=list.description %}    
+</div>
 
 <div class="block">
     {% include 'lists/edit_form.html' with controls_text="edit-list" %}

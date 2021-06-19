@@ -1,25 +1,17 @@
 """ non-interactive pages """
-from io import BytesIO
-from uuid import uuid4
-from PIL import Image
-
-from django.contrib.auth.decorators import login_required
-from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import forms, models
+from bookwyrm import models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import get_user_from_username, is_api_request
 from .helpers import privacy_filter
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 class User(View):
     """user profile page"""
 
@@ -59,10 +51,15 @@ class User(View):
                 break
 
         # user's posts
-        activities = privacy_filter(
-            request.user,
-            user.status_set.select_subclasses(),
+        activities = (
+            privacy_filter(
+                request.user,
+                user.status_set.select_subclasses(),
+            )
+            .select_related("reply_parent")
+            .prefetch_related("mention_books", "mention_users")
         )
+
         paginated = Paginator(activities, PAGE_LENGTH)
         goal = models.AnnualGoal.objects.filter(
             user=user, year=timezone.now().year
@@ -117,71 +114,3 @@ class Following(View):
             "follow_list": paginated.get_page(request.GET.get("page")),
         }
         return TemplateResponse(request, "user/relationships/following.html", data)
-
-
-@method_decorator(login_required, name="dispatch")
-class EditUser(View):
-    """edit user view"""
-
-    def get(self, request):
-        """edit profile page for a user"""
-        data = {
-            "form": forms.EditUserForm(instance=request.user),
-            "user": request.user,
-        }
-        return TemplateResponse(request, "preferences/edit_user.html", data)
-
-    def post(self, request):
-        """les get fancy with images"""
-        form = forms.EditUserForm(request.POST, request.FILES, instance=request.user)
-        if not form.is_valid():
-            data = {"form": form, "user": request.user}
-            return TemplateResponse(request, "preferences/edit_user.html", data)
-
-        user = save_user_form(form)
-
-        return redirect(user.local_path)
-
-
-def save_user_form(form):
-    """special handling for the user form"""
-    user = form.save(commit=False)
-
-    if "avatar" in form.files:
-        # crop and resize avatar upload
-        image = Image.open(form.files["avatar"])
-        image = crop_avatar(image)
-
-        # set the name to a hash
-        extension = form.files["avatar"].name.split(".")[-1]
-        filename = "%s.%s" % (uuid4(), extension)
-        user.avatar.save(filename, image, save=False)
-    user.save()
-    return user
-
-
-def crop_avatar(image):
-    """reduce the size and make an avatar square"""
-    target_size = 120
-    width, height = image.size
-    thumbnail_scale = (
-        height / (width / target_size)
-        if height > width
-        else width / (height / target_size)
-    )
-    image.thumbnail([thumbnail_scale, thumbnail_scale])
-    width, height = image.size
-
-    width_diff = width - target_size
-    height_diff = height - target_size
-    cropped = image.crop(
-        (
-            int(width_diff / 2),
-            int(height_diff / 2),
-            int(width - (width_diff / 2)),
-            int(height - (height_diff / 2)),
-        )
-    )
-    output = BytesIO()
-    cropped.save(output, format=image.format)
-    return ContentFile(output.getvalue())

@@ -37,7 +37,7 @@ class AbstractMinimalConnector(ABC):
         for field in self_fields:
             setattr(self, field, getattr(info, field))
 
-    def search(self, query, min_confidence=None):
+    def search(self, query, min_confidence=None, timeout=5):
         """free text search"""
         params = {}
         if min_confidence:
@@ -46,6 +46,7 @@ class AbstractMinimalConnector(ABC):
         data = self.get_search_data(
             "%s%s" % (self.search_url, query),
             params=params,
+            timeout=timeout,
         )
         results = []
 
@@ -126,8 +127,8 @@ class AbstractConnector(AbstractMinimalConnector):
             edition_data = data
             try:
                 work_data = self.get_work_from_edition_data(data)
-            except (KeyError, ConnectorException) as e:
-                logger.exception(e)
+            except (KeyError, ConnectorException) as err:
+                logger.exception(err)
                 work_data = data
 
         if not work_data or not edition_data:
@@ -218,7 +219,7 @@ def dict_from_mappings(data, mappings):
     return result
 
 
-def get_data(url, params=None):
+def get_data(url, params=None, timeout=10):
     """wrapper for request.get"""
     # check if the url is blocked
     if models.FederatedServer.is_blocked(url):
@@ -234,23 +235,24 @@ def get_data(url, params=None):
                 "Accept": "application/json; charset=utf-8",
                 "User-Agent": settings.USER_AGENT,
             },
+            timeout=timeout,
         )
-    except (RequestError, SSLError, ConnectionError) as e:
-        logger.exception(e)
+    except (RequestError, SSLError, ConnectionError) as err:
+        logger.exception(err)
         raise ConnectorException()
 
     if not resp.ok:
         raise ConnectorException()
     try:
         data = resp.json()
-    except ValueError as e:
-        logger.exception(e)
+    except ValueError as err:
+        logger.exception(err)
         raise ConnectorException()
 
     return data
 
 
-def get_image(url):
+def get_image(url, timeout=10):
     """wrapper for requesting an image"""
     try:
         resp = requests.get(
@@ -258,9 +260,10 @@ def get_image(url):
             headers={
                 "User-Agent": settings.USER_AGENT,
             },
+            timeout=timeout,
         )
-    except (RequestError, SSLError) as e:
-        logger.exception(e)
+    except (RequestError, SSLError) as err:
+        logger.exception(err)
         return None
     if not resp.ok:
         return None

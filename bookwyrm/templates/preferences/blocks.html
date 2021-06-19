@@ -1,4 +1,4 @@
-{% extends 'preferences/preferences_layout.html' %}
+{% extends 'preferences/layout.html' %}
 {% load i18n %}
 
 {% block title %}{% trans "Blocked Users" %}{{ author.name }}{% endblock %}
@@ -18,7 +18,7 @@
             <a href="{{ user.local_path }}">{% include 'snippets/avatar.html' with user=user %} {{ user.display_name }}</a>
         </p>
         <p class="mr-2">
-            {% include 'snippets/block_button.html' with user=user %}
+            {% include 'snippets/block_button.html' with user=user blocks=True %}
         </p>
     </li>
 {% endfor %}

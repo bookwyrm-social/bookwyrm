@@ -1,6 +1,12 @@
 {% load i18n %}
 <div class="block content">
+    {% if not user.is_active and user.deactivation_reason == "self_deletion" %}
+    <div class="notification is-danger">
+        {% trans "Permanently deleted" %}
+    </div>
+    {% else %}
     <h3>{% trans "Actions" %}</h3>
+
     <div class="is-flex">
         <p class="mr-1">
             <a class="button" href="{% url 'direct-messages-user' user.username %}">{% trans "Send direct message" %}</a>
@@ -14,6 +20,7 @@
             {% endif %}
         </form>
     </div>
+
     {% if user.local %}
     <div>
         <form name="permission" method="post" action="{% url 'settings-user' user.id %}">
@@ -38,5 +45,7 @@
             <button class="button">{% trans "Save" %}</button>
         </form>
     </div>
+    {% endif %}
+
     {% endif %}
 </div>
