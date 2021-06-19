@@ -111,6 +111,6 @@ case "$CMD" in
         runweb python manage.py generate_preview_images $@
         ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, generate_preview_images"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_streams, generate_preview_images"
         ;;
 esac
