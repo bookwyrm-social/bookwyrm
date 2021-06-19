@@ -57,16 +57,21 @@ def infer_format(app_registry, schema_editor):
     }
     for edition in editions:
         free_format = editions.physical_format_detail.lower()
+        print(free_format)
         if free_format in mappings:
+            print("hi")
             edition.physical_format = mappings[free_format]
             edition.save(broadcast=False)
         else:
             matches = [v for k, v in mappings if k in free_format]
+            print(matches)
             if not matches:
                 continue
             edition.physical_format = matches[0]
             edition.save(broadcast=False)
 
+def reverse(app_registry, schema_editor):
+    """doesn't need to do anything"""
 
 class Migration(migrations.Migration):
 
@@ -96,5 +101,5 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
-        migrations.RunPython(infer_format),
+        migrations.RunPython(infer_format, reverse),
     ]
