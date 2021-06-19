@@ -135,7 +135,8 @@ case "$CMD" in
             --cors-configuration file:///bw/$@"
         ;;
     *)
-        echo "Unrecognised command. Try:",
+        set +x
+        echo "Unrecognised command. Try:"
         echo "    build"
         echo "    clean"
         echo "    up"
