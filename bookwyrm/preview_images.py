@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.storage import default_storage
 from django.db.models import Avg
 
 from bookwyrm import models, settings
@@ -319,7 +320,7 @@ def save_and_cleanup(image, instance=None):
 
     try:
         try:
-            old_path = instance.preview_image.path
+            old_path = instance.preview_image.name
         except ValueError:
             old_path = ""
 
@@ -342,8 +343,8 @@ def save_and_cleanup(image, instance=None):
             instance.save()
 
         # Clean up old file after saving
-        if os.path.exists(old_path):
-            os.remove(old_path)
+        if default_storage.exists(old_path):
+            default_storage.delete(old_path)
 
     finally:
         image_buffer.close()
