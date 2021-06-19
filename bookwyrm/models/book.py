@@ -9,7 +9,12 @@ from imagekit.models import ImageSpecField
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
-from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE, ENABLE_PREVIEW_IMAGES, ENABLE_THUMBNAIL_GENERATION
+from bookwyrm.settings import (
+    DOMAIN,
+    DEFAULT_LANGUAGE,
+    ENABLE_PREVIEW_IMAGES,
+    ENABLE_THUMBNAIL_GENERATION,
+)
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
