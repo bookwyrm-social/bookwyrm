@@ -12,14 +12,19 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
+    {% if preview_images_enabled is True %}
+    <meta name="twitter:card" content="summary_large_image">
+    {% else %}
     <meta name="twitter:card" content="summary">
+    {% endif %}
     <meta name="twitter:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
     <meta name="og:title" content="{% if title %}{{ title }} | {% endif %}{{ site.name }}">
     <meta name="twitter:description" content="{{ site.instance_tagline }}">
     <meta name="og:description" content="{{ site.instance_tagline }}">
 
-    <meta name="twitter:image" content="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
-    <meta name="og:image" content="{% if site.logo %}{% get_media_prefix %}{{ site.logo }}{% else %}{% static "images/logo.png" %}{% endif %}">
+    {% block opengraph_images %}
+        {% include 'snippets/opengraph_images.html' %}
+    {% endblock %}
     <meta name="twitter:image:alt" content="BookWyrm Logo">
 </head>
 <body>

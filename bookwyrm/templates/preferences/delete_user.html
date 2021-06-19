@@ -1,0 +1,30 @@
+{% extends 'preferences/layout.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete Account" %}{% endblock %}
+
+{% block header %}
+{% trans "Delete Account" %}
+{% endblock %}
+
+{% block panel %}
+<div class="block">
+    <h2 class="title is-4">{% trans "Permanently delete account" %}</h2>
+    <p class="notification is-danger is-light">
+        {% trans "Deleting your account cannot be undone. The username will not be available to register in the future." %}
+    </p>
+
+    <form name="delete-user" action="{% url 'prefs-delete' %}" method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label class="label" for="id_password">{% trans "Confirm password:" %}</label>
+            <input class="input {% if form.password.errors %}is-danger{% endif %}" type="password" name="password" id="id_password" required>
+            {% for error in form.password.errors %}
+            <p class="help is-danger">{{ error | escape }}</p>
+            {% endfor %}
+        </div>
+        <button type="submit" class="button is-danger">{% trans "Delete Account" %}</button>
+    </form>
+</div>
+{% endblock %}
+

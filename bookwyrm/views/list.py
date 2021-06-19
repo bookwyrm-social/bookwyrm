@@ -314,8 +314,7 @@ def set_book_position(request, list_item_id):
             Max("order")
         )["order__max"]
 
-        if int_position > order_max:
-            int_position = order_max
+        int_position = min(int_position, order_max)
 
         if request.user not in (book_list.user, list_item.user):
             return HttpResponseNotFound()

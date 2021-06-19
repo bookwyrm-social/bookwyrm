@@ -6,15 +6,18 @@ from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
+from django.dispatch import receiver
 from django.db import models
 from django.utils import timezone
+from model_utils import FieldTracker
 import pytz
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
-from bookwyrm.settings import DOMAIN
+from bookwyrm.preview_images import generate_user_preview_image_task
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
@@ -70,6 +73,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         activitypub_field="icon",
         alt_field="alt_text",
     )
+    preview_image = models.ImageField(
+        upload_to="previews/avatars/", blank=True, null=True
+    )
     followers = fields.ManyToManyField(
         "self",
         link_only=True,
@@ -117,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     name_field = "username"
     property_fields = [("following_link", "following")]
+    field_tracker = FieldTracker(fields=["name", "avatar"])
 
     @property
     def following_link(self):
@@ -232,7 +239,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
-        if not self.local and not re.match(regex.full_username, self.username):
+        if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)
@@ -356,7 +363,7 @@ class AnnualGoal(BookWyrmModel):
 
     def get_remote_id(self):
         """put the year in the path"""
-        return "%s/goal/%d" % (self.user.remote_id, self.year)
+        return "{:s}/goal/{:d}".format(self.user.remote_id, self.year)
 
     @property
     def books(self):
@@ -443,3 +450,15 @@ def get_remote_reviews(outbox):
         if not activity["type"] == "Review":
             continue
         activitypub.Review(**activity).to_model()
+
+
+# pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=User)
+def preview_image(instance, *args, **kwargs):
+    """create preview images when user is updated"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
+    changed_fields = instance.field_tracker.changed()
+
+    if len(changed_fields) > 0:
+        generate_user_preview_image_task.delay(instance.id)

@@ -42,6 +42,14 @@ LOCALE_PATHS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+# Preview image
+ENABLE_PREVIEW_IMAGES = env.bool("ENABLE_PREVIEW_IMAGES", False)
+PREVIEW_BG_COLOR = env.str("PREVIEW_BG_COLOR", "use_dominant_color_light")
+PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
+PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
+PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
+PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -177,6 +185,7 @@ USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
     DOMAIN,
 )
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
@@ -203,6 +212,7 @@ if USE_S3:
     # S3 Media settings
     MEDIA_LOCATION = "images"
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    MEDIA_PATH = "%s/%s" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     # I don't know if it's used, but the site crashes without it
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
@@ -210,4 +220,5 @@ else:
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
+    MEDIA_PATH = "https://%s/%s" % (DOMAIN, env("MEDIA_ROOT", "images"))
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))

@@ -95,7 +95,7 @@ case "$CMD" in
         runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        execweb pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
@@ -118,6 +118,9 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams
         ;;
+    generate_preview_images)
+        runweb python manage.py generate_preview_images $@
+        ;;
     copy_media_to_s3)
         awscommand "bookwyrm_media_volume:/images"\
             "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
@@ -132,6 +135,25 @@ case "$CMD" in
             --cors-configuration file:///bw/$@"
         ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, copy_media_to_s3, set_cors_to_s3"
+        echo "Unrecognised command. Try:",
+        echo "    build"
+        echo "    clean"
+        echo "    up"
+        echo "    initdb"
+        echo "    resetdb"
+        echo "    makemigrations"
+        echo "    migrate"
+        echo "    bash"
+        echo "    shell"
+        echo "    dbshell"
+        echo "    restart_celery"
+        echo "    test"
+        echo "    pytest"
+        echo "    test_report"
+        echo "    black"
+        echo "    populate_feeds"
+        echo "    generate_preview_images"
+        echo "    copy_media_to_s3"
+        echo "    set_cors_to_s3"
         ;;
 esac

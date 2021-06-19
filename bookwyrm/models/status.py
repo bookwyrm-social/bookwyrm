@@ -5,11 +5,15 @@ import re
 from django.apps import apps
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils import timezone
+from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
+from bookwyrm.preview_images import generate_edition_preview_image_task
+from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -304,6 +308,8 @@ class Review(Status):
         max_digits=3,
     )
 
+    field_tracker = FieldTracker(fields=["rating"])
+
     @property
     def pure_name(self):
         """clarify review names for mastodon serialization"""
@@ -398,3 +404,17 @@ class Boost(ActivityMixin, Status):
     # This constraint can't work as it would cross tables.
     # class Meta:
     #     unique_together = ('user', 'boosted_status')
+
+
+# pylint: disable=unused-argument
+@receiver(models.signals.post_save)
+def preview_image(instance, sender, *args, **kwargs):
+    """Updates book previews if the rating has changed"""
+    if not ENABLE_PREVIEW_IMAGES or sender not in (Review, ReviewRating):
+        return
+
+    changed_fields = instance.field_tracker.changed()
+
+    if len(changed_fields) > 0:
+        edition = instance.book
+        generate_edition_preview_image_task.delay(edition.id)

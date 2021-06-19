@@ -1,13 +1,8 @@
 """ isbn search view """
-from django.http import HttpResponseNotFound
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
-from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.http import require_POST
 
-from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
 from .helpers import is_api_request
 
@@ -23,7 +18,6 @@ class Isbn(View):
             return JsonResponse([r.json() for r in book_results], safe=False)
 
         data = {
-            "title": "ISBN Search Results",
             "results": book_results,
             "query": isbn,
         }
