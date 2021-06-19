@@ -11,7 +11,7 @@ def infer_format(app_registry, schema_editor):
     editions = (
         app_registry.get_model("bookwyrm", "Edition")
         .objects.using(db_alias)
-        .filter(physical_format__isnull=False)
+        .filter(physical_format_detail__isnull=False)
     )
     mappings = {
         "paperback": "Paperback",
@@ -56,19 +56,16 @@ def infer_format(app_registry, schema_editor):
         "graphic": "GraphicNovel",
     }
     for edition in editions:
-        free_format = editions.physical_format_detail.lower()
-        print(free_format)
+        free_format = edition.physical_format_detail.lower()
         if free_format in mappings:
-            print("hi")
             edition.physical_format = mappings[free_format]
-            edition.save(broadcast=False)
+            edition.save()
         else:
-            matches = [v for k, v in mappings if k in free_format]
-            print(matches)
+            matches = [v for k, v in mappings.items() if k in free_format]
             if not matches:
                 continue
             edition.physical_format = matches[0]
-            edition.save(broadcast=False)
+            edition.save()
 
 def reverse(app_registry, schema_editor):
     """doesn't need to do anything"""
