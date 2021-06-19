@@ -22,6 +22,7 @@ class Verb(ActivityObject):
             self.object.to_model()
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Create(Verb):
     """Create activity"""
@@ -32,6 +33,7 @@ class Create(Verb):
     type: str = "Create"
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Delete(Verb):
     """Create activity"""
@@ -57,6 +59,7 @@ class Delete(Verb):
         # if we can't find it, we don't need to delete it because we don't have it
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Update(Verb):
     """Update activity"""
@@ -192,6 +195,7 @@ class Like(Verb):
         self.to_model()
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Announce(Verb):
     """boosting a status"""

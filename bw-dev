@@ -84,7 +84,7 @@ case "$CMD" in
         runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        execweb pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
@@ -110,7 +110,10 @@ case "$CMD" in
     generateimages)
         runweb python manage.py generateimages
         ;;
+    generate_preview_images)
+        runweb python manage.py generate_preview_images $@
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, generateimages"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_streams, generate_preview_images, generateimages"
         ;;
 esac

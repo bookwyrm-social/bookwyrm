@@ -3,7 +3,7 @@ from functools import reduce
 import operator
 
 from django.contrib.postgres.search import SearchRank, SearchVector
-from django.db.models import Count, OuterRef, Subquery, F, Q
+from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
 from .abstract_connector import AbstractConnector, SearchResult
@@ -114,6 +114,7 @@ class Connector(AbstractConnector):
 
 def search_identifiers(query, *filters):
     """tries remote_id, isbn; defined as dedupe fields on the model"""
+    # pylint: disable=W0212
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
@@ -122,6 +123,8 @@ def search_identifiers(query, *filters):
     results = models.Edition.objects.filter(
         *filters, reduce(operator.or_, (Q(**f) for f in or_filters))
     ).distinct()
+    if results.count() <= 1:
+        return results
 
     # when there are multiple editions of the same work, pick the default.
     # it would be odd for this to happen.
@@ -146,19 +149,15 @@ def search_title_author(query, min_confidence, *filters):
     )
 
     results = (
-        models.Edition.objects.annotate(search=vector)
-        .annotate(rank=SearchRank(vector, query))
+        models.Edition.objects.annotate(rank=SearchRank(vector, query))
         .filter(*filters, rank__gt=min_confidence)
         .order_by("-rank")
     )
 
     # when there are multiple editions of the same work, pick the closest
-    editions_of_work = (
-        results.values("parent_work")
-        .annotate(Count("parent_work"))
-        .values_list("parent_work")
-    )
+    editions_of_work = results.values("parent_work__id").values_list("parent_work__id")
 
+    # filter out multiple editions of the same work
     for work_id in set(editions_of_work):
         editions = results.filter(parent_work=work_id)
         default = editions.order_by("-edition_rank").first()

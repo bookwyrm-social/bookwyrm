@@ -75,7 +75,12 @@ class ImportItem(models.Model):
 
     def resolve(self):
         """try various ways to lookup a book"""
-        self.book = self.get_book_from_isbn() or self.get_book_from_title_author()
+        if self.isbn:
+            self.book = self.get_book_from_isbn()
+        else:
+            # don't fall back on title/author search is isbn is present.
+            # you're too likely to mismatch
+            self.get_book_from_title_author()
 
     def get_book_from_isbn(self):
         """search by isbn"""

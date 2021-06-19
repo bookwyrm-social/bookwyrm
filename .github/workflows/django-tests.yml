@@ -50,7 +50,6 @@ jobs:
         SECRET_KEY: beepbeep
         DEBUG: true
         DOMAIN: your.domain.here
-        OL_URL: https://openlibrary.org
         BOOKWYRM_DATABASE_BACKEND: postgres
         MEDIA_ROOT: images/
         POSTGRES_PASSWORD: hunter2
@@ -65,5 +64,6 @@ jobs:
         EMAIL_HOST_USER: ""
         EMAIL_HOST_PASSWORD: ""
         EMAIL_USE_TLS: true
+        ENABLE_PREVIEW_IMAGES: true
       run: |
         python manage.py test

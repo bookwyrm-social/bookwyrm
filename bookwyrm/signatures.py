@@ -73,6 +73,7 @@ class Signature:
         self.headers = headers
         self.signature = signature
 
+    # pylint: disable=invalid-name
     @classmethod
     def parse(cls, request):
         """extract and parse a signature from an http request"""

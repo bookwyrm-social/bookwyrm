@@ -201,6 +201,19 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
     for stream in streams.values():
         stream.add_status(instance)
 
+    if sender != models.Boost:
+        return
+    # remove the original post and other, earlier boosts
+    boosted = instance.boost.boosted_status
+    old_versions = models.Boost.objects.filter(
+        boosted_status__id=boosted.id,
+        created_date__lt=instance.created_date,
+    )
+    for stream in streams.values():
+        stream.remove_object_from_related_stores(boosted)
+        for status in old_versions:
+            stream.remove_object_from_related_stores(status)
+
 
 @receiver(signals.post_delete, sender=models.Boost)
 # pylint: disable=unused-argument
@@ -208,7 +221,10 @@ def remove_boost_on_delete(sender, instance, *args, **kwargs):
     """boosts are deleted"""
     # we're only interested in new statuses
     for stream in streams.values():
+        # remove the boost
         stream.remove_object_from_related_stores(instance)
+        # re-add the original status
+        stream.add_status(instance.boosted_status)
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
