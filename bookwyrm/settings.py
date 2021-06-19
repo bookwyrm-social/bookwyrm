@@ -58,6 +58,7 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", True)
+USE_HTTPS = env.bool("USE_HTTPS", False)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
 
@@ -193,6 +194,10 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Storage
 
+PROTOCOL = "http"
+if USE_HTTPS:
+    PROTOCOL = "https"
+
 USE_S3 = env.bool("USE_S3", False)
 
 if USE_S3:
@@ -212,13 +217,14 @@ if USE_S3:
     # S3 Media settings
     MEDIA_LOCATION = "images"
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
-    MEDIA_PATH = "%s/%s" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    MEDIA_FULL_URL = MEDIA_URL
     DEFAULT_FILE_STORAGE = "bookwyrm.storage_backends.ImagesStorage"
     # I don't know if it's used, but the site crashes without it
+    STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 else:
     STATIC_URL = "/static/"
     STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
     MEDIA_URL = "/images/"
-    MEDIA_PATH = "https://%s/%s" % (DOMAIN, env("MEDIA_ROOT", "images"))
+    MEDIA_FULL_URL = "%s://%s%s" % (PROTOCOL, DOMAIN, MEDIA_URL)
     MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))

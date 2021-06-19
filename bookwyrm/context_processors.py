@@ -11,7 +11,7 @@ def site_settings(request):  # pylint: disable=unused-argument
     return {
         "site": models.SiteSettings.objects.get(),
         "active_announcements": models.Announcement.active_announcements(),
-        "media_path": settings.MEDIA_PATH,
+        "media_full_url": settings.MEDIA_FULL_URL,
         "preview_images_enabled": settings.ENABLE_PREVIEW_IMAGES,
         "request_protocol": request_protocol,
     }
