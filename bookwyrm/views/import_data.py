@@ -16,6 +16,7 @@ from bookwyrm.importers import (
     LibrarythingImporter,
     GoodreadsImporter,
     StorygraphImporter,
+    IsbnImporter,
 )
 from bookwyrm.tasks import app
 
@@ -34,6 +35,7 @@ class Import(View):
                 "jobs": models.ImportJob.objects.filter(user=request.user).order_by(
                     "-created_date"
                 ),
+                "shelves": request.user.shelf_set.all(),
             },
         )
 
@@ -45,11 +47,17 @@ class Import(View):
             privacy = request.POST.get("privacy")
             source = request.POST.get("source")
 
+            default_shelf = None
+            file_type = "csv"
             importer = None
             if source == "LibraryThing":
                 importer = LibrarythingImporter()
             elif source == "Storygraph":
                 importer = StorygraphImporter()
+            elif source == "ISBN_txt":
+                file_type = "txt"
+                default_shelf = request.POST.get("default_shelf")
+                importer = IsbnImporter()
             else:
                 # Default : GoodReads
                 importer = GoodreadsImporter()
@@ -62,9 +70,16 @@ class Import(View):
                     ),
                     include_reviews,
                     privacy,
+                    file_type,
+                    default_shelf,
                 )
             except (UnicodeDecodeError, ValueError, KeyError):
-                return HttpResponseBadRequest(_("Not a valid csv file"))
+                return HttpResponseBadRequest(
+                    _(
+                        "Not a valid %(file_type)s file"
+                        % {"file_type": file_type.upper()}
+                    )
+                )
 
             importer.start_import(job)
 

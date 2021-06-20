@@ -58,7 +58,12 @@
                 <li class="mb-2 is-flex is-align-items-start">
                     <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
                     <label class="ml-1" for="import-item-{{ item.id }}">
-                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
+                        {% blocktrans with index=item.index %}Line {{index}}:{% endblocktrans %}
+                        {% if item.data.Title|length > 0 or item.data.Author|length > 0 %}
+                            {% blocktrans with title=item.data.Title author=item.data.Author %}<strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
+                        {% else %}
+                            {% trans "ISBN:" %} {{ item.data.ISBN13 }}
+                        {% endif %}
                         <br/>
                         {{ item.fail_reason }}.
                     </label>
@@ -91,9 +96,12 @@
             {% for item in failed_items %}
             <li class="pb-1">
                 <p>
-                    Line {{ item.index }}:
-                    <strong>{{ item.data.Title }}</strong> by
-                    {{ item.data.Author }}
+                    {% blocktrans with index=item.index %}Line {{index}}:{% endblocktrans %}
+                    {% if item.data.Title|length > 0 or item.data.Author|length > 0 %}
+                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}<strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
+                    {% else %}
+                        {% trans "ISBN:" %} {{ item.data.ISBN13 }}
+                    {% endif %}
                 </p>
                 <p>
                     {{ item.fail_reason }}.
@@ -124,6 +132,9 @@
                 {% trans "Author" %}
             </th>
             <th>
+                {% trans "ISBN" %}
+            </th>
+            <th>
             </th>
         </tr>
         {% for item in items %}
@@ -140,6 +151,9 @@
             </td>
             <td>
                 {{ item.data.Author }}
+            </td>
+            <td>
+                {{ item.data.ISBN13 }}
             </td>
             <td>
                 {% if item.book %}

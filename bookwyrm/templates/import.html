@@ -26,6 +26,9 @@
                     <option value="LibraryThing" {% if current == 'LibraryThing' %}selected{% endif %}>
                         LibraryThing (TSV)
                     </option>
+                    <option value="ISBN_txt" {% if current == 'ISBN_txt' %}selected{% endif %}>
+                        {% trans "List of ISBN" %} (TXT)
+                    </option>
                 </select>
             </div>
             <div class="field">
@@ -45,6 +48,23 @@
                     <span class="label">{% trans "Privacy setting for imported reviews:" %}</span>
                     {% include 'snippets/privacy_select.html' with no_label=True %}
                 </label>
+            </div>
+            <div class="field block">
+                <label class="label" for="default_shelf">
+                    {% trans "Default shelf:" %}
+                </label>
+                <div class="select">
+                    <select name="default_shelf" id="default_shelf" aria-describedby="default_shelf_help">
+                        {% for shelf_option in shelves %}
+                        <option value="{{ shelf_option.identifier }}">
+                            {% if shelf_option.identifier == 'to-read' %}{% trans "To Read" %}{% elif shelf_option.identifier == 'reading' %}{% trans "Currently Reading" %}{% elif shelf_option.identifier == 'read' %}{% trans "Read" %}{% else %}{{ shelf_option.name }}{% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="help" id="default_shelf_help">
+                    {% trans "This setting is only useful for the ISBN text file import." %}
+                </p>
             </div>
         </div>
         </div>

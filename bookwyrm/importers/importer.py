@@ -17,18 +17,25 @@ class Importer:
     encoding = "UTF-8"
     mandatory_fields = ["Title", "Author"]
 
-    def create_job(self, user, csv_file, include_reviews, privacy):
+    def create_job(
+        self, user, csv_file, include_reviews, privacy, file_type, default_shelf
+    ):
         """check over a csv and creates a database entry for the job"""
         job = ImportJob.objects.create(
             user=user, include_reviews=include_reviews, privacy=privacy
         )
-        for index, entry in enumerate(
-            list(csv.DictReader(csv_file, delimiter=self.delimiter))
-        ):
-            if not all(x in entry for x in self.mandatory_fields):
-                raise ValueError("Author and title must be in data.")
-            entry = self.parse_fields(entry)
-            self.save_item(job, index, entry)
+        if file_type == "txt":
+            for index, entry in enumerate(csv_file.read().splitlines()):
+                entry = self.parse_fields(entry, default_shelf)
+                self.save_item(job, index, entry)
+        else:
+            for index, entry in enumerate(
+                list(csv.DictReader(csv_file, delimiter=self.delimiter))
+            ):
+                if not all(x in entry for x in self.mandatory_fields):
+                    raise ValueError("Author and title must be in data.")
+                entry = self.parse_fields(entry)
+                self.save_item(job, index, entry)
         return job
 
     def save_item(self, job, index, data):  # pylint: disable=no-self-use

@@ -183,7 +183,15 @@ class ImportItem(models.Model):
         return []
 
     def __repr__(self):
-        return "<{!r}Item {!r}>".format(self.data["import_source"], self.data["Title"])
+        return "<{!r}Item {!r} {!r}>".format(
+            self.data["import_source"], self.data["Title"], self.data["ISBN13"]
+        )
 
     def __str__(self):
+        if (
+            self.data["Title"] == ""
+            and self.data["Author"] == ""
+            and self.data["ISBN13"]
+        ):
+            return "ISBN: {}".format(self.data["ISBN13"])
         return "{} by {}".format(self.data["Title"], self.data["Author"])
