@@ -12,7 +12,7 @@ class StorygraphImporter(Importer):
     # mandatory_fields : fields matching the book title and author
     mandatory_fields = ["Title"]
 
-    def parse_fields(self, entry):
+    def parse_fields(self, entry, default_shelf=None):
         """custom parsing for storygraph"""
         data = {}
         data["import_source"] = self.service
@@ -28,7 +28,11 @@ class StorygraphImporter(Importer):
         data["Date Added"] = re.sub(r"[/]", "-", entry["Date Added"])
         data["Date Read"] = re.sub(r"[/]", "-", entry["Last Date Read"])
 
-        data["Exclusive Shelf"] = (
-            {"read": "read", "currently-reading": "reading", "to-read": "to-read"}
-        ).get(entry["Read Status"], None)
+        # add the option to override the shelf for all imported books
+        if default_shelf:
+            data["Exclusive Shelf"] = default_shelf
+        else:
+            data["Exclusive Shelf"] = (
+                {"read": "read", "currently-reading": "reading", "to-read": "to-read"}
+            ).get(entry["Read Status"], None)
         return data

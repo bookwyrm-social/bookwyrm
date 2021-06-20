@@ -14,7 +14,7 @@ class LibrarythingImporter(Importer):
     # mandatory_fields : fields matching the book title and author
     mandatory_fields = ["Title", "Primary Author"]
 
-    def parse_fields(self, entry):
+    def parse_fields(self, entry, default_shelf=None):
         """custom parsing for librarything"""
         data = {}
         data["import_source"] = self.service
@@ -32,7 +32,10 @@ class LibrarythingImporter(Importer):
         data["Date Read"] = re.sub(r"\[|\]", "", entry["Date Read"])
 
         data["Exclusive Shelf"] = None
-        if data["Date Read"]:
+        # add the option to override the shelf for all imported books
+        if default_shelf:
+            data["Exclusive Shelf"] = default_shelf
+        elif data["Date Read"]:
             data["Exclusive Shelf"] = "read"
         elif data["Date Started"]:
             data["Exclusive Shelf"] = "reading"

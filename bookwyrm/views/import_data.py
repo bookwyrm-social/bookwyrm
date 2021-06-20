@@ -68,10 +68,14 @@ class Import(View):
                     TextIOWrapper(
                         request.FILES["csv_file"], encoding=importer.encoding
                     ),
-                    include_reviews,
-                    privacy,
-                    file_type,
-                    default_shelf,
+                    job_options={
+                        "include_reviews": include_reviews,
+                        "privacy": privacy,
+                    },
+                    import_options={
+                        "file_type": file_type,
+                        "default_shelf": default_shelf,
+                    },
                 )
             except (UnicodeDecodeError, ValueError, KeyError):
                 return HttpResponseBadRequest(

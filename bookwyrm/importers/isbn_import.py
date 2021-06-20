@@ -1,7 +1,4 @@
 """ handle reading a list of ISBN """
-import re
-import math
-
 from . import Importer
 
 
@@ -12,7 +9,7 @@ class IsbnImporter(Importer):
     # mandatory_fields : fields matching the book ISBN13
     mandatory_fields = ["ISBN13"]
 
-    def parse_fields(self, entry, default_shelf):
+    def parse_fields(self, entry, default_shelf=None):
         """custom parsing for ISBN"""
         data = {}
         data["import_source"] = self.service

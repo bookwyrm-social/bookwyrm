@@ -17,16 +17,18 @@ class Importer:
     encoding = "UTF-8"
     mandatory_fields = ["Title", "Author"]
 
-    def create_job(
-        self, user, csv_file, include_reviews, privacy, file_type, default_shelf
-    ):
+    def create_job(self, user, csv_file, job_options, import_options):
         """check over a csv and creates a database entry for the job"""
         job = ImportJob.objects.create(
-            user=user, include_reviews=include_reviews, privacy=privacy
+            user=user,
+            include_reviews=job_options["include_reviews"],
+            privacy=job_options["privacy"],
         )
-        if file_type == "txt":
+        if import_options["file_type"] == "txt":
             for index, entry in enumerate(csv_file.read().splitlines()):
-                entry = self.parse_fields(entry, default_shelf)
+                entry = self.parse_fields(
+                    entry, import_options=import_options["default_shelf"]
+                )
                 self.save_item(job, index, entry)
         else:
             for index, entry in enumerate(
@@ -42,9 +44,11 @@ class Importer:
         """creates and saves an import item"""
         ImportItem(job=job, index=index, data=data).save()
 
-    def parse_fields(self, entry):
+    def parse_fields(self, entry, default_shelf=None):
         """updates csv data with additional info"""
         entry.update({"import_source": self.service})
+        if default_shelf:
+            entry.update({"Exclusive Shelf": default_shelf})
         return entry
 
     def create_retry_job(self, user, original_job, items):
