@@ -237,7 +237,7 @@ def get_data(url, params=None, timeout=10):
             },
             timeout=timeout,
         )
-    except (RequestError, SSLError, ConnectionError) as err:
+    except (RequestError, SSLError, requests.ConnectionError, ConnectionError) as err:
         logger.exception(err)
         raise ConnectorException()
 
