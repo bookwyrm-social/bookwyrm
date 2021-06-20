@@ -48,7 +48,17 @@ class LibrarythingImport(TestCase):
 
     def test_create_job(self):
         """creates the import job entry and checks csv"""
-        import_job = self.importer.create_job(self.user, self.csv, False, "public")
+        job_options = {
+            "include_reviews": False,
+            "privacy": "public",
+        }
+        import_options = {
+            "file_type": "csv",
+            "default_shelf": None,
+        }
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         self.assertEqual(import_job.user, self.user)
         self.assertEqual(import_job.include_reviews, False)
         self.assertEqual(import_job.privacy, "public")
@@ -64,7 +74,15 @@ class LibrarythingImport(TestCase):
 
     def test_create_retry_job(self):
         """trying again with items that didn't import"""
-        import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
+        job_options = {
+            "include_reviews": False,
+            "privacy": "unlisted",
+        }
+        import_options = {
+            "file_type": "csv",
+            "default_shelf": None,
+        }
+        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
 
         retry = self.importer.create_retry_job(self.user, import_job, import_items)
@@ -83,7 +101,15 @@ class LibrarythingImport(TestCase):
     @responses.activate
     def test_import_data(self):
         """resolve entry"""
-        import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
+        job_options = {
+            "include_reviews": False,
+            "privacy": "unlisted",
+        }
+        import_options = {
+            "file_type": "csv",
+            "default_shelf": None,
+        }
+        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             book = models.Edition.objects.create(title="Test Book")
 
