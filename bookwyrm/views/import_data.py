@@ -14,6 +14,7 @@ from bookwyrm import forms, models
 from bookwyrm.importers import (
     Importer,
     LibrarythingImporter,
+    InventaireImporter,
     GoodreadsImporter,
     StorygraphImporter,
 )
@@ -46,7 +47,9 @@ class Import(View):
             source = request.POST.get("source")
 
             importer = None
-            if source == "LibraryThing":
+            if source == "Inventaire.io":
+                importer = InventaireImporter()
+            elif source == "LibraryThing":
                 importer = LibrarythingImporter()
             elif source == "Storygraph":
                 importer = StorygraphImporter()
