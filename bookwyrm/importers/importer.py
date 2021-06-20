@@ -17,18 +17,25 @@ class Importer:
     encoding = "UTF-8"
     mandatory_fields = ["Title", "Author"]
 
-    def create_job(self, user, csv_file, job_options, import_options):
+    # pylint: disable=too-many-arguments
+    def create_job(
+        self,
+        user,
+        csv_file,
+        include_reviews,
+        privacy,
+        file_type="csv",
+        default_shelf=False,
+    ):
         """check over a csv and creates a database entry for the job"""
         job = ImportJob.objects.create(
             user=user,
-            include_reviews=job_options["include_reviews"],
-            privacy=job_options["privacy"],
+            include_reviews=include_reviews,
+            privacy=privacy,
         )
-        if import_options["file_type"] == "txt":
+        if file_type == "txt":
             for index, entry in enumerate(csv_file.read().splitlines()):
-                entry = self.parse_fields(
-                    entry, default_shelf=import_options["default_shelf"]
-                )
+                entry = self.parse_fields(entry, default_shelf=default_shelf)
                 self.save_item(job, index, entry)
         else:
             for index, entry in enumerate(

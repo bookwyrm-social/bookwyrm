@@ -47,16 +47,13 @@ class IsbnImport(TestCase):
 
     def test_create_job(self):
         """creates the import job entry and checks text file"""
-        job_options = {
-            "include_reviews": False,
-            "privacy": "public",
-        }
-        import_options = {
-            "file_type": "txt",
-            "default_shelf": "to-read",
-        }
         import_job = self.importer.create_job(
-            self.user, self.csv, job_options=job_options, import_options=import_options
+            self.user,
+            self.csv,
+            False,
+            "public",
+            file_type="txt",
+            default_shelf="to-read",
         )
         self.assertEqual(import_job.user, self.user)
         self.assertEqual(import_job.include_reviews, False)
@@ -71,16 +68,13 @@ class IsbnImport(TestCase):
 
     def test_create_retry_job(self):
         """trying again with items that didn't import"""
-        job_options = {
-            "include_reviews": False,
-            "privacy": "unlisted",
-        }
-        import_options = {
-            "file_type": "txt",
-            "default_shelf": "to-read",
-        }
         import_job = self.importer.create_job(
-            self.user, self.csv, job_options=job_options, import_options=import_options
+            self.user,
+            self.csv,
+            False,
+            "unlisted",
+            file_type="txt",
+            default_shelf="to-read",
         )
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:1]
 
@@ -98,16 +92,13 @@ class IsbnImport(TestCase):
     @responses.activate
     def test_import_data(self):
         """resolve entry"""
-        job_options = {
-            "include_reviews": False,
-            "privacy": "unlisted",
-        }
-        import_options = {
-            "file_type": "txt",
-            "default_shelf": "to-read",
-        }
         import_job = self.importer.create_job(
-            self.user, self.csv, job_options=job_options, import_options=import_options
+            self.user,
+            self.csv,
+            False,
+            "unlisted",
+            file_type="txt",
+            default_shelf="to-read",
         )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             book = models.Edition.objects.create(title="Test Book")
@@ -146,17 +137,6 @@ class IsbnImport(TestCase):
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
 
-        # # uh oh.
-        # readthrough = models.ReadThrough.objects.get(user=self.user)
-        # self.assertEqual(readthrough.book, self.book)
-        # # I can't remember how to create dates and I don't want to look it up.
-        # self.assertEqual(readthrough.start_date.year, 2020)
-        # self.assertEqual(readthrough.start_date.month, 10)
-        # self.assertEqual(readthrough.start_date.day, 21)
-        # self.assertEqual(readthrough.finish_date.year, 2020)
-        # self.assertEqual(readthrough.finish_date.month, 10)
-        # self.assertEqual(readthrough.finish_date.day, 25)
-
     def test_handle_imported_book_already_shelved(self):
         """goodreads import added a book, this adds related connections"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -182,16 +162,6 @@ class IsbnImport(TestCase):
         self.assertEqual(shelf.books.first(), self.book)
         self.assertIsNone(self.user.shelf_set.get(identifier="read").books.first())
 
-        # # uh oh.
-        # readthrough = models.ReadThrough.objects.get(user=self.user)
-        # self.assertEqual(readthrough.book, self.book)
-        # self.assertEqual(readthrough.start_date.year, 2020)
-        # self.assertEqual(readthrough.start_date.month, 10)
-        # self.assertEqual(readthrough.start_date.day, 21)
-        # self.assertEqual(readthrough.finish_date.year, 2020)
-        # self.assertEqual(readthrough.finish_date.month, 10)
-        # self.assertEqual(readthrough.finish_date.day, 25)
-
     def test_handle_import_twice(self):
         """re-importing books"""
         shelf = self.user.shelf_set.filter(identifier="read").first()
@@ -216,14 +186,3 @@ class IsbnImport(TestCase):
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
-
-        # # uh oh.
-        # readthrough = models.ReadThrough.objects.get(user=self.user)
-        # self.assertEqual(readthrough.book, self.book)
-        # # I can't remember how to create dates and I don't want to look it up.
-        # self.assertEqual(readthrough.start_date.year, 2020)
-        # self.assertEqual(readthrough.start_date.month, 10)
-        # self.assertEqual(readthrough.start_date.day, 21)
-        # self.assertEqual(readthrough.finish_date.year, 2020)
-        # self.assertEqual(readthrough.finish_date.month, 10)
-        # self.assertEqual(readthrough.finish_date.day, 25)
