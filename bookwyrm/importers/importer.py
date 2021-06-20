@@ -27,7 +27,7 @@ class Importer:
         if import_options["file_type"] == "txt":
             for index, entry in enumerate(csv_file.read().splitlines()):
                 entry = self.parse_fields(
-                    entry, import_options=import_options["default_shelf"]
+                    entry, default_shelf=import_options["default_shelf"]
                 )
                 self.save_item(job, index, entry)
         else:
