@@ -408,7 +408,8 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             return None
 
         image_content = ContentFile(response.content)
-        image_name = str(uuid4()) + "." + imghdr.what(None, image_content.read())
+        extension = imghdr.what(None, image_content.read()) or ""
+        image_name = "{:s}.{:s}".format(str(uuid4()), extension)
         return [image_name, image_content]
 
     def formfield(self, **kwargs):
