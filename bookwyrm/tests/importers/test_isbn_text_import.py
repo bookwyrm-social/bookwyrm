@@ -79,7 +79,9 @@ class IsbnImport(TestCase):
             "file_type": "txt",
             "default_shelf": "to-read",
         }
-        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:1]
 
         retry = self.importer.create_retry_job(self.user, import_job, import_items)
@@ -104,7 +106,9 @@ class IsbnImport(TestCase):
             "file_type": "txt",
             "default_shelf": "to-read",
         }
-        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             book = models.Edition.objects.create(title="Test Book")
 

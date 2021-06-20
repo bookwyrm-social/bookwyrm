@@ -81,7 +81,9 @@ class GoodreadsImport(TestCase):
             "file_type": "csv",
             "default_shelf": None,
         }
-        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         import_items = models.ImportItem.objects.filter(job=import_job).all()[:2]
 
         retry = self.importer.create_retry_job(self.user, import_job, import_items)
@@ -107,7 +109,9 @@ class GoodreadsImport(TestCase):
             "file_type": "csv",
             "default_shelf": None,
         }
-        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         MockTask = namedtuple("Task", ("id"))
         mock_task = MockTask(7)
         with patch("bookwyrm.importers.importer.import_data.delay") as start:
@@ -127,7 +131,9 @@ class GoodreadsImport(TestCase):
             "file_type": "csv",
             "default_shelf": None,
         }
-        import_job = self.importer.create_job(self.user, self.csv, job_options=job_options, import_options=import_options)
+        import_job = self.importer.create_job(
+            self.user, self.csv, job_options=job_options, import_options=import_options
+        )
         with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             book = models.Edition.objects.create(title="Test Book")
 
