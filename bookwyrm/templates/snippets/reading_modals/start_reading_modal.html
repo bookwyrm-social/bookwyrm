@@ -25,7 +25,7 @@ Start "<em>{{ book_title }}</em>"
         <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
     </div>
     {% trans "Your initial thoughts" as placeholder %}
-    {% include "snippets/create_status_form.html" with book=book type="comment" placeholder=placeholder %}
+    {% include "snippets/create_status/comment.html" with book=book placeholder=placeholder %}
 </section>
 {% endblock %}
 

@@ -66,7 +66,7 @@
 <section class="is-hidden" id="show-comment-{{ status.id }}">
     <div class="card-footer">
         <div class="card-footer-item">
-            {% include 'snippets/create_status_form.html' with reply_parent=status type="reply" %}
+            {% include 'snippets/create_status/reply.html' with reply_parent=status %}
         </div>
     </div>
 </section>

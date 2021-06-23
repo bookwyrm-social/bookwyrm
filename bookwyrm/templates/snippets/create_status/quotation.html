@@ -1,0 +1,47 @@
+{% load bookwyrm_tags %}
+{% load utilities %}
+{% load status_display %}
+{% load i18n %}
+
+{% comment %}
+----- Variables
+book: the Edition object this status is related to. Required unless the status is a reply
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+{% endcomment %}
+
+{% with type="quotation" %}
+
+<form class="is-flex-grow-1" name="quotation" action="/post/quotation" method="post" id="tab-quotation-{{ book.id }}">
+    {% csrf_token %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
+    <div class="field">
+        <label class="label" for="id_quote_{{ book.id }}_{{ type }}">
+            {% trans "Quote:" %}
+        </label>
+
+        <div class="control">
+            <textarea
+                name="quote"
+                class="textarea"
+                id="id_quote_{{ book.id }}_{{ type }}"
+                placeholder="{% blocktrans with book_title=book.title %}An excerpt from '{{ book_title }}'{% endblocktrans %}"
+                required
+            >{{ draft.quote|default:'' }}</textarea>
+        </div>
+    </div>
+
+    {# Supplemental fields #}
+    <div class="field">
+        <label class="label" for="id_content_quotation_{{ book.id }}">{% trans "Comment" %}:</label>
+        {% include 'snippets/create_status/content_warning_field.html' %}
+        {% include "snippets/create_status/content_field.html" with placeholder="" %}
+    </div>
+
+    {# bottom bar #}
+    {% include "snippets/create_status/post_options_block.html" %}
+</form>
+
+{% endwith %}

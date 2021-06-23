@@ -57,15 +57,8 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
                 required
             >{{ draft.quote|default:'' }}</textarea>
             {% else %}
-            {% include 'snippets/content_warning_field.html' with parent_status=status %}
-            <textarea
-                name="content"
-                class="textarea"
-                id="id_content_{{ type }}-{{ book.id }}{{reply_parent.id}}"
-                placeholder="{{ placeholder }}"
-                aria-label="{% if reply_parent %}{% trans 'Reply' %}{% else %}{% trans "Content" %}{% endif %}"
-                required
-            >{% if reply_parent %}{{ reply_parent|mentions:request.user }}{% endif %}{% if mention %}@{{ mention|username }} {% endif %}{{ draft.content|default:'' }}</textarea>
+            {% include 'snippets/create_status/content_warning_field.html' with parent_status=status %}
+            {% load "snippets/create_status/content_field.html" %]
             {% endif %}
         </div>
     </div>
@@ -74,7 +67,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
     {% if type == 'quotation' %}
     <div class="field">
         <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
-        {% include 'snippets/content_warning_field.html' with parent_status=status %}
+        {% include 'snippets/create_status/content_warning_field.html' with parent_status=status %}
         <div class="control">
             <textarea name="content" class="textarea" rows="3" id="id_content_quote-{{ book.id }}">{{ draft.content|default:'' }}</textarea>
         </div>
