@@ -1,3 +1,4 @@
+""" ActivityPub-specific json response wrapper """
 from django.http import JsonResponse
 
 from .base_activity import ActivityEncoder

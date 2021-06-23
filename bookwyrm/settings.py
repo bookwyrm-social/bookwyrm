@@ -14,13 +14,18 @@ PAGE_LENGTH = env("PAGE_LENGTH", 15)
 DEFAULT_LANGUAGE = env("DEFAULT_LANGUAGE", "English")
 
 # celery
-CELERY_BROKER = env("CELERY_BROKER")
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
+CELERY_BROKER = "redis://:{}@redis_broker:{}/0".format(
+    requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
+)
+CELERY_RESULT_BACKEND = "redis://:{}@redis_broker:{}/0".format(
+    requests.utils.quote(env("REDIS_BROKER_PASSWORD", "")), env("REDIS_BROKER_PORT")
+)
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 # email
+EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT", 587)
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
@@ -37,6 +42,14 @@ LOCALE_PATHS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+# Preview image
+ENABLE_PREVIEW_IMAGES = env.bool("ENABLE_PREVIEW_IMAGES", False)
+PREVIEW_BG_COLOR = env.str("PREVIEW_BG_COLOR", "use_dominant_color_light")
+PREVIEW_TEXT_COLOR = env.str("PREVIEW_TEXT_COLOR", "#363636")
+PREVIEW_IMG_WIDTH = env.int("PREVIEW_IMG_WIDTH", 1200)
+PREVIEW_IMG_HEIGHT = env.int("PREVIEW_IMG_HEIGHT", 630)
+PREVIEW_DEFAULT_COVER_COLOR = env.str("PREVIEW_DEFAULT_COVER_COLOR", "#002549")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -47,7 +60,6 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env.bool("DEBUG", True)
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ["*"])
-OL_URL = env("OL_URL")
 
 # Application definition
 
@@ -121,10 +133,8 @@ STREAMS = ["home", "local", "federated"]
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-BOOKWYRM_DATABASE_BACKEND = env("BOOKWYRM_DATABASE_BACKEND", "postgres")
-
-BOOKWYRM_DBS = {
-    "postgres": {
+DATABASES = {
+    "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": env("POSTGRES_DB", "fedireads"),
         "USER": env("POSTGRES_USER", "fedireads"),
@@ -134,8 +144,6 @@ BOOKWYRM_DBS = {
     },
 }
 
-DATABASES = {"default": BOOKWYRM_DBS[BOOKWYRM_DATABASE_BACKEND]}
-
 
 LOGIN_URL = "/login/"
 AUTH_USER_MODEL = "bookwyrm.User"
@@ -143,6 +151,7 @@ AUTH_USER_MODEL = "bookwyrm.User"
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
+# pylint: disable=line-too-long
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -186,8 +195,10 @@ USE_TZ = True
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = "/static/"
+STATIC_PATH = "%s/%s" % (DOMAIN, env("STATIC_ROOT", "static"))
 STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", "static"))
 MEDIA_URL = "/images/"
+MEDIA_PATH = "%s/%s" % (DOMAIN, env("MEDIA_ROOT", "images"))
 MEDIA_ROOT = os.path.join(BASE_DIR, env("MEDIA_ROOT", "images"))
 
 USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (

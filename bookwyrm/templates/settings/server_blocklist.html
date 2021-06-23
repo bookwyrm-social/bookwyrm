@@ -1,10 +1,10 @@
 {% extends 'settings/admin_layout.html' %}
 {% load i18n %}
-{% block title %}{% trans "Add server" %}{% endblock %}
+{% block title %}{% trans "Add instance" %}{% endblock %}
 
 {% block header %}
 {% trans "Import Blocklist" %}
-<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to server list" %}</a>
+<a href="{% url 'settings-federation' %}" class="has-text-weight-normal help">{% trans "Back to instance list" %}</a>
 {% endblock %}
 
 {% block panel %}
@@ -17,7 +17,7 @@
         </li>
         {% url 'settings-add-federated-server' as url %}
         <li {% if url in request.path %}class="is-active" aria-current="page"{% endif %}>
-            <a href="{{ url }}">{% trans "Add server" %}</a>
+            <a href="{{ url }}">{% trans "Add instance" %}</a>
         </li>
     </ul>
 </div>
@@ -51,7 +51,7 @@
             <pre>
 [
     {
-        "instance": "example.server.com",
+        "instance": "example.instance.com",
         "url": "https://link.to.more/info"
     },
     ...

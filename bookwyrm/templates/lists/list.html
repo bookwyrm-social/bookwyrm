@@ -63,7 +63,7 @@
                     <div class="card-footer is-stacked-mobile has-background-white-bis is-align-items-stretch">
                         <div class="card-footer-item">
                             <div>
-                            <p>{% blocktrans with username=item.user.display_name user_path=user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
+                            <p>{% blocktrans with username=item.user.display_name user_path=item.user.local_path %}Added by <a href="{{ user_path }}">{{ username }}</a>{% endblocktrans %}</p>
                             </div>
                         </div>
                         {% if list.user == request.user or list.curation == 'open' and item.user == request.user %}

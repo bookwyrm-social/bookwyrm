@@ -7,14 +7,19 @@
 {% block content %}{% spaceless %}
 <div class="block">
     <h1 class="title">{% trans "Import Status" %}</h1>
+    <a href="{% url 'import' %}" class="has-text-weight-normal help subtitle is-link">{% trans "Back to imports" %}</a>
 
-    <p>
-        {% trans "Import started:" %} {{ job.created_date | naturaltime }}
-    </p>
-    {% if job.complete %}
-    <p>
-        {% trans "Import completed:" %} {{ task.date_done | naturaltime }}
-    </p>
+    <dl>
+        <div class="is-flex">
+            <dt class="has-text-weight-medium">{% trans "Import started:" %}</dt>
+            <dd class="ml-2">{{ job.created_date | naturaltime }}</dd>
+        </div>
+        {% if job.complete %}
+        <div class="is-flex">
+            <dt class="has-text-weight-medium">{% trans "Import completed:" %}</dt>
+            <dd class="ml-2">{{ task.date_done | naturaltime }}</dd>
+        </div>
+    </dl>
     {% elif task.failed %}
     <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
     {% endif %}
@@ -22,8 +27,9 @@
 
 <div class="block">
     {% if not job.complete %}
-    {% trans "Import still in progress." %}
     <p>
+        {% trans "Import still in progress." %}
+        <br/>
         {% trans "(Hit reload to update!)" %}
     </p>
     {% endif %}
@@ -49,16 +55,13 @@
         <fieldset id="failed-imports">
             <ul>
             {% for item in failed_items %}
-                <li class="pb-1">
-                    <input class="checkbox" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
-                    <label for="import-item-{{ item.id }}">
-                        Line {{ item.index }}:
-                        <strong>{{ item.data.Title }}</strong> by
-                        {{ item.data.Author }}
-                    </label>
-                    <p>
+                <li class="mb-2 is-flex is-align-items-start">
+                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
+                    <label class="ml-1" for="import-item-{{ item.id }}">
+                        {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
+                        <br/>
                         {{ item.fail_reason }}.
-                    </p>
+                    </label>
                 </li>
             {% endfor %}
             </ul>
@@ -104,7 +107,11 @@
 {% endif %}
 
 <div class="block">
+    {% if job.complete %}
     <h2 class="title is-4">{% trans "Successfully imported" %}</h2>
+    {% else %}
+    <h2 class="title is-4">{% trans "Import Progress" %}</h2>
+    {% endif %}
     <table class="table">
         <tr>
             <th>

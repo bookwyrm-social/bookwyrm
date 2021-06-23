@@ -1,4 +1,5 @@
 """ interface with whatever connectors the app has """
+from datetime import datetime
 import importlib
 import logging
 import re
@@ -29,23 +30,25 @@ def search(query, min_confidence=0.1, return_first=False):
     isbn = re.sub(r"[\W_]", "", query)
     maybe_isbn = len(isbn) in [10, 13]  # ISBN10 or ISBN13
 
+    timeout = 15
+    start_time = datetime.now()
     for connector in get_connectors():
         result_set = None
-        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url == "":
+        if maybe_isbn and connector.isbn_search_url and connector.isbn_search_url != "":
             # Search on ISBN
             try:
                 result_set = connector.isbn_search(isbn)
-            except Exception as e:  # pylint: disable=broad-except
-                logger.exception(e)
+            except Exception as err:  # pylint: disable=broad-except
+                logger.exception(err)
                 # if this fails, we can still try regular search
 
         # if no isbn search results, we fallback to generic search
         if not result_set:
             try:
                 result_set = connector.search(query, min_confidence=min_confidence)
-            except Exception as e:  # pylint: disable=broad-except
+            except Exception as err:  # pylint: disable=broad-except
                 # we don't want *any* error to crash the whole search page
-                logger.exception(e)
+                logger.exception(err)
                 continue
 
         if return_first and result_set:
@@ -59,6 +62,8 @@ def search(query, min_confidence=0.1, return_first=False):
                     "results": result_set,
                 }
             )
+        if (datetime.now() - start_time).seconds >= timeout:
+            break
 
     if return_first:
         return None

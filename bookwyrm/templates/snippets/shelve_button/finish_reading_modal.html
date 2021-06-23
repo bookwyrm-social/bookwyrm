@@ -7,7 +7,7 @@
 
 
 {% block modal-form-open %}
-<form name="finish-reading" action="/finish-reading/{{ book.id }}" method="post">
+<form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post">
 {% endblock %}
 
 {% block modal-body %}
@@ -15,16 +15,16 @@
     {% csrf_token %}
     <input type="hidden" name="id" value="{{ readthrough.id }}">
     <div class="field">
-        <label class="label">
+        <label class="label" for="finish_id_start_date-{{ uuid }}">
             {% trans "Started reading" %}
-            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
         </label>
+        <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
     </div>
     <div class="field">
-        <label class="label">
+        <label class="label" for="id_finish_date-{{ uuid }}">
             {% trans "Finished reading" %}
-            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
         </label>
+        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
     </div>
 </section>
 {% endblock %}
@@ -38,7 +38,7 @@
         </label>
         {% include 'snippets/privacy_select.html' %}
     </div>
-    <div class="column">
+    <div class="column has-text-right">
         <button type="submit" class="button is-success">{% trans "Save" %}</button>
         {% trans "Cancel" as button_text %}
         {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="finish-reading" controls_uid=uuid %}

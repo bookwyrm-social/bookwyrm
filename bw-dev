@@ -84,13 +84,13 @@ case "$CMD" in
         runweb coverage run --source='.' --omit="*/test*,celerywyrm*,bookwyrm/migrations/*" manage.py test "$@"
         ;;
     pytest)
-        runweb pytest --no-cov-on-fail "$@"
+        execweb pytest --no-cov-on-fail "$@"
         ;;
     collectstatic)
         runweb python manage.py collectstatic --no-input
         ;;
     makemessages)
-        runweb django-admin makemessages --no-wrap --ignore=venv $@
+        runweb django-admin makemessages --no-wrap --ignore=venv --all $@
         ;;
     compilemessages)
         runweb django-admin compilemessages --ignore venv $@
@@ -107,7 +107,10 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams
         ;;
+    generate_preview_images)
+        runweb python manage.py generate_preview_images $@
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds"
+        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_streams, generate_preview_images"
         ;;
 esac

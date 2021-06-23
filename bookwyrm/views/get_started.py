@@ -14,7 +14,7 @@ from django.views import View
 from bookwyrm import forms, models
 from bookwyrm.connectors import connector_manager
 from .helpers import get_suggested_users
-from .user import save_user_form
+from .edit_user import save_user_form
 
 
 # pylint: disable= no-self-use

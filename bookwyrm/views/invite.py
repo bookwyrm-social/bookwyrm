@@ -37,8 +37,12 @@ class ManageInvites(View):
             PAGE_LENGTH,
         )
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "invites": paginated.get_page(request.GET.get("page")),
+            "invites": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "form": forms.CreateInviteForm(),
         }
         return TemplateResponse(request, "settings/manage_invites.html", data)
@@ -118,15 +122,16 @@ class ManageInviteRequests(View):
                 reduce(operator.or_, (Q(**f) for f in filters))
             ).distinct()
 
-        paginated = Paginator(
-            requests,
-            PAGE_LENGTH,
-        )
+        paginated = Paginator(requests, PAGE_LENGTH)
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
             "ignored": ignored,
             "count": paginated.count,
-            "requests": paginated.get_page(request.GET.get("page")),
+            "requests": page,
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
             "sort": sort,
         }
         return TemplateResponse(request, "settings/manage_invite_requests.html", data)
