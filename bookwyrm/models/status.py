@@ -13,6 +13,7 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
+from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -414,12 +415,15 @@ class Boost(ActivityMixin, Status):
     #     unique_together = ('user', 'boosted_status')
 
 
-@receiver(models.signals.post_save)
 # pylint: disable=unused-argument
+@receiver(models.signals.post_save)
 def preview_image(instance, sender, *args, **kwargs):
-    if sender in (Review, ReviewRating):
-        changed_fields = instance.field_tracker.changed()
+    """Updates book previews if the rating has changed"""
+    if not ENABLE_PREVIEW_IMAGES or sender not in (Review, ReviewRating):
+        return
 
-        if len(changed_fields) > 0:
-            edition = instance.book
-            generate_edition_preview_image_task.delay(edition.id)
+    changed_fields = instance.field_tracker.changed()
+
+    if len(changed_fields) > 0:
+        edition = instance.book
+        generate_edition_preview_image_task.delay(edition.id)

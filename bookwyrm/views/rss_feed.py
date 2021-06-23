@@ -21,7 +21,7 @@ class RssFeed(Feed):
         template = get_template("rss/title.html")
         return template.render({"user": item.user, "item_title": title}).strip()
 
-    def get_object(self, request, username):
+    def get_object(self, request, username):  # pylint: disable=arguments-differ
         """the user who's posts get serialized"""
         return get_user_from_username(request.user, username)
 

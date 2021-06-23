@@ -18,9 +18,9 @@ from bookwyrm.preview_images import (
     save_and_cleanup,
 )
 
-import logging
 
-
+# pylint: disable=unused-argument
+# pylint: disable=missing-function-docstring
 class PreviewImages(TestCase):
     """every response to a get request, html or json"""
 

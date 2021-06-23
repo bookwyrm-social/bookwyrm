@@ -17,7 +17,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
@@ -239,7 +239,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     def save(self, *args, **kwargs):
         """populate fields for new local users"""
         created = not bool(self.id)
-        if not self.local and not re.match(regex.full_username, self.username):
+        if not self.local and not re.match(regex.FULL_USERNAME, self.username):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)
@@ -363,7 +363,7 @@ class AnnualGoal(BookWyrmModel):
 
     def get_remote_id(self):
         """put the year in the path"""
-        return "%s/goal/%d" % (self.user.remote_id, self.year)
+        return "{:s}/goal/{:d}".format(self.user.remote_id, self.year)
 
     @property
     def books(self):
@@ -452,9 +452,12 @@ def get_remote_reviews(outbox):
         activitypub.Review(**activity).to_model()
 
 
-@receiver(models.signals.post_save, sender=User)
 # pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=User)
 def preview_image(instance, *args, **kwargs):
+    """create preview images when user is updated"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
     changed_fields = instance.field_tracker.changed()
 
     if len(changed_fields) > 0:

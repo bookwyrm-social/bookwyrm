@@ -202,6 +202,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             *args, max_length=255, choices=PrivacyLevels.choices, default="public"
         )
 
+    # pylint: disable=invalid-name
     def set_field_from_activity(self, instance, data):
         to = data.to
         cc = data.cc
@@ -220,6 +221,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         if hasattr(instance, "mention_users"):
             mentions = [u.remote_id for u in instance.mention_users.all()]
         # this is a link to the followers list
+        # pylint: disable=protected-access
         followers = instance.user.__class__._meta.get_field(
             "followers"
         ).field_to_activity(instance.user.followers)
@@ -406,7 +408,8 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             return None
 
         image_content = ContentFile(response.content)
-        image_name = str(uuid4()) + "." + imghdr.what(None, image_content.read())
+        extension = imghdr.what(None, image_content.read()) or ""
+        image_name = "{:s}.{:s}".format(str(uuid4()), extension)
         return [image_name, image_content]
 
     def formfield(self, **kwargs):

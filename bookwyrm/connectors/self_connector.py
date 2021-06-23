@@ -114,6 +114,7 @@ class Connector(AbstractConnector):
 
 def search_identifiers(query, *filters):
     """tries remote_id, isbn; defined as dedupe fields on the model"""
+    # pylint: disable=W0212
     or_filters = [
         {f.name: query}
         for f in models.Edition._meta.get_fields()
