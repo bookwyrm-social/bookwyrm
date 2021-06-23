@@ -1,8 +1,9 @@
 {% extends 'components/modal.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block modal-title %}
-{% blocktrans trimmed with book_title=book.title %}
+{% blocktrans trimmed with book_title=book|book_title %}
 Start "<em>{{ book_title }}</em>"
 {% endblocktrans %}
 {% endblock %}
@@ -23,12 +24,8 @@ Start "<em>{{ book_title }}</em>"
         </label>
         <input type="date" name="start_date" class="input" id="start_id_start_date-{{ uuid }}" value="{% now "Y-m-d" %}">
     </div>
-    <div class="field">
-        <label class="label" for="content-{{ uuid }}">
-            {% trans "Comment" %}
-        </label>
-        <textarea name="content" class="textarea"></textarea>
-    </div>
+    {% trans "Your initial thoughts" as placeholder %}
+    {% include "snippets/create_status_form.html" with book=book type="comment" placeholder=placeholder %}
 </section>
 {% endblock %}
 

@@ -2,6 +2,16 @@
 {% load utilities %}
 {% load status_display %}
 
+{# ----- Variables -----
+book: the Edition object this status is related to. Required unless the status is a reply
+reply_parent: the parent status, if the status is a reply
+type: the format of the status. options are "comment" "quotation" "review" "direct" "reply"
+placeholder: the text used in the html "placeholder" attribute, which shows as a suggestion for what a user might type
+mention: the User object of a user who will show up at @ mentioned by default
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+#}
+
 {% load i18n %}
 <form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}
