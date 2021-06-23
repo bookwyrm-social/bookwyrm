@@ -1,3 +1,4 @@
+{% extends "snippets/create_status/layout.html" %}
 {% load bookwyrm_tags %}
 {% load utilities %}
 {% load status_display %}
@@ -12,38 +13,23 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 
 {% with type="review" %}
 
-<form class="is-flex-grow-1" name="review" action="/post/review" method="post" id="tab-review-{{ book.id }}">
-    {% csrf_token %}
-    <input type="hidden" name="book" value="{{ book.id }}">
-    <input type="hidden" name="user" value="{{ request.user.id }}">
-    <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
-
+{% block pre_content_additions %}
     <div class="field">
-        <label class="label" for="id_name_{{ book.id }}">{% trans "Title" %}:</label>
+        <label class="label" for="id_name_{{ book.id }}">{% trans "Title:" %}</label>
         <div class="control">
             <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}" placeholder="{% blocktrans with book_title=book.title %}Your review of '{{ book_title }}'{% endblocktrans %}" value="{% firstof draft.name ''%}">
         </div>
     </div>
 
-    <div class="field">
-        <label class="label mb-0" for="id_content_review_{{ book.id }}">
-            {% trans "Review:" %}
-        </label>
+    <fieldset class="mb-1">
+        <legend class="is-sr-only">{% trans "Rating" %}</legend>
 
-        <fieldset class="mb-1">
-            <legend class="is-sr-only">{% trans "Rating" %}</legend>
+        {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
+    </fieldset>
+{% endblock %}
 
-            {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
-        </fieldset>
-
-        <div class="control">
-            {% include "snippets/create_status/content_warning_field.html" with parent_status=status %}
-            {% include "snippets/create_status/content_field.html" %}
-        </div>
-    </div>
-
-    {# bottom bar #}
-    {% include "snippets/create_status/post_options_block.html" %}
-</form>
+{% block content_label %}
+    {% trans "Review:" %}
+{% endblock %}
 
 {% endwith %}

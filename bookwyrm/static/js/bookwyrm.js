@@ -219,7 +219,7 @@ let BookWyrm = new class {
     /**
      * Check or uncheck a checbox.
      *
-     * @param  {object}  checkbox - DOM node
+     * @param  {string}  checkbox - id of the checkbox
      * @param  {boolean} pressed  - Is the trigger pressed?
      * @return {undefined}
      */
