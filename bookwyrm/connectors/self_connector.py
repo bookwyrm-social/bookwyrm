@@ -2,7 +2,7 @@
 from functools import reduce
 import operator
 
-from django.contrib.postgres.search import SearchRank
+from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
@@ -141,6 +141,7 @@ def search_identifiers(query, *filters):
 
 def search_title_author(query, min_confidence, *filters):
     """searches for title and author"""
+    query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
         models.Edition.objects.annotate(rank=SearchRank("search_vector", query))
         .filter(*filters, search_vector=query, rank__gt=min_confidence)

@@ -39,17 +39,20 @@ class Migration(migrations.Migration):
                 CREATE FUNCTION book_trigger() RETURNS trigger AS $$
                 begin
                     new.search_vector :=
-                        setweight(to_tsvector('pg_catalog.english', coalesce(new.title, '')), 'A') ||
-                        setweight(to_tsvector('pg_catalog.english', coalesce(new.subtitle, '')), 'B') ||
-                        setweight(to_tsvector('pg_catalog.english', coalesce(new.series, '')), 'D') ||
-                        (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'C')
+                        coalesce(
+                            NULLIF(setweight(to_tsvector('english', coalesce(new.title, '')), 'A'), ''),
+                            setweight(to_tsvector('simple', coalesce(new.title, '')), 'A')
+                        ) ||
+                        setweight(to_tsvector('english', coalesce(new.subtitle, '')), 'B') ||
+                        (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'B')
                             FROM bookwyrm_book
                             LEFT OUTER JOIN bookwyrm_book_authors
                             ON bookwyrm_book.id = bookwyrm_book_authors.book_id
                             LEFT OUTER JOIN bookwyrm_author
                             ON bookwyrm_book_authors.author_id = bookwyrm_author.id
                             WHERE bookwyrm_book.id = new.id
-                        );
+                        ) ||
+                        setweight(to_tsvector('english', coalesce(new.series, '')), 'D');
                     return new;
                 end
                 $$ LANGUAGE plpgsql;
