@@ -183,6 +183,7 @@ class EditionForm(CustomForm):
             "parent_work",
             "shelves",
             "connector",
+            "search_vector",
         ]
 
 
