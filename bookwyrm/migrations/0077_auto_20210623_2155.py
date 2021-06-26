@@ -70,4 +70,57 @@ class Migration(migrations.Migration):
                 DROP FUNCTION IF EXISTS book_trigger;
             """,
         ),
+        # when an author is edited
+        migrations.RunSQL(
+            sql="""
+                CREATE FUNCTION author_trigger() RETURNS trigger AS $$
+                begin
+                    WITH book AS (
+                        SELECT bookwyrm_book.id as row_id
+                        FROM bookwyrm_author
+                        LEFT OUTER JOIN bookwyrm_book_authors
+                        ON bookwyrm_book_authors.id = new.id
+                        LEFT OUTER JOIN bookwyrm_book
+                        ON bookwyrm_book.id = bookwyrm_book_authors.book_id
+                    )
+                    UPDATE bookwyrm_book SET search_vector = ''
+                    FROM book
+                    WHERE id = book.row_id;
+                    return new;
+                end
+                $$ LANGUAGE plpgsql;
+
+                CREATE TRIGGER author_search_vector_trigger
+                AFTER UPDATE OF name
+                ON bookwyrm_author
+                FOR EACH ROW EXECUTE FUNCTION author_trigger();
+            """,
+            reverse_sql="""
+                DROP TRIGGER IF EXISTS author_search_vector_trigger
+                ON bookwyrm_author;
+                DROP FUNCTION IF EXISTS author_trigger;
+            """,
+        ),
+        # when an author is added to or removed from a book
+        migrations.RunSQL(
+            sql="""
+                CREATE FUNCTION book_authors_trigger() RETURNS trigger AS $$
+                begin
+                    UPDATE bookwyrm_book SET search_vector = ''
+                    WHERE id = coalesce(new.book_id, old.book_id);
+                    return new;
+                end
+                $$ LANGUAGE plpgsql;
+
+                CREATE TRIGGER book_authors_search_vector_trigger
+                AFTER INSERT OR DELETE
+                ON bookwyrm_book_authors
+                FOR EACH ROW EXECUTE FUNCTION book_authors_trigger();
+            """,
+            reverse_sql="""
+                DROP TRIGGER IF EXISTS book_authors_search_vector_trigger
+                ON bookwyrm_book_authors;
+                DROP FUNCTION IF EXISTS book_authors_trigger;
+            """,
+        ),
     ]
