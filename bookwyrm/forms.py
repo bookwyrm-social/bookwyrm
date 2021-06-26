@@ -195,6 +195,7 @@ class AuthorForm(CustomForm):
             "origin_id",
             "created_date",
             "updated_date",
+            "search_vector",
         ]
 
 
