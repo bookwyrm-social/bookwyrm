@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from bookwyrm import models
 
+
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class PostgresTriggers(TestCase):
     """special migrations, fancy stuff ya know"""
