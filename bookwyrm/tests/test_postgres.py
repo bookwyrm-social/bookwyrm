@@ -1,5 +1,5 @@
 """ django configuration of postgres  """
-from unittest import patch
+from unittest.mock import patch
 from django.test import TestCase
 
 from bookwyrm import models
