@@ -64,3 +64,11 @@ class PostgresTriggers(TestCase):
         book.authors.remove(author)
         book.refresh_from_db()
         self.assertEqual(book.search_vector, "'goodby':3A 'long':2A")
+
+    def test_search_vector_stop_word_fallback(self):
+        """use a fallback when removing stop words leads to an empty vector"""
+        book = models.Edition.objects.create(
+            title="there there",
+        )
+        book.refresh_from_db()
+        self.assertEqual(book.search_vector, "'there':1A,2A")
