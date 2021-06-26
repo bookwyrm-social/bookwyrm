@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                             setweight(to_tsvector('simple', coalesce(new.title, '')), 'A')
                         ) ||
                         setweight(to_tsvector('english', coalesce(new.subtitle, '')), 'B') ||
-                        (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'B')
+                        (SELECT setweight(to_tsvector('simple', coalesce(array_to_string(array_agg(bookwyrm_author.name), ' '), '')), 'C')
                             FROM bookwyrm_book
                             LEFT OUTER JOIN bookwyrm_book_authors
                             ON bookwyrm_book.id = bookwyrm_book_authors.book_id

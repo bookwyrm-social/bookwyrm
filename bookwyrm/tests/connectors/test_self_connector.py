@@ -70,15 +70,16 @@ class SelfConnector(TestCase):
         # title is rank A
         models.Edition.objects.create(title="Anonymous")
         # doesn't rank in this search
-        edition = models.Edition.objects.create(
+        models.Edition.objects.create(
             title="An Edition", parent_work=models.Work.objects.create(title="")
         )
 
         results = self.connector.search("Anonymous")
-        self.assertEqual(len(results), 3)
+        self.assertEqual(len(results), 4)
         self.assertEqual(results[0].title, "Anonymous")
         self.assertEqual(results[1].title, "More Editions")
         self.assertEqual(results[2].title, "Edition of Example Work")
+        self.assertEqual(results[3].title, "Another Edition")
 
     @patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay")
     def test_search_multiple_editions(self, _):
