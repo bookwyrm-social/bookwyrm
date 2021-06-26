@@ -13,7 +13,7 @@ class Connector(AbstractConnector):
     """instantiate a connector"""
 
     # pylint: disable=arguments-differ
-    def search(self, query, min_confidence=0.1, raw=False, filters=None):
+    def search(self, query, min_confidence=0, raw=False, filters=None):
         """search your local database"""
         filters = filters or []
         if not query:
