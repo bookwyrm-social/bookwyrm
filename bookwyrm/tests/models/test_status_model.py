@@ -14,6 +14,7 @@ from bookwyrm import activitypub, models, settings
 
 
 # pylint: disable=too-many-public-methods
+# pylint: disable=invalid-name
 @patch("bookwyrm.models.Status.broadcast")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
@@ -417,7 +418,7 @@ class Status(TestCase):
 
     def test_recipients_with_mentions(self, *_):
         """get recipients to broadcast a status"""
-        status = models.GeneratedNote.objects.create(
+        status = models.Status.objects.create(
             content="test content", user=self.local_user
         )
         status.mention_users.add(self.remote_user)
@@ -426,10 +427,10 @@ class Status(TestCase):
 
     def test_recipients_with_reply_parent(self, *_):
         """get recipients to broadcast a status"""
-        parent_status = models.GeneratedNote.objects.create(
+        parent_status = models.Status.objects.create(
             content="test content", user=self.remote_user
         )
-        status = models.GeneratedNote.objects.create(
+        status = models.Status.objects.create(
             content="test content", user=self.local_user, reply_parent=parent_status
         )
 
@@ -437,10 +438,10 @@ class Status(TestCase):
 
     def test_recipients_with_reply_parent_and_mentions(self, *_):
         """get recipients to broadcast a status"""
-        parent_status = models.GeneratedNote.objects.create(
+        parent_status = models.Status.objects.create(
             content="test content", user=self.remote_user
         )
-        status = models.GeneratedNote.objects.create(
+        status = models.Status.objects.create(
             content="test content", user=self.local_user, reply_parent=parent_status
         )
         status.mention_users.set([self.remote_user])
