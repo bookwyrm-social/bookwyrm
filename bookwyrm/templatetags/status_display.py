@@ -32,7 +32,6 @@ def get_replies(status):
 @register.filter(name="parent")
 def get_parent(status):
     """get the reply parent for a status"""
-    print(status, status.reply_parent)
     return (
         models.Status.objects.filter(id=status.reply_parent_id)
         .select_subclasses()
