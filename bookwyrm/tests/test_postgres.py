@@ -37,7 +37,7 @@ class PostgresTriggers(TestCase):
         book.refresh_from_db()
         self.assertEqual(
             book.search_vector,
-            "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7B 'seri':8 'the':6B 'wow':4B",
+            "'cool':5B 'goodby':3A 'long':2A 'name':9 'rays':7C 'seri':8 'the':6C 'wow':4B",
         )
 
     def test_seach_vector_on_author_update(self, *_):
@@ -51,7 +51,7 @@ class PostgresTriggers(TestCase):
         author.save(broadcast=False)
         book.refresh_from_db()
 
-        self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4B 'long':2A")
+        self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4C 'long':2A")
 
     def test_seach_vector_on_author_delete(self, *_):
         """update search when an author name changes"""
@@ -62,7 +62,7 @@ class PostgresTriggers(TestCase):
 
         book.authors.add(author)
         book.refresh_from_db()
-        self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4B 'long':2A")
+        self.assertEqual(book.search_vector, "'goodby':3A 'jeremy':4C 'long':2A")
 
         book.authors.remove(author)
         book.refresh_from_db()
