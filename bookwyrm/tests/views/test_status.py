@@ -8,6 +8,7 @@ from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
+# pylint: disable=invalid-name
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
@@ -224,7 +225,7 @@ class StatusViews(TestCase):
         request.user = self.local_user
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             status = models.GeneratedNote.objects.create(
-                content="hi", user=self.local_user
+                content="hi", user=self.local_user, note_type="READ"
             )
 
         with patch(
