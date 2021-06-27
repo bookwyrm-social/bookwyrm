@@ -1,48 +1,35 @@
-{% extends 'components/modal.html' %}
+{% extends 'snippets/reading_modals/layout.html' %}
 {% load i18n %}
+{% load utilities %}
 
 {% block modal-title %}
-{% blocktrans with book_title=book.title %}Finish "<em>{{ book_title }}</em>"{% endblocktrans %}
+{% blocktrans trimmed with book_title=book|book_title %}
+Finish "<em>{{ book_title }}</em>"
+{% endblocktrans %}
 {% endblock %}
-
 
 {% block modal-form-open %}
 <form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post">
+    <input type="hidden" name="note_type" value="READ">
 {% endblock %}
 
-{% block modal-body %}
-<section class="modal-card-body">
-    {% csrf_token %}
-    <input type="hidden" name="id" value="{{ readthrough.id }}">
-    <div class="field">
-        <label class="label" for="finish_id_start_date-{{ uuid }}">
-            {% trans "Started reading" %}
-        </label>
-        <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
-    </div>
-    <div class="field">
-        <label class="label" for="id_finish_date-{{ uuid }}">
-            {% trans "Finished reading" %}
-        </label>
-        <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
-    </div>
-</section>
-{% endblock %}
-
-{% block modal-footer %}
+{% block reading-dates %}
 <div class="columns">
-    <div class="column field">
-        <label for="post_status-{{ uuid }}">
-            <input type="checkbox" name="post-status" class="checkbox" id="post_status-{{ uuid }}" checked>
-            {% trans "Post to feed" %}
-        </label>
-        {% include 'snippets/privacy_select.html' %}
+    <div class="column is-half">
+        <div class="field">
+            <label class="label" for="finish_id_start_date-{{ uuid }}">
+                {% trans "Started reading" %}
+            </label>
+            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+        </div>
     </div>
-    <div class="column has-text-right">
-        <button type="submit" class="button is-success">{% trans "Save" %}</button>
-        {% trans "Cancel" as button_text %}
-        {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="finish-reading" controls_uid=uuid %}
+    <div class="column is-half">
+        <div class="field">
+            <label class="label" for="id_finish_date-{{ uuid }}">
+                {% trans "Finished reading" %}
+            </label>
+            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+        </div>
     </div>
 </div>
 {% endblock %}
-{% block modal-form-close %}</form>{% endblock %}
