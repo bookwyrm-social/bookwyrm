@@ -12,7 +12,6 @@ class PostgresTriggers(TestCase):
 
     def test_search_vector_on_create(self, *_):
         """make sure that search_vector is being set correctly on create"""
-        print('hello?')
         book = models.Edition.objects.create(title="The Long Goodbye")
         book.refresh_from_db()
         self.assertEqual(book.search_vector, "'goodby':3A 'long':2A")
