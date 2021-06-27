@@ -143,8 +143,9 @@ def search_title_author(query, min_confidence, *filters):
     """searches for title and author"""
     query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
-        models.Edition.objects.annotate(rank=SearchRank(F("search_vector"), query))
-        .filter(*filters, search_vector=query, rank__gt=min_confidence)
+        models.Edition.objects.filter(*filters, search_vector=query)
+        .annotate(rank=SearchRank(F("search_vector"), query))
+        .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
 
