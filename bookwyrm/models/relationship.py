@@ -99,7 +99,7 @@ class UserFollowRequest(ActivitypubMixin, UserRelationship):
     status = "follow_request"
     activity_serializer = activitypub.Follow
 
-    def save(self, *args, broadcast=True, **kwargs):
+    def save(self, *args, broadcast=True, **kwargs):  # pylint: disable=arguments-differ
         """make sure the follow or block relationship doesn't already exist"""
         # if there's a request for a follow that already exists, accept it
         # without changing the local database state

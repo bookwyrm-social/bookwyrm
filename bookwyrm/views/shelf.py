@@ -17,7 +17,7 @@ from bookwyrm import forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH
 from .helpers import is_api_request, get_edition, get_user_from_username
-from .helpers import handle_reading_status, privacy_filter
+from .helpers import privacy_filter
 
 
 # pylint: disable=no-self-use

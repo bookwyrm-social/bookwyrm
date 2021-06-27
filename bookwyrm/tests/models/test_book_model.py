@@ -1,4 +1,6 @@
 """ testing models """
+from unittest.mock import patch
+
 from dateutil.parser import parse
 from django.test import TestCase
 from django.utils import timezone
@@ -12,17 +14,18 @@ class Book(TestCase):
 
     def setUp(self):
         """we'll need some books"""
-        self.work = models.Work.objects.create(
-            title="Example Work", remote_id="https://example.com/book/1"
-        )
-        self.first_edition = models.Edition.objects.create(
-            title="Example Edition",
-            parent_work=self.work,
-        )
-        self.second_edition = models.Edition.objects.create(
-            title="Another Example Edition",
-            parent_work=self.work,
-        )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            self.work = models.Work.objects.create(
+                title="Example Work", remote_id="https://example.com/book/1"
+            )
+            self.first_edition = models.Edition.objects.create(
+                title="Example Edition",
+                parent_work=self.work,
+            )
+            self.second_edition = models.Edition.objects.create(
+                title="Another Example Edition",
+                parent_work=self.work,
+            )
 
     def test_remote_id(self):
         """fanciness with remote/origin ids"""
@@ -56,7 +59,8 @@ class Book(TestCase):
 
     def test_get_edition_info(self):
         """text slug about an edition"""
-        book = models.Edition.objects.create(title="Test Edition")
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            book = models.Edition.objects.create(title="Test Edition")
         self.assertEqual(book.edition_info, "")
 
         book.physical_format = "worm"

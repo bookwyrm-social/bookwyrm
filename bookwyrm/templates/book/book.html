@@ -1,7 +1,11 @@
 {% extends 'layout.html' %}
-{% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}
+{% load i18n %}{% load bookwyrm_tags %}{% load humanize %}{% load utilities %}{% load layout %}
 
 {% block title %}{{ book|book_title }}{% endblock %}
+
+{% block opengraph_images %}
+    {% include 'snippets/opengraph_images.html' with image=book.preview_image %}
+{% endblock %}
 
 {% block content %}
 {% with user_authenticated=request.user.is_authenticated can_edit_book=perms.bookwyrm.edit_book %}

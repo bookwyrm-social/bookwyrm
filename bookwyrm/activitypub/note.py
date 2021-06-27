@@ -19,6 +19,7 @@ class Tombstone(ActivityObject):
         return model.find_existing_by_remote_id(self.id)
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Note(ActivityObject):
     """Note activity"""
@@ -52,6 +53,7 @@ class GeneratedNote(Note):
     type: str = "GeneratedNote"
 
 
+# pylint: disable=invalid-name
 @dataclass(init=False)
 class Comment(Note):
     """like a note but with a book"""

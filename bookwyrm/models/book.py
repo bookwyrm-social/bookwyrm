@@ -1,11 +1,16 @@
 """ database schema for books and shelves """
 import re
 
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
+from django.dispatch import receiver
+from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
-from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE
+from bookwyrm.preview_images import generate_edition_preview_image_task
+from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE, ENABLE_PREVIEW_IMAGES
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -31,6 +36,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
         "User",
@@ -82,10 +88,14 @@ class Book(BookDataModel):
     cover = fields.ImageField(
         upload_to="covers/", blank=True, null=True, alt_field="alt_text"
     )
+    preview_image = models.ImageField(
+        upload_to="previews/covers/", blank=True, null=True
+    )
     first_published_date = fields.DateTimeField(blank=True, null=True)
     published_date = fields.DateTimeField(blank=True, null=True)
 
     objects = InheritanceManager()
+    field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
 
     @property
     def author_text(self):
@@ -134,6 +144,11 @@ class Book(BookDataModel):
             self.openlibrary_key,
             self.title,
         )
+
+    class Meta:
+        """sets up postgres GIN index field"""
+
+        indexes = (GinIndex(fields=["search_vector"]),)
 
 
 class Work(OrderedCollectionPageMixin, Book):
@@ -293,3 +308,17 @@ def isbn_13_to_10(isbn_13):
     if checkdigit == 10:
         checkdigit = "X"
     return converted + str(checkdigit)
+
+
+# pylint: disable=unused-argument
+@receiver(models.signals.post_save, sender=Edition)
+def preview_image(instance, *args, **kwargs):
+    """create preview image on book create"""
+    if not ENABLE_PREVIEW_IMAGES:
+        return
+    changed_fields = {}
+    if instance.field_tracker:
+        changed_fields = instance.field_tracker.changed()
+
+    if len(changed_fields) > 0:
+        generate_edition_preview_image_task.delay(instance.id)

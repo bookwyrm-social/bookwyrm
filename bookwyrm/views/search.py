@@ -23,7 +23,7 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
         query = request.GET.get("q")
-        min_confidence = request.GET.get("min_confidence", 0.1)
+        min_confidence = request.GET.get("min_confidence", 0)
         search_type = request.GET.get("type")
         search_remote = (
             request.GET.get("remote", False) and request.user.is_authenticated
@@ -83,7 +83,7 @@ def user_search(query, viewer, *_):
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
-    if re.match(regex.full_username, query):
+    if re.match(regex.FULL_USERNAME, query):
         handle_remote_webfinger(query)
 
     return (

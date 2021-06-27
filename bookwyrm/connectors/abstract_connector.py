@@ -2,11 +2,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 import logging
-from urllib3.exceptions import RequestError
 
 from django.db import transaction
 import requests
-from requests.exceptions import SSLError
+from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
@@ -127,8 +126,8 @@ class AbstractConnector(AbstractMinimalConnector):
             edition_data = data
             try:
                 work_data = self.get_work_from_edition_data(data)
-            except (KeyError, ConnectorException) as e:
-                logger.exception(e)
+            except (KeyError, ConnectorException) as err:
+                logger.exception(err)
                 work_data = data
 
         if not work_data or not edition_data:
@@ -237,16 +236,16 @@ def get_data(url, params=None, timeout=10):
             },
             timeout=timeout,
         )
-    except (RequestError, SSLError, ConnectionError) as e:
-        logger.exception(e)
+    except RequestException as err:
+        logger.exception(err)
         raise ConnectorException()
 
     if not resp.ok:
         raise ConnectorException()
     try:
         data = resp.json()
-    except ValueError as e:
-        logger.exception(e)
+    except ValueError as err:
+        logger.exception(err)
         raise ConnectorException()
 
     return data
@@ -262,8 +261,8 @@ def get_image(url, timeout=10):
             },
             timeout=timeout,
         )
-    except (RequestError, SSLError) as e:
-        logger.exception(e)
+    except RequestException as err:
+        logger.exception(err)
         return None
     if not resp.ok:
         return None
