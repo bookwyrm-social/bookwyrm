@@ -3,9 +3,9 @@
 <div class="select {{ class }}">
     {% with 0|uuid as uuid %}
     {% if not no_label %}
-    <label class="is-sr-only" for="privacy-{{ uuid }}">{% trans "Post privacy" %}</label>
+    <label class="is-sr-only" for="privacy_{{ uuid }}">{% trans "Post privacy" %}</label>
     {% endif %}
-    <select name="privacy" id="privacy-{{ uuid }}">
+    <select name="privacy" id="privacy_{{ uuid }}">
         <option value="public" {% if not current or current == 'public' %}selected{% endif %}>
             {% trans "Public" %}
         </option>

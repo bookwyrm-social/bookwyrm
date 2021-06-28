@@ -9,7 +9,7 @@
     {% if is_self and goal %}
     <div class="column is-narrow">
         {% trans "Edit Goal" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="show-edit-goal" focus="edit-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="show_edit_goal" focus="edit_form_header" %}
     </div>
     {% endif %}
 </div>
@@ -20,9 +20,9 @@
     {% if user == request.user %}
     <div class="block">
         {% now 'Y' as year %}
-        <section class="card {% if goal %}is-hidden{% endif %}" id="show-edit-goal">
+        <section class="card {% if goal %}is-hidden{% endif %}" id="show_edit_goal">
             <header class="card-header">
-                <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
+                <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit_form_header">
                     <span class="icon icon-book is-size-3 mr-2" aria-hidden="true"></span> {% blocktrans %}{{ year }} Reading Goal{% endblocktrans %}
                 </h2>
             </header>

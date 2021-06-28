@@ -2,7 +2,7 @@
 {% load utilities %}
 {% load status_display %}
 
-{# ----- Variables -----
+{# ----- Variables
 book: the Edition object this status is related to. Required unless the status is a reply
 reply_parent: the parent status, if the status is a reply
 type: the format of the status. options are "comment" "quotation" "review" "direct" "reply"
@@ -13,7 +13,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 #}
 
 {% load i18n %}
-<form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab-{{ type }}-{{ book.id }}{{ reply_parent.id }}">
+<form class="is-flex-grow-1" name="{{ type }}" action="/post/{% if type == 'direct' %}status{% else %}{{ type }}{% endif %}" method="post" id="tab_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
     {% csrf_token %}
     <input type="hidden" name="book" value="{{ book.id }}">
     <input type="hidden" name="user" value="{{ request.user.id }}">
@@ -66,10 +66,10 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
     {# Supplemental fields #}
     {% if type == 'quotation' %}
     <div class="field">
-        <label class="label" for="id_content_quote-{{ book.id }}">{% trans "Comment" %}:</label>
+        <label class="label" for="id_content_quote_{{ book.id }}">{% trans "Comment" %}:</label>
         {% include 'snippets/create_status/content_warning_field.html' with parent_status=status %}
         <div class="control">
-            <textarea name="content" class="textarea" rows="3" id="id_content_quote-{{ book.id }}">{{ draft.content|default:'' }}</textarea>
+            <textarea name="content" class="textarea" rows="3" id="id_content_quote_{{ book.id }}">{{ draft.content|default:'' }}</textarea>
         </div>
     </div>
     {% elif type == 'comment' %}
@@ -80,10 +80,10 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
         {% with readthrough=book.latest_readthrough %}
         <div class="field">
             <input type="hidden" name="id" value="{{ readthrough.id }}"/>
-            <label class="label" for="progress-{{ uuid }}">{% trans "Progress:" %}</label>
+            <label class="label" for="progress_{{ uuid }}">{% trans "Progress:" %}</label>
             <div class="field has-addons mb-0">
                 <div class="control">
-                    <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress-{{ uuid }}">
+                    <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress_{{ uuid }}">
                 </div>
                 <div class="control">
                     <div class="select">
@@ -105,7 +105,7 @@ uuid: a unique identifier used to make html "id" attributes unique and clarify j
 
 
     {# bottom bar #}
-    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers-{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
+    <input type="checkbox" class="is-hidden" name="sensitive" id="id_show_spoilers_{{ uuid }}" {% if draft.content_warning or status.content_warning %}checked{% endif %} aria-hidden="true">
 
     <div class="columns mt-1">
         <div class="field has-addons column">

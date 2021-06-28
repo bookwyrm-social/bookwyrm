@@ -164,7 +164,7 @@ let BookWyrm = new class {
         }
 
         // Show/hide container.
-        let container = document.getElementById('hide-' + targetId);
+        let container = document.getElementById('hide_' + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);

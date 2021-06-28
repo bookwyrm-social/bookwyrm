@@ -36,7 +36,7 @@
     {% if is_self %}
     <div class="column is-narrow">
         {% trans "Create shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create-shelf-form" focus="create-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" controls_text="create_shelf_form" focus="create_shelf_form_header" %}
         <a class="button" href="{% url 'import' %}">{% trans "Import Books" %}</a>
     </div>
     {% endif %}
@@ -45,7 +45,7 @@
 
 {% block panel %}
 <div class="block">
-    {% include 'user/shelf/create_shelf_form.html' with controls_text='create-shelf-form' %}
+    {% include 'user/shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
 </div>
 
 <div class="block columns is-mobile">
@@ -60,13 +60,13 @@
     {% if is_self and shelf.id %}
     <div class="column is-narrow">
         {% trans "Edit shelf" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit-shelf-form" focus="edit-shelf-form-header" %}
+        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_shelf_form" focus="edit_shelf_form_header" %}
     </div>
     {% endif %}
 </div>
 
 <div class="block">
-    {% include 'user/shelf/edit_shelf_form.html' with controls_text="edit-shelf-form" %}
+    {% include 'user/shelf/edit_shelf_form.html' with controls_text="edit_shelf_form" %}
 </div>
 
 <div class="block">
@@ -131,7 +131,7 @@
                     {% endif %}
                 </tr>
                 {% endspaceless %}
-                {% endfor %} 
+                {% endfor %}
             </tbody>
         </table>
         {% else %}

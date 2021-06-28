@@ -70,7 +70,7 @@
 
                     {% trans "Show more" as button_text %}
 
-                    {% with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+                    {% with text=button_text class="is-small" controls_text="show_status_cw" controls_uid=status.id %}
                         {% include 'snippets/toggle/open_button.html' %}
                     {% endwith %}
                 </div>
@@ -78,14 +78,14 @@
 
             <div
                 {% if status.content_warning %}
-                    id="show-status-cw-{{ status.id }}"
+                    id="show_status_cw_{{ status.id }}"
                     class="is-hidden"
                 {% endif %}
             >
                 {% if status.content_warning %}
                     {% trans "Show less" as button_text %}
 
-                    {% with text=button_text class="is-small" controls_text="show-status-cw" controls_uid=status.id %}
+                    {% with text=button_text class="is-small" controls_text="show_status_cw" controls_uid=status.id %}
                         {% include 'snippets/toggle/close_button.html' %}
                     {% endwith %}
                 {% endif %}

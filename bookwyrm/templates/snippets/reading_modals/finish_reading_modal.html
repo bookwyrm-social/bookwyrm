@@ -17,18 +17,18 @@ Finish "<em>{{ book_title }}</em>"
 <div class="columns">
     <div class="column is-half">
         <div class="field">
-            <label class="label" for="finish_id_start_date-{{ uuid }}">
+            <label class="label" for="finish_id_start_date_{{ uuid }}">
                 {% trans "Started reading" %}
             </label>
-            <input type="date" name="start_date" class="input" id="finish_id_start_date-{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
+            <input type="date" name="start_date" class="input" id="finish_id_start_date_{{ uuid }}" value="{{ readthrough.start_date | date:"Y-m-d" }}">
         </div>
     </div>
     <div class="column is-half">
         <div class="field">
-            <label class="label" for="id_finish_date-{{ uuid }}">
+            <label class="label" for="id_finish_date_{{ uuid }}">
                 {% trans "Finished reading" %}
             </label>
-            <input type="date" name="finish_date" class="input" id="id_finish_date-{{ uuid }}" value="{% now "Y-m-d" %}">
+            <input type="date" name="finish_date" class="input" id="id_finish_date_{{ uuid }}" value="{% now "Y-m-d" %}">
         </div>
     </div>
 </div>

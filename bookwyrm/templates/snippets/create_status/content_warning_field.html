@@ -1,12 +1,12 @@
 {% load i18n %}
-<div class="control{% if not parent_status.content_warning and not draft.content_warning %} is-hidden{% endif %}" id="spoilers-{{ uuid }}">
-    <label class="is-sr-only" for="id_content_warning-{{ uuid }}">{% trans "Spoiler alert:" %}</label>
+<div class="control{% if not parent_status.content_warning and not draft.content_warning %} is-hidden{% endif %}" id="spoilers_{{ uuid }}">
+    <label class="is-sr-only" for="id_content_warning_{{ uuid }}">{% trans "Spoiler alert:" %}</label>
     <input
         type="text"
         name="content_warning"
         maxlength="255"
         class="input"
-        id="id_content_warning-{{ uuid }}"
+        id="id_content_warning_{{ uuid }}"
         placeholder="{% trans 'Spoilers ahead!' %}"
         value="{% firstof draft.content_warning parent_status.content_warning '' %}">
 </div>
