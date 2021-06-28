@@ -87,7 +87,9 @@ class ImportStatus(View):
 
         try:
             task = app.AsyncResult(job.task_id)
-        except ValueError:
+            # triggers attribute error if the task won't load
+            task.status # pylint: disable=pointless-statement
+        except (ValueError, AttributeError):
             task = None
 
         items = job.items.order_by("index").all()

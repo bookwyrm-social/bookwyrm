@@ -1,8 +1,9 @@
 """ testing models """
+from unittest.mock import patch
+
 from dateutil.parser import parse
 from django.test import TestCase
 from django.utils import timezone
-from unittest.mock import patch
 
 from bookwyrm import models, settings
 from bookwyrm.models.book import isbn_10_to_13, isbn_13_to_10
