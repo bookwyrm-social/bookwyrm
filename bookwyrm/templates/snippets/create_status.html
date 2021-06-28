@@ -44,19 +44,19 @@
 
     <div class="tab-option-{{ book.id }}" id="review-{{ book.id }}" role="tabpanel" aria-labelledby="tab-review-{{ book.id }}" {% if status_type and status_type != "review" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
-        {% include 'snippets/create_status/review.html' %}
+        {% include 'snippets/create_status/status.html' with type="review" %}
         {% endwith %}
     </div>
 
     <div class="tab-option-{{ book.id }}" id="comment-{{ book.id }}" role="tabpanel" aria-labelledby="tab-comment-{{ book.id }}" {% if status_type != "comment" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
-        {% include 'snippets/create_status/comment.html' with type="comment" placeholder="Some thoughts on '"|add:book.title|add:"'" %}
+        {% include 'snippets/create_status/status.html' with type="comment" %}
         {% endwith %}
     </div>
 
     <div class="tab-option-{{ book.id }}" id="quote-{{ book.id }}" role="tabpanel" aria-labelledby="tab-quote-{{ book.id }}" {% if status_type != "quote" %}hidden{% endif %}>
         {% with 0|uuid as uuid %}
-        {% include 'snippets/create_status/quotation.html' %}
+        {% include 'snippets/create_status/status.html' with type="quotation" %}
         {% endwith %}
     </div>
 </div>
