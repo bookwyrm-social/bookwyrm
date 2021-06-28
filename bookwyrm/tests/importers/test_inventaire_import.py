@@ -105,31 +105,19 @@ class InventaireImport(TestCase):
             list(csv.DictReader(csv_file, delimiter=self.importer.delimiter))
         ):
             entry = self.importer.parse_fields(entry)
-            # Add start and finish dates since we don't have them in CSV
-            entry["Date Started"] = "2007-04-16"
-            entry["Date Finished"] = "2007-05-08"
             import_item = models.ImportItem.objects.create(
                 job_id=import_job.id, index=index, data=entry, book=self.book
             )
             break
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
-            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                handle_imported_book(
+                    self.importer.service, self.user, import_item, False, "public"
+                )
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
-
-        readthrough = models.ReadThrough.objects.get(user=self.user)
-        self.assertEqual(readthrough.book, self.book)
-        # I can't remember how to create dates and I don't want to look it up.
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
 
     def test_handle_imported_book_already_shelved(self):
         """Inventaire.io import added a book, this adds related connections"""
@@ -157,14 +145,6 @@ class InventaireImport(TestCase):
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
         self.assertIsNone(self.user.shelf_set.get(identifier="read").books.first())
-        readthrough = models.ReadThrough.objects.get(user=self.user)
-        self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
 
     def test_handle_import_twice(self):
         """re-importing books"""
@@ -181,26 +161,17 @@ class InventaireImport(TestCase):
             )
             break
 
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
-            )
-            handle_imported_book(
-                self.importer.service, self.user, import_item, False, "public"
-            )
+        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                handle_imported_book(
+                    self.importer.service, self.user, import_item, False, "public"
+                )
+                handle_imported_book(
+                    self.importer.service, self.user, import_item, False, "public"
+                )
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
-
-        readthrough = models.ReadThrough.objects.get(user=self.user)
-        self.assertEqual(readthrough.book, self.book)
-        # I can't remember how to create dates and I don't want to look it up.
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_imported_book_review(self, _):

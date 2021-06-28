@@ -9,15 +9,14 @@ class InventaireImporter(Importer):
     """csv downloads from inventaire.io"""
 
     service = "Inventaire.io"
-    # mandatory_fields : fields matching the book title and author
-    mandatory_fields = ["Works title", "Authors labels"]
+    mandatory_fields = ["Edition ISBN-13"] #["Works URLs", "Works labels", "Authors labels", "Edition ISBN-13", "Item created"]
 
     def parse_fields(self, entry):
         """custom parsing for inventaire.io"""
         data = {}
         data["import_source"] = self.service
         data["Book Id"] = re.sub(r".*/", "", entry["Works URLs"])
-        data["Title"] = entry["Works title"]
+        data["Title"] = entry["Works labels"]
         data["Author"] = entry["Authors labels"].split(',')[0]
         data["ISBN13"] = entry["Edition ISBN-13"]
         data["Date Added"] = entry["Item created"]
@@ -29,5 +28,6 @@ class InventaireImporter(Importer):
         data["Date Read"] = None
         # Maybe put this in to-read by default?
         data["Exclusive Shelf"] = None
+
         return data
 
