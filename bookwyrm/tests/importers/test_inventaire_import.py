@@ -57,7 +57,9 @@ class InventaireImport(TestCase):
         self.assertEqual(import_items[1].index, 1)
         self.assertEqual(import_items[1].data["Book Id"], "wd:Q4351947")
         self.assertEqual(import_items[2].index, 2)
-        self.assertEqual(import_items[2].data["Book Id"], "inv:93dbd9f02e6883795973edfedfde1edf")
+        self.assertEqual(
+            import_items[2].data["Book Id"], "inv:93dbd9f02e6883795973edfedfde1edf"
+        )
 
     def test_create_retry_job(self):
         """trying again with items that didn't import"""
