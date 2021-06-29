@@ -13,7 +13,7 @@ class InventaireImporter(Importer):
         "Works labels",
         "Authors labels",
         "Edition ISBN-13",
-        "Item created"
+        "Item created",
     ]
 
     def parse_fields(self, entry):
