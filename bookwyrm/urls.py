@@ -192,8 +192,8 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
     # users
-    re_path(r"%s/?$" % USER_PATH, views.User.as_view(), name="user-feed"),
     re_path(r"%s\.json$" % USER_PATH, views.User.as_view()),
+    re_path(r"%s/?$" % USER_PATH, views.User.as_view(), name="user-feed"),
     re_path(r"%s/rss" % USER_PATH, views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
         r"%s/followers(.json)?/?$" % USER_PATH,

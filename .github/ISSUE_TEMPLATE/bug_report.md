@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
@@ -23,6 +23,14 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Instance**
+On which BookWyrm instance did you encounter this problem.
+
+**Additional context**
+Add any other context about the problem here.
+
+---
+
 **Desktop (please complete the following information):**
     - OS: [e.g. iOS]
     - Browser [e.g. chrome, safari]
@@ -33,6 +41,3 @@ If applicable, add screenshots to help explain your problem.
     - OS: [e.g. iOS8.1]
     - Browser [e.g. stock browser, safari]
     - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.

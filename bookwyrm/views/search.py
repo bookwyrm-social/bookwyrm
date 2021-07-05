@@ -23,7 +23,7 @@ class Search(View):
     def get(self, request):
         """that search bar up top"""
         query = request.GET.get("q")
-        min_confidence = request.GET.get("min_confidence", 0.1)
+        min_confidence = request.GET.get("min_confidence", 0)
         search_type = request.GET.get("type")
         search_remote = (
             request.GET.get("remote", False) and request.user.is_authenticated

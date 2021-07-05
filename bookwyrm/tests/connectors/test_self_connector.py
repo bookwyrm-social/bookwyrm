@@ -43,68 +43,69 @@ class SelfConnector(TestCase):
         self.assertEqual(result.year, 1980)
         self.assertEqual(result.connector, self.connector)
 
-    def test_search_rank(self):
+    @patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay")
+    def test_search_rank(self, _):
         """prioritize certain results"""
         author = models.Author.objects.create(name="Anonymous")
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            edition = models.Edition.objects.create(
-                title="Edition of Example Work",
-                published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
-                parent_work=models.Work.objects.create(title=""),
-            )
-            # author text is rank C
-            edition.authors.add(author)
+        edition = models.Edition.objects.create(
+            title="Edition of Example Work",
+            published_date=datetime.datetime(1980, 5, 10, tzinfo=timezone.utc),
+            parent_work=models.Work.objects.create(title=""),
+        )
+        # author text is rank B
+        edition.authors.add(author)
 
-            # series is rank D
-            models.Edition.objects.create(
-                title="Another Edition",
-                series="Anonymous",
-                parent_work=models.Work.objects.create(title=""),
-            )
-            # subtitle is rank B
-            models.Edition.objects.create(
-                title="More Editions",
-                subtitle="The Anonymous Edition",
-                parent_work=models.Work.objects.create(title=""),
-            )
-            # title is rank A
-            models.Edition.objects.create(title="Anonymous")
-            # doesn't rank in this search
-            edition = models.Edition.objects.create(
-                title="An Edition", parent_work=models.Work.objects.create(title="")
-            )
+        # series is rank D
+        models.Edition.objects.create(
+            title="Another Edition",
+            series="Anonymous",
+            parent_work=models.Work.objects.create(title=""),
+        )
+        # subtitle is rank B
+        models.Edition.objects.create(
+            title="More Editions",
+            subtitle="The Anonymous Edition",
+            parent_work=models.Work.objects.create(title=""),
+        )
+        # title is rank A
+        models.Edition.objects.create(title="Anonymous")
+        # doesn't rank in this search
+        models.Edition.objects.create(
+            title="An Edition", parent_work=models.Work.objects.create(title="")
+        )
 
-            results = self.connector.search("Anonymous")
-        self.assertEqual(len(results), 3)
+        results = self.connector.search("Anonymous")
+        self.assertEqual(len(results), 4)
         self.assertEqual(results[0].title, "Anonymous")
         self.assertEqual(results[1].title, "More Editions")
         self.assertEqual(results[2].title, "Edition of Example Work")
+        self.assertEqual(results[3].title, "Another Edition")
 
-    def test_search_multiple_editions(self):
+    @patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay")
+    def test_search_multiple_editions(self, _):
         """it should get rid of duplicate editions for the same work"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Work Title")
-            edition_1 = models.Edition.objects.create(
-                title="Edition 1 Title", parent_work=work
-            )
-            edition_2 = models.Edition.objects.create(
-                title="Edition 2 Title",
-                parent_work=work,
-                edition_rank=20,  # that's default babey
-            )
-            edition_3 = models.Edition.objects.create(title="Fish", parent_work=work)
+        work = models.Work.objects.create(title="Work Title")
+        edition_1 = models.Edition.objects.create(
+            title="Edition 1 Title", parent_work=work
+        )
+        edition_2 = models.Edition.objects.create(
+            title="Edition 2 Title",
+            parent_work=work,
+            isbn_13="123456789",  # this is now the defualt edition
+        )
+        edition_3 = models.Edition.objects.create(title="Fish", parent_work=work)
 
-            # pick the best edition
-            results = self.connector.search("Edition 1 Title")
-            self.assertEqual(len(results), 1)
-            self.assertEqual(results[0].key, edition_1.remote_id)
+        # pick the best edition
+        results = self.connector.search("Edition 1 Title")
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].key, edition_1.remote_id)
 
-            # pick the default edition when no match is best
-            results = self.connector.search("Edition Title")
-            self.assertEqual(len(results), 1)
-            self.assertEqual(results[0].key, edition_2.remote_id)
+        # pick the default edition when no match is best
+        results = self.connector.search("Edition Title")
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].key, edition_2.remote_id)
 
-            # only matches one edition, so no deduplication takes place
-            results = self.connector.search("Fish")
-            self.assertEqual(len(results), 1)
-            self.assertEqual(results[0].key, edition_3.remote_id)
+        # only matches one edition, so no deduplication takes place
+        results = self.connector.search("Fish")
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].key, edition_3.remote_id)

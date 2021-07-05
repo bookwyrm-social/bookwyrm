@@ -183,6 +183,7 @@ class EditionForm(CustomForm):
             "parent_work",
             "shelves",
             "connector",
+            "search_vector",
         ]
 
 
@@ -194,6 +195,7 @@ class AuthorForm(CustomForm):
             "origin_id",
             "created_date",
             "updated_date",
+            "search_vector",
         ]
 
 
