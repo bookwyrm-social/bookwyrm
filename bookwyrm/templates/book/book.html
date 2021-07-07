@@ -209,24 +209,24 @@
                     <ul>
                         {% url 'book' book.id as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                            <a href="{{ tab_url }}">{% trans "Reviews" %} ({{ review_count }})</a>
+                            <a href="{{ tab_url }}#reviews">{% trans "Reviews" %} ({{ review_count }})</a>
                         </li>
                         {% if user_statuses.review_count %}
                         {% url 'book-user-statuses' book.id 'review' as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                            <a href="{{ tab_url }}">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
+                            <a href="{{ tab_url }}#reviews">{% trans "Your reviews" %} ({{ user_statuses.review_count }})</a>
                         </li>
                         {% endif %}
                         {% if user_statuses.comment_count %}
                         {% url 'book-user-statuses' book.id 'comment' as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                            <a href="{{ tab_url }}">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
+                            <a href="{{ tab_url }}#reviews">{% trans "Your comments" %} ({{ user_statuses.comment_count }})</a>
                         </li>
                         {% endif %}
                         {% if user_statuses.quotation_count %}
                         {% url 'book-user-statuses' book.id 'quote' as tab_url %}
                         <li {% if tab_url == request.path %}class="is-active"{% endif %}>
-                            <a href="{{ tab_url }}">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
+                            <a href="{{ tab_url }}#reviews">{% trans "Your quotes" %} ({{ user_statuses.quotation_count }})</a>
                         </li>
                         {% endif %}
                     </ul>
