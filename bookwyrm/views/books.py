@@ -59,7 +59,7 @@ class Book(View):
                 queryset = book.comment_set
             else:
                 queryset = book.quotation_set
-            queryset = queryset.filter(user=request.user)
+            queryset = queryset.filter(user=request.user, deleted=False)
         else:
             queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
         queryset = queryset.select_related("user")
@@ -102,10 +102,11 @@ class Book(View):
                 book__parent_work=book.parent_work,
             ).select_related("shelf", "book")
 
+            filters = {"user": request.user, "deleted": False}
             data["user_statuses"] = {
-                "review_count": book.review_set.filter(user=request.user).count(),
-                "comment_count": book.comment_set.filter(user=request.user).count(),
-                "quotation_count": book.quotation_set.filter(user=request.user).count(),
+                "review_count": book.review_set.filter(**filters).count(),
+                "comment_count": book.comment_set.filter(**filters).count(),
+                "quotation_count": book.quotation_set.filter(**filters).count(),
             }
 
         return TemplateResponse(request, "book/book.html", data)

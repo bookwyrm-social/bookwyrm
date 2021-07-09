@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 PropertyField = namedtuple("PropertyField", ("set_activity_from_field"))
 
 
+# pylint: disable=invalid-name
 def set_activity_from_property_field(activity, obj, field):
     """assign a model property value to the activity json"""
     activity[field[1]] = getattr(obj, field[0])
@@ -318,7 +319,9 @@ class OrderedCollectionPageMixin(ObjectMixin):
 
         remote_id = remote_id or self.remote_id
         if page:
-            return to_ordered_collection_page(queryset, remote_id, **kwargs)
+            if isinstance(page, list) and len(page) > 0:
+                page = page[0]
+            return to_ordered_collection_page(queryset, remote_id, page=page, **kwargs)
 
         if collection_only or not hasattr(self, "activity_serializer"):
             serializer = activitypub.OrderedCollection

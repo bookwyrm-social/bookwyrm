@@ -166,6 +166,7 @@ LANGUAGES = [
     ("es", _("Spanish")),
     ("fr-fr", _("French")),
     ("zh-hans", _("Simplified Chinese")),
+    ("zh-hant", _("Traditional Chinese")),
 ]
 
 
