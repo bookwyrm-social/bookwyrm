@@ -295,7 +295,7 @@ urlpatterns = [
         views.Book.as_view(),
         name="book-user-statuses",
     ),
-    re_path(r"%s/edit/?$" % BOOK_PATH, views.EditBook.as_view()),
+    re_path(r"%s/edit/?$" % BOOK_PATH, views.EditBook.as_view(), name="edit-book"),
     re_path(r"%s/confirm/?$" % BOOK_PATH, views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
