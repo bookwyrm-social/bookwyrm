@@ -49,23 +49,6 @@ case "$CMD" in
     initdb)
         initdb
         ;;
-<<<<<<< HEAD
-=======
-    resetdb)
-        clean
-        # Start just the DB so no one else is using it
-        docker-compose up --build -d db
-        execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
-        # Now start up web so we can run the migrations
-        docker-compose up --build -d web
-        initdb
-        clean
-        ;;
-    makemigrations)
-        runweb python manage.py makemigrations "$@"
-        ;;
->>>>>>> main
     migrate)
         runweb python manage.py migrate "$@"
         ;;
