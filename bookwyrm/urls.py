@@ -192,8 +192,8 @@ urlpatterns = [
     re_path(r"^import/?$", views.Import.as_view(), name="import"),
     re_path(r"^import/(\d+)/?$", views.ImportStatus.as_view(), name="import-status"),
     # users
-    re_path(r"%s/?$" % USER_PATH, views.User.as_view(), name="user-feed"),
     re_path(r"%s\.json$" % USER_PATH, views.User.as_view()),
+    re_path(r"%s/?$" % USER_PATH, views.User.as_view(), name="user-feed"),
     re_path(r"%s/rss" % USER_PATH, views.rss_feed.RssFeed(), name="user-rss"),
     re_path(
         r"%s/followers(.json)?/?$" % USER_PATH,
@@ -295,7 +295,7 @@ urlpatterns = [
         views.Book.as_view(),
         name="book-user-statuses",
     ),
-    re_path(r"%s/edit/?$" % BOOK_PATH, views.EditBook.as_view()),
+    re_path(r"%s/edit/?$" % BOOK_PATH, views.EditBook.as_view(), name="edit-book"),
     re_path(r"%s/confirm/?$" % BOOK_PATH, views.ConfirmEditBook.as_view()),
     re_path(r"^create-book/?$", views.EditBook.as_view(), name="create-book"),
     re_path(r"^create-book/confirm?$", views.ConfirmEditBook.as_view()),
