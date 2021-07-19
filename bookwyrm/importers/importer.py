@@ -2,6 +2,8 @@
 import csv
 import logging
 
+from django.utils import timezone
+
 from bookwyrm import models
 from bookwyrm.models import ImportJob, ImportItem
 from bookwyrm.tasks import app
@@ -100,7 +102,10 @@ def handle_imported_book(source, user, item, include_reviews, privacy):
     # shelve the book if it hasn't been shelved already
     if item.shelf and not existing_shelf:
         desired_shelf = models.Shelf.objects.get(identifier=item.shelf, user=user)
-        models.ShelfBook.objects.create(book=item.book, shelf=desired_shelf, user=user)
+        shelved_date = item.date_added or timezone.now()
+        models.ShelfBook.objects.create(
+            book=item.book, shelf=desired_shelf, user=user, shelved_date=shelved_date
+        )
 
     for read in item.reads:
         # check for an existing readthrough with the same dates
