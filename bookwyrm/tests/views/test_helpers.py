@@ -161,50 +161,6 @@ class ViewsHelpers(TestCase):
         result = views.helpers.handle_remote_webfinger("@mouse@example.com")
         self.assertIsNone(result)
 
-    def test_handle_reading_status_to_read(self, *_):
-        """posts shelve activities"""
-        shelf = self.local_user.shelf_set.get(identifier="to-read")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.helpers.handle_reading_status(
-                self.local_user, shelf, self.book, "public"
-            )
-        status = models.GeneratedNote.objects.get()
-        self.assertEqual(status.user, self.local_user)
-        self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.note_type, "TO_READ")
-
-    def test_handle_reading_status_reading(self, *_):
-        """posts shelve activities"""
-        shelf = self.local_user.shelf_set.get(identifier="reading")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.helpers.handle_reading_status(
-                self.local_user, shelf, self.book, "public"
-            )
-        status = models.GeneratedNote.objects.get()
-        self.assertEqual(status.user, self.local_user)
-        self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.note_type, "READING")
-
-    def test_handle_reading_status_read(self, *_):
-        """posts shelve activities"""
-        shelf = self.local_user.shelf_set.get(identifier="read")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.helpers.handle_reading_status(
-                self.local_user, shelf, self.book, "public"
-            )
-        status = models.GeneratedNote.objects.get()
-        self.assertEqual(status.user, self.local_user)
-        self.assertEqual(status.mention_books.first(), self.book)
-        self.assertEqual(status.note_type, "READ")
-
-    def test_handle_reading_status_other(self, *_):
-        """posts shelve activities"""
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            views.helpers.handle_reading_status(
-                self.local_user, self.shelf, self.book, "public"
-            )
-        self.assertFalse(models.GeneratedNote.objects.exists())
-
     def test_get_annotated_users(self, *_):
         """list of people you might know"""
         user_1 = models.User.objects.create_user(

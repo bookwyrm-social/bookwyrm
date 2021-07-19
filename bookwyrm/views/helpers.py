@@ -2,7 +2,6 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db import transaction
 from django.db.models import Count, Max, Q
 from django.http import Http404
 
@@ -136,26 +135,6 @@ def get_edition(book_id):
     if isinstance(book, models.Work):
         book = book.default_edition
     return book
-
-
-@transaction.atomic
-def handle_reading_status(user, shelf, book, privacy):
-    """post about a user reading a book"""
-    type_identifier = shelf.identifier.upper()
-    type_identifier = type_identifier.replace("-", "_")
-    if not type_identifier in models.status.NoteType:
-        # it's a non-standard shelf, don't worry about it
-        return
-    status = models.GeneratedNote(
-        user=user,
-        note_type=type_identifier,
-        privacy=privacy,
-    )
-
-    status.save(broadcast=False)
-    # the books related field can't be set until the status is saved
-    status.mention_books.set([book])
-    status.save(created=True)
 
 
 def is_blocked(viewer, user):
