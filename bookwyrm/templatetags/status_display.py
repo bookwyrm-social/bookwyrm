@@ -71,7 +71,5 @@ def get_header_template(status):
     if isinstance(status, models.Boost):
         status = status.boosted_status
     filename = "snippets/status/headers/{:s}.html".format(status.status_type.lower())
-    header_template = select_template(
-        [filename, "snippets/status/headers/note.html"]
-    )
+    header_template = select_template([filename, "snippets/status/headers/note.html"])
     return header_template.render({"status": status})

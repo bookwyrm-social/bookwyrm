@@ -36,26 +36,34 @@ def forward_func(apps, schema_editor):
                 cursor,
                 """
     INSERT INTO bookwyrm_{}(generatednote_ptr_id)
-    values %s""".format(model_name),
+    values %s""".format(
+                    model_name
+                ),
                 values,
             )
     # erase invalid strings in "content" field
-    apps.get_model("bookwyrm", "ToRead").objects.all().update(content=None)
-    apps.get_model("bookwyrm", "Reading").objects.all().update(content=None)
-    apps.get_model("bookwyrm", "Read").objects.all().update(content=None)
+    apps.get_model("bookwyrm", "ToRead").objects.using(db_alias).all().update(
+        content=None
+    )
+    apps.get_model("bookwyrm", "Reading").objects.using(db_alias).all().update(
+        content=None
+    )
+    apps.get_model("bookwyrm", "Read").objects.using(db_alias).all().update(
+        content=None
+    )
 
 
 def reverse_func(apps, schema_editor):
     """add back the default generated content"""
     db_alias = schema_editor.connection.alias
 
-    apps.get_model("bookwyrm", "ToRead").objects.using(db_alias).objects.all().update(
+    apps.get_model("bookwyrm", "ToRead").objects.using(db_alias).update(
         content="wants to read"
     )
-    apps.get_model("bookwyrm", "Reading").objects.using(db_alias).objects.all().update(
+    apps.get_model("bookwyrm", "Reading").objects.using(db_alias).update(
         content="started reading"
     )
-    apps.get_model("bookwyrm", "Read").objects.using(db_alias).objects.all().update(
+    apps.get_model("bookwyrm", "Read").objects.using(db_alias).update(
         content="finished reading"
     )
 
