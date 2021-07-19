@@ -58,9 +58,8 @@ class Goal(View):
         if request.POST.get("post-status"):
             # create status, if appropriate
             template = get_template("snippets/generated_status/goal.html")
-            models.GeneratedNote.objects.create(
+            models.GoalStatus.objects.create(
                 user=request.user,
-                note_type="GOAL",
                 content=template.render({"goal": goal, "user": request.user}).strip(),
                 privacy=goal.privacy,
             )

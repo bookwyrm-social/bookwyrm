@@ -45,9 +45,7 @@ class RssFeedView(TestCase):
             book=book,
         )
 
-        models.GeneratedNote.objects.create(
-            content="test content", user=user, note_type="READ"
-        )
+        models.ReadStatus.objects.create(content="test content", user=user)
 
         factory = RequestFactory()
 

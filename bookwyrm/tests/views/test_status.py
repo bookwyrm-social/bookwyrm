@@ -224,8 +224,8 @@ class StatusViews(TestCase):
         request = self.factory.post("")
         request.user = self.local_user
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            status = models.GeneratedNote.objects.create(
-                content="hi", user=self.local_user, note_type="READ"
+            status = models.ReadStatus.objects.create(
+                content="hi", user=self.local_user
             )
 
         with patch(

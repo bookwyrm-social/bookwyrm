@@ -124,7 +124,7 @@ class StatusForm(CustomForm):
 
 class ToReadForm(CustomForm):
     class Meta:
-        model = models.ToRead
+        model = models.ToReadStatus
         fields = [
             "privacy",
             "content",
@@ -136,7 +136,7 @@ class ToReadForm(CustomForm):
 
 class ReadingForm(CustomForm):
     class Meta:
-        model = models.Reading
+        model = models.ReadingStatus
         fields = [
             "privacy",
             "content",
@@ -148,7 +148,7 @@ class ReadingForm(CustomForm):
 
 class ReadForm(CustomForm):
     class Meta:
-        model = models.Read
+        model = models.ReadStatus
         fields = [
             "privacy",
             "content",

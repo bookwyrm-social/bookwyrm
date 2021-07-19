@@ -9,8 +9,8 @@ from .connector import Connector
 from .shelf import Shelf, ShelfBook
 from .list import List, ListItem
 
-from .status import Status, Comment, Quotation
-from .status import GeneratedNote, ToRead, Reading, Read
+from .status import GeneratedNote, Status, Comment, Quotation
+from .status import ToReadStatus, ReadingStatus, ReadStatus, GoalStatus
 from .status import Review, ReviewRating
 from .status import Boost
 from .attachment import Image

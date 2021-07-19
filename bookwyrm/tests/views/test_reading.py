@@ -55,7 +55,6 @@ class ReadingViews(TestCase):
                 "privacy": "followers",
                 "start_date": "2020-01-05",
                 "user": self.local_user.id,
-                "note_type": "READING",
                 "mention_books": self.book.id,
             },
         )
@@ -113,7 +112,6 @@ class ReadingViews(TestCase):
                 "finish_date": "2020-01-07",
                 "id": readthrough.id,
                 "user": self.local_user.id,
-                "note_type": "READ",
                 "mention_books": self.book.id,
             },
         )

@@ -231,25 +231,25 @@ class GeneratedNote(Status):
     pure_type = "Note"
 
 
-class ToRead(GeneratedNote):
+class ToReadStatus(GeneratedNote):
     """okay"""
 
     activity_serializer = activitypub.ToRead
 
 
-class Reading(GeneratedNote):
+class ReadingStatus(GeneratedNote):
     """okay"""
 
     activity_serializer = activitypub.Reading
 
 
-class Read(GeneratedNote):
+class ReadStatus(GeneratedNote):
     """okay"""
 
     activity_serializer = activitypub.Read
 
 
-class Goal(GeneratedNote):
+class GoalStatus(GeneratedNote):
     """okay"""
 
     activity_serializer = activitypub.Goal
