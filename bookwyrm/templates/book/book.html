@@ -47,7 +47,7 @@
 
         {% if user_authenticated and can_edit_book %}
         <div class="column is-narrow">
-            <a href="{{ book.id }}/edit">
+            <a href="{% url 'edit-book' book.id %}">
                 <span class="icon icon-pencil" title="{% trans "Edit Book" %}" aria-hidden=True></span>
                 <span class="is-hidden-mobile">{% trans "Edit Book" %}</span>
             </a>
