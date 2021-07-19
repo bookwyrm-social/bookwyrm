@@ -2,7 +2,7 @@
 from dateutil.relativedelta import relativedelta
 from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
-from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import select_template
 from django.utils import timezone
 from bookwyrm import models
 from bookwyrm.templatetags.utilities import get_user_identifier
@@ -65,13 +65,13 @@ def get_published_date(date):
     return naturaltime(date)
 
 
-@register.filter(name="header_template")
-def get_header_tempplate(status):
+@register.simple_tag()
+def get_header_template(status):
     """get the path for the status template"""
     if isinstance(status, models.Boost):
         status = status.boosted_status
-    filename = status.note_type if hasattr(status, "note_type") else status.status_type
-    try:
-        return "snippets/status/headers/{:s}.html".format(filename.lower())
-    except TemplateDoesNotExist:
-        return "snippets/status/headers/note.html"
+    filename = "snippets/status/headers/{:s}.html".format(status.status_type.lower())
+    header_template = select_template(
+        [filename, "snippets/status/headers/note.html"]
+    )
+    return header_template.render({"status": status})

@@ -48,7 +48,7 @@ class Signature:
 
 
 def naive_parse(activity_objects, activity_json, serializer=None):
-    """this navigates circular import issues"""
+    """this navigates circular import issues by looking up models' serializers"""
     if not serializer:
         if activity_json.get("publicKeyPem"):
             # ugh

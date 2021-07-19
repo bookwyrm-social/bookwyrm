@@ -218,18 +218,8 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
         return self.to_activity_dataclass(pure=pure).serialize()
 
 
-NoteType = models.TextChoices(
-    "NoteType",
-    "TO_READ READING READ GOAL",
-)
-
-
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
-
-    note_type = fields.EnumField(
-        max_length=255, choices=NoteType.choices, activitypub_field="type"
-    )
 
     @property
     def pure_content(self):
@@ -239,6 +229,22 @@ class GeneratedNote(Status):
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"
+
+
+class ToRead(GeneratedNote):
+    """okay"""
+
+
+class Reading(GeneratedNote):
+    """okay"""
+
+
+class Read(GeneratedNote):
+    """okay"""
+
+
+class Goal(GeneratedNote):
+    """okay"""
 
 
 class Comment(Status):

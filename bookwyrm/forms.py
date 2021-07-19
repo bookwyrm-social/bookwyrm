@@ -122,15 +122,38 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
-class ProgressStatusForm(CustomForm):
+class ToReadForm(CustomForm):
     class Meta:
-        model = models.GeneratedNote
+        model = models.ToRead
         fields = [
             "privacy",
             "content",
             "content_warning",
             "mention_books",
-            "note_type",
+            "user",
+        ]
+
+
+class ReadingForm(CustomForm):
+    class Meta:
+        model = models.Reading
+        fields = [
+            "privacy",
+            "content",
+            "content_warning",
+            "mention_books",
+            "user",
+        ]
+
+
+class ReadForm(CustomForm):
+    class Meta:
+        model = models.Read
+        fields = [
+            "privacy",
+            "content",
+            "content_warning",
+            "mention_books",
             "user",
         ]
 

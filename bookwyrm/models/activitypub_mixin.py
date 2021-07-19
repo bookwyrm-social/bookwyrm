@@ -43,7 +43,7 @@ class ActivitypubMixin:
     reverse_unfurl = False
 
     def __init__(self, *args, **kwargs):
-        """collect some info on model fields"""
+        """collect some info on model fields for later use"""
         self.image_fields = []
         self.many_to_many_fields = []
         self.simple_fields = []  # "simple"
