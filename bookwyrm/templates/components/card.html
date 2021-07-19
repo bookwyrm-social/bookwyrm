@@ -4,7 +4,7 @@
         {% endblock %}
     </header>
 
-    {% if not status or status.status_type != 'GeneratedNote' or status.book or status.mention_books.exists or status.mention_users.exists %}
+    {% if not status or status.status_type != 'Goal' or status.book or status.mention_books.exists or status.mention_users.exists %}
     <section class="card-content">
         {% block card-content %}
         {% endblock %}
