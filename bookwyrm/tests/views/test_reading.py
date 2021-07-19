@@ -42,7 +42,7 @@ class ReadingViews(TestCase):
                 parent_work=self.work,
             )
 
-    def test_start_reading(self, _):
+    def test_start_reading_basic(self, _):
         """begin a book"""
         shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READING)
         self.assertFalse(shelf.books.exists())
@@ -54,6 +54,9 @@ class ReadingViews(TestCase):
                 "post-status": True,
                 "privacy": "followers",
                 "start_date": "2020-01-05",
+                "user": self.local_user.id,
+                "note_type": "READING",
+                "mention_books": self.book.id,
             },
         )
         request.user = self.local_user
@@ -109,6 +112,9 @@ class ReadingViews(TestCase):
                 "privacy": "followers",
                 "finish_date": "2020-01-07",
                 "id": readthrough.id,
+                "user": self.local_user.id,
+                "note_type": "READ",
+                "mention_books": self.book.id,
             },
         )
         request.user = self.local_user
