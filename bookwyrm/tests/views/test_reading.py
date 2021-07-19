@@ -64,7 +64,7 @@ class ReadingViews(TestCase):
 
         self.assertEqual(shelf.books.get(), self.book)
 
-        status = models.GeneratedNote.objects.get()
+        status = models.ReadingStatus.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.mention_books.get(), self.book)
         self.assertEqual(status.privacy, "followers")
@@ -122,7 +122,7 @@ class ReadingViews(TestCase):
 
         self.assertEqual(shelf.books.get(), self.book)
 
-        status = models.GeneratedNote.objects.get()
+        status = models.ReadStatus.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.mention_books.get(), self.book)
         self.assertEqual(status.privacy, "followers")

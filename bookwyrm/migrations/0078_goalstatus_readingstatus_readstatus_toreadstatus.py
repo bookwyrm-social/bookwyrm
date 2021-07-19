@@ -26,9 +26,9 @@ def forward_func(apps, schema_editor):
     )
 
     for (notes, model_name) in [
-        (to_read_statuses, "toread"),
-        (reading_statuses, "reading"),
-        (read_statuses, "read"),
+        (to_read_statuses, "toreadstatus"),
+        (reading_statuses, "readingstatus"),
+        (read_statuses, "readstatus"),
     ]:
         with connection.cursor() as cursor:
             values = [(s.id,) for s in notes]
@@ -42,28 +42,40 @@ def forward_func(apps, schema_editor):
                 values,
             )
     # erase invalid strings in "content" field
-    apps.get_model("bookwyrm", "ToRead").objects.using(db_alias).all().update(
+    apps.get_model("bookwyrm", "ToReadStatus").objects.using(db_alias).all().update(
         content=None
     )
-    apps.get_model("bookwyrm", "Reading").objects.using(db_alias).all().update(
+    apps.get_model("bookwyrm", "ReadingStatus").objects.using(db_alias).all().update(
         content=None
     )
-    apps.get_model("bookwyrm", "Read").objects.using(db_alias).all().update(
+    apps.get_model("bookwyrm", "ReadStatus").objects.using(db_alias).all().update(
         content=None
     )
+
+    # everything else is a goal
+    goal_statuses = apps.get_model("bookwyrm", "GeneratedNote").objects.using(db_alias)
+    with connection.cursor() as cursor:
+        values = [(s.id,) for s in goal_statuses]
+        execute_values(
+            cursor,
+            """
+INSERT INTO bookwyrm_goalstatus(generatednote_ptr_id)
+values %s""",
+            values,
+        )
 
 
 def reverse_func(apps, schema_editor):
     """add back the default generated content"""
     db_alias = schema_editor.connection.alias
 
-    apps.get_model("bookwyrm", "ToRead").objects.using(db_alias).update(
+    apps.get_model("bookwyrm", "ToReadStatus").objects.using(db_alias).update(
         content="wants to read"
     )
-    apps.get_model("bookwyrm", "Reading").objects.using(db_alias).update(
+    apps.get_model("bookwyrm", "ReadingStatus").objects.using(db_alias).update(
         content="started reading"
     )
-    apps.get_model("bookwyrm", "Read").objects.using(db_alias).update(
+    apps.get_model("bookwyrm", "ReadStatus").objects.using(db_alias).update(
         content="finished reading"
     )
 
@@ -155,4 +167,5 @@ class Migration(migrations.Migration):
             },
             bases=("bookwyrm.generatednote",),
         ),
+        migrations.RunPython(forward_func, reverse_func),
     ]

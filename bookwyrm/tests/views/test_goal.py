@@ -129,6 +129,6 @@ class GoalViews(TestCase):
         self.assertEqual(goal.year, 2020)
         self.assertEqual(goal.privacy, "unlisted")
 
-        status = models.GeneratedNote.objects.get()
+        status = models.GoalStatus.objects.get()
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.privacy, "unlisted")
