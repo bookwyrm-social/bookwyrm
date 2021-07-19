@@ -53,6 +53,34 @@ class GeneratedNote(Note):
     type: str = "GeneratedNote"
 
 
+@dataclass(init=False)
+class ToRead(GeneratedNote):
+    """just a re-typed note"""
+
+    type: str = "ToRead"
+
+
+@dataclass(init=False)
+class Reading(GeneratedNote):
+    """just a re-typed note"""
+
+    type: str = "Reading"
+
+
+@dataclass(init=False)
+class Read(GeneratedNote):
+    """just a re-typed note"""
+
+    type: str = "Read"
+
+
+@dataclass(init=False)
+class Goal(GeneratedNote):
+    """just a re-typed note"""
+
+    type: str = "Goal"
+
+
 # pylint: disable=invalid-name
 @dataclass(init=False)
 class Comment(Note):

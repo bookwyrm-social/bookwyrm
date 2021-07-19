@@ -10,7 +10,6 @@ Start "<em>{{ book_title }}</em>"
 
 {% block modal-form-open %}
 <form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post">
-    <input type="hidden" name="note_type" value="READING">
 {% endblock %}
 
 {% block reading-dates %}

@@ -10,7 +10,6 @@ Finish "<em>{{ book_title }}</em>"
 
 {% block modal-form-open %}
 <form name="finish-reading" action="{% url 'reading-status' 'finish' book.id %}" method="post">
-    <input type="hidden" name="note_type" value="READ">
 {% endblock %}
 
 {% block reading-dates %}

@@ -10,5 +10,4 @@ Want to Read "<em>{{ book_title }}</em>"
 
 {% block modal-form-open %}
 <form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post">
-    <input type="hidden" name="note_type" value="TO_READ">
 {% endblock %}

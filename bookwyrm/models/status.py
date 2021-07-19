@@ -234,17 +234,25 @@ class GeneratedNote(Status):
 class ToRead(GeneratedNote):
     """okay"""
 
+    activity_serializer = activitypub.ToRead
+
 
 class Reading(GeneratedNote):
     """okay"""
+
+    activity_serializer = activitypub.Reading
 
 
 class Read(GeneratedNote):
     """okay"""
 
+    activity_serializer = activitypub.Read
+
 
 class Goal(GeneratedNote):
     """okay"""
+
+    activity_serializer = activitypub.Goal
 
 
 class Comment(Status):

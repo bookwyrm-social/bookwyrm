@@ -158,6 +158,17 @@ class ReadForm(CustomForm):
         ]
 
 
+def progress_forms(identifier):
+    """get the correct form from the shelf identifier"""
+    return {
+        models.Shelf.TO_READ: ToReadForm,
+        models.Shelf.TO_READ: ReadingForm,
+        models.Shelf.TO_READ: ReadForm,
+    }[
+        identifier
+    ]  # throws a key error for an invalid identifier
+
+
 class EditUserForm(CustomForm):
     class Meta:
         model = models.User

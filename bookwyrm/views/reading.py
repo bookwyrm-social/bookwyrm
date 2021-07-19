@@ -73,7 +73,7 @@ class ReadingStatus(View):
 
         # post about it (if you want)
         if request.POST.get("post-status"):
-            form = forms.ProgressStatusForm(request.POST)
+            form = forms.progress_forms(identifier)(request.POST)
             if not form.is_valid():
                 return TemplateResponse(
                     request, f"reading_progress/{status}.html", {"book": book}
