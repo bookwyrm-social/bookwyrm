@@ -142,6 +142,7 @@ def get_edition(book_id):
 def handle_reading_status(user, shelf, book, privacy):
     """post about a user reading a book"""
     type_identifier = shelf.identifier.upper()
+    type_identifier = type_identifier.replace("-", "_")
     if not type_identifier in models.status.NoteType:
         # it's a non-standard shelf, don't worry about it
         return
