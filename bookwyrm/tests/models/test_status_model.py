@@ -150,7 +150,7 @@ class Status(TestCase):
 
     def test_generated_note_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        status = models.GoalStatus.objects.create(
+        status = models.GeneratedNote.objects.create(
             content="test content", user=self.local_user
         )
         status.mention_books.set([self.book])
