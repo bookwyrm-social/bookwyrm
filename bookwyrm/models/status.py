@@ -227,7 +227,9 @@ NoteType = models.TextChoices(
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
 
-    note_type = fields.CharField(max_length=255, choices=NoteType.choices)
+    note_type = fields.EnumField(
+        max_length=255, choices=NoteType.choices, activitypub_field="type"
+    )
 
     @property
     def pure_content(self):

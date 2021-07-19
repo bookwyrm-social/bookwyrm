@@ -463,6 +463,18 @@ class CharField(ActivitypubFieldMixin, models.CharField):
     """activitypub-aware char field"""
 
 
+class EnumField(CharField):
+    """ENUM_SYNTAX in values (not field names) to ActivitypubSyntax"""
+
+    def field_to_activity(self, value):
+        """formatter to convert a choice value into activitypub"""
+        return "".join(v[0] + v[1:].lower() for v in value.split("_"))
+
+    def field_from_activity(self, value):
+        """formatter to convert activitypub into a model value"""
+        return re.sub("(.)([A-Z])", r"\1_\2", value.upper)
+
+
 class TextField(ActivitypubFieldMixin, models.TextField):
     """activitypub-aware text field"""
 
