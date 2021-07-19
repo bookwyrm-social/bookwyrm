@@ -107,7 +107,7 @@ class Status(View):
 
         if is_api_request(request):
             return ActivitypubResponse(
-                status.to_activity(pure=False)  # not is_bookwyrm_request(request))
+                status.to_activity(pure=not is_bookwyrm_request(request))
             )
 
         data = {
