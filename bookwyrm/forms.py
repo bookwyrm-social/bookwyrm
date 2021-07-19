@@ -162,8 +162,8 @@ def progress_forms(identifier):
     """get the correct form from the shelf identifier"""
     return {
         models.Shelf.TO_READ: ToReadForm,
-        models.Shelf.TO_READ: ReadingForm,
-        models.Shelf.TO_READ: ReadForm,
+        models.Shelf.READING: ReadingForm,
+        models.Shelf.READ_FINISHED: ReadForm,
     }[
         identifier
     ]  # throws a key error for an invalid identifier
