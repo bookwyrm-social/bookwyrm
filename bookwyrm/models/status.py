@@ -225,7 +225,7 @@ class GeneratedNote(Status):
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""
         template = get_template("snippets/generated_status/generated_note_pure.html")
-        return template.render({"status": self})
+        return template.render({"status": self}).strip()
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"
