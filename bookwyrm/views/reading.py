@@ -5,6 +5,7 @@ import dateutil.tz
 from dateutil.parser import ParserError
 
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -55,15 +56,19 @@ class ReadingStatus(View):
             )
             .first()
         )
-        if current_status_shelfbook is not None:
-            if current_status_shelfbook.shelf.identifier != desired_shelf.identifier:
-                current_status_shelfbook.delete()
-            else:  # It already was on the shelf
-                return redirect("/")
+        with transaction.atomic():
+            if current_status_shelfbook is not None:
+                if (
+                    current_status_shelfbook.shelf.identifier
+                    != desired_shelf.identifier
+                ):
+                    current_status_shelfbook.delete()
+                else:  # It already was on the shelf
+                    return redirect("/")
 
-        models.ShelfBook.objects.create(
-            book=book, shelf=desired_shelf, user=request.user
-        )
+            models.ShelfBook.objects.create(
+                book=book, shelf=desired_shelf, user=request.user
+            )
 
         if desired_shelf.identifier != models.Shelf.TO_READ:
             # update or create a readthrough

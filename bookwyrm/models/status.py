@@ -221,6 +221,12 @@ class Status(OrderedCollectionPageMixin, BookWyrmModel):
 class GeneratedNote(Status):
     """these are app-generated messages about user activity"""
 
+    def save(self, *args, **kwargs):
+        """you shouldn't make these"""
+        if self.status_type == "GeneratedNote":
+            raise ValueError("Cannot create generic generated notes")
+        super().save(*args, **kwargs)
+
     @property
     def pure_content(self):
         """indicate the book in question for mastodon (or w/e) users"""

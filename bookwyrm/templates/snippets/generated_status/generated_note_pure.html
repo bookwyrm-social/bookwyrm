@@ -1,6 +1,7 @@
 {% spaceless %}
 {% load utilities %}
+{% load markdown %}
 
-{{ status.user.display_name }} {% include "snippets/status/header_content.html" %}{% if status.content and status.status_type != "Goal" %}
-{{ status.content }}{% endif %}
+<p>{{ status.user.display_name }} {% include "snippets/status/header_content.html" %}</p>{% if status.content and status.status_type != "Goal" %}
+{{ status.content|to_markdown|safe }}{% endif %}
 {% endspaceless %}
