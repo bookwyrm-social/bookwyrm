@@ -13,7 +13,7 @@ from model_utils.managers import InheritanceManager
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
-from bookwyrm.settings import ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
 from .activitypub_mixin import ActivitypubMixin, ActivityMixin
 from .activitypub_mixin import OrderedCollectionPageMixin
 from .base_model import BookWyrmModel
@@ -235,6 +235,12 @@ class GeneratedNote(Status):
 
     activity_serializer = activitypub.GeneratedNote
     pure_type = "Note"
+
+    def get_remote_id(self):
+        """generate a url that resolves to the local object"""
+        return "https://{:s}{:s}/status/{:d}".format(
+            DOMAIN, self.user.local_path, self.id
+        )
 
 
 class ToReadStatus(GeneratedNote):
