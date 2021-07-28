@@ -67,12 +67,14 @@ class Search(View):
 
 def book_search(query, _, min_confidence, search_remote=False):
     """the real business is elsewhere"""
-    if search_remote:
-        return connector_manager.search(query, min_confidence=min_confidence)
-    results = connector_manager.local_search(query, min_confidence=min_confidence)
-    if not results:
-        return None
-    return [{"results": results}]
+    # try a local-only search
+    if not search_remote:
+        results = connector_manager.local_search(query, min_confidence=min_confidence)
+        if results:
+            # gret, we found something
+            return [{"results": results}]
+    # if there weere no local results, or the request was for remote, search all sources
+    return connector_manager.search(query, min_confidence=min_confidence)
 
 
 def user_search(query, viewer, *_):
