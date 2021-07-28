@@ -53,7 +53,7 @@ class Search(View):
             "remote": search_remote,
         }
         if query:
-            results = endpoints[search_type](
+            results, search_remote = endpoints[search_type](
                 query, request.user, min_confidence, search_remote
             )
             if results:
@@ -61,6 +61,7 @@ class Search(View):
                     request.GET.get("page")
                 )
                 data["results"] = paginated
+                data["remote"] = search_remote
 
         return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
 
@@ -72,9 +73,9 @@ def book_search(query, _, min_confidence, search_remote=False):
         results = connector_manager.local_search(query, min_confidence=min_confidence)
         if results:
             # gret, we found something
-            return [{"results": results}]
+            return [{"results": results}], False
     # if there weere no local results, or the request was for remote, search all sources
-    return connector_manager.search(query, min_confidence=min_confidence)
+    return connector_manager.search(query, min_confidence=min_confidence), True
 
 
 def user_search(query, viewer, *_):
@@ -100,7 +101,7 @@ def user_search(query, viewer, *_):
             similarity__gt=0.5,
         )
         .order_by("-similarity")[:10]
-    )
+    ), None
 
 
 def list_search(query, viewer, *_):
@@ -121,4 +122,4 @@ def list_search(query, viewer, *_):
             similarity__gt=0.1,
         )
         .order_by("-similarity")[:10]
-    )
+    ), None
