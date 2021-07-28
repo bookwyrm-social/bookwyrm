@@ -14,16 +14,16 @@ class RedisStore(ABC):
 
     max_length = settings.MAX_STREAM_LENGTH
 
-    def get_value(self, obj):
+    def get_value(self, obj_id):
         """the object and rank"""
-        return {obj.id: self.get_rank(obj)}
+        return {obj_id: self.get_rank(obj_id)}
 
-    def add_object_to_related_stores(self, obj, execute=True):
+    def add_object_to_related_stores(self, obj_id, execute=True):
         """add an object to all suitable stores"""
-        value = self.get_value(obj)
+        value = self.get_value(obj_id)
         # we want to do this as a bulk operation, hence "pipeline"
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in self.get_stores_for_object(obj_id):
             # add the status to the feed
             pipeline.zadd(store, value)
             # trim the store
@@ -33,11 +33,11 @@ class RedisStore(ABC):
         # and go!
         return pipeline.execute()
 
-    def remove_object_from_related_stores(self, obj):
+    def remove_object_from_related_stores(self, obj_id):
         """remove an object from all stores"""
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
-            pipeline.zrem(store, -1, obj.id)
+        for store in self.get_stores_for_object(obj_id):
+            pipeline.zrem(store, -1, obj_id)
         pipeline.execute()
 
     def bulk_add_objects_to_store(self, objs, store):
@@ -78,9 +78,9 @@ class RedisStore(ABC):
         """a queryset of what should go in a store, used for populating it"""
 
     @abstractmethod
-    def get_stores_for_object(self, obj):
+    def get_stores_for_object(self, obj_id):
         """the stores that an object belongs in"""
 
     @abstractmethod
-    def get_rank(self, obj):
+    def get_rank(self, obj_id):
         """how to rank an object"""

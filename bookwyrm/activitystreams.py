@@ -1,57 +1,63 @@
 """ access the activity streams stored in redis """
 from django.dispatch import receiver
+from django.db import transaction
 from django.db.models import signals, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.tasks import app
 from bookwyrm.views.helpers import privacy_filter
 
 
 class ActivityStream(RedisStore):
     """a category of activity stream (like home, local, federated)"""
 
-    def stream_id(self, user):
+    def stream_id(self, user_id):
         """the redis key for this user's instance of this stream"""
-        return "{}-{}".format(user.id, self.key)
+        return "{}-{}".format(user_id, self.key)
 
     def unread_id(self, user):
         """the redis key for this user's unread count for this stream"""
-        return "{}-unread".format(self.stream_id(user))
+        return "{}-unread".format(self.stream_id(user.id))
 
-    def get_rank(self, obj):  # pylint: disable=no-self-use
+    def get_rank(self, obj_id):  # pylint: disable=no-self-use
         """statuses are sorted by date published"""
+        obj = models.Status.objects.get(id=obj_id)
         return obj.published_date.timestamp()
 
-    def add_status(self, status):
+    def add_status(self, status_id):
         """add a status to users' feeds"""
         # the pipeline contains all the add-to-stream activities
-        pipeline = self.add_object_to_related_stores(status, execute=False)
+        pipeline = self.add_object_to_related_stores(status_id, execute=False)
 
-        for user in self.get_audience(status):
+        for user in self.get_audience(status_id):
             # add to the unread status count
             pipeline.incr(self.unread_id(user))
 
         # and go!
         pipeline.execute()
 
-    def add_user_statuses(self, viewer, user):
+    def add_user_statuses(self, viewer_id, user_id):
         """add a user's statuses to another user's feed"""
         # only add the statuses that the viewer should be able to see (ie, not dms)
-        statuses = privacy_filter(viewer, user.status_set.all())
-        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer))
+        viewer = models.User.objects.get(id=viewer_id)
+        statuses = privacy_filter(
+            viewer, models.Status.objects.filter(user__id=user_id)
+        ).limit(self.max_length)
+        self.bulk_add_objects_to_store(statuses, self.stream_id(viewer_id))
 
-    def remove_user_statuses(self, viewer, user):
+    def remove_user_statuses(self, viewer_id, user_id):
         """remove a user's status from another user's feed"""
         # remove all so that followers only statuses are removed
-        statuses = user.status_set.all()
-        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer))
+        statuses = models.Status.objects.filter(user__id=user_id)
+        self.bulk_remove_objects_from_store(statuses, self.stream_id(viewer_id))
 
     def get_activity_stream(self, user):
         """load the statuses to be displayed"""
         # clear unreads for this feed
         r.set(self.unread_id(user), 0)
 
-        statuses = self.get_store(self.stream_id(user))
+        statuses = self.get_store(self.stream_id(user.id))
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
@@ -66,10 +72,11 @@ class ActivityStream(RedisStore):
 
     def populate_streams(self, user):
         """go from zero to a timeline"""
-        self.populate_store(self.stream_id(user))
+        self.populate_store(self.stream_id(user.id))
 
-    def get_audience(self, status):  # pylint: disable=no-self-use
+    def get_audience(self, status_id):  # pylint: disable=no-self-use
         """given a status, what users should see it"""
+        status = models.Status.objects.select_subclasses().get(id=status_id)
         # direct messages don't appeard in feeds, direct comments/reviews/etc do
         if status.privacy == "direct" and status.status_type == "Note":
             return []
@@ -96,8 +103,8 @@ class ActivityStream(RedisStore):
             )
         return audience.distinct()
 
-    def get_stores_for_object(self, obj):
-        return [self.stream_id(u) for u in self.get_audience(obj)]
+    def get_stores_for_object(self, obj_id):
+        return [self.stream_id(u.id) for u in self.get_audience(obj_id)]
 
     def get_statuses_for_user(self, user):  # pylint: disable=no-self-use
         """given a user, what statuses should they see on this stream"""
@@ -117,10 +124,11 @@ class HomeStream(ActivityStream):
 
     key = "home"
 
-    def get_audience(self, status):
-        audience = super().get_audience(status)
+    def get_audience(self, status_id):
+        audience = super().get_audience(status_id)
         if not audience:
             return []
+        status = models.Status.objects.select_subclasses().get(id=status_id)
         return audience.filter(
             Q(id=status.user.id)  # if the user is the post's author
             | Q(following=status.user)  # if the user is following the author
@@ -140,11 +148,12 @@ class LocalStream(ActivityStream):
 
     key = "local"
 
-    def get_audience(self, status):
+    def get_audience(self, status_id):
         # this stream wants no part in non-public statuses
+        status = models.Status.objects.select_subclasses().get(id=status_id)
         if status.privacy != "public" or not status.user.local:
             return []
-        return super().get_audience(status)
+        return super().get_audience(status_id)
 
     def get_statuses_for_user(self, user):
         # all public statuses by a local user
@@ -160,11 +169,12 @@ class FederatedStream(ActivityStream):
 
     key = "federated"
 
-    def get_audience(self, status):
+    def get_audience(self, status_id):
         # this stream wants no part in non-public statuses
+        status = models.Status.objects.select_subclasses().get(id=status_id)
         if status.privacy != "public":
             return []
-        return super().get_audience(status)
+        return super().get_audience(status_id)
 
     def get_statuses_for_user(self, user):
         return privacy_filter(
@@ -190,41 +200,42 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         return
 
     if instance.deleted:
-        for stream in streams.values():
-            stream.remove_object_from_related_stores(instance)
+        remove_status_task.delay(instance.id)
         return
 
     if not created:
         return
 
+    # when creating new things, gotta wait on the transaction
+    transaction.on_commit(lambda: add_status_on_create_command(sender, instance))
+
+
+def add_status_on_create_command(sender, instance):
+    """runs this code only after the database commit completes"""
     # iterates through Home, Local, Federated
-    for stream in streams.values():
-        stream.add_status(instance)
+    add_status_task.delay(instance.id)
 
     if sender != models.Boost:
         return
+
     # remove the original post and other, earlier boosts
     boosted = instance.boost.boosted_status
     old_versions = models.Boost.objects.filter(
         boosted_status__id=boosted.id,
         created_date__lt=instance.created_date,
     )
-    for stream in streams.values():
-        stream.remove_object_from_related_stores(boosted)
-        for status in old_versions:
-            stream.remove_object_from_related_stores(status)
+    remove_status_task.delay(boosted.id)
+    remove_status_task.delay([o.id for o in old_versions])
 
 
 @receiver(signals.post_delete, sender=models.Boost)
 # pylint: disable=unused-argument
 def remove_boost_on_delete(sender, instance, *args, **kwargs):
     """boosts are deleted"""
-    # we're only interested in new statuses
-    for stream in streams.values():
-        # remove the boost
-        stream.remove_object_from_related_stores(instance)
-        # re-add the original status
-        stream.add_status(instance.boosted_status)
+    # remove the boost
+    remove_status_task.delay(instance.id)
+    # re-add the original status
+    add_status_task.delay(instance.boosted_status.id)
 
 
 @receiver(signals.post_save, sender=models.UserFollows)
@@ -233,7 +244,9 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     """add a newly followed user's statuses to feeds"""
     if not created or not instance.user_subject.local:
         return
-    HomeStream().add_user_statuses(instance.user_subject, instance.user_object)
+    add_user_statuses_task.delay(
+        instance.user_subject.id, instance.user_object.id, ["home"]
+    )
 
 
 @receiver(signals.post_delete, sender=models.UserFollows)
@@ -242,7 +255,9 @@ def remove_statuses_on_unfollow(sender, instance, *args, **kwargs):
     """remove statuses from a feed on unfollow"""
     if not instance.user_subject.local:
         return
-    HomeStream().remove_user_statuses(instance.user_subject, instance.user_object)
+    remove_user_statuses_task.delay(
+        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
+    )
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -251,29 +266,32 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
     # blocks apply ot all feeds
     if instance.user_subject.local:
-        for stream in streams.values():
-            stream.remove_user_statuses(instance.user_subject, instance.user_object)
+        remove_user_statuses_task.delay(
+            instance.user_subject.id, instance.user_object.id
+        )
 
     # and in both directions
     if instance.user_object.local:
-        for stream in streams.values():
-            stream.remove_user_statuses(instance.user_object, instance.user_subject)
+        remove_user_statuses_task.delay(
+            instance.user_object.id, instance.user_subject.id
+        )
 
 
 @receiver(signals.post_delete, sender=models.UserBlocks)
 # pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
-    public_streams = [LocalStream(), FederatedStream()]
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
-        for stream in public_streams:
-            stream.add_user_statuses(instance.user_subject, instance.user_object)
+        add_user_statuses_task.delay(
+            instance.user_subject.id, instance.user_object.id, ["local", "federated"]
+        )
 
-    # add statuses back to streams with statuses from anyone
+    # and the same for the unblocked user
     if instance.user_object.local:
-        for stream in public_streams:
-            stream.add_user_statuses(instance.user_object, instance.user_subject)
+        add_user_statuses_task.delay(
+            instance.user_object.id, instance.user_subject.id, ["local", "federated"]
+        )
 
 
 @receiver(signals.post_save, sender=models.User)
@@ -285,3 +303,39 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
 
     for stream in streams.values():
         stream.populate_streams(instance)
+
+
+@app.task
+def remove_status_task(status_ids):
+    """remove a status from any stream it might be in"""
+    # this can take an id or a list of ids
+    if not isinstance(status_ids, list):
+        status_ids = [status_ids]
+
+    for stream in streams.values():
+        for status_id in status_ids:
+            stream.remove_object_from_related_stores(status_id)
+
+
+@app.task
+def add_status_task(status_id):
+    """remove a status from any stream it might be in"""
+    # this can take an id or a list of ids
+    for stream in streams.values():
+        stream.add_status(status_id)
+
+
+@app.task
+def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
+    """remove all statuses by a user from a viewer's stream"""
+    stream_list = [streams[s] for s in stream_list] or streams
+    for stream in stream_list:
+        stream.remove_user_statuses(viewer_id, user_id)
+
+
+@app.task
+def add_user_statuses_task(viewer_id, user_id, stream_list=None):
+    """remove all statuses by a user from a viewer's stream"""
+    stream_list = [streams[s] for s in stream_list] or streams
+    for stream in stream_list:
+        stream.add_user_statuses(viewer_id, user_id)
