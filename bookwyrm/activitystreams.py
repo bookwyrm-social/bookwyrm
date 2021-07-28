@@ -43,7 +43,7 @@ class ActivityStream(RedisStore):
         viewer = models.User.objects.get(id=viewer_id)
         statuses = privacy_filter(
             viewer, models.Status.objects.filter(user__id=user_id)
-        ).limit(self.max_length)
+        )
         self.bulk_add_objects_to_store(statuses, self.stream_id(viewer_id))
 
     def remove_user_statuses(self, viewer_id, user_id):
@@ -245,7 +245,7 @@ def add_statuses_on_follow(sender, instance, created, *args, **kwargs):
     if not created or not instance.user_subject.local:
         return
     add_user_statuses_task.delay(
-        instance.user_subject.id, instance.user_object.id, ["home"]
+        instance.user_subject.id, instance.user_object.id, stream_list=["home"]
     )
 
 
@@ -284,13 +284,17 @@ def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
         add_user_statuses_task.delay(
-            instance.user_subject.id, instance.user_object.id, ["local", "federated"]
+            instance.user_subject.id,
+            instance.user_object.id,
+            stream_list=["local", "federated"],
         )
 
     # and the same for the unblocked user
     if instance.user_object.local:
         add_user_statuses_task.delay(
-            instance.user_object.id, instance.user_subject.id, ["local", "federated"]
+            instance.user_object.id,
+            instance.user_subject.id,
+            stream_list=["local", "federated"],
         )
 
 
@@ -328,7 +332,7 @@ def add_status_task(status_id):
 @app.task
 def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
     """remove all statuses by a user from a viewer's stream"""
-    stream_list = [streams[s] for s in stream_list] or streams
+    stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     for stream in stream_list:
         stream.remove_user_statuses(viewer_id, user_id)
 
@@ -336,6 +340,6 @@ def remove_user_statuses_task(viewer_id, user_id, stream_list=None):
 @app.task
 def add_user_statuses_task(viewer_id, user_id, stream_list=None):
     """remove all statuses by a user from a viewer's stream"""
-    stream_list = [streams[s] for s in stream_list] or streams
+    stream_list = [streams[s] for s in stream_list] if stream_list else streams.values()
     for stream in stream_list:
         stream.add_user_statuses(viewer_id, user_id)

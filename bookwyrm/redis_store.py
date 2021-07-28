@@ -44,7 +44,7 @@ class RedisStore(ABC):
         """add a list of objects to a given store"""
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
-            pipeline.zadd(store, self.get_value(obj))
+            pipeline.zadd(store, self.get_value(obj.id))
         if objs:
             pipeline.zremrangebyrank(store, 0, -1 * self.max_length)
         pipeline.execute()
@@ -66,7 +66,7 @@ class RedisStore(ABC):
         queryset = self.get_objects_for_store(store)
 
         for obj in queryset[: self.max_length]:
-            pipeline.zadd(store, self.get_value(obj))
+            pipeline.zadd(store, self.get_value(obj.id))
 
         # only trim the store if objects were added
         if queryset.exists():
