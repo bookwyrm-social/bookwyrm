@@ -7,82 +7,84 @@
 <div class="columns">
     {% if user.is_authenticated %}
     <div class="column is-one-third">
-        <h2 class="title is-5">{% trans "Your books" %}</h2>
-        {% if not suggested_books %}
-        <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
-        {% else %}
-        {% with active_book=request.GET.book %}
-        <div class="tab-group">
-            <div class="tabs is-small">
-                <ul role="tablist">
+        <section class="block">
+            <h2 class="title is-5">{% trans "Your books" %}</h2>
+            {% if not suggested_books %}
+            <p>{% trans "There are no books here right now! Try searching for a book to get started" %}</p>
+            {% else %}
+            {% with active_book=request.GET.book %}
+            <div class="tab-group">
+                <div class="tabs is-small">
+                    <ul role="tablist">
+                    {% for shelf in suggested_books %}
+                    {% if shelf.books %}
+                    {% with shelf_counter=forloop.counter %}
+                        <li>
+                            <p>
+                                {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
+                                {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
+                                {% elif shelf.identifier == 'read' %}{% trans "Read" %}
+                                {% else %}{{ shelf.name }}{% endif %}
+                            </p>
+                            <div class="tabs is-small is-toggle">
+                                <ul>
+                                    {% for book in shelf.books %}
+                                    <li class="{% if active_book == book.id|stringformat:'d' %}is-active{% elif not active_book and shelf_counter == 1 and forloop.first %}is-active{% endif %}">
+                                        <a
+                                            href="{{ request.path }}?book={{ book.id }}"
+                                            id="tab-book-{{ book.id }}"
+                                            role="tab"
+                                            aria-label="{{ book.title }}"
+                                            aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
+                                            aria-controls="book-{{ book.id }}">
+                                            {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% endwith %}
+                    {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
                 {% for shelf in suggested_books %}
-                {% if shelf.books %}
                 {% with shelf_counter=forloop.counter %}
-                    <li>
-                        <p>
-                            {% if shelf.identifier == 'to-read' %}{% trans "To Read" %}
-                            {% elif shelf.identifier == 'reading' %}{% trans "Currently Reading" %}
-                            {% elif shelf.identifier == 'read' %}{% trans "Read" %}
-                            {% else %}{{ shelf.name }}{% endif %}
-                        </p>
-                        <div class="tabs is-small is-toggle">
-                            <ul>
-                                {% for book in shelf.books %}
-                                <li class="{% if active_book == book.id|stringformat:'d' %}is-active{% elif not active_book and shelf_counter == 1 and forloop.first %}is-active{% endif %}">
-                                    <a
-                                        href="{{ request.path }}?book={{ book.id }}"
-                                        id="tab-book-{{ book.id }}"
-                                        role="tab"
-                                        aria-label="{{ book.title }}"
-                                        aria-selected="{% if active_book == book.id|stringformat:'d' %}true{% elif shelf_counter == 1 and forloop.first %}true{% else %}false{% endif %}"
-                                        aria-controls="book-{{ book.id }}">
-                                        {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m' %}
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </li>
-                {% endwith %}
-                {% endif %}
-                {% endfor %}
-                </ul>
-            </div>
-            {% for shelf in suggested_books %}
-            {% with shelf_counter=forloop.counter %}
-            {% for book in shelf.books %}
-            <div
-                class="suggested-tabs card"
-                role="tabpanel"
-                id="book-{{ book.id }}"
-                {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
-                aria-labelledby="tab-book-{{ book.id }}">
+                {% for book in shelf.books %}
+                <div
+                    class="suggested-tabs card"
+                    role="tabpanel"
+                    id="book-{{ book.id }}"
+                    {% if active_book and active_book == book.id|stringformat:'d' %}{% elif not active_book and shelf_counter == 1 and forloop.first %}{% else %} hidden{% endif %}
+                    aria-labelledby="tab-book-{{ book.id }}">
 
-                <div class="card-header">
-                    <div class="card-header-title">
-                        <div>
-                            <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
-                            {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                    <div class="card-header">
+                        <div class="card-header-title">
+                            <div>
+                                <p class="mb-2">{% include 'snippets/book_titleby.html' with book=book %}</p>
+                                {% include 'snippets/shelve_button/shelve_button.html' with book=book %}
+                            </div>
+                        </div>
+                        <div class="card-header-icon is-hidden-tablet">
+                            {% trans "Close" as button_text %}
+                            {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
                         </div>
                     </div>
-                    <div class="card-header-icon is-hidden-tablet">
-                        {% trans "Close" as button_text %}
-                        {% include 'snippets/toggle/toggle_button.html' with label=button_text controls_text="book" controls_uid=book.id class="delete" nonbutton=True pressed=True %}
+                    <div class="card-content">
+                    {% include 'snippets/create_status.html' with book=book %}
                     </div>
                 </div>
-                <div class="card-content">
-                {% include 'snippets/create_status.html' with book=book %}
-                </div>
+                {% endfor %}
+                {% endwith %}
+                {% endfor %}
             </div>
-            {% endfor %}
             {% endwith %}
-            {% endfor %}
-        </div>
-        {% endwith %}
-        {% endif %}
+            {% endif %}
+        </section>
 
         {% if goal %}
-        <section class="section">
+        <section class="block">
             <div class="block">
                 <h3 class="title is-4">{% blocktrans with yar=goal.year %}{{ year }} Reading Goal{% endblocktrans %}</h3>
                 {% include 'snippets/goal_progress.html' with goal=goal %}
