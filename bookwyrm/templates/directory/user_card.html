@@ -20,7 +20,7 @@
 
         <div class="preserve-whitespace">
         {% if user.summary %}
-            {{ user.summary|to_markdown|safe|truncatechars_html:81 }}
+            {{ user.summary|to_markdown|safe|truncatechars_html:40 }}
         {% else %}&nbsp;{% endif %}
         </div>
     </div>
