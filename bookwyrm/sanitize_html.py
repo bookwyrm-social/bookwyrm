@@ -26,6 +26,8 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
         self.output = []
         # if the html appears invalid, we just won't allow any at all
         self.allow_html = True
+        self.output.append(("data", "<style>.show-white-space{white-space:pre-wrap;}</style>"))
+        self.output.append(("data", "<span class=\"show-white-space\">"))
 
     def handle_starttag(self, tag, attrs):
         """check if the tag is valid"""
@@ -56,6 +58,7 @@ class InputHtmlParser(HTMLParser):  # pylint: disable=abstract-method
 
     def get_output(self):
         """convert the output from a list of tuples to a string"""
+        self.output.append(("data", "</span>"))
         if self.tag_stack:
             self.allow_html = False
         if not self.allow_html:
