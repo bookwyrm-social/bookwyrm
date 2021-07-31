@@ -122,42 +122,6 @@ class StatusForm(CustomForm):
         fields = ["user", "content", "content_warning", "sensitive", "privacy"]
 
 
-class ToReadForm(CustomForm):
-    class Meta:
-        model = models.ToReadStatus
-        fields = [
-            "privacy",
-            "content",
-            "content_warning",
-            "mention_books",
-            "user",
-        ]
-
-
-class ReadingForm(CustomForm):
-    class Meta:
-        model = models.ReadingStatus
-        fields = [
-            "privacy",
-            "content",
-            "content_warning",
-            "mention_books",
-            "user",
-        ]
-
-
-class ReadForm(CustomForm):
-    class Meta:
-        model = models.ReadStatus
-        fields = [
-            "privacy",
-            "content",
-            "content_warning",
-            "mention_books",
-            "user",
-        ]
-
-
 def progress_forms(identifier):
     """get the correct form from the shelf identifier"""
     return {

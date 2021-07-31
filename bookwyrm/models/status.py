@@ -234,6 +234,7 @@ class GeneratedNote(Status):
         return template.render({"status": self}).strip()
 
     activity_serializer = activitypub.GeneratedNote
+    # activity_serializer = activitypub.Goal
     pure_type = "Note"
 
     def get_remote_id(self):
@@ -243,36 +244,27 @@ class GeneratedNote(Status):
         )
 
 
-class ToReadStatus(GeneratedNote):
-    """okay"""
-
-    activity_serializer = activitypub.ToRead
-
-
-class ReadingStatus(GeneratedNote):
-    """okay"""
-
-    activity_serializer = activitypub.Reading
-
-
-class ReadStatus(GeneratedNote):
-    """okay"""
-
-    activity_serializer = activitypub.Read
-
-
-class GoalStatus(GeneratedNote):
-    """okay"""
-
-    activity_serializer = activitypub.Goal
-
-
-class Comment(Status):
-    """like a review but without a rating and transient"""
-
+StateChange = models.TextChoices(
+    "StateChange", [
+        "toRead",
+        "reading",
+        "read"
+    ]
+)
+class BookStatus(Status):
+    """generic subclass for comments, quotes, reviews"""
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
     )
+    state_change = fields.CharField(
+        max_length=255, choices=StateChange.choices, null=True, blank=True
+    )
+    class Meta:
+        """just grouping shared fields"""
+        abstract = True
+
+class Comment(BookStatus):
+    """like a review but without a rating and transient"""
 
     # this is it's own field instead of a foreign key to the progress update
     # so that the update can be deleted without impacting the status
@@ -300,13 +292,10 @@ class Comment(Status):
     pure_type = "Note"
 
 
-class Quotation(Status):
+class Quotation(BookStatus):
     """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
-    )
 
     @property
     def pure_content(self):
@@ -324,13 +313,10 @@ class Quotation(Status):
     pure_type = "Note"
 
 
-class Review(Status):
+class Review(BookStatus):
     """a book review"""
 
     name = fields.CharField(max_length=255, null=True)
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
-    )
     rating = fields.DecimalField(
         default=None,
         null=True,
