@@ -28,7 +28,7 @@
         </div>
 
         {% if user.summary %}
-        <div class="column box has-background-white-bis content">
+        <div class="column box has-background-white-bis content preserve-whitespace">
             {{ user.summary|to_markdown|safe }}
         </div>
         {% endif %}
