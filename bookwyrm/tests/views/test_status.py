@@ -8,6 +8,7 @@ from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
+# pylint: disable=invalid-name
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
@@ -316,6 +317,15 @@ class StatusViews(TestCase):
         self.assertEqual(
             result,
             '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
+        )
+
+    def test_to_markdown_detect_url(self, _):
+        """this is mostly handled in other places, but nonetheless"""
+        text = "http://fish.com/@hello#okay"
+        result = views.status.to_markdown(text)
+        self.assertEqual(
+            result,
+            '<p><a href="http://fish.com/@hello#okay">fish.com/@hello#okay</a></p>',
         )
 
     def test_to_markdown_link(self, _):
