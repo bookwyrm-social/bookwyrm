@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <div class="preserve-whitespace">
+        <div class="display-inline">
         {% if user.summary %}
             {{ user.summary|to_markdown|safe|truncatechars_html:40 }}
         {% else %}&nbsp;{% endif %}
