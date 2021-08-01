@@ -28,8 +28,10 @@
         </div>
 
         {% if user.summary %}
+        {% spaceless %}
         <div class="column box has-background-white-bis content preserve-whitespace">
             {{ user.summary|to_markdown|safe }}
+        {% endspaceless %}
         </div>
         {% endif %}
     </div>
