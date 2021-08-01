@@ -35,7 +35,7 @@ jobs:
     - name: Run Tests
       env:
         SECRET_KEY: beepbeep
-        DEBUG: true
+        DEBUG: false
         DOMAIN: your.domain.here
         BOOKWYRM_DATABASE_BACKEND: postgres
         MEDIA_ROOT: images/
@@ -53,4 +53,4 @@ jobs:
         EMAIL_USE_TLS: true
         ENABLE_PREVIEW_IMAGES: true
       run: |
-        pytest
+        pytest --reuse-db
