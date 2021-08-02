@@ -178,12 +178,8 @@ class Openlibrary(TestCase):
     @responses.activate
     def test_expand_book_data(self):
         """given a book, get more editions"""
-        work = models.Work.objects.create(
-            title="Test Work", openlibrary_key="OL1234W"
-        )
-        edition = models.Edition.objects.create(
-            title="Test Edition", parent_work=work
-        )
+        work = models.Work.objects.create(title="Test Work", openlibrary_key="OL1234W")
+        edition = models.Edition.objects.create(title="Test Edition", parent_work=work)
 
         responses.add(
             responses.GET,
@@ -232,9 +228,7 @@ class Openlibrary(TestCase):
             "bookwyrm.connectors.openlibrary.Connector." "get_authors_from_data"
         ) as mock:
             mock.return_value = []
-            result = self.connector.create_edition_from_data(
-                work, self.edition_data
-            )
+            result = self.connector.create_edition_from_data(work, self.edition_data)
         self.assertEqual(result.parent_work, work)
         self.assertEqual(result.title, "Sabriel")
         self.assertEqual(result.isbn_10, "0060273224")

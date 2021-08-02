@@ -16,9 +16,7 @@ class Shelf(TestCase):
             "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
         )
         work = models.Work.objects.create(title="Test Work")
-        self.book = models.Edition.objects.create(
-            title="test book", parent_work=work
-        )
+        self.book = models.Edition.objects.create(title="test book", parent_work=work)
 
     def test_remote_id(self):
         """shelves use custom remote ids"""

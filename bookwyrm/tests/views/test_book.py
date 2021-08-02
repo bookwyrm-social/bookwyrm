@@ -204,9 +204,7 @@ class BookViews(TestCase):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
-        edition2 = models.Edition.objects.create(
-            title="second ed", parent_work=work
-        )
+        edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
             models.ShelfBook.objects.create(

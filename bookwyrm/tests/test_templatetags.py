@@ -123,12 +123,8 @@ class TemplateTags(TestCase):
     def test_get_boosted(self, *_):
         """load a boosted status"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            status = models.Review.objects.create(
-                user=self.remote_user, book=self.book
-            )
-            boost = models.Boost.objects.create(
-                user=self.user, boosted_status=status
-            )
+            status = models.Review.objects.create(user=self.remote_user, book=self.book)
+            boost = models.Boost.objects.create(user=self.user, boosted_status=status)
         boosted = status_display.get_boosted(boost)
         self.assertIsInstance(boosted, models.Review)
         self.assertEqual(boosted, status)

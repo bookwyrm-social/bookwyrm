@@ -111,9 +111,7 @@ class AbstractConnector(TestCase):
             responses.GET, "https://example.com/book/abcd", json=self.edition_data
         )
         with patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"):
-            result = self.connector.get_or_create_book(
-                "https://example.com/book/abcd"
-            )
+            result = self.connector.get_or_create_book("https://example.com/book/abcd")
         self.assertEqual(result, self.book)
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Edition.objects.count(), 1)
