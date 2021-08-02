@@ -1,6 +1,7 @@
 {% spaceless %}
 
 {% load i18n %}
+{% load static %}
 
 <figure
     class="
@@ -20,14 +21,14 @@
         class="book-cover"
 
         {% if book.cover %}
-            src="{% if img_path is None %}/images/{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
+            src="{% if img_path is None %}{% get_media_prefix %}{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
             itemprop="thumbnailUrl"
 
             {% if book.alt_text %}
                 alt="{{ book.alt_text }}"
             {% endif %}
         {% else %}
-            src="/static/images/no_cover.jpg"
+            src="{% static "images/no_cover.jpg" %}"
             alt="{% trans "No cover" %}"
         {% endif %}
     >
