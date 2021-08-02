@@ -38,8 +38,21 @@ function makeitblack {
     docker-compose run --rm web black celerywyrm bookwyrm
 }
 
+function awscommand {
+    # expose env vars
+    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    export AWS_DEFAULT_REGION=${AWS_S3_REGION_NAME}
+    # first arg is mountpoint, second is the whole aws command
+    docker run --rm -it -v $1\
+        -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION\
+        amazon/aws-cli $2
+}
+
 CMD=$1
-shift
+if [ -n "$CMD" ]; then
+    shift
+fi
 
 # show commands as they're executed
 set -x
@@ -56,9 +69,12 @@ case "$CMD" in
         ;;
     resetdb)
         clean
-        docker-compose up --build -d
+        # Start just the DB so no one else is using it
+        docker-compose up --build -d db
         execdb dropdb -U ${POSTGRES_USER} ${POSTGRES_DB}
         execdb createdb -U ${POSTGRES_USER} ${POSTGRES_DB}
+        # Now start up web so we can run the migrations
+        docker-compose up --build -d web
         initdb
         clean
         ;;
@@ -116,7 +132,51 @@ case "$CMD" in
     generate_preview_images)
         runweb python manage.py generate_preview_images $@
         ;;
+    copy_media_to_s3)
+        awscommand "bookwyrm_media_volume:/images"\
+            "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --recursive --acl public-read"
+        ;;
+    set_cors_to_s3)
+        awscommand "$(pwd):/bw"\
+            "s3api put-bucket-cors\
+            --bucket ${AWS_STORAGE_BUCKET_NAME}\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --cors-configuration file:///bw/$@"
+        ;;
+    runweb)
+        runweb "$@"
+        ;;
+    rundb)
+        rundb "$@"
+        ;;
     *)
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_feeds, generate_preview_images"
+        set +x # No need to echo echo
+        echo "Unrecognised command. Try:"
+        echo "    up [container]"
+        echo "    run"
+        echo "    initdb"
+        echo "    resetdb"
+        echo "    makemigrations [migration]"
+        echo "    migrate [migration]"
+        echo "    bash"
+        echo "    shell"
+        echo "    dbshell"
+        echo "    restart_celery"
+        echo "    test [path]"
+        echo "    pytest [path]"
+        echo "    collectstatic"
+        echo "    makemessages [locale]"
+        echo "    compilemessages [locale]"
+        echo "    build"
+        echo "    clean"
+        echo "    black"
+        echo "    populate_streams"
+        echo "    generate_preview_images [--all]"
+        echo "    copy_media_to_s3"
+        echo "    set_cors_to_s3 [cors file]"
+        echo "    runweb [command]"
+        echo "    rundb [command]"
         ;;
 esac

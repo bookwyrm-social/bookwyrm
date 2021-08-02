@@ -1,6 +1,8 @@
 """ database schema for books and shelves """
 import re
 
+from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.dispatch import receiver
 from model_utils import FieldTracker
@@ -34,6 +36,7 @@ class BookDataModel(ObjectMixin, BookWyrmModel):
     bnf_id = fields.CharField(  # Bibliothèque nationale de France
         max_length=255, blank=True, null=True, deduplication_field=True
     )
+    search_vector = SearchVectorField(null=True)
 
     last_edited_by = fields.ForeignKey(
         "User",
@@ -141,6 +144,11 @@ class Book(BookDataModel):
             self.openlibrary_key,
             self.title,
         )
+
+    class Meta:
+        """sets up postgres GIN index field"""
+
+        indexes = (GinIndex(fields=["search_vector"]),)
 
 
 class Work(OrderedCollectionPageMixin, Book):

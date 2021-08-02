@@ -1,6 +1,7 @@
 {% load bookwyrm_tags %}
 {% load markdown %}
 {% load i18n %}
+{% load static %}
 
 {% with status_type=status.status_type %}
 <div
@@ -111,12 +112,12 @@
                                 <div class="column is-narrow">
                                     <figure class="image is-128x128">
                                         <a
-                                            href="/images/{{ attachment.image }}"
+                                            href="{% get_media_prefix %}{{ attachment.image }}"
                                             target="_blank"
                                             aria-label="{% trans 'Open image in new window' %}"
                                         >
                                             <img
-                                                src="/images/{{ attachment.image }}"
+                                                src="{% get_media_prefix %}{{ attachment.image }}"
 
                                                 {% if attachment.caption %}
                                                     alt="{{ attachment.caption }}"

@@ -1,4 +1,5 @@
 """ database schema for info about authors """
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from bookwyrm import activitypub
@@ -37,3 +38,8 @@ class Author(BookDataModel):
         return "https://%s/author/%s" % (DOMAIN, self.id)
 
     activity_serializer = activitypub.Author
+
+    class Meta:
+        """sets up postgres GIN index field"""
+
+        indexes = (GinIndex(fields=["search_vector"]),)

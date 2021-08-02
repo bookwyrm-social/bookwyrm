@@ -2,6 +2,8 @@
 import csv
 import pathlib
 from unittest.mock import patch
+import datetime
+import pytz
 
 from django.test import TestCase
 import responses
@@ -10,6 +12,10 @@ from bookwyrm import models
 from bookwyrm.importers import LibrarythingImporter
 from bookwyrm.importers.importer import import_data, handle_imported_book
 from bookwyrm.settings import DOMAIN
+
+
+def make_date(*args):
+    return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
 class LibrarythingImport(TestCase):
@@ -125,13 +131,8 @@ class LibrarythingImport(TestCase):
 
         readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
-        # I can't remember how to create dates and I don't want to look it up.
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
+        self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
+        self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
     def test_handle_imported_book_already_shelved(self):
         """librarything import added a book, this adds related connections"""
@@ -160,14 +161,11 @@ class LibrarythingImport(TestCase):
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
         self.assertIsNone(self.user.shelf_set.get(identifier="read").books.first())
+
         readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
+        self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
+        self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
     def test_handle_import_twice(self):
         """re-importing books"""
@@ -198,13 +196,8 @@ class LibrarythingImport(TestCase):
 
         readthrough = models.ReadThrough.objects.get(user=self.user)
         self.assertEqual(readthrough.book, self.book)
-        # I can't remember how to create dates and I don't want to look it up.
-        self.assertEqual(readthrough.start_date.year, 2007)
-        self.assertEqual(readthrough.start_date.month, 4)
-        self.assertEqual(readthrough.start_date.day, 16)
-        self.assertEqual(readthrough.finish_date.year, 2007)
-        self.assertEqual(readthrough.finish_date.month, 5)
-        self.assertEqual(readthrough.finish_date.day, 8)
+        self.assertEqual(readthrough.start_date, make_date(2007, 4, 16))
+        self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_handle_imported_book_review(self, _):
@@ -226,9 +219,7 @@ class LibrarythingImport(TestCase):
         review = models.Review.objects.get(book=self.book, user=self.user)
         self.assertEqual(review.content, "chef d'oeuvre")
         self.assertEqual(review.rating, 5)
-        self.assertEqual(review.published_date.year, 2007)
-        self.assertEqual(review.published_date.month, 5)
-        self.assertEqual(review.published_date.day, 8)
+        self.assertEqual(review.published_date, make_date(2007, 5, 8))
         self.assertEqual(review.privacy, "unlisted")
 
     def test_handle_imported_book_reviews_disabled(self):
