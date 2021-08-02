@@ -36,7 +36,7 @@ class InboxCreate(TestCase):
             )
         with patch(
             "bookwyrm.activitystreams.ActivityStream.add_status",
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay",
         ):
             self.status = models.Status.objects.create(
                 user=self.local_user,
