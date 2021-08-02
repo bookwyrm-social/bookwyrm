@@ -2,7 +2,7 @@
 from functools import reduce
 import operator
 
-from django.contrib.postgres.search import SearchRank, SearchVector
+from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import OuterRef, Subquery, F, Q
 
 from bookwyrm import models
@@ -13,7 +13,7 @@ class Connector(AbstractConnector):
     """instantiate a connector"""
 
     # pylint: disable=arguments-differ
-    def search(self, query, min_confidence=0.1, raw=False, filters=None):
+    def search(self, query, min_confidence=0, raw=False, filters=None):
         """search your local database"""
         filters = filters or []
         if not query:
@@ -141,16 +141,11 @@ def search_identifiers(query, *filters):
 
 def search_title_author(query, min_confidence, *filters):
     """searches for title and author"""
-    vector = (
-        SearchVector("title", weight="A")
-        + SearchVector("subtitle", weight="B")
-        + SearchVector("authors__name", weight="C")
-        + SearchVector("series", weight="D")
-    )
-
+    query = SearchQuery(query, config="simple") | SearchQuery(query, config="english")
     results = (
-        models.Edition.objects.annotate(rank=SearchRank(vector, query))
-        .filter(*filters, rank__gt=min_confidence)
+        models.Edition.objects.filter(*filters, search_vector=query)
+        .annotate(rank=SearchRank(F("search_vector"), query))
+        .filter(rank__gt=min_confidence)
         .order_by("-rank")
     )
 

@@ -109,10 +109,14 @@
 
             <img
                 class="book-cover"
-                src="{% get_media_prefix %}{{ book.cover }}"
                 itemprop="thumbnailUrl"
-                alt="{{ book.alt_text|default:'' }}"
+                {% if book.cover %}
+                src="{% if img_path is None %}{% get_media_prefix %}{% else %}{{ img_path }}{% endif %}{{ book.cover }}"
+                {% else %}
+                src="{% static "images/no_cover.jpg" %}"
+                alt="{% trans "No cover" %}"
             >
+
         {% endif %}
     </picture>
 {% endif %}

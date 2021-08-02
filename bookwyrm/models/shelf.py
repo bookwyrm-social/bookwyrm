@@ -1,6 +1,7 @@
 """ puttin' books on shelves """
 import re
 from django.db import models
+from django.utils import timezone
 
 from bookwyrm import activitypub
 from .activitypub_mixin import CollectionItemMixin, OrderedCollectionMixin
@@ -69,6 +70,7 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
         "Edition", on_delete=models.PROTECT, activitypub_field="book"
     )
     shelf = models.ForeignKey("Shelf", on_delete=models.PROTECT)
+    shelved_date = models.DateTimeField(default=timezone.now)
     user = fields.ForeignKey(
         "User", on_delete=models.PROTECT, activitypub_field="actor"
     )
@@ -86,4 +88,4 @@ class ShelfBook(CollectionItemMixin, BookWyrmModel):
         you can't put a book on shelf twice"""
 
         unique_together = ("book", "shelf")
-        ordering = ("-created_date",)
+        ordering = ("-shelved_date", "-created_date", "-updated_date")

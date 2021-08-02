@@ -103,7 +103,7 @@
                         {% include 'snippets/authors.html' %}
                     </td>
                     <td data-title="{% trans "Shelved" %}">
-                        {{ book.created_date|naturalday }}
+                        {{ book.shelved_date|naturalday }}
                     </td>
                     {% latest_read_through book user as read_through %}
                     <td data-title="{% trans "Started" %}">
