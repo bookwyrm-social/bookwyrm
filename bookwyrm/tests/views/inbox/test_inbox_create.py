@@ -10,6 +10,7 @@ from bookwyrm.activitypub import ActivitySerializerError
 
 
 # pylint: disable=too-many-public-methods
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class InboxCreate(TestCase):
     """readthrough tests"""
 
@@ -34,15 +35,6 @@ class InboxCreate(TestCase):
                 inbox="https://example.com/users/rat/inbox",
                 outbox="https://example.com/users/rat/outbox",
             )
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.add_status",
-            "bookwyrm.models.activitypub_mixin.broadcast_task.delay",
-        ):
-            self.status = models.Status.objects.create(
-                user=self.local_user,
-                content="Test status",
-                remote_id="https://example.com/status/1",
-            )
 
         self.create_json = {
             "id": "hi",
@@ -54,7 +46,7 @@ class InboxCreate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_create_status(self):
+    def test_create_status(self, _):
         """the "it justs works" mode"""
         self.assertEqual(models.Status.objects.count(), 1)
 
@@ -86,7 +78,7 @@ class InboxCreate(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Status.objects.count(), 2)
 
-    def test_create_status_remote_note_with_mention(self):
+    def test_create_status_remote_note_with_mention(self, _):
         """should only create it under the right circumstances"""
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
@@ -109,15 +101,22 @@ class InboxCreate(TestCase):
         )
         self.assertEqual(models.Notification.objects.get().notification_type, "MENTION")
 
-    def test_create_status_remote_note_with_reply(self):
+    def test_create_status_remote_note_with_reply(self, _):
         """should only create it under the right circumstances"""
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.Status.objects.create(
+                user=self.local_user,
+                content="Test status",
+                remote_id="https://example.com/status/1",
+            )
+
         self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(models.Notification.objects.filter(user=self.local_user))
 
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
         status_data = json.loads(datafile.read_bytes())
         del status_data["tag"]
-        status_data["inReplyTo"] = self.status.remote_id
+        status_data["inReplyTo"] = status.remote_id
         activity = self.create_json
         activity["object"] = status_data
 
@@ -126,11 +125,11 @@ class InboxCreate(TestCase):
             self.assertTrue(redis_mock.called)
         status = models.Status.objects.last()
         self.assertEqual(status.content, "test content in note")
-        self.assertEqual(status.reply_parent, self.status)
+        self.assertEqual(status.reply_parent, status)
         self.assertTrue(models.Notification.objects.filter(user=self.local_user))
         self.assertEqual(models.Notification.objects.get().notification_type, "REPLY")
 
-    def test_create_rating(self):
+    def test_create_rating(self, _):
         """a remote rating activity"""
         book = models.Edition.objects.create(
             title="Test Book", remote_id="https://example.com/book/1"
@@ -147,8 +146,8 @@ class InboxCreate(TestCase):
                 "id": "https://example.com/user/mouse/reviewrating/12/replies",
                 "type": "OrderedCollection",
                 "totalItems": 0,
-                "first": "https://example.com/user/mouse/reviewrating/12/replies?page=1",
-                "last": "https://example.com/user/mouse/reviewrating/12/replies?page=1",
+                "first": "https://example.com/u/mouse/reviewrating/12/replies?page=1",
+                "last": "https://example.com/u/mouse/reviewrating/12/replies?page=1",
                 "@context": "https://www.w3.org/ns/activitystreams",
             },
             "inReplyTo": "",
@@ -167,7 +166,7 @@ class InboxCreate(TestCase):
         self.assertEqual(rating.book, book)
         self.assertEqual(rating.rating, 3.0)
 
-    def test_create_list(self):
+    def test_create_list(self, _):
         """a new list"""
         activity = self.create_json
         activity["object"] = {
@@ -191,7 +190,7 @@ class InboxCreate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_create_unsupported_type(self):
+    def test_create_unsupported_type(self, _):
         """ignore activities we know we can't handle"""
         activity = self.create_json
         activity["object"] = {
@@ -201,7 +200,7 @@ class InboxCreate(TestCase):
         # just observer how it doesn't throw an error
         views.inbox.activity_task(activity)
 
-    def test_create_unknown_type(self):
+    def test_create_unknown_type(self, _):
         """ignore activities we know we've never heard of"""
         activity = self.create_json
         activity["object"] = {
