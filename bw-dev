@@ -123,7 +123,7 @@ case "$CMD" in
     populate_streams)
         runweb python manage.py populate_streams
         ;;
-    generateimages)
+    generate_thumbnails)
         runweb python manage.py generateimages
         ;;
     generate_preview_images)
@@ -171,7 +171,7 @@ case "$CMD" in
         echo "    black"
         echo "    populate_streams"
         echo "    generate_preview_images [--all]"
-        echo "    generateimages"
+        echo "    generate_thumbnails"
         echo "    copy_media_to_s3"
         echo "    set_cors_to_s3 [cors file]"
         echo "    runweb [command]"
