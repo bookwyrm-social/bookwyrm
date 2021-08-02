@@ -13,25 +13,22 @@ class GetStartedViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.mouse",
-                "password",
-                local=True,
-                localname="mouse",
-            )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                parent_work=models.Work.objects.create(title="hi"),
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-            )
+        self.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.mouse",
+            "password",
+            local=True,
+            localname="mouse",
+        )
+        self.book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title="hi"),
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+        )
         models.Connector.objects.create(
             identifier="self", connector_file="self_connector", local=True
         )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_profile_view(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -55,12 +52,11 @@ class GetStartedViews(TestCase):
         request.user = self.local_user
 
         self.assertIsNone(self.local_user.name)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                view(request)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertTrue(self.local_user.discoverable)
 

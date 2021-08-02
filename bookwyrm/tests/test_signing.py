@@ -37,20 +37,19 @@ class Signature(TestCase):
 
     def setUp(self):
         """create users and test data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.mouse = models.User.objects.create_user(
-                "mouse@%s" % DOMAIN,
-                "mouse@example.com",
-                "",
-                local=True,
-                localname="mouse",
-            )
-            self.rat = models.User.objects.create_user(
-                "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
-            )
-            self.cat = models.User.objects.create_user(
-                "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
-            )
+        self.mouse = models.User.objects.create_user(
+            "mouse@%s" % DOMAIN,
+            "mouse@example.com",
+            "",
+            local=True,
+            localname="mouse",
+        )
+        self.rat = models.User.objects.create_user(
+            "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
+        )
+        self.cat = models.User.objects.create_user(
+            "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
+        )
 
         private_key, public_key = create_key_pair()
 
@@ -58,8 +57,7 @@ class Signature(TestCase):
             "http://localhost/user/remote", KeyPair(private_key, public_key)
         )
 
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def send(self, signature, now, data, digest):
         """test request"""
@@ -119,10 +117,9 @@ class Signature(TestCase):
             status=200,
         )
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-                response = self.send_test_request(sender=self.fake_remote)
-                self.assertEqual(response.status_code, 200)
+        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
     @responses.activate
     def test_key_needs_refresh(self):
@@ -143,23 +140,22 @@ class Signature(TestCase):
         data["publicKey"]["publicKeyPem"] = key_pair.public_key
         responses.add(responses.GET, self.fake_remote.remote_id, json=data, status=200)
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.get_remote_reviews.delay"):
-                # Key correct:
-                response = self.send_test_request(sender=self.fake_remote)
-                self.assertEqual(response.status_code, 200)
+        with patch("bookwyrm.models.user.get_remote_reviews.delay"):
+            # Key correct:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
-                # Old key is cached, so still works:
-                response = self.send_test_request(sender=self.fake_remote)
-                self.assertEqual(response.status_code, 200)
+            # Old key is cached, so still works:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 200)
 
-                # Try with new key:
-                response = self.send_test_request(sender=new_sender)
-                self.assertEqual(response.status_code, 200)
+            # Try with new key:
+            response = self.send_test_request(sender=new_sender)
+            self.assertEqual(response.status_code, 200)
 
-                # Now the old key will fail:
-                response = self.send_test_request(sender=self.fake_remote)
-                self.assertEqual(response.status_code, 401)
+            # Now the old key will fail:
+            response = self.send_test_request(sender=self.fake_remote)
+            self.assertEqual(response.status_code, 401)
 
     @responses.activate
     def test_nonexistent_signer(self):

@@ -12,15 +12,13 @@ class Shelf(TestCase):
 
     def setUp(self):
         """look, a shelf"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="test book", parent_work=work
-            )
+        self.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="test book", parent_work=work
+        )
 
     def test_remote_id(self):
         """shelves use custom remote ids"""

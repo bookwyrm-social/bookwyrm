@@ -20,9 +20,8 @@ class Person(TestCase):
 
     def test_user_to_model(self):
         activity = activitypub.Person(**self.user_data)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                user = activity.to_model(model=models.User)
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            user = activity.to_model(model=models.User)
         self.assertEqual(user.username, "mouse@example.com")
         self.assertEqual(user.remote_id, "https://example.com/user/mouse")
         self.assertFalse(user.local)
