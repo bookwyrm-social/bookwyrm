@@ -53,4 +53,4 @@ jobs:
         EMAIL_USE_TLS: true
         ENABLE_PREVIEW_IMAGES: true
       run: |
-        pytest --reuse-db
+        pytest -n 3
