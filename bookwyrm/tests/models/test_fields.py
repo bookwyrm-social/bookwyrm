@@ -432,7 +432,7 @@ class ActivitypubFields(TestCase):
         value_mock = ValueMock("images/fish.jpg")
         result = fields.image_serializer(value_mock, "hello")
         self.assertEqual(result.type, "Document")
-        self.assertEqual(result.url, "https://your.domain.here/static/images/fish.jpg")
+        self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
         self.assertEqual(result.name, "hello")
 
     def test_datetime_field(self):
