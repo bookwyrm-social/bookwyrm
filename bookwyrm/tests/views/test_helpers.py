@@ -32,16 +32,17 @@ class ViewsHelpers(TestCase):
                     remote_id="https://example.com/users/mouse",
                 )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
-            self.remote_user = models.User.objects.create_user(
-                "rat",
-                "rat@rat.com",
-                "ratword",
-                local=False,
-                remote_id="https://example.com/users/rat",
-                discoverable=True,
-                inbox="https://example.com/users/rat/inbox",
-                outbox="https://example.com/users/rat/outbox",
-            )
+            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
+                self.remote_user = models.User.objects.create_user(
+                    "rat",
+                    "rat@rat.com",
+                    "ratword",
+                    local=False,
+                    remote_id="https://example.com/users/rat",
+                    discoverable=True,
+                    inbox="https://example.com/users/rat/inbox",
+                    outbox="https://example.com/users/rat/outbox",
+                )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Test Book",

@@ -9,6 +9,7 @@ from bookwyrm import models, views
 
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 class ReadingViews(TestCase):
     """viewing and creating statuses"""
 
@@ -41,7 +42,7 @@ class ReadingViews(TestCase):
             parent_work=self.work,
         )
 
-    def test_start_reading(self, _):
+    def test_start_reading(self, *_):
         """begin a book"""
         shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READING)
         self.assertFalse(shelf.books.exists())
@@ -72,7 +73,7 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.user, self.local_user)
         self.assertEqual(readthrough.book, self.book)
 
-    def test_start_reading_reshelf(self, _):
+    def test_start_reading_reshelf(self, *_):
         """begin a book"""
         to_read_shelf = self.local_user.shelf_set.get(identifier=models.Shelf.TO_READ)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -92,7 +93,7 @@ class ReadingViews(TestCase):
         self.assertFalse(to_read_shelf.books.exists())
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_finish_reading(self, _):
+    def test_finish_reading(self, *_):
         """begin a book"""
         shelf = self.local_user.shelf_set.get(identifier=models.Shelf.READ_FINISHED)
         self.assertFalse(shelf.books.exists())
@@ -128,7 +129,7 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.user, self.local_user)
         self.assertEqual(readthrough.book, self.book)
 
-    def test_edit_readthrough(self, _):
+    def test_edit_readthrough(self, *_):
         """adding dates to an ongoing readthrough"""
         start = timezone.make_aware(dateutil.parser.parse("2021-01-03"))
         readthrough = models.ReadThrough.objects.create(
@@ -155,7 +156,7 @@ class ReadingViews(TestCase):
         self.assertEqual(readthrough.finish_date.day, 7)
         self.assertEqual(readthrough.book, self.book)
 
-    def test_delete_readthrough(self, _):
+    def test_delete_readthrough(self, *_):
         """remove a readthrough"""
         readthrough = models.ReadThrough.objects.create(
             book=self.book, user=self.local_user
@@ -172,7 +173,7 @@ class ReadingViews(TestCase):
         views.delete_readthrough(request)
         self.assertFalse(models.ReadThrough.objects.filter(id=readthrough.id).exists())
 
-    def test_create_readthrough(self, _):
+    def test_create_readthrough(self, *_):
         """adding new read dates"""
         request = self.factory.post(
             "",
