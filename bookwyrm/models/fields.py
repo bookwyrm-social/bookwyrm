@@ -11,8 +11,10 @@ from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
@@ -354,7 +356,7 @@ def image_serializer(value, alt):
         url = value.url
     else:
         return None
-    url = "https://%s%s" % (DOMAIN, url)
+    url = static(url)
     return activitypub.Document(url=url, name=alt)
 
 
