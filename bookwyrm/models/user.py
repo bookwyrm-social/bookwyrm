@@ -243,7 +243,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)
-            super().save(*args, **kwargs)
 
         # this user already exists, no need to populate fields
         if not created:
@@ -276,7 +275,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.key_pair = KeyPair.objects.create(
             remote_id="%s/#main-key" % self.remote_id
         )
-        self.save(broadcast=False)
+        self.save(broadcast=False, update_fields=["key_pair"])
 
         shelves = [
             {

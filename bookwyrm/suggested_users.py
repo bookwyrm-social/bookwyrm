@@ -178,11 +178,14 @@ def update_rank_on_shelving(sender, instance, *args, **kwargs):
 
 @receiver(signals.post_save, sender=models.User)
 # pylint: disable=unused-argument, too-many-arguments
-def add_new_user(sender, instance, created, **kwargs):
+def add_new_user(sender, instance, created, update_fields=None, **kwargs):
     """a new user, wow how cool"""
     # a new user is found, create suggestions for them
     if created and instance.local:
         rerank_suggestions_task.delay(instance.id)
+
+    if update_fields and not "discoverable" in update_fields:
+        return
 
     # this happens on every save, not just when discoverability changes, annoyingly
     if instance.discoverable:
