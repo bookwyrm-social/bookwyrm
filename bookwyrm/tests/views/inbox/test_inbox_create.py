@@ -48,8 +48,6 @@ class InboxCreate(TestCase):
 
     def test_create_status(self, _):
         """the "it justs works" mode"""
-        self.assertEqual(models.Status.objects.count(), 1)
-
         datafile = pathlib.Path(__file__).parent.joinpath(
             "../../data/ap_quotation.json"
         )
@@ -72,15 +70,13 @@ class InboxCreate(TestCase):
         self.assertEqual(status.quote, "quote body")
         self.assertEqual(status.content, "commentary")
         self.assertEqual(status.user, self.local_user)
-        self.assertEqual(models.Status.objects.count(), 2)
 
         # while we're here, lets ensure we avoid dupes
         views.inbox.activity_task(activity)
-        self.assertEqual(models.Status.objects.count(), 2)
+        self.assertEqual(models.Status.objects.count(), 1)
 
     def test_create_status_remote_note_with_mention(self, _):
         """should only create it under the right circumstances"""
-        self.assertEqual(models.Status.objects.count(), 1)
         self.assertFalse(
             models.Notification.objects.filter(user=self.local_user).exists()
         )
@@ -104,7 +100,7 @@ class InboxCreate(TestCase):
     def test_create_status_remote_note_with_reply(self, _):
         """should only create it under the right circumstances"""
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-            status = models.Status.objects.create(
+            parent_status = models.Status.objects.create(
                 user=self.local_user,
                 content="Test status",
                 remote_id="https://example.com/status/1",
@@ -116,7 +112,7 @@ class InboxCreate(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_note.json")
         status_data = json.loads(datafile.read_bytes())
         del status_data["tag"]
-        status_data["inReplyTo"] = status.remote_id
+        status_data["inReplyTo"] = parent_status.remote_id
         activity = self.create_json
         activity["object"] = status_data
 
@@ -125,7 +121,7 @@ class InboxCreate(TestCase):
             self.assertTrue(redis_mock.called)
         status = models.Status.objects.last()
         self.assertEqual(status.content, "test content in note")
-        self.assertEqual(status.reply_parent, status)
+        self.assertEqual(status.reply_parent, parent_status)
         self.assertTrue(models.Notification.objects.filter(user=self.local_user))
         self.assertEqual(models.Notification.objects.get().notification_type, "REPLY")
 
