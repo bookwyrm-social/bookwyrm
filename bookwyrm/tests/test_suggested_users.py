@@ -41,6 +41,8 @@ class SuggestedUsers(TestCase):
         self.assertEqual(counts["mutuals"], 3)
         self.assertEqual(counts["shared_books"], 27)
 
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     def test_get_objects_for_store(self, *_):
         """list of people to follow for a given user"""
 
