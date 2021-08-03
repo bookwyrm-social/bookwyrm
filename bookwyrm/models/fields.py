@@ -18,7 +18,6 @@ from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
-from bookwyrm.settings import DOMAIN
 
 
 def validate_remote_id(value):
