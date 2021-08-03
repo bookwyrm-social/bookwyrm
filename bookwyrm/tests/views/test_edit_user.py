@@ -123,7 +123,8 @@ class EditUserViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task")
+    def test_delete_user(self, _):
         """use a form to update a user"""
         view = views.DeleteUser.as_view()
         form = forms.DeleteUserForm()

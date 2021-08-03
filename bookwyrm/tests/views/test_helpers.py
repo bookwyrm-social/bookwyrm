@@ -14,6 +14,7 @@ from bookwyrm.settings import USER_AGENT
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.suggested_users.rerank_user_task.delay")
 class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
@@ -203,95 +204,3 @@ class ViewsHelpers(TestCase):
                 self.local_user, self.shelf, self.book, "public"
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
-
-    def test_get_annotated_users(self, *_):
-        """list of people you might know"""
-        user_1 = models.User.objects.create_user(
-            "nutria@local.com",
-            "nutria@nutria.com",
-            "nutriaword",
-            local=True,
-            localname="nutria",
-            discoverable=True,
-        )
-        user_2 = models.User.objects.create_user(
-            "fish@local.com",
-            "fish@fish.com",
-            "fishword",
-            local=True,
-            localname="fish",
-        )
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            # 1 shared follow
-            self.local_user.following.add(user_2)
-            user_1.followers.add(user_2)
-
-            # 1 shared book
-            models.ShelfBook.objects.create(
-                user=self.local_user,
-                book=self.book,
-                shelf=self.local_user.shelf_set.first(),
-            )
-            models.ShelfBook.objects.create(
-                user=user_1, book=self.book, shelf=user_1.shelf_set.first()
-            )
-
-        result = views.helpers.get_annotated_users(self.local_user)
-        self.assertEqual(result.count(), 3)
-        self.assertTrue(user_1 in result)
-        self.assertFalse(user_2 in result)
-        self.assertTrue(self.local_user in result)
-        self.assertTrue(self.remote_user in result)
-
-        user_1_annotated = result.get(id=user_1.id)
-        self.assertEqual(user_1_annotated.mutuals, 1)
-        self.assertEqual(user_1_annotated.shared_books, 1)
-
-        remote_user_annotated = result.get(id=self.remote_user.id)
-        self.assertEqual(remote_user_annotated.mutuals, 0)
-        self.assertEqual(remote_user_annotated.shared_books, 0)
-
-    def test_get_annotated_users_counts(self, *_):
-        """correct counting for multiple shared attributed"""
-        user_1 = models.User.objects.create_user(
-            "nutria@local.com",
-            "nutria@nutria.com",
-            "nutriaword",
-            local=True,
-            localname="nutria",
-            discoverable=True,
-        )
-        for i in range(3):
-            user = models.User.objects.create_user(
-                "{:d}@local.com".format(i),
-                "{:d}@nutria.com".format(i),
-                "password",
-                local=True,
-                localname=i,
-            )
-            user.following.add(user_1)
-            user.followers.add(self.local_user)
-
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            for i in range(3):
-                book = models.Edition.objects.create(
-                    title=i,
-                    parent_work=models.Work.objects.create(title=i),
-                )
-                models.ShelfBook.objects.create(
-                    user=self.local_user,
-                    book=book,
-                    shelf=self.local_user.shelf_set.first(),
-                )
-                models.ShelfBook.objects.create(
-                    user=user_1, book=book, shelf=user_1.shelf_set.first()
-                )
-
-        result = views.helpers.get_annotated_users(
-            self.local_user,
-            ~Q(id=self.local_user.id),
-            ~Q(followers=self.local_user),
-        )
-        self.assertEqual(result.count(), 2)
-        user_1_annotated = result.get(id=user_1.id)
-        self.assertEqual(user_1_annotated.mutuals, 3)
