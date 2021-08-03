@@ -12,45 +12,39 @@ class RssFeedView(TestCase):
 
     def setUp(self):
         """test data"""
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            self.site = models.SiteSettings.objects.create()
+        self.site = models.SiteSettings.objects.create()
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.user = models.User.objects.create_user(
-                "rss_user", "rss@test.rss", "password", local=True
-            )
+        self.user = models.User.objects.create_user(
+            "rss_user", "rss@test.rss", "password", local=True
+        )
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=work,
-            )
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
+        )
 
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-                    with patch(
-                        "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
-                    ):
-                        self.review = models.Review.objects.create(
-                            name="Review name",
-                            content="test content",
-                            rating=3,
-                            user=self.user,
-                            book=self.book,
-                        )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+                self.review = models.Review.objects.create(
+                    name="Review name",
+                    content="test content",
+                    rating=3,
+                    user=self.user,
+                    book=self.book,
+                )
 
-                    self.quote = models.Quotation.objects.create(
-                        quote="a sickening sense",
-                        content="test content",
-                        user=self.user,
-                        book=self.book,
-                    )
+                self.quote = models.Quotation.objects.create(
+                    quote="a sickening sense",
+                    content="test content",
+                    user=self.user,
+                    book=self.book,
+                )
 
-                    self.generatednote = models.GeneratedNote.objects.create(
-                        content="test content", user=self.user
-                    )
+                self.generatednote = models.GeneratedNote.objects.create(
+                    content="test content", user=self.user
+                )
 
         self.factory = RequestFactory()
 

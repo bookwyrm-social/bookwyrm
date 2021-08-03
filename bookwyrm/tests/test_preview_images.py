@@ -1,6 +1,5 @@
 """ test generating preview images """
 import pathlib
-from unittest.mock import patch
 from PIL import Image
 
 from django.test import TestCase
@@ -27,31 +26,32 @@ class PreviewImages(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            avatar_file = pathlib.Path(__file__).parent.joinpath(
-                "../static/images/no_cover.jpg"
-            )
-            self.local_user = models.User.objects.create_user(
-                "possum@local.com",
-                "possum@possum.possum",
-                "password",
-                local=True,
-                localname="possum",
-                avatar=SimpleUploadedFile(
-                    avatar_file,
-                    open(avatar_file, "rb").read(),
-                    content_type="image/jpeg",
-                ),
-            )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Test Work")
-            self.edition = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=self.work,
-            )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            self.site = models.SiteSettings.objects.create()
+        avatar_file = pathlib.Path(__file__).parent.joinpath(
+            "../static/images/no_cover.jpg"
+        )
+        self.local_user = models.User.objects.create_user(
+            "possum@local.com",
+            "possum@possum.possum",
+            "password",
+            local=True,
+            localname="possum",
+            avatar=SimpleUploadedFile(
+                avatar_file,
+                open(avatar_file, "rb").read(),
+                content_type="image/jpeg",
+            ),
+        )
+
+        self.work = models.Work.objects.create(title="Test Work")
+        self.edition = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=self.work,
+        )
+
+        self.site = models.SiteSettings.objects.create()
+
+        settings.ENABLE_PREVIEW_IMAGES = True
 
     def test_generate_preview_image(self, *args, **kwargs):
         image_file = pathlib.Path(__file__).parent.joinpath(

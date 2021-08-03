@@ -1,5 +1,4 @@
 """ interface between the app and various connectors """
-from unittest.mock import patch
 from django.test import TestCase
 import responses
 
@@ -14,15 +13,14 @@ class ConnectorManager(TestCase):
 
     def setUp(self):
         """we'll need some books and a connector info entry"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Example Work")
+        self.work = models.Work.objects.create(title="Example Work")
 
-            self.edition = models.Edition.objects.create(
-                title="Example Edition", parent_work=self.work, isbn_10="0000000000"
-            )
-            self.edition = models.Edition.objects.create(
-                title="Another Edition", parent_work=self.work, isbn_10="1111111111"
-            )
+        self.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=self.work, isbn_10="0000000000"
+        )
+        self.edition = models.Edition.objects.create(
+            title="Another Edition", parent_work=self.work, isbn_10="1111111111"
+        )
 
         self.connector = models.Connector.objects.create(
             identifier="test_connector",
