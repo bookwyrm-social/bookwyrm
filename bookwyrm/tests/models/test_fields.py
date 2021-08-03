@@ -426,6 +426,17 @@ class ActivitypubFields(TestCase):
         self.assertIsInstance(loaded_image, list)
         self.assertIsInstance(loaded_image[1], ContentFile)
 
+    def test_image_serialize(self):
+        """make sure we're creating sensible image paths"""
+        ValueMock = namedtuple(
+            "ValueMock", ("url")
+        )
+        value_mock = ValueMock("images/fish.jpg")
+        result = fields.image_serializer(value_mock, "hello")
+        self.assertEqual(result.type, "Document")
+        self.assertEqual(result.url, "https://test.com/images/fish.jpg")
+        self.assertEqual(result.name, "hello")
+
     def test_datetime_field(self):
         """this one is pretty simple, it just has to use isoformat"""
         instance = fields.DateTimeField()
