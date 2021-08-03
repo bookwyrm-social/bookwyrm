@@ -74,12 +74,11 @@ class AbstractConnector(TestCase):
             Mapping("openlibraryKey"),
         ]
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                title="Test Book",
-                remote_id="https://example.com/book/1234",
-                openlibrary_key="OL1234M",
-            )
+        self.book = models.Edition.objects.create(
+            title="Test Book",
+            remote_id="https://example.com/book/1234",
+            openlibrary_key="OL1234M",
+        )
 
     def test_abstract_connector_init(self):
         """barebones connector for search with defaults"""
@@ -111,11 +110,8 @@ class AbstractConnector(TestCase):
         responses.add(
             responses.GET, "https://example.com/book/abcd", json=self.edition_data
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"):
-                result = self.connector.get_or_create_book(
-                    "https://example.com/book/abcd"
-                )
+        with patch("bookwyrm.connectors.abstract_connector.load_more_data.delay"):
+            result = self.connector.get_or_create_book("https://example.com/book/abcd")
         self.assertEqual(result, self.book)
         self.assertEqual(models.Edition.objects.count(), 1)
         self.assertEqual(models.Edition.objects.count(), 1)

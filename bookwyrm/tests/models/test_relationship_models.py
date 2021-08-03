@@ -10,22 +10,21 @@ class Relationship(TestCase):
 
     def setUp(self):
         """we need some users for this"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-            self.local_user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
-            self.local_user.remote_id = "http://local.com/user/mouse"
-            self.local_user.save(broadcast=False)
+        self.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+        )
+        self.local_user.remote_id = "http://local.com/user/mouse"
+        self.local_user.save(broadcast=False)
 
     def test_user_follows_from_request(self):
         """convert a follow request into a follow"""

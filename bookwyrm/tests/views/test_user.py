@@ -16,20 +16,18 @@ class UserViews(TestCase):
 
     def setUp(self):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.factory = RequestFactory()
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.mouse",
-                "password",
-                local=True,
-                localname="mouse",
-            )
-            self.rat = models.User.objects.create_user(
-                "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
-            )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(title="test")
+        self.factory = RequestFactory()
+        self.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.mouse",
+            "password",
+            local=True,
+            localname="mouse",
+        )
+        self.rat = models.User.objects.create_user(
+            "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
+        )
+        self.book = models.Edition.objects.create(title="test")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(
                 book=self.book,
@@ -37,8 +35,7 @@ class UserViews(TestCase):
                 shelf=self.local_user.shelf_set.first(),
             )
 
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 

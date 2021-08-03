@@ -23,15 +23,14 @@ class BookViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.com",
-                "mouseword",
-                local=True,
-                localname="mouse",
-                remote_id="https://example.com/users/mouse",
-            )
+        self.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.com",
+            "mouseword",
+            local=True,
+            localname="mouse",
+            remote_id="https://example.com/users/mouse",
+        )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(
@@ -40,15 +39,14 @@ class BookViews(TestCase):
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=self.work,
-            )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        self.work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=self.work,
+        )
+
+        models.SiteSettings.objects.create()
 
     def test_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -74,8 +72,7 @@ class BookViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
         request.user.is_superuser = True
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            result = view(request, self.book.id)
+        result = view(request, self.book.id)
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
@@ -90,9 +87,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                view(request, self.book.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.book.id)
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
@@ -108,9 +104,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            result = view(request, self.book.id)
-            result.render()
+        result = view(request, self.book.id)
+        result.render()
 
         # the changes haven't been saved yet
         self.book.refresh_from_db()
@@ -128,9 +123,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                view(request, self.book.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.book.id)
 
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
@@ -150,9 +144,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                view(request, self.book.id)
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            view(request, self.book.id)
         self.book.refresh_from_db()
         self.assertEqual(self.book.title, "New Title")
         self.assertFalse(self.book.authors.exists())
@@ -167,8 +160,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            view(request)
+        view(request)
+
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
 
@@ -183,8 +176,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            view(request)
+        view(request)
+
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work, self.work)
 
@@ -200,8 +193,8 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            view(request)
+        view(request)
+
         book = models.Edition.objects.get(title="New Title")
         self.assertEqual(book.parent_work.title, "New Title")
         self.assertEqual(book.authors.first().name, "Sappho")
@@ -210,11 +203,8 @@ class BookViews(TestCase):
     def test_switch_edition(self):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
-            edition2 = models.Edition.objects.create(
-                title="second ed", parent_work=work
-            )
+        edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
+        edition2 = models.Edition.objects.create(title="second ed", parent_work=work)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
             models.ShelfBook.objects.create(
@@ -267,12 +257,11 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                views.upload_cover(request, self.book.id)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
@@ -300,12 +289,11 @@ class BookViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                views.upload_cover(request, self.book.id)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            views.upload_cover(request, self.book.id)
+            self.assertEqual(delay_mock.call_count, 1)
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)

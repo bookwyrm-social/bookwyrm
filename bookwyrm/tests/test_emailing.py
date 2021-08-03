@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 from django.test import TestCase
 from django.test.client import RequestFactory
-import responses
 
 from bookwyrm import emailing, models
 
@@ -15,16 +14,14 @@ class Emailing(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.mouse",
-                "password",
-                local=True,
-                localname="mouse",
-            )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        self.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.mouse",
+            "password",
+            local=True,
+            localname="mouse",
+        )
+        models.SiteSettings.objects.create()
 
     def test_invite_email(self, email_mock):
         """load the invite email"""

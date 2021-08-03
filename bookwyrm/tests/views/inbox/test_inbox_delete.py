@@ -13,26 +13,25 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@example.com",
-                "mouse@mouse.com",
-                "mouseword",
-                local=True,
-                localname="mouse",
+        self.local_user = models.User.objects.create_user(
+            "mouse@example.com",
+            "mouse@mouse.com",
+            "mouseword",
+            local=True,
+            localname="mouse",
+        )
+        self.local_user.remote_id = "https://example.com/user/mouse"
+        self.local_user.save(broadcast=False)
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
-            self.local_user.remote_id = "https://example.com/user/mouse"
-            self.local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             self.status = models.Status.objects.create(
                 user=self.remote_user,
@@ -48,8 +47,7 @@ class InboxActivities(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_delete_status(self):
         """remove a status"""
@@ -119,8 +117,7 @@ class InboxActivities(TestCase):
             "object": self.remote_user.remote_id,
         }
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            views.inbox.activity_task(activity)
+        views.inbox.activity_task(activity)
         self.assertFalse(models.User.objects.get(username="rat@example.com").is_active)
 
     def test_delete_user_unknown(self):

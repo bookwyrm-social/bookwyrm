@@ -19,18 +19,17 @@ class AuthenticationViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.com",
-                "password",
-                local=True,
-                localname="mouse",
-            )
+        self.local_user = models.User.objects.create_user(
+            "mouse@local.com",
+            "mouse@mouse.com",
+            "password",
+            local=True,
+            localname="mouse",
+        )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            self.settings = models.SiteSettings.objects.create(id=1)
+
+        self.settings = models.SiteSettings.objects.create(id=1)
 
     def test_login_get(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -60,9 +59,8 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
@@ -77,9 +75,8 @@ class AuthenticationViews(TestCase):
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
@@ -157,9 +154,8 @@ class AuthenticationViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(models.SiteInvite.objects.get().times_used, 1)
