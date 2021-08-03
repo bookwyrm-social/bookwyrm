@@ -17,7 +17,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from bookwyrm import activitypub, settings
+from bookwyrm import activitypub
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import BookWyrmModel

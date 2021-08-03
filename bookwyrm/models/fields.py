@@ -356,7 +356,7 @@ def image_serializer(value, alt):
     else:
         return None
     if not url[:4] == "http":
-        url = "https://{:s}{:s}".format(DOMAIN, url)
+        url = "https://{:s}/{:s}".format(DOMAIN, url)
     return activitypub.Document(url=url, name=alt)
 
 
