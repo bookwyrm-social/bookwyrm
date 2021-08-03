@@ -43,7 +43,9 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_profile_view_post(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    def test_profile_view_post(self, *_):
         """save basic user details"""
         view = views.GetStartedProfile.as_view()
         form = forms.LimitedEditUserForm(instance=self.local_user)
@@ -85,7 +87,8 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_books_view_post(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_books_view_post(self, _):
         """shelve some books"""
         view = views.GetStartedBooks.as_view()
         data = {self.book.id: self.local_user.shelf_set.first().id}

@@ -69,7 +69,7 @@ class FederationViews(TestCase):
             identifier="hi.there.com",
         )
         self.remote_user.federated_server = server
-        self.remote_user.save()
+        self.remote_user.save(update_fields=["federated_server"])
 
         self.assertEqual(server.status, "federated")
 
@@ -108,7 +108,9 @@ class FederationViews(TestCase):
         self.remote_user.federated_server = server
         self.remote_user.is_active = False
         self.remote_user.deactivation_reason = "domain_block"
-        self.remote_user.save()
+        self.remote_user.save(
+            update_fields=["federated_server", "is_active", "deactivation_reason"]
+        )
 
         request = self.factory.post("")
         request.user = self.local_user

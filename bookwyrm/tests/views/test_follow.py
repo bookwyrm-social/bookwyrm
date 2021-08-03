@@ -130,7 +130,9 @@ class FollowViews(TestCase):
     def test_handle_accept(self):
         """accept a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -147,7 +149,9 @@ class FollowViews(TestCase):
     def test_handle_reject(self):
         """reject a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(

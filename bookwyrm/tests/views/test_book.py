@@ -201,7 +201,8 @@ class BookViews(TestCase):
         self.assertEqual(book.authors.first().name, "Sappho")
         self.assertEqual(book.authors.first(), book.parent_work.authors.first())
 
-    def test_switch_edition(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_switch_edition(self, _):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)

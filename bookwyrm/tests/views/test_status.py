@@ -9,8 +9,8 @@ from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable=invalid-name
-@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
 
@@ -328,7 +328,7 @@ class StatusViews(TestCase):
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
-    def test_handle_delete_status(self, mock):
+    def test_handle_delete_status(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):

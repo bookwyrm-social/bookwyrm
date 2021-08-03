@@ -13,6 +13,7 @@ from bookwyrm.suggested_users import suggested_users, get_annotated_users
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+@patch("bookwyrm.suggested_users.remove_user_task.delay")
 class SuggestedUsers(TestCase):
     """using redis to build activity streams"""
 
@@ -22,7 +23,6 @@ class SuggestedUsers(TestCase):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "password", local=True, localname="mouse"
             )
-        self.book = models.Edition.objects.create(title="test book")
 
     def test_get_rank(self, *_):
         """a float that reflects both the mutuals count and shared books"""
@@ -97,7 +97,12 @@ class SuggestedUsers(TestCase):
             "fishword",
             local=True,
             localname="fish",
-            discoverable=True,
+        )
+        work = models.Work.objects.create(title="Test Work")
+        book = models.Edition.objects.create(
+            title="Test Book",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             # 1 shared follow
@@ -107,27 +112,21 @@ class SuggestedUsers(TestCase):
             # 1 shared book
             models.ShelfBook.objects.create(
                 user=self.local_user,
-                book=self.book,
+                book=book,
                 shelf=self.local_user.shelf_set.first(),
             )
             models.ShelfBook.objects.create(
-                user=user_1, book=self.book, shelf=user_1.shelf_set.first()
+                user=user_1, book=book, shelf=user_1.shelf_set.first()
             )
 
         result = get_annotated_users(self.local_user)
-        self.assertEqual(result.count(), 2)
+        self.assertEqual(result.count(), 1)
         self.assertTrue(user_1 in result)
         self.assertFalse(user_2 in result)
-        self.assertTrue(self.local_user in result)
-        self.assertTrue(self.remote_user in result)
 
         user_1_annotated = result.get(id=user_1.id)
         self.assertEqual(user_1_annotated.mutuals, 1)
         self.assertEqual(user_1_annotated.shared_books, 1)
-
-        remote_user_annotated = result.get(id=self.remote_user.id)
-        self.assertEqual(remote_user_annotated.mutuals, 0)
-        self.assertEqual(remote_user_annotated.shared_books, 0)
 
     def test_get_annotated_users_counts(self, *_):
         """correct counting for multiple shared attributed"""
@@ -170,6 +169,5 @@ class SuggestedUsers(TestCase):
             ~Q(id=self.local_user.id),
             ~Q(followers=self.local_user),
         )
-        self.assertEqual(result.count(), 2)
         user_1_annotated = result.get(id=user_1.id)
         self.assertEqual(user_1_annotated.mutuals, 3)
