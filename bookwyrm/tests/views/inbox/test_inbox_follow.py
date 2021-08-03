@@ -103,7 +103,9 @@ class InboxRelationships(TestCase):
         }
 
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False, update_fields=["manually_approves_followers"])
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             views.inbox.activity_task(activity)
@@ -125,7 +127,9 @@ class InboxRelationships(TestCase):
     def test_undo_follow_request(self):
         """the requester cancels a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False, update_fields=["manually_approves_followers"])
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             request = models.UserFollowRequest.objects.create(
                 user_subject=self.remote_user, user_object=self.local_user
