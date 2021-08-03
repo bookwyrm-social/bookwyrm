@@ -163,7 +163,7 @@ class FederationViews(TestCase):
         """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
-        self.remote_user.save()
+        self.remote_user.save(update_fields=["federated_server"])
 
         data = [
             {"instance": "server.name", "url": "https://explanation.url"},  # new server

@@ -15,6 +15,7 @@ from django.test.client import RequestFactory
 from bookwyrm import forms, models, views
 
 
+@patch("bookwyrm.suggested_users.remove_user_task.delay")
 class EditUserViews(TestCase):
     """view user and edit profile"""
 
@@ -33,19 +34,19 @@ class EditUserViews(TestCase):
                 "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
             )
 
-        self.book = models.Edition.objects.create(title="test")
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=self.local_user.shelf_set.first(),
-            )
+            self.book = models.Edition.objects.create(title="test")
+            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+                models.ShelfBook.objects.create(
+                    book=self.book,
+                    user=self.local_user,
+                    shelf=self.local_user.shelf_set.first(),
+                )
 
         models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-    def test_edit_user_page(self):
+    def test_edit_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditUser.as_view()
         request = self.factory.get("")
@@ -55,7 +56,7 @@ class EditUserViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_user(self):
+    def test_edit_user(self, _):
         """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
@@ -74,7 +75,7 @@ class EditUserViews(TestCase):
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
 
-    def test_edit_user_avatar(self):
+    def test_edit_user_avatar(self, _):
         """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
@@ -101,7 +102,7 @@ class EditUserViews(TestCase):
         self.assertEqual(self.local_user.avatar.width, 120)
         self.assertEqual(self.local_user.avatar.height, 120)
 
-    def test_crop_avatar(self):
+    def test_crop_avatar(self, _):
         """reduce that image size"""
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
@@ -113,7 +114,7 @@ class EditUserViews(TestCase):
         image_result = Image.open(result)
         self.assertEqual(image_result.size, (120, 120))
 
-    def test_delete_user_page(self):
+    def test_delete_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.DeleteUser.as_view()
         request = self.factory.get("")
@@ -124,7 +125,7 @@ class EditUserViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.suggested_users.rerank_suggestions_task")
-    def test_delete_user(self, _):
+    def test_delete_user(self, *_):
         """use a form to update a user"""
         view = views.DeleteUser.as_view()
         form = forms.DeleteUserForm()
