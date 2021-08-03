@@ -31,9 +31,10 @@ class LibrarythingImport(TestCase):
 
         # Librarything generates latin encoded exports...
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        self.user = models.User.objects.create_user(
-            "mmai", "mmai@mmai.mmai", "password", local=True
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mmai", "mmai@mmai.mmai", "password", local=True
+            )
 
         models.Connector.objects.create(
             identifier=DOMAIN,
@@ -197,7 +198,7 @@ class LibrarythingImport(TestCase):
         self.assertEqual(readthrough.finish_date, make_date(2007, 5, 8))
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-    def test_handle_imported_book_review(self, _):
+    def test_handle_imported_book_review(self, *_):
         """librarything review import"""
         import_job = models.ImportJob.objects.create(user=self.user)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/librarything.tsv")

@@ -15,13 +15,14 @@ class FederationViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",

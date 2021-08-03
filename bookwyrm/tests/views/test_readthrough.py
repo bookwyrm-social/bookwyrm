@@ -21,9 +21,10 @@ class ReadThrough(TestCase):
             title="Example Edition", parent_work=self.work
         )
 
-        self.user = models.User.objects.create_user(
-            "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
+            )
 
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.client.force_login(self.user)

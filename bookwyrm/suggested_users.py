@@ -148,9 +148,9 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 # pylint: disable=unused-argument
 def update_suggestions_on_block(sender, instance, *args, **kwargs):
     """remove blocked users from recs"""
-    if instance.user_subject.local:
+    if instance.user_subject.local and instance.user_object.discoverable:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
-    if instance.user_object.local:
+    if instance.user_object.local and instance.user_subject.discoverable:
         remove_suggestion_task.delay(instance.user_object.id, instance.user_subject.id)
 
 

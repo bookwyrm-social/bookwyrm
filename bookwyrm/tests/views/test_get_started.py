@@ -13,13 +13,14 @@ class GetStartedViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",

@@ -27,9 +27,10 @@ class ActivitypubMixins(TestCase):
 
     def setUp(self):
         """shared data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+            )
         self.local_user.remote_id = "http://example.com/a/b"
         self.local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):

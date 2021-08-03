@@ -13,21 +13,23 @@ from bookwyrm.settings import USER_AGENT
 
 
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 class ViewsHelpers(TestCase):
     """viewing and creating statuses"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            discoverable=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                discoverable=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -53,12 +55,12 @@ class ViewsHelpers(TestCase):
                 name="Test Shelf", identifier="test-shelf", user=self.local_user
             )
 
-    def test_get_edition(self, _):
+    def test_get_edition(self, *_):
         """given an edition or a work, returns an edition"""
         self.assertEqual(views.helpers.get_edition(self.book.id), self.book)
         self.assertEqual(views.helpers.get_edition(self.work.id), self.book)
 
-    def test_get_user_from_username(self, _):
+    def test_get_user_from_username(self, *_):
         """works for either localname or username"""
         self.assertEqual(
             views.helpers.get_user_from_username(self.local_user, "mouse"),
@@ -71,7 +73,7 @@ class ViewsHelpers(TestCase):
         with self.assertRaises(Http404):
             views.helpers.get_user_from_username(self.local_user, "mojfse@example.com")
 
-    def test_is_api_request(self, _):
+    def test_is_api_request(self, *_):
         """should it return html or json"""
         request = self.factory.get("/path")
         request.headers = {"Accept": "application/json"}
@@ -85,12 +87,12 @@ class ViewsHelpers(TestCase):
         request.headers = {"Accept": "Praise"}
         self.assertFalse(views.helpers.is_api_request(request))
 
-    def test_is_api_request_no_headers(self, _):
+    def test_is_api_request_no_headers(self, *_):
         """should it return html or json"""
         request = self.factory.get("/path")
         self.assertFalse(views.helpers.is_api_request(request))
 
-    def test_is_bookwyrm_request(self, _):
+    def test_is_bookwyrm_request(self, *_):
         """checks if a request came from a bookwyrm instance"""
         request = self.factory.get("", {"q": "Test Book"})
         self.assertFalse(views.helpers.is_bookwyrm_request(request))
@@ -105,7 +107,7 @@ class ViewsHelpers(TestCase):
         request = self.factory.get("", {"q": "Test Book"}, HTTP_USER_AGENT=USER_AGENT)
         self.assertTrue(views.helpers.is_bookwyrm_request(request))
 
-    def test_existing_user(self, _):
+    def test_existing_user(self, *_):
         """simple database lookup by username"""
         result = views.helpers.handle_remote_webfinger("@mouse@local.com")
         self.assertEqual(result, self.local_user)
@@ -117,7 +119,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(result, self.local_user)
 
     @responses.activate
-    def test_load_user(self, _):
+    def test_load_user(self, *_):
         """find a remote user using webfinger"""
         username = "mouse@example.com"
         wellknown = {
@@ -147,7 +149,7 @@ class ViewsHelpers(TestCase):
             self.assertIsInstance(result, models.User)
             self.assertEqual(result.username, "mouse@example.com")
 
-    def test_user_on_blocked_server(self, _):
+    def test_user_on_blocked_server(self, *_):
         """find a remote user using webfinger"""
         models.FederatedServer.objects.create(
             server_name="example.com", status="blocked"
@@ -156,7 +158,7 @@ class ViewsHelpers(TestCase):
         result = views.helpers.handle_remote_webfinger("@mouse@example.com")
         self.assertIsNone(result)
 
-    def test_handle_reading_status_to_read(self, _):
+    def test_handle_reading_status_to_read(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="to-read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -168,7 +170,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "wants to read")
 
-    def test_handle_reading_status_reading(self, _):
+    def test_handle_reading_status_reading(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="reading")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -180,7 +182,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "started reading")
 
-    def test_handle_reading_status_read(self, _):
+    def test_handle_reading_status_read(self, *_):
         """posts shelve activities"""
         shelf = self.local_user.shelf_set.get(identifier="read")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
@@ -192,7 +194,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(status.mention_books.first(), self.book)
         self.assertEqual(status.content, "finished reading")
 
-    def test_handle_reading_status_other(self, _):
+    def test_handle_reading_status_other(self, *_):
         """posts shelve activities"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             views.helpers.handle_reading_status(
@@ -200,7 +202,7 @@ class ViewsHelpers(TestCase):
             )
         self.assertFalse(models.GeneratedNote.objects.exists())
 
-    def test_get_annotated_users(self, _):
+    def test_get_annotated_users(self, *_):
         """list of people you might know"""
         user_1 = models.User.objects.create_user(
             "nutria@local.com",
@@ -247,7 +249,7 @@ class ViewsHelpers(TestCase):
         self.assertEqual(remote_user_annotated.mutuals, 0)
         self.assertEqual(remote_user_annotated.shared_books, 0)
 
-    def test_get_annotated_users_counts(self, _):
+    def test_get_annotated_users_counts(self, *_):
         """correct counting for multiple shared attributed"""
         user_1 = models.User.objects.create_user(
             "nutria@local.com",
