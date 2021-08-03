@@ -21,15 +21,16 @@ class ViewsHelpers(TestCase):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
-                "mouse@mouse.com",
-                "mouseword",
-                local=True,
-                discoverable=True,
-                localname="mouse",
-                remote_id="https://example.com/users/mouse",
-            )
+            with patch("bookwyrm.suggested_users.rerank_user_task.delay"):
+                self.local_user = models.User.objects.create_user(
+                    "mouse@local.com",
+                    "mouse@mouse.com",
+                    "mouseword",
+                    local=True,
+                    discoverable=True,
+                    localname="mouse",
+                    remote_id="https://example.com/users/mouse",
+                )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
