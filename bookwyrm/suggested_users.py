@@ -1,11 +1,15 @@
 """ store recommended follows in redis """
 import math
+import logging
 from django.dispatch import receiver
 from django.db.models import signals, Count, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
 from bookwyrm.tasks import app
+
+
+logger = logging.getLogger(__name__)
 
 
 class SuggestedUsers(RedisStore):
@@ -84,7 +88,12 @@ class SuggestedUsers(RedisStore):
         # annotate users with mutuals and shared book counts
         for user_id, rank in values[:5]:
             counts = self.get_counts_from_rank(rank)
-            user = models.User.objects.get(id=user_id)
+            try:
+                user = models.User.objects.get(id=user_id)
+            except models.User.DoesNotExist as err:
+                # if this happens, the suggestions are janked way up
+                logger.exception(err)
+                continue
             user.mutuals = counts["mutuals"]
             user.shared_books = counts["shared_books"]
             results.append(user)

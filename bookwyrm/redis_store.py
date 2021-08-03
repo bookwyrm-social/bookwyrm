@@ -65,6 +65,10 @@ class RedisStore(ABC):
         pipeline = r.pipeline()
         queryset = self.get_objects_for_store(store)
 
+        # first, remove everything currently in it
+        pipeline.delete(store)
+
+        # now, add everything back
         for obj in queryset[: self.max_length]:
             pipeline.zadd(store, self.get_value(obj))
 
