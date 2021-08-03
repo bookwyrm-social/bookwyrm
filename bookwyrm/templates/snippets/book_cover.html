@@ -18,129 +18,27 @@
 
             {% if enable_thumbnail_generation %}
 
-                {% if size_mobile == 'xsmall' %}
+                {% if size_mobile %}
                     <source
                         media="(max-width: 768px)"
                         type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xsmall' ext='webp' %}"
+                        srcset="{% get_book_cover_thumbnail book=book size=size_mobile ext='webp' %}"
                     />
                     <source
                         media="(max-width: 768px)"
                         type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xsmall' ext='jpg' %}"
-                    />
-                {% elif size_mobile == 'small' %}
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='small' ext='webp' %}"
-                    />
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='small' ext='jpg' %}"
-                    />
-                {% elif size_mobile == 'medium' %}
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='medium' ext='webp' %}"
-                    />
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='medium' ext='jpg' %}"
-                    />
-                {% elif size_mobile == 'large' %}
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='large' ext='webp' %}"
-                    />
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='large' ext='jpg' %}"
-                    />
-                {% elif size_mobile == 'xlarge' %}
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xlarge' ext='webp' %}"
-                    />
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xlarge' ext='jpg' %}"
-                    />
-                {% elif size_mobile == 'xxlarge' %}
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xxlarge' ext='webp' %}"
-                    />
-                    <source
-                        media="(max-width: 768px)"
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xxlarge' ext='jpg' %}"
+                        srcset="{% get_book_cover_thumbnail book=book size=size_mobile ext='jpg' %}"
                     />
                 {% endif %}
 
-                {% if size == 'xsmall' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xsmall' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xsmall' ext='jpg' %}"
-                    />
-                {% elif size == 'small' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='small' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='small' ext='jpg' %}"
-                    />
-                {% elif size == 'medium' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='medium' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='medium' ext='jpg' %}"
-                    />
-                {% elif size == 'large' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='large' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='large' ext='jpg' %}"
-                    />
-                {% elif size == 'xlarge' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xlarge' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xlarge' ext='jpg' %}"
-                    />
-                {% elif size == 'xxlarge' %}
-                    <source
-                        type="image/webp"
-                        srcset="{% get_book_cover_thumbnail book=book size='xxlarge' ext='webp' %}"
-                    />
-                    <source
-                        type="image/jpg"
-                        srcset="{% get_book_cover_thumbnail book=book size='xxlarge' ext='jpg' %}"
-                    />
-                {% endif %}
+                <source
+                    type="image/webp"
+                    srcset="{% get_book_cover_thumbnail book=book size=size ext='webp' %}"
+                />
+                <source
+                    type="image/jpg"
+                    srcset="{% get_book_cover_thumbnail book=book size=size ext='jpg' %}"
+                />
 
             {% endif %}
 
