@@ -17,7 +17,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from bookwyrm import activitypub
+from bookwyrm import activitypub, settings
 from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import BookWyrmModel
@@ -428,13 +428,11 @@ class ActivitypubFields(TestCase):
 
     def test_image_serialize(self):
         """make sure we're creating sensible image paths"""
-        ValueMock = namedtuple(
-            "ValueMock", ("url")
-        )
+        ValueMock = namedtuple("ValueMock", ("url"))
         value_mock = ValueMock("images/fish.jpg")
         result = fields.image_serializer(value_mock, "hello")
         self.assertEqual(result.type, "Document")
-        self.assertEqual(result.url, "https://test.com/images/fish.jpg")
+        self.assertEqual(result.url, "https://your.domain.here/static/images/fish.jpg")
         self.assertEqual(result.name, "hello")
 
     def test_datetime_field(self):

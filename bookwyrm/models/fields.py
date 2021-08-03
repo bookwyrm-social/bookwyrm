@@ -18,6 +18,7 @@ from django.utils.translation import gettext_lazy as _
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
+from bookwyrm.settings import DOMAIN
 
 
 def validate_remote_id(value):
@@ -356,6 +357,8 @@ def image_serializer(value, alt):
     else:
         return None
     url = static(url)
+    if not url[:4] == "http":
+        url = "https://{:s}{:s}".format(DOMAIN, url)
     return activitypub.Document(url=url, name=alt)
 
 
