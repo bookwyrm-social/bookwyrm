@@ -27,7 +27,8 @@ class LandingViews(TestCase):
         self.anonymous_user.is_authenticated = False
         models.SiteSettings.objects.create()
 
-    def test_home_page(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_home_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Home.as_view()
         request = self.factory.get("")

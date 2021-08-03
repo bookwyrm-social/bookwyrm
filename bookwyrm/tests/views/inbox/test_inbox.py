@@ -19,13 +19,14 @@ class Inbox(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
 
-        local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         local_user.remote_id = "https://example.com/user/mouse"
         local_user.save(broadcast=False)
         with patch("bookwyrm.models.user.set_remote_server.delay"):

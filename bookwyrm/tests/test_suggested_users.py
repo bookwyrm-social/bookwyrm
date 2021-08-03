@@ -2,6 +2,7 @@
 from collections import namedtuple
 from unittest.mock import patch
 
+from django.db.models import Q
 from django.test import TestCase
 
 from bookwyrm import models
@@ -10,6 +11,8 @@ from bookwyrm.suggested_users import suggested_users, get_annotated_users
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.suggested_users.rerank_user_task.delay")
 class SuggestedUsers(TestCase):
     """using redis to build activity streams"""
 
@@ -41,8 +44,6 @@ class SuggestedUsers(TestCase):
         self.assertEqual(counts["mutuals"], 3)
         self.assertEqual(counts["shared_books"], 27)
 
-    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
-    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
     def test_get_objects_for_store(self, *_):
         """list of people to follow for a given user"""
 
@@ -96,6 +97,7 @@ class SuggestedUsers(TestCase):
             "fishword",
             local=True,
             localname="fish",
+            discoverable=True,
         )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             # 1 shared follow
@@ -112,8 +114,8 @@ class SuggestedUsers(TestCase):
                 user=user_1, book=self.book, shelf=user_1.shelf_set.first()
             )
 
-        result = views.helpers.get_annotated_users(self.local_user)
-        self.assertEqual(result.count(), 3)
+        result = get_annotated_users(self.local_user)
+        self.assertEqual(result.count(), 2)
         self.assertTrue(user_1 in result)
         self.assertFalse(user_2 in result)
         self.assertTrue(self.local_user in result)
