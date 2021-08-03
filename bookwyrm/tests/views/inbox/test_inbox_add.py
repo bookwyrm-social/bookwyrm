@@ -22,7 +22,7 @@ class InboxAdd(TestCase):
                 localname="mouse",
             )
         local_user.remote_id = "https://example.com/user/mouse"
-        local_user.save(broadcast=False)
+        local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
