@@ -15,6 +15,7 @@ from bookwyrm.settings import DOMAIN
 
 
 def make_date(*args):
+    """helper function to easily generate a date obj"""
     return datetime.datetime(*args, tzinfo=pytz.UTC)
 
 
@@ -28,10 +29,9 @@ class LibrarythingImport(TestCase):
 
         # Librarything generates latin encoded exports...
         self.csv = open(datafile, "r", encoding=self.importer.encoding)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.user = models.User.objects.create_user(
-                "mmai", "mmai@mmai.mmai", "password", local=True
-            )
+        self.user = models.User.objects.create_user(
+            "mmai", "mmai@mmai.mmai", "password", local=True
+        )
 
         models.Connector.objects.create(
             identifier=DOMAIN,
@@ -44,13 +44,12 @@ class LibrarythingImport(TestCase):
             search_url="https://%s/search?q=" % DOMAIN,
             priority=1,
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=work,
-            )
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
+        )
 
     def test_create_job(self):
         """creates the import job entry and checks csv"""
@@ -90,8 +89,7 @@ class LibrarythingImport(TestCase):
     def test_import_data(self):
         """resolve entry"""
         import_job = self.importer.create_job(self.user, self.csv, False, "unlisted")
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            book = models.Edition.objects.create(title="Test Book")
+        book = models.Edition.objects.create(title="Test Book")
 
         with patch(
             "bookwyrm.models.import_job.ImportItem.get_book_from_isbn"
@@ -120,11 +118,10 @@ class LibrarythingImport(TestCase):
             )
             break
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, False, "public"
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, False, "public"
+            )
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -152,11 +149,10 @@ class LibrarythingImport(TestCase):
             )
             break
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, False, "public"
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, False, "public"
+            )
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -182,14 +178,13 @@ class LibrarythingImport(TestCase):
             )
             break
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, False, "public"
-                )
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, False, "public"
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, False, "public"
+            )
+            handle_imported_book(
+                self.importer.service, self.user, import_item, False, "public"
+            )
 
         shelf.refresh_from_db()
         self.assertEqual(shelf.books.first(), self.book)
@@ -211,11 +206,10 @@ class LibrarythingImport(TestCase):
             job_id=import_job.id, index=0, data=entry, book=self.book
         )
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, True, "unlisted"
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, True, "unlisted"
+            )
         review = models.Review.objects.get(book=self.book, user=self.user)
         self.assertEqual(review.content, "chef d'oeuvre")
         self.assertEqual(review.rating, 5)
@@ -233,11 +227,10 @@ class LibrarythingImport(TestCase):
             job_id=import_job.id, index=0, data=entry, book=self.book
         )
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                handle_imported_book(
-                    self.importer.service, self.user, import_item, False, "unlisted"
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            handle_imported_book(
+                self.importer.service, self.user, import_item, False, "unlisted"
+            )
         self.assertFalse(
             models.Review.objects.filter(book=self.book, user=self.user).exists()
         )
