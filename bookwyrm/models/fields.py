@@ -80,7 +80,7 @@ class ActivitypubFieldMixin:
             return False
 
         # the field is unchanged
-        if getattr(instance, self.name) == formatted:
+        if hasattr(instance, self.name) and getattr(instance, self.name) == formatted:
             return False
 
         setattr(instance, self.name, formatted)
