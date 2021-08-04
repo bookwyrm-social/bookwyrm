@@ -7,6 +7,7 @@ from django.utils import timezone
 from bookwyrm import models
 
 
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class ReadThrough(TestCase):
     """readthrough tests"""
@@ -15,14 +16,13 @@ class ReadThrough(TestCase):
         """basic user and book data"""
         self.client = Client()
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Example Work")
+        self.work = models.Work.objects.create(title="Example Work")
 
-            self.edition = models.Edition.objects.create(
-                title="Example Edition", parent_work=self.work
-            )
+        self.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=self.work
+        )
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.user = models.User.objects.create_user(
                 "cinco", "cinco@example.com", "seissiete", local=True, localname="cinco"
             )
@@ -30,7 +30,7 @@ class ReadThrough(TestCase):
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             self.client.force_login(self.user)
 
-    def test_create_basic_readthrough(self, delay_mock):
+    def test_create_basic_readthrough(self, delay_mock, _):
         """A basic readthrough doesn't create a progress update"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 
@@ -51,7 +51,7 @@ class ReadThrough(TestCase):
         self.assertEqual(readthroughs[0].finish_date, None)
         self.assertEqual(delay_mock.call_count, 1)
 
-    def test_create_progress_readthrough(self, delay_mock):
+    def test_create_progress_readthrough(self, delay_mock, _):
         """a readthrough with progress"""
         self.assertEqual(self.edition.readthrough_set.count(), 0)
 

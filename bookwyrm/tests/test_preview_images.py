@@ -9,7 +9,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models.fields.files import ImageFieldFile
 
 from bookwyrm import models, settings
-
 from bookwyrm.preview_images import (
     generate_site_preview_image_task,
     generate_edition_preview_image_task,
@@ -27,10 +26,10 @@ class PreviewImages(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            avatar_file = pathlib.Path(__file__).parent.joinpath(
-                "../static/images/no_cover.jpg"
-            )
+        avatar_file = pathlib.Path(__file__).parent.joinpath(
+            "../static/images/no_cover.jpg"
+        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "possum@local.com",
                 "possum@possum.possum",
@@ -43,15 +42,17 @@ class PreviewImages(TestCase):
                     content_type="image/jpeg",
                 ),
             )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Test Work")
-            self.edition = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=self.work,
-            )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            self.site = models.SiteSettings.objects.create()
+
+        self.work = models.Work.objects.create(title="Test Work")
+        self.edition = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=self.work,
+        )
+
+        self.site = models.SiteSettings.objects.create()
+
+        settings.ENABLE_PREVIEW_IMAGES = True
 
     def test_generate_preview_image(self, *args, **kwargs):
         image_file = pathlib.Path(__file__).parent.joinpath(

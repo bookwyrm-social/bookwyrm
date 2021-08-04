@@ -1,8 +1,8 @@
 """ test for app action functionality """
+from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
-from unittest.mock import patch
 
 from bookwyrm import forms, models, views
 
@@ -13,7 +13,7 @@ class ReportViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -28,8 +28,7 @@ class ReportViews(TestCase):
                 local=True,
                 localname="rat",
             )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_reports_page(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -117,7 +116,9 @@ class ReportViews(TestCase):
         report.refresh_from_db()
         self.assertFalse(report.resolved)
 
-    def test_suspend_user(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_suspend_user(self, *_):
         """toggle whether a user is able to log in"""
         self.assertTrue(self.rat.is_active)
         request = self.factory.post("")

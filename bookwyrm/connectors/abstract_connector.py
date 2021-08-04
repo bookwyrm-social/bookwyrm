@@ -2,11 +2,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
 import logging
-from urllib3.exceptions import RequestError
 
 from django.db import transaction
 import requests
-from requests.exceptions import SSLError
+from requests.exceptions import RequestException
 
 from bookwyrm import activitypub, models, settings
 from .connector_manager import load_more_data, ConnectorException
@@ -237,7 +236,7 @@ def get_data(url, params=None, timeout=10):
             },
             timeout=timeout,
         )
-    except (RequestError, SSLError, ConnectionError) as err:
+    except RequestException as err:
         logger.exception(err)
         raise ConnectorException()
 
@@ -262,7 +261,7 @@ def get_image(url, timeout=10):
             },
             timeout=timeout,
         )
-    except (RequestError, SSLError) as err:
+    except RequestException as err:
         logger.exception(err)
         return None
     if not resp.ok:

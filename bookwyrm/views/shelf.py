@@ -2,7 +2,7 @@
 from collections import namedtuple
 
 from django.db import IntegrityError
-from django.db.models import OuterRef, Subquery
+from django.db.models import OuterRef, Subquery, F
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -69,7 +69,8 @@ class Shelf(View):
             reviews = privacy_filter(request.user, reviews)
 
         books = books.annotate(
-            rating=Subquery(reviews.values("rating")[:1])
+            rating=Subquery(reviews.values("rating")[:1]),
+            shelved_date=F("shelfbook__shelved_date"),
         ).prefetch_related("authors")
 
         paginated = Paginator(

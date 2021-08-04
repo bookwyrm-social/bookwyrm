@@ -15,13 +15,14 @@ from django.test.client import RequestFactory
 from bookwyrm import forms, models, views
 
 
+@patch("bookwyrm.suggested_users.remove_user_task.delay")
 class EditUserViews(TestCase):
     """view user and edit profile"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -33,7 +34,6 @@ class EditUserViews(TestCase):
                 "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
             )
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
             self.book = models.Edition.objects.create(title="test")
             with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
                 models.ShelfBook.objects.create(
@@ -42,12 +42,11 @@ class EditUserViews(TestCase):
                     shelf=self.local_user.shelf_set.first(),
                 )
 
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-    def test_edit_user_page(self):
+    def test_edit_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.EditUser.as_view()
         request = self.factory.get("")
@@ -57,32 +56,33 @@ class EditUserViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_user(self):
+    def test_edit_user(self, _):
         """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
         form.data["email"] = "wow@email.com"
+        form.data["default_post_privacy"] = "public"
         form.data["preferred_timezone"] = "UTC"
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
         self.assertIsNone(self.local_user.name)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                view(request)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
 
-    def test_edit_user_avatar(self):
+    def test_edit_user_avatar(self, _):
         """use a form to update a user"""
         view = views.EditUser.as_view()
         form = forms.EditUserForm(instance=self.local_user)
         form.data["name"] = "New Name"
         form.data["email"] = "wow@email.com"
+        form.data["default_post_privacy"] = "public"
         form.data["preferred_timezone"] = "UTC"
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
@@ -93,19 +93,18 @@ class EditUserViews(TestCase):
         request = self.factory.post("", form.data)
         request.user = self.local_user
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                view(request)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertEqual(self.local_user.email, "wow@email.com")
         self.assertIsNotNone(self.local_user.avatar)
         self.assertEqual(self.local_user.avatar.width, 120)
         self.assertEqual(self.local_user.avatar.height, 120)
 
-    def test_crop_avatar(self):
+    def test_crop_avatar(self, _):
         """reduce that image size"""
         image_file = pathlib.Path(__file__).parent.joinpath(
             "../../static/images/no_cover.jpg"
@@ -117,7 +116,7 @@ class EditUserViews(TestCase):
         image_result = Image.open(result)
         self.assertEqual(image_result.size, (120, 120))
 
-    def test_delete_user_page(self):
+    def test_delete_user_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.DeleteUser.as_view()
         request = self.factory.get("")
@@ -127,7 +126,8 @@ class EditUserViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task")
+    def test_delete_user(self, *_):
         """use a form to update a user"""
         view = views.DeleteUser.as_view()
         form = forms.DeleteUserForm()

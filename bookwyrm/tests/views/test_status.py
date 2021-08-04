@@ -8,6 +8,8 @@ from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
+# pylint: disable=invalid-name
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class StatusViews(TestCase):
     """viewing and creating statuses"""
@@ -15,7 +17,7 @@ class StatusViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -24,28 +26,26 @@ class StatusViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            with patch("bookwyrm.models.user.set_remote_server"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@email.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=work,
+        with patch("bookwyrm.models.user.set_remote_server"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@email.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
 
-    def test_handle_status(self, _):
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
+        )
+        models.SiteSettings.objects.create()
+
+    def test_handle_status(self, *_):
         """create a status"""
         view = views.CreateStatus.as_view()
         form = forms.CommentForm(
@@ -68,13 +68,12 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, self.local_user)
         self.assertEqual(status.book, self.book)
 
-    def test_handle_status_reply(self, _):
+    def test_handle_status_reply(self, *_):
         """create a status in reply to an existing status"""
         view = views.CreateStatus.as_view()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = models.User.objects.create_user(
-                "rat", "rat@rat.com", "password", local=True
-            )
+        user = models.User.objects.create_user(
+            "rat", "rat@rat.com", "password", local=True
+        )
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
             parent = models.Status.objects.create(
                 content="parent status", user=self.local_user
@@ -99,17 +98,16 @@ class StatusViews(TestCase):
         self.assertEqual(status.user, user)
         self.assertEqual(models.Notification.objects.get().user, self.local_user)
 
-    def test_handle_status_mentions(self, _):
+    def test_handle_status_mentions(self, *_):
         """@mention a user in a post"""
         view = views.CreateStatus.as_view()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = models.User.objects.create_user(
-                "rat@%s" % DOMAIN,
-                "rat@rat.com",
-                "password",
-                local=True,
-                localname="rat",
-            )
+        user = models.User.objects.create_user(
+            "rat@%s" % DOMAIN,
+            "rat@rat.com",
+            "password",
+            local=True,
+            localname="rat",
+        )
         form = forms.CommentForm(
             {
                 "content": "hi @rat",
@@ -132,13 +130,12 @@ class StatusViews(TestCase):
             status.content, '<p>hi <a href="%s">@rat</a></p>' % user.remote_id
         )
 
-    def test_handle_status_reply_with_mentions(self, _):
+    def test_handle_status_reply_with_mentions(self, *_):
         """reply to a post with an @mention'ed user"""
         view = views.CreateStatus.as_view()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = models.User.objects.create_user(
-                "rat", "rat@rat.com", "password", local=True, localname="rat"
-            )
+        user = models.User.objects.create_user(
+            "rat", "rat@rat.com", "password", local=True, localname="rat"
+        )
         form = forms.CommentForm(
             {
                 "content": "hi @rat@example.com",
@@ -177,7 +174,7 @@ class StatusViews(TestCase):
         self.assertFalse(self.remote_user in reply.mention_users.all())
         self.assertTrue(self.local_user in reply.mention_users.all())
 
-    def test_delete_and_redraft(self, _):
+    def test_delete_and_redraft(self, *_):
         """delete and re-draft a status"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
@@ -198,16 +195,15 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 
-    def test_delete_and_redraft_invalid_status_type_rating(self, _):
+    def test_delete_and_redraft_invalid_status_type_rating(self, *_):
         """you can't redraft generated statuses"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
         request.user = self.local_user
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-                status = models.ReviewRating.objects.create(
-                    book=self.book, rating=2.0, user=self.local_user
-                )
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+            status = models.ReviewRating.objects.create(
+                book=self.book, rating=2.0, user=self.local_user
+            )
 
         with patch(
             "bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores"
@@ -219,7 +215,7 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_delete_and_redraft_invalid_status_type_generated_note(self, _):
+    def test_delete_and_redraft_invalid_status_type_generated_note(self, *_):
         """you can't redraft generated statuses"""
         view = views.DeleteAndRedraft.as_view()
         request = self.factory.post("")
@@ -239,16 +235,15 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_find_mentions(self, _):
+    def test_find_mentions(self, *_):
         """detect and look up @ mentions of users"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = models.User.objects.create_user(
-                "nutria@%s" % DOMAIN,
-                "nutria@nutria.com",
-                "password",
-                local=True,
-                localname="nutria",
-            )
+        user = models.User.objects.create_user(
+            "nutria@%s" % DOMAIN,
+            "nutria@nutria.com",
+            "password",
+            local=True,
+            localname="nutria",
+        )
         self.assertEqual(user.username, "nutria@%s" % DOMAIN)
 
         self.assertEqual(
@@ -286,7 +281,7 @@ class StatusViews(TestCase):
             ("@nutria@%s" % DOMAIN, user),
         )
 
-    def test_format_links(self, _):
+    def test_format_links(self, *_):
         """find and format urls into a tags"""
         url = "http://www.fish.com/"
         self.assertEqual(
@@ -309,7 +304,7 @@ class StatusViews(TestCase):
             "?q=arkady+strugatsky&mode=everything</a>" % url,
         )
 
-    def test_to_markdown(self, _):
+    def test_to_markdown(self, *_):
         """this is mostly handled in other places, but nonetheless"""
         text = "_hi_ and http://fish.com is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
@@ -318,13 +313,22 @@ class StatusViews(TestCase):
             '<p><em>hi</em> and <a href="http://fish.com">fish.com</a> ' "is rad</p>",
         )
 
-    def test_to_markdown_link(self, _):
+    def test_to_markdown_detect_url(self, *_):
+        """this is mostly handled in other places, but nonetheless"""
+        text = "http://fish.com/@hello#okay"
+        result = views.status.to_markdown(text)
+        self.assertEqual(
+            result,
+            '<p><a href="http://fish.com/@hello#okay">fish.com/@hello#okay</a></p>',
+        )
+
+    def test_to_markdown_link(self, *_):
         """this is mostly handled in other places, but nonetheless"""
         text = "[hi](http://fish.com) is <marquee>rad</marquee>"
         result = views.status.to_markdown(text)
         self.assertEqual(result, '<p><a href="http://fish.com">hi</a> ' "is rad</p>")
 
-    def test_handle_delete_status(self, mock):
+    def test_handle_delete_status(self, mock, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
@@ -344,7 +348,7 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertTrue(status.deleted)
 
-    def test_handle_delete_status_permission_denied(self, _):
+    def test_handle_delete_status_permission_denied(self, *_):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
@@ -358,7 +362,7 @@ class StatusViews(TestCase):
         status.refresh_from_db()
         self.assertFalse(status.deleted)
 
-    def test_handle_delete_status_moderator(self, mock):
+    def test_handle_delete_status_moderator(self, mock, _):
         """marks a status as deleted"""
         view = views.DeleteStatus.as_view()
         with patch("bookwyrm.activitystreams.ActivityStream.add_status"):

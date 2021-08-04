@@ -13,7 +13,7 @@ class InboxAdd(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -21,27 +21,27 @@ class InboxAdd(TestCase):
                 local=True,
                 localname="mouse",
             )
-            local_user.remote_id = "https://example.com/user/mouse"
-            local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="work title")
-            self.book = models.Edition.objects.create(
-                title="Test",
-                remote_id="https://example.com/book/37292",
-                parent_work=work,
+        local_user.remote_id = "https://example.com/user/mouse"
+        local_user.save(broadcast=False, update_fields=["remote_id"])
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+
+        work = models.Work.objects.create(title="work title")
+        self.book = models.Edition.objects.create(
+            title="Test",
+            remote_id="https://example.com/book/37292",
+            parent_work=work,
+        )
+
+        models.SiteSettings.objects.create()
 
     @responses.activate
     def test_handle_add_book_to_shelf(self):

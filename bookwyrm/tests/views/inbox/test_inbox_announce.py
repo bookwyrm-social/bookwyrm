@@ -13,7 +13,7 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -21,26 +21,26 @@ class InboxActivities(TestCase):
                 local=True,
                 localname="mouse",
             )
-            self.local_user.remote_id = "https://example.com/user/mouse"
-            self.local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
+        self.local_user.remote_id = "https://example.com/user/mouse"
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
+                self.status = models.Status.objects.create(
+                    user=self.local_user,
+                    content="Test status",
+                    remote_id="https://example.com/status/1",
                 )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                with patch("bookwyrm.activitystreams.ActivityStream.add_status"):
-                    self.status = models.Status.objects.create(
-                        user=self.local_user,
-                        content="Test status",
-                        remote_id="https://example.com/status/1",
-                    )
 
         self.create_json = {
             "id": "hi",
@@ -50,8 +50,8 @@ class InboxActivities(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+
+        models.SiteSettings.objects.create()
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
@@ -88,13 +88,12 @@ class InboxActivities(TestCase):
     @patch("bookwyrm.activitystreams.ActivityStream.remove_object_from_related_stores")
     def test_boost_remote_status(self, redis_mock, _):
         """boost a status from a remote server"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="work title")
-            book = models.Edition.objects.create(
-                title="Test",
-                remote_id="https://bookwyrm.social/book/37292",
-                parent_work=work,
-            )
+        work = models.Work.objects.create(title="work title")
+        book = models.Edition.objects.create(
+            title="Test",
+            remote_id="https://bookwyrm.social/book/37292",
+            parent_work=work,
+        )
         self.assertEqual(models.Notification.objects.count(), 0)
         activity = {
             "type": "Announce",

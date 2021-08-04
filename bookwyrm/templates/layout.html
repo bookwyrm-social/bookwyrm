@@ -1,14 +1,16 @@
-{% load layout %}{% load i18n %}
+{% load layout %}
+{% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="{% get_lang %}">
 <head>
     <title>{% block title %}BookWyrm{% endblock %} | {{ site.name }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/css/vendor/bulma.min.css">
-    <link rel="stylesheet" href="/static/css/vendor/icons.css">
-    <link rel="stylesheet" href="/static/css/bookwyrm.css">
+    <link rel="stylesheet" href="{% static "css/vendor/bulma.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/vendor/icons.css" %}">
+    <link rel="stylesheet" href="{% static "css/bookwyrm.css" %}">
 
-    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{{ media_url }}{{ site.favicon }}{% else %}/static/images/favicon.ico{% endif %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% if site.favicon %}{% get_media_prefix %}{{ site.favicon }}{% else %}{% static "images/favicon.ico" %}{% endif %}">
 
     {% if preview_images_enabled is True %}
     <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +32,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item" href="/">
-                <img class="image logo" src="{% if site.logo_small %}{{ media_url }}{{ site.logo_small }}{% else %}/static/images/logo-small.png{% endif %}" alt="Home page">
+                <img class="image logo" src="{% if site.logo_small %}{% get_media_prefix %}{{ site.logo_small }}{% else %}{% static "images/logo-small.png" %}{% endif %}" alt="Home page">
             </a>
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
@@ -149,7 +151,7 @@
                     {% if request.path != '/login' and request.path != '/login/' %}
                     <div class="columns">
                         <div class="column">
-                            <form name="login" method="post" action="/login">
+                            <form name="login" method="post" action="{% url 'login' %}?next={{ request.path }}">
                                 {% csrf_token %}
                                 <div class="columns is-variable is-1">
                                     <div class="column">
@@ -242,8 +244,8 @@
 <script>
     var csrf_token = '{{ csrf_token }}';
 </script>
-<script src="/static/js/bookwyrm.js"></script>
-<script src="/static/js/localstorage.js"></script>
+<script src="{% static "js/bookwyrm.js" %}"></script>
+<script src="{% static "js/localstorage.js" %}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
