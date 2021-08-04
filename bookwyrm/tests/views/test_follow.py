@@ -10,20 +10,21 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-class BookViews(TestCase):
-    """books books books"""
+class FollowViews(TestCase):
+    """follows"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -66,15 +67,16 @@ class BookViews(TestCase):
 
     def test_handle_follow_local_manually_approves(self):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-            manually_approves_followers=True,
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+                manually_approves_followers=True,
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -89,14 +91,15 @@ class BookViews(TestCase):
 
     def test_handle_follow_local(self):
         """send a follow request"""
-        rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@rat.com",
-            "ratword",
-            local=True,
-            localname="rat",
-            remote_id="https://example.com/users/rat",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@rat.com",
+                "ratword",
+                local=True,
+                localname="rat",
+                remote_id="https://example.com/users/rat",
+            )
         request = self.factory.post("", {"user": rat})
         request.user = self.local_user
         self.assertEqual(models.UserFollowRequest.objects.count(), 0)
@@ -127,7 +130,9 @@ class BookViews(TestCase):
     def test_handle_accept(self):
         """accept a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -144,7 +149,9 @@ class BookViews(TestCase):
     def test_handle_reject(self):
         """reject a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(

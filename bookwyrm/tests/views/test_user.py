@@ -17,23 +17,25 @@ class UserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
+            )
         self.book = models.Edition.objects.create(title="test")
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.ShelfBook.objects.create(
-                book=self.book,
-                user=self.local_user,
-                shelf=self.local_user.shelf_set.first(),
-            )
+            with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+                models.ShelfBook.objects.create(
+                    book=self.book,
+                    user=self.local_user,
+                    shelf=self.local_user.shelf_set.first(),
+                )
 
         models.SiteSettings.objects.create()
         self.anonymous_user = AnonymousUser
@@ -94,7 +96,8 @@ class UserViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_followers_page_blocked(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_followers_page_blocked(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Followers.as_view()
         request = self.factory.get("")

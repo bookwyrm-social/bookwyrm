@@ -27,11 +27,12 @@ class ActivitypubMixins(TestCase):
 
     def setUp(self):
         """shared data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
+            )
         self.local_user.remote_id = "http://example.com/a/b"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -189,7 +190,7 @@ class ActivitypubMixins(TestCase):
     def test_get_recipients_combine_inboxes(self, *_):
         """should combine users with the same shared_inbox"""
         self.remote_user.shared_inbox = "http://example.com/inbox"
-        self.remote_user.save(broadcast=False)
+        self.remote_user.save(broadcast=False, update_fields=["shared_inbox"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             another_remote_user = models.User.objects.create_user(
                 "nutria",

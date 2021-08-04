@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.dispatch import receiver
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from model_utils import FieldTracker
 import pytz
@@ -104,6 +104,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through="Favorite",
         through_fields=("user", "status"),
         related_name="favorite_statuses",
+    )
+    default_post_privacy = models.CharField(
+        max_length=255, default="public", choices=fields.PrivacyLevels.choices
     )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
@@ -243,7 +246,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)
-            super().save(*args, **kwargs)
 
         # this user already exists, no need to populate fields
         if not created:
@@ -253,7 +255,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            set_remote_server.delay(self.id)
+            transaction.on_commit(lambda: set_remote_server.delay(self.id))
             return
 
         # populate fields for local users
@@ -276,7 +278,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.key_pair = KeyPair.objects.create(
             remote_id="%s/#main-key" % self.remote_id
         )
-        self.save(broadcast=False)
+        self.save(broadcast=False, update_fields=["key_pair"])
 
         shelves = [
             {
@@ -406,7 +408,7 @@ def set_remote_server(user_id):
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
-    user.save(broadcast=False)
+    user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 

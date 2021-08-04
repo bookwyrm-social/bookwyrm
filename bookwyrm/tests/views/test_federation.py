@@ -15,13 +15,14 @@ class FederationViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -68,7 +69,7 @@ class FederationViews(TestCase):
             identifier="hi.there.com",
         )
         self.remote_user.federated_server = server
-        self.remote_user.save()
+        self.remote_user.save(update_fields=["federated_server"])
 
         self.assertEqual(server.status, "federated")
 
@@ -107,7 +108,9 @@ class FederationViews(TestCase):
         self.remote_user.federated_server = server
         self.remote_user.is_active = False
         self.remote_user.deactivation_reason = "domain_block"
-        self.remote_user.save()
+        self.remote_user.save(
+            update_fields=["federated_server", "is_active", "deactivation_reason"]
+        )
 
         request = self.factory.post("")
         request.user = self.local_user
@@ -162,7 +165,7 @@ class FederationViews(TestCase):
         """load a json file with a list of servers to block"""
         server = models.FederatedServer.objects.create(server_name="hi.there.com")
         self.remote_user.federated_server = server
-        self.remote_user.save()
+        self.remote_user.save(update_fields=["federated_server"])
 
         data = [
             {"instance": "server.name", "url": "https://explanation.url"},  # new server

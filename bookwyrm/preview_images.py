@@ -338,9 +338,9 @@ def save_and_cleanup(image, instance=None):
 
         save_without_broadcast = isinstance(instance, (models.Book, models.User))
         if save_without_broadcast:
-            instance.save(broadcast=False)
+            instance.save(broadcast=False, update_fields=["preview_image"])
         else:
-            instance.save()
+            instance.save(update_fields=["preview_image"])
 
         # Clean up old file after saving
         if old_path and default_storage.exists(old_path):

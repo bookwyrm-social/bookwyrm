@@ -37,19 +37,20 @@ class Signature(TestCase):
 
     def setUp(self):
         """create users and test data"""
-        self.mouse = models.User.objects.create_user(
-            "mouse@%s" % DOMAIN,
-            "mouse@example.com",
-            "",
-            local=True,
-            localname="mouse",
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
-        )
-        self.cat = models.User.objects.create_user(
-            "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.mouse = models.User.objects.create_user(
+                "mouse@%s" % DOMAIN,
+                "mouse@example.com",
+                "",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@%s" % DOMAIN, "rat@example.com", "", local=True, localname="rat"
+            )
+            self.cat = models.User.objects.create_user(
+                "cat@%s" % DOMAIN, "cat@example.com", "", local=True, localname="cat"
+            )
 
         private_key, public_key = create_key_pair()
 

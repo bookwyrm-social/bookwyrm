@@ -10,20 +10,22 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 class ShelfViews(TestCase):
     """tag views"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         self.work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(
             title="Example Edition",
@@ -36,7 +38,7 @@ class ShelfViews(TestCase):
             )
         models.SiteSettings.objects.create()
 
-    def test_shelf_page(self, _):
+    def test_shelf_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.first()
@@ -63,7 +65,7 @@ class ShelfViews(TestCase):
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
 
-    def test_edit_shelf_privacy(self, _):
+    def test_edit_shelf_privacy(self, *_):
         """set name or privacy on shelf"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -83,7 +85,7 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.privacy, "unlisted")
 
-    def test_edit_shelf_name(self, _):
+    def test_edit_shelf_name(self, *_):
         """change the name of an editable shelf"""
         view = views.Shelf.as_view()
         shelf = models.Shelf.objects.create(name="Test Shelf", user=self.local_user)
@@ -100,7 +102,7 @@ class ShelfViews(TestCase):
         self.assertEqual(shelf.name, "cool name")
         self.assertEqual(shelf.identifier, "testshelf-%d" % shelf.id)
 
-    def test_edit_shelf_name_not_editable(self, _):
+    def test_edit_shelf_name_not_editable(self, *_):
         """can't change the name of an non-editable shelf"""
         view = views.Shelf.as_view()
         shelf = self.local_user.shelf_set.get(identifier="to-read")
@@ -115,7 +117,7 @@ class ShelfViews(TestCase):
 
         self.assertEqual(shelf.name, "To Read")
 
-    def test_handle_shelve(self, _):
+    def test_handle_shelve(self, *_):
         """shelve a book"""
         request = self.factory.post(
             "", {"book": self.book.id, "shelf": self.shelf.identifier}
@@ -133,7 +135,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(self.shelf.books.get(), self.book)
 
-    def test_handle_shelve_to_read(self, _):
+    def test_handle_shelve_to_read(self, *_):
         """special behavior for the to-read shelf"""
         shelf = models.Shelf.objects.get(identifier="to-read")
         request = self.factory.post(
@@ -146,7 +148,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_shelve_reading(self, _):
+    def test_handle_shelve_reading(self, *_):
         """special behavior for the reading shelf"""
         shelf = models.Shelf.objects.get(identifier="reading")
         request = self.factory.post(
@@ -159,7 +161,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_shelve_read(self, _):
+    def test_handle_shelve_read(self, *_):
         """special behavior for the read shelf"""
         shelf = models.Shelf.objects.get(identifier="read")
         request = self.factory.post(
@@ -172,7 +174,7 @@ class ShelfViews(TestCase):
         # make sure the book is on the shelf
         self.assertEqual(shelf.books.get(), self.book)
 
-    def test_handle_unshelve(self, _):
+    def test_handle_unshelve(self, *_):
         """remove a book from a shelf"""
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             models.ShelfBook.objects.create(

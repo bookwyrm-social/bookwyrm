@@ -15,18 +15,20 @@ class LandingViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
         models.SiteSettings.objects.create()
 
-    def test_home_page(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_home_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Home.as_view()
         request = self.factory.get("")

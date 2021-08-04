@@ -1,4 +1,5 @@
 """ testing models """
+from unittest.mock import patch
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
@@ -10,9 +11,10 @@ class ReadThrough(TestCase):
 
     def setUp(self):
         """look, a shelf"""
-        self.user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
 
         self.work = models.Work.objects.create(title="Example Work")
         self.edition = models.Edition.objects.create(

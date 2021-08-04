@@ -19,15 +19,16 @@ class Inbox(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
 
-        local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         local_user.remote_id = "https://example.com/user/mouse"
-        local_user.save(broadcast=False)
+        local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -144,7 +145,8 @@ class Inbox(TestCase):
         )
         self.assertTrue(views.inbox.is_blocked_activity(activity))
 
-    def test_create_by_deactivated_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_create_by_deactivated_user(self, _):
         """don't let deactivated users post"""
         self.remote_user.delete(broadcast=False)
         self.assertTrue(self.remote_user.deleted)
