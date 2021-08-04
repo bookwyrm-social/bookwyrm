@@ -39,6 +39,7 @@ class GoalViews(TestCase):
         )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
+        self.year = timezone.now().year
         models.SiteSettings.objects.create()
 
     def test_goal_page_no_goal(self):
@@ -47,7 +48,7 @@ class GoalViews(TestCase):
         request = self.factory.get("")
         request.user = self.rat
 
-        result = view(request, self.local_user.localname, 2020)
+        result = view(request, self.local_user.localname, self.year)
         self.assertEqual(result.status_code, 404)
 
     def test_goal_page_no_goal_self(self):
@@ -56,7 +57,7 @@ class GoalViews(TestCase):
         request = self.factory.get("")
         request.user = self.local_user
 
-        result = view(request, self.local_user.localname, 2020)
+        result = view(request, self.local_user.localname, self.year)
         result.render()
         self.assertIsInstance(result, TemplateResponse)
 
@@ -66,7 +67,7 @@ class GoalViews(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
 
-        result = view(request, self.local_user.localname, 2020)
+        result = view(request, self.local_user.localname, self.year)
         self.assertEqual(result.status_code, 302)
 
     def test_goal_page_public(self):
@@ -94,13 +95,13 @@ class GoalViews(TestCase):
     def test_goal_page_private(self):
         """view a user's private goal"""
         models.AnnualGoal.objects.create(
-            user=self.local_user, year=2020, goal=15, privacy="followers"
+            user=self.local_user, year=self.year, goal=15, privacy="followers"
         )
         view = views.Goal.as_view()
         request = self.factory.get("")
         request.user = self.rat
 
-        result = view(request, self.local_user.localname, 2020)
+        result = view(request, self.local_user.localname, self.year)
         self.assertEqual(result.status_code, 404)
 
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
@@ -112,19 +113,19 @@ class GoalViews(TestCase):
             {
                 "user": self.local_user.id,
                 "goal": 10,
-                "year": 2020,
+                "year": self.year,
                 "privacy": "unlisted",
                 "post-status": True,
             },
         )
         request.user = self.local_user
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            view(request, self.local_user.localname, 2020)
+            view(request, self.local_user.localname, self.year)
 
         goal = models.AnnualGoal.objects.get()
         self.assertEqual(goal.user, self.local_user)
         self.assertEqual(goal.goal, 10)
-        self.assertEqual(goal.year, 2020)
+        self.assertEqual(goal.year, self.year)
         self.assertEqual(goal.privacy, "unlisted")
 
         status = models.GeneratedNote.objects.get()
