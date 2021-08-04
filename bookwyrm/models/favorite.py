@@ -30,7 +30,7 @@ class Favorite(ActivityMixin, BookWyrmModel):
     def save(self, *args, **kwargs):
         """update user active time"""
         self.user.last_active_date = timezone.now()
-        self.user.save(broadcast=False)
+        self.user.save(broadcast=False, update_fields=["last_active_date"])
         super().save(*args, **kwargs)
 
         if self.status.user.local and self.status.user != self.user:

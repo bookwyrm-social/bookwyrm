@@ -1,4 +1,5 @@
 """ test for app action functionality """
+from unittest.mock import patch
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -12,20 +13,21 @@ class ReportViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        self.rat = models.User.objects.create_user(
-            "rat@local.com",
-            "rat@mouse.mouse",
-            "password",
-            local=True,
-            localname="rat",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+            self.rat = models.User.objects.create_user(
+                "rat@local.com",
+                "rat@mouse.mouse",
+                "password",
+                local=True,
+                localname="rat",
+            )
         models.SiteSettings.objects.create()
 
     def test_reports_page(self):
@@ -114,7 +116,9 @@ class ReportViews(TestCase):
         report.refresh_from_db()
         self.assertFalse(report.resolved)
 
-    def test_suspend_user(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_suspend_user(self, *_):
         """toggle whether a user is able to log in"""
         self.assertTrue(self.rat.is_active)
         request = self.factory.post("")

@@ -13,15 +13,16 @@ class InboxActivities(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -105,7 +106,8 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.count(), 1)
         self.assertEqual(models.Notification.objects.get(), notif)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {

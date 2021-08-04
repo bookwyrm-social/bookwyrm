@@ -14,15 +14,16 @@ class InboxUpdate(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        self.local_user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         self.local_user.remote_id = "https://example.com/user/mouse"
-        self.local_user.save(broadcast=False)
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",
@@ -79,7 +80,8 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_update_user(self):
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    def test_update_user(self, _):
         """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,

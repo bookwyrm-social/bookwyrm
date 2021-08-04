@@ -16,19 +16,22 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.suggested_users.remove_user_task.delay")
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         self.book = models.Edition.objects.create(
             parent_work=models.Work.objects.create(title="hi"),
             title="Example Edition",
@@ -36,6 +39,7 @@ class FeedViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_feed(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Feed.as_view()

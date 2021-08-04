@@ -76,7 +76,7 @@ class PasswordReset(View):
             return TemplateResponse(request, "password_reset.html", data)
 
         user.set_password(new_password)
-        user.save(broadcast=False)
+        user.save(broadcast=False, update_fields=["password"])
         login(request, user)
         reset_code.delete()
         return redirect("/")
@@ -100,6 +100,6 @@ class ChangePassword(View):
             return redirect("preferences/password")
 
         request.user.set_password(new_password)
-        request.user.save(broadcast=False)
+        request.user.save(broadcast=False, update_fields=["password"])
         login(request, request.user)
         return redirect(request.user.local_path)

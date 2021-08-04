@@ -44,18 +44,22 @@
 
 {# activity feed #}
 {% if not activities %}
-<p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+<div class="block content">
+    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+
+    {% if suggested_users %}
+    {# suggested users for when things are very lonely #}
+    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+</div>
+{% endif %}
+
 {% endif %}
 
 {% for activity in activities %}
 
 {% if not activities.number > 1 and forloop.counter0 == 2 and suggested_users %}
 {# suggested users on the first page, two statuses down #}
-<section class="block">
-    <h2 class="title is-5">{% trans "Who to follow" %}</h2>
-    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
-    <a class="help" href="{% url 'directory' %}">View directory <span class="icon icon-arrow-right"></a>
-</section>
+{% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
 {% endif %}
 <div class="block">
     {% include 'snippets/status/status.html' with status=activity %}

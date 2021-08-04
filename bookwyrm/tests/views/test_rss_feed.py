@@ -14,9 +14,10 @@ class RssFeedView(TestCase):
         """test data"""
         self.site = models.SiteSettings.objects.create()
 
-        self.user = models.User.objects.create_user(
-            "rss_user", "rss@test.rss", "password", local=True
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "rss_user", "rss@test.rss", "password", local=True
+            )
 
         work = models.Work.objects.create(title="Test Work")
         self.book = models.Edition.objects.create(

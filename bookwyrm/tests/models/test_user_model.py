@@ -11,15 +11,16 @@ from bookwyrm.settings import DOMAIN
 # pylint: disable=missing-function-docstring
 class User(TestCase):
     def setUp(self):
-        self.user = models.User.objects.create_user(
-            "mouse@%s" % DOMAIN,
-            "mouse@mouse.mouse",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            name="hi",
-            bookwyrm_user=False,
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse@%s" % DOMAIN,
+                "mouse@mouse.mouse",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                name="hi",
+                bookwyrm_user=False,
+            )
 
     def test_computed_fields(self):
         """username instead of id here"""
@@ -154,7 +155,8 @@ class User(TestCase):
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """deactivate a user"""
         self.assertTrue(self.user.is_active)
         with patch(
