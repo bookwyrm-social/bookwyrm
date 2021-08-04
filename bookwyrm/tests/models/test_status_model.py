@@ -177,7 +177,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -208,7 +208,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -246,7 +246,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -287,7 +287,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -309,7 +309,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
@@ -331,7 +331,7 @@ class Status(TestCase):
         self.assertEqual(activity["attachment"][0].type, "Document")
         self.assertEqual(
             activity["attachment"][0].url,
-            "https://%s%s" % (settings.DOMAIN, self.book.cover.url),
+            "https://%s%s" % (settings.MEDIA_FULL_URL, self.book.cover.url),
         )
         self.assertEqual(activity["attachment"][0].name, "Test Edition")
 
