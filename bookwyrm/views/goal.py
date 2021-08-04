@@ -29,7 +29,7 @@ class Goal(View):
 
         current_year = timezone.now().year
         if not goal and year != timezone.now().year:
-            return redirect('user-goal', username, current_year)
+            return redirect("user-goal", username, current_year)
 
         if goal and not goal.visible_to_user(request.user):
             return HttpResponseNotFound()
