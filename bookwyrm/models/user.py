@@ -105,6 +105,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user", "status"),
         related_name="favorite_statuses",
     )
+    default_post_privacy = models.CharField(
+        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+    )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)

@@ -132,6 +132,7 @@ class EditUserForm(CustomForm):
             "summary",
             "show_goal",
             "manually_approves_followers",
+            "default_post_privacy",
             "discoverable",
             "preferred_timezone",
         ]
