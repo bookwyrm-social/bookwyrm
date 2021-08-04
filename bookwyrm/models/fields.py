@@ -424,6 +424,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             }
         )
 
+    # pylint: disable=no-self-use
     def get_absolute_url(self, value):
         """returns an absolute URL for the image"""
         name = getattr(value, "name")
