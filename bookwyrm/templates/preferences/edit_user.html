@@ -56,8 +56,10 @@
     <div class="block">
         <label class="label" for="id_default_post_privacy">
             {% trans "Default post privacy:" %}
-            {{ form.default_post_privacy }}
         </label>
+        <div class="select">
+            {{ form.default_post_privacy }}
+        </div>
     </div>
     <div class="block">
         <label class="checkbox label" for="id_discoverable">
