@@ -431,7 +431,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
         url = filepath_to_uri(value)
         if url is not None:
-            url = url.lstrip('/')
+            url = url.lstrip("/")
         url = urljoin(MEDIA_FULL_URL, url)
 
         return url
