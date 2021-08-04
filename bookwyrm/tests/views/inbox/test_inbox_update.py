@@ -14,7 +14,7 @@ class InboxUpdate(TestCase):
 
     def setUp(self):
         """basic user and book data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -22,18 +22,18 @@ class InboxUpdate(TestCase):
                 local=True,
                 localname="mouse",
             )
-            self.local_user.remote_id = "https://example.com/user/mouse"
-            self.local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
+        self.local_user.remote_id = "https://example.com/user/mouse"
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
 
         self.create_json = {
             "id": "hi",
@@ -43,8 +43,8 @@ class InboxUpdate(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+
+        models.SiteSettings.objects.create()
 
     def test_update_list(self):
         """a new list"""
@@ -80,7 +80,8 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_update_user(self):
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    def test_update_user(self, _):
         """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,
@@ -99,17 +100,16 @@ class InboxUpdate(TestCase):
         self.assertIsNone(self.remote_user.name)
         self.assertFalse(self.remote_user.discoverable)
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            views.inbox.activity_task(
-                {
-                    "type": "Update",
-                    "to": [],
-                    "cc": [],
-                    "actor": "hi",
-                    "id": "sdkjf",
-                    "object": userdata,
-                }
-            )
+        views.inbox.activity_task(
+            {
+                "type": "Update",
+                "to": [],
+                "cc": [],
+                "actor": "hi",
+                "id": "sdkjf",
+                "object": userdata,
+            }
+        )
         user = models.User.objects.get(id=self.remote_user.id)
         self.assertEqual(user.name, "RAT???")
         self.assertEqual(user.username, "rat@example.com")
@@ -124,28 +124,27 @@ class InboxUpdate(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_edition.json")
         bookdata = json.loads(datafile.read_bytes())
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            models.Work.objects.create(
-                title="Test Work", remote_id="https://bookwyrm.social/book/5988"
-            )
-            book = models.Edition.objects.create(
-                title="Test Book", remote_id="https://bookwyrm.social/book/5989"
-            )
+        models.Work.objects.create(
+            title="Test Work", remote_id="https://bookwyrm.social/book/5988"
+        )
+        book = models.Edition.objects.create(
+            title="Test Book", remote_id="https://bookwyrm.social/book/5989"
+        )
 
-            del bookdata["authors"]
-            self.assertEqual(book.title, "Test Book")
+        del bookdata["authors"]
+        self.assertEqual(book.title, "Test Book")
 
-            with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
-                views.inbox.activity_task(
-                    {
-                        "type": "Update",
-                        "to": [],
-                        "cc": [],
-                        "actor": "hi",
-                        "id": "sdkjf",
-                        "object": bookdata,
-                    }
-                )
+        with patch("bookwyrm.activitypub.base_activity.set_related_field.delay"):
+            views.inbox.activity_task(
+                {
+                    "type": "Update",
+                    "to": [],
+                    "cc": [],
+                    "actor": "hi",
+                    "id": "sdkjf",
+                    "object": bookdata,
+                }
+            )
         book = models.Edition.objects.get(id=book.id)
         self.assertEqual(book.title, "Piranesi")
         self.assertEqual(book.last_edited_by, self.remote_user)
@@ -155,10 +154,9 @@ class InboxUpdate(TestCase):
         datafile = pathlib.Path(__file__).parent.joinpath("../../data/bw_work.json")
         bookdata = json.loads(datafile.read_bytes())
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            book = models.Work.objects.create(
-                title="Test Book", remote_id="https://bookwyrm.social/book/5988"
-            )
+        book = models.Work.objects.create(
+            title="Test Book", remote_id="https://bookwyrm.social/book/5988"
+        )
 
         del bookdata["authors"]
         self.assertEqual(book.title, "Test Book")

@@ -22,31 +22,30 @@ class Status(TestCase):
 
     def setUp(self):
         """useful things for creating a status"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
             )
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(title="Test Edition")
-
-            image_file = pathlib.Path(__file__).parent.joinpath(
-                "../../static/images/default_avi.jpg"
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
-            image = Image.open(image_file)
-            output = BytesIO()
-            with patch("bookwyrm.models.Status.broadcast"):
-                image.save(output, format=image.format)
-                self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
+        self.book = models.Edition.objects.create(title="Test Edition")
+
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        with patch("bookwyrm.models.Status.broadcast"):
+            image.save(output, format=image.format)
+            self.book.cover.save("test.jpg", ContentFile(output.getvalue()))
 
     def test_status_generated_fields(self, *_):
         """setting remote id"""
@@ -61,10 +60,9 @@ class Status(TestCase):
         child = models.Status.objects.create(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            models.Review.objects.create(
-                content="hey", reply_parent=parent, user=self.local_user, book=self.book
-            )
+        models.Review.objects.create(
+            content="hey", reply_parent=parent, user=self.local_user, book=self.book
+        )
         models.Status.objects.create(
             content="hi hello", reply_parent=child, user=self.local_user
         )
@@ -96,10 +94,9 @@ class Status(TestCase):
         child = models.Status.objects.create(
             content="hello", reply_parent=parent, user=self.local_user
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            models.Review.objects.create(
-                content="hey", reply_parent=parent, user=self.local_user, book=self.book
-            )
+        models.Review.objects.create(
+            content="hey", reply_parent=parent, user=self.local_user, book=self.book
+        )
         models.Status.objects.create(
             content="hi hello", reply_parent=child, user=self.local_user
         )
@@ -256,15 +253,14 @@ class Status(TestCase):
 
     def test_review_to_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            status = models.Review.objects.create(
-                name="Review name",
-                content="test content",
-                rating=3.0,
-                user=self.local_user,
-                book=self.book,
-            )
-            activity = status.to_activity()
+        status = models.Review.objects.create(
+            name="Review name",
+            content="test content",
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity()
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Review")
         self.assertEqual(activity["rating"], 3)
@@ -274,15 +270,14 @@ class Status(TestCase):
 
     def test_review_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            status = models.Review.objects.create(
-                name="Review's name",
-                content="test content",
-                rating=3.0,
-                user=self.local_user,
-                book=self.book,
-            )
-            activity = status.to_activity(pure=True)
+        status = models.Review.objects.create(
+            name="Review's name",
+            content="test content",
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
@@ -299,14 +294,13 @@ class Status(TestCase):
 
     def test_review_to_pure_activity_no_rating(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            status = models.Review.objects.create(
-                name="Review name",
-                content="test content",
-                user=self.local_user,
-                book=self.book,
-            )
-            activity = status.to_activity(pure=True)
+        status = models.Review.objects.create(
+            name="Review name",
+            content="test content",
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Article")
         self.assertEqual(
@@ -322,13 +316,12 @@ class Status(TestCase):
 
     def test_reviewrating_to_pure_activity(self, *_):
         """subclass of the base model version with a "pure" serializer"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            status = models.ReviewRating.objects.create(
-                rating=3.0,
-                user=self.local_user,
-                book=self.book,
-            )
-            activity = status.to_activity(pure=True)
+        status = models.ReviewRating.objects.create(
+            rating=3.0,
+            user=self.local_user,
+            book=self.book,
+        )
+        activity = status.to_activity(pure=True)
         self.assertEqual(activity["id"], status.remote_id)
         self.assertEqual(activity["type"], "Note")
         self.assertEqual(
@@ -357,12 +350,11 @@ class Status(TestCase):
         status = models.Status.objects.create(
             content="test content", user=self.local_user
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            fav = models.Favorite.objects.create(status=status, user=self.local_user)
+        fav = models.Favorite.objects.create(status=status, user=self.local_user)
 
-            # can't fav a status twice
-            with self.assertRaises(IntegrityError):
-                models.Favorite.objects.create(status=status, user=self.local_user)
+        # can't fav a status twice
+        with self.assertRaises(IntegrityError):
+            models.Favorite.objects.create(status=status, user=self.local_user)
 
         activity = fav.to_activity()
         self.assertEqual(activity["type"], "Like")

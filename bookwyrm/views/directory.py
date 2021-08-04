@@ -6,7 +6,7 @@ from django.template.response import TemplateResponse
 from django.views import View
 from django.utils.decorators import method_decorator
 
-from .helpers import get_annotated_users
+from bookwyrm import suggested_users
 
 # pylint: disable=no-self-use
 @method_decorator(login_required, name="dispatch")
@@ -23,7 +23,7 @@ class Directory(View):
         if scope == "local":
             filters["local"] = True
 
-        users = get_annotated_users(request.user, **filters)
+        users = suggested_users.get_annotated_users(request.user, **filters)
         sort = request.GET.get("sort")
         if sort == "recent":
             users = users.order_by("-last_active_date")
@@ -32,8 +32,12 @@ class Directory(View):
 
         paginated = Paginator(users, 12)
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "users": paginated.get_page(request.GET.get("page")),
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+            "users": page,
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

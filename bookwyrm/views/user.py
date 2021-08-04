@@ -88,7 +88,9 @@ class Followers(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_followers_activity(**request.GET))
 
-        paginated = Paginator(user.followers.all(), PAGE_LENGTH)
+        paginated = Paginator(
+            user.followers.order_by("-created_date").all(), PAGE_LENGTH
+        )
         data = {
             "user": user,
             "is_self": request.user.id == user.id,
@@ -107,7 +109,9 @@ class Following(View):
         if is_api_request(request):
             return ActivitypubResponse(user.to_following_activity(**request.GET))
 
-        paginated = Paginator(user.following.all(), PAGE_LENGTH)
+        paginated = Paginator(
+            user.following.order_by("-created_date").all(), PAGE_LENGTH
+        )
         data = {
             "user": user,
             "is_self": request.user.id == user.id,

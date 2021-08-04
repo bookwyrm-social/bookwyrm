@@ -2,6 +2,7 @@
 {% load status_display %}
 {% load i18n %}
 {% load humanize %}
+{% load static %}
 
 <div class="media">
     <figure class="media-left" aria-hidden="true">
@@ -18,7 +19,7 @@
                 itemtype="https://schema.org/Person"
             >
                 {% if status.user.avatar %}
-                    <meta itemprop="image" content="/images/{{ status.user.avatar }}">
+                    <meta itemprop="image" content="{% get_media_prefix %}{{ status.user.avatar }}">
                 {% endif %}
 
                 <a

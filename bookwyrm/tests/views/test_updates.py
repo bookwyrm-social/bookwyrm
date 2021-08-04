@@ -14,8 +14,8 @@ class UpdateViews(TestCase):
 
     def setUp(self):
         """we need basic test data and mocks"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.factory = RequestFactory()
+        self.factory = RequestFactory()
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -23,8 +23,7 @@ class UpdateViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_get_notification_count(self):
         """there are so many views, this just makes sure it LOADS"""

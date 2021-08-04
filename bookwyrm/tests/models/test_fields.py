@@ -24,10 +24,11 @@ from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
 
 # pylint: disable=too-many-public-methods
-class ActivitypubFields(TestCase):
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+class ModelFields(TestCase):
     """overwrites standard model feilds to work with activitypub"""
 
-    def test_validate_remote_id(self):
+    def test_validate_remote_id(self, _):
         """should look like a url"""
         self.assertIsNone(fields.validate_remote_id("http://www.example.com"))
         self.assertIsNone(fields.validate_remote_id("https://www.example.com"))
@@ -44,7 +45,7 @@ class ActivitypubFields(TestCase):
             "http://www.example.com/dlfjg 23/x",
         )
 
-    def test_activitypub_field_mixin(self):
+    def test_activitypub_field_mixin(self, _):
         """generic mixin with super basic to and from functionality"""
         instance = fields.ActivitypubFieldMixin()
         self.assertEqual(instance.field_to_activity("fish"), "fish")
@@ -62,7 +63,7 @@ class ActivitypubFields(TestCase):
         instance.name = "snake_case_name"
         self.assertEqual(instance.get_activitypub_field(), "snakeCaseName")
 
-    def test_set_field_from_activity(self):
+    def test_set_field_from_activity(self, _):
         """setter from entire json blob"""
 
         @dataclass
@@ -81,7 +82,7 @@ class ActivitypubFields(TestCase):
         instance.set_field_from_activity(mock_model, data)
         self.assertEqual(mock_model.field_name, "hi")
 
-    def test_set_activity_from_field(self):
+    def test_set_activity_from_field(self, _):
         """set json field given entire model"""
 
         @dataclass
@@ -99,7 +100,7 @@ class ActivitypubFields(TestCase):
         instance.set_activity_from_field(data, mock_model)
         self.assertEqual(data["fieldName"], "bip")
 
-    def test_remote_id_field(self):
+    def test_remote_id_field(self, _):
         """just sets some defaults on charfield"""
         instance = fields.RemoteIdField()
         self.assertEqual(instance.max_length, 255)
@@ -108,7 +109,7 @@ class ActivitypubFields(TestCase):
         with self.assertRaises(ValidationError):
             instance.run_validators("http://www.example.com/dlfjg 23/x")
 
-    def test_username_field(self):
+    def test_username_field(self, _):
         """again, just setting defaults on username field"""
         instance = fields.UsernameField()
         self.assertEqual(instance.activitypub_field, "preferredUsername")
@@ -129,7 +130,7 @@ class ActivitypubFields(TestCase):
 
         self.assertEqual(instance.field_to_activity("test@example.com"), "test")
 
-    def test_privacy_field_defaults(self):
+    def test_privacy_field_defaults(self, _):
         """post privacy field's many default values"""
         instance = fields.PrivacyField()
         self.assertEqual(instance.max_length, 255)
@@ -142,7 +143,7 @@ class ActivitypubFields(TestCase):
             instance.public, "https://www.w3.org/ns/activitystreams#Public"
         )
 
-    def test_privacy_field_set_field_from_activity(self):
+    def test_privacy_field_set_field_from_activity(self, _):
         """translate between to/cc fields and privacy"""
 
         @dataclass(init=False)
@@ -188,10 +189,9 @@ class ActivitypubFields(TestCase):
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_privacy_field_set_activity_from_field(self, *_):
         """translate between to/cc fields and privacy"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = User.objects.create_user(
-                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-            )
+        user = User.objects.create_user(
+            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+        )
         public = "https://www.w3.org/ns/activitystreams#Public"
         followers = "%s/followers" % user.remote_id
 
@@ -231,7 +231,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(activity["to"], [user.remote_id])
         self.assertEqual(activity["cc"], [])
 
-    def test_foreign_key(self):
+    def test_foreign_key(self, _):
         """should be able to format a related model"""
         instance = fields.ForeignKey("User", on_delete=models.CASCADE)
         Serializable = namedtuple("Serializable", ("to_activity", "remote_id"))
@@ -240,7 +240,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity(item), "https://e.b/c")
 
     @responses.activate
-    def test_foreign_key_from_activity_str(self):
+    def test_foreign_key_from_activity_str(self, _):
         """create a new object from a foreign key"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
@@ -249,26 +249,25 @@ class ActivitypubFields(TestCase):
         del userdata["icon"]
 
         # it shouldn't match with this unrelated user:
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            unrelated_user = User.objects.create_user(
-                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-            )
+        unrelated_user = User.objects.create_user(
+            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+        )
 
-            # test receiving an unknown remote id and loading data
-            responses.add(
-                responses.GET,
-                "https://example.com/user/mouse",
-                json=userdata,
-                status=200,
-            )
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                value = instance.field_from_activity("https://example.com/user/mouse")
+        # test receiving an unknown remote id and loading data
+        responses.add(
+            responses.GET,
+            "https://example.com/user/mouse",
+            json=userdata,
+            status=200,
+        )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            value = instance.field_from_activity("https://example.com/user/mouse")
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, "https://example.com/user/mouse")
         self.assertEqual(value.name, "MOUSE?? MOUSE!!")
 
-    def test_foreign_key_from_activity_dict(self):
+    def test_foreign_key_from_activity_dict(self, *_):
         """test recieving activity json"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
@@ -277,60 +276,57 @@ class ActivitypubFields(TestCase):
         del userdata["icon"]
 
         # it shouldn't match with this unrelated user:
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            unrelated_user = User.objects.create_user(
-                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-            )
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                value = instance.field_from_activity(activitypub.Person(**userdata))
+        unrelated_user = User.objects.create_user(
+            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+        )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertIsInstance(value, User)
         self.assertNotEqual(value, unrelated_user)
         self.assertEqual(value.remote_id, "https://example.com/user/mouse")
         self.assertEqual(value.name, "MOUSE?? MOUSE!!")
         # et cetera but we're not testing serializing user json
 
-    def test_foreign_key_from_activity_dict_existing(self):
+    def test_foreign_key_from_activity_dict_existing(self, _):
         """test receiving a dict of an existing object in the db"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
         userdata = json.loads(datafile.read_bytes())
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
-            user.remote_id = "https://example.com/user/mouse"
-            user.save(broadcast=False)
+        user = User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        user.remote_id = "https://example.com/user/mouse"
+        user.save(broadcast=False, update_fields=["remote_id"])
 
-            User.objects.create_user(
-                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-            )
+        User.objects.create_user(
+            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+        )
 
-            with patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast"):
-                value = instance.field_from_activity(activitypub.Person(**userdata))
+        with patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast"):
+            value = instance.field_from_activity(activitypub.Person(**userdata))
         self.assertEqual(value, user)
 
-    def test_foreign_key_from_activity_str_existing(self):
+    def test_foreign_key_from_activity_str_existing(self, _):
         """test receiving a remote id of an existing object in the db"""
         instance = fields.ForeignKey(User, on_delete=models.CASCADE)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
-            User.objects.create_user(
-                "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
-            )
+        user = User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        User.objects.create_user(
+            "rat", "rat@rat.rat", "ratword", local=True, localname="rat"
+        )
 
         value = instance.field_from_activity(user.remote_id)
         self.assertEqual(value, user)
 
-    def test_one_to_one_field(self):
+    def test_one_to_one_field(self, _):
         """a gussied up foreign key"""
         instance = fields.OneToOneField("User", on_delete=models.CASCADE)
         Serializable = namedtuple("Serializable", ("to_activity", "remote_id"))
         item = Serializable(lambda: {"a": "b"}, "https://e.b/c")
         self.assertEqual(instance.field_to_activity(item), {"a": "b"})
 
-    def test_many_to_many_field(self):
+    def test_many_to_many_field(self, _):
         """lists!"""
         instance = fields.ManyToManyField("User")
 
@@ -348,7 +344,7 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_to_activity(items), "example.com/snake_case")
 
     @responses.activate
-    def test_many_to_many_field_from_activity(self):
+    def test_many_to_many_field_from_activity(self, _):
         """resolve related fields for a list, takes a list of remote ids"""
         instance = fields.ManyToManyField(User)
         datafile = pathlib.Path(__file__).parent.joinpath("../data/ap_user.json")
@@ -360,16 +356,15 @@ class ActivitypubFields(TestCase):
         responses.add(
             responses.GET, "https://example.com/user/mouse", json=userdata, status=200
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                value = instance.field_from_activity(
-                    ["https://example.com/user/mouse", "bleh"]
-                )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            value = instance.field_from_activity(
+                ["https://example.com/user/mouse", "bleh"]
+            )
         self.assertIsInstance(value, list)
         self.assertEqual(len(value), 1)
         self.assertIsInstance(value[0], User)
 
-    def test_tag_field(self):
+    def test_tag_field(self, _):
         """a special type of many to many field"""
         instance = fields.TagField("User")
 
@@ -388,25 +383,25 @@ class ActivitypubFields(TestCase):
         self.assertEqual(result[0].name, "Name")
         self.assertEqual(result[0].type, "Serializable")
 
-    def test_tag_field_from_activity(self):
+    def test_tag_field_from_activity(self, _):
         """loadin' a list of items from Links"""
         # TODO
 
     @responses.activate
     @patch("bookwyrm.models.activitypub_mixin.ObjectMixin.broadcast")
-    def test_image_field(self, _):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_image_field(self, *_):
         """storing images"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            user = User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
-            image_file = pathlib.Path(__file__).parent.joinpath(
-                "../../static/images/default_avi.jpg"
-            )
-            image = Image.open(image_file)
-            output = BytesIO()
-            image.save(output, format=image.format)
-            user.avatar.save("test.jpg", ContentFile(output.getvalue()))
+        user = User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        image_file = pathlib.Path(__file__).parent.joinpath(
+            "../../static/images/default_avi.jpg"
+        )
+        image = Image.open(image_file)
+        output = BytesIO()
+        image.save(output, format=image.format)
+        user.avatar.save("test.jpg", ContentFile(output.getvalue()))
 
         output = fields.image_serializer(user.avatar, alt="alt text")
         self.assertIsNotNone(
@@ -433,7 +428,16 @@ class ActivitypubFields(TestCase):
         self.assertIsInstance(loaded_image, list)
         self.assertIsInstance(loaded_image[1], ContentFile)
 
-    def test_datetime_field(self):
+    def test_image_serialize(self, _):
+        """make sure we're creating sensible image paths"""
+        ValueMock = namedtuple("ValueMock", ("url"))
+        value_mock = ValueMock("/images/fish.jpg")
+        result = fields.image_serializer(value_mock, "hello")
+        self.assertEqual(result.type, "Document")
+        self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
+        self.assertEqual(result.name, "hello")
+
+    def test_datetime_field(self, _):
         """this one is pretty simple, it just has to use isoformat"""
         instance = fields.DateTimeField()
         now = timezone.now()
@@ -441,12 +445,12 @@ class ActivitypubFields(TestCase):
         self.assertEqual(instance.field_from_activity(now.isoformat()), now)
         self.assertEqual(instance.field_from_activity("bip"), None)
 
-    def test_array_field(self):
+    def test_array_field(self, _):
         """idk why it makes them strings but probably for a good reason"""
         instance = fields.ArrayField(fields.IntegerField)
         self.assertEqual(instance.field_to_activity([0, 1]), ["0", "1"])
 
-    def test_html_field(self):
+    def test_html_field(self, _):
         """sanitizes html, the sanitizer has its own tests"""
         instance = fields.HtmlField()
         self.assertEqual(

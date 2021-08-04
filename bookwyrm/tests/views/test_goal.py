@@ -16,7 +16,7 @@ class GoalViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -33,15 +33,13 @@ class GoalViews(TestCase):
                 localname="rat",
                 remote_id="https://example.com/users/rat",
             )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-            )
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+        )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_goal_page_no_goal(self):
         """view a reading goal page for another's unset goal"""

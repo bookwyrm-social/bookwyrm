@@ -13,13 +13,14 @@ from bookwyrm.settings import DOMAIN
 
 
 # pylint: disable=too-many-public-methods
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 class AuthenticationViews(TestCase):
     """login and password management"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -29,10 +30,10 @@ class AuthenticationViews(TestCase):
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            self.settings = models.SiteSettings.objects.create(id=1)
 
-    def test_login_get(self):
+        self.settings = models.SiteSettings.objects.create(id=1)
+
+    def test_login_get(self, _):
         """there are so many views, this just makes sure it LOADS"""
         login = views.Login.as_view()
         request = self.factory.get("")
@@ -48,7 +49,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
 
-    def test_register(self):
+    def test_register(self, _):
         """create a user"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -60,9 +61,8 @@ class AuthenticationViews(TestCase):
                 "email": "aa@bb.cccc",
             },
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
@@ -70,16 +70,15 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_trailing_space(self):
+    def test_register_trailing_space(self, _):
         """django handles this so weirdly"""
         view = views.Register.as_view()
         request = self.factory.post(
             "register/",
             {"localname": "nutria ", "password": "mouseword", "email": "aa@bb.ccc"},
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         nutria = models.User.objects.last()
@@ -87,7 +86,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_invalid_email(self):
+    def test_register_invalid_email(self, _):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -98,7 +97,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_invalid_username(self):
+    def test_register_invalid_username(self, _):
         """gotta have an email"""
         view = views.Register.as_view()
         self.assertEqual(models.User.objects.count(), 1)
@@ -126,7 +125,7 @@ class AuthenticationViews(TestCase):
         self.assertEqual(models.User.objects.count(), 1)
         response.render()
 
-    def test_register_closed_instance(self):
+    def test_register_closed_instance(self, _):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -138,7 +137,7 @@ class AuthenticationViews(TestCase):
         with self.assertRaises(PermissionDenied):
             view(request)
 
-    def test_register_invite(self):
+    def test_register_invite(self, _):
         """you can't just register"""
         view = views.Register.as_view()
         self.settings.allow_registration = False
@@ -157,9 +156,8 @@ class AuthenticationViews(TestCase):
                 "invite_code": "testcode",
             },
         )
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.views.authentication.login"):
-                response = view(request)
+        with patch("bookwyrm.views.authentication.login"):
+            response = view(request)
         self.assertEqual(models.User.objects.count(), 2)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(models.SiteInvite.objects.get().times_used, 1)
