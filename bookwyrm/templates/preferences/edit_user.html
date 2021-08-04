@@ -54,6 +54,12 @@
         </label>
     </div>
     <div class="block">
+        <label class="label" for="id_default_post_privacy">
+            {% trans "Default post privacy:" %}
+            {{ form.default_post_privacy }}
+        </label>
+    </div>
+    <div class="block">
         <label class="checkbox label" for="id_discoverable">
             {% trans "Show this account in suggested users:" %}
             {{ form.discoverable }}
