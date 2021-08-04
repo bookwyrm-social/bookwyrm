@@ -3,6 +3,7 @@ from dataclasses import MISSING
 import imghdr
 import re
 from uuid import uuid4
+from urllib.parse import urljoin
 
 import dateutil.parser
 from dateutil.parser import ParserError
@@ -13,11 +14,12 @@ from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.utils.encoding import filepath_to_uri
 
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
-from bookwyrm.settings import DOMAIN
+from bookwyrm.settings import MEDIA_FULL_URL
 
 
 def validate_remote_id(value):
@@ -355,8 +357,6 @@ def image_serializer(value, alt):
         url = value.url
     else:
         return None
-    if not url[:4] == "http":
-        url = "https://{:s}{:s}".format(DOMAIN, url)
     return activitypub.Document(url=url, name=alt)
 
 
@@ -422,6 +422,19 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
                 **kwargs,
             }
         )
+
+    def get_absolute_url(self, instance):
+        """returns an absolute URL for the image"""
+        value = getattr(instance, self.name)
+        if value is None:
+            return
+
+        url = filepath_to_uri(value)
+        if url is not None:
+            url = url.lstrip('/')
+        url = urljoin(MEDIA_FULL_URL, url)
+
+        return url
 
 
 class DateTimeField(ActivitypubFieldMixin, models.DateTimeField):
