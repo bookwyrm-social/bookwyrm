@@ -155,7 +155,8 @@ class User(TestCase):
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """deactivate a user"""
         self.assertTrue(self.user.is_active)
         with patch(

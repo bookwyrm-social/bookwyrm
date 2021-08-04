@@ -80,7 +80,8 @@ class InboxUpdate(TestCase):
         self.assertEqual(book_list.description, "summary text")
         self.assertEqual(book_list.remote_id, "https://example.com/list/22")
 
-    def test_update_user(self):
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    def test_update_user(self, _):
         """update an existing user"""
         models.UserFollows.objects.create(
             user_subject=self.local_user,

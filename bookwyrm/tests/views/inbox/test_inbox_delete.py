@@ -106,7 +106,8 @@ class InboxActivities(TestCase):
         self.assertEqual(models.Notification.objects.count(), 1)
         self.assertEqual(models.Notification.objects.get(), notif)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """delete a user"""
         self.assertTrue(models.User.objects.get(username="rat@example.com").is_active)
         activity = {

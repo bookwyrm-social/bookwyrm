@@ -106,7 +106,8 @@ class GetStartedViews(TestCase):
         self.assertEqual(shelfbook.book, self.book)
         self.assertEqual(shelfbook.user, self.local_user)
 
-    def test_users_view(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_users_view(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("")
@@ -118,7 +119,8 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_users_view_with_query(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_users_view_with_query(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("?query=rat")

@@ -405,7 +405,7 @@ def set_remote_server(user_id):
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
-    user.save(broadcast=False)
+    user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 

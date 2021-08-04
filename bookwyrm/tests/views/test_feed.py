@@ -39,6 +39,7 @@ class FeedViews(TestCase):
         )
         models.SiteSettings.objects.create()
 
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_feed(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Feed.as_view()
