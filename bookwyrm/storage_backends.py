@@ -46,4 +46,4 @@ class ImagesStorage(S3Boto3Storage):  # pylint: disable=abstract-method
 
             # Upload the object which will auto close the
             # content_autoclose instance
-            return super(ImagesStorage, self)._save(name, content_autoclose)
+            return super()._save(name, content_autoclose)
