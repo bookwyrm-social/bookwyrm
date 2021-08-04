@@ -423,13 +423,13 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             }
         )
 
-    def get_absolute_url(self, instance):
+    def get_absolute_url(self, value):
         """returns an absolute URL for the image"""
-        value = getattr(instance, self.name)
-        if value is None:
+        name = getattr(value, self.name)
+        if name is None:
             return
 
-        url = filepath_to_uri(value)
+        url = filepath_to_uri(name)
         if url is not None:
             url = url.lstrip("/")
         url = urljoin(MEDIA_FULL_URL, url)

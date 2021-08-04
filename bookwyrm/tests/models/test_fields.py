@@ -429,7 +429,7 @@ class ActivitypubFields(TestCase):
     def test_image_serialize(self):
         """make sure we're creating sensible image paths"""
         ValueMock = namedtuple("ValueMock", ("url"))
-        value_mock = ValueMock("/images/fish.jpg")
+        value_mock = ValueMock("https://your.domain.here/images/fish.jpg")
         result = fields.image_serializer(value_mock, "hello")
         self.assertEqual(result.type, "Document")
         self.assertEqual(result.url, "https://your.domain.here/images/fish.jpg")
