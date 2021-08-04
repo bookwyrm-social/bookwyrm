@@ -424,7 +424,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
             }
         )
 
-    def get_absolute_url(value):
+    def get_absolute_url(self, value):
         """returns an absolute URL for the image"""
         name = getattr(value, "name")
         if name is None:
