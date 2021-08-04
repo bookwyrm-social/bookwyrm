@@ -22,6 +22,7 @@ from bookwyrm.activitypub.base_activity import ActivityObject
 from bookwyrm.models import fields, User, Status
 from bookwyrm.models.base_model import BookWyrmModel
 from bookwyrm.models.activitypub_mixin import ActivitypubMixin
+from bookwyrm.settings import DOMAIN
 
 # pylint: disable=too-many-public-methods
 class ActivitypubFields(TestCase):
@@ -401,20 +402,17 @@ class ActivitypubFields(TestCase):
         image.save(output, format=image.format)
         user.avatar.save("test.jpg", ContentFile(output.getvalue()))
 
-        output = fields.image_serializer(user.avatar, alt="alt text")
+        instance = fields.ImageField()
+
+        output = instance.field_to_activity(user.avatar)
         self.assertIsNotNone(
             re.match(
-                r".*\.jpg",
+                fr"https:\/\/{DOMAIN}\/.*\.jpg",
                 output.url,
             )
         )
-        self.assertEqual(output.name, "alt text")
+        self.assertEqual(output.name, "")
         self.assertEqual(output.type, "Document")
-
-        instance = fields.ImageField()
-
-        output = fields.image_serializer(user.avatar, alt=None)
-        self.assertEqual(instance.field_to_activity(user.avatar), output)
 
         responses.add(
             responses.GET,

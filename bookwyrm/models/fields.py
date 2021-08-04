@@ -387,7 +387,8 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         activity[key] = formatted
 
     def field_to_activity(self, value, alt=None):
-        return image_serializer(value, alt)
+        url = self.get_absolute_url(value)
+        return activitypub.Document(url=url, name=alt)
 
     def field_from_activity(self, value):
         image_slug = value
@@ -425,7 +426,7 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
 
     def get_absolute_url(self, value):
         """returns an absolute URL for the image"""
-        name = getattr(value, self.name)
+        name = getattr(value, "name")
         if name is None:
             return None
 
