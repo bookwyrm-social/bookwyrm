@@ -67,8 +67,10 @@ def infer_format(app_registry, schema_editor):
             edition.physical_format = matches[0]
             edition.save()
 
+
 def reverse(app_registry, schema_editor):
     """doesn't need to do anything"""
+
 
 class Migration(migrations.Migration):
 
