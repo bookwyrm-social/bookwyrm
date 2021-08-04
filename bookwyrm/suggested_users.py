@@ -141,7 +141,7 @@ def update_suggestions_on_follow(sender, instance, created, *args, **kwargs):
 
     if instance.user_subject.local:
         remove_suggestion_task.delay(instance.user_subject.id, instance.user_object.id)
-    rerank_user_task.delay(instance.user_object.id)
+    rerank_user_task.delay(instance.user_object.id, update_only=False)
 
 
 @receiver(signals.post_save, sender=models.UserBlocks)
@@ -159,7 +159,7 @@ def update_suggestions_on_block(sender, instance, *args, **kwargs):
 def update_suggestions_on_unfollow(sender, instance, **kwargs):
     """update rankings, but don't re-suggest because it was probably intentional"""
     if instance.user_object.discoverable:
-        rerank_user_task.delay(instance.user_object.id)
+        rerank_user_task.delay(instance.user_object.id, update_only=False)
 
 
 @receiver(signals.post_save, sender=models.ShelfBook)
