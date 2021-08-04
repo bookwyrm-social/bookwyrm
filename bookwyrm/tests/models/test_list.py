@@ -11,13 +11,11 @@ class List(TestCase):
 
     def setUp(self):
         """look, a list"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.local_user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="hello")
-            self.book = models.Edition.objects.create(title="hi", parent_work=work)
+        self.local_user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
+        work = models.Work.objects.create(title="hello")
+        self.book = models.Edition.objects.create(title="hi", parent_work=work)
 
     def test_remote_id(self, _):
         """shelves use custom remote ids"""

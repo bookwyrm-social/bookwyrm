@@ -51,7 +51,7 @@ class Announcements(View):
             form = forms.AnnouncementForm()
         data = {
             "announcements": Paginator(
-                models.Announcement.objects.all(), PAGE_LENGTH
+                models.Announcement.objects.order_by("-created_date"), PAGE_LENGTH
             ).get_page(request.GET.get("page")),
             "form": form,
         }

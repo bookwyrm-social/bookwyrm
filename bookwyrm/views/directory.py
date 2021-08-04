@@ -32,8 +32,12 @@ class Directory(View):
 
         paginated = Paginator(users, 12)
 
+        page = paginated.get_page(request.GET.get("page"))
         data = {
-            "users": paginated.get_page(request.GET.get("page")),
+            "page_range": paginated.get_elided_page_range(
+                page.number, on_each_side=2, on_ends=1
+            ),
+            "users": page,
         }
         return TemplateResponse(request, "directory/directory.html", data)
 

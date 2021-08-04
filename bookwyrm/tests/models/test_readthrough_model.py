@@ -1,7 +1,6 @@
 """ testing models """
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from unittest.mock import patch
 
 from bookwyrm import models
 
@@ -11,16 +10,14 @@ class ReadThrough(TestCase):
 
     def setUp(self):
         """look, a shelf"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            self.user = models.User.objects.create_user(
-                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-            )
+        self.user = models.User.objects.create_user(
+            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+        )
 
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Example Work")
-            self.edition = models.Edition.objects.create(
-                title="Example Edition", parent_work=self.work
-            )
+        self.work = models.Work.objects.create(title="Example Work")
+        self.edition = models.Edition.objects.create(
+            title="Example Edition", parent_work=self.work
+        )
 
         self.readthrough = models.ReadThrough.objects.create(
             user=self.user, book=self.edition
