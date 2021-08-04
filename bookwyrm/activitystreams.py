@@ -173,6 +173,34 @@ class FederatedStream(ActivityStream):
             privacy_levels=["public"],
         )
 
+class BooksStream(ActivityStream):
+    """books on your shelves"""
+
+    key = "books"
+
+    def get_audience(self, status):
+        """anyone with the mentioned book on their shelves"""
+        # only show public statuses on the books feed,
+        # and only statuses that mention books
+        if status.privacy != "public" or not (status.mention_books.exists() or hasattr(status, "book")):
+            return []
+
+        work = status.book.parent_work if hasattr(status, "book") else status.mention_books.first().parent_work
+
+        audience = super().get_audience(status)
+        if not audience:
+            return []
+        return audience.filter(
+            shelfbook__book__parent_work=work
+        ).distinct()
+
+    def get_statuses_for_user(self, user):
+        """any public status that mentions their books"""
+        return privacy_filter(
+            user,
+            models.Status.objects.select_subclasses().filter(,
+            privacy_levels=["public"],
+        )
 
 streams = {
     "home": HomeStream(),
