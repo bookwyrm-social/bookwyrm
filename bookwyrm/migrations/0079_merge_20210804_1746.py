@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0046_user_default_post_privacy'),
-        ('bookwyrm', '0078_add_shelved_date'),
+        ("bookwyrm", "0046_user_default_post_privacy"),
+        ("bookwyrm", "0078_add_shelved_date"),
     ]
 
-    operations = [
-    ]
+    operations = []

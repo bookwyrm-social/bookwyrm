@@ -26,6 +26,7 @@ from .base_model import BookWyrmModel, DeactivationReason
 from .federated_server import FederatedServer
 from . import fields, Review
 
+
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
 
@@ -105,9 +106,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         related_name="favorite_statuses",
     )
     default_post_privacy = models.CharField(
-        max_length=255,
-        default='public',
-        choices=fields.PrivacyLevels.choices
+        max_length=255, default="public", choices=fields.PrivacyLevels.choices
     )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)

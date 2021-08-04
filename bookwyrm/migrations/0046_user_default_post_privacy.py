@@ -6,13 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bookwyrm', '0045_auto_20210210_2114'),
+        ("bookwyrm", "0045_auto_20210210_2114"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='default_post_privacy',
-            field=models.CharField(choices=[('public', 'Public'), ('unlisted', 'Unlisted'), ('followers', 'Followers'), ('direct', 'Direct')], default='public', max_length=255),
+            model_name="user",
+            name="default_post_privacy",
+            field=models.CharField(
+                choices=[
+                    ("public", "Public"),
+                    ("unlisted", "Unlisted"),
+                    ("followers", "Followers"),
+                    ("direct", "Direct"),
+                ],
+                default="public",
+                max_length=255,
+            ),
         ),
     ]
