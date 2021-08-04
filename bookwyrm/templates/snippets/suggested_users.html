@@ -13,10 +13,23 @@
             {% include 'snippets/follow_button.html' with user=user minimal=True %}
             {% if user.mutuals %}
             <p class="help">
-            {% blocktrans with mutuals=user.mutuals|intcomma count counter=user.mutuals %}{{ mutuals }} follower you follow{% plural %}{{ mutuals }} followers you follow{% endblocktrans %}
+                {% blocktrans trimmed with mutuals=user.mutuals|intcomma count counter=user.mutuals %}
+                {{ mutuals }} follower you follow
+                {% plural %}
+                {{ mutuals }} followers you follow{% endblocktrans %}
             </p>
             {% elif user.shared_books %}
-            <p class="help">{% blocktrans with shared_books=user.shared_books|intcomma count counter=user.shared_books %}{{ shared_books }} book on your shelves{% plural %}{{ shared_books }} books on your shelves{% endblocktrans %}</p>
+            <p class="help">
+                {% blocktrans trimmed with shared_books=user.shared_books|intcomma count counter=user.shared_books %}
+                {{ shared_books }} book on your shelves
+                {% plural %}
+                {{ shared_books }} books on your shelves
+                {% endblocktrans %}
+            </p>
+            {% elif request.user in user.following.all %}
+            <p class="help">
+                {% trans "Follows you" %}
+            </p>
             {% endif %}
         </div>
     </div>
