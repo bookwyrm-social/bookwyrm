@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.dispatch import receiver
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from model_utils import FieldTracker
 import pytz
@@ -252,7 +252,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            set_remote_server.delay(self.id)
+            transaction.on_commit(lambda: set_remote_server.delay(self.id))
             return
 
         # populate fields for local users
