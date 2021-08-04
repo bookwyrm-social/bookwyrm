@@ -17,9 +17,9 @@
 
 {% block panel %}
 <section class="block">
-    {% if user == request.user %}
+    {% now 'Y' as current_year %}
+    {% if user == request.user and year == current_year %}
     <div class="block">
-        {% now 'Y' as year %}
         <section class="card {% if goal %}is-hidden{% endif %}" id="show-edit-goal">
             <header class="card-header">
                 <h2 class="card-header-title has-background-primary has-text-white" tabindex="0" id="edit-form-header">
