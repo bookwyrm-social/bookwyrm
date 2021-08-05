@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 20:40+0000\n"
+"POT-Creation-Date: 2021-08-05 01:33+0000\n"
 "PO-Revision-Date: 2021-03-02 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -101,27 +101,49 @@ msgstr "Username"
 msgid "A user with that username already exists."
 msgstr "Dieser Benutzename ist bereits vergeben."
 
-#: bookwyrm/settings.py:166
+#: bookwyrm/settings.py:123
+msgid "Home Timeline"
+msgstr ""
+
+#: bookwyrm/settings.py:123
+msgid "Home"
+msgstr ""
+
+#: bookwyrm/settings.py:124
+#, fuzzy
+#| msgid "Title"
+msgid "Books Timeline"
+msgstr "Titel"
+
+#: bookwyrm/settings.py:124 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/templates/user/layout.html:81
+#, fuzzy
+#| msgid "Book"
+msgid "Books"
+msgstr "Buch"
+
+#: bookwyrm/settings.py:170
 msgid "English"
 msgstr "Englisch"
 
-#: bookwyrm/settings.py:167
+#: bookwyrm/settings.py:171
 msgid "German"
 msgstr "Deutsch"
 
-#: bookwyrm/settings.py:168
+#: bookwyrm/settings.py:172
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: bookwyrm/settings.py:169
+#: bookwyrm/settings.py:173
 msgid "French"
 msgstr "Französisch"
 
-#: bookwyrm/settings.py:170
+#: bookwyrm/settings.py:174
 msgid "Simplified Chinese"
 msgstr "Vereinfachtes Chinesisch"
 
-#: bookwyrm/settings.py:171
+#: bookwyrm/settings.py:175
 msgid "Traditional Chinese"
 msgstr ""
 
@@ -972,39 +994,12 @@ msgstr "Alle Nachrichten"
 msgid "You have no messages right now."
 msgstr "Du hast momentan keine Nachrichten."
 
-#: bookwyrm/templates/feed/feed.html:8
-msgid "Home Timeline"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:10
-msgid "Local Timeline"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:12
-#, fuzzy
-#| msgid "Federated Servers"
-msgid "Federated Timeline"
-msgstr "Föderierende Server"
-
-#: bookwyrm/templates/feed/feed.html:18
-msgid "Home"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:21
-msgid "Local"
-msgstr "Lokal"
-
-#: bookwyrm/templates/feed/feed.html:24
-#: bookwyrm/templates/settings/edit_server.html:40
-msgid "Federated"
-msgstr "Föderiert"
-
-#: bookwyrm/templates/feed/feed.html:32
+#: bookwyrm/templates/feed/feed.html:22
 #, python-format
-msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
+msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:48
+#: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "Hier sind noch keine Aktivitäten! Folge anderen, um loszulegen"
 
@@ -2020,14 +2015,6 @@ msgstr "Suche nach Buch oder Benutzer*in"
 msgid "Search type"
 msgstr "Suche"
 
-#: bookwyrm/templates/search/layout.html:21
-#: bookwyrm/templates/search/layout.html:42
-#: bookwyrm/templates/user/layout.html:81
-#, fuzzy
-#| msgid "Book"
-msgid "Books"
-msgstr "Buch"
-
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/admin_layout.html:26
@@ -2241,6 +2228,10 @@ msgstr "Instanzname"
 #| msgid "Import Status"
 msgid "Status:"
 msgstr "Importstatus"
+
+#: bookwyrm/templates/settings/edit_server.html:40
+msgid "Federated"
+msgstr "Föderiert"
 
 #: bookwyrm/templates/settings/edit_server.html:41
 #: bookwyrm/templates/settings/federated_server.html:10
@@ -2573,15 +2564,23 @@ msgstr "Registrierungen geschlossen text"
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Direktnachrichten mit <a href=\"%(path)s\">%(username)s</a>"
 
+#: bookwyrm/templates/snippets/authors.html:22
+#, python-format
+msgid "and %(remainder_count_display)s other"
+msgid_plural "and %(remainder_count_display)s others"
+msgstr[0] ""
+msgstr[1] ""
+
 #: bookwyrm/templates/snippets/book_cover.html:32
 #, fuzzy
 #| msgid "Add cover"
 msgid "No cover"
 msgstr "Cover hinzufügen"
 
-#: bookwyrm/templates/snippets/book_titleby.html:4
-#, python-format
-msgid "<a href=\"%(path)s\">%(title)s</a> by "
+#: bookwyrm/templates/snippets/book_titleby.html:6
+#, fuzzy, python-format
+#| msgid "<a href=\"%(path)s\">%(title)s</a> by "
+msgid "<a href=\"%(path)s\">%(title)s</a> by"
 msgstr "<a href=\"%(path)s\">%(title)s</a> von "
 
 #: bookwyrm/templates/snippets/boost_button.html:20
@@ -3312,6 +3311,14 @@ msgstr "Dieser Benutzename ist bereits vergeben."
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Federated Servers"
+#~ msgid "Federated Timeline"
+#~ msgstr "Föderierende Server"
+
+#~ msgid "Local"
+#~ msgstr "Lokal"
 
 #, fuzzy
 #~| msgid "Direct Messages with <a href=\"%(path)s\">%(username)s</a>"
