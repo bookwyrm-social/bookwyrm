@@ -301,12 +301,14 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
 
 # ---- TASKS
 
+
 @app.task
 def populate_streams_task(user_id):
     """create a user's streams"""
     user = models.User.objects.get(id=user_id)
     for stream in streams.values():
         stream.populate_streams(user)
+
 
 @app.task
 def remove_status_task(status_ids):
