@@ -295,7 +295,7 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 # pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
-    public_streams = [v for (k, v) in streams.items() if k != 'home']
+    public_streams = [v for (k, v) in streams.items() if k != "home"]
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
         for stream in public_streams:
