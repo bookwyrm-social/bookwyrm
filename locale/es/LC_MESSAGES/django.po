@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 20:40+0000\n"
+"POT-Creation-Date: 2021-08-05 01:33+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,27 +91,47 @@ msgstr "nombre de usuario"
 msgid "A user with that username already exists."
 msgstr "Ya existe un usuario con ese nombre."
 
-#: bookwyrm/settings.py:166
+#: bookwyrm/settings.py:123
+msgid "Home Timeline"
+msgstr "Línea temporal de hogar"
+
+#: bookwyrm/settings.py:123
+msgid "Home"
+msgstr "Hogar"
+
+#: bookwyrm/settings.py:124
+#, fuzzy
+#| msgid "Book Title"
+msgid "Books Timeline"
+msgstr "Título"
+
+#: bookwyrm/settings.py:124 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/templates/user/layout.html:81
+msgid "Books"
+msgstr "Libros"
+
+#: bookwyrm/settings.py:170
 msgid "English"
 msgstr "Inglés"
 
-#: bookwyrm/settings.py:167
+#: bookwyrm/settings.py:171
 msgid "German"
 msgstr "Aléman"
 
-#: bookwyrm/settings.py:168
+#: bookwyrm/settings.py:172
 msgid "Spanish"
 msgstr "Español"
 
-#: bookwyrm/settings.py:169
+#: bookwyrm/settings.py:173
 msgid "French"
 msgstr "Francés"
 
-#: bookwyrm/settings.py:170
+#: bookwyrm/settings.py:174
 msgid "Simplified Chinese"
 msgstr "Chino simplificado"
 
-#: bookwyrm/settings.py:171
+#: bookwyrm/settings.py:175
 #, fuzzy
 #| msgid "Additional info:"
 msgid "Traditional Chinese"
@@ -904,37 +924,13 @@ msgstr "Todos los mensajes"
 msgid "You have no messages right now."
 msgstr "No tienes ningún mensaje en este momento."
 
-#: bookwyrm/templates/feed/feed.html:8
-msgid "Home Timeline"
-msgstr "Línea temporal de hogar"
-
-#: bookwyrm/templates/feed/feed.html:10
-msgid "Local Timeline"
-msgstr "Línea temporal local"
-
-#: bookwyrm/templates/feed/feed.html:12
-msgid "Federated Timeline"
-msgstr "Línea temporal federalizado"
-
-#: bookwyrm/templates/feed/feed.html:18
-msgid "Home"
-msgstr "Hogar"
-
-#: bookwyrm/templates/feed/feed.html:21
-msgid "Local"
-msgstr "Local"
-
-#: bookwyrm/templates/feed/feed.html:24
-#: bookwyrm/templates/settings/edit_server.html:40
-msgid "Federated"
-msgstr "Federalizado"
-
-#: bookwyrm/templates/feed/feed.html:32
-#, python-format
-msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
+#: bookwyrm/templates/feed/feed.html:22
+#, fuzzy, python-format
+#| msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
+msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
 msgstr "cargar <span data-poll=\"stream/%(tab)s\">0</span> status(es) no leídos"
 
-#: bookwyrm/templates/feed/feed.html:48
+#: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr "¡No hay actividad ahora mismo! Sigue a otro usuario para empezar"
 
@@ -1885,12 +1881,6 @@ msgstr "Búsqueda"
 msgid "Search type"
 msgstr "Tipo de búsqueda"
 
-#: bookwyrm/templates/search/layout.html:21
-#: bookwyrm/templates/search/layout.html:42
-#: bookwyrm/templates/user/layout.html:81
-msgid "Books"
-msgstr "Libros"
-
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/admin_layout.html:26
@@ -2071,6 +2061,10 @@ msgstr "Instancia:"
 #: bookwyrm/templates/user_admin/user_info.html:34
 msgid "Status:"
 msgstr "Status:"
+
+#: bookwyrm/templates/settings/edit_server.html:40
+msgid "Federated"
+msgstr "Federalizado"
 
 #: bookwyrm/templates/settings/edit_server.html:41
 #: bookwyrm/templates/settings/federated_server.html:10
@@ -2366,13 +2360,21 @@ msgstr "Texto de registración cerrada:"
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr "Publicado por <a href=\"%(user_path)s\">%(username)s</a>"
 
+#: bookwyrm/templates/snippets/authors.html:22
+#, python-format
+msgid "and %(remainder_count_display)s other"
+msgid_plural "and %(remainder_count_display)s others"
+msgstr[0] ""
+msgstr[1] ""
+
 #: bookwyrm/templates/snippets/book_cover.html:32
 msgid "No cover"
 msgstr "Sin portada"
 
-#: bookwyrm/templates/snippets/book_titleby.html:4
-#, python-format
-msgid "<a href=\"%(path)s\">%(title)s</a> by "
+#: bookwyrm/templates/snippets/book_titleby.html:6
+#, fuzzy, python-format
+#| msgid "<a href=\"%(path)s\">%(title)s</a> by "
+msgid "<a href=\"%(path)s\">%(title)s</a> by"
 msgstr "<a href=\"%(path)s\">%(title)s</a> por "
 
 #: bookwyrm/templates/snippets/boost_button.html:20
@@ -3046,6 +3048,15 @@ msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónic
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
+
+#~ msgid "Local Timeline"
+#~ msgstr "Línea temporal local"
+
+#~ msgid "Federated Timeline"
+#~ msgstr "Línea temporal federalizado"
+
+#~ msgid "Local"
+#~ msgstr "Local"
 
 #~ msgid "Remove <a href=\"%(path)s\">%(name)s</a>"
 #~ msgstr "Eliminar <a href=\"%(path)s\">%(name)s</a>"
