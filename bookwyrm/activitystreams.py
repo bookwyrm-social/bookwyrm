@@ -9,7 +9,7 @@ from bookwyrm.views.helpers import privacy_filter
 
 
 class ActivityStream(RedisStore):
-    """a category of activity stream (like home, local, federated)"""
+    """a category of activity stream (like home, local, books)"""
 
     def stream_id(self, user):
         """the redis key for this user's instance of this stream"""
@@ -229,7 +229,6 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
     if not created:
         return
 
-    # iterates through Home, Local, Federated
     for stream in streams.values():
         stream.add_status(instance)
 
@@ -296,7 +295,7 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 # pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
-    public_streams = [LocalStream(), FederatedStream()]
+    public_streams = [v for (k, v) in streams.items() if k != 'home']
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
         for stream in public_streams:
