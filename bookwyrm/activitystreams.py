@@ -156,25 +156,6 @@ class LocalStream(ActivityStream):
         )
 
 
-class FederatedStream(ActivityStream):
-    """users you follow"""
-
-    key = "federated"
-
-    def get_audience(self, status):
-        # this stream wants no part in non-public statuses
-        if status.privacy != "public":
-            return []
-        return super().get_audience(status)
-
-    def get_statuses_for_user(self, user):
-        return privacy_filter(
-            user,
-            models.Status.objects.select_subclasses(),
-            privacy_levels=["public"],
-        )
-
-
 class BooksStream(ActivityStream):
     """books on your shelves"""
 
@@ -201,7 +182,7 @@ class BooksStream(ActivityStream):
         return audience.filter(shelfbook__book__parent_work=work).distinct()
 
     def get_statuses_for_user(self, user):
-        """any public status that mentions their books"""
+        """any public status that mentions the user's books"""
         books = user.shelfbook_set.values_list(
             "book__parent_work__id", flat=True
         ).distinct()
@@ -219,13 +200,13 @@ class BooksStream(ActivityStream):
         )
 
 
+# determine which streams are enabled in settings.py
 available_streams = [s["key"] for s in STREAMS]
 streams = {
     k: v
     for (k, v) in {
         "home": HomeStream(),
         "local": LocalStream(),
-        "federated": FederatedStream(),
         "books": BooksStream(),
     }.items()
     if k in available_streams
