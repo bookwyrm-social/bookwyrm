@@ -4,8 +4,8 @@ from django.db.models import signals, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.settings import STREAMS
 from bookwyrm.views.helpers import privacy_filter
-
 
 class ActivityStream(RedisStore):
     """a category of activity stream (like home, local, federated)"""
@@ -218,13 +218,13 @@ class BooksStream(ActivityStream):
         )
 
 
-streams = {
+available_streams = [s["key"] for s in STREAMS]
+streams = {k:v for (k, v) in {
     "home": HomeStream(),
     "local": LocalStream(),
     "federated": FederatedStream(),
     "books": BooksStream(),
-}
-
+}.items() if k in available_streams}
 
 @receiver(signals.post_save)
 # pylint: disable=unused-argument

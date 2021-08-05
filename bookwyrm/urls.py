@@ -23,7 +23,7 @@ STATUS_PATH = r"%s/(%s)/(?P<status_id>\d+)" % (USER_PATH, "|".join(status_types)
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
 
-STREAMS = "|".join(settings.STREAMS)
+STREAMS = "|".join(s["key"] for s in settings.STREAMS)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

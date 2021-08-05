@@ -118,7 +118,11 @@ REDIS_ACTIVITY_PORT = env("REDIS_ACTIVITY_PORT", 6379)
 REDIS_ACTIVITY_PASSWORD = env("REDIS_ACTIVITY_PASSWORD", None)
 
 MAX_STREAM_LENGTH = int(env("MAX_STREAM_LENGTH", 200))
-STREAMS = ["home", "books"]
+
+STREAMS = [
+    {"key": "home", "name": _("Home Timeline"), "shortname": _("Home")},
+    {"key": "books", "name": _("Books Timeline"), "shortname": _("Books")},
+]
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
