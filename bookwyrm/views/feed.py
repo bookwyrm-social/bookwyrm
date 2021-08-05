@@ -24,9 +24,11 @@ class Feed(View):
     def get(self, request, tab):
         """user's homepage with activity feed"""
         tab = [s for s in STREAMS if s["key"] == tab]
-        tab = tab[0] or STREAMS[0]
+        tab = tab[0] if tab else STREAMS[0]
 
-        activities = activitystreams.streams[tab["key"]].get_activity_stream(request.user)
+        activities = activitystreams.streams[tab["key"]].get_activity_stream(
+            request.user
+        )
         paginated = Paginator(activities, PAGE_LENGTH)
 
         suggestions = suggested_users.get_suggestions(request.user)
