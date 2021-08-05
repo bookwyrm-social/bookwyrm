@@ -6,11 +6,12 @@ from django.db.models import signals, Q
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
 from bookwyrm.tasks import app
+from bookwyrm.settings import STREAMS
 from bookwyrm.views.helpers import privacy_filter
 
 
 class ActivityStream(RedisStore):
-    """a category of activity stream (like home, local, federated)"""
+    """a category of activity stream (like home, local, books)"""
 
     def stream_id(self, user):
         """the redis key for this user's instance of this stream"""
@@ -157,29 +158,60 @@ class LocalStream(ActivityStream):
         )
 
 
-class FederatedStream(ActivityStream):
-    """users you follow"""
+class BooksStream(ActivityStream):
+    """books on your shelves"""
 
-    key = "federated"
+    key = "books"
 
     def get_audience(self, status):
-        # this stream wants no part in non-public statuses
-        if status.privacy != "public":
+        """anyone with the mentioned book on their shelves"""
+        # only show public statuses on the books feed,
+        # and only statuses that mention books
+        if status.privacy != "public" or not (
+            status.mention_books.exists() or hasattr(status, "book")
+        ):
             return []
-        return super().get_audience(status)
+
+        work = (
+            status.book.parent_work
+            if hasattr(status, "book")
+            else status.mention_books.first().parent_work
+        )
+
+        audience = super().get_audience(status)
+        if not audience:
+            return []
+        return audience.filter(shelfbook__book__parent_work=work).distinct()
 
     def get_statuses_for_user(self, user):
+        """any public status that mentions the user's books"""
+        books = user.shelfbook_set.values_list(
+            "book__parent_work__id", flat=True
+        ).distinct()
         return privacy_filter(
             user,
-            models.Status.objects.select_subclasses(),
+            models.Status.objects.select_subclasses()
+            .filter(
+                Q(comment__book__parent_work__id__in=books)
+                | Q(quotation__book__parent_work__id__in=books)
+                | Q(review__book__parent_work__id__in=books)
+                | Q(mention_books__parent_work__id__in=books)
+            )
+            .distinct(),
             privacy_levels=["public"],
         )
 
 
+# determine which streams are enabled in settings.py
+available_streams = [s["key"] for s in STREAMS]
 streams = {
-    "home": HomeStream(),
-    "local": LocalStream(),
-    "federated": FederatedStream(),
+    k: v
+    for (k, v) in {
+        "home": HomeStream(),
+        "local": LocalStream(),
+        "books": BooksStream(),
+    }.items()
+    if k in available_streams
 }
 
 
@@ -203,8 +235,6 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
 
 def add_status_on_create_command(sender, instance):
     """runs this code only after the database commit completes"""
-
-    # iterates through Home, Local, Federated
     add_status_task.delay(instance.id)
 
     if sender != models.Boost:
@@ -272,12 +302,14 @@ def remove_statuses_on_block(sender, instance, *args, **kwargs):
 # pylint: disable=unused-argument
 def add_statuses_on_unblock(sender, instance, *args, **kwargs):
     """remove statuses from all feeds on block"""
+    public_streams = [v for (k, v) in streams.items() if k != "home"]
+
     # add statuses back to streams with statuses from anyone
     if instance.user_subject.local:
         add_user_statuses_task.delay(
             instance.user_subject.id,
             instance.user_object.id,
-            stream_list=["local", "federated"],
+            stream_list=public_streams,
         )
 
     # add statuses back to streams with statuses from anyone
@@ -285,7 +317,7 @@ def add_statuses_on_unblock(sender, instance, *args, **kwargs):
         add_user_statuses_task.delay(
             instance.user_object.id,
             instance.user_subject.id,
-            stream_list=["local", "federated"],
+            stream_list=public_streams,
         )
 
 
