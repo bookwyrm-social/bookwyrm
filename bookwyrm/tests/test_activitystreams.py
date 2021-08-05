@@ -190,20 +190,3 @@ class Activitystreams(TestCase):
         )
         users = activitystreams.LocalStream().get_audience(status)
         self.assertEqual(users, [])
-
-    def test_federatedstream_get_audience(self, *_):
-        """get a list of users that should see a status"""
-        status = models.Status.objects.create(
-            user=self.remote_user, content="hi", privacy="public"
-        )
-        users = activitystreams.FederatedStream().get_audience(status)
-        self.assertTrue(self.local_user in users)
-        self.assertTrue(self.another_user in users)
-
-    def test_federatedstream_get_audience_unlisted(self, *_):
-        """get a list of users that should see a status"""
-        status = models.Status.objects.create(
-            user=self.remote_user, content="hi", privacy="unlisted"
-        )
-        users = activitystreams.FederatedStream().get_audience(status)
-        self.assertEqual(users, [])
