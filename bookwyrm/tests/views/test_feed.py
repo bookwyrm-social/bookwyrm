@@ -45,7 +45,7 @@ class FeedViews(TestCase):
         view = views.Feed.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "local")
+        result = view(request, "home")
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)

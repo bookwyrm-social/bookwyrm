@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-04 20:40+0000\n"
+"POT-Creation-Date: 2021-08-05 01:33+0000\n"
 "PO-Revision-Date: 2021-02-28 17:19-0800\n"
 "Last-Translator: Mouse Reeve <mousereeve@riseup.net>\n"
 "Language-Team: English <LL@li.org>\n"
@@ -91,27 +91,45 @@ msgstr ""
 msgid "A user with that username already exists."
 msgstr ""
 
-#: bookwyrm/settings.py:166
-msgid "English"
+#: bookwyrm/settings.py:123
+msgid "Home Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:167
-msgid "German"
+#: bookwyrm/settings.py:123
+msgid "Home"
 msgstr ""
 
-#: bookwyrm/settings.py:168
-msgid "Spanish"
+#: bookwyrm/settings.py:124
+msgid "Books Timeline"
 msgstr ""
 
-#: bookwyrm/settings.py:169
-msgid "French"
+#: bookwyrm/settings.py:124 bookwyrm/templates/search/layout.html:21
+#: bookwyrm/templates/search/layout.html:42
+#: bookwyrm/templates/user/layout.html:81
+msgid "Books"
 msgstr ""
 
 #: bookwyrm/settings.py:170
-msgid "Simplified Chinese"
+msgid "English"
 msgstr ""
 
 #: bookwyrm/settings.py:171
+msgid "German"
+msgstr ""
+
+#: bookwyrm/settings.py:172
+msgid "Spanish"
+msgstr ""
+
+#: bookwyrm/settings.py:173
+msgid "French"
+msgstr ""
+
+#: bookwyrm/settings.py:174
+msgid "Simplified Chinese"
+msgstr ""
+
+#: bookwyrm/settings.py:175
 msgid "Traditional Chinese"
 msgstr ""
 
@@ -896,37 +914,12 @@ msgstr ""
 msgid "You have no messages right now."
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:8
-msgid "Home Timeline"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:10
-msgid "Local Timeline"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:12
-msgid "Federated Timeline"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:18
-msgid "Home"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:21
-msgid "Local"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:24
-#: bookwyrm/templates/settings/edit_server.html:40
-msgid "Federated"
-msgstr ""
-
-#: bookwyrm/templates/feed/feed.html:32
+#: bookwyrm/templates/feed/feed.html:22
 #, python-format
-msgid "load <span data-poll=\"stream/%(tab)s\">0</span> unread status(es)"
+msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
 msgstr ""
 
-#: bookwyrm/templates/feed/feed.html:48
+#: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
 msgstr ""
 
@@ -1864,12 +1857,6 @@ msgstr ""
 msgid "Search type"
 msgstr ""
 
-#: bookwyrm/templates/search/layout.html:21
-#: bookwyrm/templates/search/layout.html:42
-#: bookwyrm/templates/user/layout.html:81
-msgid "Books"
-msgstr ""
-
 #: bookwyrm/templates/search/layout.html:23
 #: bookwyrm/templates/search/layout.html:46
 #: bookwyrm/templates/settings/admin_layout.html:26
@@ -2043,6 +2030,10 @@ msgstr ""
 #: bookwyrm/templates/settings/federated_server.html:31
 #: bookwyrm/templates/user_admin/user_info.html:34
 msgid "Status:"
+msgstr ""
+
+#: bookwyrm/templates/settings/edit_server.html:40
+msgid "Federated"
 msgstr ""
 
 #: bookwyrm/templates/settings/edit_server.html:41
@@ -2333,13 +2324,20 @@ msgstr ""
 msgid "Posted by <a href=\"%(user_path)s\">%(username)s</a>"
 msgstr ""
 
+#: bookwyrm/templates/snippets/authors.html:22
+#, python-format
+msgid "and %(remainder_count_display)s other"
+msgid_plural "and %(remainder_count_display)s others"
+msgstr[0] ""
+msgstr[1] ""
+
 #: bookwyrm/templates/snippets/book_cover.html:32
 msgid "No cover"
 msgstr ""
 
-#: bookwyrm/templates/snippets/book_titleby.html:4
+#: bookwyrm/templates/snippets/book_titleby.html:6
 #, python-format
-msgid "<a href=\"%(path)s\">%(title)s</a> by "
+msgid "<a href=\"%(path)s\">%(title)s</a> by"
 msgstr ""
 
 #: bookwyrm/templates/snippets/boost_button.html:20

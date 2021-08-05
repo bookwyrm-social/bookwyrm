@@ -46,4 +46,4 @@ class Activitystreams(TestCase):
             "bookwyrm.activitystreams.ActivityStream.populate_store"
         ) as redis_mock:
             populate_streams()
-        self.assertEqual(redis_mock.call_count, 6)  # 2 users x 3 streams
+        self.assertEqual(redis_mock.call_count, 4)  # 2 users x 2 streams
