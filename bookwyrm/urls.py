@@ -23,6 +23,8 @@ STATUS_PATH = r"%s/(%s)/(?P<status_id>\d+)" % (USER_PATH, "|".join(status_types)
 
 BOOK_PATH = r"^book/(?P<book_id>\d+)"
 
+STREAMS = "|".join(settings.STREAMS)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
@@ -177,7 +179,7 @@ urlpatterns = [
         name="get-started-users",
     ),
     # feeds
-    re_path(r"^(?P<tab>home|local|federated)/?$", views.Feed.as_view()),
+    re_path(r"^(?P<tab>{:s})/?$".format(STREAMS), views.Feed.as_view()),
     re_path(
         r"^direct-messages/?$", views.DirectMessage.as_view(), name="direct-messages"
     ),

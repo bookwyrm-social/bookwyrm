@@ -173,6 +173,7 @@ class FederatedStream(ActivityStream):
             privacy_levels=["public"],
         )
 
+
 class BooksStream(ActivityStream):
     """books on your shelves"""
 
@@ -182,30 +183,46 @@ class BooksStream(ActivityStream):
         """anyone with the mentioned book on their shelves"""
         # only show public statuses on the books feed,
         # and only statuses that mention books
-        if status.privacy != "public" or not (status.mention_books.exists() or hasattr(status, "book")):
+        if status.privacy != "public" or not (
+            status.mention_books.exists() or hasattr(status, "book")
+        ):
             return []
 
-        work = status.book.parent_work if hasattr(status, "book") else status.mention_books.first().parent_work
+        work = (
+            status.book.parent_work
+            if hasattr(status, "book")
+            else status.mention_books.first().parent_work
+        )
 
         audience = super().get_audience(status)
         if not audience:
             return []
-        return audience.filter(
-            shelfbook__book__parent_work=work
-        ).distinct()
+        return audience.filter(shelfbook__book__parent_work=work).distinct()
 
     def get_statuses_for_user(self, user):
         """any public status that mentions their books"""
+        books = user.shelfbook_set.values_list(
+            "book__parent_work__id", flat=True
+        ).distinct()
         return privacy_filter(
             user,
-            models.Status.objects.select_subclasses().filter(,
+            models.Status.objects.select_subclasses()
+            .filter(
+                Q(comment__book__parent_work__id__in=books)
+                | Q(quotation__book__parent_work__id__in=books)
+                | Q(review__book__parent_work__id__in=books)
+                | Q(mention_books__parent_work__id__in=books)
+            )
+            .distinct(),
             privacy_levels=["public"],
         )
+
 
 streams = {
     "home": HomeStream(),
     "local": LocalStream(),
     "federated": FederatedStream(),
+    "books": BooksStream(),
 }
 
 
