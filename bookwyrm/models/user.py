@@ -111,7 +111,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    last_active_date = models.DateTimeField(auto_now=True)
+    last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
     show_goal = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
