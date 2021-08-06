@@ -24,6 +24,9 @@ CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
+# make users confirm their email addresses after registration
+CONFIRM_EMAIL = env("CONFIRM_EMAIL", True)
+
 # email
 EMAIL_BACKEND = env("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
 EMAIL_HOST = env("EMAIL_HOST")

@@ -9,8 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
-from bookwyrm import forms, models
-from bookwyrm.settings import DOMAIN
+from bookwyrm import emailing, forms, models
+from bookwyrm.settings import DOMAIN, CONFIRM_EMAIL
 
 
 # pylint: disable= no-self-use
@@ -104,12 +104,21 @@ class Register(View):
 
         username = "%s@%s" % (localname, DOMAIN)
         user = models.User.objects.create_user(
-            username, email, password, localname=localname, local=True
+            username,
+            email,
+            password,
+            localname=localname,
+            local=True,
+            is_active=not CONFIRM_EMAIL,
         )
         if invite:
             invite.times_used += 1
             invite.invitees.add(user)
             invite.save()
+
+        if CONFIRM_EMAIL:
+            emailing.email_confirmation_email(user)
+            return redirect("confirm-email")
 
         login(request, user)
         return redirect("get-started-profile")

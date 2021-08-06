@@ -1,0 +1,11 @@
+{% extends 'email/text_layout.html' %}
+{% load i18n %}
+{% block content %}
+{% blocktrans trimmed %}
+One last step before you join {{ site_name }}! Please confirm your email address by clicking the link below:
+{% endblocktrans %}
+
+{{ confirmation_link }}
+
+
+{% endblock %}

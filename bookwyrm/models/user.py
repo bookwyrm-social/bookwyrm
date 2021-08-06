@@ -17,7 +17,7 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
@@ -26,6 +26,10 @@ from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
 
+def site_link():
+    """helper for generating links to the site"""
+    protocol = "https" if USE_HTTPS else "http"
+    return f"{protocol}://{DOMAIN}"
 
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
@@ -128,6 +132,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def confirmation_link(self):
+        """helper for generating confirmation links"""
+        link = site_link()
+        return f"{link}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -260,9 +270,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return
 
         # populate fields for local users
-        self.remote_id = "https://%s/user/%s" % (DOMAIN, self.localname)
+        self.remote_id = "%s/user/%s" % (site_link(), self.localname)
         self.inbox = "%s/inbox" % self.remote_id
-        self.shared_inbox = "https://%s/inbox" % DOMAIN
+        self.shared_inbox = "%s/inbox" % site_link()
         self.outbox = "%s/outbox" % self.remote_id
 
         # an id needs to be set before we can proceed with related models

@@ -46,4 +46,6 @@ def email_preview(request):
     data["text_content_path"] = "email/{}/text_content.html".format(template)
     data["reset_link"] = "https://example.com/link"
     data["invite_link"] = "https://example.com/link"
+    data["confirmation_link"] = "https://example.com/link"
+    data["confirmation_code"] = "AKJHKDGKJSDFG"
     return TemplateResponse(request, "email/preview.html", data)
