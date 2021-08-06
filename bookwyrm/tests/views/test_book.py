@@ -12,6 +12,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.utils import timezone
 
 from bookwyrm import forms, models, views
 from bookwyrm.activitypub import ActivitypubResponse
@@ -52,6 +53,11 @@ class BookViews(TestCase):
     def test_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Book.as_view()
+        models.ReadThrough.objects.create(
+            user=self.local_user,
+            book=self.book,
+            start_date=timezone.now(),
+        )
         request = self.factory.get("")
         request.user = self.local_user
         with patch("bookwyrm.views.books.is_api_request") as is_api:
@@ -66,6 +72,78 @@ class BookViews(TestCase):
             result = view(request, self.book.id)
         self.assertIsInstance(result, ActivitypubResponse)
         self.assertEqual(result.status_code, 200)
+
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    def test_book_page_statuses(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Book.as_view()
+
+        review = models.Review.objects.create(
+            user=self.local_user,
+            book=self.book,
+            content="hi",
+        )
+
+        comment = models.Comment.objects.create(
+            user=self.local_user,
+            book=self.book,
+            content="hi",
+        )
+
+        quote = models.Quotation.objects.create(
+            user=self.local_user,
+            book=self.book,
+            content="hi",
+            quote="wow",
+        )
+
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="review")
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["statuses"].object_list[0], review)
+
+        with patch("bookwyrm.views.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="comment")
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["statuses"].object_list[0], comment)
+
+        with patch("bookwyrm.views.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.book.id, user_statuses="quotation")
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["statuses"].object_list[0], quote)
+
+    def test_book_page_invalid_id(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Book.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, 0)
+        self.assertEqual(result.status_code, 404)
+
+    def test_book_page_work_id(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Book.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+        with patch("bookwyrm.views.books.is_api_request") as is_api:
+            is_api.return_value = False
+            result = view(request, self.work.id)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["book"], self.book)
 
     def test_edit_book_page(self):
         """there are so many views, this just makes sure it LOADS"""
