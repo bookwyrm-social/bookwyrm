@@ -367,9 +367,9 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
 
 @receiver(signals.pre_save, sender=models.ShelfBook)
 # pylint: disable=unused-argument
-def add_statuses_on_shelve(sender, instance, created, *args, **kwargs):
+def add_statuses_on_shelve(sender, instance, *args, **kwargs):
     """update books stream when user shelves a book"""
-    if not created or not instance.user.local:
+    if not instance.user.local:
         return
     # check if the book is already on the user's shelves
     if models.ShelfBook.objects.filter(
