@@ -6,6 +6,7 @@ from bookwyrm import activitystreams, models
 
 @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.activitystreams.BooksStream.add_book_statuses")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
 class Activitystreams(TestCase):
     """using redis to build activity streams"""

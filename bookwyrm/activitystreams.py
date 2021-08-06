@@ -199,6 +199,40 @@ class BooksStream(ActivityStream):
             privacy_levels=["public"],
         )
 
+    def add_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+        statuses = privacy_filter(
+            user,
+            models.Status.objects.select_subclasses()
+            .filter(
+                Q(comment__book__parent_work=work)
+                | Q(quotation__book__parent_work=work)
+                | Q(review__book__parent_work=work)
+                | Q(mention_books__parent_work=work)
+            )
+            .distinct(),
+            privacy_levels=["public"],
+        )
+        self.bulk_add_objects_to_store(statuses, self.stream_id(user))
+
+    def remove_book_statuses(self, user, book):
+        """add statuses about a book to a user's feed"""
+        work = book.parent_work
+        statuses = privacy_filter(
+            user,
+            models.Status.objects.select_subclasses()
+            .filter(
+                Q(comment__book__parent_work=work)
+                | Q(quotation__book__parent_work=work)
+                | Q(review__book__parent_work=work)
+                | Q(mention_books__parent_work=work)
+            )
+            .distinct(),
+            privacy_levels=["public"],
+        )
+        self.bulk_remove_objects_from_store(statuses, self.stream_id(user))
+
 
 # determine which streams are enabled in settings.py
 available_streams = [s["key"] for s in STREAMS]
@@ -316,3 +350,33 @@ def populate_streams_on_account_create(sender, instance, created, *args, **kwarg
 
     for stream in streams.values():
         stream.populate_streams(instance)
+
+
+@receiver(signals.pre_save, sender=models.ShelfBook)
+# pylint: disable=unused-argument
+def add_statuses_on_shelve(sender, instance, *args, **kwargs):
+    """update books stream when user shelves a book"""
+    if not instance.user.local:
+        return
+    # check if the book is already on the user's shelves
+    if models.ShelfBook.objects.filter(
+        user=instance.user, book__in=instance.book.parent_work.editions.all()
+    ).exists():
+        return
+
+    BooksStream().add_book_statuses(instance.user, instance.book)
+
+
+@receiver(signals.post_delete, sender=models.ShelfBook)
+# pylint: disable=unused-argument
+def remove_statuses_on_shelve(sender, instance, *args, **kwargs):
+    """update books stream when user unshelves a book"""
+    if not instance.user.local:
+        return
+    # check if the book is actually unshelved, not just moved
+    if models.ShelfBook.objects.filter(
+        user=instance.user, book__in=instance.book.parent_work.editions.all()
+    ).exists():
+        return
+
+    BooksStream().remove_book_statuses(instance.user, instance.book)
