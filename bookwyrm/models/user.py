@@ -22,7 +22,7 @@ from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason
+from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
 
@@ -123,6 +123,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     deactivation_reason = models.CharField(
         max_length=255, choices=DeactivationReason.choices, null=True, blank=True
     )
+    confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
     property_fields = [("following_link", "following")]
