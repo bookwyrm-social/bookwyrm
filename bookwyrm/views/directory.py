@@ -28,7 +28,7 @@ class Directory(View):
         if sort == "recent":
             users = users.order_by("-last_active_date")
         else:
-            users = users.order_by("-mutuals", "-shared_books", "-last_active_date")
+            users = users.order_by("-mutuals", "-last_active_date")
 
         paginated = Paginator(users, 12)
 
