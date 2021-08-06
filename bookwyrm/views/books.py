@@ -339,18 +339,15 @@ def set_cover_from_url(url):
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def add_description(request, book_id):
     """upload a new cover"""
-    if not request.method == "POST":
-        return redirect("/")
-
     book = get_object_or_404(models.Edition, id=book_id)
 
     description = request.POST.get("description")
 
     book.description = description
     book.last_edited_by = request.user
-    book.save()
+    book.save(update_fields=["description", "last_edited_by"])
 
-    return redirect("/book/%s" % book.id)
+    return redirect("book", book.id)
 
 
 @require_POST
@@ -360,7 +357,7 @@ def resolve_book(request):
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
 
-    return redirect("/book/%d" % book.id)
+    return redirect("book", book.id)
 
 
 @login_required

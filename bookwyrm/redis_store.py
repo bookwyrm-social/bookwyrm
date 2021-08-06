@@ -50,15 +50,15 @@ class RedisStore(ABC):
         pipeline.execute()
 
     def bulk_remove_objects_from_store(self, objs, store):
-        """remoev a list of objects from a given store"""
+        """remove a list of objects from a given store"""
         pipeline = r.pipeline()
         for obj in objs[: self.max_length]:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
-    def get_store(self, store):  # pylint: disable=no-self-use
+    def get_store(self, store, **kwargs):  # pylint: disable=no-self-use
         """load the values in a store"""
-        return r.zrevrange(store, 0, -1)
+        return r.zrevrange(store, 0, -1, **kwargs)
 
     def populate_store(self, store):
         """go from zero to a store"""

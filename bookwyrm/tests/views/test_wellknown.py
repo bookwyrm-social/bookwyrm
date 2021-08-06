@@ -16,16 +16,17 @@ class UserViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
-        models.User.objects.create_user(
-            "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
+            models.User.objects.create_user(
+                "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             models.User.objects.create_user(
                 "rat",

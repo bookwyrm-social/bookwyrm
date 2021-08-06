@@ -23,14 +23,15 @@ class BookViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.com",
-            "mouseword",
-            local=True,
-            localname="mouse",
-            remote_id="https://example.com/users/mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.com",
+                "mouseword",
+                local=True,
+                localname="mouse",
+                remote_id="https://example.com/users/mouse",
+            )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(
@@ -200,7 +201,8 @@ class BookViews(TestCase):
         self.assertEqual(book.authors.first().name, "Sappho")
         self.assertEqual(book.authors.first(), book.parent_work.authors.first())
 
-    def test_switch_edition(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_switch_edition(self, _):
         """updates user's relationships to a book"""
         work = models.Work.objects.create(title="test work")
         edition1 = models.Edition.objects.create(title="first ed", parent_work=work)
@@ -297,3 +299,16 @@ class BookViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
+
+    def test_add_description(self):
+        """add a book description"""
+        self.local_user.groups.add(self.group)
+        request = self.factory.post("", {"description": "new description hi"})
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.add_description(request, self.book.id)
+
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.description, "new description hi")
+        self.assertEqual(self.book.last_edited_by, self.local_user)

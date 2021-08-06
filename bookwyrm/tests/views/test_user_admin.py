@@ -14,13 +14,14 @@ class UserAdminViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        self.local_user = models.User.objects.create_user(
-            "mouse@local.com",
-            "mouse@mouse.mouse",
-            "password",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse@local.com",
+                "mouse@mouse.mouse",
+                "password",
+                local=True,
+                localname="mouse",
+            )
         models.SiteSettings.objects.create()
 
     def test_user_admin_list_page(self):
@@ -47,7 +48,9 @@ class UserAdminViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_user_admin_page_post(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_user_admin_page_post(self, *_):
         """set the user's group"""
         group = Group.objects.create(name="editor")
         self.assertEqual(

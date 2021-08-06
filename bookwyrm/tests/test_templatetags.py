@@ -22,13 +22,14 @@ class TemplateTags(TestCase):
 
     def setUp(self):
         """create some filler objects"""
-        self.user = models.User.objects.create_user(
-            "mouse@example.com",
-            "mouse@mouse.mouse",
-            "mouseword",
-            local=True,
-            localname="mouse",
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.user = models.User.objects.create_user(
+                "mouse@example.com",
+                "mouse@mouse.mouse",
+                "mouseword",
+                local=True,
+                localname="mouse",
+            )
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             self.remote_user = models.User.objects.create_user(
                 "rat",

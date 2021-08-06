@@ -11,9 +11,10 @@ class List(TestCase):
 
     def setUp(self):
         """look, a list"""
-        self.local_user = models.User.objects.create_user(
-            "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
-        )
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
+            self.local_user = models.User.objects.create_user(
+                "mouse", "mouse@mouse.mouse", "mouseword", local=True, localname="mouse"
+            )
         work = models.Work.objects.create(title="hello")
         self.book = models.Edition.objects.create(title="hi", parent_work=work)
 
