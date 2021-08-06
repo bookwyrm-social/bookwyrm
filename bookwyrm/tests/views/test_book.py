@@ -299,3 +299,16 @@ class BookViews(TestCase):
 
         self.book.refresh_from_db()
         self.assertTrue(self.book.cover)
+
+    def test_add_description(self):
+        """add a book description"""
+        self.local_user.groups.add(self.group)
+        request = self.factory.post("", {"description": "new description hi"})
+        request.user = self.local_user
+
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            views.add_description(request, self.book.id)
+
+        self.book.refresh_from_db()
+        self.assertEqual(self.book.description, "new description hi")
+        self.assertEqual(self.book.last_edited_by, self.local_user)
