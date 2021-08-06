@@ -28,7 +28,9 @@ class UserViews(TestCase):
             self.rat = models.User.objects.create_user(
                 "rat@local.com", "rat@rat.rat", "password", local=True, localname="rat"
             )
-        self.book = models.Edition.objects.create(title="test")
+        self.book = models.Edition.objects.create(
+            title="test", parent_work=models.Work.objects.create(title="test work")
+        )
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
             with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
                 models.ShelfBook.objects.create(
