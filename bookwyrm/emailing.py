@@ -30,6 +30,7 @@ def email_confirmation_email(user):
     data["confirmation_link"] = user.confirmation_link
     send_email.delay(user.email, *format_email("confirm_email", data))
 
+
 def invite_email(invite_request):
     """send out an invite code"""
     data = email_data()

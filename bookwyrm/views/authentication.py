@@ -10,20 +10,21 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
 from bookwyrm import emailing, forms, models
-from bookwyrm.settings import DOMAIN, CONFIRM_EMAIL
+from bookwyrm.settings import DOMAIN
 
 
-# pylint: disable= no-self-use
+# pylint: disable=no-self-use
 @method_decorator(csrf_exempt, name="dispatch")
 class Login(View):
     """authenticate an existing user"""
 
-    def get(self, request):
+    def get(self, request, confirmed=None):
         """login page"""
         if request.user.is_authenticated:
             return redirect("/")
-        # sene user to the login page
+        # send user to the login page
         data = {
+            "show_confirmed_email": confirmed,
             "login_form": forms.LoginForm(),
             "register_form": forms.RegisterForm(),
         }
@@ -37,14 +38,15 @@ class Login(View):
 
         localname = login_form.data["localname"]
         if "@" in localname:  # looks like an email address to me
-            email = localname
             try:
-                username = models.User.objects.get(email=email)
+                username = models.User.objects.get(email=localname).username
             except models.User.DoesNotExist:  # maybe it's a full username?
                 username = localname
         else:
             username = "%s@%s" % (localname, DOMAIN)
         password = login_form.data["password"]
+
+        # perform authentication
         user = authenticate(request, username=username, password=password)
         if user is not None:
             # successful login
@@ -53,6 +55,12 @@ class Login(View):
             user.save(broadcast=False, update_fields=["last_active_date"])
             return redirect(request.GET.get("next", "/"))
 
+        # maybe the user is pending email confirmation
+        if models.User.objects.filter(
+            username=username, is_active=False, deactivation_reason="pending"
+        ).exists():
+            return redirect("confirm-email")
+
         # login errors
         login_form.non_field_errors = "Username or password are incorrect"
         register_form = forms.RegisterForm()
@@ -60,12 +68,23 @@ class Login(View):
         return TemplateResponse(request, "login.html", data)
 
 
+@method_decorator(login_required, name="dispatch")
+class Logout(View):
+    """log out"""
+
+    def get(self, request):
+        """done with this place! outa here!"""
+        logout(request)
+        return redirect("/")
+
+
 class Register(View):
     """register a user"""
 
     def post(self, request):
         """join the server"""
-        if not models.SiteSettings.get().allow_registration:
+        settings = models.SiteSettings.get()
+        if not settings.allow_registration:
             invite_code = request.POST.get("invite_code")
 
             if not invite_code:
@@ -109,14 +128,15 @@ class Register(View):
             password,
             localname=localname,
             local=True,
-            is_active=not CONFIRM_EMAIL,
+            deactivation_reason="pending" if settings.require_confirm_email else None,
+            is_active=not settings.require_confirm_email,
         )
         if invite:
             invite.times_used += 1
             invite.invitees.add(user)
             invite.save()
 
-        if CONFIRM_EMAIL:
+        if settings.require_confirm_email:
             emailing.email_confirmation_email(user)
             return redirect("confirm-email")
 
@@ -124,11 +144,32 @@ class Register(View):
         return redirect("get-started-profile")
 
 
-@method_decorator(login_required, name="dispatch")
-class Logout(View):
-    """log out"""
+class ConfirmEmail(View):
+    """enter code to confirm email address"""
 
-    def get(self, request):
-        """done with this place! outa here!"""
-        logout(request)
-        return redirect("/")
+    def get(self, request):  # pylint: disable=unused-argument
+        """you need a code! keep looking"""
+        settings = models.SiteSettings.get()
+        if request.user.is_authenticated or not settings.require_confirm_email:
+            return redirect("/")
+
+        return TemplateResponse(request, "confirm_email.html")
+
+
+class ConfirmEmailCode(View):
+    """confirm email address"""
+
+    def get(self, request, code):  # pylint: disable=unused-argument
+        """you got the code! good work"""
+        settings = models.SiteSettings.get()
+        if request.user.is_authenticated or not settings.require_confirm_email:
+            return redirect("/")
+
+        # look up the user associated with this code
+        user = get_object_or_404(models.User, confirmation_code=code)
+        # update the user
+        user.is_active = True
+        user.deactivation_reason = None
+        user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
+        # direct the user to log in
+        return redirect("login", confirmed="confirmed")

@@ -26,10 +26,12 @@ from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
 
+
 def site_link():
     """helper for generating links to the site"""
     protocol = "https" if USE_HTTPS else "http"
     return f"{protocol}://{DOMAIN}"
+
 
 class User(OrderedCollectionPageMixin, AbstractUser):
     """a user who wants to read books"""
@@ -218,7 +220,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_followers_activity(self, **kwargs):
@@ -228,7 +230,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_activity(self, **kwargs):

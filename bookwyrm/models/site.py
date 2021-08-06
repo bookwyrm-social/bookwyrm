@@ -31,6 +31,7 @@ class SiteSettings(models.Model):
     # registration
     allow_registration = models.BooleanField(default=True)
     allow_invite_requests = models.BooleanField(default=True)
+    require_confirm_email = models.BooleanField(default=True)
 
     # images
     logo = models.ImageField(upload_to="logos/", null=True, blank=True)
