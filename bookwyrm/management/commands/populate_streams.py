@@ -8,7 +8,7 @@ def populate_streams():
     users = models.User.objects.filter(
         local=True,
         is_active=True,
-    )
+    ).order_by("last_active_date")
     for user in users:
         for stream in activitystreams.streams.values():
             stream.populate_streams(user)
