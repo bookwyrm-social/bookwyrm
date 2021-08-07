@@ -162,8 +162,8 @@ def is_blocked(viewer, user):
     return False
 
 
-def get_discover_books():
-    """list of books for the discover page"""
+def get_landing_books():
+    """list of books for the landing page"""
     return list(
         set(
             models.Edition.objects.filter(
