@@ -32,7 +32,7 @@ class AuthenticationViews(TestCase):
         self.anonymous_user.is_authenticated = False
 
         self.settings = models.SiteSettings.objects.create(
-            id=1, require_email_confirmation=False
+            id=1, require_confirm_email=False
         )
 
     def test_login_get(self, _):
