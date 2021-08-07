@@ -1,5 +1,6 @@
 {% load bookwyrm_tags %}
 {% load i18n %}
+{% load status_display %}
 
 {% if status %}
     {% with book=status.book %}
@@ -59,9 +60,13 @@
                     {% include 'snippets/follow_button.html' with user=status.user show_username=True minimal=True %}
                 </div>
 
-                <div class="notification has-background-white p-2">
-                    {% include "snippets/status/content_status.html" with hide_book=True %}
+                <div class="notification has-background-white p-2 mb-2">
+                    {% include "snippets/status/content_status.html" with hide_book=True trim_length=100 hide_more=True %}
                 </div>
+                <a href="{{ status.remote_id }}">
+                    <span>{% trans "View status" %}</span>
+                    <span class="icon icon-arrow-right" aria-hidden="true"></span>
+                </a>
             </div>
         </div>
     {% endwith %}
