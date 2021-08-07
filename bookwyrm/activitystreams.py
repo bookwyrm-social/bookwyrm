@@ -260,9 +260,6 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
             stream.remove_object_from_related_stores(instance)
         return
 
-    if not created:
-        return
-
     for stream in streams.values():
         stream.add_status(instance)
 
