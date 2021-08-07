@@ -144,18 +144,6 @@ class Register(View):
         return redirect("get-started-profile")
 
 
-class ConfirmEmail(View):
-    """enter code to confirm email address"""
-
-    def get(self, request):  # pylint: disable=unused-argument
-        """you need a code! keep looking"""
-        settings = models.SiteSettings.get()
-        if request.user.is_authenticated or not settings.require_confirm_email:
-            return redirect("/")
-
-        return TemplateResponse(request, "confirm_email.html")
-
-
 class ConfirmEmailCode(View):
     """confirm email address"""
 
@@ -166,10 +154,30 @@ class ConfirmEmailCode(View):
             return redirect("/")
 
         # look up the user associated with this code
-        user = get_object_or_404(models.User, confirmation_code=code)
+        try:
+            user = models.User.objects.get(confirmation_code=code)
+        except models.User.DoesNotExist:
+            return TemplateResponse(request, "confirm_email/confirm_email.html", {"valid": False})
         # update the user
         user.is_active = True
         user.deactivation_reason = None
         user.save(broadcast=False, update_fields=["is_active", "deactivation_reason"])
         # direct the user to log in
         return redirect("login", confirmed="confirmed")
+
+
+class ConfirmEmail(View):
+    """enter code to confirm email address"""
+
+    def get(self, request):  # pylint: disable=unused-argument
+        """you need a code! keep looking"""
+        settings = models.SiteSettings.get()
+        if request.user.is_authenticated or not settings.require_confirm_email:
+            return redirect("/")
+
+        return TemplateResponse(request, "confirm_email/confirm_email.html", {"valid": True})
+
+    def post(self, request):
+        """same as clicking the link"""
+        code = request.POST.get("code")
+        return ConfirmEmailCode().get(request, code)

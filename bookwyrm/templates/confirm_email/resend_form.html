@@ -1,0 +1,19 @@
+{% extends "components/inline_form.html" %}
+{% load i18n %}
+{% block header %}
+{% trans "Resend confirmation link" %}
+{% endblock %}
+
+{% block form %}
+<form name="resend" method="post" action="{#% url 'resend-link' %#}">
+    <div class="field">
+        <label class="label" for="email">{% trans "Email address:" %}</label>
+        <div class="control">
+            <input type="text" class="input" required id="email">
+        </div>
+    </div>
+    <div class="control">
+        <button class="button is-link">{% trans "Resend link" %}</button>
+    </div>
+</form>
+{% endblock %}

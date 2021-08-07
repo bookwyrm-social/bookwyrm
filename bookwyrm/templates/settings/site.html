@@ -92,6 +92,13 @@
             </label>
         </div>
         <div class="field">
+            <label class="label mb-0" for="id_allow_invite_requests">
+                {{ site_form.require_confirm_email }}
+                {% trans "Require users to confirm email address" %}
+            </label>
+            <p class="help">{% trans "(Recommended if registration is open)" %}</p>
+        </div>
+        <div class="field">
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>
             {{ site_form.registration_closed_text }}
         </div>
