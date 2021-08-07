@@ -5,23 +5,14 @@
 {% if status %}
     {% with book=status.book %}
         <a href="{{ book.local_path }}">
-            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-h-l-tablet is-w-auto align to-b to-l' %}
+            {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' %}
         </a>
 
-        {% include 'snippets/stars.html' with rating=book|rating:request.user %}
+        <div class="block mt-2">
+            {% include 'snippets/shelve_button/shelve_button.html' %}
+        </div>
 
-        <h3 class="title is-6">
-            <a href="{{ book.local_path }}">{{ book.title }}</a>
-        </h3>
-
-        {% if book.authors %}
-            <p class="subtitle is-6">
-                {% trans "by" %}
-                {% include 'snippets/authors.html' with limit=3 %}
-            </p>
-        {% endif %}
-
-        <div class="media">
+        <div class="media block mb-2">
             <figure class="media-left" aria-hidden="true">
                 <a class="image is-48x48" href="{{ status.user.local_path }}">
                     {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
@@ -29,12 +20,34 @@
             </figure>
 
             <div class="media-content">
-                <h3 class="has-text-weight-bold">
+                <h3 class="title is-6">
                     <a href="{{ status.user.local_path }}">
                         <span>{{ status.user.display_name }}</span>
                     </a>
+
+                    {% if status.status_type == 'GeneratedNote' %}
+                        {{ status.content|safe }}
+                    {% elif status.status_type == 'Rating' %}
+                        {% trans "rated" %}
+                    {% elif status.status_type == 'Review' %}
+                        {% trans "reviewed" %}
+                    {% elif status.status_type == 'Comment' %}
+                        {% trans "commented on" %}
+                    {% elif status.status_type == 'Quotation' %}
+                        {% trans "quoted" %}
+                    {% endif %}
+
+                    <a href="{{ book.local_path }}">{{ book.title }}</a>
                 </h3>
+                {% if status.rating %}
+                <p class="subtitle is-6">
+                    {% include 'snippets/stars.html' with rating=status.rating %}
+                </p>
+                {% endif %}
             </div>
+        </div>
+        <div class="block">
+            {% include 'snippets/follow_button.html' with user=status.user show_username=True minimal=True %}
         </div>
 
     {% endwith %}

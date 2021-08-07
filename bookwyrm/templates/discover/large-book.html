@@ -1,37 +1,67 @@
 {% load bookwyrm_tags %}
-{% load markdown %}
 {% load i18n %}
 
-{% if book %}
-    {% with book=book %}
+{% if status %}
+    {% with book=status.book %}
         <div class="columns is-gapless">
-            <div class="column is-5-tablet is-cover">
+            <div class="column is-6-tablet is-cover">
                 <a
                     class="align to-b to-l"
                     href="{{ book.local_path }}"
                 >{% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto-tablet' %}</a>
 
                 {% include 'snippets/stars.html' with rating=book|rating:request.user %}
-            </div>
-
-
-            <div class="column mt-3-mobile ml-3-tablet">
-                <h3 class="title is-5">
+                <h3 class="title is-6">
                     <a href="{{ book.local_path }}">{{ book.title }}</a>
                 </h3>
 
                 {% if book.authors %}
-                    <p class="subtitle is-5">
-                        {% trans "by" %}
-                        {% include 'snippets/authors.html' with limit=3 %}
-                    </p>
+                <p class="subtitle is-6 mb-2">
+                    {% trans "by" %}
+                    {% include 'snippets/authors.html' with limit=3 %}
+                </p>
                 {% endif %}
 
-                {% if book|book_description %}
-                    <blockquote class="content">
-                        {{ book|book_description|to_markdown|safe|truncatewords_html:50 }}
-                    </blockquote>
-                {% endif %}
+                {% include 'snippets/shelve_button/shelve_button.html' %}
+            </div>
+
+            <div class="column mt-3-mobile ml-3-tablet">
+                <div class="media block mb-2">
+                    <figure class="media-left" aria-hidden="true">
+                        <a class="image is-48x48" href="{{ status.user.local_path }}">
+                            {% include 'snippets/avatar.html' with user=status.user ariaHide="true" medium="true" %}
+                        </a>
+                    </figure>
+                    <div class="media-content">
+                        <h3 class="title is-6">
+                            <a href="{{ status.user.local_path }}">
+                                <span>{{ status.user.display_name }}</span>
+                            </a>
+
+                            {% if status.status_type == 'GeneratedNote' %}
+                                {{ status.content|safe }}
+                            {% elif status.status_type == 'Rating' %}
+                                {% trans "rated" %}
+                            {% elif status.status_type == 'Review' %}
+                                {% trans "reviewed" %}
+                            {% elif status.status_type == 'Comment' %}
+                                {% trans "commented on" %}
+                            {% elif status.status_type == 'Quotation' %}
+                                {% trans "quoted" %}
+                            {% endif %}
+
+                            <a href="{{ book.local_path }}">{{ book.title }}</a>
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="block">
+                    {% include 'snippets/follow_button.html' with user=status.user show_username=True minimal=True %}
+                </div>
+
+                <div class="notification has-background-white p-2">
+                    {% include "snippets/status/content_status.html" with hide_book=True %}
+                </div>
             </div>
         </div>
     {% endwith %}

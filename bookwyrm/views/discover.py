@@ -7,7 +7,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from bookwyrm import models
-from bookwyrm.settings import PAGE_LENGTH
 from .helpers import privacy_filter
 
 
@@ -24,13 +23,20 @@ class Discover(View):
                 Q(comment__isnull=False)
                 | Q(review__isnull=False)
                 | Q(quotation__isnull=False),
-                user__local=True
+                user__local=True,
             ),
-            #privacy_levels=["public"]
+            privacy_levels=["public"],
         )
-        #paginated = Paginator(activities, PAGE_LENGTH)
+        large_activities = Paginator(
+            activities.filter(~Q(content=None), ~Q(content="")), 6
+        )
+        small_activities = Paginator(
+            activities.filter(Q(content=None) | Q(content="")), 4
+        )
+
+        page = request.GET.get("page")
         data = {
-            "large": activities.filter(~Q(review__isnull=True, review__content=None))[:2],
-            "small": activities.filter(~Q(content=None))[:4],
+            "large_activities": large_activities.get_page(page),
+            "small_activities": small_activities.get_page(page),
         }
         return TemplateResponse(request, "discover/discover.html", data)
