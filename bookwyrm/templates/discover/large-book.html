@@ -60,7 +60,7 @@
                     {% include 'snippets/follow_button.html' with user=status.user show_username=True minimal=True %}
                 </div>
 
-                <div class="notification has-background-white p-2 mb-2">
+                <div class="notification has-background-white p-2 mb-2 clip-text">
                     {% include "snippets/status/content_status.html" with hide_book=True trim_length=70 hide_more=True %}
                 </div>
                 <a href="{{ status.remote_id }}">
