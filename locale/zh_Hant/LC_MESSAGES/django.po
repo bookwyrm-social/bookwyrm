@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-06 18:34+0000\n"
+"POT-Creation-Date: 2021-08-07 01:35+0000\n"
 "PO-Revision-Date: 2021-06-30 10:36+0000\n"
 "Last-Translator: Grace Cheng <chengracecwy@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -288,7 +288,7 @@ msgstr "Goodreads key:"
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
-#: bookwyrm/templates/settings/site.html:101
+#: bookwyrm/templates/settings/site.html:108
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:36
@@ -687,6 +687,60 @@ msgstr "關閉"
 msgid "Compose status"
 msgstr "撰寫狀態"
 
+#: bookwyrm/templates/confirm_email/confirm_email.html:4
+#, fuzzy
+#| msgid "Confirm"
+msgid "Confirm email"
+msgstr "確認"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:7
+#, fuzzy
+#| msgid "Email address:"
+msgid "Confirm your email address"
+msgstr "郵箱地址:"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:13
+msgid "A confirmation code has been sent to the email address you used to register your account."
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:15
+msgid "Sorry! We couldn't find that code."
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:19
+#, fuzzy
+#| msgid "Confirm password:"
+msgid "Confirmation code:"
+msgstr "確認密碼:"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:25
+#: bookwyrm/templates/discover/landing_layout.html:70
+#: bookwyrm/templates/moderation/report_modal.html:33
+msgid "Submit"
+msgstr "提交"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:32
+msgid "Can't find your code?"
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/resend_form.html:4
+msgid "Resend confirmation link"
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/resend_form.html:11
+#: bookwyrm/templates/discover/landing_layout.html:64
+#: bookwyrm/templates/password_reset_request.html:18
+#: bookwyrm/templates/preferences/edit_user.html:38
+#: bookwyrm/templates/snippets/register_form.html:13
+msgid "Email address:"
+msgstr "郵箱地址:"
+
+#: bookwyrm/templates/confirm_email/resend_form.html:17
+#, fuzzy
+#| msgid "Re-send invite"
+msgid "Resend link"
+msgstr "重新發送請求"
+
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
 msgstr "社群"
@@ -813,7 +867,7 @@ msgid "Join %(name)s"
 msgstr "加入 %(name)s"
 
 #: bookwyrm/templates/discover/landing_layout.html:51
-#: bookwyrm/templates/login.html:51
+#: bookwyrm/templates/login.html:56
 msgid "This instance is closed"
 msgstr "本實例不開放。"
 
@@ -825,21 +879,25 @@ msgstr "謝謝你！我們已經受到了你的請求。"
 msgid "Request an Invitation"
 msgstr "請求邀請"
 
-#: bookwyrm/templates/discover/landing_layout.html:64
-#: bookwyrm/templates/password_reset_request.html:18
-#: bookwyrm/templates/preferences/edit_user.html:38
-#: bookwyrm/templates/snippets/register_form.html:13
-msgid "Email address:"
-msgstr "郵箱地址:"
-
-#: bookwyrm/templates/discover/landing_layout.html:70
-#: bookwyrm/templates/moderation/report_modal.html:33
-msgid "Submit"
-msgstr "提交"
-
 #: bookwyrm/templates/discover/landing_layout.html:79
 msgid "Your Account"
 msgstr "你的帳號"
+
+#: bookwyrm/templates/email/confirm/html_content.html:6
+#: bookwyrm/templates/email/confirm/text_content.html:4
+#, python-format
+msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
+msgstr ""
+
+#: bookwyrm/templates/email/confirm/html_content.html:11
+#, fuzzy
+#| msgid "Confirm"
+msgid "Confirm Email"
+msgstr "確認"
+
+#: bookwyrm/templates/email/confirm/subject.html:2
+msgid "Please confirm your email"
+msgstr ""
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -1247,7 +1305,7 @@ msgid "Imported"
 msgstr "已匯入"
 
 #: bookwyrm/templates/invite.html:4 bookwyrm/templates/invite.html:12
-#: bookwyrm/templates/login.html:46
+#: bookwyrm/templates/login.html:51
 msgid "Create an Account"
 msgstr "建立帳號"
 
@@ -1315,7 +1373,7 @@ msgid "Notifications"
 msgstr "通知"
 
 #: bookwyrm/templates/layout.html:158 bookwyrm/templates/layout.html:162
-#: bookwyrm/templates/login.html:17
+#: bookwyrm/templates/login.html:22
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "使用者名稱:"
@@ -1324,12 +1382,12 @@ msgstr "使用者名稱:"
 msgid "password"
 msgstr "密碼"
 
-#: bookwyrm/templates/layout.html:164 bookwyrm/templates/login.html:36
+#: bookwyrm/templates/layout.html:164 bookwyrm/templates/login.html:41
 msgid "Forgot your password?"
 msgstr "忘記了密碼？"
 
 #: bookwyrm/templates/layout.html:167 bookwyrm/templates/login.html:10
-#: bookwyrm/templates/login.html:33
+#: bookwyrm/templates/login.html:38
 msgid "Log in"
 msgstr "登入"
 
@@ -1505,16 +1563,20 @@ msgstr "你的列表"
 msgid "Login"
 msgstr "登入"
 
-#: bookwyrm/templates/login.html:23 bookwyrm/templates/password_reset.html:17
+#: bookwyrm/templates/login.html:16
+msgid "Success! Email address confirmed."
+msgstr ""
+
+#: bookwyrm/templates/login.html:28 bookwyrm/templates/password_reset.html:17
 #: bookwyrm/templates/snippets/register_form.html:22
 msgid "Password:"
 msgstr "密碼:"
 
-#: bookwyrm/templates/login.html:52
+#: bookwyrm/templates/login.html:57
 msgid "Contact an administrator to get an invite"
 msgstr "聯絡管理員以取得邀請"
 
-#: bookwyrm/templates/login.html:63
+#: bookwyrm/templates/login.html:68
 msgid "More about this site"
 msgstr "關於本網站的更多"
 
@@ -2338,7 +2400,15 @@ msgstr "允許註冊:"
 msgid "Allow invite requests"
 msgstr "允許請求邀請:"
 
-#: bookwyrm/templates/settings/site.html:95
+#: bookwyrm/templates/settings/site.html:97
+msgid "Require users to confirm email address"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:99
+msgid "(Recommended if registration is open)"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:102
 msgid "Registration closed text:"
 msgstr "註冊關閉文字:"
 
@@ -3011,7 +3081,7 @@ msgstr "檔案超過了最大大小: 10MB"
 msgid "%(title)s: %(subtitle)s"
 msgstr ""
 
-#: bookwyrm/views/authentication.py:58
+#: bookwyrm/views/authentication.py:69
 msgid "Username or password are incorrect"
 msgstr ""
 

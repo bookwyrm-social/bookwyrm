@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-06 18:34+0000\n"
+"POT-Creation-Date: 2021-08-07 01:35+0000\n"
 "PO-Revision-Date: 2021-04-05 12:44+0100\n"
 "Last-Translator: Fabien Basmaison <contact@arkhi.org>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -286,7 +286,7 @@ msgstr "Clé Goodreads :"
 #: bookwyrm/templates/settings/announcement_form.html:69
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
-#: bookwyrm/templates/settings/site.html:101
+#: bookwyrm/templates/settings/site.html:108
 #: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
 #: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:36
@@ -684,6 +684,60 @@ msgstr "Fermer"
 msgid "Compose status"
 msgstr "Rédiger un statut"
 
+#: bookwyrm/templates/confirm_email/confirm_email.html:4
+#, fuzzy
+#| msgid "Confirm"
+msgid "Confirm email"
+msgstr "Confirmer"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:7
+#, fuzzy
+#| msgid "Email address:"
+msgid "Confirm your email address"
+msgstr "Adresse email :"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:13
+msgid "A confirmation code has been sent to the email address you used to register your account."
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:15
+msgid "Sorry! We couldn't find that code."
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:19
+#, fuzzy
+#| msgid "Confirm password:"
+msgid "Confirmation code:"
+msgstr "Confirmez le mot de passe :"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:25
+#: bookwyrm/templates/discover/landing_layout.html:70
+#: bookwyrm/templates/moderation/report_modal.html:33
+msgid "Submit"
+msgstr "Valider"
+
+#: bookwyrm/templates/confirm_email/confirm_email.html:32
+msgid "Can't find your code?"
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/resend_form.html:4
+msgid "Resend confirmation link"
+msgstr ""
+
+#: bookwyrm/templates/confirm_email/resend_form.html:11
+#: bookwyrm/templates/discover/landing_layout.html:64
+#: bookwyrm/templates/password_reset_request.html:18
+#: bookwyrm/templates/preferences/edit_user.html:38
+#: bookwyrm/templates/snippets/register_form.html:13
+msgid "Email address:"
+msgstr "Adresse email :"
+
+#: bookwyrm/templates/confirm_email/resend_form.html:17
+#, fuzzy
+#| msgid "Re-send invite"
+msgid "Resend link"
+msgstr "Envoyer l’invitation de nouveau"
+
 #: bookwyrm/templates/directory/community_filter.html:5
 msgid "Community"
 msgstr "Communauté"
@@ -812,7 +866,7 @@ msgid "Join %(name)s"
 msgstr "Rejoignez %(name)s"
 
 #: bookwyrm/templates/discover/landing_layout.html:51
-#: bookwyrm/templates/login.html:51
+#: bookwyrm/templates/login.html:56
 msgid "This instance is closed"
 msgstr "Cette instance est fermée"
 
@@ -824,21 +878,25 @@ msgstr "Merci ! Votre demande a bien été reçue."
 msgid "Request an Invitation"
 msgstr "Demander une invitation"
 
-#: bookwyrm/templates/discover/landing_layout.html:64
-#: bookwyrm/templates/password_reset_request.html:18
-#: bookwyrm/templates/preferences/edit_user.html:38
-#: bookwyrm/templates/snippets/register_form.html:13
-msgid "Email address:"
-msgstr "Adresse email :"
-
-#: bookwyrm/templates/discover/landing_layout.html:70
-#: bookwyrm/templates/moderation/report_modal.html:33
-msgid "Submit"
-msgstr "Valider"
-
 #: bookwyrm/templates/discover/landing_layout.html:79
 msgid "Your Account"
 msgstr "Votre compte"
+
+#: bookwyrm/templates/email/confirm/html_content.html:6
+#: bookwyrm/templates/email/confirm/text_content.html:4
+#, python-format
+msgid "One last step before you join %(site_name)s! Please confirm your email address by clicking the link below:"
+msgstr ""
+
+#: bookwyrm/templates/email/confirm/html_content.html:11
+#, fuzzy
+#| msgid "Confirm"
+msgid "Confirm Email"
+msgstr "Confirmer"
+
+#: bookwyrm/templates/email/confirm/subject.html:2
+msgid "Please confirm your email"
+msgstr ""
 
 #: bookwyrm/templates/email/html_layout.html:15
 #: bookwyrm/templates/email/text_layout.html:2
@@ -1246,7 +1304,7 @@ msgid "Imported"
 msgstr "Importé"
 
 #: bookwyrm/templates/invite.html:4 bookwyrm/templates/invite.html:12
-#: bookwyrm/templates/login.html:46
+#: bookwyrm/templates/login.html:51
 msgid "Create an Account"
 msgstr "Créer un compte"
 
@@ -1314,7 +1372,7 @@ msgid "Notifications"
 msgstr "Notifications"
 
 #: bookwyrm/templates/layout.html:158 bookwyrm/templates/layout.html:162
-#: bookwyrm/templates/login.html:17
+#: bookwyrm/templates/login.html:22
 #: bookwyrm/templates/snippets/register_form.html:4
 msgid "Username:"
 msgstr "Nom du compte :"
@@ -1323,12 +1381,12 @@ msgstr "Nom du compte :"
 msgid "password"
 msgstr "Mot de passe"
 
-#: bookwyrm/templates/layout.html:164 bookwyrm/templates/login.html:36
+#: bookwyrm/templates/layout.html:164 bookwyrm/templates/login.html:41
 msgid "Forgot your password?"
 msgstr "Mot de passe oublié ?"
 
 #: bookwyrm/templates/layout.html:167 bookwyrm/templates/login.html:10
-#: bookwyrm/templates/login.html:33
+#: bookwyrm/templates/login.html:38
 msgid "Log in"
 msgstr "Se connecter"
 
@@ -1504,16 +1562,20 @@ msgstr "Vos listes"
 msgid "Login"
 msgstr "Connexion"
 
-#: bookwyrm/templates/login.html:23 bookwyrm/templates/password_reset.html:17
+#: bookwyrm/templates/login.html:16
+msgid "Success! Email address confirmed."
+msgstr ""
+
+#: bookwyrm/templates/login.html:28 bookwyrm/templates/password_reset.html:17
 #: bookwyrm/templates/snippets/register_form.html:22
 msgid "Password:"
 msgstr "Mot de passe :"
 
-#: bookwyrm/templates/login.html:52
+#: bookwyrm/templates/login.html:57
 msgid "Contact an administrator to get an invite"
 msgstr "Contacter un administrateur pour obtenir une invitation"
 
-#: bookwyrm/templates/login.html:63
+#: bookwyrm/templates/login.html:68
 msgid "More about this site"
 msgstr "En savoir plus sur ce site"
 
@@ -2333,7 +2395,15 @@ msgstr "Autoriser les inscriptions"
 msgid "Allow invite requests"
 msgstr "Autoriser les demandes d’invitation"
 
-#: bookwyrm/templates/settings/site.html:95
+#: bookwyrm/templates/settings/site.html:97
+msgid "Require users to confirm email address"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:99
+msgid "(Recommended if registration is open)"
+msgstr ""
+
+#: bookwyrm/templates/settings/site.html:102
 msgid "Registration closed text:"
 msgstr "Texte affiché lorsque les inscriptions sont closes :"
 
@@ -3015,7 +3085,7 @@ msgstr "Ce fichier dépasse la taille limite : 10 Mo"
 msgid "%(title)s: %(subtitle)s"
 msgstr "%(title)s (%(subtitle)s)"
 
-#: bookwyrm/views/authentication.py:58
+#: bookwyrm/views/authentication.py:69
 msgid "Username or password are incorrect"
 msgstr ""
 
@@ -3064,11 +3134,6 @@ msgstr "Un lien de réinitialisation a été envoyé à %s."
 #, fuzzy
 #~| msgid "Email address:"
 #~ msgid "Enter a valid integer."
-#~ msgstr "Adresse email :"
-
-#, fuzzy
-#~| msgid "Email address:"
-#~ msgid "Enter a valid email address."
 #~ msgstr "Adresse email :"
 
 #, fuzzy
