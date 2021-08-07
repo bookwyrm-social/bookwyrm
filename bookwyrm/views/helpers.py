@@ -164,16 +164,21 @@ def is_blocked(viewer, user):
 
 def get_landing_books():
     """list of books for the landing page"""
-    return list(
-        set(
-            models.Edition.objects.filter(
-                review__published_date__isnull=False,
-                review__deleted=False,
-                review__user__local=True,
-                review__privacy__in=["public", "unlisted"],
-            )
-            .exclude(cover__exact="")
-            .annotate(Max("review__published_date"))
-            .order_by("-review__published_date__max")[:6]
+
+    options = (
+        models.Edition.objects.filter(
+            review__published_date__isnull=False,
+            review__deleted=False,
+            review__user__local=True,
+            review__privacy__in=["public", "unlisted"],
         )
+        .exclude(cover__exact="")
+        .annotate(Max("review__published_date"))
+        .order_by("-review__published_date__max")
     )
+
+    has_description = options.exclude(description=None).exclude(description="")
+    return {
+        "has_description": has_description[:2],
+        "no_description": options.exclude(id__in=has_description)[:4],
+    }
