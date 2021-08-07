@@ -11,4 +11,10 @@ One last step before you join {{ site_name }}! Please confirm your email address
 {% trans "Confirm Email" as text %}
 {% include 'email/snippets/action.html' with path=confirmation_link text=text %}
 
+<p>
+{% blocktrans trimmed %}
+Or enter the code "<code>{{ confirmation_code }}</code>" at login.
+{% endblocktrans %}
+</p>
+
 {% endblock %}
