@@ -31,7 +31,9 @@ class AuthenticationViews(TestCase):
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
 
-        self.settings = models.SiteSettings.objects.create(id=1)
+        self.settings = models.SiteSettings.objects.create(
+            id=1, require_email_confirmation=False
+        )
 
     def test_login_get(self, _):
         """there are so many views, this just makes sure it LOADS"""
