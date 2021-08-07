@@ -132,7 +132,8 @@ class AuthenticationViews(TestCase):
         self.assertEqual(nutria.localname, "nutria-user.user_nutria")
         self.assertEqual(nutria.local, True)
 
-    def test_register_email_confirm(self, _):
+    @patch("bookwyrm.emailing.send_email.delay")
+    def test_register_email_confirm(self, *_):
         """create a user"""
         self.settings.require_confirm_email = True
         self.settings.save()
