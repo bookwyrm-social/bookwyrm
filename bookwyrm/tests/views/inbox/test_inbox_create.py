@@ -47,7 +47,8 @@ class InboxCreate(TestCase):
         }
         models.SiteSettings.objects.create()
 
-    def test_create_status(self, _):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_create_status(self, *_):
         """the "it justs works" mode"""
         datafile = pathlib.Path(__file__).parent.joinpath(
             "../../data/ap_quotation.json"
