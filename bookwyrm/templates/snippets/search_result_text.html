@@ -18,7 +18,17 @@
         </p>
         <p>
             {% if result.author %}
-                {{ result.author }}
+            <a
+                href="{{ result.author.local_path }}"
+                class="author"
+                itemprop="author"
+                itemscope
+                itemtype="https://schema.org/Thing"
+            >
+                <span itemprop="name">
+                    {{ result.author.name }}
+                </span>
+            </a>
             {% endif %}
 
             {% if result.year %}
