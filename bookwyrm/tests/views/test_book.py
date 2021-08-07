@@ -74,7 +74,8 @@ class BookViews(TestCase):
         self.assertEqual(result.status_code, 200)
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    def test_book_page_statuses(self, _):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_book_page_statuses(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Book.as_view()
 
