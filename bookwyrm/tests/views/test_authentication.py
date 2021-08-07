@@ -8,7 +8,7 @@ from django.template.response import TemplateResponse
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from bookwyrm import models, views
+from bookwyrm import forms, models, views
 from bookwyrm.settings import DOMAIN
 
 
@@ -22,7 +22,7 @@ class AuthenticationViews(TestCase):
         self.factory = RequestFactory()
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
-                "mouse@local.com",
+                "mouse@your.domain.here",
                 "mouse@mouse.com",
                 "password",
                 local=True,
@@ -48,6 +48,66 @@ class AuthenticationViews(TestCase):
         result = login(request)
         self.assertEqual(result.url, "/")
         self.assertEqual(result.status_code, 302)
+
+    def test_login_post_localname(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse@mouse.com"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_username(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse@your.domain.here"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_email(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse"
+        form.data["password"] = "password"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        self.assertEqual(result.url, "/")
+        self.assertEqual(result.status_code, 302)
+
+    def test_login_post_invalid_credentials(self, _):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Login.as_view()
+        form = forms.LoginForm()
+        form.data["localname"] = "mouse"
+        form.data["password"] = "passsword1"
+        request = self.factory.post("", form.data)
+        request.user = self.anonymous_user
+
+        with patch("bookwyrm.views.authentication.login"):
+            result = view(request)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(
+            result.context_data["login_form"].non_field_errors,
+            "Username or password are incorrect",
+        )
 
     def test_register(self, _):
         """create a user"""

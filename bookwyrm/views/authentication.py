@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views import View
@@ -65,7 +66,7 @@ class Login(View):
             return redirect("confirm-email")
 
         # login errors
-        login_form.non_field_errors = "Username or password are incorrect"
+        login_form.non_field_errors = _("Username or password are incorrect")
         register_form = forms.RegisterForm()
         data = {"login_form": login_form, "register_form": register_form}
         return TemplateResponse(request, "login.html", data)
