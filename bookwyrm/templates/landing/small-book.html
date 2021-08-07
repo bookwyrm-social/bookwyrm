@@ -16,7 +16,7 @@
         {% if book.authors %}
             <p class="subtitle is-6">
                 {% trans "by" %}
-                {% include 'snippets/authors.html' %}
+                {% include 'snippets/authors.html' with limit=3 %}
             </p>
         {% endif %}
     {% endwith %}
