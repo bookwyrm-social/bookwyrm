@@ -12,7 +12,7 @@ register = template.Library()
 def get_rating(book, user):
     """get the overall rating of a book"""
     queryset = views.helpers.privacy_filter(
-        user, models.Review.objects.filter(book=book)
+        user, models.Review.objects.filter(book__in=book.parent_work.editions.all())
     )
     return queryset.aggregate(Avg("rating"))["rating__avg"]
 

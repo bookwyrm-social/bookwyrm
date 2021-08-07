@@ -1,4 +1,6 @@
 """ base model with default fields """
+import base64
+from Crypto import Random
 from django.db import models
 from django.dispatch import receiver
 
@@ -9,11 +11,17 @@ from .fields import RemoteIdField
 DeactivationReason = models.TextChoices(
     "DeactivationReason",
     [
+        "pending",
         "self_deletion",
         "moderator_deletion",
         "domain_block",
     ],
 )
+
+
+def new_access_code():
+    """the identifier for a user invite"""
+    return base64.b32encode(Random.get_random_bytes(5)).decode("ascii")
 
 
 class BookWyrmModel(models.Model):
