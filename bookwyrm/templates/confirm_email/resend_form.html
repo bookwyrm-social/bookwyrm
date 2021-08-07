@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block form %}
-<form name="resend" method="post" action="{#% url 'resend-link' %#}">
+<form name="resend" method="post" action="{% url 'resend-link' %}">
+    {% csrf_token %}
     <div class="field">
         <label class="label" for="email">{% trans "Email address:" %}</label>
         <div class="control">
-            <input type="text" class="input" required id="email">
+            <input type="text" name="email" class="input" required id="email">
         </div>
     </div>
     <div class="control">

@@ -7,6 +7,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views import View
 
 from bookwyrm import emailing, forms, models
@@ -53,6 +54,8 @@ class Login(View):
             login(request, user)
             user.last_active_date = timezone.now()
             user.save(broadcast=False, update_fields=["last_active_date"])
+            if request.POST.get("first_login"):
+                return redirect("get-started-profile")
             return redirect(request.GET.get("next", "/"))
 
         # maybe the user is pending email confirmation
@@ -157,7 +160,9 @@ class ConfirmEmailCode(View):
         try:
             user = models.User.objects.get(confirmation_code=code)
         except models.User.DoesNotExist:
-            return TemplateResponse(request, "confirm_email/confirm_email.html", {"valid": False})
+            return TemplateResponse(
+                request, "confirm_email/confirm_email.html", {"valid": False}
+            )
         # update the user
         user.is_active = True
         user.deactivation_reason = None
@@ -175,9 +180,22 @@ class ConfirmEmail(View):
         if request.user.is_authenticated or not settings.require_confirm_email:
             return redirect("/")
 
-        return TemplateResponse(request, "confirm_email/confirm_email.html", {"valid": True})
+        return TemplateResponse(
+            request, "confirm_email/confirm_email.html", {"valid": True}
+        )
 
     def post(self, request):
         """same as clicking the link"""
         code = request.POST.get("code")
         return ConfirmEmailCode().get(request, code)
+
+
+@require_POST
+def resend_link(request):
+    """resend confirmation link"""
+    email = request.POST.get("email")
+    user = get_object_or_404(models.User, email=email)
+    emailing.email_confirmation_email(user)
+    return TemplateResponse(
+        request, "confirm_email/confirm_email.html", {"valid": True}
+    )

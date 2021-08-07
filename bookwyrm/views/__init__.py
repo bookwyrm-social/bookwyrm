@@ -1,7 +1,7 @@
 """ make sure all our nice views are available """
 from .announcements import Announcements, Announcement, delete_announcement
 from .authentication import Login, Register, Logout
-from .authentication import ConfirmEmail, ConfirmEmailCode
+from .authentication import ConfirmEmail, ConfirmEmailCode, resend_link
 from .author import Author, EditAuthor
 from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook, Editions
