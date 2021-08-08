@@ -29,7 +29,7 @@ class DiscoverViews(TestCase):
 
     def test_discover_page_empty(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Home.as_view()
+        view = views.Directory.as_view()
         request = self.factory.get("")
         request.user = self.local_user
         with patch(
@@ -41,9 +41,10 @@ class DiscoverViews(TestCase):
         result.render()
 
     @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
-    def test_discover_page(self, _):
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_discover_page(self, *_):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Home.as_view()
+        view = views.Directory.as_view()
         request = self.factory.get("")
         request.user = self.local_user
 
@@ -69,7 +70,7 @@ class DiscoverViews(TestCase):
 
     def test_discover_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Home.as_view()
+        view = views.Directory.as_view()
         request = self.factory.get("")
         request.user = self.anonymous_user
         result = view(request)
