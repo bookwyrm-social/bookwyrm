@@ -6,8 +6,7 @@ from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from bookwyrm import models
-from .helpers import privacy_filter
+from bookwyrm import activitystreams
 
 
 # pylint: disable= no-self-use
@@ -17,21 +16,28 @@ class Discover(View):
 
     def get(self, request):
         """tiled book activity page"""
-        activities = privacy_filter(
-            request.user,
-            models.Status.objects.select_subclasses().filter(
+        activities = (
+            activitystreams.streams["local"]
+            .get_activity_stream(request.user)
+            .filter(
                 Q(comment__isnull=False)
                 | Q(review__isnull=False)
-                | Q(quotation__isnull=False),
-                user__local=True,
-            ),
-            privacy_levels=["public"],
+                | Q(quotation__isnull=False)
+                | Q(mention_books__isnull=False)
+            )
         )
+
         large_activities = Paginator(
-            activities.filter(~Q(content=None), ~Q(content="")), 6
+            activities.filter(mention_books__isnull=True)
+            .exclude(content=None, quotation__quote=None)
+            .exclude(content=""),
+            6,
         )
         small_activities = Paginator(
-            activities.filter(Q(content=None) | Q(content="")), 4
+            activities.filter(
+                Q(mention_books__isnull=False) | Q(content=None) | Q(content="")
+            ),
+            4,
         )
 
         page = request.GET.get("page")

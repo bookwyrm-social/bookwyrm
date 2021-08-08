@@ -56,7 +56,13 @@ class ActivityStream(RedisStore):
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
-            .select_related("user", "reply_parent")
+            .select_related(
+                "user",
+                "reply_parent",
+                "comment__book",
+                "review__book",
+                "quotation__book",
+            )
             .prefetch_related("mention_books", "mention_users")
             .order_by("-published_date")
         )
