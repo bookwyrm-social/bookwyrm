@@ -4,6 +4,7 @@ from django.db.models import signals, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
+from bookwyrm.tasks import app
 from bookwyrm.views.helpers import privacy_filter
 
 
@@ -374,3 +375,11 @@ def remove_statuses_on_shelve(sender, instance, *args, **kwargs):
         return
 
     BooksStream().remove_book_statuses(instance.user, instance.book)
+
+
+@app.task
+def populate_stream_task(stream, user_id):
+    """background task for populating an empty activitystream"""
+    user = models.User.objects.get(id=user_id)
+    stream = streams[stream]
+    stream.populate_streams(user)
