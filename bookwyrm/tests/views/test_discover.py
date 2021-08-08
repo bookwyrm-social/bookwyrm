@@ -9,7 +9,7 @@ from bookwyrm import models
 from bookwyrm import views
 
 
-class LandingViews(TestCase):
+class DiscoverViews(TestCase):
     """pages you land on without really trying"""
 
     def setUp(self):
@@ -27,36 +27,51 @@ class LandingViews(TestCase):
         self.anonymous_user.is_authenticated = False
         models.SiteSettings.objects.create()
 
-    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
-    def test_home_page(self, _):
+    def test_discover_page_empty(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Home.as_view()
+        view = views.Discover.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        with patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream"):
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
+        ) as mock:
             result = view(request)
+        self.assertEqual(mock.call_count, 1)
         self.assertEqual(result.status_code, 200)
         result.render()
 
+    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_discover_page(self, *_):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Discover.as_view()
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        book = models.Edition.objects.create(
+            title="hi", parent_work=models.Work.objects.create(title="work")
+        )
+
+        models.Comment.objects.create(
+            book=book,
+            user=self.local_user,
+            content="hello",
+        )
+        models.Status.objects.create(user=self.local_user, content="beep")
+
+        with patch(
+            "bookwyrm.activitystreams.ActivityStream.get_activity_stream"
+        ) as mock:
+            mock.return_value = models.Status.objects.all()
+            result = view(request)
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(result.status_code, 200)
+        result.render()
+
+    def test_discover_page_logged_out(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.Discover.as_view()
+        request = self.factory.get("")
         request.user = self.anonymous_user
         result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.status_code, 200)
-        result.render()
-
-    def test_about_page(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.About.as_view()
-        request = self.factory.get("")
-        request.user = self.local_user
-        result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        result.render()
-        self.assertEqual(result.status_code, 200)
-
-    def test_landing(self):
-        """there are so many views, this just makes sure it LOADS"""
-        view = views.Landing.as_view()
-        request = self.factory.get("")
-        result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
+        self.assertEqual(result.status_code, 302)
