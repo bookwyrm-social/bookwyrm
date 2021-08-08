@@ -74,6 +74,4 @@ class DiscoverViews(TestCase):
         request = self.factory.get("")
         request.user = self.anonymous_user
         result = view(request)
-        self.assertIsInstance(result, TemplateResponse)
-        self.assertEqual(result.status_code, 200)
-        result.render()
+        self.assertEqual(result.status_code, 302)
