@@ -71,7 +71,7 @@ class Connector(AbstractConnector):
         # flatten the data so that images, uri, and claims are on the same level
         return {
             **data.get("claims", {}),
-            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks"]},
+            **{k: data.get(k) for k in ["uri", "image", "labels", "sitelinks", "type"]},
         }
 
     def search(self, query, min_confidence=None):  # pylint: disable=arguments-differ
