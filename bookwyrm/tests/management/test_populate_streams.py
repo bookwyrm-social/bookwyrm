@@ -42,8 +42,6 @@ class Activitystreams(TestCase):
                 user=self.local_user, content="hi", book=self.book
             )
 
-        with patch(
-            "bookwyrm.activitystreams.ActivityStream.populate_store"
-        ) as redis_mock:
+        with patch("bookwyrm.activitystreams.populate_stream_task.delay") as redis_mock:
             populate_streams()
         self.assertEqual(redis_mock.call_count, 4)  # 2 users x 2 streams
