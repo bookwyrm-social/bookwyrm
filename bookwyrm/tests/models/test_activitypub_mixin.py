@@ -21,28 +21,28 @@ from bookwyrm.settings import PAGE_LENGTH
 
 # pylint: disable=invalid-name
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
-@patch("bookwyrm.preview_images.generate_user_preview_image_task.delay")
+@patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
 class ActivitypubMixins(TestCase):
     """functionality shared across models"""
 
     def setUp(self):
         """shared data"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse", "mouse@mouse.com", "mouseword", local=True, localname="mouse"
             )
-            self.local_user.remote_id = "http://example.com/a/b"
-            self.local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
+        self.local_user.remote_id = "http://example.com/a/b"
+        self.local_user.save(broadcast=False, update_fields=["remote_id"])
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
 
         self.object_mock = {
             "to": "to field",
@@ -78,22 +78,20 @@ class ActivitypubMixins(TestCase):
         """attempt to match a remote id to an object in the db"""
         # uses a different remote id scheme
         # this isn't really part of this test directly but it's helpful to state
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            book = models.Edition.objects.create(
-                title="Test Edition", remote_id="http://book.com/book"
-            )
+        book = models.Edition.objects.create(
+            title="Test Edition", remote_id="http://book.com/book"
+        )
 
         self.assertEqual(book.origin_id, "http://book.com/book")
         self.assertNotEqual(book.remote_id, "http://book.com/book")
 
         # uses subclasses
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.Comment.objects.create(
-                user=self.local_user,
-                content="test status",
-                book=book,
-                remote_id="https://comment.net",
-            )
+        models.Comment.objects.create(
+            user=self.local_user,
+            content="test status",
+            book=book,
+            remote_id="https://comment.net",
+        )
 
         result = models.User.find_existing_by_remote_id("hi")
         self.assertIsNone(result)
@@ -110,11 +108,10 @@ class ActivitypubMixins(TestCase):
 
     def test_find_existing(self, *_):
         """match a blob of data to a model"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            book = models.Edition.objects.create(
-                title="Test edition",
-                openlibrary_key="OL1234",
-            )
+        book = models.Edition.objects.create(
+            title="Test edition",
+            openlibrary_key="OL1234",
+        )
 
         result = models.Edition.find_existing({"openlibraryKey": "OL1234"})
         self.assertEqual(result, book)
@@ -193,7 +190,7 @@ class ActivitypubMixins(TestCase):
     def test_get_recipients_combine_inboxes(self, *_):
         """should combine users with the same shared_inbox"""
         self.remote_user.shared_inbox = "http://example.com/inbox"
-        self.remote_user.save(broadcast=False)
+        self.remote_user.save(broadcast=False, update_fields=["shared_inbox"])
         with patch("bookwyrm.models.user.set_remote_server.delay"):
             another_remote_user = models.User.objects.create_user(
                 "nutria",
@@ -369,7 +366,6 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(activity["type"], "Undo")
         self.assertIsInstance(activity["object"], dict)
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_to_ordered_collection_page(self, *_):
         """make sure the paged results of an ordered collection work"""
         self.assertEqual(PAGE_LENGTH, 15)
@@ -395,7 +391,6 @@ class ActivitypubMixins(TestCase):
         self.assertEqual(page_2.orderedItems[0]["content"], "test status 14")
         self.assertEqual(page_2.orderedItems[-1]["content"], "test status 0")
 
-    @patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay")
     def test_to_ordered_collection(self, *_):
         """convert a queryset into an ordered collection object"""
         self.assertEqual(PAGE_LENGTH, 15)

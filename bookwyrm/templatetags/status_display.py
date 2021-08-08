@@ -73,3 +73,9 @@ def get_header_template(status):
     filename = "snippets/status/headers/{:s}.html".format(status.status_type.lower())
     header_template = select_template([filename, "snippets/status/headers/note.html"])
     return header_template.render({"status": status})
+
+
+@register.simple_tag(takes_context=False)
+def load_book(status):
+    """how many users that you follow, follow them"""
+    return status.book if hasattr(status, "book") else status.mention_books.first()

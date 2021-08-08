@@ -1,17 +1,14 @@
-import datetime
-
-from unittest.mock import patch
+"""test author serializer"""
 from django.test import TestCase
 from bookwyrm import models
 
 
 class Author(TestCase):
     def setUp(self):
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-            )
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+        )
         self.author = models.Author.objects.create(
             name="Author fullname",
             aliases=["One", "Two"],

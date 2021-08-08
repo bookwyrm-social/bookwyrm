@@ -13,6 +13,7 @@ from django.db import models
 from django.forms import ClearableFileInput, ImageField as DjangoImageField
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from bookwyrm import activitypub
 from bookwyrm.connectors import get_image
 from bookwyrm.sanitize_html import InputHtmlParser
@@ -66,7 +67,7 @@ class ActivitypubFieldMixin:
         super().__init__(*args, **kwargs)
 
     def set_field_from_activity(self, instance, data):
-        """helper function for assinging a value to the field"""
+        """helper function for assinging a value to the field. Returns if changed"""
         try:
             value = getattr(data, self.get_activitypub_field())
         except AttributeError:
@@ -76,8 +77,14 @@ class ActivitypubFieldMixin:
             value = getattr(data, "actor")
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING or formatted == {}:
-            return
+            return False
+
+        # the field is unchanged
+        if hasattr(instance, self.name) and getattr(instance, self.name) == formatted:
+            return False
+
         setattr(instance, self.name, formatted)
+        return True
 
     def set_activity_from_field(self, activity, instance):
         """update the json object"""
@@ -204,6 +211,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
 
     # pylint: disable=invalid-name
     def set_field_from_activity(self, instance, data):
+        original = getattr(instance, self.name)
         to = data.to
         cc = data.cc
         if to == [self.public]:
@@ -214,6 +222,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
             setattr(instance, self.name, "unlisted")
         else:
             setattr(instance, self.name, "followers")
+        return original == getattr(instance, self.name)
 
     def set_activity_from_field(self, activity, instance):
         # explicitly to anyone mentioned (statuses only)
@@ -269,9 +278,10 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
-            return
+            return False
         getattr(instance, self.name).set(formatted)
         instance.save(broadcast=False)
+        return True
 
     def field_to_activity(self, value):
         if self.link_only:
@@ -354,7 +364,8 @@ def image_serializer(value, alt):
         url = value.url
     else:
         return None
-    url = "https://%s%s" % (DOMAIN, url)
+    if not url[:4] == "http":
+        url = "https://{:s}{:s}".format(DOMAIN, url)
     return activitypub.Document(url=url, name=alt)
 
 
@@ -371,8 +382,10 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
-            return
+            return False
+
         getattr(instance, self.name).save(*formatted, save=save)
+        return True
 
     def set_activity_from_field(self, activity, instance):
         value = getattr(instance, self.name)

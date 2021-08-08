@@ -15,7 +15,7 @@ class PasswordViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -25,8 +25,7 @@ class PasswordViews(TestCase):
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create(id=1)
+        models.SiteSettings.objects.create(id=1)
 
     def test_password_reset_request(self):
         """there are so many views, this just makes sure it LOADS"""

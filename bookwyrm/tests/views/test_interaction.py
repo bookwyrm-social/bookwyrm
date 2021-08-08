@@ -15,7 +15,7 @@ class InteractionViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -24,24 +24,23 @@ class InteractionViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            with patch("bookwyrm.models.user.set_remote_server"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@email.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
-
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=work,
+        with patch("bookwyrm.models.user.set_remote_server"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@email.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
             )
+
+        work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=work,
+        )
 
     def test_favorite(self, *_):
         """create and broadcast faving a status"""

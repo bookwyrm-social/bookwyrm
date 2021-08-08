@@ -11,14 +11,21 @@
             </a>
             <div class="media-content">
                 <a href="{{ user.local_path }}" class="is-block mb-2">
-                    <span class="title is-4 is-block">{{ user.display_name }}</span>
+                    <span class="title is-4 is-block">
+                        {{ user.display_name }}
+                        {% if user.manually_approves_followers %}
+                        <span class="icon icon-lock is-size-7" title="{% trans 'Locked account' %}">
+                            <span class="is-sr-only">{% trans "Locked account" %}</span>
+                        </span>
+                        {% endif %}
+                    </span>
                     <span class="subtitle is-7 is-block">@{{ user|username }}</span>
                 </a>
                 {% include 'snippets/follow_button.html' with user=user %}
             </div>
         </div>
 
-        <div>
+        <div class="display-inline">
         {% if user.summary %}
             {{ user.summary|to_markdown|safe|truncatechars_html:40 }}
         {% else %}&nbsp;{% endif %}

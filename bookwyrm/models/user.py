@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.postgres.fields import CICharField
 from django.core.validators import MinValueValidator
 from django.dispatch import receiver
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from model_utils import FieldTracker
 import pytz
@@ -17,14 +17,20 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason
+from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
+
+
+def site_link():
+    """helper for generating links to the site"""
+    protocol = "https" if USE_HTTPS else "http"
+    return f"{protocol}://{DOMAIN}"
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
@@ -105,10 +111,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         through_fields=("user", "status"),
         related_name="favorite_statuses",
     )
+    default_post_privacy = models.CharField(
+        max_length=255, default="public", choices=fields.PrivacyLevels.choices
+    )
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    last_active_date = models.DateTimeField(auto_now=True)
+    last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
     show_goal = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
@@ -120,10 +129,17 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     deactivation_reason = models.CharField(
         max_length=255, choices=DeactivationReason.choices, null=True, blank=True
     )
+    confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def confirmation_link(self):
+        """helper for generating confirmation links"""
+        link = site_link()
+        return f"{link}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -204,7 +220,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_followers_activity(self, **kwargs):
@@ -214,7 +230,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_activity(self, **kwargs):
@@ -243,7 +259,6 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             # generate a username that uses the domain (webfinger format)
             actor_parts = urlparse(self.remote_id)
             self.username = "%s@%s" % (self.username, actor_parts.netloc)
-            super().save(*args, **kwargs)
 
         # this user already exists, no need to populate fields
         if not created:
@@ -253,13 +268,13 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         # this is a new remote user, we need to set their remote server field
         if not self.local:
             super().save(*args, **kwargs)
-            set_remote_server.delay(self.id)
+            transaction.on_commit(lambda: set_remote_server.delay(self.id))
             return
 
         # populate fields for local users
-        self.remote_id = "https://%s/user/%s" % (DOMAIN, self.localname)
+        self.remote_id = "%s/user/%s" % (site_link(), self.localname)
         self.inbox = "%s/inbox" % self.remote_id
-        self.shared_inbox = "https://%s/inbox" % DOMAIN
+        self.shared_inbox = "%s/inbox" % site_link()
         self.outbox = "%s/outbox" % self.remote_id
 
         # an id needs to be set before we can proceed with related models
@@ -276,7 +291,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         self.key_pair = KeyPair.objects.create(
             remote_id="%s/#main-key" % self.remote_id
         )
-        self.save(broadcast=False)
+        self.save(broadcast=False, update_fields=["key_pair"])
 
         shelves = [
             {
@@ -406,7 +421,7 @@ def set_remote_server(user_id):
     user = User.objects.get(id=user_id)
     actor_parts = urlparse(user.remote_id)
     user.federated_server = get_or_create_remote_server(actor_parts.netloc)
-    user.save(broadcast=False)
+    user.save(broadcast=False, update_fields=["federated_server"])
     if user.bookwyrm_user and user.outbox:
         get_remote_reviews.delay(user.outbox)
 

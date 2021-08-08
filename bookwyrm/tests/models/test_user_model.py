@@ -11,7 +11,7 @@ from bookwyrm.settings import DOMAIN
 # pylint: disable=missing-function-docstring
 class User(TestCase):
     def setUp(self):
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.user = models.User.objects.create_user(
                 "mouse@%s" % DOMAIN,
                 "mouse@mouse.mouse",
@@ -35,16 +35,15 @@ class User(TestCase):
         self.assertIsNotNone(self.user.key_pair.public_key)
 
     def test_remote_user(self):
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.rat",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/dfjkg",
-                    bookwyrm_user=False,
-                )
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.rat",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/dfjkg",
+                bookwyrm_user=False,
+            )
         self.assertEqual(user.username, "rat@example.com")
 
     def test_user_shelves(self):
@@ -156,7 +155,8 @@ class User(TestCase):
         self.assertIsNone(server.application_type)
         self.assertIsNone(server.application_version)
 
-    def test_delete_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_delete_user(self, _):
         """deactivate a user"""
         self.assertTrue(self.user.is_active)
         with patch(

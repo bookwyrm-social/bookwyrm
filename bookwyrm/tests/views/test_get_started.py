@@ -13,7 +13,7 @@ class GetStartedViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -21,17 +21,15 @@ class GetStartedViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                parent_work=models.Work.objects.create(title="hi"),
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-            )
+        self.book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title="hi"),
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+        )
         models.Connector.objects.create(
             identifier="self", connector_file="self_connector", local=True
         )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_profile_view(self):
         """there are so many views, this just makes sure it LOADS"""
@@ -45,7 +43,9 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_profile_view_post(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    @patch("bookwyrm.suggested_users.rerank_user_task.delay")
+    def test_profile_view_post(self, *_):
         """save basic user details"""
         view = views.GetStartedProfile.as_view()
         form = forms.LimitedEditUserForm(instance=self.local_user)
@@ -55,12 +55,11 @@ class GetStartedViews(TestCase):
         request.user = self.local_user
 
         self.assertIsNone(self.local_user.name)
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
-            with patch(
-                "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
-            ) as delay_mock:
-                view(request)
-                self.assertEqual(delay_mock.call_count, 1)
+        with patch(
+            "bookwyrm.models.activitypub_mixin.broadcast_task.delay"
+        ) as delay_mock:
+            view(request)
+            self.assertEqual(delay_mock.call_count, 1)
         self.assertEqual(self.local_user.name, "New Name")
         self.assertTrue(self.local_user.discoverable)
 
@@ -88,7 +87,8 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_books_view_post(self):
+    @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+    def test_books_view_post(self, _):
         """shelve some books"""
         view = views.GetStartedBooks.as_view()
         data = {self.book.id: self.local_user.shelf_set.first().id}
@@ -106,7 +106,8 @@ class GetStartedViews(TestCase):
         self.assertEqual(shelfbook.book, self.book)
         self.assertEqual(shelfbook.user, self.local_user)
 
-    def test_users_view(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_users_view(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("")
@@ -118,7 +119,8 @@ class GetStartedViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_users_view_with_query(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_users_view_with_query(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.GetStartedUsers.as_view()
         request = self.factory.get("?query=rat")

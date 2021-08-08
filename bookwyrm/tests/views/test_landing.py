@@ -15,7 +15,7 @@ class LandingViews(TestCase):
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -25,10 +25,10 @@ class LandingViews(TestCase):
             )
         self.anonymous_user = AnonymousUser
         self.anonymous_user.is_authenticated = False
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
-    def test_home_page(self):
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
+    def test_home_page(self, _):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Home.as_view()
         request = self.factory.get("")
@@ -54,9 +54,9 @@ class LandingViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_discover(self):
+    def test_landing(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Discover.as_view()
+        view = views.Landing.as_view()
         request = self.factory.get("")
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)

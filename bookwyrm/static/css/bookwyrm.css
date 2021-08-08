@@ -29,6 +29,11 @@ body {
     min-width: 75% !important;
 }
 
+.clip-text {
+    max-height: 35em;
+    overflow: hidden;
+}
+
 /** Utilities not covered by Bulma
  ******************************************************************************/
 
@@ -70,6 +75,14 @@ body {
 
 .card.is-stretchable .card-content {
     flex-grow: 1;
+}
+
+.preserve-whitespace p {
+    white-space: pre-wrap !important;
+}
+
+.display-inline p {
+    display: inline !important;
 }
 
 /** Shelving

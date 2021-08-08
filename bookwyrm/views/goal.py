@@ -4,6 +4,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
@@ -24,6 +25,10 @@ class Goal(View):
         goal = models.AnnualGoal.objects.filter(year=year, user=user).first()
         if not goal and user != request.user:
             return HttpResponseNotFound()
+
+        current_year = timezone.now().year
+        if not goal and year != timezone.now().year:
+            return redirect("user-goal", username, current_year)
 
         if goal and not goal.visible_to_user(request.user):
             return HttpResponseNotFound()

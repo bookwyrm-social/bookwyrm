@@ -16,13 +16,15 @@ from bookwyrm.activitypub import ActivitypubResponse
 
 @patch("bookwyrm.activitystreams.ActivityStream.get_activity_stream")
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+@patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+@patch("bookwyrm.suggested_users.remove_user_task.delay")
 class FeedViews(TestCase):
     """activity feed, statuses, dms"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.mouse",
@@ -30,21 +32,20 @@ class FeedViews(TestCase):
                 local=True,
                 localname="mouse",
             )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.book = models.Edition.objects.create(
-                parent_work=models.Work.objects.create(title="hi"),
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-            )
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        self.book = models.Edition.objects.create(
+            parent_work=models.Work.objects.create(title="hi"),
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+        )
+        models.SiteSettings.objects.create()
 
+    @patch("bookwyrm.suggested_users.SuggestedUsers.get_suggestions")
     def test_feed(self, *_):
         """there are so many views, this just makes sure it LOADS"""
         view = views.Feed.as_view()
         request = self.factory.get("")
         request.user = self.local_user
-        result = view(request, "local")
+        result = view(request, "home")
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
@@ -92,14 +93,11 @@ class FeedViews(TestCase):
         output = BytesIO()
         image.save(output, format=image.format)
         with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            with patch(
-                "bookwyrm.preview_images.generate_edition_preview_image_task.delay"
-            ):
-                status = models.Review.objects.create(
-                    content="hi",
-                    user=self.local_user,
-                    book=self.book,
-                )
+            status = models.Review.objects.create(
+                content="hi",
+                user=self.local_user,
+                book=self.book,
+            )
             attachment = models.Image.objects.create(
                 status=status, caption="alt text here"
             )
@@ -152,13 +150,12 @@ class FeedViews(TestCase):
 
     def test_get_suggested_book(self, *_):
         """gets books the ~*~ algorithm ~*~ thinks you want to post about"""
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-                models.ShelfBook.objects.create(
-                    book=self.book,
-                    user=self.local_user,
-                    shelf=self.local_user.shelf_set.get(identifier="reading"),
-                )
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.ShelfBook.objects.create(
+                book=self.book,
+                user=self.local_user,
+                shelf=self.local_user.shelf_set.get(identifier="reading"),
+            )
         suggestions = views.feed.get_suggested_books(self.local_user)
         self.assertEqual(suggestions[0]["name"], "Currently Reading")
         self.assertEqual(suggestions[0]["books"][0], self.book)

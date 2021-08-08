@@ -11,7 +11,8 @@ from django.views import View
 from bookwyrm import activitystreams, forms, models
 from bookwyrm.activitypub import ActivitypubResponse
 from bookwyrm.settings import PAGE_LENGTH, STREAMS
-from .helpers import get_user_from_username, privacy_filter, get_suggested_users
+from bookwyrm.suggested_users import suggested_users
+from .helpers import get_user_from_username, privacy_filter
 from .helpers import is_api_request, is_bookwyrm_request
 
 
@@ -22,23 +23,26 @@ class Feed(View):
 
     def get(self, request, tab):
         """user's homepage with activity feed"""
-        if not tab in STREAMS:
-            tab = "home"
+        tab = [s for s in STREAMS if s["key"] == tab]
+        tab = tab[0] if tab else STREAMS[0]
 
-        activities = activitystreams.streams[tab].get_activity_stream(request.user)
+        activities = activitystreams.streams[tab["key"]].get_activity_stream(
+            request.user
+        )
         paginated = Paginator(activities, PAGE_LENGTH)
 
-        suggested_users = get_suggested_users(request.user)
+        suggestions = suggested_users.get_suggestions(request.user)
 
         data = {
             **feed_page_data(request.user),
             **{
                 "user": request.user,
                 "activities": paginated.get_page(request.GET.get("page")),
-                "suggested_users": suggested_users,
+                "suggested_users": suggestions,
                 "tab": tab,
+                "streams": STREAMS,
                 "goal_form": forms.GoalForm(),
-                "path": "/%s" % tab,
+                "path": "/%s" % tab["key"],
             },
         }
         return TemplateResponse(request, "feed/feed.html", data)

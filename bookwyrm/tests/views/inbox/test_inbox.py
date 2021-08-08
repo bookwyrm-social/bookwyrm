@@ -19,7 +19,7 @@ class Inbox(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
 
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             local_user = models.User.objects.create_user(
                 "mouse@example.com",
                 "mouse@mouse.com",
@@ -27,18 +27,18 @@ class Inbox(TestCase):
                 local=True,
                 localname="mouse",
             )
-            local_user.remote_id = "https://example.com/user/mouse"
-            local_user.save(broadcast=False)
-            with patch("bookwyrm.models.user.set_remote_server.delay"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@rat.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
+        local_user.remote_id = "https://example.com/user/mouse"
+        local_user.save(broadcast=False, update_fields=["remote_id"])
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@rat.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         self.create_json = {
             "id": "hi",
             "type": "Create",
@@ -47,8 +47,7 @@ class Inbox(TestCase):
             "cc": ["https://example.com/user/mouse/followers"],
             "object": {},
         }
-        with patch("bookwyrm.preview_images.generate_site_preview_image_task.delay"):
-            models.SiteSettings.objects.create()
+        models.SiteSettings.objects.create()
 
     def test_inbox_invalid_get(self):
         """shouldn't try to handle if the user is not found"""
@@ -146,7 +145,8 @@ class Inbox(TestCase):
         )
         self.assertTrue(views.inbox.is_blocked_activity(activity))
 
-    def test_create_by_deactivated_user(self):
+    @patch("bookwyrm.suggested_users.remove_user_task.delay")
+    def test_create_by_deactivated_user(self, _):
         """don't let deactivated users post"""
         self.remote_user.delete(broadcast=False)
         self.assertTrue(self.remote_user.deleted)

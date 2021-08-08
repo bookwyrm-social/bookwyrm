@@ -53,7 +53,7 @@ class Search(View):
             "remote": search_remote,
         }
         if query:
-            results = endpoints[search_type](
+            results, search_remote = endpoints[search_type](
                 query, request.user, min_confidence, search_remote
             )
             if results:
@@ -61,25 +61,28 @@ class Search(View):
                     request.GET.get("page")
                 )
                 data["results"] = paginated
+                data["remote"] = search_remote
 
         return TemplateResponse(request, "search/{:s}.html".format(search_type), data)
 
 
 def book_search(query, _, min_confidence, search_remote=False):
     """the real business is elsewhere"""
-    if search_remote:
-        return connector_manager.search(query, min_confidence=min_confidence)
-    results = connector_manager.local_search(query, min_confidence=min_confidence)
-    if not results:
-        return None
-    return [{"results": results}]
+    # try a local-only search
+    if not search_remote:
+        results = connector_manager.local_search(query, min_confidence=min_confidence)
+        if results:
+            # gret, we found something
+            return [{"results": results}], False
+    # if there weere no local results, or the request was for remote, search all sources
+    return connector_manager.search(query, min_confidence=min_confidence), True
 
 
 def user_search(query, viewer, *_):
     """cool kids members only user search"""
     # logged out viewers can't search users
     if not viewer.is_authenticated:
-        return models.User.objects.none()
+        return models.User.objects.none(), None
 
     # use webfinger for mastodon style account@domain.com username to load the user if
     # they don't exist locally (handle_remote_webfinger will check the db)
@@ -98,7 +101,7 @@ def user_search(query, viewer, *_):
             similarity__gt=0.5,
         )
         .order_by("-similarity")[:10]
-    )
+    ), None
 
 
 def list_search(query, viewer, *_):
@@ -119,4 +122,4 @@ def list_search(query, viewer, *_):
             similarity__gt=0.1,
         )
         .order_by("-similarity")[:10]
-    )
+    ), None

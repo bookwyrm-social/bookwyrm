@@ -1,9 +1,16 @@
 {% spaceless %}
+{% load i18n %}
+{% load humanize %}
 {% comment %}
     @todo The author property needs to be an Organization or a Person. We’ll be using Thing which is the more generic ancestor.
     @see https://schema.org/Author
 {% endcomment %}
-{% for author in book.authors.all %}
+{% firstof limit None as limit %}
+{% with subtraction_value='-'|add:limit %}
+{% with remainder_count=book.authors.count|add:subtraction_value %}
+{% with remainder_count_display=remainder_count|intcomma %}
+
+{% for author in book.authors.all|slice:limit %}
     <a
         href="{{ author.local_path }}"
         class="author"
@@ -12,6 +19,14 @@
         itemtype="https://schema.org/Thing"
     ><span
         itemprop="name"
-    >{{ author.name }}<span></a>{% if not forloop.last %}, {% endif %}
+        >{{ author.name }}<span></a>{% if not forloop.last %}, {% elif remainder_count > 0 %}, {% blocktrans trimmed count counter=remainder_count %}
+and {{ remainder_count_display }} other
+{% plural %}
+and {{ remainder_count_display }} others
+{% endblocktrans %}{% endif %}
 {% endfor %}
+
+{% endwith %}
+{% endwith %}
+{% endwith %}
 {% endspaceless %}

@@ -1,38 +1,28 @@
-{% extends 'feed/feed_layout.html' %}
+{% extends 'feed/layout.html' %}
 {% load i18n %}
 
 {% block panel %}
 
 <h1 class="title">
-    {% if tab == 'home' %}
-    {% trans "Home Timeline" %}
-    {% elif tab == 'local' %}
-    {% trans "Local Timeline" %}
-    {% else %}
-    {% trans "Federated Timeline" %}
-    {% endif %}
+    {{ tab.name }}
 </h1>
 <div class="tabs">
     <ul>
-        <li class="{% if tab == 'home' %}is-active{% endif %}"{% if tab == 'home' %} aria-current="page"{% endif %}>
-            <a href="/#feed">{% trans "Home" %}</a>
+        {% for stream in streams %}
+        <li class="{% if tab.key == stream.key %}is-active{% endif %}"{% if tab.key == stream.key %} aria-current="page"{% endif %}>
+            <a href="/{{ stream.key }}#feed">{{ stream.shortname }}</a>
         </li>
-        <li class="{% if tab == 'local' %}is-active{% endif %}"{% if tab == 'local' %} aria-current="page"{% endif %}>
-            <a href="/local#feed">{% trans "Local" %}</a>
-        </li>
-        <li class="{% if tab == 'federated' %}is-active{% endif %}"{% if tab == 'federated' %} aria-current="page"{% endif %}>
-            <a href="/federated#feed">{% trans "Federated" %}</a>
-        </li>
+        {% endfor %}
     </ul>
 </div>
 
 {# announcements and system messages #}
 {% if not activities.number > 1 %}
 <a href="{{ request.path }}" class="transition-y is-hidden notification is-primary is-block" data-poll-wrapper>
-    {% blocktrans %}load <span data-poll="stream/{{ tab }}">0</span> unread status(es){% endblocktrans %}
+    {% blocktrans %}load <span data-poll="stream/{{ tab.key }}">0</span> unread status(es){% endblocktrans %}
 </a>
 
-{% if request.user.show_goal and not goal and tab == 'home' %}
+{% if request.user.show_goal and not goal and tab.key == streams.first.key %}
 {% now 'Y' as year %}
 <section class="block">
     {% include 'snippets/goal_card.html' with year=year %}
@@ -44,18 +34,22 @@
 
 {# activity feed #}
 {% if not activities %}
-<p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+<div class="block content">
+    <p>{% trans "There aren't any activities right now! Try following a user to get started" %}</p>
+
+    {% if suggested_users %}
+    {# suggested users for when things are very lonely #}
+    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+</div>
+{% endif %}
+
 {% endif %}
 
 {% for activity in activities %}
 
 {% if not activities.number > 1 and forloop.counter0 == 2 and suggested_users %}
 {# suggested users on the first page, two statuses down #}
-<section class="block">
-    <h2 class="title is-5">{% trans "Who to follow" %}</h2>
-    {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
-    <a class="help" href="{% url 'directory' %}">View directory <span class="icon icon-arrow-right"></a>
-</section>
+{% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
 {% endif %}
 <div class="block">
     {% include 'snippets/status/status.html' with status=activity %}

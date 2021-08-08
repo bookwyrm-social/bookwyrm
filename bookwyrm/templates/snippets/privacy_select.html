@@ -5,17 +5,18 @@
     {% if not no_label %}
     <label class="is-sr-only" for="privacy_{{ uuid }}">{% trans "Post privacy" %}</label>
     {% endif %}
+    {% firstof current user.default_post_privacy "public" as privacy %}
     <select name="privacy" id="privacy_{{ uuid }}">
-        <option value="public" {% if not current or current == 'public' %}selected{% endif %}>
+        <option value="public" {% if privacy == 'public' %}selected{% endif %}>
             {% trans "Public" %}
         </option>
-        <option value="unlisted" {% if current == 'unlisted' %}selected{% endif %}>
+        <option value="unlisted" {% if privacy == 'unlisted' %}selected{% endif %}>
             {% trans "Unlisted" %}
         </option>
-        <option value="followers" {% if current == 'followers' %}selected{% endif %}>
+        <option value="followers" {% if privacy == 'followers' %}selected{% endif %}>
             {% trans "Followers" %}
         </option>
-        <option value="direct" {% if current == 'direct' %}selected{% endif %}>
+        <option value="direct" {% if privacy == 'direct' %}selected{% endif %}>
             {% trans "Private" %}
         </option>
     </select>

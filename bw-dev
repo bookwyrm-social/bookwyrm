@@ -38,6 +38,17 @@ function makeitblack {
     docker-compose run --rm web black celerywyrm bookwyrm
 }
 
+function awscommand {
+    # expose env vars
+    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    export AWS_DEFAULT_REGION=${AWS_S3_REGION_NAME}
+    # first arg is mountpoint, second is the whole aws command
+    docker run --rm -it -v $1\
+        -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION\
+        amazon/aws-cli $2
+}
+
 CMD=$1
 if [ -n "$CMD" ]; then
     shift
@@ -110,10 +121,26 @@ case "$CMD" in
         makeitblack
         ;;
     populate_streams)
-        runweb python manage.py populate_streams
+        runweb python manage.py populate_streams $@
+        ;;
+    populate_suggestions)
+        runweb python manage.py populate_suggestions
         ;;
     generate_preview_images)
         runweb python manage.py generate_preview_images $@
+        ;;
+    copy_media_to_s3)
+        awscommand "bookwyrm_media_volume:/images"\
+            "s3 cp /images s3://${AWS_STORAGE_BUCKET_NAME}/images\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --recursive --acl public-read"
+        ;;
+    set_cors_to_s3)
+        awscommand "$(pwd):/bw"\
+            "s3api put-bucket-cors\
+            --bucket ${AWS_STORAGE_BUCKET_NAME}\
+            --endpoint-url ${AWS_S3_ENDPOINT_URL}\
+            --cors-configuration file:///bw/$@"
         ;;
     runweb)
         runweb "$@"
@@ -123,6 +150,31 @@ case "$CMD" in
         ;;
     *)
         set +x # No need to echo echo
-        echo "Unrecognised command. Try: build, clean, up, initdb, resetdb, makemigrations, migrate, bash, shell, dbshell, restart_celery, test, pytest, test_report, black, populate_streams, generate_preview_images"
+        echo "Unrecognised command. Try:"
+        echo "    up [container]"
+        echo "    run"
+        echo "    initdb"
+        echo "    resetdb"
+        echo "    makemigrations [migration]"
+        echo "    migrate [migration]"
+        echo "    bash"
+        echo "    shell"
+        echo "    dbshell"
+        echo "    restart_celery"
+        echo "    test [path]"
+        echo "    pytest [path]"
+        echo "    collectstatic"
+        echo "    makemessages [locale]"
+        echo "    compilemessages [locale]"
+        echo "    build"
+        echo "    clean"
+        echo "    black"
+        echo "    populate_streams [--stream=<stream name>]"
+        echo "    populate_suggestions"
+        echo "    generate_preview_images [--all]"
+        echo "    copy_media_to_s3"
+        echo "    set_cors_to_s3 [cors file]"
+        echo "    runweb [command]"
+        echo "    rundb [command]"
         ;;
 esac

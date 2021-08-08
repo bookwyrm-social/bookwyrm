@@ -10,13 +10,13 @@ from django.test.client import RequestFactory
 from bookwyrm import models, views
 
 
-class BookViews(TestCase):
-    """books books books"""
+class FollowViews(TestCase):
+    """follows"""
 
     def setUp(self):
         """we need basic test data and mocks"""
         self.factory = RequestFactory()
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.local_user = models.User.objects.create_user(
                 "mouse@local.com",
                 "mouse@mouse.com",
@@ -25,16 +25,16 @@ class BookViews(TestCase):
                 localname="mouse",
                 remote_id="https://example.com/users/mouse",
             )
-            with patch("bookwyrm.models.user.set_remote_server"):
-                self.remote_user = models.User.objects.create_user(
-                    "rat",
-                    "rat@email.com",
-                    "ratword",
-                    local=False,
-                    remote_id="https://example.com/users/rat",
-                    inbox="https://example.com/users/rat/inbox",
-                    outbox="https://example.com/users/rat/outbox",
-                )
+        with patch("bookwyrm.models.user.set_remote_server"):
+            self.remote_user = models.User.objects.create_user(
+                "rat",
+                "rat@email.com",
+                "ratword",
+                local=False,
+                remote_id="https://example.com/users/rat",
+                inbox="https://example.com/users/rat/inbox",
+                outbox="https://example.com/users/rat/outbox",
+            )
         self.group = Group.objects.create(name="editor")
         self.group.permissions.add(
             Permission.objects.create(
@@ -43,13 +43,12 @@ class BookViews(TestCase):
                 content_type=ContentType.objects.get_for_model(models.User),
             ).id
         )
-        with patch("bookwyrm.preview_images.generate_edition_preview_image_task.delay"):
-            self.work = models.Work.objects.create(title="Test Work")
-            self.book = models.Edition.objects.create(
-                title="Example Edition",
-                remote_id="https://example.com/book/1",
-                parent_work=self.work,
-            )
+        self.work = models.Work.objects.create(title="Test Work")
+        self.book = models.Edition.objects.create(
+            title="Example Edition",
+            remote_id="https://example.com/book/1",
+            parent_work=self.work,
+        )
 
     def test_handle_follow_remote(self):
         """send a follow request"""
@@ -68,7 +67,7 @@ class BookViews(TestCase):
 
     def test_handle_follow_local_manually_approves(self):
         """send a follow request"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
@@ -92,7 +91,7 @@ class BookViews(TestCase):
 
     def test_handle_follow_local(self):
         """send a follow request"""
-        with patch("bookwyrm.preview_images.generate_user_preview_image_task.delay"):
+        with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             rat = models.User.objects.create_user(
                 "rat@local.com",
                 "rat@rat.com",
@@ -131,7 +130,9 @@ class BookViews(TestCase):
     def test_handle_accept(self):
         """accept a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(
@@ -148,7 +149,9 @@ class BookViews(TestCase):
     def test_handle_reject(self):
         """reject a follow request"""
         self.local_user.manually_approves_followers = True
-        self.local_user.save(broadcast=False)
+        self.local_user.save(
+            broadcast=False, update_fields=["manually_approves_followers"]
+        )
         request = self.factory.post("", {"user": self.remote_user.username})
         request.user = self.local_user
         rel = models.UserFollowRequest.objects.create(

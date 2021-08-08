@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageColor
 
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.storage import default_storage
 from django.db.models import Avg
 
 from bookwyrm import models, settings
@@ -319,9 +320,9 @@ def save_and_cleanup(image, instance=None):
 
     try:
         try:
-            old_path = instance.preview_image.path
+            old_path = instance.preview_image.name
         except ValueError:
-            old_path = ""
+            old_path = None
 
         # Save
         image.save(image_buffer, format="jpeg", quality=75)
@@ -337,13 +338,13 @@ def save_and_cleanup(image, instance=None):
 
         save_without_broadcast = isinstance(instance, (models.Book, models.User))
         if save_without_broadcast:
-            instance.save(broadcast=False)
+            instance.save(broadcast=False, update_fields=["preview_image"])
         else:
-            instance.save()
+            instance.save(update_fields=["preview_image"])
 
         # Clean up old file after saving
-        if os.path.exists(old_path):
-            os.remove(old_path)
+        if old_path and default_storage.exists(old_path):
+            default_storage.delete(old_path)
 
     finally:
         image_buffer.close()
