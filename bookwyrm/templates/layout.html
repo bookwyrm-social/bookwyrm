@@ -67,8 +67,8 @@
                 <a href="{% url 'lists' %}" class="navbar-item">
                     {% trans "Lists" %}
                 </a>
-                <a href="{% url 'directory' %}" class="navbar-item">
-                    {% trans "Directory" %}
+                <a href="{% url 'discover' %}" class="navbar-item">
+                    {% trans "Discover" %}
                 </a>
                 {% endif %}
             </div>
@@ -89,6 +89,11 @@
                         <span class="ml-2">{{ request.user.display_name }}</span>
                     </a>
                     <ul class="navbar-dropdown" id="navbar-dropdown">
+                        <li>
+                            <a href="{% url 'directory' %}" class="navbar-item">
+                                {% trans "Directory" %}
+                            </a>
+                        </li>
                         <li>
                             <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
                                 {% trans 'Your Books' %}

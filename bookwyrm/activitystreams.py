@@ -4,7 +4,7 @@ from django.db.models import signals, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
-from bookwyrm.settings import STREAMS
+from bookwyrm.tasks import app
 from bookwyrm.views.helpers import privacy_filter
 
 
@@ -56,7 +56,13 @@ class ActivityStream(RedisStore):
         return (
             models.Status.objects.select_subclasses()
             .filter(id__in=statuses)
-            .select_related("user", "reply_parent")
+            .select_related(
+                "user",
+                "reply_parent",
+                "comment__book",
+                "review__book",
+                "quotation__book",
+            )
             .prefetch_related("mention_books", "mention_users")
             .order_by("-published_date")
         )
@@ -235,15 +241,10 @@ class BooksStream(ActivityStream):
 
 
 # determine which streams are enabled in settings.py
-available_streams = [s["key"] for s in STREAMS]
 streams = {
-    k: v
-    for (k, v) in {
-        "home": HomeStream(),
-        "local": LocalStream(),
-        "books": BooksStream(),
-    }.items()
-    if k in available_streams
+    "home": HomeStream(),
+    "local": LocalStream(),
+    "books": BooksStream(),
 }
 
 
@@ -391,3 +392,11 @@ def remove_statuses_on_unshelve(sender, instance, *args, **kwargs):
         return
 
     BooksStream().remove_book_statuses(instance.user, instance.book)
+
+
+@app.task
+def populate_stream_task(stream, user_id):
+    """background task for populating an empty activitystream"""
+    user = models.User.objects.get(id=user_id)
+    stream = streams[stream]
+    stream.populate_streams(user)

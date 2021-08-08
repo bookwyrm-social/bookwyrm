@@ -62,3 +62,9 @@ def get_published_date(date):
     if delta.days:
         return naturalday(date, "M j")
     return naturaltime(date)
+
+
+@register.simple_tag(takes_context=False)
+def load_book(status):
+    """how many users that you follow, follow them"""
+    return status.book if hasattr(status, "book") else status.mention_books.first()

@@ -89,7 +89,7 @@ case "$CMD" in
         docker-compose restart
         ;;
     populate_streams)
-        runweb python manage.py populate_streams
+        runweb python manage.py populate_streams $@
         ;;
     populate_suggestions)
         runweb python manage.py populate_suggestions
@@ -131,7 +131,7 @@ case "$CMD" in
         echo "    collectstatic"
         echo "    build"
         echo "    clean"
-        echo "    populate_streams"
+        echo "    populate_streams [--stream=<stream name>]"
         echo "    populate_suggestions"
         echo "    generate_preview_images [--all]"
         echo "    copy_media_to_s3"
