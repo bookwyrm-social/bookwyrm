@@ -162,7 +162,7 @@ urlpatterns = [
     # landing pages
     re_path(r"^about/?$", views.About.as_view(), name="about"),
     path("", views.Home.as_view(), name="landing"),
-    re_path(r"^discover/?$", views.Discover.as_view()),
+    re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
     re_path(
         r"^notifications/(?P<notification_type>mentions)/?$",
