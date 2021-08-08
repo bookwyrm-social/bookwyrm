@@ -4,7 +4,6 @@ from django.db.models import signals, Q
 
 from bookwyrm import models
 from bookwyrm.redis_store import RedisStore, r
-from bookwyrm.settings import STREAMS
 from bookwyrm.views.helpers import privacy_filter
 
 
@@ -235,15 +234,10 @@ class BooksStream(ActivityStream):
 
 
 # determine which streams are enabled in settings.py
-available_streams = [s["key"] for s in STREAMS]
 streams = {
-    k: v
-    for (k, v) in {
-        "home": HomeStream(),
-        "local": LocalStream(),
-        "books": BooksStream(),
-    }.items()
-    if k in available_streams
+    "home": HomeStream(),
+    "local": LocalStream(),
+    "books": BooksStream(),
 }
 
 
