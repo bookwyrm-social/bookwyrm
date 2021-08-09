@@ -11,7 +11,7 @@
 </header>
 
 {% if not request.user.discoverable %}
-<div class="box has-text-centered content" data-hide="hide-join-directory"><div class="columns">
+<div class="box has-text-centered content" data-hide="hide_join_directory"><div class="columns">
     <div class="column">
     <p>
         {% trans "Make your profile discoverable to other BookWyrm users." %}
@@ -27,7 +27,7 @@
     </div>
     <div class="column is-narrow">
         {% trans "Dismiss message" as button_text %}
-        <button type="button" class="delete set-display" data-id="hide-join-directory" data-value="true">
+        <button type="button" class="delete set-display" data-id="hide_join_directory" data-value="true">
             <span>Dismiss message</span>
         </button>
     </div>

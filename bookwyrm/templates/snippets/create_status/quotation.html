@@ -1,0 +1,34 @@
+{% extends "snippets/create_status/layout.html" %}
+{% load bookwyrm_tags %}
+{% load utilities %}
+{% load status_display %}
+{% load i18n %}
+
+{% comment %}
+----- Variables
+book: the Edition object this status is related to. Required unless the status is a reply
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+{% endcomment %}
+
+{% with type="quotation" %}
+
+{% block pre_content_additions %}
+    <div class="field">
+        <label class="label" for="id_quote_{{ book.id }}_{{ type }}">
+            {% trans "Quote:" %}
+        </label>
+
+        <div class="control">
+            <textarea
+                name="quote"
+                class="textarea"
+                id="id_quote_{{ book.id }}_{{ type }}"
+                placeholder="{% blocktrans with book_title=book.title %}An excerpt from '{{ book_title }}'{% endblocktrans %}"
+                required
+            >{{ draft.quote|default:'' }}</textarea>
+        </div>
+    </div>
+{% endblock %}
+
+{% endwith %}

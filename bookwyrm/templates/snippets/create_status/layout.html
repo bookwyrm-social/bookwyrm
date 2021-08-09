@@ -1,0 +1,57 @@
+{% load bookwyrm_tags %}
+{% load i18n %}
+{% load utilities %}
+{% load status_display %}
+
+{% comment %}
+----- Variables
+book: the Edition object this status is related to. Required unless the status is a reply
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+type: used for uniquely identifying the html elements when mutliple types of posts are available for a book, and usually the endpoint name that the form posts to
+reply_parent: the Status object this post will be in reply to, if applicable
+{% endcomment %}
+
+{% block form_open %}
+{# default form tag syntax, can be overriddden #}
+<form class="is-flex-grow-1" name="{{ type }}" action="/post/{{ type }}" method="post" id="tab_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
+{% endblock %}
+
+    {% csrf_token %}
+
+    {% block initial_fields %}
+    <input type="hidden" name="book" value="{{ book.id }}">
+    <input type="hidden" name="user" value="{{ request.user.id }}">
+    <input type="hidden" name="reply_parent" value="{% firstof draft.reply_parent.id reply_parent.id %}">
+    {% endblock %}
+
+    <div class="field">
+        <div class="control">
+            {% include "snippets/create_status/content_warning_field.html" %}
+        </div>
+
+        {# fields that go between the content warnings and the content field (ie, quote) #}
+        {% block pre_content_additions %}{% endblock %}
+
+        <label class="label" for="id_content_{{ type }}_{{ book.id }}{{ reply_parent.id }}">
+            {% block content_label %}
+                {% trans "Comment:" %}
+            {% endblock %}
+        </label>
+
+        <div class="control">
+            {% include "snippets/create_status/content_field.html" with placeholder=placeholder %}
+        </div>
+    </div>
+
+    {# additional fields that go after the content block (ie, progress) #}
+    {% block post_content_additions %}{% endblock %}
+
+    {% block options_block %}
+    {# cw, post privacy, and submit button #}
+    {% include "snippets/create_status/post_options_block.html" %}
+    {% endblock %}
+
+{% block form_close %}
+</form>
+{% endblock %}

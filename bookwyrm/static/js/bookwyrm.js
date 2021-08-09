@@ -164,7 +164,7 @@ let BookWyrm = new class {
         }
 
         // Show/hide container.
-        let container = document.getElementById('hide-' + targetId);
+        let container = document.getElementById('hide_' + targetId);
 
         if (container) {
             this.toggleContainer(container, pressed);
@@ -219,7 +219,7 @@ let BookWyrm = new class {
     /**
      * Check or uncheck a checbox.
      *
-     * @param  {object}  checkbox - DOM node
+     * @param  {string}  checkbox - id of the checkbox
      * @param  {boolean} pressed  - Is the trigger pressed?
      * @return {undefined}
      */
