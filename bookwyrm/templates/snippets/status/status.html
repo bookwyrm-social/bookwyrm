@@ -8,8 +8,8 @@
             {{ status.user.display_name }}
         </a>
         {% trans "boosted" %}
-        {% include 'snippets/status/status_body.html' with status=status|boosted_status %}
+        {% include 'snippets/status/body.html' with status=status|boosted_status %}
     {% else %}
-        {% include 'snippets/status/status_body.html' with status=status %}
+        {% include 'snippets/status/body.html' with status=status %}
     {% endif %}
 {% endif %}

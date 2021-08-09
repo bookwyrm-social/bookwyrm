@@ -8,9 +8,9 @@
         type="submit"
     {% endif %}
     class="{% if not nonbutton %}button {% endif %}{{ class }}{% if button_type %} {{ button_type }}{% endif %}"
-    data-controls="{{ controls_text }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"
-    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
-    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}-{{ controls_uid }}{% endif %}"{% endif %}
+    data-controls="{{ controls_text }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"
+    {% if focus %}data-focus-target="{{ focus }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"{% endif %}
+    {% if checkbox %}data-controls-checkbox="{{ checkbox }}{% if controls_uid %}_{{ controls_uid }}{% endif %}"{% endif %}
     {% if label %}aria-label="{{ label }}"{% endif %}
     aria-pressed="{% if pressed %}true{% else %}false{% endif %}"
     {% if disabled %}disabled{% endif %}

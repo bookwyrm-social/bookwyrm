@@ -1,0 +1,22 @@
+{% spaceless %}
+{% load i18n %}
+{% load status_display %}
+{% load utilities %}
+
+{% if status.status_type == 'GeneratedNote' %}
+{% with book=status.mention_books.first %}
+{{ status.content|safe }} <a href="{{ book.local_path }}">{{ book|book_title }}</a>
+{% endwith %}
+
+{% else %}
+
+{% with parent_status=status|parent %}
+{% if parent_status %}
+{% blocktrans trimmed with username=parent_status.user.display_name user_path=parent_status.user.local_path status_path=parent_status.local_path %}
+replied to <a href="{{ user_path }}">{{ username}}'s</a> <a href="{{ status_path }}">status</a>
+{% endblocktrans %}
+{% endif %}
+{% endwith %}
+
+{% endif %}
+{% endspaceless %}

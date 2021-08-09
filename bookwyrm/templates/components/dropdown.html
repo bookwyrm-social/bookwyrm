@@ -3,7 +3,7 @@
 
 {% with 0|uuid as uuid %}
 <div
-    id="menu-{{ uuid }}"
+    id="menu_{{ uuid }}"
     class="
         dropdown control
         {% if right %}is-right{% endif %}
@@ -14,15 +14,15 @@
         type="button"
         aria-expanded="false"
         aria-haspopup="true"
-        aria-controls="menu-options-{{ uuid }}"
-        data-controls="menu-{{ uuid }}"
+        aria-controls="menu_options_{{ uuid }}"
+        data-controls="menu_{{ uuid }}"
     >
         {% block dropdown-trigger %}{% endblock %}
     </button>
 
     <div class="dropdown-menu">
         <ul
-            id="menu-options-{{ uuid }}"
+            id="menu_options_{{ uuid }}"
             class="dropdown-content p-0 is-clipped"
             role="menu"
         >

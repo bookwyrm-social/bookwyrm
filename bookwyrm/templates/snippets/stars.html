@@ -4,7 +4,7 @@
 <span class="stars">
     <span class="is-sr-only">
         {% if rating %}
-            {% blocktranslate trimmed with rating=rating|floatformat count counter=rating|length %}
+            {% blocktranslate trimmed with rating=rating|floatformat:0 count counter=rating|floatformat:0|add:0 %}
                 {{ rating }} star
             {% plural %}
                 {{ rating }} stars
