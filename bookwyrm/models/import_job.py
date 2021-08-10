@@ -71,6 +71,7 @@ class ImportItem(models.Model):
     index = models.IntegerField()
     data = models.JSONField()
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
+    book_guess = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
     fail_reason = models.TextField(null=True)
 
     def resolve(self):
@@ -80,7 +81,7 @@ class ImportItem(models.Model):
         else:
             # don't fall back on title/author search is isbn is present.
             # you're too likely to mismatch
-            self.get_book_from_title_author()
+            self.book = self.get_book_from_title_author()
 
     def get_book_from_isbn(self):
         """search by isbn"""
