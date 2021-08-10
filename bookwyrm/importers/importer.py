@@ -76,9 +76,10 @@ def import_data(source, job_id):
                 item.save()
                 continue
 
-            if item.book:
+            if item.book or item.book_guess:
                 item.save()
 
+            if item.book:
                 # shelves book and handles reviews
                 handle_imported_book(
                     source, job.user, item, job.include_reviews, job.privacy
