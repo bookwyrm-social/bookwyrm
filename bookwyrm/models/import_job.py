@@ -85,7 +85,7 @@ class ImportItem(models.Model):
         if self.isbn:
             self.book = self.get_book_from_isbn()
         else:
-            # don't fall back on title/author search is isbn is present.
+            # don't fall back on title/author search if isbn is present.
             # you're too likely to mismatch
             book, confidence = self.get_book_from_title_author()
             if confidence > 0.999:
@@ -111,7 +111,10 @@ class ImportItem(models.Model):
         )
         if search_result:
             # raises ConnectorException
-            return search_result.connector.get_or_create_book(search_result.key)
+            return (
+                search_result.connector.get_or_create_book(search_result.key),
+                search_result.confidence,
+            )
         return None, 0
 
     @property
