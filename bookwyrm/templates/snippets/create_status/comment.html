@@ -1,0 +1,49 @@
+{% extends "snippets/create_status/layout.html" %}
+{% load bookwyrm_tags %}
+{% load i18n %}
+{% load utilities %}
+{% load status_display %}
+
+{% comment %}
+----- Variables
+book: the Edition object this status is related to. Required unless the status is a reply
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+{% endcomment %}
+
+{% with type="comment" %}
+{% trans "Some thoughts on the book" as placeholder %}
+
+{% block post_content_additions %}
+    {# Supplemental fields #}
+    <div>
+        {% active_shelf book as active_shelf %}
+        {% if active_shelf.shelf.identifier == 'reading' and book.latest_readthrough %}
+
+        {% with readthrough=book.latest_readthrough %}
+        <div class="field">
+            <input type="hidden" name="id" value="{{ readthrough.id }}"/>
+            <label class="label" for="progress_{{ uuid }}">{% trans "Progress:" %}</label>
+            <div class="field has-addons mb-0">
+                <div class="control">
+                    <input aria-label="{% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}Current page{% else %}Percent read{% endif %}" class="input" type="number" min="0" name="progress" size="3" value="{% firstof draft.progress readthrough.progress '' %}" id="progress_{{ uuid }}">
+                </div>
+                <div class="control">
+                    <div class="select">
+                        <select name="progress_mode" aria-label="Progress mode">
+                            <option value="PG" {% if draft.progress_mode == 'PG' or readthrough.progress_mode == 'PG' %}selected{% endif %}>{% trans "pages" %}</option>
+                            <option value="PCT" {% if draft.progress_mode == 'PCT' or readthrough.progress_mode == 'PCT' %}selected{% endif %}>{% trans "percent" %}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% if readthrough.progress_mode == 'PG' and book.pages %}
+            <p class="help">{% blocktrans with pages=book.pages %}of {{ pages }} pages{% endblocktrans %}</p>
+            {% endif %}
+        </div>
+        {% endwith %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% endwith %}

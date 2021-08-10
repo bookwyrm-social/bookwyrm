@@ -1,0 +1,35 @@
+{% extends "snippets/create_status/layout.html" %}
+{% load bookwyrm_tags %}
+{% load utilities %}
+{% load status_display %}
+{% load i18n %}
+
+{% comment %}
+----- Variables
+book: the Edition object this status is related to. Required unless the status is a reply
+draft: the content of an existing Status object to be edited (used in delete and redraft)
+uuid: a unique identifier used to make html "id" attributes unique and clarify javascript controls
+{% endcomment %}
+
+{% with type="review" %}
+
+{% block pre_content_additions %}
+    <div class="field">
+        <label class="label" for="id_name_{{ book.id }}">{% trans "Title:" %}</label>
+        <div class="control">
+            <input type="text" name="name" maxlength="255" class="input" required="" id="id_name_{{ book.id }}" placeholder="{% blocktrans with book_title=book.title %}Your review of '{{ book_title }}'{% endblocktrans %}" value="{% firstof draft.name ''%}">
+        </div>
+    </div>
+
+    <fieldset class="mb-1">
+        <legend class="is-sr-only">{% trans "Rating" %}</legend>
+
+        {% include 'snippets/form_rate_stars.html' with book=book type=type|default:'summary' default_rating=draft.rating %}
+    </fieldset>
+{% endblock %}
+
+{% block content_label %}
+    {% trans "Review:" %}
+{% endblock %}
+
+{% endwith %}
