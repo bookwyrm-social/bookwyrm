@@ -3,6 +3,7 @@ import csv
 import logging
 
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from bookwyrm import models
 from bookwyrm.models import ImportJob, ImportItem
@@ -71,7 +72,7 @@ def import_data(source, job_id):
                 item.resolve()
             except Exception as err:  # pylint: disable=broad-except
                 logger.exception(err)
-                item.fail_reason = "Error loading book"
+                item.fail_reason = _("Error loading book")
                 item.save()
                 continue
 
@@ -83,7 +84,7 @@ def import_data(source, job_id):
                     source, job.user, item, job.include_reviews, job.privacy
                 )
             else:
-                item.fail_reason = "Could not find a match for book"
+                item.fail_reason = _("Could not find a match for book")
                 item.save()
     finally:
         job.complete = True
