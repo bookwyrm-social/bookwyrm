@@ -2,7 +2,7 @@
 import re
 from requests import HTTPError
 from django.core.exceptions import FieldError
-from django.db.models import Max, Q
+from django.db.models import Q
 from django.http import Http404
 
 from bookwyrm import activitypub, models
@@ -162,8 +162,9 @@ def is_blocked(viewer, user):
     return False
 
 
-def get_discover_books():
-    """list of books for the discover page"""
+def get_landing_books():
+    """list of books for the landing page"""
+
     return list(
         set(
             models.Edition.objects.filter(
@@ -173,7 +174,7 @@ def get_discover_books():
                 review__privacy__in=["public", "unlisted"],
             )
             .exclude(cover__exact="")
-            .annotate(Max("review__published_date"))
-            .order_by("-review__published_date__max")[:6]
+            .distinct()
+            .order_by("-review__published_date")[:6]
         )
     )

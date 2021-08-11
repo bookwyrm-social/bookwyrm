@@ -54,9 +54,9 @@ class LandingViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
-    def test_discover(self):
+    def test_landing(self):
         """there are so many views, this just makes sure it LOADS"""
-        view = views.Discover.as_view()
+        view = views.Landing.as_view()
         request = self.factory.get("")
         result = view(request)
         self.assertIsInstance(result, TemplateResponse)

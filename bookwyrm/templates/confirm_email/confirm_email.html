@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm email" %}{% endblock %}
+
+{% block content %}
+<h1 class="title">{% trans "Confirm your email address" %}</h1>
+
+<div class="columns">
+    <div class="column">
+        <div class="block content">
+            <section class="block">
+                <p>{% trans "A confirmation code has been sent to the email address you used to register your account." %}</p>
+                {% if not valid %}
+                <p class="notification is-warning">{% trans "Sorry! We couldn't find that code." %}</p>
+                {% endif %}
+                <form name="confirm" method="post" action="{% url 'confirm-email' %}">
+                    {% csrf_token %}
+                    <label class="label" for="confirmation_code">{% trans "Confirmation code:" %}</label>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input class="input" type="text" name="code" id="confirmation_code" required>
+                        </div>
+                        <div class="control">
+                            <button class="button is-link" type="submit">{% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="block">
+                {% trans "Can't find your code?" as button_text %}
+                {% include "snippets/toggle/open_button.html" with text=button_text controls_text="resend_form" focus="resend_form_header" %}
+                {% include "confirm_email/resend_form.html" with controls_text="resend_form" %}
+            </section>
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
+            {% include 'snippets/about.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -175,3 +175,10 @@ class TemplateTags(TestCase):
 
         result = bookwyrm_tags.related_status(notification)
         self.assertIsInstance(result, models.Status)
+
+    def test_get_next_shelf(self, *_):
+        """self progress helper"""
+        self.assertEqual(bookwyrm_tags.get_next_shelf("to-read"), "reading")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("reading"), "read")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("read"), "read")
+        self.assertEqual(bookwyrm_tags.get_next_shelf("blooooga"), "to-read")

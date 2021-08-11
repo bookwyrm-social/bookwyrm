@@ -11,7 +11,7 @@
 {% trans "Edit Announcement" as button_text %}
 <div class="field has-addons">
     <div class="control">
-        {% include 'snippets/toggle/open_button.html' with controls_text="edit-announcement" icon_with_text="pencil" text=button_text focus="edit-announcement-header" %}
+        {% include 'snippets/toggle/open_button.html' with controls_text="edit_announcement" icon_with_text="pencil" text=button_text focus="edit_announcement_header" %}
     </div>
     <form class="control" action="{% url 'settings-announcements-delete' announcement.id %}" method="post">
         {% csrf_token %}
@@ -26,7 +26,7 @@
 {% block panel %}
 
 <form name="edit-announcement" method="post" action="{% url 'settings-announcements' announcement.id %}" class="block">
-    {% include 'settings/announcement_form.html' with controls_text="edit-announcement" %}
+    {% include 'settings/announcement_form.html' with controls_text="edit_announcement" %}
 </form>
 
 <div class="block content">

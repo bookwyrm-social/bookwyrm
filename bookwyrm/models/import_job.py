@@ -80,7 +80,7 @@ class ImportItem(models.Model):
         else:
             # don't fall back on title/author search is isbn is present.
             # you're too likely to mismatch
-            self.get_book_from_title_author()
+            self.book = self.get_book_from_title_author()
 
     def get_book_from_isbn(self):
         """search by isbn"""

@@ -9,7 +9,7 @@
 
 <form action="{% url 'settings-site' %}" method="POST" class="content" enctype="multipart/form-data">
     {% csrf_token %}
-    <section class="block" id="instance-info">
+    <section class="block" id="instance_info">
         <h2 class="title is-4">{% trans "Instance Info" %}</h2>
         <div class="field">
             <label class="label" for="id_name">{% trans "Instance Name:" %}</label>
@@ -90,6 +90,13 @@
                 {{ site_form.allow_invite_requests }}
                 {% trans "Allow invite requests" %}
             </label>
+        </div>
+        <div class="field">
+            <label class="label mb-0" for="id_allow_invite_requests">
+                {{ site_form.require_confirm_email }}
+                {% trans "Require users to confirm email address" %}
+            </label>
+            <p class="help">{% trans "(Recommended if registration is open)" %}</p>
         </div>
         <div class="field">
             <label class="label" for="id_registration_closed_text">{% trans "Registration closed text:" %}</label>

@@ -72,8 +72,8 @@
             {% if user_authenticated and not book.cover %}
             <div class="block">
                 {% trans "Add cover" as button_text %}
-                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add-cover" controls_uid=book.id focus="modal-title-add-cover" class="is-small" %}
-                {% include 'book/cover_modal.html' with book=book controls_text="add-cover" controls_uid=book.id %}
+                {% include 'snippets/toggle/toggle_button.html' with text=button_text controls_text="add_cover" controls_uid=book.id focus="modal_title_add_cover" class="is-small" %}
+                {% include 'book/cover_modal.html' with book=book controls_text="add_cover" controls_uid=book.id %}
                 {% if request.GET.cover_error %}
                 <p class="help is-danger">{% trans "Failed to load cover" %}</p>
                 {% endif %}
@@ -128,19 +128,19 @@
 
                 {% if user_authenticated and can_edit_book and not book|book_description %}
                 {% trans 'Add Description' as button_text %}
-                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add-description" controls_uid=book.id focus="id_description" hide_active=True id="hide-description" %}
+                {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="add_description" controls_uid=book.id focus="id_description" hide_active=True id="hide_description" %}
 
-                <div class="box is-hidden" id="add-description-{{ book.id }}">
+                <div class="box is-hidden" id="add_description_{{ book.id }}">
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
                         {% csrf_token %}
                         <p class="fields is-grouped">
-                            <label class="label"for="id_description">{% trans "Description:" %}</label>
-                            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description"></textarea>
+                            <label class="label"for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
+                            <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
                         </p>
                         <div class="field">
                             <button class="button is-primary" type="submit">{% trans "Save" %}</button>
                             {% trans "Cancel" as button_text %}
-                            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-description" controls_uid=book.id hide_inactive=True %}
+                            {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add_description" controls_uid=book.id hide_inactive=True %}
                         </div>
                     </form>
                 </div>
@@ -177,10 +177,10 @@
                     </div>
                     <div class="column is-narrow">
                         {% trans "Add read dates" as button_text %}
-                        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" class="is-small" controls_text="add-readthrough" focus="add-readthrough-focus" %}
+                        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="plus" class="is-small" controls_text="add_readthrough" focus="add_readthrough_focus_" %}
                     </div>
                 </header>
-                <section class="is-hidden box" id="add-readthrough">
+                <section class="is-hidden box" id="add_readthrough">
                     <form name="add-readthrough" action="/create-readthrough" method="post">
                         {% include 'snippets/readthrough_form.html' with readthrough=None %}
                         <div class="field is-grouped">
@@ -189,7 +189,7 @@
                             </div>
                             <div class="control">
                                 {% trans "Cancel" as button_text %}
-                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add-readthrough" %}
+                                {% include 'snippets/toggle/close_button.html' with text=button_text controls_text="add_readthrough" %}
                             </div>
                         </div>
                     </form>

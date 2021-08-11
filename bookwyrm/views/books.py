@@ -65,6 +65,13 @@ class Book(View):
         queryset = queryset.select_related("user")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
+        lists = privacy_filter(
+            request.user,
+            models.List.objects.filter(
+                listitem__approved=True,
+                listitem__book__in=book.parent_work.editions.all(),
+            ),
+        )
         data = {
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
@@ -75,9 +82,7 @@ class Book(View):
             if not user_statuses
             else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
-            "lists": privacy_filter(
-                request.user, book.list_set.filter(listitem__approved=True)
-            ),
+            "lists": lists,
         }
 
         if request.user.is_authenticated:

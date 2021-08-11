@@ -53,11 +53,11 @@
             {% endif %}
         {% endwith %}
 
-        <fieldset id="failed-imports">
+        <fieldset id="failed_imports">
             <ul>
             {% for item in failed_items %}
                 <li class="mb-2 is-flex is-align-items-start">
-                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import-item-{{ item.id }}">
+                    <input class="checkbox mt-1" type="checkbox" name="import_item" value="{{ item.id }}" id="import_item_{{ item.id }}">
                     <label class="ml-1" for="import-item-{{ item.id }}">
                         {% blocktrans with index=item.index title=item.data.Title author=item.data.Author %}Line {{ index }}: <strong>{{ title }}</strong> by {{ author }}{% endblocktrans %}
                         <br/>

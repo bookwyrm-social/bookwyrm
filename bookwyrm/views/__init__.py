@@ -1,11 +1,13 @@
 """ make sure all our nice views are available """
 from .announcements import Announcements, Announcement, delete_announcement
 from .authentication import Login, Register, Logout
+from .authentication import ConfirmEmail, ConfirmEmailCode, resend_link
 from .author import Author, EditAuthor
 from .block import Block, unblock
 from .books import Book, EditBook, ConfirmEditBook, Editions
 from .books import upload_cover, add_description, switch_edition, resolve_book
 from .directory import Directory
+from .discover import Discover
 from .edit_user import EditUser, DeleteUser
 from .federation import Federation, FederatedServer
 from .federation import AddFederatedServer, ImportServerBlocklist
@@ -21,7 +23,7 @@ from .interaction import Favorite, Unfavorite, Boost, Unboost
 from .invite import ManageInvites, Invite, InviteRequest
 from .invite import ManageInviteRequests, ignore_invite_request
 from .isbn import Isbn
-from .landing import About, Home, Discover
+from .landing import About, Home, Landing
 from .list import Lists, List, Curate, UserLists
 from .notifications import Notifications
 from .outbox import Outbox

@@ -46,7 +46,15 @@ urlpatterns = [
     re_path("^api/updates/stream/(?P<stream>[a-z]+)/?$", views.get_unread_status_count),
     # authentication
     re_path(r"^login/?$", views.Login.as_view(), name="login"),
+    re_path(r"^login/(?P<confirmed>confirmed)?$", views.Login.as_view(), name="login"),
     re_path(r"^register/?$", views.Register.as_view()),
+    re_path(r"confirm-email/?$", views.ConfirmEmail.as_view(), name="confirm-email"),
+    re_path(
+        r"confirm-email/(?P<code>[A-Za-z0-9]+)/?$",
+        views.ConfirmEmailCode.as_view(),
+        name="confirm-email-code",
+    ),
+    re_path(r"resend-link", views.resend_link, name="resend-link"),
     re_path(r"^logout/?$", views.Logout.as_view(), name="logout"),
     re_path(
         r"^password-reset/?$",
@@ -154,7 +162,7 @@ urlpatterns = [
     # landing pages
     re_path(r"^about/?$", views.About.as_view(), name="about"),
     path("", views.Home.as_view(), name="landing"),
-    re_path(r"^discover/?$", views.Discover.as_view()),
+    re_path(r"^discover/?$", views.Discover.as_view(), name="discover"),
     re_path(r"^notifications/?$", views.Notifications.as_view(), name="notifications"),
     re_path(
         r"^notifications/(?P<notification_type>mentions)/?$",
