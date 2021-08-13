@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-10 02:58+0000\n"
+"POT-Creation-Date: 2021-08-13 02:21+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -954,8 +954,9 @@ msgid "You have no messages right now."
 msgstr "No tienes ningún mensaje en este momento."
 
 #: bookwyrm/templates/feed/feed.html:22
-#, python-format
-msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
+#, fuzzy, python-format
+#| msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
+msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
 msgstr "cargar <span data-poll=\"stream/%(tab.key)s\">0</span> status(es) no leído(s)"
 
 #: bookwyrm/templates/feed/feed.html:38
@@ -2515,10 +2516,12 @@ msgid "Quote:"
 msgstr "Cita:"
 
 #: bookwyrm/templates/snippets/create_status/quotation.html:27
+#, python-format
 msgid "An excerpt from '%(book_title)s'"
 msgstr "Un extracto de '%(book_title)s'"
 
 #: bookwyrm/templates/snippets/create_status/review.html:20
+#, python-format
 msgid "Your review of '%(book_title)s'"
 msgstr "Tu reseña de '%(book_title)s'"
 
@@ -2562,6 +2565,7 @@ msgid "Clear filters"
 msgstr "Borrar filtros"
 
 #: bookwyrm/templates/snippets/follow_button.html:14
+#, python-format
 msgid "Follow @%(username)s"
 msgstr "Seguir @%(username)s"
 
@@ -2574,6 +2578,7 @@ msgid "Undo follow request"
 msgstr "Des-enviar solicitud de seguidor"
 
 #: bookwyrm/templates/snippets/follow_button.html:30
+#, python-format
 msgid "Unfollow @%(username)s"
 msgstr "Dejar de seguir @%(username)s"
 
@@ -2606,6 +2611,7 @@ msgstr[0] "estableció una meta de leer %(counter)s libro en %(year)s"
 msgstr[1] "estableció una meta de leer %(counter)s libros en %(year)s"
 
 #: bookwyrm/templates/snippets/generated_status/rating.html:3
+#, python-format
 msgid "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s star"
 msgid_plural "rated <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s stars"
 msgstr[0] "reseñó <em><a href=\"%(path)s\">%(title)s</a></em>: %(display_rating)s estrella"
@@ -2672,6 +2678,8 @@ msgid "page %(page)s of %(total_pages)s"
 msgstr "página %(page)s de %(total_pages)s"
 
 #: bookwyrm/templates/snippets/page_text.html:6
+#, fuzzy, python-format
+#| msgid "page %(page)s"
 msgid "page %(page)s"
 msgstr "página %(pages)s"
 
@@ -2805,35 +2813,42 @@ msgid "Open image in new window"
 msgstr "Abrir imagen en una nueva ventana"
 
 #: bookwyrm/templates/snippets/status/headers/comment.html:2
+#, python-format
 msgid "commented on <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "comentó en <a href=\"%(book_path)s\">\"%(book)s\"</a>"
 
 #: bookwyrm/templates/snippets/status/headers/note.html:15
 #, python-format
-msgid "replied to <a href=\"%(user_path)s\">%(username)s's</a> <a href=\"%(status_path)s\">status</a>"
+msgid "replied to <a href=\"%(user_path)s\">%(username)s</a>'s <a href=\"%(status_path)s\">status</a>"
 msgstr "respondió al <a href=\"%(status_path)s\">status</a> de <a href=\"%(user_path)s\">%(username)s</a> "
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
+#, python-format
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "citó a <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/rating.html:3
+#, python-format
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
 msgstr "calificó <a href=\"%(book_path)s\">%(book)s</a>:"
 
 #: bookwyrm/templates/snippets/status/headers/read.html:5
+#, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "terminó de leer <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/reading.html:6
+#, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "empezó a leer <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/review.html:3
+#, python-format
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "reseñó a <a href=\"%(book_path)s\">%(book)s</a>"
 
 #: bookwyrm/templates/snippets/status/headers/to_read.html:6
+#, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> quiere leer <a href=\"%(book_path)s\">%(book)s</a>"
 
