@@ -83,7 +83,7 @@ class ReadingStatus(View):
                     form.save()
                 else:
                     # uh oh
-                    raise Exception("Invalid form")
+                    raise Exception(form.errors)
             else:
                 privacy = request.POST.get("privacy")
                 handle_reading_status(request.user, desired_shelf, book, privacy)
