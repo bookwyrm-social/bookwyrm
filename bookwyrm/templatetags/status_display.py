@@ -70,7 +70,12 @@ def get_header_template(status):
     """get the path for the status template"""
     if isinstance(status, models.Boost):
         status = status.boosted_status
-    header_type = status.reading_status or status.status_type.lower()
+    try:
+        header_type = status.reading_status
+        if not header_type:
+            raise AttributeError()
+    except AttributeError:
+        header_type = status.status_type.lower()
     filename = f"snippets/status/headers/{header_type}.html"
     header_template = select_template([filename, "snippets/status/headers/note.html"])
     return header_template.render({"status": status})
