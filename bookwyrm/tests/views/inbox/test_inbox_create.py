@@ -80,9 +80,7 @@ class InboxCreate(TestCase):
     @patch("bookwyrm.activitystreams.ActivityStream.add_status")
     def test_create_comment_with_reading_status(self, *_):
         """the "it justs works" mode"""
-        datafile = pathlib.Path(__file__).parent.joinpath(
-            "../../data/ap_comment.json"
-        )
+        datafile = pathlib.Path(__file__).parent.joinpath("../../data/ap_comment.json")
         status_data = json.loads(datafile.read_bytes())
         status_data["readingStatus"] = "to-read"
 
@@ -97,9 +95,7 @@ class InboxCreate(TestCase):
             self.assertTrue(redis_mock.called)
 
         status = models.Comment.objects.get()
-        self.assertEqual(
-            status.remote_id, "https://example.com/user/mouse/comment/6"
-        )
+        self.assertEqual(status.remote_id, "https://example.com/user/mouse/comment/6")
         self.assertEqual(status.content, "commentary")
         self.assertEqual(status.reading_status, "to-read")
         self.assertEqual(status.user, self.local_user)
