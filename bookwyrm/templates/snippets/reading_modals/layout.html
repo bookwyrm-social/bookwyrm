@@ -8,8 +8,8 @@
 
 {% with 0|uuid as local_uuid %}
 <div class="is-flex is-justify-content-space-between">
-    <label for="post_status_start_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_start_{{ local_uuid }}_{{ uuid }}" aria-pressed="true">
-        <input type="checkbox" name="post-status" class="checkbox" id="post_status_start_{{ local_uuid }}_{{ uuid }}" checked>
+    <label for="post_status_{{ local_uuid }}_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_{{ local_uuid }}_{{ uuid }}" data-disables="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" aria-pressed="true">
+        <input type="checkbox" name="post-status" class="checkbox" id="post_status_{{ local_uuid }}_{{ uuid }}" checked>
         {% trans "Post to feed" %}
     </label>
     <div class="is-hidden" id="hide_reading_content_{{ local_uuid }}_{{ uuid }}">
@@ -19,7 +19,9 @@
 
 <div id="reading_content_{{ local_uuid }}_{{ uuid }}">
     <hr aria-hidden="true">
-    {% include "snippets/reading_modals/form.html" %}
+    <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}">
+        {% include "snippets/reading_modals/form.html" %}
+    </fieldset>
 </div>
 {% endwith %}
 

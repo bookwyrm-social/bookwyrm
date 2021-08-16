@@ -10,4 +10,5 @@ Want to Read "<em>{{ book_title }}</em>"
 
 {% block modal-form-open %}
 <form name="shelve" action="{% url 'reading-status' 'want' book.id %}" method="post">
+{% csrf_token %}
 {% endblock %}
