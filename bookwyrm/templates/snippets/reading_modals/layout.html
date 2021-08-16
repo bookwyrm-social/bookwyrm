@@ -20,7 +20,7 @@
 <div id="reading_content_{{ local_uuid }}_{{ uuid }}">
     <hr aria-hidden="true">
     <fieldset id="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}">
-        {% include "snippets/reading_modals/form.html" %}
+        {% include "snippets/reading_modals/form.html" with optional=True %}
     </fieldset>
 </div>
 {% endwith %}

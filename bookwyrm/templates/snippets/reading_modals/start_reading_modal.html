@@ -10,6 +10,7 @@ Start "<em>{{ book_title }}</em>"
 
 {% block modal-form-open %}
 <form name="start-reading" action="{% url 'reading-status' 'start' book.id %}" method="post">
+{% csrf_token %}
 {% endblock %}
 
 {% block reading-dates %}
