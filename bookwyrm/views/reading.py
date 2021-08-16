@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.http import require_POST
 
-from bookwyrm import models
+from bookwyrm import forms, models
 from .helpers import get_edition, handle_reading_status
 
 
@@ -76,8 +76,17 @@ class ReadingStatus(View):
 
         # post about it (if you want)
         if request.POST.get("post-status"):
-            privacy = request.POST.get("privacy")
-            handle_reading_status(request.user, desired_shelf, book, privacy)
+            # is it a comment?
+            if request.POST.get("content"):
+                form = forms.CommentForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                else:
+                    # uh oh
+                    raise Exception("Invalid form")
+            else:
+                privacy = request.POST.get("privacy")
+                handle_reading_status(request.user, desired_shelf, book, privacy)
 
         return redirect(request.headers.get("Referer", "/"))
 
