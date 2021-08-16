@@ -27,7 +27,6 @@ class RssFeedView(TestCase):
 
         models.SiteSettings.objects.create()
 
-
     def test_rss_empty(self, *_):
         """load an rss feed"""
         view = rss_feed.RssFeed()
@@ -36,7 +35,6 @@ class RssFeedView(TestCase):
         result = view(request, username=self.local_user.username)
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Status updates from rss_user", result.content)
-        result.render()
 
     def test_rss_comment(self, *_):
         """load an rss feed"""
@@ -51,7 +49,6 @@ class RssFeedView(TestCase):
         result = view(request, username=self.local_user.username)
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Example Edition", result.content)
-        result.render()
 
     def test_rss_review(self, *_):
         """load an rss feed"""
@@ -67,7 +64,6 @@ class RssFeedView(TestCase):
         request.user = self.local_user
         result = view(request, username=self.local_user.username)
         self.assertEqual(result.status_code, 200)
-        result.render()
 
     def test_rss_quotation(self, *_):
         """load an rss feed"""
@@ -82,6 +78,5 @@ class RssFeedView(TestCase):
         request.user = self.local_user
         result = view(request, username=self.local_user.username)
         self.assertEqual(result.status_code, 200)
-        result.render()
 
         self.assertIn(b"a sickening sense", result.content)
