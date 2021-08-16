@@ -3,6 +3,11 @@
 
 {% block form_open %}{% endblock %}
 
+{% block content_label %}
+{% trans "Comment:" %}
+<span class="help mt-0 has-text-weight-normal">{% trans "(Optional)" %}</span>
+{% endblock %}
+
 {% block initial_fields %}
 <input type="hidden" name="user" value="{{ request.user.id }}">
 <input type="hidden" name="mention_books" value="{{ book.id }}">
