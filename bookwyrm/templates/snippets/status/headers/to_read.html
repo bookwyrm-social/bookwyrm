@@ -1,0 +1,8 @@
+{% spaceless %}
+{% load i18n %}
+{% load utilities %}
+
+{% with book=status.mention_books.first %}
+{% blocktrans with book_path=book.remote_id book=book|book_title %}<a href="{{ user_path }}">{{ username }}</a> wants to read <a href="{{ book_path }}">{{ book }}</a>{% endblocktrans %}
+{% endwith %}
+{% endspaceless %}
