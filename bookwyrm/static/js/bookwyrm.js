@@ -179,6 +179,7 @@ let BookWyrm = new class {
 
         // Toggle form disabled, if appropriate
         let disable = trigger.dataset.disables;
+
         if (disable) {
             this.toggleDisabled(disable, !pressed);
         }
