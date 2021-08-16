@@ -235,12 +235,20 @@ class GeneratedNote(Status):
     pure_type = "Note"
 
 
-class Comment(Status):
-    """like a review but without a rating and transient"""
+class BookStatus(Status):
+    """Shared fields for comments, quotes, reviews"""
 
     book = fields.ForeignKey(
         "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
     )
+    pure_type = "Note"
+
+    class Meta:
+        abstract = True
+
+
+class Comment(BookStatus):
+    """like a review but without a rating and transient"""
 
     # this is it's own field instead of a foreign key to the progress update
     # so that the update can be deleted without impacting the status
@@ -265,16 +273,12 @@ class Comment(Status):
         )
 
     activity_serializer = activitypub.Comment
-    pure_type = "Note"
 
 
-class Quotation(Status):
+class Quotation(BookStatus):
     """like a review but without a rating and transient"""
 
     quote = fields.HtmlField()
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
-    )
 
     @property
     def pure_content(self):
@@ -289,16 +293,12 @@ class Quotation(Status):
         )
 
     activity_serializer = activitypub.Quotation
-    pure_type = "Note"
 
 
-class Review(Status):
+class Review(BookStatus):
     """a book review"""
 
     name = fields.CharField(max_length=255, null=True)
-    book = fields.ForeignKey(
-        "Edition", on_delete=models.PROTECT, activitypub_field="inReplyToBook"
-    )
     rating = fields.DecimalField(
         default=None,
         null=True,
