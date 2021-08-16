@@ -235,6 +235,11 @@ class GeneratedNote(Status):
     pure_type = "Note"
 
 
+ReadingStatusChoices = models.TextChoices(
+    "ReadingStatusChoices", ["to-read", "reading", "read"]
+)
+
+
 class BookStatus(Status):
     """Shared fields for comments, quotes, reviews"""
 
@@ -243,7 +248,13 @@ class BookStatus(Status):
     )
     pure_type = "Note"
 
+    reading_status = fields.CharField(
+        max_length=255, choices=ReadingStatusChoices.choices, null=True, blank=True
+    )
+
     class Meta:
+        """not a real model, sorry"""
+
         abstract = True
 
 
