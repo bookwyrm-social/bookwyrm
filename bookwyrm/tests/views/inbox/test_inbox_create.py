@@ -77,6 +77,37 @@ class InboxCreate(TestCase):
         views.inbox.activity_task(activity)
         self.assertEqual(models.Status.objects.count(), 1)
 
+    @patch("bookwyrm.activitystreams.ActivityStream.add_status")
+    def test_create_comment_with_reading_status(self, *_):
+        """the "it justs works" mode"""
+        datafile = pathlib.Path(__file__).parent.joinpath(
+            "../../data/ap_comment.json"
+        )
+        status_data = json.loads(datafile.read_bytes())
+        status_data["readingStatus"] = "to-read"
+
+        models.Edition.objects.create(
+            title="Test Book", remote_id="https://example.com/book/1"
+        )
+        activity = self.create_json
+        activity["object"] = status_data
+
+        with patch("bookwyrm.activitystreams.ActivityStream.add_status") as redis_mock:
+            views.inbox.activity_task(activity)
+            self.assertTrue(redis_mock.called)
+
+        status = models.Comment.objects.get()
+        self.assertEqual(
+            status.remote_id, "https://example.com/user/mouse/comment/6"
+        )
+        self.assertEqual(status.content, "commentary")
+        self.assertEqual(status.reading_status, "to-read")
+        self.assertEqual(status.user, self.local_user)
+
+        # while we're here, lets ensure we avoid dupes
+        views.inbox.activity_task(activity)
+        self.assertEqual(models.Status.objects.count(), 1)
+
     def test_create_status_remote_note_with_mention(self, _):
         """should only create it under the right circumstances"""
         self.assertFalse(
