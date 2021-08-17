@@ -34,8 +34,14 @@ class Editions(View):
         if request.GET.get("format"):
             filters["physical_format__iexact"] = request.GET.get("format")
 
+        editions = work.editions.order_by("-edition_rank")
+        languages = set(
+            sum([e for e in editions.values_list("languages", flat=True)], [])
+        )
+
+        editions = editions.filter(**filters)
+
         query = request.GET.get("q")
-        search_filters = {}
         if query:
             searchable_array_fields = ["languages", "publishers"]
             searchable_fields = [
@@ -49,16 +55,11 @@ class Editions(View):
             search_filter_entries = [
                 {f"{f}__icontains": query} for f in searchable_fields
             ] + [{f"{f}__iexact": query} for f in searchable_array_fields]
-            search_filters = reduce(
-                operator.or_, (Q(**f) for f in search_filter_entries)
+            editions = editions.filter(
+                reduce(operator.or_, (Q(**f) for f in search_filter_entries))
             )
 
-        editions = work.editions.order_by("-edition_rank")
-        languages = set(sum([e.languages for e in editions], []))
-
-        paginated = Paginator(
-            editions.filter(**filters).filter(search_filters), PAGE_LENGTH
-        )
+        paginated = Paginator(editions, PAGE_LENGTH)
         data = {
             "editions": paginated.get_page(request.GET.get("page")),
             "work": work,
