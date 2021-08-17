@@ -35,9 +35,7 @@ class Editions(View):
             filters["physical_format__iexact"] = request.GET.get("format")
 
         editions = work.editions.order_by("-edition_rank")
-        languages = set(
-            sum(editions.values_list("languages", flat=True), [])
-        )
+        languages = set(sum(editions.values_list("languages", flat=True), []))
 
         editions = editions.filter(**filters)
 
