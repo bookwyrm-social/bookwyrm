@@ -8,7 +8,7 @@
 
 {% with 0|uuid as local_uuid %}
 <div class="is-flex is-justify-content-space-between">
-    <label for="post_status_{{ local_uuid }}_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_{{ local_uuid }}_{{ uuid }}" data-disables="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" aria-pressed="true">
+    <label for="post_status_{{ local_uuid }}_{{ uuid }}" data-controls="reading_content_{{ local_uuid }}_{{ uuid }}" data-controls-checkbox="post_status_{{ local_uuid }}_{{ uuid }}" data-disables="reading_content_fieldset_{{ local_uuid }}_{{ uuid }}" aria-pressed="true" data-allow-default="true">
         <input type="checkbox" name="post-status" class="checkbox" id="post_status_{{ local_uuid }}_{{ uuid }}" checked>
         {% trans "Post to feed" %}
     </label>

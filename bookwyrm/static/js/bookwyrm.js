@@ -138,10 +138,10 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleAction(event) {
-        if (event.currentTarget == event.target) {
+        let trigger = event.currentTarget;
+        if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
             event.preventDefault();
         }
-        let trigger = event.currentTarget;
         let pressed = trigger.getAttribute('aria-pressed') === 'false';
         let targetId = trigger.dataset.controls;
 
