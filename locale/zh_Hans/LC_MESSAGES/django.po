@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-13 02:21+0000\n"
+"POT-Creation-Date: 2021-08-16 21:26+0000\n"
 "PO-Revision-Date: 2021-03-20 00:56+0000\n"
 "Last-Translator: Kana <gudzpoz@live.com>\n"
 "Language-Team: Mouse Reeve <LL@li.org>\n"
@@ -18,59 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: bookwyrm/forms.py:232
+#: bookwyrm/forms.py:233
 msgid "A user with this email already exists."
 msgstr "已经存在使用该邮箱的用户。"
 
-#: bookwyrm/forms.py:246
+#: bookwyrm/forms.py:247
 msgid "One Day"
 msgstr "一天"
 
-#: bookwyrm/forms.py:247
+#: bookwyrm/forms.py:248
 msgid "One Week"
 msgstr "一周"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:249
 msgid "One Month"
 msgstr "一个月"
 
-#: bookwyrm/forms.py:249
+#: bookwyrm/forms.py:250
 msgid "Does Not Expire"
 msgstr "永不失效"
 
-#: bookwyrm/forms.py:254
+#: bookwyrm/forms.py:255
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d 次使用"
 
-#: bookwyrm/forms.py:257
+#: bookwyrm/forms.py:258
 msgid "Unlimited"
 msgstr "不受限"
 
-#: bookwyrm/forms.py:307
+#: bookwyrm/forms.py:308
 msgid "List Order"
 msgstr "列表顺序"
 
-#: bookwyrm/forms.py:308
+#: bookwyrm/forms.py:309
 msgid "Book Title"
 msgstr "书名"
 
-#: bookwyrm/forms.py:309
+#: bookwyrm/forms.py:310
 #: bookwyrm/templates/snippets/create_status/review.html:25
 #: bookwyrm/templates/user/shelf/shelf.html:85
 #: bookwyrm/templates/user/shelf/shelf.html:116
 msgid "Rating"
 msgstr "评价"
 
-#: bookwyrm/forms.py:311 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:312 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "排序方式"
 
-#: bookwyrm/forms.py:315
+#: bookwyrm/forms.py:316
 msgid "Ascending"
 msgstr "升序"
 
-#: bookwyrm/forms.py:316
+#: bookwyrm/forms.py:317
 msgid "Descending"
 msgstr "降序"
 
@@ -284,9 +284,8 @@ msgstr "Goodreads key:"
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
 #: bookwyrm/templates/settings/site.html:108
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:36
+#: bookwyrm/templates/snippets/reading_modals/layout.html:16
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:42
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:45
 msgid "Save"
 msgstr "保存"
@@ -300,10 +299,7 @@ msgstr "保存"
 #: bookwyrm/templates/settings/federated_server.html:99
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:43
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:43
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:37
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:28
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:43
 msgid "Cancel"
 msgstr "取消"
 
@@ -1791,8 +1787,9 @@ msgid "boosted your <a href=\"%(related_path)s\">status</a>"
 msgstr "转发了你的 <a href=\"%(related_path)s\">状态</a>"
 
 #: bookwyrm/templates/notifications.html:121
-#, python-format
-msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list “<a href=\"%(list_path)s\">%(list_name)s</a>”"
+#, fuzzy, python-format
+#| msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list “<a href=\"%(list_path)s\">%(list_name)s</a>”"
+msgid " added <em><a href=\"%(book_path)s\">%(book_title)s</a></em> to your list \"<a href=\"%(list_path)s\">%(list_name)s</a>\""
 msgstr " 添加了 <em><a href=\"%(book_path)s\">%(book_title)s</a></em> 到你的列表 “<a href=\"%(list_path)s\">%(list_name)s</a>”"
 
 #: bookwyrm/templates/notifications.html:123
@@ -2446,24 +2443,24 @@ msgid "Some thoughts on the book"
 msgstr "对书的一些看法"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:26
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:16
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:16
 msgid "Progress:"
 msgstr "进度:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:34
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:30
 #: bookwyrm/templates/snippets/readthrough_form.html:22
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:30
 msgid "pages"
 msgstr "页数"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:35
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:31
 #: bookwyrm/templates/snippets/readthrough_form.html:23
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:31
 msgid "percent"
 msgstr "百分比"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:41
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:36
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:36
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "全书 %(pages)s 页"
@@ -2492,6 +2489,7 @@ msgid "Include spoiler alert"
 msgstr "加入剧透警告"
 
 #: bookwyrm/templates/snippets/create_status/layout.html:38
+#: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
 msgstr "评论:"
 
@@ -2638,9 +2636,7 @@ msgid "Goal privacy:"
 msgstr "目标隐私:"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:37
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:31
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:20
+#: bookwyrm/templates/snippets/reading_modals/layout.html:13
 msgid "Post to feed"
 msgstr "发布到消息流中"
 
@@ -2715,20 +2711,44 @@ msgstr "留下评价"
 msgid "Rate"
 msgstr "评价"
 
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:6
+#, python-format
+msgid "Finish \"<em>%(book_title)s</em>\""
+msgstr "完成《<em>%(book_title)s</em>》"
+
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:22
+#: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:20
 #: bookwyrm/templates/snippets/readthrough_form.html:7
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:19
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:19
 msgid "Started reading"
 msgstr "已开始阅读"
+
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:30
+#: bookwyrm/templates/snippets/readthrough_form.html:30
+msgid "Finished reading"
+msgstr "已完成阅读"
+
+#: bookwyrm/templates/snippets/reading_modals/form.html:8
+msgid "(Optional)"
+msgstr ""
+
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:45
+msgid "Update progress"
+msgstr "更新进度"
+
+#: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:6
+#, python-format
+msgid "Start \"<em>%(book_title)s</em>\""
+msgstr "开始《<em>%(book_title)s</em>》"
+
+#: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
+#, python-format
+msgid "Want to Read \"<em>%(book_title)s</em>\""
+msgstr "想要阅读《<em>%(book_title)s</em>》"
 
 #: bookwyrm/templates/snippets/readthrough_form.html:14
 msgid "Progress"
 msgstr "进度"
-
-#: bookwyrm/templates/snippets/readthrough_form.html:30
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:25
-msgid "Finished reading"
-msgstr "已完成阅读"
 
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
@@ -2746,16 +2766,6 @@ msgstr "导入书目"
 msgid "Move book"
 msgstr "移动书目"
 
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:5
-#, python-format
-msgid "Finish \"<em>%(book_title)s</em>\""
-msgstr "完成《<em>%(book_title)s</em>》"
-
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:5
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:45
-msgid "Update progress"
-msgstr "更新进度"
-
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
 msgstr "更多书架"
@@ -2769,7 +2779,6 @@ msgid "Finish reading"
 msgstr "完成阅读"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:25
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:26
 msgid "Want to read"
 msgstr "想要阅读"
 
@@ -2777,16 +2786,6 @@ msgstr "想要阅读"
 #, python-format
 msgid "Remove from %(name)s"
 msgstr "从 %(name)s 移除"
-
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:5
-#, python-format
-msgid "Start \"<em>%(book_title)s</em>\""
-msgstr "开始《<em>%(book_title)s</em>》"
-
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:5
-#, python-format
-msgid "Want to Read \"<em>%(book_title)s</em>\""
-msgstr "想要阅读《<em>%(book_title)s</em>》"
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
 #: bookwyrm/templates/snippets/trimmed_text.html:17
@@ -2814,7 +2813,6 @@ msgstr "回复了 <a href=\"%(user_path)s\">%(username)s</a> 的 <a href=\"%(sta
 
 #: bookwyrm/templates/snippets/status/headers/quotation.html:2
 #, python-format
-#| msgid "Reported by <a href=\"%(path)s\">%(username)s</a>"
 msgid "quoted <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "引用了 <a href=\"%(book_path)s\">%(book)s</a>"
 
@@ -2823,12 +2821,12 @@ msgstr "引用了 <a href=\"%(book_path)s\">%(book)s</a>"
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
 msgstr "为 <a href=\"%(book_path)s\">%(book)s</a> 打了分:"
 
-#: bookwyrm/templates/snippets/status/headers/read.html:5
+#: bookwyrm/templates/snippets/status/headers/read.html:7
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "完成阅读 <a href=\"%(book_path)s\">%(book)s</a>"
 
-#: bookwyrm/templates/snippets/status/headers/reading.html:6
+#: bookwyrm/templates/snippets/status/headers/reading.html:7
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "开始阅读 <a href=\"%(book_path)s\">%(book)s</a>"
@@ -2838,7 +2836,7 @@ msgstr "开始阅读 <a href=\"%(book_path)s\">%(book)s</a>"
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "为 <a href=\"%(book_path)s\">%(book)s</a> 撰写了书评"
 
-#: bookwyrm/templates/snippets/status/headers/to_read.html:6
+#: bookwyrm/templates/snippets/status/headers/to_read.html:7
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> 想要阅读 <a href=\"%(book_path)s\">%(book)s</a>"
@@ -3142,6 +3140,11 @@ msgstr "没有找到使用该邮箱的用户。"
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "密码重置连接已发送给 %s"
+
+#: bookwyrm/views/rss_feed.py:34
+#, python-brace-format
+msgid "Status updates from {obj.display_name}"
+msgstr ""
 
 #~ msgid "Local Timeline"
 #~ msgstr "本地时间线"

@@ -138,8 +138,11 @@ let BookWyrm = new class {
      * @return {undefined}
      */
     toggleAction(event) {
-        event.preventDefault();
         let trigger = event.currentTarget;
+
+        if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
+            event.preventDefault();
+        }
         let pressed = trigger.getAttribute('aria-pressed') === 'false';
         let targetId = trigger.dataset.controls;
 
@@ -175,6 +178,13 @@ let BookWyrm = new class {
 
         if (checkbox) {
             this.toggleCheckbox(checkbox, pressed);
+        }
+
+        // Toggle form disabled, if appropriate
+        let disable = trigger.dataset.disables;
+
+        if (disable) {
+            this.toggleDisabled(disable, !pressed);
         }
 
         // Set focus, if appropriate.
@@ -225,6 +235,17 @@ let BookWyrm = new class {
      */
     toggleCheckbox(checkbox, pressed) {
         document.getElementById(checkbox).checked = !!pressed;
+    }
+
+    /**
+     * Enable or disable a form element or fieldset
+     *
+     * @param  {string}  form_element - id of the element
+     * @param  {boolean} pressed  - Is the trigger pressed?
+     * @return {undefined}
+     */
+    toggleDisabled(form_element, pressed) {
+        document.getElementById(form_element).disabled = !!pressed;
     }
 
     /**
