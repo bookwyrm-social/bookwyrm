@@ -20,39 +20,6 @@
     {% endblock %}
 </header>
 
-{# user bio #}
-<div class="block">
-    <div class="columns">
-        <div class="column is-two-fifths">
-            {% include 'user/user_preview.html' with user=user %}
-        </div>
-
-        {% if user.summary %}
-        {% spaceless %}
-        <div class="column box has-background-white-bis content preserve-whitespace">
-            {{ user.summary|to_markdown|safe }}
-        {% endspaceless %}
-        </div>
-        {% endif %}
-    </div>
-    {% if not is_self and request.user.is_authenticated %}
-    {% include 'snippets/follow_button.html' with user=user %}
-    {% endif %}
-
-    {% if is_self and user.follower_requests.all %}
-    <div class="follow-requests">
-        <h2>{% trans "Follow Requests" %}</h2>
-        {% for requester in user.follower_requests.all %}
-            <div class="row shrink">
-                <p>
-                    <a href="{{ requester.local_path }}">{{ requester.display_name }}</a> ({{ requester.username }})
-                </p>
-                {% include 'snippets/follow_request_buttons.html' with user=requester %}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
 
 {% block tabs %}
 {% with user|username as username %}
