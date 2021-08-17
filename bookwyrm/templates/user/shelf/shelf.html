@@ -1,4 +1,4 @@
-{% extends 'user/layout_without_bio.html' %}
+{% extends 'layout.html' %}
 {% load bookwyrm_tags %}
 {% load utilities %}
 {% load humanize %}
@@ -8,15 +8,17 @@
 {% include 'user/shelf/books_header.html' %}
 {% endblock %}
 
-{% block header %}
-<header class="columns">
+{% block opengraph_images %}
+    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% endblock %}
+
+{% block content %}
+<header class="block">
     <h1 class="title">
         {% include 'user/shelf/books_header.html' %}
     </h1>
 </header>
-{% endblock %}
 
-{% block tabs %}
 <div class="block columns">
     <div class="column">
         <div class="tabs">
@@ -41,9 +43,7 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
 
-{% block panel %}
 <div class="block">
     {% include 'user/shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
 </div>
