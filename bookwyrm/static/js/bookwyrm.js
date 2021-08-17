@@ -139,6 +139,7 @@ let BookWyrm = new class {
      */
     toggleAction(event) {
         let trigger = event.currentTarget;
+
         if (!trigger.dataset.allowDefault || event.currentTarget == event.target) {
             event.preventDefault();
         }
