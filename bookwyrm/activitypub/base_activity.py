@@ -106,7 +106,7 @@ class ActivityObject:
                 value = field.default
             setattr(self, field.name, value)
 
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint: disable=too-many-locals,too-many-branches,too-many-arguments
     def to_model(
         self, model=None, instance=None, allow_create=True, save=True, overwrite=True
     ):
