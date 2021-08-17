@@ -36,7 +36,7 @@ class Editions(View):
 
         editions = work.editions.order_by("-edition_rank")
         languages = set(
-            sum([e for e in editions.values_list("languages", flat=True)], [])
+            sum(editions.values_list("languages", flat=True), [])
         )
 
         editions = editions.filter(**filters)
