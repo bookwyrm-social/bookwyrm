@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-13 02:21+0000\n"
+"POT-Creation-Date: 2021-08-16 21:26+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,59 +18,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bookwyrm/forms.py:232
+#: bookwyrm/forms.py:233
 msgid "A user with this email already exists."
 msgstr "Ya existe un usuario con ese correo electrónico."
 
-#: bookwyrm/forms.py:246
+#: bookwyrm/forms.py:247
 msgid "One Day"
 msgstr "Un día"
 
-#: bookwyrm/forms.py:247
+#: bookwyrm/forms.py:248
 msgid "One Week"
 msgstr "Una semana"
 
-#: bookwyrm/forms.py:248
+#: bookwyrm/forms.py:249
 msgid "One Month"
 msgstr "Un mes"
 
-#: bookwyrm/forms.py:249
+#: bookwyrm/forms.py:250
 msgid "Does Not Expire"
 msgstr "Nunca se vence"
 
-#: bookwyrm/forms.py:254
+#: bookwyrm/forms.py:255
 #, python-format
 msgid "%(count)d uses"
 msgstr "%(count)d usos"
 
-#: bookwyrm/forms.py:257
+#: bookwyrm/forms.py:258
 msgid "Unlimited"
 msgstr "Sin límite"
 
-#: bookwyrm/forms.py:307
+#: bookwyrm/forms.py:308
 msgid "List Order"
 msgstr "Orden de la lista"
 
-#: bookwyrm/forms.py:308
+#: bookwyrm/forms.py:309
 msgid "Book Title"
 msgstr "Título"
 
-#: bookwyrm/forms.py:309
+#: bookwyrm/forms.py:310
 #: bookwyrm/templates/snippets/create_status/review.html:25
 #: bookwyrm/templates/user/shelf/shelf.html:85
 #: bookwyrm/templates/user/shelf/shelf.html:116
 msgid "Rating"
 msgstr "Calificación"
 
-#: bookwyrm/forms.py:311 bookwyrm/templates/lists/list.html:107
+#: bookwyrm/forms.py:312 bookwyrm/templates/lists/list.html:107
 msgid "Sort By"
 msgstr "Ordenar por"
 
-#: bookwyrm/forms.py:315
+#: bookwyrm/forms.py:316
 msgid "Ascending"
 msgstr "Ascendente"
 
-#: bookwyrm/forms.py:316
+#: bookwyrm/forms.py:317
 msgid "Descending"
 msgstr "Descendente"
 
@@ -284,9 +284,8 @@ msgstr "Clave Goodreads:"
 #: bookwyrm/templates/settings/edit_server.html:68
 #: bookwyrm/templates/settings/federated_server.html:98
 #: bookwyrm/templates/settings/site.html:108
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:42
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:42
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:36
+#: bookwyrm/templates/snippets/reading_modals/layout.html:16
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:42
 #: bookwyrm/templates/user_admin/user_moderation_actions.html:45
 msgid "Save"
 msgstr "Guardar"
@@ -300,10 +299,7 @@ msgstr "Guardar"
 #: bookwyrm/templates/settings/federated_server.html:99
 #: bookwyrm/templates/snippets/delete_readthrough_modal.html:17
 #: bookwyrm/templates/snippets/goal_form.html:32
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:43
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:43
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:37
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:28
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:43
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2451,24 +2447,24 @@ msgid "Some thoughts on the book"
 msgstr "Algunos pensamientos sobre el libro"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:26
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:16
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:16
 msgid "Progress:"
 msgstr "Progreso:"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:34
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:30
 #: bookwyrm/templates/snippets/readthrough_form.html:22
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:30
 msgid "pages"
 msgstr "páginas"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:35
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:31
 #: bookwyrm/templates/snippets/readthrough_form.html:23
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:31
 msgid "percent"
 msgstr "por ciento"
 
 #: bookwyrm/templates/snippets/create_status/comment.html:41
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:36
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:36
 #, python-format
 msgid "of %(pages)s pages"
 msgstr "de %(pages)s páginas"
@@ -2497,6 +2493,7 @@ msgid "Include spoiler alert"
 msgstr "Incluir alerta de spoiler"
 
 #: bookwyrm/templates/snippets/create_status/layout.html:38
+#: bookwyrm/templates/snippets/reading_modals/form.html:7
 msgid "Comment:"
 msgstr "Comentario:"
 
@@ -2647,9 +2644,7 @@ msgid "Goal privacy:"
 msgstr "Privacidad de meta:"
 
 #: bookwyrm/templates/snippets/goal_form.html:26
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:37
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:31
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:20
+#: bookwyrm/templates/snippets/reading_modals/layout.html:13
 msgid "Post to feed"
 msgstr "Compartir con tu feed"
 
@@ -2725,20 +2720,44 @@ msgstr "Da una calificación"
 msgid "Rate"
 msgstr "Calificar"
 
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:6
+#, python-format
+msgid "Finish \"<em>%(book_title)s</em>\""
+msgstr "Terminar \"<em>%(book_title)s</em>\""
+
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:22
+#: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:20
 #: bookwyrm/templates/snippets/readthrough_form.html:7
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:19
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:19
 msgid "Started reading"
 msgstr "Lectura se empezó"
+
+#: bookwyrm/templates/snippets/reading_modals/finish_reading_modal.html:30
+#: bookwyrm/templates/snippets/readthrough_form.html:30
+msgid "Finished reading"
+msgstr "Lectura se terminó"
+
+#: bookwyrm/templates/snippets/reading_modals/form.html:8
+msgid "(Optional)"
+msgstr ""
+
+#: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
+#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:45
+msgid "Update progress"
+msgstr "Progreso de actualización"
+
+#: bookwyrm/templates/snippets/reading_modals/start_reading_modal.html:6
+#, python-format
+msgid "Start \"<em>%(book_title)s</em>\""
+msgstr "Empezar \"<em>%(book_title)s</em>\""
+
+#: bookwyrm/templates/snippets/reading_modals/want_to_read_modal.html:6
+#, python-format
+msgid "Want to Read \"<em>%(book_title)s</em>\""
+msgstr "Quiero leer \"<em>%(book_title)s</em>\""
 
 #: bookwyrm/templates/snippets/readthrough_form.html:14
 msgid "Progress"
 msgstr "Progreso"
-
-#: bookwyrm/templates/snippets/readthrough_form.html:30
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:25
-msgid "Finished reading"
-msgstr "Lectura se terminó"
 
 #: bookwyrm/templates/snippets/register_form.html:32
 msgid "Sign Up"
@@ -2756,16 +2775,6 @@ msgstr "Importar libro"
 msgid "Move book"
 msgstr "Mover libro"
 
-#: bookwyrm/templates/snippets/shelve_button/finish_reading_modal.html:5
-#, python-format
-msgid "Finish \"<em>%(book_title)s</em>\""
-msgstr "Terminar \"<em>%(book_title)s</em>\""
-
-#: bookwyrm/templates/snippets/shelve_button/progress_update_modal.html:5
-#: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:45
-msgid "Update progress"
-msgstr "Progreso de actualización"
-
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_dropdown.html:5
 msgid "More shelves"
 msgstr "Más estantes"
@@ -2779,7 +2788,6 @@ msgid "Finish reading"
 msgstr "Terminar de leer"
 
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:25
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:26
 msgid "Want to read"
 msgstr "Quiero leer"
 
@@ -2787,16 +2795,6 @@ msgstr "Quiero leer"
 #, python-format
 msgid "Remove from %(name)s"
 msgstr "Quitar de %(name)s"
-
-#: bookwyrm/templates/snippets/shelve_button/start_reading_modal.html:5
-#, python-format
-msgid "Start \"<em>%(book_title)s</em>\""
-msgstr "Empezar \"<em>%(book_title)s</em>\""
-
-#: bookwyrm/templates/snippets/shelve_button/want_to_read_modal.html:5
-#, python-format
-msgid "Want to Read \"<em>%(book_title)s</em>\""
-msgstr "Quiero leer \"<em>%(book_title)s</em>\""
 
 #: bookwyrm/templates/snippets/status/content_status.html:72
 #: bookwyrm/templates/snippets/trimmed_text.html:17
@@ -2832,12 +2830,12 @@ msgstr "citó a <a href=\"%(book_path)s\">%(book)s</a>"
 msgid "rated <a href=\"%(book_path)s\">%(book)s</a>:"
 msgstr "calificó <a href=\"%(book_path)s\">%(book)s</a>:"
 
-#: bookwyrm/templates/snippets/status/headers/read.html:5
+#: bookwyrm/templates/snippets/status/headers/read.html:7
 #, python-format
 msgid "finished reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "terminó de leer <a href=\"%(book_path)s\">%(book)s</a>"
 
-#: bookwyrm/templates/snippets/status/headers/reading.html:6
+#: bookwyrm/templates/snippets/status/headers/reading.html:7
 #, python-format
 msgid "started reading <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "empezó a leer <a href=\"%(book_path)s\">%(book)s</a>"
@@ -2847,7 +2845,7 @@ msgstr "empezó a leer <a href=\"%(book_path)s\">%(book)s</a>"
 msgid "reviewed <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "reseñó a <a href=\"%(book_path)s\">%(book)s</a>"
 
-#: bookwyrm/templates/snippets/status/headers/to_read.html:6
+#: bookwyrm/templates/snippets/status/headers/to_read.html:7
 #, python-format
 msgid "<a href=\"%(user_path)s\">%(username)s</a> wants to read <a href=\"%(book_path)s\">%(book)s</a>"
 msgstr "<a href=\"%(user_path)s\">%(username)s</a> quiere leer <a href=\"%(book_path)s\">%(book)s</a>"
@@ -3155,6 +3153,11 @@ msgstr "No se pudo encontrar un usuario con esa dirección de correo electrónic
 #, python-format
 msgid "A password reset link sent to %s"
 msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
+
+#: bookwyrm/views/rss_feed.py:34
+#, python-brace-format
+msgid "Status updates from {obj.display_name}"
+msgstr ""
 
 #~ msgid "Local Timeline"
 #~ msgstr "Línea temporal local"

@@ -59,6 +59,9 @@ class Comment(Note):
     """like a note but with a book"""
 
     inReplyToBook: str
+    readingStatus: str = None
+    progress: int = None
+    progressMode: str = None
     type: str = "Comment"
 
 

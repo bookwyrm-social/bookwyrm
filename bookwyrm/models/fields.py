@@ -66,7 +66,7 @@ class ActivitypubFieldMixin:
             self.activitypub_field = activitypub_field
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data):
+    def set_field_from_activity(self, instance, data, overwrite=True):
         """helper function for assinging a value to the field. Returns if changed"""
         try:
             value = getattr(data, self.get_activitypub_field())
@@ -79,8 +79,15 @@ class ActivitypubFieldMixin:
         if formatted is None or formatted is MISSING or formatted == {}:
             return False
 
+        current_value = (
+            getattr(instance, self.name) if hasattr(instance, self.name) else None
+        )
+        # if we're not in overwrite mode, only continue updating the field if its unset
+        if current_value and not overwrite:
+            return False
+
         # the field is unchanged
-        if hasattr(instance, self.name) and getattr(instance, self.name) == formatted:
+        if current_value == formatted:
             return False
 
         setattr(instance, self.name, formatted)
@@ -210,7 +217,10 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         )
 
     # pylint: disable=invalid-name
-    def set_field_from_activity(self, instance, data):
+    def set_field_from_activity(self, instance, data, overwrite=True):
+        if not overwrite:
+            return False
+
         original = getattr(instance, self.name)
         to = data.to
         cc = data.cc
@@ -273,8 +283,11 @@ class ManyToManyField(ActivitypubFieldMixin, models.ManyToManyField):
         self.link_only = link_only
         super().__init__(*args, **kwargs)
 
-    def set_field_from_activity(self, instance, data):
+    def set_field_from_activity(self, instance, data, overwrite=True):
         """helper function for assinging a value to the field"""
+        if not overwrite and getattr(instance, self.name).exists():
+            return False
+
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
@@ -377,11 +390,14 @@ class ImageField(ActivitypubFieldMixin, models.ImageField):
         super().__init__(*args, **kwargs)
 
     # pylint: disable=arguments-differ
-    def set_field_from_activity(self, instance, data, save=True):
+    def set_field_from_activity(self, instance, data, save=True, overwrite=True):
         """helper function for assinging a value to the field"""
         value = getattr(data, self.get_activitypub_field())
         formatted = self.field_from_activity(value)
         if formatted is None or formatted is MISSING:
+            return False
+
+        if not overwrite and hasattr(instance, self.name):
             return False
 
         getattr(instance, self.name).save(*formatted, save=save)
