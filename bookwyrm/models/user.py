@@ -17,14 +17,20 @@ from bookwyrm.connectors import get_data, ConnectorException
 from bookwyrm.models.shelf import Shelf
 from bookwyrm.models.status import Status, Review
 from bookwyrm.preview_images import generate_user_preview_image_task
-from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import DOMAIN, ENABLE_PREVIEW_IMAGES, USE_HTTPS
 from bookwyrm.signatures import create_key_pair
 from bookwyrm.tasks import app
 from bookwyrm.utils import regex
 from .activitypub_mixin import OrderedCollectionPageMixin, ActivitypubMixin
-from .base_model import BookWyrmModel, DeactivationReason
+from .base_model import BookWyrmModel, DeactivationReason, new_access_code
 from .federated_server import FederatedServer
 from . import fields, Review
+
+
+def site_link():
+    """helper for generating links to the site"""
+    protocol = "https" if USE_HTTPS else "http"
+    return f"{protocol}://{DOMAIN}"
 
 
 class User(OrderedCollectionPageMixin, AbstractUser):
@@ -111,7 +117,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     remote_id = fields.RemoteIdField(null=True, unique=True, activitypub_field="id")
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    last_active_date = models.DateTimeField(auto_now=True)
+    last_active_date = models.DateTimeField(default=timezone.now)
     manually_approves_followers = fields.BooleanField(default=False)
     show_goal = models.BooleanField(default=True)
     discoverable = fields.BooleanField(default=False)
@@ -123,10 +129,17 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     deactivation_reason = models.CharField(
         max_length=255, choices=DeactivationReason.choices, null=True, blank=True
     )
+    confirmation_code = models.CharField(max_length=32, default=new_access_code)
 
     name_field = "username"
     property_fields = [("following_link", "following")]
     field_tracker = FieldTracker(fields=["name", "avatar"])
+
+    @property
+    def confirmation_link(self):
+        """helper for generating confirmation links"""
+        link = site_link()
+        return f"{link}/confirm-email/{self.confirmation_code}"
 
     @property
     def following_link(self):
@@ -207,7 +220,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.following.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_followers_activity(self, **kwargs):
@@ -217,7 +230,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
             id_only=True,
-            **kwargs
+            **kwargs,
         )
 
     def to_activity(self, **kwargs):
@@ -259,9 +272,9 @@ class User(OrderedCollectionPageMixin, AbstractUser):
             return
 
         # populate fields for local users
-        self.remote_id = "https://%s/user/%s" % (DOMAIN, self.localname)
+        self.remote_id = "%s/user/%s" % (site_link(), self.localname)
         self.inbox = "%s/inbox" % self.remote_id
-        self.shared_inbox = "https://%s/inbox" % DOMAIN
+        self.shared_inbox = "%s/inbox" % site_link()
         self.outbox = "%s/outbox" % self.remote_id
 
         # an id needs to be set before we can proceed with related models

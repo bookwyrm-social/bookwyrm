@@ -2,6 +2,7 @@
 from dateutil.relativedelta import relativedelta
 from django import template
 from django.contrib.humanize.templatetags.humanize import naturaltime, naturalday
+from django.template.loader import select_template
 from django.utils import timezone
 from bookwyrm import models
 from bookwyrm.templatetags.utilities import get_user_identifier
@@ -35,7 +36,7 @@ def get_parent(status):
     return (
         models.Status.objects.filter(id=status.reply_parent_id)
         .select_subclasses()
-        .get()
+        .first()
     )
 
 
@@ -62,3 +63,19 @@ def get_published_date(date):
     if delta.days:
         return naturalday(date, "M j")
     return naturaltime(date)
+
+
+@register.simple_tag()
+def get_header_template(status):
+    """get the path for the status template"""
+    if isinstance(status, models.Boost):
+        status = status.boosted_status
+    filename = "snippets/status/headers/{:s}.html".format(status.status_type.lower())
+    header_template = select_template([filename, "snippets/status/headers/note.html"])
+    return header_template.render({"status": status})
+
+
+@register.simple_tag(takes_context=False)
+def load_book(status):
+    """how many users that you follow, follow them"""
+    return status.book if hasattr(status, "book") else status.mention_books.first()

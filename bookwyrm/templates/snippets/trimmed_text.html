@@ -3,21 +3,25 @@
 {% load i18n %}
 
 {% with 0|uuid as uuid %}
+{% firstof trim_length 150 as trim_length %}
     {% if full %}
         {% with full|to_markdown|safe as full %}
-            {% with full|to_markdown|safe|truncatewords_html:150 as trimmed %}
+            {% with full|to_markdown|safe|truncatewords_html:trim_length as trimmed %}
                 {% if not no_trim and trimmed != full %}
-                    <div id="hide-full-{{ uuid }}">
-                        <div class="content" id="trimmed-{{ uuid }}">
+                    <div id="hide_full_{{ uuid }}">
+                        <div class="content" id="trimmed_{{ uuid }}">
                             <div dir="auto">{{ trimmed }}</div>
 
                             <div>
+                            {% if not hide_more %}
                                 {% trans "Show more" as button_text %}
                                 {% include 'snippets/toggle/open_button.html' with text=button_text controls_text="full" controls_uid=uuid class="is-small" %}
+                            {% endif %}
                             </div>
                         </div>
                     </div>
-                    <div id="full-{{ uuid }}" class="is-hidden">
+                    {% if not hide_more %}
+                    <div id="full_{{ uuid }}" class="is-hidden">
                         <div class="content">
                             <div
                                 dir="auto"
@@ -32,6 +36,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 {% else %}
                     <div class="content">
                         <div

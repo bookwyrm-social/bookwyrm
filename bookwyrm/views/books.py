@@ -65,6 +65,13 @@ class Book(View):
         queryset = queryset.select_related("user")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
+        lists = privacy_filter(
+            request.user,
+            models.List.objects.filter(
+                listitem__approved=True,
+                listitem__book__in=book.parent_work.editions.all(),
+            ),
+        )
         data = {
             "book": book,
             "statuses": paginated.get_page(request.GET.get("page")),
@@ -75,9 +82,7 @@ class Book(View):
             if not user_statuses
             else None,
             "rating": reviews.aggregate(Avg("rating"))["rating__avg"],
-            "lists": privacy_filter(
-                request.user, book.list_set.filter(listitem__approved=True)
-            ),
+            "lists": lists,
         }
 
         if request.user.is_authenticated:
@@ -339,18 +344,15 @@ def set_cover_from_url(url):
 @permission_required("bookwyrm.edit_book", raise_exception=True)
 def add_description(request, book_id):
     """upload a new cover"""
-    if not request.method == "POST":
-        return redirect("/")
-
     book = get_object_or_404(models.Edition, id=book_id)
 
     description = request.POST.get("description")
 
     book.description = description
     book.last_edited_by = request.user
-    book.save()
+    book.save(update_fields=["description", "last_edited_by"])
 
-    return redirect("/book/%s" % book.id)
+    return redirect("book", book.id)
 
 
 @require_POST
@@ -360,7 +362,7 @@ def resolve_book(request):
     connector = connector_manager.get_or_create_connector(remote_id)
     book = connector.get_or_create_book(remote_id)
 
-    return redirect("/book/%d" % book.id)
+    return redirect("book", book.id)
 
 
 @login_required

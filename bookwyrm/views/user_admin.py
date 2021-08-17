@@ -30,6 +30,9 @@ class UserAdminList(View):
         username = request.GET.get("username")
         if username:
             filters["username__icontains"] = username
+        scope = request.GET.get("scope")
+        if scope:
+            filters["local"] = scope == "local"
 
         users = models.User.objects.filter(**filters)
 

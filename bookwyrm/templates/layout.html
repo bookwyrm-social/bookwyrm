@@ -37,7 +37,7 @@
             <form class="navbar-item column" action="/search/">
                 <div class="field has-addons">
                     <div class="control">
-                        <input aria-label="{% trans 'Search for a book or user' %}" id="search-input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
+                        <input aria-label="{% trans 'Search for a book or user' %}" id="search_input" class="input" type="text" name="q" placeholder="{% trans 'Search for a book or user' %}" value="{{ query }}">
                     </div>
                     <div class="control">
                         <button class="button" type="submit">
@@ -49,7 +49,7 @@
                 </div>
             </form>
 
-            <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main-nav" aria-expanded="false">
+            <div role="button" tabindex="0" class="navbar-burger pulldown-menu" data-controls="main_nav" aria-expanded="false">
                 <div class="navbar-item mt-3">
                     <div class="icon icon-dots-three-vertical" title="{% trans 'Main navigation menu' %}">
                         <span class="is-sr-only">{% trans "Main navigation menu" %}</span>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="navbar-menu" id="main-nav">
+        <div class="navbar-menu" id="main_nav">
             <div class="navbar-start">
                 {% if request.user.is_authenticated %}
                 <a href="/#feed" class="navbar-item">
@@ -67,8 +67,8 @@
                 <a href="{% url 'lists' %}" class="navbar-item">
                     {% trans "Lists" %}
                 </a>
-                <a href="{% url 'directory' %}" class="navbar-item">
-                    {% trans "Directory" %}
+                <a href="{% url 'discover' %}" class="navbar-item">
+                    {% trans "Discover" %}
                 </a>
                 {% endif %}
             </div>
@@ -88,7 +88,12 @@
                         {% include 'snippets/avatar.html' with user=request.user %}
                         <span class="ml-2">{{ request.user.display_name }}</span>
                     </a>
-                    <ul class="navbar-dropdown" id="navbar-dropdown">
+                    <ul class="navbar-dropdown" id="navbar_dropdown">
+                        <li>
+                            <a href="{% url 'directory' %}" class="navbar-item">
+                                {% trans "Directory" %}
+                            </a>
+                        </li>
                         <li>
                             <a href="{% url 'user-shelves' request.user.localname %}" class="navbar-item">
                                 {% trans 'Your Books' %}
