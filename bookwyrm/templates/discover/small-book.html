@@ -6,7 +6,7 @@
 {% if status.book or status.mention_books.exists %}
     {% load_book status as book %}
     <a href="{{ book.local_path }}">
-        {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' size='large' %}
+        {% include 'snippets/book_cover.html' with cover_class='is-w-l-mobile is-w-auto align to-b to-l' size='xxlarge' %}
     </a>
 
     <div class="block mt-2">
