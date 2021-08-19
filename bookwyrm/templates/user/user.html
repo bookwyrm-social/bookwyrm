@@ -35,7 +35,7 @@
             {% for book in shelf.books %}
             <div class="control">
                 <a href="{{ book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m is-h-s-mobile' %}
+                {% include 'snippets/book_cover.html' with book=book cover_class='is-h-m is-h-s-mobile' size_mobile='small' size='medium' %}
                 </a>
             </div>
             {% endfor %}
