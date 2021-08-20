@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "django_rename_app",
     "bookwyrm",
     "celery",
+    "imagekit",
     "storages",
 ]
 
@@ -191,6 +192,9 @@ USER_AGENT = "%s (BookWyrm/%s; +https://%s/)" % (
     DOMAIN,
 )
 
+# Imagekit generated thumbnails
+ENABLE_THUMBNAIL_GENERATION = env.bool("ENABLE_THUMBNAIL_GENERATION", False)
+IMAGEKIT_CACHEFILE_DIR = "thumbnails"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

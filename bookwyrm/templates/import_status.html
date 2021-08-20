@@ -132,7 +132,7 @@
             <td>
                 {% if item.book %}
                 <a href="{{ item.book.local_path }}">
-                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' %}
+                {% include 'snippets/book_cover.html' with book=item.book cover_class='is-h-s' size='small' %}
                 </a>
                 {% endif %}
             </td>

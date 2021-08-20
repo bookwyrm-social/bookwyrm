@@ -41,7 +41,7 @@
                         >
                             <div class="column is-3-mobile is-2-tablet is-cover align to-t">
                                 <a href="{{ item.book.local_path }}" aria-hidden="true">
-                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' %}
+                                    {% include 'snippets/book_cover.html' with cover_class='is-w-auto is-h-m-tablet is-align-items-flex-start' size='medium' %}
                                 </a>
                             </div>
 
@@ -161,7 +161,7 @@
                         href="{{ book.local_path }}"
                         aria-hidden="true"
                     >
-                        {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto is-h-s-mobile align to-t' %}
+                        {% include 'snippets/book_cover.html' with book=book cover_class='is-w-auto is-h-s-mobile align to-t' size='small' %}
                     </a>
 
                     <div class="column ml-3">
