@@ -134,7 +134,7 @@
                     <form name="add-description" method="POST" action="/add-description/{{ book.id }}">
                         {% csrf_token %}
                         <p class="fields is-grouped">
-                            <label class="label"for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
+                            <label class="label" for="id_description_{{ book.id }}">{% trans "Description:" %}</label>
                             <textarea name="description" cols="None" rows="None" class="textarea" id="id_description_{{ book.id }}"></textarea>
                         </p>
                         <div class="field">
