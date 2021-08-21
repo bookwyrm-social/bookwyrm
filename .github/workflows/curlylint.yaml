@@ -18,11 +18,11 @@ jobs:
       - name: Run linter
         run: >
           curlylint --rule 'aria_role: true' \
-           --rule 'django_forms_rendering: true' \
-           --rule 'html_has_lang: true' \
-           --rule 'image_alt: true' \
-           --rule 'meta_viewport: true' \
-           --rule 'no_autofocus: true' \
-           --rule 'tabindex_no_positive: true' \
-           --exclude '_modal.html|create_status/layout.html' \
-          bookwyrm/templates
+            --rule 'django_forms_rendering: true' \
+            --rule 'html_has_lang: true' \
+            --rule 'image_alt: true' \
+            --rule 'meta_viewport: true' \
+            --rule 'no_autofocus: true' \
+            --rule 'tabindex_no_positive: true' \
+            --exclude '_modal.html|create_status/layout.html' \
+            bookwyrm/templates
