@@ -71,7 +71,7 @@ def get_header_template(status):
     if isinstance(status, models.Boost):
         status = status.boosted_status
     try:
-        header_type = status.reading_status
+        header_type = status.reading_status.replace("-", "_")
         if not header_type:
             raise AttributeError()
     except AttributeError:
