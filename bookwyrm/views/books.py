@@ -62,7 +62,7 @@ class Book(View):
             queryset = queryset.filter(user=request.user, deleted=False)
         else:
             queryset = reviews.exclude(Q(content__isnull=True) | Q(content=""))
-        queryset = queryset.select_related("user")
+        queryset = queryset.select_related("user").order_by("-published_date")
         paginated = Paginator(queryset, PAGE_LENGTH)
 
         lists = privacy_filter(
