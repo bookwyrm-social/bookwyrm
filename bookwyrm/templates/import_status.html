@@ -20,10 +20,10 @@
             <dt class="has-text-weight-medium">{% trans "Import completed:" %}</dt>
             <dd class="ml-2">{{ task.date_done | naturaltime }}</dd>
         </div>
+        {% elif task.failed %}
+        <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
+        {% endif %}
     </dl>
-    {% elif task.failed %}
-    <div class="notification is-danger">{% trans "TASK FAILED" %}</div>
-    {% endif %}
 </div>
 
 <div class="block">
@@ -84,26 +84,26 @@
 
             <button class="button is-block mt-3" type="submit">{% trans "Retry items" %}</button>
         </fieldset>
-
-        <hr>
-
-        {% else %}
-        <ul>
-            {% for item in failed_items %}
-            <li class="pb-1">
-                <p>
-                    Line {{ item.index }}:
-                    <strong>{{ item.data.Title }}</strong> by
-                    {{ item.data.Author }}
-                </p>
-                <p>
-                    {{ item.fail_reason }}.
-                </p>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </form>
+
+    <hr>
+
+    {% else %}
+    <ul>
+        {% for item in failed_items %}
+        <li class="pb-1">
+            <p>
+                Line {{ item.index }}:
+                <strong>{{ item.data.Title }}</strong> by
+                {{ item.data.Author }}
+            </p>
+            <p>
+                {{ item.fail_reason }}.
+            </p>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </div>
 {% endif %}
 
@@ -152,7 +152,6 @@
         </tr>
         {% endfor %}
     </table>
-</div>
 </div>
 {% endspaceless %}{% endblock %}
 
