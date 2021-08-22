@@ -116,7 +116,7 @@ class List(View):
         if direction == "descending":
             directional_sort_by = "-" + directional_sort_by
 
-        items = book_list.listitem_set
+        items = book_list.listitem_set.prefetch_related("user", "book", "book__authors")
         if sort_by == "rating":
             items = items.annotate(
                 average_rating=Avg(
