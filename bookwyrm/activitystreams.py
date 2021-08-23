@@ -273,9 +273,10 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         created_date__lt=instance.created_date,
     )
     for stream in streams.values():
-        stream.remove_object_from_related_stores(boosted)
+        audience = streams.get_stores_for_object(instance)
+        stream.remove_object_from_related_stores(boosted, stores=audience)
         for status in old_versions:
-            stream.remove_object_from_related_stores(status)
+            stream.remove_object_from_related_stores(status, stores=audience)
 
 
 @receiver(signals.post_delete, sender=models.Boost)
