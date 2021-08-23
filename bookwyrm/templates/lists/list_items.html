@@ -1,4 +1,7 @@
+{% load i18n %}
 {% load markdown %}
+{% load interaction %}
+
 <div class="columns is-multiline">
     {% for list in lists %}
     <div class="column is-one-quarter">
@@ -7,6 +10,14 @@
                 <h4 class="card-header-title">
                     <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
+                {% if request.user|saved:list %}
+                <div class="card-header-icon">
+                    {% trans "Saved" as text %}
+                    <span class="icon icon-bookmark has-text-grey" title="{{ text }}">
+                        <span class="is-sr-only">{{ text }}</span>
+                    </span>
+                </div>
+                {% endif %}
             </header>
 
             {% with list_books=list.listitem_set.all|slice:5 %}
