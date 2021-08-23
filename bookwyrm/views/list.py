@@ -244,7 +244,7 @@ class Curate(View):
 
 @require_POST
 @login_required
-def saveList(request, list_id):
+def save_list(request, list_id):
     """save a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.add(book_list)
@@ -253,7 +253,7 @@ def saveList(request, list_id):
 
 @require_POST
 @login_required
-def unsaveList(request, list_id):
+def unsave_list(request, list_id):
     """unsave a list"""
     book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)

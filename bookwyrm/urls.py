@@ -234,8 +234,8 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
-    re_path(r"^save-list/(?P<list_id>\d+)/?$", views.saveList, name="list-save"),
-    re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsaveList, name="list-unsave"),
+    re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
+    re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
     # User books
     re_path(r"%s/books/?$" % USER_PATH, views.Shelf.as_view(), name="user-shelves"),
     re_path(
