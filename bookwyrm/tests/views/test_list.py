@@ -126,7 +126,7 @@ class ListViews(TestCase):
         self.assertIsInstance(result, TemplateResponse)
         result.render()
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.context_data["lists"].object_list, [])
+        self.assertEqual(len(result.context_data["lists"].object_list), 0)
 
     def test_saved_lists_page_logged_out(self):
         """logged out saved lists"""
@@ -135,7 +135,7 @@ class ListViews(TestCase):
         request.user = self.anonymous_user
 
         result = view(request)
-        self.assertEqual(result.status_code, 301)
+        self.assertEqual(result.status_code, 302)
 
     def test_lists_create(self):
         """create list view"""
@@ -378,5 +378,4 @@ class ListViews(TestCase):
         request.user = self.anonymous_user
 
         result = view(request, self.local_user.username)
-        result.render()
         self.assertEqual(result.status_code, 302)
