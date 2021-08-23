@@ -3,32 +3,32 @@
 
 {% if request.user.is_authenticated %}
 
-{% with request.user|bookmarked:list as bookmarked %}
+{% with request.user|saved:list as saved %}
 <form
-    name="bookmark-{{ list.id }}"
-    action="{% url 'list-bookmark' list.id %}"
+    name="save-{{ list.id }}"
+    action="{% url 'list-save' list.id %}"
     method="POST"
-    class="interaction bookmark_{{ list.id }} {% if bookmarked %}is-hidden{% endif %}"
-    data-id="bookmark_{{ list.id }}"
+    class="interaction save_{{ list.id }} {% if saved %}is-hidden{% endif %}"
+    data-id="save_{{ list.id }}"
 >
     {% csrf_token %}
-    {% trans "Bookmark" as text %}
-    <button class="button">
+    {% trans "Save" as text %}
+    <button class="button" type="submit">
         <span class="icon icon-bookmark m-0-mobile" title="{{ text }}"></span>
         <span class="is-sr-only-mobile">{{ text }}</span>
     </button>
 </form>
 
 <form
-    name="bookmark-{{ list.id }}"
-    action="{% url 'list-unbookmark' list.id %}"
+    name="unsave-{{ list.id }}"
+    action="{% url 'list-unsave' list.id %}"
     method="POST"
-    class="interaction active bookmark_{{ list.id }} {% if not bookmarked %}is-hidden{% endif %}"
-    data-id="bookmark_{{ list.id }}"
+    class="interaction save_{{ list.id }} active {% if not saved %}is-hidden{% endif %}"
+    data-id="save_{{ list.id }}"
 >
     {% csrf_token %}
-    {% trans "Un-bookmark" as text %}
-    <button class="button">
+    {% trans "Un-save" as text %}
+    <button class="button" type="submit">
         <span class="icon icon-bookmark m-0-mobile has-text-primary" title="{{ text }}"></span>
         <span class="is-sr-only-mobile">{{ text }}</span>
     </button>

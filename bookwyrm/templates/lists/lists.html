@@ -31,12 +31,12 @@
 <nav class="tabs">
     <ul>
         {% url 'lists' as url %}
-        <li{% if url in request.path %} class="is-active"{% endif %}>
+        <li{% if request.path in url %} class="is-active"{% endif %}>
             <a href="{{ url }}">{% trans "All Lists" %}</a>
         </li>
-        {% url 'bookmarked-lists' as url %}
+        {% url 'saved-lists' as url %}
         <li{% if url in request.path %} class="is-active"{% endif %}>
-            <a href="{{ url }}">{% trans "Bookmarked Lists" %}</a>
+            <a href="{{ url }}">{% trans "Saved Lists" %}</a>
         </li>
     </ul>
 </nav>

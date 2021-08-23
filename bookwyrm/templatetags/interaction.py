@@ -18,7 +18,7 @@ def get_user_boosted(user, status):
     return status.boosters.filter(user=user).exists()
 
 
-@register.filter(name="bookmarked")
-def get_user_bookmarked(user, book_list):
-    """did the user bookmark a list"""
+@register.filter(name="saved")
+def get_user_saved_lists(user, book_list):
+    """did the user save a list"""
     return user.saved_lists.filter(id=book_list.id).exists()

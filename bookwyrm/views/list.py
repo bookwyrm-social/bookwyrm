@@ -64,8 +64,8 @@ class Lists(View):
 
 
 @method_decorator(login_required, name="dispatch")
-class BookmarkedLists(View):
-    """bookmarked book list page"""
+class SavedLists(View):
+    """saved book list page"""
 
     def get(self, request):
         """display book lists"""
@@ -244,18 +244,18 @@ class Curate(View):
 
 @require_POST
 @login_required
-def bookmark(request, list_id):
-    """bookmark a list"""
-    book_list = models.List.objects.get(id=list_id)
+def saveList(request, list_id):
+    """save a list"""
+    book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.add(book_list)
     return redirect("list", list_id)
 
 
 @require_POST
 @login_required
-def unbookmark(request, list_id):
+def unsaveList(request, list_id):
     """unsave a list"""
-    book_list = models.List.objects.get(id=list_id)
+    book_list = get_object_or_404(models.List, id=list_id)
     request.user.saved_lists.remove(book_list)
     return redirect("list", list_id)
 

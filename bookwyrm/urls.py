@@ -218,9 +218,7 @@ urlpatterns = [
     # lists
     re_path(r"%s/lists/?$" % USER_PATH, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
-    re_path(
-        r"^list/bookmarks/?$", views.BookmarkedLists.as_view(), name="bookmarked-lists"
-    ),
+    re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
     re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
     re_path(
@@ -236,10 +234,8 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
-    re_path(r"bookmark/(?P<list_id>\d+)/?$", views.bookmark, name="list-bookmark"),
-    re_path(
-        r"^unbookmark/(?P<list_id>\d+)/?$", views.unbookmark, name="list-unbookmark"
-    ),
+    re_path(r"^save-list/(?P<list_id>\d+)/?$", views.saveList, name="list-save"),
+    re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsaveList, name="list-unsave"),
     # User books
     re_path(r"%s/books/?$" % USER_PATH, views.Shelf.as_view(), name="user-shelves"),
     re_path(
