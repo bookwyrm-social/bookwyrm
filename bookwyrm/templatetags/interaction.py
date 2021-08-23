@@ -16,3 +16,9 @@ def get_user_liked(user, status):
 def get_user_boosted(user, status):
     """did the given user fav a status?"""
     return status.boosters.filter(user=user).exists()
+
+
+@register.filter(name="saved")
+def get_user_saved_lists(user, book_list):
+    """did the user save a list"""
+    return user.saved_lists.filter(id=book_list.id).exists()

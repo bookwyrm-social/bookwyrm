@@ -218,6 +218,7 @@ urlpatterns = [
     # lists
     re_path(r"%s/lists/?$" % USER_PATH, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
+    re_path(r"^list/saved/?$", views.SavedLists.as_view(), name="saved-lists"),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
     re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
     re_path(
@@ -233,6 +234,8 @@ urlpatterns = [
     re_path(
         r"^list/(?P<list_id>\d+)/curate/?$", views.Curate.as_view(), name="list-curate"
     ),
+    re_path(r"^save-list/(?P<list_id>\d+)/?$", views.save_list, name="list-save"),
+    re_path(r"^unsave-list/(?P<list_id>\d+)/?$", views.unsave_list, name="list-unsave"),
     # User books
     re_path(r"%s/books/?$" % USER_PATH, views.Shelf.as_view(), name="user-shelves"),
     re_path(
@@ -294,8 +297,10 @@ urlpatterns = [
         name="redraft",
     ),
     # interact
-    re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view()),
-    re_path(r"^unfavorite/(?P<status_id>\d+)/?$", views.Unfavorite.as_view()),
+    re_path(r"^favorite/(?P<status_id>\d+)/?$", views.Favorite.as_view(), name="fav"),
+    re_path(
+        r"^unfavorite/(?P<status_id>\d+)/?$", views.Unfavorite.as_view(), name="unfav"
+    ),
     re_path(r"^boost/(?P<status_id>\d+)/?$", views.Boost.as_view()),
     re_path(r"^unboost/(?P<status_id>\d+)/?$", views.Unboost.as_view()),
     # books

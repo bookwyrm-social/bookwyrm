@@ -63,6 +63,25 @@ class Lists(View):
         return redirect(book_list.local_path)
 
 
+@method_decorator(login_required, name="dispatch")
+class SavedLists(View):
+    """saved book list page"""
+
+    def get(self, request):
+        """display book lists"""
+        # hide lists with no approved books
+        lists = request.user.saved_lists.order_by("-updated_date")
+
+        paginated = Paginator(lists, 12)
+        data = {
+            "lists": paginated.get_page(request.GET.get("page")),
+            "list_form": forms.ListForm(),
+            "path": "/list",
+        }
+        return TemplateResponse(request, "lists/lists.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
 class UserLists(View):
     """a user's book list page"""
 
@@ -116,7 +135,7 @@ class List(View):
         if direction == "descending":
             directional_sort_by = "-" + directional_sort_by
 
-        items = book_list.listitem_set
+        items = book_list.listitem_set.prefetch_related("user", "book", "book__authors")
         if sort_by == "rating":
             items = items.annotate(
                 average_rating=Avg(
@@ -224,6 +243,25 @@ class Curate(View):
 
 
 @require_POST
+@login_required
+def save_list(request, list_id):
+    """save a list"""
+    book_list = get_object_or_404(models.List, id=list_id)
+    request.user.saved_lists.add(book_list)
+    return redirect("list", list_id)
+
+
+@require_POST
+@login_required
+def unsave_list(request, list_id):
+    """unsave a list"""
+    book_list = get_object_or_404(models.List, id=list_id)
+    request.user.saved_lists.remove(book_list)
+    return redirect("list", list_id)
+
+
+@require_POST
+@login_required
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
@@ -273,6 +311,7 @@ def add_book(request):
 
 
 @require_POST
+@login_required
 def remove_book(request, list_id):
     """remove a book from a list"""
     with transaction.atomic():
@@ -289,6 +328,7 @@ def remove_book(request, list_id):
 
 
 @require_POST
+@login_required
 def set_book_position(request, list_item_id):
     """
     Action for when the list user manually specifies a list position, takes
