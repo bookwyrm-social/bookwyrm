@@ -11,12 +11,13 @@
             {% include 'lists/created_text.html' with list=list %}
         </p>
     </div>
-    {% if request.user == list.user %}
-    <div class="column is-narrow">
-        {% trans "Edit List" as button_text %}
-        {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_list" focus="edit_list_header" %}
+    <div class="column is-narrow is-flex">
+        {% if request.user == list.user %}
+            {% trans "Edit List" as button_text %}
+            {% include 'snippets/toggle/open_button.html' with text=button_text icon_with_text="pencil" controls_text="edit_list" focus="edit_list_header" %}
+        {% endif %}
+        {% include "lists/bookmark_button.html" with list=list %}
     </div>
-    {% endif %}
 </header>
 
 <div class="block content">
