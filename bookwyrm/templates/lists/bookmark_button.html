@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load interaction %}
+
+{% if request.user.is_authenticated %}
+
+{% with request.user|bookmarked:list as bookmarked %}
+<form
+    name="bookmark-{{ list.id }}"
+    action="/"
+    method="POST"
+    class="interaction bookmark_{{ list.id }} {% if bookmarked %}is-hidden{% endif %}"
+    data-id="bookmark_{{ list.id }}"
+>
+    {% csrf_token %}
+    {% trans "Bookmark" as text %}
+    <button class="button">
+        <span class="icon icon-bookmark m-0-mobile" title="{{ text }}"></span>
+        <span class="is-sr-only-mobile">{{ text }}</span>
+    </button>
+</form>
+
+<form
+    name="bookmark-{{ list.id }}"
+    action="/"
+    method="POST"
+    class="interaction active bookmark_{{ list.id }} {% if not bookmarked %}is-hidden{% endif %}"
+    data-id="bookmark_{{ list.id }}"
+>
+    {% csrf_token %}
+    {% trans "Un-bookmark" as text %}
+    <button class="button">
+        <span class="icon icon-bookmark m-0-mobile has-text-primary" title="{{ text }}"></span>
+        <span class="is-sr-only-mobile">{{ text }}</span>
+    </button>
+</form>
+{% endwith %}
+
+{% endif %}
+
