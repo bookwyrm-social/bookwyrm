@@ -6,7 +6,7 @@
 {% with request.user|bookmarked:list as bookmarked %}
 <form
     name="bookmark-{{ list.id }}"
-    action="/"
+    action="{% url 'list-bookmark' list.id %}"
     method="POST"
     class="interaction bookmark_{{ list.id }} {% if bookmarked %}is-hidden{% endif %}"
     data-id="bookmark_{{ list.id }}"
@@ -21,7 +21,7 @@
 
 <form
     name="bookmark-{{ list.id }}"
-    action="/"
+    action="{% url 'list-unbookmark' list.id %}"
     method="POST"
     class="interaction active bookmark_{{ list.id }} {% if not bookmarked %}is-hidden{% endif %}"
     data-id="bookmark_{{ list.id }}"

@@ -224,6 +224,25 @@ class Curate(View):
 
 
 @require_POST
+@login_required
+def bookmark(request, list_id):
+    """bookmark a list"""
+    book_list = models.List.objects.get(id=list_id)
+    request.user.saved_lists.add(book_list)
+    return redirect("list", list_id)
+
+
+@require_POST
+@login_required
+def unbookmark(request, list_id):
+    """unsave a list"""
+    book_list = models.List.objects.get(id=list_id)
+    request.user.saved_lists.remove(book_list)
+    return redirect("list", list_id)
+
+
+@require_POST
+@login_required
 def add_book(request):
     """put a book on a list"""
     book_list = get_object_or_404(models.List, id=request.POST.get("list"))
@@ -273,6 +292,7 @@ def add_book(request):
 
 
 @require_POST
+@login_required
 def remove_book(request, list_id):
     """remove a book from a list"""
     with transaction.atomic():
@@ -289,6 +309,7 @@ def remove_book(request, list_id):
 
 
 @require_POST
+@login_required
 def set_book_position(request, list_item_id):
     """
     Action for when the list user manually specifies a list position, takes
