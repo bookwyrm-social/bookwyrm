@@ -8,6 +8,7 @@ from bookwyrm import activitystreams, models
 @patch("bookwyrm.activitystreams.ActivityStream.add_status")
 @patch("bookwyrm.activitystreams.BooksStream.add_book_statuses")
 @patch("bookwyrm.suggested_users.rerank_suggestions_task.delay")
+# pylint: disable=too-many-public-methods
 class Activitystreams(TestCase):
     """using redis to build activity streams"""
 
@@ -292,10 +293,13 @@ class Activitystreams(TestCase):
     def test_boost_to_another_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        boost = models.Boost.objects.create(
-            boosted_status=status,
-            user=self.another_user,
-        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ):
+            boost = models.Boost.objects.create(
+                boosted_status=status,
+                user=self.another_user,
+            )
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
@@ -313,10 +317,13 @@ class Activitystreams(TestCase):
         """add a boost and deduplicate the boosted status on the timeline"""
         self.local_user.following.add(self.another_user)
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        boost = models.Boost.objects.create(
-            boosted_status=status,
-            user=self.another_user,
-        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ):
+            boost = models.Boost.objects.create(
+                boosted_status=status,
+                user=self.another_user,
+            )
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
@@ -336,10 +343,13 @@ class Activitystreams(TestCase):
     def test_boost_to_same_timeline(self, *_):
         """add a boost and deduplicate the boosted status on the timeline"""
         status = models.Status.objects.create(user=self.local_user, content="hi")
-        boost = models.Boost.objects.create(
-            boosted_status=status,
-            user=self.local_user,
-        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ):
+            boost = models.Boost.objects.create(
+                boosted_status=status,
+                user=self.local_user,
+            )
         with patch(
             "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
         ) as mock:
