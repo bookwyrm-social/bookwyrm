@@ -218,6 +218,9 @@ urlpatterns = [
     # lists
     re_path(r"%s/lists/?$" % USER_PATH, views.UserLists.as_view(), name="user-lists"),
     re_path(r"^list/?$", views.Lists.as_view(), name="lists"),
+    re_path(
+        r"^list/bookmarks/?$", views.BookmarkedLists.as_view(), name="bookmarked-lists"
+    ),
     re_path(r"^list/(?P<list_id>\d+)(.json)?/?$", views.List.as_view(), name="list"),
     re_path(r"^list/add-book/?$", views.list.add_book, name="list-add-book"),
     re_path(

@@ -63,6 +63,25 @@ class Lists(View):
         return redirect(book_list.local_path)
 
 
+@method_decorator(login_required, name="dispatch")
+class BookmarkedLists(View):
+    """bookmarked book list page"""
+
+    def get(self, request):
+        """display book lists"""
+        # hide lists with no approved books
+        lists = request.user.saved_lists.order_by("-updated_date")
+
+        paginated = Paginator(lists, 12)
+        data = {
+            "lists": paginated.get_page(request.GET.get("page")),
+            "list_form": forms.ListForm(),
+            "path": "/list",
+        }
+        return TemplateResponse(request, "lists/lists.html", data)
+
+
+@method_decorator(login_required, name="dispatch")
 class UserLists(View):
     """a user's book list page"""
 

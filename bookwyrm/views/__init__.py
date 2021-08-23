@@ -25,7 +25,7 @@ from .invite import ManageInvites, Invite, InviteRequest
 from .invite import ManageInviteRequests, ignore_invite_request
 from .isbn import Isbn
 from .landing import About, Home, Landing
-from .list import Lists, List, Curate, UserLists
+from .list import Lists, BookmarkedLists, List, Curate, UserLists
 from .list import bookmark, unbookmark
 from .notifications import Notifications
 from .outbox import Outbox
