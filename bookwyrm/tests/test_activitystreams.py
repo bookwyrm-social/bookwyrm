@@ -286,3 +286,67 @@ class Activitystreams(TestCase):
         # yes book, yes audience
         result = activitystreams.BooksStream().get_statuses_for_user(self.local_user)
         self.assertEqual(list(result), [status])
+
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    def test_boost_to_another_timeline(self, *_):
+        """add a boost and deduplicate the boosted status on the timeline"""
+        status = models.Status.objects.create(user=self.local_user, content="hi")
+        boost = models.Boost.objects.create(
+            boosted_status=status,
+            user=self.another_user,
+        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ) as mock:
+            activitystreams.add_status_on_create(models.Boost, boost, True)
+        self.assertTrue(mock.called)
+        call_args = mock.call_args
+        self.assertEqual(call_args[0][0], status)
+        self.assertEqual(
+            call_args[1]["stores"], ["{:d}-home".format(self.another_user.id)]
+        )
+
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    def test_boost_to_following_timeline(self, *_):
+        """add a boost and deduplicate the boosted status on the timeline"""
+        self.local_user.following.add(self.another_user)
+        status = models.Status.objects.create(user=self.local_user, content="hi")
+        boost = models.Boost.objects.create(
+            boosted_status=status,
+            user=self.another_user,
+        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ) as mock:
+            activitystreams.add_status_on_create(models.Boost, boost, True)
+        self.assertTrue(mock.called)
+        call_args = mock.call_args
+        self.assertEqual(call_args[0][0], status)
+        self.assertTrue(
+            "{:d}-home".format(self.another_user.id) in call_args[1]["stores"]
+        )
+        self.assertTrue(
+            "{:d}-home".format(self.local_user.id) in call_args[1]["stores"]
+        )
+
+    @patch("bookwyrm.activitystreams.LocalStream.remove_object_from_related_stores")
+    @patch("bookwyrm.activitystreams.BooksStream.remove_object_from_related_stores")
+    def test_boost_to_same_timeline(self, *_):
+        """add a boost and deduplicate the boosted status on the timeline"""
+        status = models.Status.objects.create(user=self.local_user, content="hi")
+        boost = models.Boost.objects.create(
+            boosted_status=status,
+            user=self.local_user,
+        )
+        with patch(
+            "bookwyrm.activitystreams.HomeStream.remove_object_from_related_stores"
+        ) as mock:
+            activitystreams.add_status_on_create(models.Boost, boost, True)
+        self.assertTrue(mock.called)
+        call_args = mock.call_args
+        self.assertEqual(call_args[0][0], status)
+        self.assertEqual(
+            call_args[1]["stores"], ["{:d}-home".format(self.local_user.id)]
+        )
