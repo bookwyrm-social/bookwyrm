@@ -37,7 +37,7 @@ class RedisStore(ABC):
         """remove an object from all stores"""
         stores = stores or self.get_stores_for_object(obj)
         pipeline = r.pipeline()
-        for store in self.get_stores_for_object(obj):
+        for store in stores:
             pipeline.zrem(store, -1, obj.id)
         pipeline.execute()
 
