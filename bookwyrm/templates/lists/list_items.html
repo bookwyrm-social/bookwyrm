@@ -10,7 +10,7 @@
                 <h4 class="card-header-title">
                     <a href="{{ list.local_path }}">{{ list.name }}</a> <span class="subtitle">{% include 'snippets/privacy-icons.html' with item=list %}</span>
                 </h4>
-                {% if request.user|saved:list %}
+                {% if request.user.is_authenticated and request.user|saved:list %}
                 <div class="card-header-icon">
                     {% trans "Saved" as text %}
                     <span class="icon icon-bookmark has-text-grey" title="{{ text }}">
