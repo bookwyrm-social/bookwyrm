@@ -4,6 +4,18 @@ from django.db import migrations, models
 import django.db.models.expressions
 
 
+def normalize_readthrough_dates(app_registry, schema_editor):
+    """bih"""
+    db_alias = schema_editor.connection.alias
+    app_registry.get_model("bookwyrm", "Readthrough").objects.using(db_alias).filter(
+        start_date__gt=models.F("finish_date")
+    ).update(start_date=models.F("finish_date"))
+
+
+def reverse_func(apps, schema_editor):
+    """nothing to do here"""
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -11,6 +23,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(normalize_readthrough_dates, reverse_func),
         migrations.AlterModelOptions(
             name="readthrough",
             options={"ordering": ("-start_date",)},
