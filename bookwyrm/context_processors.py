@@ -11,6 +11,7 @@ def site_settings(request):  # pylint: disable=unused-argument
     return {
         "site": models.SiteSettings.objects.get(),
         "active_announcements": models.Announcement.active_announcements(),
+        "thumbnail_generation_enabled": settings.ENABLE_THUMBNAIL_GENERATION,
         "media_full_url": settings.MEDIA_FULL_URL,
         "preview_images_enabled": settings.ENABLE_PREVIEW_IMAGES,
         "request_protocol": request_protocol,

@@ -29,6 +29,10 @@ body {
     min-width: 75% !important;
 }
 
+.modal-card-body {
+    max-height: 70vh;
+}
+
 .clip-text {
     max-height: 35em;
     overflow: hidden;
@@ -232,16 +236,21 @@ body {
 /* Cover caption
  * -------------------------------------------------------------------------- */
 
-.no-cover .cover_caption {
+.no-cover .cover-caption {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    padding: 0.25em;
+    padding: 0.5em;
     font-size: 0.75em;
     color: white;
     background-color: #002549;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: initial;
+    text-align: center;
 }
 
 /** Avatars

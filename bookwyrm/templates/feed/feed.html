@@ -40,9 +40,8 @@
     {% if suggested_users %}
     {# suggested users for when things are very lonely #}
     {% include 'feed/suggested_users.html' with suggested_users=suggested_users %}
+    {% endif %}
 </div>
-{% endif %}
-
 {% endif %}
 
 {% for activity in activities %}

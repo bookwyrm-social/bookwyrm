@@ -42,11 +42,18 @@
 </div>
 {% endif %}
 
-{% if book %}
-<form class="block" name="edit-book" action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}" method="post" enctype="multipart/form-data">
-{% else %}
-<form class="block" name="create-book" action="/create-book{% if confirm_mode %}/confirm{% endif %}" method="post" enctype="multipart/form-data">
-{% endif %}
+<form
+    class="block"
+    {% if book %}
+        name="edit-book"
+        action="{{ book.local_path }}/{% if confirm_mode %}confirm{% else %}edit{% endif %}"
+    {% else %}
+        name="create-book"
+        action="/create-book{% if confirm_mode %}/confirm{% endif %}"
+    {% endif %}
+    method="post"
+    enctype="multipart/form-data"
+>
 
     {% csrf_token %}
     {% if confirm_mode %}
@@ -220,7 +227,7 @@
             <h2 class="title is-4">{% trans "Cover" %}</h2>
             <div class="columns">
                 <div class="column is-3 is-cover">
-                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' %}
+                    {% include 'snippets/book_cover.html' with book=book cover_class='is-h-xl-mobile is-w-auto-tablet' size_mobile='xlarge' size='large' %}
                 </div>
 
                 <div class="column">

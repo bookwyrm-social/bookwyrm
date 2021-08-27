@@ -23,14 +23,15 @@ class ActivityStream(RedisStore):
         """statuses are sorted by date published"""
         return obj.published_date.timestamp()
 
-    def add_status(self, status):
+    def add_status(self, status, increment_unread=False):
         """add a status to users' feeds"""
         # the pipeline contains all the add-to-stream activities
         pipeline = self.add_object_to_related_stores(status, execute=False)
 
-        for user in self.get_audience(status):
-            # add to the unread status count
-            pipeline.incr(self.unread_id(user))
+        if increment_unread:
+            for user in self.get_audience(status):
+                # add to the unread status count
+                pipeline.incr(self.unread_id(user))
 
         # and go!
         pipeline.execute()
@@ -262,7 +263,7 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         return
 
     for stream in streams.values():
-        stream.add_status(instance)
+        stream.add_status(instance, increment_unread=created)
 
     if sender != models.Boost:
         return
@@ -273,9 +274,10 @@ def add_status_on_create(sender, instance, created, *args, **kwargs):
         created_date__lt=instance.created_date,
     )
     for stream in streams.values():
-        stream.remove_object_from_related_stores(boosted)
+        audience = stream.get_stores_for_object(instance)
+        stream.remove_object_from_related_stores(boosted, stores=audience)
         for status in old_versions:
-            stream.remove_object_from_related_stores(status)
+            stream.remove_object_from_related_stores(status, stores=audience)
 
 
 @receiver(signals.post_delete, sender=models.Boost)

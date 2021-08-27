@@ -7,10 +7,16 @@ from django.db import models
 from django.dispatch import receiver
 from model_utils import FieldTracker
 from model_utils.managers import InheritanceManager
+from imagekit.models import ImageSpecField
 
 from bookwyrm import activitypub
 from bookwyrm.preview_images import generate_edition_preview_image_task
-from bookwyrm.settings import DOMAIN, DEFAULT_LANGUAGE, ENABLE_PREVIEW_IMAGES
+from bookwyrm.settings import (
+    DOMAIN,
+    DEFAULT_LANGUAGE,
+    ENABLE_PREVIEW_IMAGES,
+    ENABLE_THUMBNAIL_GENERATION,
+)
 
 from .activitypub_mixin import OrderedCollectionPageMixin, ObjectMixin
 from .base_model import BookWyrmModel
@@ -96,6 +102,40 @@ class Book(BookDataModel):
 
     objects = InheritanceManager()
     field_tracker = FieldTracker(fields=["authors", "title", "subtitle", "cover"])
+
+    if ENABLE_THUMBNAIL_GENERATION:
+        cover_bw_book_xsmall_webp = ImageSpecField(
+            source="cover", id="bw:book:xsmall:webp"
+        )
+        cover_bw_book_xsmall_jpg = ImageSpecField(
+            source="cover", id="bw:book:xsmall:jpg"
+        )
+        cover_bw_book_small_webp = ImageSpecField(
+            source="cover", id="bw:book:small:webp"
+        )
+        cover_bw_book_small_jpg = ImageSpecField(source="cover", id="bw:book:small:jpg")
+        cover_bw_book_medium_webp = ImageSpecField(
+            source="cover", id="bw:book:medium:webp"
+        )
+        cover_bw_book_medium_jpg = ImageSpecField(
+            source="cover", id="bw:book:medium:jpg"
+        )
+        cover_bw_book_large_webp = ImageSpecField(
+            source="cover", id="bw:book:large:webp"
+        )
+        cover_bw_book_large_jpg = ImageSpecField(source="cover", id="bw:book:large:jpg")
+        cover_bw_book_xlarge_webp = ImageSpecField(
+            source="cover", id="bw:book:xlarge:webp"
+        )
+        cover_bw_book_xlarge_jpg = ImageSpecField(
+            source="cover", id="bw:book:xlarge:jpg"
+        )
+        cover_bw_book_xxlarge_webp = ImageSpecField(
+            source="cover", id="bw:book:xxlarge:webp"
+        )
+        cover_bw_book_xxlarge_jpg = ImageSpecField(
+            source="cover", id="bw:book:xxlarge:jpg"
+        )
 
     @property
     def author_text(self):

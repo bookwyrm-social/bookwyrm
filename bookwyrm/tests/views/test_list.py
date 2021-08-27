@@ -91,6 +91,52 @@ class ListViews(TestCase):
         result.render()
         self.assertEqual(result.status_code, 200)
 
+    def test_saved_lists_page(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.SavedLists.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            booklist = models.List.objects.create(
+                name="Public list", user=self.local_user
+            )
+            models.List.objects.create(
+                name="Private list", privacy="direct", user=self.local_user
+            )
+        self.local_user.saved_lists.add(booklist)
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.context_data["lists"].object_list, [booklist])
+
+    def test_saved_lists_page_empty(self):
+        """there are so many views, this just makes sure it LOADS"""
+        view = views.SavedLists.as_view()
+        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
+            models.List.objects.create(name="Public list", user=self.local_user)
+            models.List.objects.create(
+                name="Private list", privacy="direct", user=self.local_user
+            )
+        request = self.factory.get("")
+        request.user = self.local_user
+
+        result = view(request)
+        self.assertIsInstance(result, TemplateResponse)
+        result.render()
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.context_data["lists"].object_list), 0)
+
+    def test_saved_lists_page_logged_out(self):
+        """logged out saved lists"""
+        view = views.SavedLists.as_view()
+        request = self.factory.get("")
+        request.user = self.anonymous_user
+
+        result = view(request)
+        self.assertEqual(result.status_code, 302)
+
     def test_lists_create(self):
         """create list view"""
         view = views.Lists.as_view()
@@ -328,15 +374,8 @@ class ListViews(TestCase):
     def test_user_lists_page_logged_out(self):
         """there are so many views, this just makes sure it LOADS"""
         view = views.UserLists.as_view()
-        with patch("bookwyrm.models.activitypub_mixin.broadcast_task.delay"):
-            models.List.objects.create(name="Public list", user=self.local_user)
-            models.List.objects.create(
-                name="Private list", privacy="direct", user=self.local_user
-            )
         request = self.factory.get("")
         request.user = self.anonymous_user
 
         result = view(request, self.local_user.username)
-        self.assertIsInstance(result, TemplateResponse)
-        result.render()
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, 302)

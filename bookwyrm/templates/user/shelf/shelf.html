@@ -1,4 +1,4 @@
-{% extends 'user/layout.html' %}
+{% extends 'layout.html' %}
 {% load bookwyrm_tags %}
 {% load utilities %}
 {% load humanize %}
@@ -8,15 +8,17 @@
 {% include 'user/shelf/books_header.html' %}
 {% endblock %}
 
-{% block header %}
-<header class="columns">
+{% block opengraph_images %}
+    {% include 'snippets/opengraph_images.html' with image=user.preview_image %}
+{% endblock %}
+
+{% block content %}
+<header class="block">
     <h1 class="title">
         {% include 'user/shelf/books_header.html' %}
     </h1>
 </header>
-{% endblock %}
 
-{% block tabs %}
 <div class="block columns">
     <div class="column">
         <div class="tabs">
@@ -41,9 +43,7 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
 
-{% block panel %}
 <div class="block">
     {% include 'user/shelf/create_shelf_form.html' with controls_text='create_shelf_form' %}
 </div>
@@ -94,7 +94,7 @@
                 {% spaceless %}
                 <tr class="book-preview">
                     <td class="book-preview-top-row">
-                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' %}</a>
+                        <a href="{{ book.local_path }}">{% include 'snippets/book_cover.html' with book=book cover_class='is-w-s-tablet is-h-s' size='small' %}</a>
                     </td>
                     <td data-title="{% trans "Title" %}">
                         <a href="{{ book.local_path }}">{{ book.title }}</a>

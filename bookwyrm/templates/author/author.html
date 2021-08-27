@@ -57,7 +57,7 @@
 
             {% if author.wikipedia_link %}
             <p class="my-1">
-                <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel=”noopener” target="_blank">
+                <a itemprop="sameAs" href="{{ author.wikipedia_link }}" rel="noopener" target="_blank">
                     {% trans "Wikipedia" %}
                 </a>
             </p>
@@ -70,7 +70,7 @@
                 </a>
             </p>
             {% endif %}
-            
+
             {% if author.inventaire_id %}
             <p class="my-1">
                 <a itemprop="sameAs" href="https://inventaire.io/entity/{{ author.inventaire_id }}" target="_blank" rel="noopener">
@@ -86,7 +86,7 @@
                 </a>
             </p>
             {% endif %}
-            
+
             {% if author.goodreads_key %}
             <p class="my-1">
                 <a itemprop="sameAs" href="https://www.goodreads.com/author/show/{{ author.goodreads_key }}" target="_blank" rel="noopener">
@@ -109,7 +109,7 @@
     <div class="columns is-multiline is-mobile">
     {% for book in books %}
         <div class="column is-one-fifth">
-            {% include 'discover/small-book.html' with book=book %}
+            {% include 'landing/small-book.html' with book=book %}
         </div>
     {% endfor %}
     </div>
