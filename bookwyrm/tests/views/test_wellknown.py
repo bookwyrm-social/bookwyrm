@@ -51,6 +51,16 @@ class UserViews(TestCase):
         data = json.loads(result.getvalue())
         self.assertEqual(data["subject"], "acct:mouse@local.com")
 
+    def test_webfinger_case_sensitivty(self):
+        """ensure that webfinger queries are not case sensitive"""
+        request = self.factory.get("", {"resource": "acct:MoUsE@local.com"})
+        request.user = self.anonymous_user
+
+        result = views.webfinger(request)
+        self.assertIsInstance(result, JsonResponse)
+        data = json.loads(result.getvalue())
+        self.assertEqual(data["subject"], "acct:mouse@local.com")
+
     def test_nodeinfo_pointer(self):
         """just tells you where nodeinfo is"""
         request = self.factory.get("")
