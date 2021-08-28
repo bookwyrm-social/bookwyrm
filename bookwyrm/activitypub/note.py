@@ -30,8 +30,8 @@ class Note(ActivityObject):
     to: List[str] = field(default_factory=lambda: [])
     cc: List[str] = field(default_factory=lambda: [])
     replies: Dict = field(default_factory=lambda: {})
-    inReplyTo: str = ""
-    summary: str = ""
+    inReplyTo: str = None
+    summary: str = None
     tag: List[Link] = field(default_factory=lambda: [])
     attachment: List[Document] = field(default_factory=lambda: [])
     sensitive: bool = False
