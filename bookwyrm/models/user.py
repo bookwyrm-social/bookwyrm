@@ -88,6 +88,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
         symmetrical=False,
         through="UserFollows",
         through_fields=("user_object", "user_subject"),
+        related_name="following",
     )
     follow_requests = models.ManyToManyField(
         "self",
