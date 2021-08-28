@@ -146,6 +146,15 @@ class ModelFields(TestCase):
     def test_privacy_field_set_field_from_activity(self, _):
         """translate between to/cc fields and privacy"""
 
+        with patch("bookwyrm.models.user.set_remote_server.delay"):
+            test_user = User.objects.create_user(
+                username="test_user@example.com",
+                local=False,
+                remote_id="https://example.com/test_user",
+                inbox="https://example.com/users/test_user/inbox",
+                followers_url="https://example.com/users/test_user/followers",
+            )
+
         @dataclass(init=False)
         class TestActivity(ActivityObject):
             """real simple mock"""
@@ -154,6 +163,7 @@ class ModelFields(TestCase):
             cc: List[str]
             id: str = "http://hi.com"
             type: str = "Test"
+            attributedTo: str = test_user.remote_id
 
         class TestPrivacyModel(ActivitypubMixin, BookWyrmModel):
             """real simple mock model because BookWyrmModel is abstract"""
@@ -185,7 +195,7 @@ class ModelFields(TestCase):
         instance.set_field_from_activity(model_instance, data)
         self.assertEqual(model_instance.privacy_field, "unlisted")
 
-        data.to = ["http://user_remote/followers"]
+        data.to = [test_user.followers_url]
         data.cc = []
         instance.set_field_from_activity(model_instance, data)
         self.assertEqual(model_instance.privacy_field, "followers")
