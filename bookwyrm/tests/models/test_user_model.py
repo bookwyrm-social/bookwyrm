@@ -32,6 +32,7 @@ class User(TestCase):
         self.assertEqual(self.user.shared_inbox, f"{self.protocol}{DOMAIN}/inbox")
         self.assertEqual(self.user.inbox, f"{expected_id}/inbox")
         self.assertEqual(self.user.outbox, f"{expected_id}/outbox")
+        self.assertEqual(self.user.followers_url, f"{expected_id}/followers")
         self.assertIsNotNone(self.user.key_pair.private_key)
         self.assertIsNotNone(self.user.key_pair.public_key)
 
