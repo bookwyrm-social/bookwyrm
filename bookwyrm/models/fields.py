@@ -226,7 +226,7 @@ class PrivacyField(ActivitypubFieldMixin, models.CharField):
         cc = data.cc
 
         # we need to figure out who this is to get their followers link
-        user = activitypub.resolve_remote_id(self.attributedTo, model="User")
+        user = activitypub.resolve_remote_id(data.attributedTo, model="User")
 
         if to == [self.public]:
             setattr(instance, self.name, "public")
