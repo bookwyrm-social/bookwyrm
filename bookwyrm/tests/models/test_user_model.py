@@ -11,6 +11,7 @@ from bookwyrm.settings import USE_HTTPS, DOMAIN
 # pylint: disable=missing-function-docstring
 class User(TestCase):
     protocol = "https://" if USE_HTTPS else "http://"
+
     def setUp(self):
         with patch("bookwyrm.suggested_users.rerank_suggestions_task.delay"):
             self.user = models.User.objects.create_user(
