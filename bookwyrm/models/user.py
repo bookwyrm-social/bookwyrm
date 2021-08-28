@@ -82,13 +82,12 @@ class User(OrderedCollectionPageMixin, AbstractUser):
     preview_image = models.ImageField(
         upload_to="previews/avatars/", blank=True, null=True
     )
-    followers = fields.ManyToManyField(
+    followers_url = fields.CharField(max_length=255, activitypub_field="followers")
+    followers = models.ManyToManyField(
         "self",
-        link_only=True,
         symmetrical=False,
         through="UserFollows",
         through_fields=("user_object", "user_subject"),
-        related_name="following",
     )
     follow_requests = models.ManyToManyField(
         "self",
@@ -228,7 +227,7 @@ class User(OrderedCollectionPageMixin, AbstractUser):
 
     def to_followers_activity(self, **kwargs):
         """activitypub followers list"""
-        remote_id = "%s/followers" % self.remote_id
+        remote_id = self.followers_url
         return self.to_ordered_collection(
             self.followers.order_by("-updated_date").all(),
             remote_id=remote_id,
