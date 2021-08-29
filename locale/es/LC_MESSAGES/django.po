@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-27 19:11+0000\n"
+"POT-Creation-Date: 2021-08-29 18:01+0000\n"
 "PO-Revision-Date: 2021-03-19 11:49+0800\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Reese Porter <reesedporter@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -667,10 +667,8 @@ msgid "Delete these read dates"
 msgstr "Eliminar estas fechas de lectura"
 
 #: bookwyrm/templates/book/search_filter.html:5
-#, fuzzy
-#| msgid "Search Results"
 msgid "Search editions"
-msgstr "Resultados de búsqueda"
+msgstr "Buscar ediciones"
 
 #: bookwyrm/templates/components/inline_form.html:8
 #: bookwyrm/templates/components/modal.html:11
@@ -957,10 +955,8 @@ msgid "You have no messages right now."
 msgstr "No tienes ningún mensaje en este momento."
 
 #: bookwyrm/templates/feed/feed.html:22
-#, fuzzy, python-format
-#| msgid "load <span data-poll=\"stream/%(tab.key)s\">0</span> unread status(es)"
 msgid "load <span data-poll=\"stream/%(tab_key)s\">0</span> unread status(es)"
-msgstr "cargar <span data-poll=\"stream/%(tab.key)s\">0</span> status(es) no leído(s)"
+msgstr "cargar <span data-poll=\"stream/%(tab_key)s\">0</span> status(es) no leído(s)"
 
 #: bookwyrm/templates/feed/feed.html:38
 msgid "There aren't any activities right now! Try following a user to get started"
@@ -1007,10 +1003,8 @@ msgid "Who to follow"
 msgstr "A quién seguir"
 
 #: bookwyrm/templates/feed/suggested_users.html:5
-#, fuzzy
-#| msgid "Directory"
 msgid "View directory"
-msgstr "Directorio"
+msgstr "Ver directorio"
 
 #: bookwyrm/templates/get_started/book_preview.html:6
 #, python-format
@@ -1440,7 +1434,7 @@ msgstr "BookWyrm es software de código abierto. Puedes contribuir o reportar pr
 
 #: bookwyrm/templates/lists/bookmark_button.html:30
 msgid "Un-save"
-msgstr ""
+msgstr "Des-guardar"
 
 #: bookwyrm/templates/lists/create_form.html:5
 #: bookwyrm/templates/lists/lists.html:20
@@ -1582,26 +1576,20 @@ msgid "Suggest"
 msgstr "Sugerir"
 
 #: bookwyrm/templates/lists/list_items.html:15
-#, fuzzy
-#| msgid "Save"
 msgid "Saved"
-msgstr "Guardar"
+msgstr "Guardado"
 
 #: bookwyrm/templates/lists/lists.html:14 bookwyrm/templates/user/lists.html:9
 msgid "Your Lists"
 msgstr "Tus listas"
 
 #: bookwyrm/templates/lists/lists.html:35
-#, fuzzy
-#| msgid "Lists"
 msgid "All Lists"
-msgstr "Listas"
+msgstr "Todas las listas"
 
 #: bookwyrm/templates/lists/lists.html:39
-#, fuzzy
-#| msgid "Create List"
 msgid "Saved Lists"
-msgstr "Crear lista"
+msgstr "Listas guardadas"
 
 #: bookwyrm/templates/login.html:4
 msgid "Login"
@@ -2694,10 +2682,8 @@ msgid "page %(page)s of %(total_pages)s"
 msgstr "página %(page)s de %(total_pages)s"
 
 #: bookwyrm/templates/snippets/page_text.html:6
-#, fuzzy, python-format
-#| msgid "page %(page)s"
 msgid "page %(page)s"
-msgstr "página %(pages)s"
+msgstr "página %(page)s"
 
 #: bookwyrm/templates/snippets/pagination.html:12
 msgid "Previous"
@@ -2759,7 +2745,7 @@ msgstr "Lectura se terminó"
 
 #: bookwyrm/templates/snippets/reading_modals/form.html:8
 msgid "(Optional)"
-msgstr ""
+msgstr "(Opcional)"
 
 #: bookwyrm/templates/snippets/reading_modals/progress_update_modal.html:5
 #: bookwyrm/templates/snippets/shelve_button/shelve_button_options.html:47
@@ -3178,7 +3164,7 @@ msgstr "Un enlace para reestablecer tu contraseña se enviará a %s"
 #: bookwyrm/views/rss_feed.py:34
 #, python-brace-format
 msgid "Status updates from {obj.display_name}"
-msgstr ""
+msgstr "Actualizaciones de status de {obj.display_name}"
 
 #~ msgid "Search Results for \"%(query)s\""
 #~ msgstr "Resultados de búsqueda por \"%(query)s\""
